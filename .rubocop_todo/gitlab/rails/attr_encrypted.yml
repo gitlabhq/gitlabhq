@@ -53,7 +53,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'ee/app/models/dependency_proxy/packages/setting.rb'
     - 'ee/app/models/geo_node.rb'
     - 'ee/app/models/merge_requests/external_status_check.rb'
-    - 'ee/app/models/remote_development/workspace_variable.rb'
     - 'ee/app/models/status_page/project_setting.rb'
     - 'ee/app/models/system_access/group_microsoft_application.rb'
     - 'ee/app/models/system_access/group_microsoft_graph_access_token.rb'

@@ -55,6 +55,7 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 - Status: Beta
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

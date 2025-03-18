@@ -595,6 +595,21 @@ Gitlab/BoundedContexts:
     - 'lib/**/*'
     - 'ee/lib/**/*'
 
+Gitlab/HardDeleteCalls:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+    - 'ee/db/fixtures/**/*'
+    - 'lib/tasks/**/*.rake'
+    - 'ee/lib/tasks/**/*.rake'
+    - 'app/services/groups/destroy_service.rb'
+    - 'app/services/projects/destroy_service.rb'
+    - 'app/workers/group_destroy_worker.rb'
+    - 'app/workers/project_destroy_worker.rb'
+    - 'ee/app/services/namespaces/groups/adjourned_deletion_service.rb'
+    - 'ee/app/services/projects/adjourned_deletion_service.rb'
+
 Gitlab/PolicyRuleBoolean:
   Enabled: true
   Include:

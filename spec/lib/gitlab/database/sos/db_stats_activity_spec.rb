@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::Sos::DbStatsActivity, feature_category: :databa
   end
 
   describe '#run' do
-    it 'executes each query successfully and writes results to CSV' do
+    it 'successfully writes each query result to csv' do
       handler.run
 
       described_class::QUERIES.each_key do |name|

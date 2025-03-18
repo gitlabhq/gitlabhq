@@ -109,7 +109,13 @@ module Projects
     end
 
     def fork_network
-      @fork_network ||= @project.fork_network || @project.build_root_of_fork_network
+      @fork_network ||= @project.fork_network || build_fork_network
+    end
+
+    def build_fork_network
+      @project.build_root_of_fork_network.tap do |fork_network|
+        fork_network.organization = @project.organization
+      end
     end
 
     def build_fork_network_member(fork_to_project)

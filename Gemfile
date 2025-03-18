@@ -522,7 +522,7 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4', feature_category: :shared
 
   gem 'gitlab-styles', '~> 13.1.0', feature_category: :tooling, require: false
-  gem 'haml_lint', '~> 0.58', feature_category: :tooling
+  gem 'haml_lint', '~> 0.58', feature_category: :tooling, require: false
 
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.14.0', require: false, feature_category: :shared

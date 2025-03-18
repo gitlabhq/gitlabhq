@@ -427,6 +427,7 @@ class Project < ApplicationRecord
 
   has_many :container_registry_protection_rules, class_name: 'ContainerRegistry::Protection::Rule', inverse_of: :project
   has_many :container_registry_protection_tag_rules, class_name: 'ContainerRegistry::Protection::TagRule', inverse_of: :project
+
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -3475,6 +3476,12 @@ class Project < ApplicationRecord
   def pages_url_builder(options = nil)
     strong_memoize_with(:pages_url_builder, options) do
       Gitlab::Pages::UrlBuilder.new(self, options)
+    end
+  end
+
+  def has_container_registry_protected_tag_rules?(action:, access_level:)
+    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level) do
+      container_registry_protection_tag_rules.for_actions_and_access([action], access_level).exists?
     end
   end
 

@@ -27,7 +27,6 @@ Gitlab/ServiceResponse:
     - 'app/services/packages/debian/create_distribution_service.rb'
     - 'app/services/packages/mark_package_for_destruction_service.rb'
     - 'app/services/packages/rubygems/dependency_resolver_service.rb'
-    - 'app/services/snippets/base_service.rb'
     - 'app/services/timelogs/base_service.rb'
     - 'app/services/work_items/create_and_link_service.rb'
     - 'app/services/work_items/create_from_task_service.rb'

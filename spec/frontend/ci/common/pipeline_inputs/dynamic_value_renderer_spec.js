@@ -181,8 +181,9 @@ describe('DynamicValueRenderer', () => {
         ${'NUMBER'}  | ${'42'}    | ${42}              | ${false}
         ${'BOOLEAN'} | ${'true'}  | ${true}            | ${true}
         ${'BOOLEAN'} | ${'false'} | ${false}           | ${true}
+        ${'ARRAY'}   | ${'a,b,c'} | ${'a,b,c'}         | ${false}
       `(
-        'converts input value "$inputValue" to $type typed value',
+        'handles input value "$inputValue" for $type type appropriately',
         async ({ type, inputValue, expectedTypedValue, usesDropdown }) => {
           createComponent({
             props: { item: { ...defaultProps.item, type } },

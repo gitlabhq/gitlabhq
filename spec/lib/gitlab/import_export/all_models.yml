@@ -1238,6 +1238,7 @@ vulnerability_finding:
   - feedbacks
   - finding_evidence
   - security_findings
+  - finding_token_status
 scanner:
   - findings
   - security_findings

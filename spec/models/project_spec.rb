@@ -9956,4 +9956,41 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
   end
+
+  describe '#has_container_registry_protected_tag_rules?' do
+    let_it_be_with_refind(:project) { create(:project) }
+
+    subject { project.has_container_registry_protected_tag_rules?(action: 'delete', access_level: Gitlab::Access::OWNER) }
+
+    it 'returns false when there is no matching tag protection rule' do
+      create(:container_registry_protection_tag_rule,
+        project: project,
+        minimum_access_level_for_push: :admin,
+        minimum_access_level_for_delete: :maintainer
+      )
+
+      expect(subject).to eq(false)
+    end
+
+    it 'returns true when there exists a matching tag protection rule' do
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        minimum_access_level_for_push: :maintainer,
+        minimum_access_level_for_delete: :admin
+      )
+
+      expect(subject).to eq(true)
+    end
+
+    it 'memoizes the call' do
+      allow(project.container_registry_protection_tag_rules).to receive(:for_actions_and_access).and_call_original
+
+      2.times do
+        project.has_container_registry_protected_tag_rules?(action: 'push', access_level: :maintainer)
+      end
+
+      expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer).once
+    end
+  end
 end

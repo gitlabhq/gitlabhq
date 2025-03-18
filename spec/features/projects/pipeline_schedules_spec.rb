@@ -14,6 +14,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
   before do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+    stub_feature_flags(ci_inputs_for_pipelines: false)
   end
 
   context 'logged in as the pipeline schedule owner' do

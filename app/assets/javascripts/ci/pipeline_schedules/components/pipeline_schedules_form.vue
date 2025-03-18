@@ -12,8 +12,10 @@ import { createAlert } from '~/alert';
 import { visitUrl, queryToObject } from '~/lib/utils/url_utility';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import RefSelector from '~/ref/components/ref_selector.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
+import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline_schedule.mutation.graphql';
 import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
@@ -30,12 +32,13 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlLoadingIcon,
+    IntervalPatternInput,
+    PipelineInputsForm,
+    PipelineVariablesFormGroup,
     RefSelector,
     TimezoneDropdown,
-    IntervalPatternInput,
-    PipelineVariablesFormGroup,
   },
-  mixins: [PipelineVariablesPermissionsMixin],
+  mixins: [glFeatureFlagsMixin(), PipelineVariablesPermissionsMixin],
   inject: [
     'projectPath',
     'projectId',
@@ -86,6 +89,7 @@ export default {
           this.description = schedule.description;
           this.cron = schedule.cron;
           this.cronTimezone = schedule.cronTimezone;
+          this.savedInputs = schedule.inputs?.nodes || [];
           this.scheduleRef = schedule.ref || this.defaultBranch;
           this.variables = variables.map((variable) => {
             return {
@@ -109,14 +113,16 @@ export default {
   },
   data() {
     return {
-      cron: '',
-      description: '',
-      scheduleRef: this.defaultBranch,
       activated: true,
+      cron: '',
       cronTimezone: '',
-      variables: [],
+      description: '',
+      pipelineInputs: [],
+      savedInputs: [],
       schedule: {},
+      scheduleRef: this.defaultBranch,
       updatedVariables: [],
+      variables: [],
     };
   },
   i18n: {
@@ -153,6 +159,9 @@ export default {
     },
     filledVariables() {
       return this.updatedVariables.filter((variable) => variable.key !== '' && !variable.empty);
+    },
+    isPipelineInputsFeatureAvailable() {
+      return this.glFeatures.ciInputsForPipelines;
     },
     preparedVariablesUpdate() {
       return this.filledVariables.map((variable) => {
@@ -203,6 +212,7 @@ export default {
               variables: this.preparedVariablesCreate,
               active: this.activated,
               projectPath: this.projectPath,
+              ...(this.isPipelineInputsFeatureAvailable && { inputs: this.pipelineInputs }),
             },
           },
         });
@@ -233,6 +243,7 @@ export default {
               ref: this.scheduleRef,
               variables: this.preparedVariablesUpdate,
               active: this.activated,
+              ...(this.isPipelineInputsFeatureAvailable && { inputs: this.pipelineInputs }),
             },
           },
         });
@@ -311,6 +322,14 @@ export default {
           class="gl-w-full"
         />
       </gl-form-group>
+      <!--Pipeline inputs-->
+      <pipeline-inputs-form
+        v-if="isPipelineInputsFeatureAvailable"
+        :saved-inputs="savedInputs"
+        :query-ref="scheduleRef"
+        class="gl-mb-6"
+        @update-inputs="pipelineInputs = $event"
+      />
       <!--Variable List-->
       <pipeline-variables-form-group
         v-if="canViewPipelineVariables"

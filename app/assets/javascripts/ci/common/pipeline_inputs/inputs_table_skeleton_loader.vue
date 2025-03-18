@@ -1,5 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
+import { getSkeletonRectProps } from './utils';
 
 export default {
   name: 'InputsTableSkeletonLoader',
@@ -7,16 +8,7 @@ export default {
     GlSkeletonLoader,
   },
   methods: {
-    getSkeletonRectProps(columnIndex, rowIndex) {
-      return {
-        x: `${columnIndex * 25.5}%`,
-        y: rowIndex * 10,
-        width: '23%',
-        height: 6,
-        rx: 2,
-        ry: 2,
-      };
-    },
+    getSkeletonRectProps,
   },
 };
 </script>

@@ -52,9 +52,8 @@ export default {
 </script>
 
 <template>
-  <!-- Using inline style for max-height as gl-max-h-* utilities are insufficient for our needs.
-       Will replace with pagination or better utilities in the future. -->
-  <div class="gl-overflow-y-auto" style="max-height: 50rem">
+  <!-- Will replace with pagination in the future. -->
+  <div class="gl-overflow-y-auto md:gl-max-h-[50rem]">
     <gl-table-lite
       class="gl-mb-0"
       :items="inputs"

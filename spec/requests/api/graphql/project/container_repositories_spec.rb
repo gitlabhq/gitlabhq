@@ -285,4 +285,55 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
       end
     end
   end
+
+  describe 'destroyContainerRepository' do
+    describe 'efficient database queries' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:project_container_repositories) { create_list(:container_repository, 2, project: project) }
+
+      let(:fields) do
+        <<~GQL
+          containerRepositories {
+            nodes {
+              userPermissions {
+                destroyContainerRepository
+              }
+            }
+          }
+        GQL
+      end
+
+      before_all do
+        create(:container_registry_protection_tag_rule,
+          project: project,
+          tag_name_pattern: 'x'
+        )
+      end
+
+      before do
+        project_container_repositories.each do |repository|
+          stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+      end
+
+      it 'avoids N+1 database queries', :use_sql_query_cache do
+        query = graphql_query_for('project', { 'fullPath' => project.full_path }, fields)
+
+        first_user = create(:user, developer_of: project)
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: first_user)
+        end
+
+        second_user = create(:user, developer_of: project)
+        new_repositories = create_list(:container_repository, 2, project: project)
+        new_repositories.each do |repository|
+          stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+
+        expect do
+          post_graphql(query, current_user: second_user)
+        end.to issue_same_number_of_queries_as(control)
+      end
+    end
+  end
 end

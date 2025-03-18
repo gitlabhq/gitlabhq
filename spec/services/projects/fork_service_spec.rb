@@ -91,6 +91,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         expect(fork_network).not_to be_nil
         expect(fork_network.root_project).to eq(project)
         expect(fork_network.projects).to contain_exactly(project, fork_of_project)
+        expect(fork_network.organization).to eq(project.organization)
       end
 
       it 'imports the repository of the forked project', :sidekiq_might_not_need_inline do

@@ -309,6 +309,23 @@ class ContainerRepository < ApplicationRecord
     self.find_by(project: path.repository_project, name: path.repository_name)
   end
 
+  def has_protected_tag_rules_for_delete?(user)
+    return false if Feature.disabled?(:container_registry_protected_tags, project)
+
+    return true if user.nil?
+    return false if user.can_admin_all_resources?
+
+    return false unless project.has_container_registry_protected_tag_rules?(
+      action: 'delete',
+      access_level: user.max_member_access_for_project(project.id)
+    )
+
+    # This is an API call so we put it last
+    return false unless has_tags?
+
+    true
+  end
+
   private
 
   def transform_tags_page(tags_response_body)

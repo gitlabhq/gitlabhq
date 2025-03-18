@@ -13,6 +13,7 @@ module Gitlab
       ].freeze
 
       LONG_RUNNING_TASKS = [
+        Sos::PgStatStatements,
         Sos::DbLoopStatsActivity
       ].freeze
 

@@ -97,7 +97,8 @@ module API
           present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
           with_captcha_check_rest_api(spammable: snippet) do
-            render_api_error!({ error: service_response.message }, service_response.http_status)
+            http_status = Helpers::Snippets::HttpResponseMap.status_for(service_response.reason)
+            render_api_error!({ error: service_response.message }, http_status)
           end
         end
       end
@@ -143,7 +144,8 @@ module API
           present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
           with_captcha_check_rest_api(spammable: snippet) do
-            render_api_error!({ error: service_response.message }, service_response.http_status)
+            http_status = Helpers::Snippets::HttpResponseMap.status_for(service_response.reason)
+            render_api_error!({ error: service_response.message }, http_status)
           end
         end
       end
