@@ -21,7 +21,7 @@ You can run scans and view [pipeline secret detection JSON report artifacts](../
 
 With GitLab Ultimate, pipeline secret detection results are also processed so you can:
 
-- See them in the [merge request widget](../../detect/security_scan_results.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/_index.md) UIs.
+- See them in the [merge request widget](../../detect/security_scan_results.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/_index.md).
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
@@ -51,48 +51,25 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 ## Coverage
 
-Pipeline secret detection scans different aspects of your code, depending on the situation. For all methods
-except "Default branch", pipeline secret detection scans commits. Only the content of each diff is scanned.
-For example, pipeline secret detection can detect if a secret was added in one commit and removed in a later commit.
-Pipeline secret detection does not scan other strings, like commit messages.
+Pipeline secret detection is optimized to balance coverage and run time.
+Only the current state of the repository and future commits are scanned for secrets.
+To identify secrets already present in the repository's history, run an historic scan once
+after enabling pipeline secret detection. Scan results are available only after the pipeline is completed.
 
-When run against the default branch, pipeline secret detection scans the Git working tree.
+Exactly what is scanned for secrets depends on the type of pipeline,
+and whether any additional configuration is set.
 
-- Historic scan
+By default, when you run a pipeline:
 
-  If the `SECRET_DETECTION_HISTORIC_SCAN` variable is set, every commit from each
-  [branch](../../../project/repository/branches/_index.md) is scanned. Before scanning the
-  repository's content, pipeline secret detection runs the command `git fetch --all` to fetch the content of all
-  branches.
+- On the **default branch**, the Git working tree is scanned.
+  This means the entire repository is scanned as though it were a typical directory.
+- On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
+- On an **existing, non-default branch**, the content of all commits from the most recent branch commit to the latest commit is scanned.
+- On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
+  the content of all commits from the parent to the latest commit is scanned. To use merge request pipelines, you must use the
+  [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
-- Commit range
-
-  If the `SECRET_DETECTION_LOG_OPTIONS` variable is set, the secrets analyzer fetches the entire
-  history of the branch or reference the pipeline is being run for. Pipeline secret detection then runs,
-  and scans each commit from the specified range.
-
-- Default branch
-
-  When pipeline secret detection is run on the default branch, the Git repository is treated as a plain
-  folder. Only the contents of the repository at the current HEAD are scanned. Commit history is not scanned.
-
-- Push event
-
-  On a push event, pipeline secret detection determines what commit range to scan, given the information
-  available in the runner. To determine the commit range, the variables `CI_COMMIT_SHA` and
-  `CI_COMMIT_BEFORE_SHA` are important.
-
-  - `CI_COMMIT_SHA` is the commit at HEAD for a given branch. This variable is always set for push events.
-  - `CI_COMMIT_BEFORE_SHA` is set in most cases. However, it is not set for the first push event on
-    a new branch, nor for merge pipelines. Because of this, pipeline secret detection can't be guaranteed
-    when multiple commits are committed to a new branch.
-
-- Merge request
-
-  In a merge request, pipeline secret detection scans every commit made on the source branch. To use this
-  feature, you must use the [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
-  [merge request pipelines](../../../../ci/pipelines/merge_request_pipelines.md). Pipeline secret detection's
-  results are only available after the pipeline is completed.
+To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
 ### Full history pipeline secret detection
 

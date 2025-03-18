@@ -8,7 +8,7 @@ title: Housekeeping
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -164,6 +164,12 @@ To trigger a manual prune of unreachable objects:
 
 ### Scheduled housekeeping
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 While GitLab automatically performs housekeeping tasks based on the number of
 pushes, it does not maintain repositories that don't receive any pushes at all.
 As a result, inactive repositories or repositories that are only getting read
@@ -262,6 +268,12 @@ took to execute. In the example above, the scheduled housekeeping completed
 in just over 5 minutes.
 
 ## Object pool repositories
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Object pool repositories are used by GitLab to deduplicate objects across forks
 of a repository. When creating the first fork, we:

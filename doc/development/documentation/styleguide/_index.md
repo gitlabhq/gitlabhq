@@ -574,6 +574,11 @@ When using code blocks:
   which has triple backticks already. The example above uses quadruple backticks internally
   to illustrate the code block format.
 
+To represent missing information in a code block, use a comment or an [ellipsis](word_list.md#ellipsis-ellipses). For example:
+
+- `# Removed for readability`
+- `// ...`
+
 ### Keyboard commands
 
 Use the HTML `<kbd>` tag when referring to keystroke presses. For example:

@@ -870,7 +870,13 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 
 ## ellipsis, ellipses
 
-When documenting UI text, if the UI includes an ellipsis, do not include the ellipsis in the documentation.
+Avoid ellipses when you can. If you must include them, for example as part of a code block or other CLI response,
+use three periods with no space (`...`) instead of the `&hellip;` HTML entity or the `&#8230;` HTML code.
+
+For more information, see [code blocks](../styleguide/_index.md#code-blocks).
+
+Do not include any ellipses when documenting UI text.
+
 For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 Use:
