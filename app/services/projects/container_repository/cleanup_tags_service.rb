@@ -36,7 +36,7 @@ module Projects
       def can_destroy?
         return true if container_expiration_policy
 
-        can?(current_user, :destroy_container_image, project)
+        can?(current_user, :destroy_container_image_tag, project)
       end
 
       def valid_regex?

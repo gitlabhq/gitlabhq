@@ -238,7 +238,7 @@ For detailed information about the `gl-coverage-fuzzing-report.json` file's form
 
 Example coverage-guided fuzzing report:
 
-```json-doc
+```json
 {
   "version": "v1.0.8",
   "regression": false,

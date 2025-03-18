@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::ConvertFeatureCategoryToGroupLabel, feature_cat
       let(:feature_category) { 'non_existing_feature_category_test' }
 
       it 'returns nil' do
-        expect(group_label).to be nil
+        expect(group_label).to be_nil
       end
     end
   end

@@ -464,13 +464,55 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
         check_redis_keys_files_overrides
       end
+
+      context 'when spec files are added' do
+        before do
+          filename1 = 'app/not_spec.rb'
+          filename2 = 'spec/controller/credentials_controller_spec.rb'
+
+          allow(fake_helper).to receive(:modified_files).and_return([filename1, filename2])
+          allow(fake_helper).to receive(:changed_lines).with(filename2).and_return(file_diff)
+        end
+
+        context 'when migration specs are not added' do
+          let(:file_diff) do
+            [
+              "+     it_behaves_like 'internal event' do",
+              "+       let(:event) {'credentials_show'}",
+              "+     end"
+            ]
+          end
+
+          it "adds a suggestion to add specs" do
+            expect(analytics_instrumentation).to receive(:warn)
+
+            check_redis_keys_files_overrides
+          end
+        end
+
+        context 'when migration specs are already added' do
+          let(:file_diff) do
+            [
+              "+     it_behaves_like 'migrated internal event' do",
+              "+       let(:event) {'credentials_show'}",
+              "+     end"
+            ]
+          end
+
+          it "doesn't add a suggestion to add specs" do
+            expect(analytics_instrumentation).not_to receive(:warn)
+
+            check_redis_keys_files_overrides
+          end
+        end
+      end
     end
 
     context 'when no new keys added to overrides files' do
       let(:file_diff_hll) { "-user_viewed_cluster_configuration-user: user_viewed_cluster_configuration" }
       let(:file_diff_total) { "-user_viewed_cluster_configuration-user: USER_VIEWED_CLUSTER_CONFIGURATION" }
 
-      it 'adds suggestion to add specs' do
+      it "doesn't add a suggestion to add specs" do
         expect(analytics_instrumentation).not_to receive(:warn)
 
         check_redis_keys_files_overrides

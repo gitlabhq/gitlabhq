@@ -12,17 +12,25 @@ title: GitLab quick actions
 
 {{< /details >}}
 
-Quick actions are text-based shortcuts for common actions that are usually done
-by selecting buttons or dropdowns in the GitLab user interface. You can enter
-these commands in the descriptions or comments of issues, epics, merge requests,
-and commits. Quick actions are executed from both new comments and description, and when you edit
-existing ones.
+Quick actions provide text-based shortcuts for common actions in GitLab.
+Quick actions:
 
-Many quick actions are context-aware, requiring certain conditions be met. For example, to remove
-an issue due date with `/remove_due_date`, the issue must have a due date set.
+- Execute common actions without using the user interface.
+- Support working with issues, merge requests, epics, and commits.
+- Run automatically when you save descriptions or comments.
+- Respond to specific contexts and conditions.
+- Process multiple commands when entered on separate lines.
 
-Be sure to enter each quick action on a separate line to allow GitLab to
-properly detect and execute the commands.
+For example, you can use quick actions to:
+
+- Assign users.
+- Add labels.
+- Set due dates.
+- Change status.
+- Set other attributes.
+
+Each command starts with a forward slash (`/`) and must be entered on a separate line.
+Many quick actions accept parameters, which you can enter with quotation marks (`"`) or specific formatting.
 
 ## Parameters
 
@@ -78,7 +86,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/draft`                                                                                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Set the [draft status](merge_requests/drafts.md). |
 | `/due <date>`                                                                                   | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Set due date. Examples of valid `<date>` include `in 2 days`, `this Friday` and `December 31st`. See [Chronic](https://gitlab.com/gitlab-org/ruby/gems/gitlab-chronic#examples) for more examples. |
 | `/duplicate <item>`                                                                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Close this <work item type>. Marks as related to, and a duplicate of, <#item>. |
-| `/epic <epic>`                                                                                  | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Add to epic `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. |
+| `/epic <epic>` or `/set_parent <epic>`                                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Add to epic `<epic>` as a child item. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. Alias `/set_parent` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514942) in GitLab 17.10. |
 | `/estimate <time>` or `/estimate_time <time>`                                                   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Set time estimate. For example, `/estimate 1mo 2w 3d 4h 5m`. For more information, see [Time tracking](time_tracking.md). Alias `/estimate_time` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16501) in GitLab 15.6. For epics, your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md). |
 | `/health_status <value>`                                                                        | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Set [health status](issues/managing_issues.md#health-status). For epics, your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md). Valid options for `<value>` are `on_track`, `needs_attention`, and `at_risk`. |
 | `/iteration *iteration:<iteration ID> or <iteration name>`                                      | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Set iteration. For example, to set the `Late in July` iteration: `/iteration *iteration:"Late in July"`. |
@@ -181,7 +189,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/remove_child <work_item>`                                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Remove the child `<work_item>`. The `<work_item>` value should be in the format of `#item`, `group/project#item`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/132761) in GitLab 16.10. |
 | `/remove_parent`                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Removes the parent work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434344) in GitLab 16.9. |
 | `/reopen`                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Reopen. |
-| `/set_parent <work_item>`                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Set parent work item to `<work_item>`. The `<work_item>` value should be in the format of `#item`, `group/project#item`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5. |
+| `/set_parent <work_item>`                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Set parent work item to `<work_item>`. The `<work_item>` value should be in the format of `#item`, `group/project#item`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5. Alias `/epic` for [issues with the new look](issues/issue_work_items.md) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514942) in GitLab 17.10. |
 | `/shrug`                                            | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Add `¯\＿(ツ)＿/¯`. |
 | `/subscribe`                                                  | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Subscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/tableflip`                                        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Add `(╯°□°)╯︵ ┻━┻`. |

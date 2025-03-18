@@ -1,19 +1,17 @@
 <script>
-import { GlButton, GlTruncate, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
-import { PATH_SEPARATOR } from '~/lib/utils/url_utility';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { joinPaths, PATH_SEPARATOR } from '~/lib/utils/url_utility';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { __, s__, n__ } from '~/locale';
 import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import eventHub from '../event_hub';
 
 export default {
   components: {
-    GlButton,
-    GlTruncate,
     GlCollapsibleListbox,
-    GlIcon,
   },
   mixins: [Tracking.mixin()],
   apollo: {
@@ -45,6 +43,11 @@ export default {
       default: '',
     },
     trackLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    toggleAriaLabelledBy: {
       type: String,
       required: false,
       default: '',
@@ -155,6 +158,19 @@ export default {
         this.shouldSkipQuery = false;
       }
     },
+    handleDropdownItemClick(namespaceId) {
+      const namespace = this.allItems.find((item) => item.id === namespaceId);
+
+      if (namespace) {
+        eventHub.$emit('update-visibility', {
+          name: namespace.name,
+          visibility: namespace.visibility,
+          showPath: namespace.webUrl,
+          editPath: joinPaths(namespace.webUrl, '-', 'edit'),
+        });
+      }
+      this.setNamespace(namespace);
+    },
     handleSelectTemplate(id, fullPath) {
       this.groupPathToFilterBy = fullPath.split(PATH_SEPARATOR).shift();
       this.setNamespace({ id, fullPath });
@@ -187,31 +203,34 @@ export default {
 </script>
 
 <template>
-  <gl-collapsible-listbox
-    searchable
-    fluid-width
-    :searching="loading"
-    :items="items"
-    :toggle-text="dropdownText"
-    :no-results-text="$options.i18n.emptySearchResult"
-    class="gl-w-full"
-    @show="trackDropdownShow"
-    @shown="handleDropdownShown"
-    @search="onSearch"
-  >
-    <template #toggle>
-      <gl-button :class="dropdownPlaceholderClass">
-        <gl-truncate
-          :text="dropdownText"
-          position="start"
-          class="gl-mr-auto gl-overflow-hidden"
-          with-tooltip
-        />
-        <gl-icon class="gl-button-icon dropdown-chevron !gl-ml-2 !gl-mr-0" name="chevron-down" />
-      </gl-button>
-    </template>
-    <template #search-summary-sr-only>
-      {{ searchSummary }}
-    </template>
-  </gl-collapsible-listbox>
+  <div>
+    <gl-collapsible-listbox
+      searchable
+      fluid-width
+      :searching="loading"
+      :items="items"
+      :toggle-text="dropdownText"
+      toggle-class="gl-w-full"
+      :toggle-aria-labelled-by="toggleAriaLabelledBy"
+      :no-results-text="$options.i18n.emptySearchResult"
+      class="project-destination-select gl-w-full gl-max-w-full"
+      @show="trackDropdownShow"
+      @shown="handleDropdownShown"
+      @select="handleDropdownItemClick"
+      @search="onSearch"
+    >
+      <template #search-summary-sr-only>
+        {{ searchSummary }}
+      </template>
+    </gl-collapsible-listbox>
+
+    <input type="hidden" name="project[selected_namespace_id]" :value="selectedNamespace.id" />
+
+    <input
+      id="project[namespace_id]"
+      type="hidden"
+      name="namespace_id"
+      :value="selectedNamespace.id || userNamespaceUniqueId"
+    />
+  </div>
 </template>

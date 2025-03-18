@@ -70,7 +70,7 @@ In addition:
   - Gains access to the protected branch, as well as to the deploy key itself.
   - Can push to the protected branch, if the deploy key has read-write permission.
     This is true even if the branch is protected against changes from all users.
-- Deploy keys are invalidated when the user is blocked or removed from the instance.
+- If the creator of the deploy key is blocked or removed from the instance, the user can still pull changes from the group or project, but not push.
 
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
 For human interactions, use credentials tied to users such as personal access tokens.

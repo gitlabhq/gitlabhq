@@ -115,7 +115,7 @@ start-review-app-pipeline:
       - REGISTRY_HOST
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.
-  # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword
+  # https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#pass-yaml-defined-cicd-variables
   variables:
     # This is needed by `review-build-cng-env` (`.gitlab/ci/review-apps/main.gitlab-ci.yml`).
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID

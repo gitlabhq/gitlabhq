@@ -80,7 +80,7 @@ export default {
             false;
           this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
           this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
-          this.isSquashReadOnly = data.project.squashReadOnly;
+          this.isSquashReadOnly = data.project.mergeRequest.squashReadOnly;
           this.squashCommitMessage = data.project.mergeRequest.defaultSquashCommitMessage;
         }
 
@@ -283,7 +283,7 @@ export default {
       }
 
       if (this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) {
-        return __('Merge...');
+        return __('Merge…');
       }
 
       return __('Merge');
@@ -362,7 +362,7 @@ export default {
       return this.shouldDisplayMergeImmediatelyDropdownOptions && this.isSkipMergeTrainAvailable;
     },
     canRebase() {
-      return this.sourceHasDivergedFromTarget && this.shouldShowMergeControls;
+      return this.sourceHasDivergedFromTarget && this.mr.canPushToSourceBranch;
     },
   },
   watch: {
@@ -578,7 +578,7 @@ export default {
       } catch (error) {
         createAlert({
           message: error.response?.data?.message || __('Failed to rebase. Please try again.'),
-          variant: 'error',
+          variant: 'danger',
         });
       } finally {
         this.isRebaseInProgress = false;
@@ -715,24 +715,26 @@ export default {
               <ul class="mr-widget-merge-details gl-mb-3 gl-w-full gl-pl-6 gl-text-subtle">
                 <template v-if="sourceHasDivergedFromTarget">
                   <li>
-                    <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
-                      <template #link>
-                        <gl-link :href="mr.targetBranchPath">{{
-                          $options.i18n.divergedCommits(mr.divergedCommitsCount)
-                        }}</gl-link>
-                      </template>
-                    </gl-sprintf>
-                    <gl-button
-                      v-if="canRebase"
-                      size="small"
-                      variant="link"
-                      data-testid="rebase-button"
-                      :loading="isRebaseInProgress"
-                      :aria-label="__('Rebase source branch')"
-                      @click="handleRebaseClick"
-                    >
-                      {{ __('Rebase source branch') }}
-                    </gl-button>
+                    <div class="gl-gap-2 md:gl-flex">
+                      <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                        <template #link>
+                          <gl-link :href="mr.targetBranchPath">{{
+                            $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                          }}</gl-link>
+                        </template>
+                      </gl-sprintf>
+                      <gl-button
+                        v-if="canRebase"
+                        size="small"
+                        variant="link"
+                        data-testid="rebase-button"
+                        :loading="isRebaseInProgress"
+                        :aria-label="__('Rebase source branch')"
+                        @click="handleRebaseClick"
+                      >
+                        {{ __('Rebase source branch') }}
+                      </gl-button>
+                    </div>
                   </li>
                 </template>
                 <li>
@@ -845,14 +847,27 @@ export default {
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-subtle">
-                <li v-if="sourceHasDivergedFromTarget" class="gl-leading-normal">
-                  <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
-                    <template #link>
-                      <gl-link :href="mr.targetBranchPath">{{
-                        $options.i18n.divergedCommits(mr.divergedCommitsCount)
-                      }}</gl-link>
-                    </template>
-                  </gl-sprintf>
+                <li v-if="sourceHasDivergedFromTarget">
+                  <div class="gl-gap-2 md:gl-flex">
+                    <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                      <template #link>
+                        <gl-link :href="mr.targetBranchPath">{{
+                          $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                        }}</gl-link>
+                      </template>
+                    </gl-sprintf>
+                    <gl-button
+                      v-if="canRebase"
+                      size="small"
+                      variant="link"
+                      data-testid="rebase-button"
+                      :loading="isRebaseInProgress"
+                      :aria-label="__('Rebase source branch')"
+                      @click="handleRebaseClick"
+                    >
+                      {{ __('Rebase source branch') }}
+                    </gl-button>
+                  </div>
                 </li>
                 <li class="gl-leading-normal">
                   <added-commit-message

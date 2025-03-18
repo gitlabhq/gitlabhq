@@ -33,6 +33,10 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
     blob_at('93ee732', 'files/ipython/math.ipynb')
   end
 
+  it 'blob/notebook/raw-output.json' do
+    blob_at('9b33108', 'files/ipython/raw-cell.ipynb')
+  end
+
   it 'blob/pdf/test.pdf' do
     blob_at('e774ebd33', 'files/pdf/test.pdf')
   end

@@ -23,7 +23,8 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       get api("/projects/#{project.id}/deployments", user), params: params
     end
 
-    it_behaves_like 'enforcing job token policies', :read_deployments do
+    it_behaves_like 'enforcing job token policies', :read_deployments,
+      allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
         get api("/projects/#{source_project.id}/deployments"), params: { job_token: target_job.token }
       end
@@ -174,7 +175,8 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       shared_examples "returns project deployments" do
         let(:project) { deployment.environment.project }
 
-        it_behaves_like 'enforcing job token policies', :read_deployments do
+        it_behaves_like 'enforcing job token policies', :read_deployments,
+          allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
           let(:request) do
             get api("/projects/#{source_project.id}/deployments/#{deployment.id}"),
               params: { job_token: target_job.token }
@@ -670,7 +672,8 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
 
     subject { get api("/projects/#{project.id}/deployments/#{deployment.id}/merge_requests", user) }
 
-    it_behaves_like 'enforcing job token policies', :read_deployments do
+    it_behaves_like 'enforcing job token policies', :read_deployments,
+      allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
         get api("/projects/#{source_project.id}/deployments/#{deployment.id}/merge_requests"), params: { job_token: target_job.token }
       end

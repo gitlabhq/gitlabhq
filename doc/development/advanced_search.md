@@ -1,7 +1,7 @@
 ---
 stage: Foundations
 group: Global Search
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Advanced search development guidelines
 ---
 
@@ -213,7 +213,6 @@ See [Recommended process for adding a new document type](#recommended-process-fo
 
 ### Create the index
 
-NOTE
 All new indexes must have:
 
 - `project_id` and `namespace_id` fields (if available). One of the fields must be used for routing.
@@ -233,7 +232,7 @@ All new indexes must have:
 1. Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to create the index
    by executing `scripts/elastic-migration` and following the instructions.
    The migration name must be in the format `Create<Name>Index`.
-1. Use the [`Elastic::MigrationCreateIndex`](search/advanced_search_migration_styleguide.md#elasticmigrationcreateindex)
+1. Use the [`Search::Elastic::MigrationCreateIndexHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationcreateindexhelper)
    helper and the `'migration creates a new index'` shared example for the specification file created.
 1. Add the target class to `Gitlab::Elastic::Helper::ES_SEPARATE_CLASSES`.
 1. To test the index creation, run `Elastic::MigrationWorker.new.perform` in a console and check that the index
@@ -452,10 +451,271 @@ A query is built using:
 
 New scopes must create a new query builder class that inherits from `Search::Elastic::QueryBuilder`.
 
-#### Filters
+#### Understanding Queries vs Filters
 
-The filters below may be used to build Elasticsearch queries. To use a filter, the index must
-have the required fields in the mapping. Filters use the `options` hash to build JSON which is added to the `query_hash`
+Queries in Elasticsearch serve two key purposes: filtering documents and calculating relevance scores. When building
+search functionality:
+
+- **Queries** are essential when relevance scoring is required to rank results by how well they match search criteria.
+  They use the Boolean query's `must`, `should`, and `must_not` clauses, all of which influence the document's final
+  relevance score.
+
+- **Filters** (within query context) determine whether documents appear in search results without affecting their score.
+  For search operations where results only need to be included/excluded without ranking by relevance, using filters
+  alone is more efficient and performs better at scale.
+
+Choose the appropriate approach based on your search requirements - use queries with scoring clauses for ranked results,
+and rely on filters for simple inclusion/exclusion logic.
+
+#### Available Queries
+
+All query builders must return a standardized `query_hash` structure that conforms to Elasticsearch's Boolean query
+syntax. The `Search::Elastic::BoolExpr` class provides an interface for constructing Boolean queries.
+
+The required query hash structure is:
+
+```json
+{
+  "query": {
+    "bool": {
+      "must": [],
+      "must_not": [],
+      "should": [],
+      "filters": [],
+      "minimum_should_match": null
+    }
+  }
+}
+```
+
+##### `by_iid`
+
+Query by `iid` field and document type. Requires `type` and `iid` fields.
+
+```json
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "iid": {
+              "_name": "milestone:related:iid",
+              "value": 1
+            }
+          }
+        },
+        {
+          "term": {
+            "type": {
+              "_name": "doc:is_a:milestone",
+              "value": "milestone"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+##### `by_full_text`
+
+Performs a full text search. This query will use `by_multi_match_query` or `by_simple_query_string` if Advanced search syntax is used in the query string. `by_multi_match_query` is behind the `search_uses_match_queries` feature flag.
+
+##### `by_multi_match_query`
+
+Uses `multi_match` Elasticsearch API. Can be customized with the following options:
+
+- `count_only` - uses the Boolean query clause `filter`. Scoring and highlighting are not performed.
+- `query` - if no query is passed, uses `match_all` Elasticsearch API
+- `keyword_match_clause` - if `:should` is passed, uses the Boolean query clause `should`. Default: `must` clause 
+
+```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "bool": {
+            "must": [],
+            "must_not": [],
+            "should": [
+              {
+                "multi_match": {
+                  "_name": "project:multi_match:and:search_terms",
+                  "fields": [
+                    "name^10",
+                    "name_with_namespace^2",
+                    "path_with_namespace",
+                    "path^9",
+                    "description"
+                  ],
+                  "query": "search",
+                  "operator": "and",
+                  "lenient": true
+                }
+              },
+              {
+                "multi_match": {
+                  "_name": "project:multi_match_phrase:search_terms",
+                  "type": "phrase",
+                  "fields": [
+                    "name^10",
+                    "name_with_namespace^2",
+                    "path_with_namespace",
+                    "path^9",
+                    "description"
+                  ],
+                  "query": "search",
+                  "lenient": true
+                }
+              }
+            ],
+            "filter": [],
+            "minimum_should_match": 1
+          }
+        }
+      ],
+      "must_not": [],
+      "should": [],
+      "filter": [],
+      "minimum_should_match": null
+    }
+  }
+}
+```
+
+##### `by_simple_query_string`
+
+Uses `simple_query_string` Elasticsearch API. Can be customized with the following options:
+
+- `count_only` - uses the Boolean query clause `filter`. Scoring and highlighting are not performed.
+- `query` - if no query is passed, uses `match_all` Elasticsearch API
+- `keyword_match_clause` - if `:should` is passed, uses the Boolean query clause `should`. Default: `must` clause
+
+```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "simple_query_string": {
+            "_name": "project:match:search_terms",
+            "fields": [
+              "name^10",
+              "name_with_namespace^2",
+              "path_with_namespace",
+              "path^9",
+              "description"
+            ],
+            "query": "search",
+            "lenient": true,
+            "default_operator": "and"
+          }
+        }
+      ],
+      "must_not": [],
+      "should": [],
+      "filter": [],
+      "minimum_should_match": null
+    }
+  }
+}
+```
+
+##### `by_knn`
+
+Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
+
+Performs a hybrid search using embeddings. Uses `full_text_search` unless embeddings are supported.
+
+{{< alert type="warning" >}}
+
+Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this query must be used with the `by_knn` filter.
+
+{{< /alert >}}
+
+The example below is for Elasticsearch.
+
+```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "bool": {
+            "must": [],
+            "must_not": [],
+            "should": [
+              {
+                "multi_match": {
+                  "_name": "work_item:multi_match:and:search_terms",
+                  "fields": [
+                    "iid^50",
+                    "title^2",
+                    "description"
+                  ],
+                  "query": "test",
+                  "operator": "and",
+                  "lenient": true
+                }
+              },
+              {
+                "multi_match": {
+                  "_name": "work_item:multi_match_phrase:search_terms",
+                  "type": "phrase",
+                  "fields": [
+                    "iid^50",
+                    "title^2",
+                    "description"
+                  ],
+                  "query": "test",
+                  "lenient": true
+                }
+              }
+            ],
+            "filter": [],
+            "minimum_should_match": 1
+          }
+        }
+      ],
+      "must_not": [],
+      "should": [],
+      "filter": [],
+      "minimum_should_match": null
+    }
+  },
+  "knn": {
+    "field": "embedding_0",
+    "query_vector": [
+      0.030752448365092278,
+      -0.05360432341694832
+    ],
+    "boost": 5,
+    "k": 25,
+    "num_candidates": 100,
+    "similarity": 0.6,
+    "filter": []
+  }
+}
+```
+
+#### Available Filters
+
+The query builder framework provides a collection of pre-built filters to handle common search scenarios. These filters
+simplify the process of constructing complex query conditions without having to write raw Elasticsearch query DSL.
+
+#### Filter Requirements and Usage
+
+To use any filter:
+
+1. The index mapping must include all required fields specified in each filter's documentation
+1. Pass the appropriate parameters via the `options` hash when calling the filter
+1. Each filter will generate the appropriate JSON structure and add it to your `query_hash`
+
+Filters can be composed together to create sophisticated search queries while maintaining readable and maintainable
+code. The following sections detail each available filter, its required fields, supported options, and example output.
 
 ##### `by_type`
 
@@ -744,14 +1004,20 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 }
 ```
 
-##### `by_group_level_authorization`
+##### `by_search_level_and_group_membership`
 
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
-filter on `namespace_visibility_level` based on permissions user has for each group.
+filter on `namespace_visibility_level` based on permissions user has for each group. 
 
 {{< alert type="note" >}}
 
-Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field. 
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+Examples are shown for an authenticated user. The JSON may be different for users with authorizations, admins, external, or anonymous users
 
 {{< /alert >}}
 
@@ -914,7 +1180,7 @@ Examples are shown for a logged in user. The JSON may be different for users wit
 
 ##### `by_search_level_and_membership`
 
-Requires `project_id` and `traversal_id` fields. Supports feature `*_access_level` fields. Query with `search_level`
+Requires `project_id`, `traversal_id` and project visibility (defaulting to `visibility_level` but can set with the `project_visibility_level_field` option) fields. Supports feature `*_access_level` fields. Query with `search_level`
  and optionally `project_ids`, `group_ids`, `features`, and `current_user` in options.
 
 Filtering is applied for:
@@ -1185,6 +1451,57 @@ Examples are shown for a logged in user. The JSON may be different for users wit
 ]
 ```
 
+##### `by_knn`
+
+Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
+
+{{< alert type="warning" >}}
+
+Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this filter must be used with the
+`by_knn` query.
+
+{{< /alert >}}
+
+### Creating a filter
+
+Filters are essential components in building effective Elasticsearch queries. They help narrow down search results
+without affecting the relevance scoring.
+
+- All filters must be documented.
+- Filters are created as class level methods in `Search::Elastic::Filters` 
+- The method should start with `by_`.
+- The method must take `query_hash` and `options` parameters only.
+- `query_hash` is expected to contain a hash with this format.
+
+  ```json
+   { "query": 
+     { "bool": 
+       {
+         "must": [],
+         "must_not": [],
+         "should": [],  
+         "filters": [],
+         "minimum_should_match": null    
+       }
+     }
+   }
+  ```
+
+- Use `add_filter` to add the filter to the query hash. Filters should add to the `filters` to avoid calculating score. The score calculation is done by the query itself. 
+- Use `context.name(:filters)` around the filter to add a name to the filter. This helps identify which part of a query and filter have allowed a result to be returned by the search
+
+  ```ruby
+    def by_new_filter_type(query_hash:, options:)
+        filter_selected_value = options[:field_value]
+
+        context.name(:filters) do
+          add_filter(query_hash, :query, :bool, :filter) do
+            { term: { field_name: { _name: context.name(:field_name), value: filter_selected_value } } }
+          end
+        end
+    end
+  ```
+
 ### Sending queries to Elasticsearch
 
 The queries are sent to `::Gitlab::Search::Client` from `Gitlab::Elastic::SearchResults`.
@@ -1193,7 +1510,7 @@ the response from Elasticsearch.
 
 #### Model requirements
 
-The model must response to the `to_ability_name` method so that the redaction logic can check if it has
+The model must respond to the `to_ability_name` method so that the redaction logic can check if it has
 `Ability.allowed?(current_user, :"read_#{object.to_ability_name}", object)?`. The method must be added if
 it does not exist.
 
@@ -1309,6 +1626,14 @@ is forwarded by all requests from Rails to Elasticsearch as the
 header which allows us to track any
 [tasks](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
 in the cluster back the request in GitLab.
+
+## Development tips
+
+- [Kibana](advanced_search/tips.md#kibana)
+- [Viewing index status](advanced_search/tips.md#viewing-index-status)
+- [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
+- [Testing migrations](advanced_search/tips.md#testing-migrations)
+- [Index data](advanced_search/tips.md#index-data)
 
 ## Troubleshooting
 

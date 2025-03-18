@@ -1,6 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import { mapValues } from 'lodash';
+// rspec spec/frontend/fixtures/search_navigation.rb to generate this file
+import noActiveItems from 'test_fixtures/search_navigation/no_active_items.json';
 import testAction from 'helpers/vuex_action_helper';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import * as logger from '~/lib/logger';
@@ -44,6 +47,17 @@ jest.mock('~/alert');
 jest.mock('~/lib/logger', () => ({
   logError: jest.fn(),
 }));
+
+jest.mock('~/lib/utils/url_utility', () => {
+  const urlUtility = jest.requireActual('~/lib/utils/url_utility');
+
+  return {
+    __esModule: true,
+    ...urlUtility,
+    setUrlParams: jest.fn(() => 'mocked-new-url'),
+    updateHistory: jest.fn(),
+  };
+});
 
 describe('Global Search Store Actions', () => {
   let mock;
@@ -159,41 +173,112 @@ describe('Global Search Store Actions', () => {
     });
   });
 
-  describe.each`
-    payload                                      | isDirty  | isDirtyMutation
-    ${{ key: SIDEBAR_PARAMS[0], value: 'test' }} | ${false} | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: false }]}
-    ${{ key: SIDEBAR_PARAMS[0], value: 'test' }} | ${true}  | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: true }]}
-    ${{ key: SIDEBAR_PARAMS[1], value: 'test' }} | ${false} | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: false }]}
-    ${{ key: SIDEBAR_PARAMS[1], value: 'test' }} | ${true}  | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: true }]}
-    ${{ key: 'non-sidebar', value: 'test' }}     | ${false} | ${[]}
-    ${{ key: 'non-sidebar', value: 'test' }}     | ${true}  | ${[]}
-  `('setQuery', ({ payload, isDirty, isDirtyMutation }) => {
-    describe(`when filter param is ${payload.key} and utils.isSidebarDirty returns ${isDirty}`, () => {
-      const expectedMutations = [{ type: types.SET_QUERY, payload }].concat(isDirtyMutation);
+  describe('setQuery', () => {
+    describe('when search type is zoekt and scope is blob with zoektMultimatchFrontend feature enabled', () => {
+      const payload = { key: 'some-key', value: 'some-value' };
+      let originalGon;
+      let commit;
+      let fetchSidebarCountSpy;
 
       beforeEach(() => {
-        storeUtils.isSidebarDirty = jest.fn().mockReturnValue(isDirty);
+        originalGon = window.gon;
+        commit = jest.fn();
+
+        fetchSidebarCountSpy = jest
+          .spyOn(actions, 'fetchSidebarCount')
+          .mockImplementation(() => Promise.resolve());
+
+        window.gon = { features: { zoektMultimatchFrontend: true } };
+        storeUtils.isSidebarDirty = jest.fn().mockReturnValue(false);
+
+        state = createState({
+          query: { ...MOCK_QUERY, search: 'test-search' },
+          navigation: { ...MOCK_NAVIGATION },
+          searchType: 'zoekt',
+        });
       });
 
-      it(`should dispatch the correct mutations`, () => {
-        return testAction({ action: actions.setQuery, payload, state, expectedMutations });
+      afterEach(() => {
+        window.gon = originalGon;
+        fetchSidebarCountSpy.mockRestore();
+      });
+
+      it('should update URL, document title, and history', async () => {
+        const getters = { currentScope: 'blobs' };
+
+        await actions.setQuery({ state, commit, getters }, payload);
+
+        expect(setUrlParams).toHaveBeenCalledWith(
+          { ...state.query },
+          window.location.href,
+          false,
+          true,
+        );
+
+        expect(document.title).toBe(state.query.search);
+
+        expect(updateHistory).toHaveBeenCalledWith({
+          state: state.query,
+          title: state.query.search,
+          url: 'mocked-new-url',
+          replace: false,
+        });
+      });
+
+      it('does not update URL or fetch sidebar counts when conditions are not met', async () => {
+        let getters = { currentScope: 'blobs' };
+        state.searchType = 'not-zoekt';
+
+        await actions.setQuery({ state, commit, getters }, payload);
+
+        expect(setUrlParams).not.toHaveBeenCalled();
+        expect(updateHistory).not.toHaveBeenCalled();
+        expect(fetchSidebarCountSpy).not.toHaveBeenCalled();
+
+        setUrlParams.mockClear();
+        updateHistory.mockClear();
+        fetchSidebarCountSpy.mockClear();
+
+        state.searchType = 'zoekt';
+        getters = { currentScope: 'not-blobs' };
+
+        await actions.setQuery({ state, commit, getters }, payload);
+
+        expect(setUrlParams).not.toHaveBeenCalled();
+        expect(updateHistory).not.toHaveBeenCalled();
+        expect(fetchSidebarCountSpy).not.toHaveBeenCalled();
+
+        setUrlParams.mockClear();
+        updateHistory.mockClear();
+        fetchSidebarCountSpy.mockClear();
+
+        getters = { currentScope: 'blobs' };
+        window.gon.features.zoektMultimatchFrontend = false;
+
+        await actions.setQuery({ state, commit, getters }, payload);
+
+        expect(setUrlParams).not.toHaveBeenCalled();
+        expect(updateHistory).not.toHaveBeenCalled();
+        expect(fetchSidebarCountSpy).not.toHaveBeenCalled();
       });
     });
-  });
 
-  describe.each`
-    payload
-    ${{ key: REGEX_PARAM, value: true }}
-    ${{ key: REGEX_PARAM, value: { random: 'test' } }}
-  `('setQuery', ({ payload }) => {
-    describe(`when query param is ${payload.key}`, () => {
-      beforeEach(() => {
-        storeUtils.setDataToLS = jest.fn();
-        actions.setQuery({ state, commit: jest.fn() }, payload);
-      });
+    describe.each`
+      payload
+      ${{ key: REGEX_PARAM, value: true }}
+      ${{ key: REGEX_PARAM, value: { random: 'test' } }}
+    `('setQuery with REGEX_PARAM', ({ payload }) => {
+      describe(`when query param is ${payload.key}`, () => {
+        beforeEach(() => {
+          storeUtils.setDataToLS = jest.fn();
+          window.gon = { features: { zoektMultimatchFrontend: false } };
+          const getters = { currentScope: 'not-blobs' };
+          actions.setQuery({ state, commit: jest.fn(), getters }, payload);
+        });
 
-      it(`setsItem in local storage`, () => {
-        expect(storeUtils.setDataToLS).toHaveBeenCalledWith(LS_REGEX_HANDLE, expect.anything());
+        it(`setsItem in local storage`, () => {
+          expect(storeUtils.setDataToLS).toHaveBeenCalledWith(LS_REGEX_HANDLE, expect.anything());
+        });
       });
     });
   });
@@ -201,7 +286,12 @@ describe('Global Search Store Actions', () => {
   describe('applyQuery', () => {
     beforeEach(() => {
       setWindowLocation('https://test/');
-      jest.spyOn(urlUtils, 'visitUrl').mockReturnValue({});
+      jest.spyOn(urlUtils, 'visitUrl').mockImplementation(() => {});
+      jest
+        .spyOn(urlUtils, 'setUrlParams')
+        .mockReturnValue(
+          'https://test/?scope=issues&state=all&group_id=1&language%5B%5D=C&language%5B%5D=JavaScript&label_name%5B%5D=Aftersync&label_name%5B%5D=Brist&search=*',
+        );
     });
 
     it('calls visitUrl and setParams with the state.query', async () => {
@@ -355,17 +445,29 @@ describe('Global Search Store Actions', () => {
     });
   });
 
-  describe('fetchSidebarCount uses wild card seach', () => {
+  describe('fetchSidebarCount uses wild card search', () => {
     beforeEach(() => {
-      state.navigation = MOCK_NAVIGATION;
-      state.urlQuery.search = '';
+      state.navigation = noActiveItems;
+      state.query = { search: '' };
+      state.urlQuery = { search: '' };
+
+      jest.spyOn(urlUtils, 'setUrlParams').mockImplementation((params) => {
+        return `http://test.host/search/count?search=${params.search || '*'}`;
+      });
+
+      storeUtils.skipBlobESCount = jest.fn().mockReturnValue(true);
+
+      mock.onGet().reply(HTTP_STATUS_OK, MOCK_ENDPOINT_RESPONSE);
     });
 
     it('should use wild card', async () => {
-      await testAction({ action: actions.fetchSidebarCount, state, expectedMutations: [] });
-      expect(mock.history.get[0].url).toBe('http://test.host/search/count?scope=projects&search=*');
-      expect(mock.history.get[3].url).toBe(
-        'http://test.host/search/count?scope=merge_requests&search=*',
+      const commit = jest.fn();
+
+      await actions.fetchSidebarCount({ commit, state });
+
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith(
+        expect.objectContaining({ search: '*' }),
+        expect.anything(),
       );
     });
   });
@@ -409,16 +511,16 @@ describe('Global Search Store Actions', () => {
         {
           payload: {
             key: 'label_name',
-            value: ['Aftersync', 'Brist'],
+            value: ['Aftersync'],
           },
           type: 'SET_QUERY',
         },
         {
-          payload: true,
+          payload: false,
           type: 'SET_SIDEBAR_DIRTY',
         },
       ];
-      return testAction(actions.closeLabel, { key: '60' }, state, expectedResult, []);
+      return testAction(actions.closeLabel, { title: 'Brist' }, state, expectedResult, []);
     });
   });
 

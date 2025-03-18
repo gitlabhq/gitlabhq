@@ -180,7 +180,6 @@ You can have more than one step in a job.
 ## Refactor your step
 
 To refactor your steps, move them from the `.gitlab-ci.yml` to a dedicated file:
-To refactor your steps by moving them from CI Config into a dedicated file:
 
 1. Move the first step you created to a directory called `hello`:
 

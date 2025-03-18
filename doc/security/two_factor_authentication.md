@@ -115,7 +115,7 @@ You can enforce 2FA for all users in a group or subgroup.
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role for the group.
+- You must have the Owner role for the group.
 
 To enforce 2FA for a group:
 

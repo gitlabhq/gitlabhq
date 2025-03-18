@@ -600,6 +600,34 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe '.with_project_statistics' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) do
+        create(:project,
+          namespace: namespace,
+          statistics: build(
+            :project_statistics,
+            namespace: namespace,
+            repository_size: 101,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      it 'includes the project statistics' do
+        namespaces = described_class.with_project_statistics
+        expect(
+          namespaces.where(id: namespace.id).first.projects.first.association(:statistics).loaded?
+        ).to be_truthy
+      end
+    end
   end
 
   describe 'delegate' do

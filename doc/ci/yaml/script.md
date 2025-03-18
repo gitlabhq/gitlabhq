@@ -31,7 +31,7 @@ For example, this script uses a colon:
 ```yaml
 job:
   script:
-    - curl --request POST --header 'Content-Type: application/json' "https://gitlab/api/v4/projects"
+    - curl --request POST --header 'Content-Type: application/json' "https://gitlab.example.com/api/v4/projects"
 ```
 
 To be considered valid YAML, you must wrap the entire command in single quotes. If
@@ -41,7 +41,7 @@ if possible:
 ```yaml
 job:
   script:
-    - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
+    - 'curl --request POST --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects"'
 ```
 
 You can verify the syntax is valid with the [CI Lint](../yaml/lint.md) tool.

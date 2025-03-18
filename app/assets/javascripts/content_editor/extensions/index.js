@@ -1,3 +1,5 @@
+export { default as Alert } from './alert';
+export { default as AlertTitle } from './alert_title';
 export { default as Attachment } from './attachment';
 export { default as Audio } from './audio';
 export { default as Blockquote } from './blockquote';
@@ -60,5 +62,6 @@ export { default as TableRow } from './table_row';
 export { default as TaskItem } from './task_item';
 export { default as TaskList } from './task_list';
 export { default as Text } from './text';
+export { default as Time } from './time';
 export { default as Video } from './video';
 export { default as WordBreak } from './word_break';

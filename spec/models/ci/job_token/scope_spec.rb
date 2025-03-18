@@ -230,17 +230,35 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
   end
 
   describe '#policies_allowed?' do
-    subject { scope.policies_allowed?(accessed_project, policies) }
+    subject(:policies_allowed?) { scope.policies_allowed?(accessed_project, policies) }
 
     let(:scope) { described_class.new(target_project) }
     let_it_be(:target_project) { create(:project) }
     let_it_be(:allowed_policy) { ::Ci::JobToken::Policies::POLICIES.first }
     let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
 
+    shared_examples 'capturing job token policies' do
+      it 'captures job token policies' do
+        expect(::Ci::JobToken::Authorization).to receive(:capture_job_token_policies).with(policies)
+
+        policies_allowed?
+      end
+    end
+
+    shared_examples 'not capturing job token policies' do
+      it 'does not capture job token policies' do
+        expect(::Ci::JobToken::Authorization).not_to receive(:capture_job_token_policies)
+
+        policies_allowed?
+      end
+    end
+
     context 'when no policies are given' do
       let_it_be(:policies) { [] }
 
       it { is_expected.to be(false) }
+
+      it_behaves_like 'not capturing job token policies'
     end
 
     context 'when the policies are defined in the scope' do
@@ -248,22 +266,39 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
       it { is_expected.to be(true) }
 
+      it_behaves_like 'capturing job token policies'
+
+      context 'when an admin policy is defined in the scope' do
+        let_it_be(:allowed_policy) { 'admin_jobs' }
+        let_it_be(:policies) { [:admin_jobs, :read_jobs] }
+
+        it 'allows both the admin policy and the read policy' do
+          is_expected.to be(true)
+        end
+      end
+
       context 'when the accessed project is not inbound accessible' do
         let(:accessed_project) { create(:project) }
 
         it { is_expected.to be(false) }
+
+        it_behaves_like 'capturing job token policies'
       end
     end
 
-    context 'when the policy are not defined in the scope' do
+    context 'when the policies are not defined in the scope' do
       let_it_be(:policies) { [:not_allowed_policy] }
 
       it { is_expected.to be(false) }
+
+      it_behaves_like 'capturing job token policies'
 
       context 'when the accessed project is the target project' do
         let(:accessed_project) { target_project }
 
         it { is_expected.to be(true) }
+
+        it_behaves_like 'not capturing job token policies'
       end
 
       context 'when the accessed project does not have ci_inbound_job_token_scope_enabled set to true' do
@@ -272,12 +307,26 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         end
 
         it { is_expected.to be(true) }
+
+        it_behaves_like 'capturing job token policies'
+      end
+
+      context 'when the `add_policies_to_ci_job_token` flag is disabled' do
+        before do
+          stub_feature_flags(add_policies_to_ci_job_token: false)
+        end
+
+        it { is_expected.to be(true) }
+
+        it_behaves_like 'capturing job token policies'
       end
 
       context 'when the accessed project has not enabled fine grained permissions' do
         let(:accessed_project) { create_inbound_accessible_project(target_project) }
 
         it { is_expected.to be(true) }
+
+        it_behaves_like 'capturing job token policies'
       end
     end
   end

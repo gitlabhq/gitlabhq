@@ -57,11 +57,6 @@ export default {
       required: false,
       default: false,
     },
-    showIssuableByEmail: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     createProjectMessage() {
@@ -142,7 +137,6 @@ export default {
             <csv-import-export-buttons
               :export-csv-path="exportCsvPathWithQuery"
               :issuable-count="currentTabCount"
-              track-import-click
             />
           </gl-disclosure-dropdown>
         </template>

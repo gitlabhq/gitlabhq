@@ -8,15 +8,15 @@ RSpec.describe ::DependencyProxy::GroupSettings::UpdateService, feature_category
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:group_settings) { create(:dependency_proxy_group_setting, group: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:params) { { enabled: false } }
+  let_it_be(:params) { { enabled: false, identity: 'i', secret: 's' } }
 
   describe '#execute' do
     subject { described_class.new(container: group, current_user: user, params: params).execute }
 
     shared_examples 'updating the dependency proxy group settings' do
       it_behaves_like 'updating the dependency proxy group settings attributes',
-        from: { enabled: true },
-        to: { enabled: false }
+        from: { enabled: true, identity: 'username', secret: 'secret' },
+        to: { enabled: false, identity: 'i', secret: 's' }
 
       it 'returns a success' do
         result = subject

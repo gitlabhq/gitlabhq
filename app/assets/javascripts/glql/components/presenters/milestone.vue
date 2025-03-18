@@ -27,7 +27,9 @@ export default {
 <template>
   <gl-link
     ref="reference"
+    class="gfm gfm-milestone"
     data-reference-type="milestone"
+    :data-original="`%\&quot;${data.title}\&quot;`"
     :title="data.title"
     :data-project="project"
     :data-milestone="data.id"

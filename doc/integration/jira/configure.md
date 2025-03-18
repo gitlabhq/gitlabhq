@@ -12,7 +12,11 @@ title: Jira issues integration
 
 {{< /details >}}
 
-> - Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
+{{< history >}}
+
+- Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
+
+{{< /history >}}
 
 The Jira issues integration connects one or more GitLab projects to a Jira instance.
 You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud).
@@ -231,21 +235,18 @@ To create a Jira Cloud API token:
 
 To copy the API token, select **Copy**.
 
-## Migrate from Jira Server to Jira Cloud
+## Migrate from one Jira site to another
 
-> - Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
+{{< history >}}
 
-To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira issues integration:
+- Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
-1. Select **Jira issues**.
-1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
-1. In **Email or username**, enter the email registered on your Jira profile.
-1. [Create a Jira Cloud API token](#create-a-jira-cloud-api-token), and copy the token value.
-1. In **API token or password**, paste the API token value.
-1. Optional. Select **Test settings**.
-1. Select **Save changes**.
+{{< /history >}}
+
+To migrate from one Jira site to another in GitLab and maintain your Jira issues integration:
+
+1. Follow the steps in [configure the integration](#configure-the-integration).
+1. Enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
 
 To update existing Jira issue references in GitLab to use the new Jira site URL, you must
 [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

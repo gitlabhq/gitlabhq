@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :model do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+
   it_behaves_like 'a resource event'
   it_behaves_like 'a resource event for issues'
   it_behaves_like 'a resource event for merge requests'
@@ -17,6 +20,48 @@ RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :
 
   describe 'associations' do
     it { is_expected.to belong_to(:milestone) }
+
+    it { is_expected.to belong_to(:namespace) }
+
+    it { is_expected.to belong_to(:issue) }
+
+    it { is_expected.to belong_to(:merge_request) }
+  end
+
+  describe 'validations' do
+    describe 'issue presence' do
+      it { is_expected.to validate_presence_of(:issue) }
+
+      context 'when merge_request is present' do
+        subject { described_class.new(merge_request: build_stubbed(:merge_request)) }
+
+        it { is_expected.not_to validate_presence_of(:issue) }
+      end
+    end
+
+    describe 'merge_request presence' do
+      it { is_expected.to validate_presence_of(:merge_request) }
+
+      context 'when issue is present' do
+        subject { described_class.new(issue: build_stubbed(:issue)) }
+
+        it { is_expected.not_to validate_presence_of(:merge_request) }
+      end
+    end
+
+    describe 'issue and merge_request mutually exclusive' do
+      context 'when merge_request is present' do
+        it 'validates that merge_request and issue are mutually exclusive' do
+          expect(
+            described_class.new(merge_request: create(:merge_request, source_project: project))
+          ).to validate_absence_of(:issue).with_message(_("can't be specified if a merge request was already provided"))
+        end
+      end
+
+      context 'when merge_request is not present' do
+        it { is_expected.not_to validate_absence_of(:issue) }
+      end
+    end
   end
 
   describe '#milestone_title' do
@@ -37,9 +82,6 @@ RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :
   end
 
   describe '#milestone_parent' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:group) { create(:group) }
-
     let(:milestone) { create(:milestone, project: project) }
     let(:event) { create(:resource_milestone_event, milestone: milestone) }
 
@@ -62,6 +104,38 @@ RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :
 
       it 'returns nil' do
         expect(event.milestone_parent).to be_nil
+      end
+    end
+  end
+
+  describe 'ensure_namespace_id' do
+    context 'when event belongs to an issue' do
+      let(:issue) { create(:issue, project: project) }
+      let(:event) { described_class.new(issue: issue) }
+
+      it 'sets the namespace id from the issue namespace id' do
+        # zero until we remove the default when table is backfilled
+        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514593
+        expect(event.namespace_id).to be_zero
+
+        event.valid?
+
+        expect(event.namespace_id).to eq(issue.namespace.id)
+      end
+    end
+
+    context 'when event belongs to a merge request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:event) { described_class.new(merge_request: merge_request) }
+
+      it 'sets the namespace id from the merge request project namespace id' do
+        # zero until we remove the default when table is backfilled
+        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514593
+        expect(event.namespace_id).to be_zero
+
+        event.valid?
+
+        expect(event.namespace_id).to eq(merge_request.source_project.project_namespace_id)
       end
     end
   end

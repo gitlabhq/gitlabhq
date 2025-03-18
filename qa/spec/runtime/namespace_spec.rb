@@ -11,7 +11,7 @@ RSpec.describe QA::Runtime::Namespace do
 
   describe '.group_name' do
     it "returns unique name with predefined pattern" do
-      expect(described_class.group_name).to match(/qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-[a-f0-9]{16}/)
+      expect(described_class.group_name).to match(/e2e-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-[a-f0-9]{16}/)
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe QA::Runtime::Namespace do
 
     context "when running on ephemeral environment" do
       it "returns random sandbox name" do
-        expect(described_class.sandbox_name).to match(/qa-sandbox-[a-f0-9]{12}/)
+        expect(described_class.sandbox_name).to match(/e2e-sandbox-[a-f0-9]{12}/)
       end
     end
   end

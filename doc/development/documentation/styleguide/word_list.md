@@ -210,7 +210,8 @@ Use **offline environment** to describe installations that have physical barrier
 
 ## allow, enable
 
-Try to avoid **allow** and **enable**, unless you are talking about security-related features.
+Try to avoid **allow** and **enable**, unless you are talking about security-related features or the
+state of a feature flag.
 
 Use:
 
@@ -867,9 +868,15 @@ For example:
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
 
-## ellipsis
+## ellipsis, ellipses
 
-When documenting UI text, if the UI includes an ellipsis, do not include the ellipsis in the documentation.
+Avoid ellipses when you can. If you must include them, for example as part of a code block or other CLI response,
+use three periods with no space (`...`) instead of the `&hellip;` HTML entity or the `&#8230;` HTML code.
+
+For more information, see [code blocks](../styleguide/_index.md#code-blocks).
+
+Do not include any ellipses when documenting UI text.
+
 For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 Use:
@@ -1101,6 +1108,16 @@ Putting the brand names next to each other can imply ownership or partnership, w
 unless we've gone through a legal review and have been told to promote the partnership.
 
 This guidance follows the [Use of Third-party Trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#dos--donts-for-use-of-third-party-trademarks-in-gitlab).
+
+## GitLab AI vendor model
+
+Use **GitLab AI vendor model** to refer to a [language model](#language-model-large-language-model)
+that is hosted by GitLab, and that customers access through the GitLab-hosted
+[AI gateway](#ai-gateway).
+
+Do not use this term when the [language model is hosted by a customer](#self-hosted-model),
+or when the customer is using the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)
+feature.
 
 ## GitLab Dedicated
 
@@ -2027,6 +2044,10 @@ See also [recommended steps](_index.md#recommended-steps).
 ## register
 
 Use **register** instead of **sign up** when talking about creating an account.
+
+## reindex
+
+Use **reindex** instead of **re-index** when talking about search.
 
 ## remove
 

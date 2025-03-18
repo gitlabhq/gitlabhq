@@ -214,7 +214,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
         post api(path, admin, admin_mode: true), params: {}
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['secret']).not_to be nil
+        expect(json_response['secret']).not_to be_nil
         expect(application.secret_matches?(json_response['secret'])).not_to eq(true)
       end
 

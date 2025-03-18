@@ -10,6 +10,8 @@ import {
 } from '@gitlab/ui';
 import { isEmpty, maxBy, range } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 
 export default {
   name: 'CandidateDetail',
@@ -20,6 +22,8 @@ export default {
     GlTab,
     GlTabs,
     GlTableLite,
+    PackageFiles: () =>
+      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +37,19 @@ export default {
   computed: {
     info() {
       return this.candidate.info;
+    },
+    projectPath() {
+      return this.candidate.projectPath;
+    },
+    packageType() {
+      return 'ml_model';
+    },
+    packageId() {
+      if (!this.info?.pathToArtifact) return null;
+      return convertToGraphQLId(
+        TYPENAME_PACKAGES_PACKAGE,
+        this.info.pathToArtifact.split('/packages/')[1],
+      );
     },
     ciJob() {
       return this.info.ciJob;
@@ -55,11 +72,11 @@ export default {
 
       const fields = range(maxStep + 1).map((step) => ({
         key: step.toString(),
-        label: sprintf(s__('MlModelRegistry|Step %{step}'), { step }),
+        label: sprintf(s__('MlExperimentTracking|Step %{step}'), { step }),
         ...cssClasses,
       }));
 
-      return [{ key: 'name', label: s__('MlModelRegistry|Metric'), ...cssClasses }, ...fields];
+      return [{ key: 'name', label: s__('MlExperimentTracking|Metric'), ...cssClasses }, ...fields];
     },
     metricsTableItems() {
       const items = {};
@@ -87,20 +104,20 @@ export default {
     },
   },
   i18n: {
-    detailsLabel: s__('MlModelRegistry|Details & Metadata'),
-    artifactsLabel: s__('MlModelRegistry|Artifacts'),
-    mlflowIdLabel: s__('MlModelRegistry|MLflow run ID'),
-    ciSectionLabel: s__('MlModelRegistry|CI Info'),
+    detailsLabel: s__('MlExperimentTracking|Details & Metadata'),
+    artifactsLabel: s__('MlExperimentTracking|Artifacts'),
+    mlflowIdLabel: s__('MlExperimentTracking|MLflow run ID'),
+    ciSectionLabel: s__('MlExperimentTracking|CI Info'),
     jobLabel: __('Job'),
-    ciUserLabel: s__('MlModelRegistry|Triggered by'),
+    ciUserLabel: s__('MlExperimentTracking|Triggered by'),
     ciMrLabel: __('Merge request'),
-    parametersLabel: s__('MlModelRegistry|Parameters'),
-    performanceLabel: s__('MlModelRegistry|Performance'),
-    noParametersMessage: s__('MlModelRegistry|No logged parameters'),
-    noMetricsMessage: s__('MlModelRegistry|No logged metrics'),
-    noMetadataMessage: s__('MlModelRegistry|No logged metadata'),
-    noCiMessage: s__('MlModelRegistry|Run not linked to a CI build'),
-    noArtifactsMessage: s__('MlModelRegistry|No logged artifacts.'),
+    parametersLabel: s__('MlExperimentTracking|Parameters'),
+    performanceLabel: s__('MlExperimentTracking|Performance'),
+    noParametersMessage: s__('MlExperimentTracking|No logged parameters'),
+    noMetricsMessage: s__('MlExperimentTracking|No logged metrics'),
+    noMetadataMessage: s__('MlExperimentTracking|No logged metadata'),
+    noCiMessage: s__('MlExperimentTracking|Run not linked to a CI build'),
+    noArtifactsMessage: s__('MlExperimentTracking|No logged artifacts.'),
     copyMessage: __('Copy MLflow run ID'),
   },
 };
@@ -179,13 +196,12 @@ export default {
         </section>
       </gl-tab>
       <gl-tab :title="$options.i18n.artifactsLabel" class="gl-pt-3" data-testid="artifacts">
-        <gl-link
+        <package-files
           v-if="info.pathToArtifact"
-          :href="info.pathToArtifact"
-          data-testid="artifacts-link"
-        >
-          {{ $options.i18n.artifactsLabel }}
-        </gl-link>
+          :project-path="projectPath"
+          :package-type="packageType"
+          :package-id="packageId"
+        />
         <div v-else class="gl-text-subtle">{{ $options.i18n.noArtifactsMessage }}</div>
       </gl-tab>
       <gl-tab :title="$options.i18n.performanceLabel" class="gl-pt-3" data-testid="metrics">

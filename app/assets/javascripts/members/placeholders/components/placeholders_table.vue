@@ -23,6 +23,7 @@ import {
   PLACEHOLDER_STATUS_COMPLETED,
   placeholderUserBadges,
 } from '~/import_entities/import_groups/constants';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholderActions from './placeholder_actions.vue';
 
@@ -118,6 +119,10 @@ export default {
           label: s__('BulkImport|Source'),
         },
         {
+          key: 'createdAt',
+          label: __('Created at'),
+        },
+        {
           key: 'status',
           label: s__('UserMapping|Reassignment status'),
         },
@@ -193,6 +198,10 @@ export default {
     onConfirm(item) {
       this.$emit('confirm', item);
     },
+
+    formatDate(dateString) {
+      return localeDateFormat.asDateTime.format(new Date(dateString));
+    },
   },
   placeholderUsersHelpPath: helpPagePath('user/project/import/_index', {
     anchor: 'placeholder-users',
@@ -259,6 +268,18 @@ export default {
             >
           </template>
         </div>
+      </template>
+
+      <template #head(createdAt)="{ label }">
+        <span>{{ label }}</span>
+        <help-popover :aria-label="__('Local time is displayed.')" class="gl-ml-2 gl-inline-flex">
+          <gl-sprintf :message="__('Local time is displayed.')" />
+        </help-popover>
+      </template>
+      <template #cell(createdAt)="{ item }">
+        <span>
+          {{ formatDate(item.createdAt) }}
+        </span>
       </template>
 
       <template #cell(status)="{ item }">

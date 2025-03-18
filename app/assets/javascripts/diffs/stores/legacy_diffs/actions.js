@@ -30,7 +30,6 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
-  MR_TREE_SHOW_KEY,
   TREE_LIST_STORAGE_KEY,
   OLD_LINE_KEY,
   NEW_LINE_KEY,
@@ -716,18 +715,6 @@ export function scrollToFile({ path }) {
       handleLocationHash();
     });
   }
-}
-
-export function setShowTreeList({ showTreeList, saving = true }) {
-  this[types.SET_SHOW_TREE_LIST](showTreeList);
-
-  if (saving) {
-    localStorage.setItem(MR_TREE_SHOW_KEY, showTreeList);
-  }
-}
-
-export function toggleTreeList() {
-  this[types.SET_SHOW_TREE_LIST](!this.showTreeList);
 }
 
 export function openDiffFileCommentForm(formData) {

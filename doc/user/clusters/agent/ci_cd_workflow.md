@@ -186,13 +186,13 @@ deploy:
     AGENT_ID: 1234 # replace with your agent's numeric ID
     K8S_PROXY_URL: https://<KAS_DOMAIN>/k8s-proxy/ # For agent server (KAS) deployed in Kubernetes cluster (for gitlab.com use kas.gitlab.com); replace with your URL
     # K8S_PROXY_URL: https://<GITLAB_DOMAIN>/-/kubernetes-agent/k8s-proxy/ # For agent server (KAS) in Omnibus
-    # ... any other variables you have configured
+    # Include any additional variables
   before_script:
     - kubectl config set-credentials agent:$AGENT_ID --token="ci:${AGENT_ID}:${CI_JOB_TOKEN}"
     - kubectl config set-cluster gitlab --server="${K8S_PROXY_URL}"
     - kubectl config set-context "$KUBE_CONTEXT" --cluster=gitlab --user="agent:${AGENT_ID}"
     - kubectl config use-context "$KUBE_CONTEXT"
-  # ... rest of your job configuration
+  # Include the remaining job configuration
 ```
 
 ### Environments with KAS that use self-signed certificates
@@ -371,6 +371,7 @@ In this example:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `kubernetes_agent_protected_branches`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.10. Feature flag `kubernetes_agent_protected_branches` removed.
 
 {{< /history >}}
 

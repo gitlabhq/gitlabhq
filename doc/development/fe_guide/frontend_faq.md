@@ -105,7 +105,7 @@ When referencing Backend rails paths, avoid using `*_url`, and use `*_path` inst
 
 Example:
 
-```haml
+```ruby
 -# Bad :(
 #js-foo{ data: { foo_url: some_rails_foo_url } }
 

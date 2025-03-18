@@ -12,8 +12,23 @@ title: Migrate projects and groups by using file exports
 
 {{< /details >}}
 
-Migrating groups and projects by using [direct transfer](../../group/import/_index.md) is recommended. However, in some
-situations, you might need to migrate groups and project by using file exports.
+File exports give you a portable package of your GitLab data that works in offline environments.
+This migration method preserves most project data, including
+repositories, issues, merge requests, and comments.
+
+Use file exports to:
+
+- Migrate between offline environments.
+- Move specific projects without their entire group structure.
+
+[Direct transfer](../../group/import/_index.md) remains the recommended migration method for most situations.
+
+{{< alert type="note" >}}
+
+You should not use project export files to back up your data.
+Using project export files for backups does not always work, and not all items are exported.
+
+{{< /alert >}}
 
 ## Known issues
 
@@ -320,7 +335,7 @@ To help avoid abuse, by default, users are rate limited to:
 | Request type    | Limit                           |
 |:----------------|:--------------------------------|
 | Export          | 6 projects per minute           |
-| Download export | 1 download per group per minute |
+| Download export | 1 download per project per minute |
 | Import          | 6 projects per minute           |
 
 ## Migrate groups by uploading an export file (deprecated)

@@ -56,7 +56,7 @@ To create an OAuth application on your GitLab Self-Managed instance:
 
    {{< alert type="note" >}}
 
-You must clear these checkboxes to avoid [errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
+   You must clear these checkboxes to avoid [errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
 
    {{< /alert >}}
 

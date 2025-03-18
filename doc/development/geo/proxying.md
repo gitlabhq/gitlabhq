@@ -97,8 +97,7 @@ Secondary-->>Client: proxy full response
 
 ## Git pull
 
-For historical reasons, the `push_from_secondary` path is used to forward a Git pull. There is
-[an issue proposing to rename this route](https://gitlab.com/gitlab-org/gitlab/-/issues/292690) to avoid confusion.
+The Git pull forward path was [renamed from the legacy name `push_from_secondary` to `from_secondary` for more clarity in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292690).
 
 ### Git pull over HTTP(s)
 
@@ -146,22 +145,22 @@ participant G as "Gitaly (primary)"
 C->>Wsec: GET /foo/bar.git/info/refs/?service=git-upload-pack
 Wsec->>Rsec: <response>
 note over Rsec: decide that the repo is out of date
-Rsec-->>Wsec: 302 Redirect to /-/push_from_secondary/2/foo/bar.git/info/refs?service=git-upload-pack
+Rsec-->>Wsec: 302 Redirect to /-/from_secondary/2/foo/bar.git/info/refs?service=git-upload-pack
 Wsec-->>C: <response>
-C->>Wsec: GET /-/push_from_secondary/2/foo/bar.git/info/refs/?service=git-upload-pack
+C->>Wsec: GET /-/from_secondary/2/foo/bar.git/info/refs/?service=git-upload-pack
 Wsec->>W: <proxied request>
 W->>R: <data>
 R-->>W: 401 Unauthorized
 W-->>Wsec: <proxied response>
 Wsec-->>C: <response>
-C->>Wsec: GET /-/push_from_secondary/2/foo/bar.git/info/refs/?service=git-upload-pack
+C->>Wsec: GET /-/from_secondary/2/foo/bar.git/info/refs/?service=git-upload-pack
 note over W: proxied
 Wsec->>W: <proxied request>
 W->>R: <data>
 R-->>W: Render Workhorse OK
 W-->>Wsec: <proxied response>
 Wsec-->>C: <response>
-C->>Wsec: POST /-/push_from_secondary/2/foo/bar.git/git-upload-pack
+C->>Wsec: POST /-/from_secondary/2/foo/bar.git/git-upload-pack
 Wsec->>W: <proxied request>
 W->>R: GitHttpController#git_receive_pack
 R-->>W: Render Workhorse OK
@@ -259,7 +258,7 @@ S-->>C: return Git response from primary
 
 ### Git push over HTTP(S)
 
-If a requested repository isn't synced, or we detect is not up to date, the request will be proxied to the primary, a push redirects to a local path formatted as `/-/push_from_secondary/$SECONDARY_ID/*`.
+If a requested repository isn't synced, or we detect is not up to date, the request will be proxied to the primary, a push redirects to a local path formatted as `/-/from_secondary/$SECONDARY_ID/*`.
 Further, requests through this path are proxied to the primary, which will handle the push.
 
 ```mermaid
@@ -270,20 +269,20 @@ participant W as Workhorse (primary)
 participant R as Rails (primary)
 participant G as Gitaly (primary)
 C->>Wsec: GET /foo/bar.git/info/refs/?service=git-receive-pack
-Wsec->>C: 302 Redirect to /-/push_from_secondary/2/foo/bar.git/info/refs?service=git-receive-pack
-C->>Wsec: GET /-/push_from_secondary/2/foo/bar.git/info/refs/?service=git-receive-pack
+Wsec->>C: 302 Redirect to /-/from_secondary/2/foo/bar.git/info/refs?service=git-receive-pack
+C->>Wsec: GET /-/from_secondary/2/foo/bar.git/info/refs/?service=git-receive-pack
 Wsec->>W: <proxied request>
 W->>R: <data>
 R-->>W: 401 Unauthorized
 W-->>Wsec: <proxied response>
 Wsec-->>C: <response>
-C->>Wsec: GET /-/push_from_secondary/2/foo/bar.git/info/refs/?service=git-receive-pack
+C->>Wsec: GET /-/from_secondary/2/foo/bar.git/info/refs/?service=git-receive-pack
 Wsec->>W: <proxied request>
 W->>R: <data>
 R-->>W: Render Workhorse OK
 W-->>Wsec: <proxied response>
 Wsec-->>C: <response>
-C->>Wsec: POST /-/push_from_secondary/2/foo/bar.git/git-receive-pack
+C->>Wsec: POST /-/from_secondary/2/foo/bar.git/git-receive-pack
 Wsec->>W: <proxied request>
 W->>R: GitHttpController:git_receive_pack
 R-->>W: Render Workhorse OK

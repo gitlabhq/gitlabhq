@@ -47,7 +47,7 @@ module Ci
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
-
+    CANCELABLE_STATUSES = (HasStatus::CANCELABLE_STATUSES + ['canceling']).freeze
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     TOKEN_PREFIX = 'glcbt-'
@@ -170,20 +170,6 @@ module Ci
       )
     end
 
-    scope :eager_load_everything, -> do
-      includes(
-        [
-          { pipeline: [:project, :user] },
-          :job_artifacts_archive,
-          :metadata,
-          :trigger_request,
-          :project,
-          :user,
-          :tags
-        ]
-      )
-    end
-
     scope :with_exposed_artifacts, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
         .includes(:metadata, :job_artifacts_metadata)
@@ -197,7 +183,6 @@ module Ci
     scope :with_live_trace, -> { where_exists(Ci::BuildTraceChunk.scoped_build) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, ->(date) { finished.where('finished_at < ?', date) }
-    scope :license_management_jobs, -> { where(name: %i[license_management license_scanning]) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
     # WARNING: This scope could lead to performance implications for large size of tables `ci_builds` and ci_runners`.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
     scope :with_runner_type, ->(runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
@@ -434,6 +419,10 @@ module Ci
       cancel_gracefully?
     end
 
+    def supports_force_cancel?
+      true
+    end
+
     def build_matcher
       strong_memoize(:build_matcher) do
         Gitlab::Ci::Matching::BuildMatcher.new({
@@ -499,10 +488,7 @@ module Ci
     end
 
     def archived?
-      return true if degenerated?
-
-      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
-      archive_builds_older_than.present? && created_at < archive_builds_older_than
+      degenerated? || super
     end
 
     def playable?
@@ -534,6 +520,10 @@ module Ci
 
     def cancelable?
       (active? || created?) && !canceling?
+    end
+
+    def force_cancelable?
+      canceling? && supports_force_cancel?
     end
 
     def retries_count
@@ -646,9 +636,7 @@ module Ci
 
     def pages_variables
       ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables
-          .append(key: 'CI_PAGES_HOSTNAME', value: project.pages_hostname)
-          .append(key: 'CI_PAGES_URL', value: project.pages_url(pages))
+        variables.append(key: 'CI_PAGES_URL', value: project.pages_url(pages))
       end
     end
 
@@ -802,14 +790,9 @@ module Ci
       return unless project
       return if user&.blocked?
 
-      if Feature.enabled?(:ci_async_build_hooks_execution, project)
-        return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
+      return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
 
-        Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
-      else
-        project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
-        project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
-      end
+      Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
     end
 
     def browsable_artifacts?
@@ -1221,7 +1204,7 @@ module Ci
     end
 
     def token
-      return encoded_jwt if user&.has_composite_identity? || Feature.enabled?(:ci_job_token_jwt, user)
+      return encoded_jwt if user&.has_composite_identity? || use_jwt_for_ci_cd_job_token?
 
       super
     end
@@ -1235,6 +1218,10 @@ module Ci
     end
 
     private
+
+    def use_jwt_for_ci_cd_job_token?
+      namespace&.root_ancestor&.namespace_settings&.jwt_ci_cd_job_token_enabled?
+    end
 
     def encoded_jwt
       ::Ci::JobToken::Jwt.encode(self)
@@ -1358,7 +1345,14 @@ module Ci
     end
 
     def track_ci_build_created_event
-      Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
+      Gitlab::InternalEvents.track_event(
+        'create_ci_build',
+        project: project,
+        user: user,
+        additional_properties: {
+          property: name
+        }
+      )
     end
 
     def partition_id_prefix_in_16_bit_encode

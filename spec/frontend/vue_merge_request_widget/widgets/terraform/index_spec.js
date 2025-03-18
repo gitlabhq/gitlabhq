@@ -59,7 +59,7 @@ describe('Terraform extension', () => {
 
   describe('summary', () => {
     describe('while loading', () => {
-      const loadingText = 'Loading Terraform reports...';
+      const loadingText = 'Loading Terraform reports…';
 
       it('should render loading text', async () => {
         mockPollingApi(HTTP_STATUS_OK, plans, {});
@@ -192,6 +192,49 @@ describe('Terraform extension', () => {
       it('does not make additional requests after poll is unsuccessful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('sorting', () => {
+    const failedPlan = {
+      create: '',
+      update: '',
+      delete: '',
+      job_name: 'Failed report',
+    };
+    const highChangesPlan = {
+      create: '5',
+      update: '3',
+      delete: '2',
+      job_name: 'High Changes',
+    };
+    const mediumChangesPlan = {
+      create: '1',
+      update: '2',
+      delete: '0',
+      job_name: 'Medium Changes',
+    };
+    const lowChangesPlan = {
+      create: '0',
+      update: '1',
+      delete: '0',
+      job_name: 'Low Changes',
+    };
+
+    it('sorts reports by total changes in descending order', async () => {
+      const reports = [lowChangesPlan, highChangesPlan, failedPlan, mediumChangesPlan];
+
+      mockPollingApi(HTTP_STATUS_OK, reports, {});
+      createComponent();
+      await waitForPromises();
+
+      wrapper.findByTestId('toggle-button').trigger('click');
+      await waitForPromises();
+
+      expect(findListItem(0).text()).toContain('Failed report');
+      expect(findListItem(1).text()).toContain('High Changes');
+      expect(findListItem(2).text()).toContain('Medium Changes');
+      expect(findListItem(3).text()).toContain('Low Changes');
     });
   });
 });

@@ -15,15 +15,16 @@ title: Configure GitLab Duo on a self-managed instance
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
 To use GitLab Duo on a self-managed instance, you can do either of the following:
 
-- Use the LLMs and the cloud-based AI gateway that's hosted by GitLab. This is the default option.
-- [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/gitlab_duo_self_hosted/_index.md).
+- Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by
+  GitLab. This is the default option.
+- [Use GitLab Duo Self-Hosted to self-host the AI gateway, with a supported self-hosted LLM](../../administration/gitlab_duo_self_hosted/_index.md#set-up-a-gitlab-duo-self-hosted-infrastructure).
   This option provides full control over your data and security.
 
-  {{< alert type="note" >}}
+{{< alert type="note" >}}
 
-You must have an Ultimate license with GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
+You must have an Ultimate subscription with the GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
 
-  {{< /alert >}}
+{{< /alert >}}
 
 This page focuses on how to configure a self-managed instance if you're using the default, GitLab-hosted option.
 
@@ -112,3 +113,5 @@ These tests are performed:
 | Network | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](setup.md). |
 | Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data) your subscription data. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
+
+If you are experiencing any issues with the health check, see [GitLab Duo Self-Hosted troubleshooting](../../administration/gitlab_duo_self_hosted/troubleshooting.md#gitlab-duo-health-check-is-not-working).

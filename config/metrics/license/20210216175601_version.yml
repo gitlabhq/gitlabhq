@@ -2,7 +2,7 @@
 data_category: standard
 key_path: version
 description: Version of GitLab instance
-product_group: distribution_deploy
+product_group: self_managed
 product_categories:
 - build
 value_type: string

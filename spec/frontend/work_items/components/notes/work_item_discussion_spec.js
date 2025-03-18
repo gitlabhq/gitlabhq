@@ -41,6 +41,7 @@ describe('Work Item Discussion', () => {
     workItemId = mockWorkItemId,
     workItemType = 'Task',
     isExpandedOnLoad = true,
+    hideFullscreenMarkdownButton = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemDiscussion, {
       apolloProvider: createMockApollo([
@@ -55,6 +56,7 @@ describe('Work Item Discussion', () => {
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
         isExpandedOnLoad,
+        hideFullscreenMarkdownButton,
       },
     });
   };
@@ -70,6 +72,21 @@ describe('Work Item Discussion', () => {
 
     it('should not show the comment form by default', () => {
       expect(findWorkItemAddNote().exists()).toBe(false);
+    });
+  });
+
+  describe('when hideFullscreenMarkdownButton is true', () => {
+    beforeEach(() => {
+      createComponent({
+        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes,
+        hideFullscreenMarkdownButton: true,
+      });
+    });
+    it('passes hideFullscreenMarkdownButton to work-item-note', () => {
+      expect(findThreadAtIndex(0).props('hideFullscreenMarkdownButton')).toBe(true);
+    });
+    it('passes hideFullscreenMarkdownButton to work-item-add-note', () => {
+      expect(findWorkItemAddNote().props('hideFullscreenMarkdownButton')).toBe(true);
     });
   });
 

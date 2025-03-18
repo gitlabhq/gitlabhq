@@ -5,6 +5,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffHelper
   include RendersCommits
   include ProductAnalyticsTracking
+  include RapidDiffsResource
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!
@@ -105,6 +106,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     render json: ProjectSerializer.new.represent(get_target_projects)
   end
 
+  def diffs_resource
+    @merge_request&.compare&.diffs
+  end
+
   private
 
   def get_target_projects
@@ -118,8 +123,12 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
 
+    recent_commits = @merge_request.recent_commits(
+      load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, @target_project)
+    ).with_latest_pipeline(@merge_request.source_branch)
+
     @commits = set_commits_for_rendering(
-      @merge_request.recent_commits.with_latest_pipeline(@merge_request.source_branch),
+      recent_commits,
       commits_count: @merge_request.commits_count
     )
 

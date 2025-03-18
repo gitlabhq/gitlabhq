@@ -1,5 +1,6 @@
 ---
 description: Tracks when a user views the details of an error.
+internal_events: true
 action: view_error_details
 product_group: platform_insights
 milestone: '16.1'

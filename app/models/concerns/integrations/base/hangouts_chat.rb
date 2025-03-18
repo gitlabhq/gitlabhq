@@ -29,7 +29,7 @@ module Integrations
             'user/project/integrations/hangouts_chat.md',
             'Before enabling this integration, create a webhook for the space in Google Chat where you want to ' \
               'receive notifications from this project.',
-            _('How do I set up a Google Chat webhook?')
+            link_text: _('How do I set up a Google Chat webhook?')
           )
         end
 

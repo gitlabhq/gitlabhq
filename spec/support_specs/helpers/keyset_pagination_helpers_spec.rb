@@ -82,7 +82,7 @@ RSpec.describe KeysetPaginationHelpers, feature_category: :api do
       # malformed as the regxe is expecting the url to be surrounded by `<>`
       let(:headers) { { 'LINK' => %(rel="next", GARBAGE, #{url}; rel="prev") } }
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 end

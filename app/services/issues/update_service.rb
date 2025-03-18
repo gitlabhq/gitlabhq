@@ -102,7 +102,16 @@ module Issues
         target_project != issue.project
 
       update(issue)
-      Issues::MoveService.new(container: project, current_user: current_user).execute(issue, target_project)
+
+      if Feature.enabled?(:work_item_move_and_clone, project)
+        ::WorkItems::DataSync::MoveService.new(
+          work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace
+        ).execute[:work_item]
+      else
+        ::Issues::MoveService.new(
+          container: project, current_user: current_user
+        ).execute(issue, target_project)
+      end
     end
 
     private
@@ -110,10 +119,25 @@ module Issues
     attr_reader :perform_spam_check
 
     override :after_update
-    def after_update(issue, _old_associations)
+    def after_update(issue, old_associations)
       super
 
       GraphqlTriggers.work_item_updated(issue)
+      publish_event(issue, old_associations)
+    end
+
+    def publish_event(work_item, old_associations)
+      event = WorkItems::WorkItemUpdatedEvent.new(data: {
+        id: work_item.id,
+        namespace_id: work_item.namespace_id,
+        previous_work_item_parent_id: old_associations[:work_item_parent_id],
+        updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
+        updated_widgets: @widget_params&.compact_blank&.keys&.map(&:to_s)
+      }.tap(&:compact_blank!))
+
+      work_item.run_after_commit_or_now do
+        Gitlab::EventStore.publish(event)
+      end
     end
 
     def handle_date_changes(issue)
@@ -131,7 +155,17 @@ module Issues
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
-      Issues::CloneService.new(container: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
+
+      if Feature.enabled?(:work_item_move_and_clone, project)
+        ::WorkItems::DataSync::CloneService.new(
+          work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace,
+          params: { clone_with_notes: with_notes }
+        ).execute[:work_item]
+      else
+        Issues::CloneService.new(container: project, current_user: current_user).execute(
+          issue, target_project, with_notes: with_notes
+        )
+      end
     end
 
     def create_merge_request_from_quick_action
@@ -177,15 +211,13 @@ module Issues
     end
 
     def handle_issue_type_change(issue)
-      return unless issue.previous_changes.include?('correct_work_item_type_id')
+      return unless issue.previous_changes.include?('work_item_type_id')
 
       do_handle_issue_type_change(issue)
     end
 
     def do_handle_issue_type_change(issue)
-      old_work_item_type = ::WorkItems::Type.find_by_correct_id(
-        issue.correct_work_item_type_id_before_last_save
-      ).base_type
+      old_work_item_type = ::WorkItems::Type.find_by_id(issue.work_item_type_id_before_last_save).base_type
       SystemNoteService.change_issue_type(issue, current_user, old_work_item_type)
 
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?

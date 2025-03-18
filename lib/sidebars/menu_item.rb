@@ -5,6 +5,7 @@ module Sidebars
     include ::Sidebars::Concerns::LinkWithHtmlOptions
 
     attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon, :sprite_icon_html_options, :has_pill, :pill_count, :pill_count_field, :super_sidebar_parent, :avatar, :entity_id
+    attr_accessor :render
     alias_method :has_pill?, :has_pill
 
     # rubocop: disable Metrics/ParameterLists
@@ -26,7 +27,9 @@ module Sidebars
     # rubocop: enable Metrics/ParameterLists
 
     def render?
-      true
+      return true if @render.nil?
+
+      @render
     end
 
     def serialize_for_super_sidebar

@@ -1,3 +1,26 @@
+include:
+  - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
+
+.check-release-set:
+  stage: .pre
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - |
+      if [ -z "$RELEASE" ]; then
+        echo "E2E test pipeline requires omnibus installation docker image to be set via $RELEASE environment variable"
+        exit 1
+      else
+        echo "Omnibus installation image is set to '$RELEASE'"
+      fi
+
+.update-script:
+  script:
+    - !reference [.bundle-prefix]
+    - export QA_COMMAND="bundle exec gitlab-qa ${QA_SCENARIO:-Test::Omnibus::UpdateFromPrevious} $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE $UPDATE_FROM_EDITION -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - echo "Running - '$QA_COMMAND'"
+    - eval "$QA_COMMAND"
+
 trigger-omnibus-env:
   stage: .pre
   extends:

@@ -5,10 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Revert and undo changes
 ---
 
-Git provides options for undoing changes at any point in the
+Working with Git involves experimentation and iteration. Mistakes happen during development,
+and sometimes you need to reverse changes. Git gives you control over your code history
+with features to undo changes at any point in your
 [Git workflow](get_started.md#understand-the-git-workflow).
 
-The method to use depends on whether the changes are:
+Recover from accidental commits, remove sensitive data, fix incorrect merges, and maintain a clean
+repository history. When collaborating with others, preserve transparency with new revert
+commits, or reset your work locally before sharing. The method to use depends on whether the
+changes are:
 
 - Only on your local computer.
 - Stored remotely on a Git server such as GitLab.com.
@@ -261,9 +266,22 @@ was merged into your branch. In that case, you must revert the changes on the re
 ### Revert remote changes without altering history
 
 To undo changes in the remote repository, you can create a new commit with the changes you
-want to undo. This process preserves the history and provides a clear timeline and development structure.
+want to undo. This process preserves the history and provides a clear timeline and development structure:
 
-![Use revert to keep branch flowing](img/revert_v14_0.png)
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+   REMOTE["REMOTE"] --> A(A)
+   A --> B(B)
+   B --> C(C)
+   C --> negB("-B")
+   negB --> D(D)
+
+   B:::crossed
+   classDef crossed stroke:#000,stroke-width:3px,color:#000,stroke-dasharray: 5 5
+
+   negB -.->|reverts| B
+```
 
 To revert changes introduced in a specific commit `B`:
 
@@ -279,7 +297,7 @@ Even with an updated history, old commits can still be
 accessed by commit SHA, at least until all the automated cleanup
 of detached commits is performed, or a cleanup is run manually. Even the cleanup might not remove old commits if there are still refs pointing to them.
 
-![Modifying history causes problems on remote branch](img/rebase_reset_v10_0.png)
+![Modifying history causes problems on remote branch](img/rebase_reset_v17_10.drawio.svg)
 
 You should not change the history when you're working in a public branch
 or a branch that might be used by others.

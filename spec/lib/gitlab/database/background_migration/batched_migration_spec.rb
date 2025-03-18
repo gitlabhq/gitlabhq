@@ -865,7 +865,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       let!(:batched_job) { create(:batched_background_migration_job, :succeeded, batched_migration: migration) }
 
       it 'returns nil' do
-        expect(subject).to be nil
+        expect(subject).to be_nil
       end
     end
 

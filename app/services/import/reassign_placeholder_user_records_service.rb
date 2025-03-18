@@ -2,6 +2,8 @@
 
 module Import
   class ReassignPlaceholderUserRecordsService
+    include Gitlab::InternalEventsTracking
+
     MEMBER_SELECT_BATCH_SIZE = 100
     MEMBER_DELETE_BATCH_SIZE = 1_000
     GROUP_FINDER_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
@@ -47,6 +49,8 @@ module Import
       UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if project_membership_created?
 
       import_source_user.complete!
+
+      track_reassignment_complete
 
       ServiceResponse.success(
         message: s_('Import|Placeholder user record reassignment complete'),
@@ -284,6 +288,18 @@ module Import
         existing_membership: existing_membership.attributes.slice(
           'id', 'access_level', 'source_id', 'source_type', 'user_id'
         )
+      )
+    end
+
+    def track_reassignment_complete
+      track_internal_event(
+        'complete_placeholder_user_reassignment',
+        namespace: import_source_user.namespace,
+        additional_properties: {
+          label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+          property: Gitlab::GlobalAnonymousId.user_id(import_source_user.reassign_to_user),
+          import_type: import_source_user.import_type
+        }
       )
     end
 

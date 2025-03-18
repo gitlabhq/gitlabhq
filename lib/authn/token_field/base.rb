@@ -8,14 +8,16 @@ module Authn
       attr_reader :klass, :token_field, :expires_at_field, :options
 
       def self.fabricate(model, field, options)
-        raise ArgumentError, _('Incompatible options set!') if options[:digest] && options[:encrypted]
+        if options[:digest] && options[:encrypted] && options[:insecure]
+          raise ArgumentError, _('Incompatible options set!')
+        end
 
-        if options[:digest]
-          Authn::TokenField::Digest.new(model, field, options)
-        elsif options[:encrypted]
+        if options[:encrypted]
           Authn::TokenField::Encrypted.new(model, field, options)
-        else
+        elsif options[:insecure]
           Authn::TokenField::Insecure.new(model, field, options)
+        else
+          Authn::TokenField::Digest.new(model, field, options)
         end
       end
 

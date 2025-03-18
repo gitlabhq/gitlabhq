@@ -29,7 +29,7 @@ You can use either of these words:
 - `closed`
 - `closing`
 
-See also the [Asana integration API documentation](../../../api/integrations.md#asana).
+See also the [Asana integration API documentation](../../../api/project_integrations.md#asana).
 
 ## Setup
 

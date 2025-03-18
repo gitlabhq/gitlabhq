@@ -379,10 +379,10 @@ scan.
   [files supported by SAST)](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
   - Only rules with the default ruleset are supported.
-    [Custom rulesets](../secret_detection/pipeline/_index.md#customize-analyzer-rulesets) are not
-    supported. Instead, you can configure a
-    [remote configuration file](../secret_detection/pipeline/_index.md#with-a-remote-ruleset) and set
-    the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
+    [Replacing](../secret_detection/pipeline/configure.md#replace-the-default-ruleset) or [extending](../secret_detection/pipeline/configure.md#extend-the-default-ruleset)
+    the default ruleset is not supported. Instead, you can configure a
+    [remote configuration file](../secret_detection/pipeline/configure.md#with-a-remote-ruleset) to override
+    or disable a rule from the default ruleset using the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
   - For `scheduled` scan execution policies, secret detection by default runs first in `historic`
     mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default
     mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current
@@ -420,6 +420,13 @@ The following settings are supported by the `scan_settings` parameter:
 | `ignore_default_before_after_script` | `boolean` | false | `true`, `false` | `false` | Specifies whether to exclude any default `before_script` and `after_script` definitions in the pipeline configuration from the scan job. |
 
 ## CI/CD variables
+
+{{< alert type="warning" >}}
+
+Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
+in a Git repository.
+
+{{< /alert >}}
 
 Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
 

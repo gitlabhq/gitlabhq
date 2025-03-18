@@ -8,7 +8,9 @@ lock_gitlab_schemas:
   - gitlab_main
   - gitlab_main_clusterwide
   - gitlab_main_cell
+  - gitlab_main_cell_local
   - gitlab_ci
+  - gitlab_ci_cell_local
   - gitlab_pm
 klass: Gitlab::Database::SecApplicationRecord
 # if Sec database is not configured, use this database

@@ -1,6 +1,7 @@
 - header_style = 'font-size:24px; text-align:center; line-height:30px;'
 - text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
 - error_style = 'color:#c91c00;'
+- emphasis_style = 'font-weight:bold;color:#c17d10;'
 - button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
 
 - strong_tag_pair = tag_pair(tag.strong(style: 'color: #7b58cf'), :strong_open, :strong_close)
@@ -8,10 +9,11 @@
 %h1{ style: header_style }
   = @title
 
-%p{ style: text_style }
-  - if @has_errors
+- if @has_errors || @skipped_count > 0
+  %p{ style: text_style }
     = safe_format(s_('BulkImport|Items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
-  - else
+- else
+  %p{ style: text_style }
     = safe_format(s_('BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
 
 %ul
@@ -20,6 +22,13 @@
   - if @has_errors
     %li{ style: error_style }
       %strong= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count)
+  - if @skipped_count > 0
+    %li{ style: emphasis_style }
+      = safe_format(s_('BulkImport|%{count} placeholder users skipped.'), count: @skipped_count)
+
+- if @has_errors
+  %p{ style: text_style }
+    = s_('BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email.')
 
 %p{ style: text_style }
   - extra_params = @has_errors ? { status: 'failed' } : {}

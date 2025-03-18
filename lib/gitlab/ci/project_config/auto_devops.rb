@@ -9,7 +9,7 @@ module Gitlab
             next unless project&.auto_devops_enabled?
 
             template = Gitlab::Template::GitlabCiYmlTemplate.find(template_name)
-            YAML.dump('include' => [{ 'template' => template.full_name }])
+            ci_yaml_include({ 'template' => template.full_name })
           end
         end
 

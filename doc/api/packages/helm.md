@@ -23,7 +23,7 @@ and is generally not meant for manual consumption.
 {{< /alert >}}
 
 For instructions on how to upload and install Helm packages from the GitLab
-Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/_index.md).
+package registry, see the [Helm registry documentation](../../user/packages/helm_repository/_index.md).
 
 {{< alert type="note" >}}
 

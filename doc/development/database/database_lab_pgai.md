@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Database Lab access using the `pgai` Ruby gem
 ---
 
@@ -42,7 +42,7 @@ you can follow the steps below to configure the `pgai` Gem:
 
    # Grab the respective port values from https://console.postgres.ai/gitlab/instances
    # for the instances you'll be using (in this case, for the `main` database instance)
-   pgai env add --alias main --id <instance-host> --port <instance-port> -n <database_name>
+   pgai env add --alias main --id <instance-host> --port <instance-port> -n gitlabhq_dblab
    ```
 
 1. Once this one-time configuration is done, you can use `pgai connect` to connect to a particular database. For

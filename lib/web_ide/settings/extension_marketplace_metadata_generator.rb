@@ -48,6 +48,10 @@ module WebIde
         return metadata_disabled(:no_flag) if flag_enabled.nil?
         return metadata_disabled(:instance_disabled) unless flag_enabled
 
+        unless ::WebIde::ExtensionMarketplace.feature_enabled_from_application_settings?(user: user)
+          return metadata_disabled(:instance_disabled)
+        end
+
         build_metadata_for_user(user)
       end
 

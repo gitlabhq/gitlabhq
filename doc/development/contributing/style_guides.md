@@ -155,6 +155,10 @@ See the dedicated [Guidelines for shell commands in the GitLab codebase](../shel
 
 See the dedicated [Shell scripting standards and style guidelines](../shell_scripting_guide/_index.md).
 
+## Publishing NPM packages to npmjs.com
+
+See the dedicated [npmjs package publishing guide](../npmjs.md).
+
 ## Markdown
 
 <!-- vale gitlab_base.Spelling = NO -->

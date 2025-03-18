@@ -78,6 +78,39 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
     end
   end
 
+  describe '#admin_runners_fleet_dashboard_data', :enable_admin_mode do
+    let_it_be(:user) { admin_user }
+
+    subject(:data) { helper.admin_runners_fleet_dashboard_data }
+
+    it 'returns correct data' do
+      expect(data).to include(
+        admin_runners_path: '/admin/runners',
+        new_runner_path: '/admin/runners/new',
+        clickhouse_ci_analytics_available: 'false',
+        can_admin_runners: 'true'
+      )
+    end
+
+    context 'when ClickHouse is configured' do
+      before do
+        allow(Gitlab::ClickHouse).to receive(:configured?).and_return(true)
+      end
+
+      it 'returns the correct data' do
+        expect(data).to include(clickhouse_ci_analytics_available: 'true')
+      end
+    end
+
+    context 'when current user is not an admin' do
+      let_it_be(:user) { non_admin_user }
+
+      it 'returns the correct data' do
+        expect(data).to include(can_admin_runners: 'false')
+      end
+    end
+  end
+
   describe '#group_shared_runners_settings_data' do
     let_it_be(:parent) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent, shared_runners_enabled: false) }

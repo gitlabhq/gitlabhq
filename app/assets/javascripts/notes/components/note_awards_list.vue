@@ -30,6 +30,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    defaultAwards: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapGetters(['getUserData']),
@@ -62,6 +67,7 @@ export default {
       :awards="awards"
       :can-award-emoji="canAwardEmoji"
       :current-user-id="getUserData.id"
+      :default-awards="defaultAwards"
       @award="handleAward($event)"
     />
   </div>

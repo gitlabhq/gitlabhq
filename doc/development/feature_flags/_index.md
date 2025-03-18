@@ -2,16 +2,14 @@
 stage: none
 group: unassigned
 info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+description: Developer documentation about GitLab feature flags.
 title: Feature flags in the development of GitLab
 ---
 
-{{< alert type="note" >}}
-
-This document explains how to contribute to the development and operations of the GitLab product.
-If you want to use feature flags to show and hide functionality in your own applications,
-view [this feature flags information](../../operations/feature_flags.md) instead.
-
-{{< /alert >}}
+This page explains how developers contribute to the development and operations of the GitLab product
+through feature flags. To create custom feature flags to show and hide features in your own applications,
+see [Create a feature flag](../../operations/feature_flags.md#create-a-feature-flag).
+A [complete list of feature flags](../../user/feature_flags.md) in GitLab is also available.
 
 {{< alert type="warning" >}}
 

@@ -268,7 +268,7 @@ Charts variables:
 ```yaml
 all:
   vars:
-    ...
+    # ...
     gitlab_charts_custom_config_file: '/path/to/gitlab-environment-toolkit/ansible/environments/gitlab-10k/inventory/charts.yml'
 ```
 

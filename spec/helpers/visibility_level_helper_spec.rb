@@ -83,23 +83,6 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       it 'returns default description for public group' do
         expect(descriptions[2]).to eq('The group and any public projects can be viewed without any authentication.')
       end
-
-      context 'when application setting `should_check_namespace_plan` is true', if: Gitlab.ee? do
-        let(:group) { build_stubbed(:group) }
-        let(:public_option_description) { visibility_level_description(public_vis, group) }
-
-        before do
-          allow(Gitlab::CurrentSettings.current_application_settings).to receive(:should_check_namespace_plan?)
-                                                                     .and_return(true)
-        end
-
-        it 'returns updated description for public visibility option in group general settings' do
-          expect(public_option_description).to match(
-            'The group, any public projects, and any of their members, issues, and merge requests can be viewed ' \
-              'without authentication.'
-          )
-        end
-      end
     end
   end
 

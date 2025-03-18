@@ -10,40 +10,38 @@ RSpec.describe Admin::VersionCheckController, :enable_admin_mode, feature_catego
   end
 
   describe 'GET #version_check' do
-    context 'when VersionCheck.response is nil' do
+    let(:version_check_response) { { 'success' => true, 'version' => '16.0.0' } }
+
+    context 'when version check is successful' do
       before do
-        allow_next_instance_of(VersionCheck) do |instance|
-          allow(instance).to receive(:response).and_return(nil)
-        end
+        allow(Rails.cache).to receive(:fetch).with("version_check").and_return(version_check_response)
+      end
+
+      it 'returns version check data' do
         get admin_version_check_path
-      end
 
-      it 'returns nil' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_nil
+        expect(json_response).to eq(version_check_response)
       end
 
-      it 'sets no-cache headers' do
-        expect(response.headers['Cache-Control']).to eq('max-age=0, private, must-revalidate')
+      it 'sets cache expiration to 1 minute' do
+        get admin_version_check_path
+
+        expect(response.headers['Cache-Control']).to include('max-age=60')
       end
     end
 
-    context 'when VersionCheck.response is valid' do
+    context 'when version check fails' do
       before do
-        allow_next_instance_of(VersionCheck) do |instance|
-          allow(instance).to receive(:response).and_return({ "severity" => "success" })
-        end
+        allow(VersionCheckHelper).to receive(:gitlab_version_check).and_return(nil)
+      end
 
+      it 'returns nil without cache headers' do
         get admin_version_check_path
-      end
 
-      it 'returns the valid data' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({ "severity" => "success" })
-      end
-
-      it 'sets proper cache headers' do
-        expect(response.headers['Cache-Control']).to eq('max-age=60, private')
+        expect(json_response).to be_nil
+        expect(response.headers['Cache-Control']).not_to include('max-age=60')
       end
     end
   end

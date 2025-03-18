@@ -1,0 +1,8 @@
+<%= safe_format(body_text,
+  invite_email: member.invite_email,
+  user_name: user.name,
+  target_name: member_source.human_name,
+  target_model_name: target_model_name)
+%>
+
+<%= member_source.web_url %>

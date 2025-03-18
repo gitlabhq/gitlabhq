@@ -35,8 +35,7 @@
       = dispensable_render "shared/gitlab_version/security_patch_upgrade_alert"
       = dispensable_render "shared/service_ping_consent"
       = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
-      = dispensable_render_if_exists "layouts/header/seat_count_alert"
-      = dispensable_render_if_exists "layouts/header/all_seats_used_alert", context: context
+      = dispensable_render_if_exists "layouts/header/seat_count_alert", context: context
       = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = dispensable_render_if_exists "shared/silent_mode_banner"

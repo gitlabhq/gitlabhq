@@ -92,7 +92,9 @@ RSpec.describe Packages::Policies::DependencyProxy::GroupPolicy, feature_categor
       end
 
       context 'with all other user types' do
-        User::USER_TYPES.except(:human, :project_bot, :security_policy_bot, :placeholder).each_value do |user_type|
+        excluded_types = %i[human project_bot security_policy_bot admin_bot placeholder]
+
+        User::USER_TYPES.except(*excluded_types).each_value do |user_type|
           context "with user_type #{user_type}" do
             let_it_be(:auth_token) { create(:personal_access_token, user: non_group_member) }
 

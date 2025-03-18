@@ -5,14 +5,18 @@ module Gitlab
     class Blame
       include Gitlab::EncodingHelper
 
+      IgnoreRevsFormatError = Class.new(StandardError)
+      IgnoreRevsFileError = Class.new(StandardError)
+
       attr_reader :lines, :blames, :range
 
-      def initialize(repository, sha, path, range: nil)
+      def initialize(repository, sha, path, range: nil, ignore_revisions_blob: nil)
         @repo = repository
         @sha = sha
         @path = path
         @range = range
         @lines = []
+        @ignore_revisions_blob = ignore_revisions_blob
         @blames = load_blame
       end
 
@@ -24,6 +28,8 @@ module Gitlab
 
       private
 
+      attr_reader :ignore_revisions_blob
+
       def range_spec
         "#{range.first},#{range.last}" if range
       end
@@ -34,7 +40,8 @@ module Gitlab
       end
 
       def fetch_raw_blame
-        @repo.gitaly_commit_client.raw_blame(@sha, @path, range: range_spec)
+        @repo.gitaly_commit_client.raw_blame(@sha, @path, range: range_spec,
+          ignore_revisions_blob: ignore_revisions_blob)
       rescue ArgumentError
         # Return an empty result when the blame range is out-of-range or path is not found
         ""

@@ -7,7 +7,11 @@ module Gitlab
         # Abstraction to control shell command execution
         # It provides an easier API to common usages
         class Command < Base
+          # @return [Hash<String,String>] a hash containing key=>values to be set as ENV when running the command
           attr_reader :env
+
+          # @return [String|Pathname] A path where a Shell::Command should run from
+          attr_reader :chdir
 
           # Result data structure from running a command
           #
@@ -26,10 +30,12 @@ module Gitlab
 
           # @example Usage
           #   Shell::Command.new('echo', 'Some amazing output').capture
-          # @param [Array<String>] cmd_args
-          # @param [Hash<String,String>] env
-          def initialize(*cmd_args, env: {})
+          # @param [Array<String>] cmd_args a list of command and its arguments to run
+          # @param [String|Pathname] chdir a path where Shell::Command should run from
+          # @param [Hash<String,String>] env a hash containing key=>values to be set as ENV when running the command
+          def initialize(*cmd_args, chdir: Gitlab::Backup::Cli.root, env: {})
             @cmd_args = cmd_args.freeze
+            @chdir = chdir
             @env = env.freeze
           end
 
@@ -54,7 +60,7 @@ module Gitlab
           # @return [Command::Result] Captured output from executing a process
           def capture
             start = Time.now
-            stdout, stderr, status = Open3.capture3(env, *cmd_args)
+            stdout, stderr, status = Open3.capture3(env, *cmd_args, chdir: chdir)
             duration = Time.now - start
 
             Result.new(stdout: stdout, stderr: stderr, status: status, duration: duration)
@@ -80,7 +86,7 @@ module Gitlab
             options[:in] = input if input # redirect stdin
             options[:out] = output if output # redirect stdout
 
-            status_list = Open3.pipeline(cmd_args(with_env: true), **options)
+            status_list = Open3.pipeline(cmd_args(with_env: true), chdir: chdir, **options)
             duration = Time.now - start
 
             err_write.close # close the pipe before reading

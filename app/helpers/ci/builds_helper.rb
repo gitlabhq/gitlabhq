@@ -4,7 +4,7 @@ module Ci
   module BuildsHelper
     def build_failed_issue_options
       {
-        title: _("Job Failed #%{build_id}") % { build_id: @build.id },
+        title: safe_format(_("Job Failed #%{build_id}"), build_id: @build.id),
         description: project_job_url(@project, @build)
       }
     end

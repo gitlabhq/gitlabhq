@@ -3,8 +3,11 @@
 module Import
   module SourceUsers
     class CancelReassignmentService < BaseService
+      attr_reader :reassign_to_user
+
       def initialize(import_source_user, current_user:)
         @import_source_user = import_source_user
+        @reassign_to_user = import_source_user.reassign_to_user
         @current_user = current_user
       end
 
@@ -25,6 +28,11 @@ module Import
         return error_invalid_status if invalid_status
 
         if cancel_successful
+          track_reassignment_event(
+            'cancel_placeholder_user_reassignment',
+            reassign_to_user: reassign_to_user
+          )
+
           ServiceResponse.success(payload: import_source_user)
         else
           ServiceResponse.error(payload: import_source_user, message: import_source_user.errors.full_messages)

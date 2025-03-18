@@ -103,7 +103,10 @@ describe('ide/init_gitlab_web_ide', () => {
     it('calls start with element', () => {
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(findRootElement(), {
-        baseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
+        embedderOriginUrl: TEST_HOST,
+        workbenchBaseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
+        extensionsHostBaseUrl:
+          'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
         projectPath: TEST_PROJECT_PATH,
         ref: TEST_BRANCH_NAME,
         filePath: TEST_FILE_PATH,

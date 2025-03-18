@@ -38,11 +38,6 @@ export default {
       type: Object,
       required: true,
     },
-    isBlobPage: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     hideViewerSwitcher: {
       type: Boolean,
       required: false,
@@ -178,7 +173,7 @@ export default {
       <table-of-contents v-if="glFeatures.blobOverflowMenu" class="gl-pr-2" />
 
       <web-ide-link
-        v-if="showWebIdeLink"
+        v-if="!glFeatures.blobOverflowMenu && showWebIdeLink"
         :show-edit-button="!isBinary"
         :button-variant="editButtonVariant"
         class="sm:!gl-ml-0"
@@ -203,7 +198,6 @@ export default {
       <slot name="actions"></slot>
 
       <default-actions
-        v-if="!glFeatures.blobOverflowMenu || (glFeatures.blobOverflowMenu && !isBlobPage)"
         :raw-path="blob.externalStorageUrl || blob.rawPath"
         :active-viewer="viewer"
         :has-render-error="hasRenderError"

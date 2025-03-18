@@ -152,10 +152,10 @@ gitlab-enrich-cdx-results:
   stage: .post
   extends: .static-reachability-rules
   variables:
-    GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.1"
+    GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.3"
     GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_FILENAME
     SCA_TO_SARIF_PROJECT_ID: 60962090
-    DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*.cdx.json"
+    DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*-*.cdx.json"
   image:
     name: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
     entrypoint: [""]
@@ -250,6 +250,15 @@ semgrep-sast:
         - '**/*.swift'
         - '**/*.m'
         - '**/*.kt'
+        - '**/*.properties'
+        - '**/application*.yml'
+        - '**/management*.yml'
+        - '**/actuator*.yml'
+        - '**/bootstrap*.yml'
+        - '**/application*.yaml'
+        - '**/management*.yaml'
+        - '**/actuator*.yaml'
+        - '**/bootstrap*.yaml'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
@@ -283,6 +292,15 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
+        - '**/*.properties'
+        - '**/application*.yml'
+        - '**/management*.yml'
+        - '**/actuator*.yml'
+        - '**/bootstrap*.yml'
+        - '**/application*.yaml'
+        - '**/management*.yaml'
+        - '**/actuator*.yaml'
+        - '**/bootstrap*.yaml'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -308,6 +326,15 @@ semgrep-sast:
         - '**/*.swift'
         - '**/*.m'
         - '**/*.kt'
+        - '**/*.properties'
+        - '**/application*.yml'
+        - '**/management*.yml'
+        - '**/actuator*.yml'
+        - '**/bootstrap*.yml'
+        - '**/application*.yaml'
+        - '**/management*.yaml'
+        - '**/actuator*.yaml'
+        - '**/bootstrap*.yaml'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
@@ -341,6 +368,15 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
+        - '**/*.properties'
+        - '**/application*.yml'
+        - '**/management*.yml'
+        - '**/actuator*.yml'
+        - '**/bootstrap*.yml'
+        - '**/application*.yaml'
+        - '**/management*.yaml'
+        - '**/actuator*.yaml'
+        - '**/bootstrap*.yaml'
 
 sobelow-sast:
   extends: .sast-analyzer

@@ -158,7 +158,7 @@ Rather than attempting to push all changes at once, this workaround:
    git gc
    SIZE=$(git count-objects -v 2> /dev/null | grep size-pack | awk '{print $2}')
 
-   # Be conservative... and try to push 2GB at a time
+   # Be conservative and try to push 2GB at a time
    # (given this assumes each commit is the same size - which is wrong)
    BATCHES=$(($SIZE / 500000))
    TOTAL_COMMITS=$(git rev-list --count HEAD)

@@ -4,7 +4,7 @@ import { initWorkItemsRoot } from '~/work_items';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
 import { __ } from '~/locale';
 
-initWorkItemsRoot({ workspaceType: WORKSPACE_GROUP });
+initWorkItemsRoot({ workspaceType: WORKSPACE_GROUP, withTabs: false });
 initWorkItemsFeedback({
   feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463598',
   feedbackIssueText: __('Provide feedback on the experience'),

@@ -8,6 +8,5 @@ description: Geo events implemented generically, used by the SSF where all objec
   types can generate an event to be processed by the secondary sites.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23447
 milestone: '12.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_cell_local
 table_size: small
-exempt_from_sharding: true

@@ -44,9 +44,12 @@ describe('Commit signature', () => {
     ${signatureTypes.GPG}  | ${verificationStatuses.OTHER_USER}
     ${signatureTypes.GPG}  | ${verificationStatuses.SAME_USER_DIFFERENT_EMAIL}
     ${signatureTypes.GPG}  | ${verificationStatuses.MULTIPLE_SIGNATURES}
+    ${signatureTypes.GPG}  | ${verificationStatuses.UNVERIFIED_AUTHOR_EMAIL}
     ${signatureTypes.X509} | ${verificationStatuses.VERIFIED}
+    ${signatureTypes.X509} | ${verificationStatuses.UNVERIFIED_AUTHOR_EMAIL}
     ${signatureTypes.SSH}  | ${verificationStatuses.VERIFIED}
     ${signatureTypes.SSH}  | ${verificationStatuses.REVOKED_KEY}
+    ${signatureTypes.SSH}  | ${verificationStatuses.UNVERIFIED_AUTHOR_EMAIL}
   `(
     'For a specified `$signatureType` and `$verificationStatus` it renders component correctly',
     ({ signatureType, verificationStatus }) => {

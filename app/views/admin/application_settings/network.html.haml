@@ -119,15 +119,7 @@
   - c.with_body do
     = render 'note_limits'
 
-= render ::Layouts::SettingsBlockComponent.new(_('Users API rate limits'),
-  id: 'js-users-api-limits-settings',
-  testid: 'users-api-limits-settings',
-  expanded: expanded_by_default?) do |c|
-  - c.with_description do
-    = _('Set the per-user rate limit for getting a user by ID via the API.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
-  - c.with_body do
-    = render 'users_api_limits'
+= render 'users_api_limits'
 
 = render 'groups_api_limits'
 

@@ -18,7 +18,7 @@ management [solutions page](https://about.gitlab.com/solutions/compliance/).
 The [security features](../../security/_index.md) in GitLab may also help you meet relevant compliance standards.
 
 For more information on all GitLab compliance features to ensure your GitLab instance meets common compliance standards, see
-[Compliance features](../../administration/compliance.md).
+[Compliance features](../../administration/compliance/compliance_features.md).
 
 ## Compliant workflow automation
 
@@ -32,8 +32,8 @@ compliance:
 
 | Feature                                                                                                                                  | Instances                            | Groups                               | Projects                             | Description |
 |:-----------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:------------|
-| [Compliance frameworks](../group/compliance_frameworks.md)                                                                               | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Describe the type of compliance requirements projects must follow. |
-| [Compliance pipelines](../group/compliance_pipelines.md)                                                                                 | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Define a pipeline configuration to run for any projects with a given compliance framework. |
+| [Compliance frameworks](../compliance/compliance_frameworks.md)                                                                               | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Describe the type of compliance requirements projects must follow. |
+| [Compliance pipelines](../compliance/compliance_pipelines.md)                                                                                 | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Define a pipeline configuration to run for any projects with a given compliance framework. |
 | [Merge request approval policy approval settings](../application_security/policies/merge_request_approval_policies.md#approval_settings) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Enforce a merge request approval policy enforcing multiple approvers and override various project settings in all enforced groups or projects across your GitLab instance or group. |
 
 ## Audit management

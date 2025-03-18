@@ -14,7 +14,7 @@ title: CI/CD steps
 {{< /details >}}
 
 Steps are reusable units of a job that when composed together replace the `script` used in a GitLab CI/CD job.
-While you are not required to use steps, the reusability, composability, testability, and independence
+You are not required to use steps. However, the reusability, composability, testability, and independence
 of steps make it easier to understand and maintain CI/CD pipeline.
 
 To get started, you can try the [Set up steps tutorial](../../tutorials/setup_steps/_index.md).
@@ -27,8 +27,8 @@ for full details on any breaking changes.
 
 ## Step workflow
 
-A step either runs a sequence of steps or executes a command. Each step specifies inputs received and outputs returned, has
-access to CI/CD job variables, environment variables, and resources provided by the execution environment such as the file
+A step either runs a sequence of steps or executes a command. Each step specifies inputs and outputs, and has
+access to CI/CD job variables, environment variables, and resources such as the file
 system and networking. Steps are hosted locally on the file system, in GitLab.com repositories, or in any other Git source.
 
 Additionally, steps:
@@ -166,7 +166,7 @@ For example:
 #### Load a step from a Git repository
 
 Load a step from a Git repository by supplying the URL and revision (commit, branch, or tag) of the repository.
-You can also specify the relative directory and filename of the step within the `steps` folder of the repository.
+You can also specify the relative directory and filename of the step in the `steps` folder of the repository.
 If the URL is specified without a directory, then `step.yml` is loaded from the `steps` folder.
 
 For example:
@@ -265,7 +265,7 @@ job:
     - name: echo_random
       step: gitlab.com/components/echo
       inputs:
-        message: "The random value is: ${{steps.generate_rand.random_value}}"
+        message: "The random value is: ${{steps.generate_rand.outputs.random_value}}"
 ```
 
 ### Environment variables
@@ -431,7 +431,7 @@ run:
 ```
 
 Steps only have access to a subset of environment variables from the runner environment.
-Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073+) to track
+Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
 when steps can access all environment variables.
 
 #### Execute a command
@@ -619,5 +619,4 @@ For example, a project could use a component that adds a job to format Go code:
           fmt_packages: $[[ inputs.fmt_packages ]]             # fmt_packages set to the value of the component input fmt_packages
   ```
 
-In this example, the complexity of the steps the component author used to compose the job are hidden from the user
-in the CI/CD component.
+In this example, the CI/CD component hides the complexity of the steps from the component author.

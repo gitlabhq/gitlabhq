@@ -801,7 +801,7 @@ Do not run the sync process too frequently as this could lead to multiple syncs 
 
 You can manually configure LDAP user sync times by setting the
 following configuration values, in cron format. If needed, you can
-use a [crontab generator](http://www.crontabgenerator.com).
+use a [crontab generator](https://it-tools.tech/crontab-generator).
 The example below shows how to set LDAP user
 sync to run once every 12 hours at the top of the hour.
 
@@ -899,7 +899,7 @@ sync to run once every 12 hours at the top of the hour.
 
 By default, GitLab runs a group sync process every hour, on the hour.
 The values shown are in cron format. If needed, you can use a
-[Crontab Generator](http://www.crontabgenerator.com).
+[crontab generator](https://it-tools.tech/crontab-generator).
 
 {{< alert type="warning" >}}
 

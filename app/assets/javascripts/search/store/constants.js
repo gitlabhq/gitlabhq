@@ -84,3 +84,4 @@ export const SEARCH_LEVEL_PROJECT = 'project';
 export const SEARCH_LEVEL_GROUP = 'group';
 
 export const LS_REGEX_HANDLE = `${REGEX_PARAM}_advanced_search`;
+export const SEARCH_WINDOW_TITLE = `${s__('GlobalSearch|Search')} · GitLab`;

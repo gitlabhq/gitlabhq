@@ -27,9 +27,15 @@ module Mutations
             required: true,
             description: copy_field_description(Types::Packages::Protection::RuleType, :package_type)
 
+          argument :minimum_access_level_for_delete,
+            Types::Packages::Protection::RuleAccessLevelForDeleteEnum,
+            required: false,
+            experiment: { milestone: '17.10' },
+            description: copy_field_description(Types::Packages::Protection::RuleType, :minimum_access_level_for_delete)
+
           argument :minimum_access_level_for_push,
             Types::Packages::Protection::RuleAccessLevelEnum,
-            required: true,
+            required: false,
             description: copy_field_description(Types::Packages::Protection::RuleType, :minimum_access_level_for_push)
 
           field :package_protection_rule,
@@ -40,8 +46,13 @@ module Mutations
           def resolve(project_path:, **kwargs)
             project = authorized_find!(project_path)
 
-            response = ::Packages::Protection::CreateRuleService.new(project: project, current_user: current_user,
-              params: kwargs).execute
+            kwargs.except!(:minimum_access_level_for_delete) if Feature.disabled?(:packages_protected_packages_delete,
+              project)
+
+            response =
+              ::Packages::Protection::CreateRuleService
+                .new(project: project, current_user: current_user, params: kwargs)
+                .execute
 
             { package_protection_rule: response.payload[:package_protection_rule], errors: response.errors }
           end

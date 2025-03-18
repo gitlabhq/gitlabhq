@@ -1055,8 +1055,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         before do
           ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings.restrict_user_defined_variables = restrict_variables
           ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
+          ci_cd_settings.restrict_user_defined_variables = restrict_variables
           ci_cd_settings.save!
         end
 
@@ -2977,7 +2977,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     let(:developer_operations_permissions) do
       guest_operations_permissions + [
-        :create_container_image, :update_container_image, :destroy_container_image
+        :create_container_image, :update_container_image, :destroy_container_image, :destroy_container_image_tag
       ]
     end
 
@@ -4054,7 +4054,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
       let(:project) { public_send("#{project_visibility}_project") }
       let(:self_referential_job) { build_stubbed(:ci_build, project: project, user: current_user) }
-      let(:scope_project) { public_send(:private_project) }
+      let(:scope_project) { private_project }
 
       before do
         stub_feature_flags(allow_push_repository_for_job_token: false) if ff_disabled

@@ -10,7 +10,7 @@ ignorecase: true
 nonword: true
 vocab: false
 level: warning
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#future-tense
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#future-tense
 tokens:
   - (going to|will|won't)[ \n:]\w*
   - (It?|we|you|they)'ll[ \n:]\w*

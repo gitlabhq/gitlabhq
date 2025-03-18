@@ -43,6 +43,10 @@ $work-item-overview-gap-width: 2rem;
     display: block !important;
   }
 
+  .work-item-container-xs-hidden {
+    display: none !important;
+  }
+
   .work-item-attributes-wrapper {
     position: static !important;
     overflow-y: initial !important;
@@ -51,7 +55,7 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-overview {
+.work-item-overview:not(.sidebar-hidden) {
   @include media-breakpoint-up(md) {
     display: grid;
     // allow the main content area to shrink
@@ -297,33 +301,26 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     display: block;
     height: 3rem;
     width: 100%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, $white 100%);
+    background: linear-gradient(180deg, transparent 0%, var(--gl-background-color-default) 100%);
 
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      background: linear-gradient(180deg, rgba(31, 30, 36, 0.00) 0%, $gray-950 100%);
+    .work-item-drawer & {
+      background: linear-gradient(180deg, transparent 0%, var(--gl-background-color-overlap) 100%);
     }
   }
 
   .show-all-btn {
     pointer-events: auto;
-    background-color: $white;
+    background-color: var(--gl-background-color-default);
 
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      background-color: $gray-950;
+    .work-item-drawer & {
+      background-color: var(--gl-background-color-overlap);
     }
 
     &::before, &::after {
       content: '';
       height: 1px;
       flex: 1;
-      border-top: 1px solid $gray-50;
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      .gl-dark & {
-        border-top: 1px solid $gray-900;
-      }
+      border-top: 1px solid var(--gl-border-color-subtle);
     }
   }
 }
@@ -342,5 +339,14 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 .create-work-item-modal {
   .note-textarea {
     overflow-y: scroll !important;
+  }
+}
+
+.design-list-item {
+  height: 160px;
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--gray-400, $gray-400);
   }
 }

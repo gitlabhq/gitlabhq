@@ -15,14 +15,24 @@ RSpec.describe ClickHouse::Models::BaseModel, feature_category: :database do
     end
   end
 
-  describe '#to_sql' do
-    it 'delegates to the query builder' do
-      expect(query_builder).to receive(:to_sql).and_return("SELECT * FROM dummy_table")
+  it { expect(described_class).to be < ClickHouse::Client::QueryLike }
+
+  shared_examples 'method delegated to query builder' do |method_name|
+    it "delegates ##{method_name} to @query_builder" do
+      expect(query_builder).to receive(method_name).and_return("SELECT * FROM dummy_table")
 
       dummy_instance = dummy_class.new(query_builder)
 
-      expect(dummy_instance.to_sql).to eq("SELECT * FROM dummy_table")
+      expect(dummy_instance.public_send(method_name)).to eq("SELECT * FROM dummy_table")
     end
+  end
+
+  describe '#to_sql' do
+    it_behaves_like 'method delegated to query builder', :to_sql
+  end
+
+  describe '#to_redacted_sql' do
+    it_behaves_like 'method delegated to query builder', :to_redacted_sql
   end
 
   describe '#where' do

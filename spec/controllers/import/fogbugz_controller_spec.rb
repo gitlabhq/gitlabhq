@@ -64,7 +64,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
           post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
 
           expect(response).to redirect_to(new_import_fogbugz_url)
-          expect(flash[:alert]).to eq("Specified URL cannot be used: \"#{reason}\"")
+          expect(flash[:alert]).to eq("Specified URL cannot be used: &quot;#{reason}&quot;")
         end
       end
 

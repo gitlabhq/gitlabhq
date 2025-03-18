@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlAlert, GlFormCheckbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
@@ -103,7 +103,7 @@ describe('Design management index page', () => {
   let moveDesignHandler;
   let permissionsQueryHandler;
 
-  const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
+  const findDesignCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
   const findToolbar = () => wrapper.findByTestId('design-selector-toolbar');
   const findDesignCollectionIsCopying = () => wrapper.findByTestId('design-collection-is-copying');
@@ -546,10 +546,10 @@ describe('Design management index page', () => {
     });
 
     it('adds two designs to selected designs when their checkboxes are checked', async () => {
-      findDesignCheckboxes().at(0).trigger('click');
+      findDesignCheckboxes().at(0).vm.$emit('change');
 
       await nextTick();
-      findDesignCheckboxes().at(1).trigger('click');
+      findDesignCheckboxes().at(1).vm.$emit('change');
 
       await nextTick();
       expect(findDeleteButton().exists()).toBe(true);
@@ -571,7 +571,7 @@ describe('Design management index page', () => {
     });
 
     it('removes all designs from selected designs when at least one design was selected', async () => {
-      findDesignCheckboxes().at(0).trigger('click');
+      findDesignCheckboxes().at(0).vm.$emit('change');
       await nextTick();
 
       findSelectAllButton().vm.$emit('click');

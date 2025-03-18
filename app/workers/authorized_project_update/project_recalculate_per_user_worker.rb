@@ -2,7 +2,7 @@
 
 module AuthorizedProjectUpdate
   class ProjectRecalculatePerUserWorker < ProjectRecalculateWorker
-    data_consistency :sticky, feature_flag: :change_data_consistency_for_permissions_workers
+    data_consistency :sticky
 
     feature_category :permissions
     urgency :high

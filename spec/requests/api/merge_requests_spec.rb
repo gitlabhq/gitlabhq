@@ -1808,7 +1808,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
     it 'returns a 200 when merge request is valid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
-      commit = merge_request.commits.first
+      commit = merge_request.merge_request_diff.last_commit
 
       expect_successful_response_with_paginated_array
       expect(json_response.size).to eq(merge_request.commits.size)
@@ -1817,14 +1817,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response.first['parent_ids']).to be_present
     end
 
-    context 'when commits_from_gitaly feature flag is disabled' do
+    context 'when commits_from_gitaly and optimized_commit_storage feature flags are disabled' do
       before do
+        stub_feature_flags(more_commits_from_gitaly: false)
         stub_feature_flags(commits_from_gitaly: false)
+        stub_feature_flags(optimized_commit_storage: false)
       end
 
       it 'returns a 200 without parent_ids' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
-        commit = merge_request.commits.first
+        commit = merge_request.merge_request_diff.last_commit
 
         expect_successful_response_with_paginated_array
         expect(json_response.size).to eq(merge_request.commits.size)
@@ -3420,7 +3422,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(source_repository.branch_exists?(source_branch)).to be false
-        expect(merge_request.reload.should_remove_source_branch?).to be nil
+        expect(merge_request.reload.should_remove_source_branch?).to be_nil
       end
 
       it 'does not remove the source branch' do

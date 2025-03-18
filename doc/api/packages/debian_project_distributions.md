@@ -12,7 +12,11 @@ title: Debian project distributions API
 
 {{< /details >}}
 
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+{{< history >}}
+
+- [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+
+{{< /history >}}
 
 This is the reference documentation for the Debian project distributions API. This API is behind a
 feature flag that is disabled by default. To use this API, you must [enable the Debian API](#enable-the-debian-api).

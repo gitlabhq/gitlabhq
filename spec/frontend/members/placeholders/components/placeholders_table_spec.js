@@ -26,12 +26,19 @@ import {
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_DESC,
   PLACEHOLDER_SORT_STATUS_ASC,
+  PLACEHOLDER_SORT_ID_ASC,
 } from '~/import_entities/import_groups/constants';
 
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
-import { mockSourceUsersQueryResponse, mockSourceUsers } from '../mock_data';
+
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import {
+  importSourceUserCreatedAt,
+  mockSourceUsersQueryResponse,
+  mockSourceUsers,
+} from '../mock_data';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -149,6 +156,7 @@ describe('PlaceholdersTable', () => {
       expect(findTableFields()).toEqual([
         'Placeholder user',
         'Source',
+        'Created at',
         'Reassignment status',
         'Reassign placeholder to',
       ]);
@@ -209,6 +217,15 @@ describe('PlaceholdersTable', () => {
 
       expect(badge.text()).toBe('Not started');
       expect(badgeTooltip.value).toBe('Reassignment not started.');
+    });
+
+    it('renders the createdAt date in correct format', async () => {
+      await waitForPromises();
+      const firstRow = findTableRows().at(0);
+      const expectedDateTime = localeDateFormat.asDateTime.format(
+        new Date(importSourceUserCreatedAt),
+      );
+      expect(firstRow.find('[aria-colindex="3"]').text()).toBe(expectedDateTime);
     });
 
     it('renders avatar for placeholderUser when item status is KEEP_AS_PLACEHOLDER', async () => {
@@ -446,6 +463,18 @@ describe('PlaceholdersTable', () => {
         }),
       );
     });
+
+    it('to time created, it refetches data using the created_at sort option', async () => {
+      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
+      await wrapper.setProps({ querySort: PLACEHOLDER_SORT_ID_ASC });
+
+      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(2);
+      expect(sourceUsersQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sort: PLACEHOLDER_SORT_ID_ASC,
+        }),
+      );
+    });
   });
 
   describe('correctly filters users with failed status', () => {
@@ -508,6 +537,7 @@ describe('PlaceholdersTable', () => {
       expect(findTableFields()).toEqual([
         'Placeholder user',
         'Source',
+        'Created at',
         'Reassignment status',
         'Reassigned to',
       ]);

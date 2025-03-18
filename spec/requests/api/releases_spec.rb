@@ -19,7 +19,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   end
 
   describe 'GET /projects/:id/releases', :use_clean_rails_redis_caching do
-    it_behaves_like 'enforcing job token policies', :read_releases do
+    it_behaves_like 'enforcing job token policies', :read_releases,
+      allow_public_access_for_enabled_project_features: [:repository, :releases] do
       let(:user) { developer }
       let(:request) do
         get api("/projects/#{source_project.id}/releases"), params: { job_token: target_job.token }
@@ -326,7 +327,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         )
       end
 
-      it_behaves_like 'enforcing job token policies', :read_releases do
+      it_behaves_like 'enforcing job token policies', :read_releases,
+        allow_public_access_for_enabled_project_features: [:repository, :releases] do
         let(:user) { developer }
         let(:request) do
           get api("/projects/#{source_project.id}/releases/v0.1"), params: { job_token: target_job.token }
@@ -595,7 +597,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     context 'with a valid release tag' do
       context 'when filepath is provided' do
         context 'when filepath exists' do
-          it_behaves_like 'enforcing job token policies', :read_releases, expected_success_status: :redirect do
+          it_behaves_like 'enforcing job token policies', :read_releases, expected_success_status: :redirect,
+            allow_public_access_for_enabled_project_features: [:repository, :releases] do
             let(:user) { developer }
             let(:request) do
               get api("/projects/#{source_project.id}/releases/v0.1/downloads#{filepath}"),
@@ -731,7 +734,8 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         )
       end
 
-      it_behaves_like 'enforcing job token policies', :read_releases, expected_success_status: :redirect do
+      it_behaves_like 'enforcing job token policies', :read_releases, expected_success_status: :redirect,
+        allow_public_access_for_enabled_project_features: [:repository, :releases] do
         let(:user) { developer }
         let(:request) do
           get api("/projects/#{source_project.id}/releases/permalink/latest"), params: { job_token: target_job.token }

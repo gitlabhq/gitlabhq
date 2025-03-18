@@ -48,7 +48,7 @@ module Mutations
 
       def work_item_data_with_fallback_type(work_item_data)
         work_item_type_id = work_item_data.delete(:work_item_type_id)
-        work_item_type = ::WorkItems::Type.find_by_correct_id_with_fallback(work_item_type_id)
+        work_item_type = ::WorkItems::Type.find_by_id_with_fallback(work_item_type_id)
 
         work_item_data[:work_item_type] = work_item_type
 

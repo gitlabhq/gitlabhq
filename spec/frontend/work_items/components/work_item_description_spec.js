@@ -16,7 +16,7 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
-import { ROUTES } from '~/work_items/constants';
+import { ROUTES, NEW_WORK_ITEM_IID, NEW_WORK_ITEM_GID } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -60,6 +60,8 @@ describe('WorkItemDescription', () => {
     },
   });
 
+  const mockFullPath = 'test-project-path';
+
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     isCreateFlow = false,
@@ -77,6 +79,8 @@ describe('WorkItemDescription', () => {
     descriptionTemplateHandler = successfulTemplateHandler,
     routeName = '',
     routeQuery = {},
+    fullPath = mockFullPath,
+    hideFullscreenMarkdownButton = false,
   } = {}) => {
     router = {
       replace: jest.fn(),
@@ -89,7 +93,7 @@ describe('WorkItemDescription', () => {
         [workItemDescriptionTemplateQuery, descriptionTemplateHandler],
       ]),
       propsData: {
-        fullPath: 'test-project-path',
+        fullPath,
         workItemId,
         workItemIid,
         workItemTypeId,
@@ -97,12 +101,10 @@ describe('WorkItemDescription', () => {
         editMode,
         showButtonsBelowField,
         isCreateFlow,
+        hideFullscreenMarkdownButton,
       },
       provide: {
         isGroup,
-        glFeatures: {
-          workItemDescriptionTemplates: true,
-        },
       },
       mocks: {
         $route: {
@@ -179,6 +181,61 @@ describe('WorkItemDescription', () => {
           fullPath,
           iid,
           isGroup: true,
+        }),
+      });
+    });
+
+    it('passes correct autocompletion data sources when it is a new group work item', async () => {
+      const workItemResponse = workItemByIidResponseFactory({
+        iid: NEW_WORK_ITEM_IID,
+        id: NEW_WORK_ITEM_GID,
+      });
+
+      const newGroupWorkItem = {
+        data: {
+          workspace: {
+            __typename: 'Group',
+            id: 'gid://gitlab/Group/24',
+            workItem: {
+              ...workItemResponse.data.workspace.workItem,
+              namespace: {
+                id: 'gid://gitlab/Group/24',
+                fullPath: 'gitlab-org',
+                name: 'Gitlab Org',
+                fullName: 'Gitlab Org',
+                __typename: 'Namespace',
+              },
+            },
+          },
+        },
+      };
+
+      const {
+        namespace: { fullPath },
+      } = newGroupWorkItem.data.workspace.workItem;
+
+      createComponent({
+        isEditing: true,
+        isGroup: true,
+        workItemResponse: newGroupWorkItem,
+        workItemIid: NEW_WORK_ITEM_IID,
+        fullPath,
+      });
+
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props()).toMatchObject({
+        supportsQuickActions: true,
+        renderMarkdownPath: markdownPreviewPath({
+          fullPath,
+          iid: NEW_WORK_ITEM_IID,
+          isGroup: true,
+        }),
+        autocompleteDataSources: autocompleteDataSources({
+          fullPath,
+          iid: NEW_WORK_ITEM_IID,
+          isGroup: true,
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/5',
         }),
       });
     });
@@ -699,4 +756,55 @@ describe('WorkItemDescription', () => {
       });
     });
   });
+
+  describe('when hideFullscreenMarkdownButton is true', () => {
+    it('does not show full screen button on markdown editor', async () => {
+      await createComponent({ hideFullscreenMarkdownButton: true, isEditing: true });
+
+      expect(findMarkdownEditor().props('restrictedToolBarItems')).toEqual(['full-screen']);
+    });
+  });
+
+  it.each`
+    namespaceId                | uploadsPath                            | namespaceType
+    ${'gid://gitlab/Group/24'} | ${`/groups/${mockFullPath}/-/uploads`} | ${'group'}
+    ${'123'}                   | ${`/${mockFullPath}/uploads`}          | ${'project'}
+  `(
+    'passes correct uploads path for markdown editor when namespace is $namespaceType',
+
+    async ({ namespaceId, uploadsPath }) => {
+      const workItemResponse = workItemByIidResponseFactory({
+        iid: NEW_WORK_ITEM_IID,
+        id: NEW_WORK_ITEM_GID,
+      });
+
+      const newGroupWorkItem = {
+        data: {
+          workspace: {
+            __typename: 'Group',
+            id: namespaceId,
+            workItem: {
+              ...workItemResponse.data.workspace.workItem,
+              namespace: {
+                id: namespaceId,
+                fullPath: 'gitlab-org',
+                name: 'Gitlab Org',
+                fullName: 'Gitlab Org',
+                __typename: 'Namespace',
+              },
+            },
+          },
+        },
+      };
+
+      createComponent({
+        isEditing: true,
+        isGroup: true,
+        workItemResponse: newGroupWorkItem,
+      });
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props('uploadsPath')).toBe(uploadsPath);
+    },
+  );
 });

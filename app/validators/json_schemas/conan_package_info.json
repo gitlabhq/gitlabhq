@@ -1,33 +1,28 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "Conan Info Schema",
-  "oneOf": [
-    {
-      "type": "object",
-      "additionalProperties": false
+  "type": "object",
+  "properties": {
+    "recipe_hash": {
+      "type": "string"
     },
-    {
+    "settings": {
       "type": "object",
-      "properties": {
-        "settings": {
-          "type": "object"
-        },
-        "requires": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "options": {
-          "type": "object"
-        }
-      },
-      "required": [
-        "settings",
-        "requires",
-        "options"
-      ],
-      "additionalProperties": true
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
-  ]
+  }
 }

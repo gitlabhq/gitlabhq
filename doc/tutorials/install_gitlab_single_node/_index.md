@@ -12,6 +12,8 @@ title: 'Tutorial: Install and secure a single node GitLab instance'
 
 {{< /details >}}
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 In this tutorial you will learn how to install and securely configure a single
 node GitLab instance that can accommodate up to
 [20 RPS or 1,000 users](../../administration/reference_architectures/1k_users.md).
@@ -160,7 +162,7 @@ they add an extra layer of security.
 
    {{< alert type="note" >}}
 
-The naming and source directory decide the order of processing, which is
+   The naming and source directory decide the order of processing, which is
    important because the last parameter processed might override earlier ones.
 
    {{< /alert >}}

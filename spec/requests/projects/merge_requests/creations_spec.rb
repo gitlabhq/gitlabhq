@@ -76,6 +76,36 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
         end
       end
     end
+
+    describe 'GET new/diff_files_metadata' do
+      let(:send_request) { get namespace_project_new_merge_request_diff_files_metadata_path(params) }
+
+      context 'with valid params' do
+        let(:params) do
+          {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            merge_request: {
+              source_branch: 'fix',
+              target_branch: 'master'
+            }
+          }
+        end
+
+        include_examples 'diff files metadata'
+      end
+
+      context 'with invalid params' do
+        let(:params) do
+          {
+            namespace_id: project.namespace.to_param,
+            project_id: project
+          }
+        end
+
+        include_examples 'missing diff files metadata'
+      end
+    end
   end
 
   describe 'POST /:namespace/:project/merge_requests' do

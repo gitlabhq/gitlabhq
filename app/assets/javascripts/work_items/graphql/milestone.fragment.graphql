@@ -6,4 +6,5 @@ fragment MilestoneFragment on Milestone {
   startDate
   dueDate
   webPath
+  projectMilestone
 }

@@ -9,6 +9,9 @@ module MergeRequests
 
     def execute
       old_diff_refs = merge_request.diff_refs
+
+      return if merge_request.reached_versions_limit?
+
       new_diff = merge_request.create_merge_request_diff
 
       clear_cache(new_diff)

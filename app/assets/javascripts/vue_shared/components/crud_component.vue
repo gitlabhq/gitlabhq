@@ -1,11 +1,12 @@
 <script>
-import { GlButton, GlIcon, GlLoadingIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlBadge, GlLoadingIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlButton,
     GlIcon,
+    GlBadge,
     GlLoadingIcon,
     GlLink,
   },
@@ -79,6 +80,11 @@ export default {
       default: null,
     },
     bodyClass: {
+      type: [String, Object],
+      required: false,
+      default: null,
+    },
+    footerClass: {
       type: [String, Object],
       required: false,
       default: null,
@@ -208,14 +214,15 @@ export default {
           >
             <template v-if="displayedCount">
               <gl-icon v-if="icon" :name="icon" variant="subtle" data-testid="crud-icon" />
-              {{ displayedCount }}
+              <template v-if="icon">{{ displayedCount }}</template>
+              <gl-badge v-else class="gl-self-baseline">{{ displayedCount }}</gl-badge>
             </template>
             <slot v-if="$scopedSlots.count" name="count"></slot>
           </span>
         </h2>
         <p
           v-if="description || $scopedSlots.description"
-          class="gl-mb-0 gl-mt-2 gl-text-sm gl-leading-normal gl-text-subtle"
+          class="!gl-mb-0 !gl-mt-2 !gl-text-sm !gl-leading-normal !gl-text-subtle"
           data-testid="crud-description"
         >
           <slot v-if="$scopedSlots.description" name="description"></slot>
@@ -283,8 +290,9 @@ export default {
     </div>
 
     <footer
-      v-if="$scopedSlots.footer"
+      v-if="isContentVisible && $scopedSlots.footer"
       class="gl-border-t gl-rounded-b-base gl-border-section gl-bg-section gl-px-5 gl-py-4"
+      :class="footerClass"
       data-testid="crud-footer"
     >
       <slot name="footer"></slot>

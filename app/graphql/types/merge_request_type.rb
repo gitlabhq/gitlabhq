@@ -25,9 +25,9 @@ module Types
     field :diff_head_sha, GraphQL::Types::String, null: true, calls_gitaly: true,
       description: 'Diff head SHA of the merge request.'
     field :diff_refs, Types::DiffRefsType, null: true,
-      description: 'References of the base SHA, the head SHA, and the start SHA for this merge request.'
+      description: 'References of the base SHA, the head SHA, and the start SHA for the merge request.'
     field :diff_stats, [Types::DiffStatsType], null: true, calls_gitaly: true,
-      description: 'Details about which files were changed in this merge request.' do
+      description: 'Details about which files were changed in the merge request.' do
       argument :path, GraphQL::Types::String, required: false, description: 'Specific file path.'
     end
     field :draft, GraphQL::Types::Boolean, method: :draft?, null: false,
@@ -75,7 +75,7 @@ module Types
     field :default_squash_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
       description: 'Default squash commit message of the merge request.'
     field :diff_stats_summary, Types::DiffStatsSummaryType, null: true, calls_gitaly: true,
-      description: 'Summary of which files were changed in this merge request.'
+      description: 'Summary of which files were changed in the merge request.'
     field :diverged_from_target_branch, GraphQL::Types::Boolean,
       null: false, calls_gitaly: true,
       method: :diverged_from_target_branch?,
@@ -176,7 +176,7 @@ module Types
       complexity: 5,
       description: 'Assignees of the merge request.'
     field :author, Types::MergeRequests::AuthorType, null: true,
-      description: 'User who created this merge request.'
+      description: 'User who created the merge request.'
     field :discussion_locked, GraphQL::Types::Boolean,
       description: 'Indicates if comments on the merge request are locked to members only.',
       null: false
@@ -215,7 +215,7 @@ module Types
       complexity: 5,
       description: 'Users from whom a review has been requested.'
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
-      description: 'Indicates if the currently logged in user is subscribed to this merge request.'
+      description: 'Indicates if the currently logged in user is subscribed to the merge request.'
     field :supports_lock_on_merge, GraphQL::Types::Boolean, null: false, method: :supports_lock_on_merge?,
       description: 'Indicates if the merge request supports locked labels.'
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
@@ -245,7 +245,7 @@ module Types
     field :has_ci, GraphQL::Types::Boolean, null: false, method: :has_ci?,
       description: 'Indicates if the merge request has CI.'
     field :merge_user, Types::UserType, null: true,
-      description: 'User who merged this merge request or set it to auto-merge.'
+      description: 'User who merged the merge request or set it to auto-merge.'
     field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
       description: 'Indicates if the merge request is mergeable.'
     field :security_auto_fix,
@@ -266,6 +266,10 @@ module Types
       HEREDOC
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,
       description: 'Indicates if the merge request will be squashed when merged.'
+    field :squash_read_only, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if `squashReadOnly` is enabled.',
+      method: :squash_readonly?
     field :timelogs, Types::TimelogType.connection_type, null: false,
       description: 'Timelogs on the merge request.'
 
@@ -342,11 +346,15 @@ module Types
     end
 
     def commits
-      object.commits.commits
+      object.commits(
+        load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, object.target_project)
+      ).commits
     end
 
     def commits_without_merge_commits
-      object.commits.without_merge_commits
+      object.commits(
+        load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, object.target_project)
+      ).without_merge_commits
     end
 
     def security_auto_fix

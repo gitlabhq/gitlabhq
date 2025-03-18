@@ -149,9 +149,9 @@ namespace :gitlab do
     end
 
     def alter_cell_sequences_range
-      return unless Gitlab.config.topology_service_enabled?
+      return unless Gitlab.config.cell.enabled
 
-      return puts "Skipping altering cell sequences range" if Gitlab.config.skip_sequence_alteration?
+      return puts "Skipping altering cell sequences range" if Gitlab.config.cell.database.skip_sequence_alteration
 
       sequence_range = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_range
 

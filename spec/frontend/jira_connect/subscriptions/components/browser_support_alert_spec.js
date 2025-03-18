@@ -27,7 +27,7 @@ describe('BrowserSupportAlert', () => {
     createComponent({ mountFn: mount });
     expect(findLink().attributes()).toMatchObject({
       target: '_blank',
-      rel: 'noopener',
+      rel: 'noopener noreferrer',
     });
   });
 });

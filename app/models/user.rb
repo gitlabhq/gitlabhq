@@ -82,8 +82,8 @@ class User < ApplicationRecord
   NOREPLY_EMAIL_DOMAIN = "noreply.#{Gitlab.config.gitlab.host}".freeze
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
-  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
-  add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
+  add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
+  add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/439294
   add_authentication_token_field :static_object_token, encrypted: :optional # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
 
@@ -321,9 +321,6 @@ class User < ApplicationRecord
   has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
   has_many :vscode_settings, class_name: 'VsCode::Settings::VsCodeSetting', inverse_of: :user
-
-  has_many :requested_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'requested_by_id'
-  has_many :reviewed_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'reviewed_by_id'
 
   has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
@@ -614,7 +611,7 @@ class User < ApplicationRecord
       user.class.temporary_ignore_cross_database_tables(
         %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
       ) do
-        user.starred_projects.update_counters(star_count: -1)
+        user.starred_projects.where('star_count > 0').update_counters(star_count: -1)
       end
     end
   end
@@ -1218,6 +1215,19 @@ class User < ApplicationRecord
     super if ::Gitlab::Database.read_write?
   end
 
+  # This is a copy of #forget_me! without the check for `expire_all_remember_me_on_sign_out`
+  # https://github.com/heartcombo/devise/blob/v4.9.4/lib/devise/models/rememberable.rb#L58-L63
+  #
+  # We need a separate method because we disabled that setting but we also need to be able to
+  # manually expire these tokens when a session is manually destroyed
+  def invalidate_all_remember_tokens!
+    return unless persisted?
+
+    self.remember_token = nil if respond_to?(:remember_token)
+    self.remember_created_at = nil
+    save(validate: false)
+  end
+
   # Override Devise Rememberable#remember_me?
   #
   # In Devise this method compares the remember me token received from the user session
@@ -1595,7 +1605,7 @@ class User < ApplicationRecord
     union_sql = ::Gitlab::SQL::Union.new(
       [owned_groups,
         maintainers_groups,
-        groups_with_developer_maintainer_project_access]).to_sql
+        groups_with_developer_project_access]).to_sql
 
     ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
   end
@@ -1805,7 +1815,9 @@ class User < ApplicationRecord
     verified_emails = []
     verified_emails << email if primary_email_verified?
     verified_emails << private_commit_email if include_private_email
-    verified_emails.concat(emails.confirmed.pluck(:email))
+    verified_emails.concat(
+      emails.loaded? ? emails.select(&:confirmed?).pluck(:email) : emails.confirmed.pluck(:email)
+    )
     verified_emails.uniq
   end
 
@@ -2000,13 +2012,13 @@ class User < ApplicationRecord
     end
   end
 
-  def manageable_groups(include_groups_with_developer_maintainer_access: false)
+  def manageable_groups(include_groups_with_developer_access: false)
     owned_and_maintainer_group_hierarchy = owned_or_maintainers_groups.self_and_descendants
 
-    if include_groups_with_developer_maintainer_access
+    if include_groups_with_developer_access
       union_sql = ::Gitlab::SQL::Union.new(
         [owned_and_maintainer_group_hierarchy,
-          groups_with_developer_maintainer_project_access]).to_sql
+          groups_with_developer_project_access]).to_sql
 
       ::Group.from("(#{union_sql}) #{::Group.table_name}")
     else
@@ -2173,12 +2185,6 @@ class User < ApplicationRecord
     end
   end
 
-  def todos_done_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      TodosFinder.new(self, state: :done).execute.count
-    end
-  end
-
   def todos_pending_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       TodosFinder.new(self, state: :pending).execute.count
@@ -2192,7 +2198,6 @@ class User < ApplicationRecord
   end
 
   def update_todos_count_cache
-    todos_done_count(force: true)
     todos_pending_count(force: true)
   end
 
@@ -2214,7 +2219,6 @@ class User < ApplicationRecord
   end
 
   def invalidate_todos_cache_counts
-    Rails.cache.delete(['users', id, 'todos_done_count'])
     Rails.cache.delete(['users', id, 'todos_pending_count'])
   end
 
@@ -2601,6 +2605,10 @@ class User < ApplicationRecord
     support_pin_data&.fetch(:expires_at, nil)
   end
 
+  def can_access_admin_area?
+    admin?
+  end
+
   protected
 
   # override, from Devise::Validatable
@@ -2824,10 +2832,10 @@ class User < ApplicationRecord
     end
   end
 
-  def groups_with_developer_maintainer_project_access
-    project_creation_levels = [::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS]
+  def groups_with_developer_project_access
+    project_creation_levels = [::Gitlab::Access::DEVELOPER_PROJECT_ACCESS]
 
-    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
       project_creation_levels << nil
     end
 
@@ -2910,7 +2918,15 @@ class User < ApplicationRecord
   end
 
   def prefix_for_feed_token
-    FEED_TOKEN_PREFIX
+    self.class.prefix_for_feed_token
+  end
+
+  def self.prefix_for_feed_token
+    return FEED_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+
+    # Manually remove gl - we'll add this from the configuration.
+    # Once the feature flag has been removed, we can change FEED_TOKEN_PREFIX to `ft-`
+    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(FEED_TOKEN_PREFIX.delete_prefix('gl'))
   end
 
   # method overridden in EE

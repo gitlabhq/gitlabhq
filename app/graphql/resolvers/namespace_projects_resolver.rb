@@ -50,6 +50,10 @@ module Resolvers
       required: false,
       description: "Return only projects that use the namespace domain for pages projects."
 
+    argument :archived_only, GraphQL::Types::Boolean,
+      required: false,
+      description: "Return only archived projects."
+
     type Types::ProjectType, null: true
 
     def resolve(args)
@@ -88,7 +92,8 @@ module Resolvers
         ids: parse_gids(args[:ids]),
         with_issues_enabled: args[:with_issues_enabled],
         with_merge_requests_enabled: args[:with_merge_requests_enabled],
-        with_namespace_domain_pages: args[:with_namespace_domain_pages]
+        with_namespace_domain_pages: args[:with_namespace_domain_pages],
+        archived_only: args[:archived_only]
       }
     end
 

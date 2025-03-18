@@ -1,0 +1,20 @@
+---
+# Cop supports --autocorrect.
+InternalAffairs/RedundantMessageArgument:
+  Details: grace period
+  Exclude:
+    - 'rubocop/cop/feature_flag_usage.rb'
+    - 'rubocop/cop/file_decompression.rb'
+    - 'rubocop/cop/gitlab/feature_flag_without_actor.rb'
+    - 'rubocop/cop/gitlab/license_available_usage.rb'
+    - 'rubocop/cop/gitlab/no_find_in_workers.rb'
+    - 'rubocop/cop/migration/async_post_migrate_only.rb'
+    - 'rubocop/cop/migration/batch_migrations_post_only.rb'
+    - 'rubocop/cop/migration/migration_with_milestone.rb'
+    - 'rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction.rb'
+    - 'rubocop/cop/migration/prevent_single_statement_with_disable_ddl_transaction.rb'
+    - 'rubocop/cop/migration/schema_addition_methods_no_post.rb'
+    - 'rubocop/cop/redis_queue_usage.rb'
+    - 'rubocop/cop/rspec/shared_groups_metadata.rb'
+    - 'rubocop/cop/sidekiq_api_usage.rb'
+    - 'rubocop/cop/sidekiq_redis_call.rb'

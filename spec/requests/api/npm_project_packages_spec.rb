@@ -203,7 +203,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 
-      it_behaves_like 'enforcing job token policies', :read_packages do
+      it_behaves_like 'enforcing job token policies', :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry do
         let(:headers) { build_token_auth_header(target_job.token) }
       end
 

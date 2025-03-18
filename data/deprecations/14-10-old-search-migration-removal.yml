@@ -10,4 +10,4 @@
   stage: enablement
   tiers: premium, ultimate
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/359133
-  documentation_url: https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html#deleting-advanced-search-migrations-in-a-major-version-upgrade
+  documentation_url: https://docs.gitlab.com/development/search/advanced_search_migration_styleguide/#deleting-advanced-search-migrations-in-a-major-version-upgrade

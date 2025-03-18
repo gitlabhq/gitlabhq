@@ -35,7 +35,8 @@ module API
         send_snowplow_event = !!params[:send_to_snowplow]
 
         if Gitlab::Tracking::AiTracking::EVENTS_MIGRATED_TO_INSTRUMENTATION_LAYER.exclude?(event_name)
-          Gitlab::Tracking::AiTracking.track_event(event_name, **additional_properties.merge(user: current_user))
+          Gitlab::Tracking::AiTracking.track_event(event_name,
+**additional_properties.merge(user: current_user, project_id: project_id, namespace_id: namespace_id))
         end
 
         track_event(

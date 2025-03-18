@@ -11,7 +11,7 @@ import { formatGroups, timestampType } from '~/organizations/shared/utils';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+} from 'ee_else_ce/vue_shared/components/groups_list/utils';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import NewGroupButton from './new_group_button.vue';

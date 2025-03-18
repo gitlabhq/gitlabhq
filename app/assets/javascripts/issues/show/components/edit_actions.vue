@@ -13,24 +13,15 @@ export default {
   },
   mixins: [trackingMixin, updateMixin],
   props: {
-    endpoint: {
-      required: true,
-      type: String,
-    },
     formState: {
       type: Object,
-      required: true,
-    },
-    issuableType: {
-      type: String,
       required: true,
     },
   },
   data() {
     return {
-      deleteLoading: false,
       skipApollo: false,
-      issueState: {},
+      issueState: {}, // eslint-disable-line vue/no-unused-properties
     };
   },
   apollo: {

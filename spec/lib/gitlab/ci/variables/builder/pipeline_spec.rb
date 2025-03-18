@@ -115,6 +115,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :ci_v
                 merge_request.source_branch
               ).to_s,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
+              'CI_MERGE_REQUEST_DRAFT' => merge_request.work_in_progress?.to_s,
               'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description,
               'CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED' => 'false',
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
@@ -245,6 +246,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :ci_v
               'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
               'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => merge_request.source_branch_sha,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
+              'CI_MERGE_REQUEST_DRAFT' => merge_request.work_in_progress?.to_s,
               'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description,
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,

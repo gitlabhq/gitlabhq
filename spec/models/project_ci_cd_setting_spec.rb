@@ -60,6 +60,32 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       end
     end
 
+    context 'when restrict_user_defined_variables is false' do
+      let(:project) { build(:project) }
+      let(:setting) { described_class.new(project: project) }
+
+      before do
+        setting.pipeline_variables_minimum_override_role = :maintainer
+        setting.restrict_user_defined_variables = false
+      end
+
+      it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
+    end
+
+    context 'when restrict_user_defined_variables is true' do
+      let(:project) { build(:project) }
+      let(:setting) { described_class.new(project: project) }
+
+      before do
+        setting.pipeline_variables_minimum_override_role = :maintainer
+        setting.restrict_user_defined_variables = true
+      end
+
+      it 'returns the set role' do
+        expect(setting.pipeline_variables_minimum_override_role).to eq('maintainer')
+      end
+    end
+
     context 'when a namespace is defined' do
       let_it_be(:project) { create(:project, :with_namespace_settings) }
 
@@ -95,6 +121,36 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
         it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
 
         it_behaves_like 'enables restrict_user_defined_variables'
+      end
+    end
+  end
+
+  describe '#pipeline_variables_minimum_override_role=' do
+    let(:project) { build(:project) }
+    let(:setting) { described_class.new(project: project) }
+
+    context 'when setting a value' do
+      before do
+        setting.pipeline_variables_minimum_override_role = :developer
+      end
+
+      it 'sets the role' do
+        expect(setting.pipeline_variables_minimum_override_role_for_database).to eq(described_class::DEVELOPER_ROLE)
+      end
+
+      it 'enables restrict_user_defined_variables' do
+        expect(setting.restrict_user_defined_variables).to be true
+      end
+    end
+
+    context 'when setting nil value' do
+      before do
+        setting.restrict_user_defined_variables = false
+        setting.pipeline_variables_minimum_override_role = nil
+      end
+
+      it 'does not change the current settings' do
+        expect(setting.restrict_user_defined_variables).to be false
       end
     end
   end

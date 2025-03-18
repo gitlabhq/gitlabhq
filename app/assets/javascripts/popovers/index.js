@@ -3,6 +3,7 @@ import Vue from 'vue';
 import PopoversComponent from './components/popovers.vue';
 
 let app;
+let isInitialized = false;
 
 const APP_ELEMENT_ID = 'gl-popovers-app';
 
@@ -32,13 +33,16 @@ const handlePopoverEvent = (rootTarget, e, selector) => {
 };
 
 export const initPopovers = () => {
-  ['mouseenter', 'focus', 'click'].forEach((event) => {
-    document.addEventListener(
-      event,
-      (e) => handlePopoverEvent(document, e, '[data-toggle="popover"]'),
-      true,
-    );
-  });
+  if (!isInitialized) {
+    ['mouseenter', 'focus', 'click'].forEach((event) => {
+      document.addEventListener(
+        event,
+        (e) => handlePopoverEvent(document, e, '[data-toggle="popover"]'),
+        true,
+      );
+    });
+    isInitialized = true;
+  }
 
   return getPopoversApp();
 };

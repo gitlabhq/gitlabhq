@@ -24,11 +24,6 @@ export default {
       type: String,
       required: true,
     },
-    canAttachFile: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     enableAutocomplete: {
       type: Boolean,
       required: false,

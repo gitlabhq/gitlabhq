@@ -18,6 +18,8 @@ describe('Pipeline label component', () => {
   const findAutoDevopsTagLink = () => wrapper.findByTestId('pipeline-url-autodevops-link');
   const findDetachedTag = () => wrapper.findByTestId('pipeline-url-detached');
   const findMergedResultsTag = () => wrapper.findByTestId('pipeline-url-merged-results');
+  const findBranchTag = () => wrapper.findByTestId('pipeline-url-branch');
+  const findTagTag = () => wrapper.findByTestId('pipeline-url-tag');
   const findFailureTag = () => wrapper.findByTestId('pipeline-url-failure');
   const findForkTag = () => wrapper.findByTestId('pipeline-url-fork');
   const findTrainTag = () => wrapper.findByTestId('pipeline-url-train');
@@ -48,6 +50,8 @@ describe('Pipeline label component', () => {
     expect(findForkTag().exists()).toBe(false);
     expect(findTrainTag().exists()).toBe(false);
     expect(findMergedResultsTag().exists()).toBe(false);
+    expect(findBranchTag().exists()).toBe(false);
+    expect(findTagTag().exists()).toBe(false);
   });
 
   it('should render the stuck tag when flag is provided', () => {
@@ -195,6 +199,50 @@ describe('Pipeline label component', () => {
     });
 
     expect(findMergedResultsTag().exists()).toBe(false);
+  });
+
+  it('should render the branch badge when the pipeline is a branch pipeline', () => {
+    const branchPipeline = defaultProps.pipeline;
+    branchPipeline.flags.type = 'branch';
+
+    createComponent({
+      ...branchPipeline,
+    });
+
+    expect(findBranchTag().text()).toBe('branch');
+  });
+
+  it('should not render the branch badge when the pipeline is a tag pipeline', () => {
+    const tagPipeline = defaultProps.pipeline;
+    tagPipeline.flags.type = 'tag';
+
+    createComponent({
+      ...tagPipeline,
+    });
+
+    expect(findBranchTag().exists()).toBe(false);
+  });
+
+  it('should render the tag badge when the pipeline is a tag pipeline', () => {
+    const tagPipeline = defaultProps.pipeline;
+    tagPipeline.flags.type = 'tag';
+
+    createComponent({
+      ...tagPipeline,
+    });
+
+    expect(findTagTag().text()).toBe('tag');
+  });
+
+  it('should not render the tag badge when the pipeline is a branch pipeline', () => {
+    const branchPipeline = defaultProps.pipeline;
+    branchPipeline.flags.type = 'branch';
+
+    createComponent({
+      ...branchPipeline,
+    });
+
+    expect(findTagTag().exists()).toBe(false);
   });
 
   it('should render the train badge when the pipeline is a merge train pipeline', () => {

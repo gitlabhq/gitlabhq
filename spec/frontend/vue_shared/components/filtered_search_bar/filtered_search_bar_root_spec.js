@@ -4,6 +4,8 @@ import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
+
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import {
   FILTERED_SEARCH_TERM,
@@ -60,7 +62,7 @@ jest.mock('~/filtered_search/services/recent_searches_service', () => {
 const defaultProps = {
   namespace: 'gitlab-org/gitlab-test',
   recentSearchesStorageKey: 'issues',
-  tokens: mockAvailableTokens,
+  tokens: markRaw(mockAvailableTokens),
   initialFilterValue: [],
   showCheckbox: false,
   checkboxChecked: false,
@@ -255,7 +257,7 @@ describe('FilteredSearchBarRoot', () => {
         findGlSorting().vm.$emit('sortByChange', mockSortOptions[1].id);
         await nextTick();
 
-        expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[1]);
+        expect(wrapper.vm.selectedSortOption).toEqual(mockSortOptions[1]);
         expect(wrapper.emitted('onSort')[0]).toEqual([mockSortOptions[1].sortDirection.descending]);
       });
     });
@@ -386,7 +388,7 @@ describe('FilteredSearchBarRoot', () => {
     it('renders search history items dropdown with formatting done using token symbols', async () => {
       createComponent({ propsData: { sortOptions: mockSortOptions }, shallow: false });
       wrapper.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
-      await nextTick();
+      await waitForPromises();
 
       expect(findGlDisclosureDropdownItems().at(0).text()).toBe(
         'Author := @rootLabel := ~bugMilestone := %v1.0"duo"',
@@ -404,12 +406,12 @@ describe('FilteredSearchBarRoot', () => {
         });
 
         wrapper.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
-        await nextTick();
+        await waitForPromises();
         expect(findGlDisclosureDropdownItem().text()).toBe('Membership := Direct');
       });
     });
 
-    describe('when token options have do not have `title` attribute defined', () => {
+    describe('when token options do not have `title` attribute defined', () => {
       it('renders search history items using the provided `value` attribute', async () => {
         createComponent({
           propsData: {
@@ -419,7 +421,7 @@ describe('FilteredSearchBarRoot', () => {
           shallow: false,
         });
         wrapper.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
-        await nextTick();
+        await waitForPromises();
         expect(findGlDisclosureDropdownItem().text()).toBe('Membership := exclude');
       });
     });

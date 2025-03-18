@@ -28,5 +28,11 @@ FactoryBot.define do
       end
       # rubocop:enable RSpec/FactoryBot/StrategyInCallback
     end
+
+    trait :with_metadatum do
+      terraform_module_metadatum do
+        association(:terraform_module_metadatum, package: instance)
+      end
+    end
   end
 end

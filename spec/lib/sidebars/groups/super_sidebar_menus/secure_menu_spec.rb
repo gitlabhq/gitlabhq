@@ -17,6 +17,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::SecureMenu, feature_category
     expect(items.map(&:item_id)).to eq([
       :security_dashboard,
       :vulnerability_report,
+      :security_inventory,
       :dependency_list,
       :audit_events,
       :compliance,

@@ -441,7 +441,7 @@ To set up multiple SAML IdPs:
                name: 'saml', # This is mandatory and must match the provider name
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback', # URL must match the name of the provider
                strategy_class: 'OmniAuth::Strategies::SAML',
-               ... # Put here all the required arguments similar to a single provider
+               # Include all required arguments similar to a single provider
              },
      },
      {
@@ -451,7 +451,7 @@ To set up multiple SAML IdPs:
                name: 'saml_2', # This is mandatory and must match the provider name
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
                strategy_class: 'OmniAuth::Strategies::SAML',
-               ... # Put here all the required arguments similar to a single provider
+               # Include all required arguments similar to a single provider
              },
      }
    ]
@@ -485,7 +485,7 @@ To set up multiple SAML IdPs:
      name: 'saml' # This is mandatory and must match the provider name
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback' # URL must match the name of the provider
      strategy_class: 'OmniAuth::Strategies::SAML' # Mandatory
-     ... # Put here all the required arguments similar to a single provider
+     # Include all required arguments similar to a single provider
    ```
 
 1. Put the following content in a file named `saml_2.yaml` to be used as a
@@ -499,7 +499,7 @@ To set up multiple SAML IdPs:
      name: 'saml_2' # This is mandatory and must match the provider name
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback' # URL must match the name of the provider
      strategy_class: 'OmniAuth::Strategies::SAML' # Mandatory
-     ... # Put here all the required arguments similar to a single provider
+     # Include all required arguments similar to a single provider
    ```
 
 1. Optional. Set additional SAML providers by following the same steps.
@@ -567,7 +567,7 @@ To set up multiple SAML IdPs:
                        name: 'saml', # This is mandatory and must match the provider name
                        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback', # URL must match the name of the provider
                        strategy_class: 'OmniAuth::Strategies::SAML',
-                       ... # Put here all the required arguments similar to a single provider
+                       # Include all required arguments similar to a single provider
                      },
              },
              {
@@ -577,7 +577,7 @@ To set up multiple SAML IdPs:
                        name: 'saml_2', # This is mandatory and must match the provider name
                        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
                        strategy_class: 'OmniAuth::Strategies::SAML',
-                       ... # Put here all the required arguments similar to a single provider
+                       # Include all required arguments similar to a single provider
                      },
              }
            ]
@@ -618,7 +618,7 @@ To set up multiple SAML IdPs:
              name: 'saml', # This is mandatory and must match the provider name
              assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback', # URL must match the name of the provider
              strategy_class: 'OmniAuth::Strategies::SAML',
-             ... # Put here all the required arguments similar to a single provider
+             # Include all required arguments similar to a single provider
            },
          }
          - {
@@ -628,7 +628,7 @@ To set up multiple SAML IdPs:
              name: 'saml_2', # This is mandatory and must match the provider name
              strategy_class: 'OmniAuth::Strategies::SAML',
              assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
-             ... # Put here all the required arguments similar to a single provider
+             # Include all required arguments similar to a single provider
            },
          }
    ```
@@ -908,7 +908,7 @@ Prerequisites:
 
   The name of the attribute must contain the groups that a user belongs to.
   To tell GitLab where to find these groups, add a `groups_attribute:`
-  element to your SAML settings.
+  element to your SAML settings. This attribute is case-sensitive.
 
 ### Required groups
 
@@ -1087,9 +1087,12 @@ SAML can automatically identify a user as an
 [external user](../administration/external_users.md), based on the `external_groups`
 setting.
 
-**NOTE**:
+{{< alert type="note" >}}
+
 If the attribute specified in `groups_attribute` is incorrect or missing then the user will
 access as a standard user.
+
+{{< /alert >}}
 
 Example configuration:
 
@@ -1767,7 +1770,7 @@ list.
       sudo service gitlab restart
       ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -3403,7 +3406,7 @@ To implement signing:
       sudo service gitlab restart
       ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

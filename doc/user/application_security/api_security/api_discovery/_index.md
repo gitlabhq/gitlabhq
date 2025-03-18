@@ -186,5 +186,8 @@ When experiencing a behavior not working as expected, consider providing context
 - Language runtime with version (for example OpenJDK v17.0.1).
 <!-- - Scanner log file is available as a job artifact named `gl-api-discovery.log`. -->
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+
+{{< /alert >}}

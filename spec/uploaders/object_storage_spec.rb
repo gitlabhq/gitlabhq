@@ -572,7 +572,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
     context 'when FIPS is disabled' do
       it 'response disables FIPS' do
-        expect(subject[:UploadHashFunctions]).to be nil
+        expect(subject[:UploadHashFunctions]).to be_nil
       end
     end
 

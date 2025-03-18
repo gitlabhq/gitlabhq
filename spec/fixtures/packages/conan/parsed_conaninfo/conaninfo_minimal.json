@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "arch": "x86_64",
+    "build_type": "Release",
+    "compiler": "apple-clang",
+    "compiler.libcxx": "libc++",
+    "compiler.version": "10.0",
+    "os": "Macos"
+  }
+}

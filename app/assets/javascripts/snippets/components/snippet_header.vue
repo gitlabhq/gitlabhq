@@ -124,9 +124,7 @@ export default {
       return {
         text: __('Delete'),
         action: () => this.showDeleteModal(),
-        extraAttrs: {
-          class: '!gl-text-red-500',
-        },
+        variant: 'danger',
       };
     },
     newSnippetItem() {

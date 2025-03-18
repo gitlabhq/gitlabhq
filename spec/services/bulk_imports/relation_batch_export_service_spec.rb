@@ -46,17 +46,19 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
       expect { service.execute }.to change { export.reload.updated_at }
     end
 
-    context 'when relation is empty and there is nothing to export' do
-      let_it_be(:export) { create(:bulk_import_export, :batched, project: project, relation: 'milestones') }
-      let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }
+    context 'when the cache key is missing or expired' do
+      it 'does not proceed with exporting and marks the batch as failed' do
+        allow(Gitlab::Cache::Import::Caching).to receive(:values_from_set).with(cache_key).and_return([])
 
-      it 'creates empty file on disk' do
-        allow(subject).to receive(:export_path).and_return('foo')
-        allow(FileUtils).to receive(:remove_entry)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(BulkImports::Error)
+        )
 
-        expect(FileUtils).to receive(:touch).with('foo/milestones.ndjson').and_call_original
+        expect { service.execute }.not_to raise_error
+        batch.reload
 
-        subject.execute
+        expect(batch.failed?).to eq(true)
+        expect(batch.error).to eq("Batched relation export cache key missing or expired.")
       end
     end
   end

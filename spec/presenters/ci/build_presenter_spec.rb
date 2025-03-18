@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildPresenter do
+RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -105,35 +105,84 @@ RSpec.describe Ci::BuildPresenter do
   end
 
   describe '#trigger_variables' do
-    let(:build) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
-    let(:trigger) { create(:ci_trigger, project: project) }
-    let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be_with_reload(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:trigger) { create(:ci_trigger, project: project) }
+    let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
 
-    context 'when variable is stored in ci_pipeline_variables' do
-      let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
-
-      context 'when pipeline is triggered by trigger API' do
-        it 'returns variables' do
-          expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
-        end
+    context 'when not triggered' do
+      it 'returns empty array' do
+        expect(presenter.trigger_variables).to eq([])
       end
 
-      context 'when pipeline is not triggered by trigger API' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
+      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+        before do
+          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+        end
 
-        it 'does not return variables' do
+        it 'returns empty array' do
           expect(presenter.trigger_variables).to eq([])
         end
       end
     end
 
-    context 'when variable is stored in ci_trigger_requests.variables' do
+    context 'when triggered' do
       before do
-        trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
+        pipeline.update!(trigger_id: trigger.id) if pipeline.trigger_id.blank?
+        build.update!(trigger_request: trigger_request) if build.trigger_request.blank?
       end
 
-      it 'returns variables' do
-        expect(presenter.trigger_variables).to eq(trigger_request.user_variables)
+      it 'returns empty array' do
+        expect(presenter.trigger_variables).to eq([])
+      end
+
+      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+        before do
+          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+        end
+
+        it 'returns empty array' do
+          expect(presenter.trigger_variables).to eq([])
+        end
+      end
+
+      context 'when variable is stored in ci_trigger_request' do
+        before do
+          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
+        end
+
+        it 'returns empty array' do
+          expect(presenter.trigger_variables).to eq([])
+        end
+
+        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+          before do
+            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+          end
+
+          it 'returns trigger variables' do
+            expect(presenter.trigger_variables).to eq(trigger_request.user_variables)
+          end
+        end
+
+        context 'when variable is stored in ci_pipeline_variables' do
+          let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
+
+          it 'returns variables' do
+            expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
+          end
+
+          context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+            before do
+              stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+            end
+
+            it 'returns variables' do
+              expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
+            end
+          end
+        end
       end
     end
   end

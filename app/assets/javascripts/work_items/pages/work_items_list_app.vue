@@ -1,10 +1,12 @@
 <script>
-import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -44,9 +46,12 @@ import {
   OPERATOR_IS,
   OPERATORS_IS,
   OPERATORS_IS_NOT_OR,
+  OPERATORS_AFTER_BEFORE,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CLOSED,
   TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_CREATED,
   TOKEN_TITLE_GROUP,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
@@ -56,7 +61,9 @@ import {
   TOKEN_TITLE_STATE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CLOSED,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CREATED,
   TOKEN_TYPE_GROUP,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
@@ -69,11 +76,13 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   STATE_CLOSED,
   STATE_OPEN,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
@@ -89,6 +98,7 @@ const LabelToken = () =>
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const LocalBoard = () => import('./local_board.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -100,11 +110,15 @@ export default {
   sortOptions,
   components: {
     GlLoadingIcon,
+    GlButton,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
     WorkItemDrawer,
     WorkItemHealthStatus,
+    EmptyStateWithoutAnyIssues,
+    CreateWorkItemModal,
+    LocalBoard,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -117,6 +131,7 @@ export default {
     'isGroup',
     'isSignedIn',
     'workItemType',
+    'hasIssueDateFilterFeature',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -139,6 +154,11 @@ export default {
       required: false,
       default: () => [],
     },
+    eeSearchTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -156,6 +176,8 @@ export default {
       activeItem: null,
       isRefetching: false,
       hasStateToken: false,
+      initialLoadWasFiltered: false,
+      showLocalBoard: false,
     };
   },
   apollo: {
@@ -174,12 +196,7 @@ export default {
         this.pageInfo = data?.[this.namespace].workItems.pageInfo ?? {};
 
         if (data?.[this.namespace]) {
-          if (this.isGroup) {
-            const rootBreadcrumbName = this.isEpicsList ? __('Epics') : s__('WorkItem|Work items');
-            document.title = `${rootBreadcrumbName} · ${data.group.name} · GitLab`;
-          } else {
-            document.title = `Issues · ${data.project.name} · GitLab`;
-          }
+          document.title = this.calculateDocumentTitle(data);
         }
         if (!this.withTabs) {
           this.hasAnyIssues = Boolean(data?.[this.namespace].workItems.nodes);
@@ -211,6 +228,7 @@ export default {
         if (!this.isInitialLoadComplete) {
           this.hasAnyIssues = Boolean(all);
           this.isInitialLoadComplete = true;
+          this.initialLoadWasFiltered = this.filterTokens.length > 0;
         }
       },
       error(error) {
@@ -253,6 +271,7 @@ export default {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     queryVariables() {
+      const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
       return {
         fullPath: this.fullPath,
         sort: this.sortKey,
@@ -260,8 +279,8 @@ export default {
         search: this.searchQuery,
         ...this.apiFilterParams,
         ...this.pageParams,
-        excludeProjects: this.isEpicsList,
-        includeDescendants: !this.apiFilterParams.fullPath,
+        excludeProjects: hasGroupFilter || this.isEpicsList,
+        includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
       };
@@ -405,6 +424,30 @@ export default {
         });
       }
 
+      if (this.hasIssueDateFilterFeature) {
+        tokens.push({
+          type: TOKEN_TYPE_CLOSED,
+          title: TOKEN_TITLE_CLOSED,
+          icon: 'history',
+          unique: true,
+          token: DateToken,
+          operators: OPERATORS_AFTER_BEFORE,
+        });
+
+        tokens.push({
+          type: TOKEN_TYPE_CREATED,
+          title: TOKEN_TITLE_CREATED,
+          icon: 'history',
+          unique: true,
+          token: DateToken,
+          operators: OPERATORS_AFTER_BEFORE,
+        });
+      }
+
+      if (this.eeSearchTokens.length) {
+        tokens.push(...this.eeSearchTokens);
+      }
+
       tokens.sort((a, b) => a.title.localeCompare(b.title));
 
       return tokens;
@@ -457,6 +500,14 @@ export default {
       }
       return [];
     },
+    enableClientSideBoardsExperiment() {
+      return this.glFeatures.workItemsClientSideBoards;
+    },
+    workItemTypeName() {
+      return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
+        ? WORK_ITEM_TYPE_ENUM_EPIC
+        : WORK_ITEM_TYPE_ENUM_ISSUE;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -483,8 +534,31 @@ export default {
     this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
-    handleSelect(item) {
-      this.activeItem = item;
+    handleToggle(item) {
+      if (item && this.activeItem?.iid === item.iid) {
+        this.activeItem = null;
+        const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+        if (queryParam) {
+          updateHistory({
+            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+          });
+        }
+      } else {
+        this.activeItem = item;
+      }
+    },
+    calculateDocumentTitle(data) {
+      const middleCrumb = this.isGroup ? data.group.name : data.project.name;
+      if (this.glFeatures.workItemPlanningView) {
+        return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
+      }
+      if (this.isGroup && this.isEpicsList) {
+        return `${__('Epics')} · ${middleCrumb} · GitLab`;
+      }
+      if (this.isGroup) {
+        return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
+      }
+      return `${__('Issues')} · ${middleCrumb} · GitLab`;
     },
     fetchEmojis(search) {
       return this.autocompleteCache.fetch({
@@ -675,6 +749,11 @@ export default {
     checkIfStateTokenExists() {
       return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
     },
+    handleWorkItemCreated() {
+      this.isInitialLoadComplete = false;
+      this.$apollo.queries.workItems.refetch();
+      this.$apollo.queries.workItemStateCounts.refetch();
+    },
   },
 };
 </script>
@@ -682,94 +761,115 @@ export default {
 <template>
   <gl-loading-icon v-if="!isInitialLoadComplete && !error" class="gl-mt-5" size="lg" />
 
-  <div v-else-if="hasAnyIssues || error">
-    <work-item-drawer
-      v-if="workItemDrawerEnabled"
-      :active-item="activeItem"
-      :open="isItemSelected"
-      :issuable-type="activeWorkItemType"
-      :new-comment-template-paths="newCommentTemplatePaths"
-      click-outside-exclude-selector=".issuable-list"
-      @close="activeItem = null"
-      @addChild="refetchItems"
-      @workItemDeleted="deleteItem"
-      @work-item-updated="handleStatusChange"
-    />
-    <issuable-list
-      :active-issuable="activeItem"
-      :add-padding="!withTabs"
-      :current-tab="state"
-      :default-page-size="pageSize"
-      :error="error"
-      :has-next-page="pageInfo.hasNextPage"
-      :has-previous-page="pageInfo.hasPreviousPage"
-      :initial-filter-value="filterTokens"
-      :initial-sort-by="sortKey"
-      :issuables="workItems"
-      :issuables-loading="isLoading"
-      :show-bulk-edit-sidebar="showBulkEditSidebar"
-      namespace="work-items"
-      :full-path="fullPath"
-      recent-searches-storage-key="issues"
-      :search-tokens="searchTokens"
-      show-filtered-search-friendly-text
-      :show-page-size-selector="showPageSizeSelector"
-      :show-pagination-controls="showPaginationControls"
-      show-work-item-type-icon
-      :sort-options="$options.sortOptions"
-      sync-filter-and-sort
-      :tab-counts="tabCounts"
-      :tabs="tabs"
-      use-keyset-pagination
-      :prevent-redirect="workItemDrawerEnabled"
-      @click-tab="handleClickTab"
-      @dismiss-alert="error = undefined"
-      @filter="handleFilter"
-      @next-page="handleNextPage"
-      @page-size-change="handlePageSizeChange"
-      @previous-page="handlePreviousPage"
-      @sort="handleSort"
-      @select-issuable="handleSelect"
-    >
-      <template #nav-actions>
-        <slot name="nav-actions"></slot>
-      </template>
+  <div v-else-if="hasAnyIssues || error || initialLoadWasFiltered">
+    <div v-if="showLocalBoard">
+      <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
+    </div>
+    <template v-else>
+      <work-item-drawer
+        v-if="workItemDrawerEnabled"
+        :active-item="activeItem"
+        :open="isItemSelected"
+        :issuable-type="activeWorkItemType"
+        :new-comment-template-paths="newCommentTemplatePaths"
+        click-outside-exclude-selector=".issuable-list"
+        @close="activeItem = null"
+        @addChild="refetchItems"
+        @workItemDeleted="deleteItem"
+        @work-item-updated="handleStatusChange"
+      />
+      <issuable-list
+        :active-issuable="activeItem"
+        :add-padding="!withTabs"
+        :current-tab="state"
+        :default-page-size="pageSize"
+        :error="error"
+        :has-next-page="pageInfo.hasNextPage"
+        :has-previous-page="pageInfo.hasPreviousPage"
+        :initial-filter-value="filterTokens"
+        :initial-sort-by="sortKey"
+        :issuables="workItems"
+        :issuables-loading="isLoading"
+        :show-bulk-edit-sidebar="showBulkEditSidebar"
+        namespace="work-items"
+        :full-path="fullPath"
+        recent-searches-storage-key="issues"
+        :search-tokens="searchTokens"
+        show-filtered-search-friendly-text
+        :show-page-size-selector="showPageSizeSelector"
+        :show-pagination-controls="showPaginationControls"
+        show-work-item-type-icon
+        :sort-options="$options.sortOptions"
+        sync-filter-and-sort
+        :tab-counts="tabCounts"
+        :tabs="tabs"
+        use-keyset-pagination
+        :prevent-redirect="workItemDrawerEnabled"
+        @click-tab="handleClickTab"
+        @dismiss-alert="error = undefined"
+        @filter="handleFilter"
+        @next-page="handleNextPage"
+        @page-size-change="handlePageSizeChange"
+        @previous-page="handlePreviousPage"
+        @sort="handleSort"
+        @select-issuable="handleToggle"
+      >
+        <template #nav-actions>
+          <gl-button
+            v-if="enableClientSideBoardsExperiment"
+            data-testid="show-local-board-button"
+            @click="showLocalBoard = true"
+            >{{ __('Launch board') }}</gl-button
+          >
+          <slot name="nav-actions"> </slot>
+        </template>
 
-      <template #timeframe="{ issuable = {} }">
-        <issue-card-time-info :issue="issuable" :is-work-item-list="true" />
-      </template>
+        <template #timeframe="{ issuable = {} }">
+          <issue-card-time-info :issue="issuable" :is-work-item-list="true" />
+        </template>
 
-      <template #status="{ issuable }">
-        {{ getStatus(issuable) }}
-      </template>
+        <template #status="{ issuable }">
+          {{ getStatus(issuable) }}
+        </template>
 
-      <template #statistics="{ issuable = {} }">
-        <issue-card-statistics :issue="issuable" />
-      </template>
+        <template #statistics="{ issuable = {} }">
+          <issue-card-statistics :issue="issuable" />
+        </template>
 
-      <template #empty-state>
-        <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
-      </template>
+        <template #empty-state>
+          <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
+        </template>
 
-      <template #list-body>
-        <slot name="list-body"></slot>
-      </template>
+        <template #list-body>
+          <slot name="list-body"></slot>
+        </template>
 
-      <template #bulk-edit-actions="{ checkedIssuables }">
-        <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
-      </template>
+        <template #bulk-edit-actions="{ checkedIssuables }">
+          <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
+        </template>
 
-      <template #sidebar-items="{ checkedIssuables }">
-        <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
-      </template>
+        <template #sidebar-items="{ checkedIssuables }">
+          <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
+        </template>
 
-      <template #health-status="{ issuable = {} }">
-        <work-item-health-status :issue="issuable" />
-      </template>
-    </issuable-list>
+        <template #health-status="{ issuable = {} }">
+          <work-item-health-status :issue="issuable" />
+        </template>
+      </issuable-list>
+    </template>
   </div>
 
   <div v-else>
-    <slot name="page-empty-state"></slot>
+    <slot name="page-empty-state">
+      <empty-state-without-any-issues>
+        <template #new-issue-button>
+          <create-work-item-modal
+            :is-group="isGroup"
+            :work-item-type-name="workItemTypeName"
+            @workItemCreated="handleWorkItemCreated"
+          />
+        </template>
+      </empty-state-without-any-issues>
+    </slot>
   </div>
 </template>

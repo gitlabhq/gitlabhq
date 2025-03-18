@@ -1,5 +1,6 @@
 <script>
-import { isEqual, isString } from 'lodash';
+import { isEqual } from 'lodash';
+import { getStorageValue, saveStorageValue, removeStorageValue } from '~/lib/utils/local_storage';
 
 /**
  * This component will save and restore a value to and from localStorage.
@@ -44,60 +45,21 @@ export default {
     value(newVal) {
       if (!this.persist) return;
 
-      this.saveValue(this.serialize(newVal));
+      saveStorageValue(this.storageKey, newVal, this.asString);
     },
     clear(newVal) {
       if (newVal) {
-        localStorage.removeItem(this.storageKey);
+        removeStorageValue(this.storageKey);
       }
     },
   },
   mounted() {
     // On mount, trigger update if we actually have a localStorageValue
-    const { exists, value } = this.getStorageValue();
+    const { exists, value } = getStorageValue(this.storageKey, this.asString);
 
     if (exists && !isEqual(value, this.value)) {
       this.$emit('input', value);
     }
-  },
-  methods: {
-    getStorageValue() {
-      const value = localStorage.getItem(this.storageKey);
-
-      if (value === null) {
-        return { exists: false };
-      }
-
-      try {
-        return { exists: true, value: this.deserialize(value) };
-      } catch {
-        // eslint-disable-next-line no-console
-        console.warn(
-          `[gitlab] Failed to deserialize value from localStorage (key=${this.storageKey})`,
-          value,
-        );
-        // default to "don't use localStorage value"
-        return { exists: false };
-      }
-    },
-    saveValue(val) {
-      localStorage.setItem(this.storageKey, val);
-    },
-    serialize(val) {
-      if (!isString(val) && this.asString) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          `[gitlab] LocalStorageSync is saving`,
-          val,
-          `to the key "${this.storageKey}", but it is not a string and the 'asString' prop is true. This will save and restore the stringified value rather than the original value. If this is not intended, please remove or set the 'asString' prop to false.`,
-        );
-      }
-
-      return this.asString ? val : JSON.stringify(val);
-    },
-    deserialize(val) {
-      return this.asString ? val : JSON.parse(val);
-    },
   },
   render() {
     return this.$scopedSlots.default?.();

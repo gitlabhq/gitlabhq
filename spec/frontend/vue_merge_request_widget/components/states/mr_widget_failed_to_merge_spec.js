@@ -155,7 +155,7 @@ describe('MRWidgetFailedToMerge', () => {
 
     it('renders remaining time', () => {
       expect(wrapper.find('.has-custom-error').text().trim()).toBe(
-        'Refreshing in 10 seconds to show the updated status...',
+        'Refreshing in 10 seconds to show the updated status…',
       );
     });
   });

@@ -18,6 +18,10 @@ includes a task or reference topic.
 The tech writing team sometimes uses the acronym `CTRT` to refer to the topic types.
 The acronym refers to the first letter of each topic type.
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [Editing for style and topic type](https://youtu.be/HehnjPgPWb0).
+<!-- Video published on 2021-06-06 -->
+
 ## Other page and topic types
 
 In addition to the four primary topic types, you can use the following:

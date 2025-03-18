@@ -475,7 +475,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
-      it_behaves_like 'enforcing job token policies', :read_packages do
+      it_behaves_like 'enforcing job token policies', :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry do
         before_all do
           project.add_maintainer(user)
         end
@@ -649,7 +650,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
-      it_behaves_like 'enforcing job token policies', :read_packages do
+      it_behaves_like 'enforcing job token policies', :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry do
         let(:request) do
           download_file(file_name: package_file.file_name, params: { job_token: target_job.token })
         end
@@ -842,7 +844,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       subject { download_file_with_token(file_name: package_file.file_name) }
 
-      it_behaves_like 'enforcing job token policies', :read_packages do
+      it_behaves_like 'enforcing job token policies', :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry do
         let(:request) do
           download_file(file_name: package_file.file_name, params: { job_token: target_job.token })
         end

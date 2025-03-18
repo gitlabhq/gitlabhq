@@ -30,6 +30,11 @@ export default {
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
     hasHtmlLabel: {
       type: Boolean,
       required: false,
@@ -168,6 +173,7 @@ export default {
 <template>
   <entity-selector
     :label="label"
+    :description="description"
     :input-name="inputName"
     :input-id="inputId"
     :initial-selection="initialSelection"

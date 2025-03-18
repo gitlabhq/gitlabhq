@@ -1,0 +1,9 @@
+---
+name: prompt_migration_troubleshoot_job
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475045
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169944
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524191
+milestone: '17.6'
+group: group::custom models
+type: beta
+default_enabled: true

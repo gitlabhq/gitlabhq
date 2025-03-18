@@ -39,7 +39,8 @@ module API
         mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_environments
+      route_setting :authorization, job_token_policies: :read_environments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/environments' do
         authorize! :read_environment, user_project
 
@@ -71,7 +72,7 @@ module API
         optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
         optional :flux_resource_path, type: String, desc: 'The Flux resource path to associate with this environment'
         optional :description, type: String, desc: 'The description of the environment'
-        optional :auto_stop_setting, type: String, default: "always", values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
+        optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :admin_environments
@@ -84,14 +85,16 @@ module API
           agent = ::Clusters::AgentsFinder.new(user_project, current_user).execute.find_by_id(params[:cluster_agent_id])
 
           bad_request!("cluster agent doesn't exist or cannot be associated with this environment") unless agent
+          params[:cluster_agent] = agent
         end
 
-        environment = user_project.environments.create(params)
+        params[:skip_agent_auth] = true
+        response = ::Environments::CreateService.new(user_project, current_user, params).execute
 
-        if environment.persisted?
-          present environment, with: Entities::Environment, current_user: current_user
+        if response.success?
+          present response.payload[:environment], with: Entities::Environment, current_user: current_user
         else
-          render_validation_error!(environment)
+          render_api_error!(response.message, 400)
         end
       end
 
@@ -200,9 +203,10 @@ module API
       end
 
       desc 'Stop an environment' do
-        detail 'It returns 200 if the environment was successfully stopped, and 404 if the environment does not exist.'
+        detail 'It returns 200 if the environment was successfully stopped.'
         success Entities::Environment
         failure [
+          { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
@@ -221,8 +225,13 @@ module API
 
         authorize! :stop_environment, environment
 
-        ::Environments::StopService.new(user_project, current_user, declared_params(include_missing: false))
-                                 .execute(environment)
+        service_response = ::Environments::StopService.new(
+          user_project,
+          current_user,
+          declared_params(include_missing: false)
+        ).execute(environment)
+
+        bad_request!(service_response.message) if service_response.error?
 
         status 200
         present environment, with: Entities::Environment, current_user: current_user
@@ -271,7 +280,8 @@ module API
         requires :environment_id, type: Integer, desc: 'The ID of the environment'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_environments
+      route_setting :authorization, job_token_policies: :read_environments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/environments/:environment_id' do
         authorize! :read_environment, user_project
 

@@ -41,6 +41,12 @@ export default {
         this.pipeline.flags.merged_result_pipeline && !this.pipeline.flags.merge_train_pipeline
       );
     },
+    showBranchBadge() {
+      return this.pipeline.flags.type === 'branch';
+    },
+    showTagBadge() {
+      return this.pipeline.flags.type === 'tag';
+    },
     autoDevopsTagId() {
       return `pipeline-url-autodevops-${this.pipeline.id}`;
     },
@@ -76,7 +82,7 @@ export default {
     <gl-badge
       v-if="pipeline.flags.latest"
       v-gl-tooltip
-      :title="__('Latest pipeline for the most recent commit on this branch')"
+      :title="__('Latest pipeline for the most recent commit on this ref')"
       variant="success"
       data-testid="pipeline-url-latest"
       >{{ __('latest') }}</gl-badge
@@ -149,6 +155,22 @@ export default {
     <gl-badge v-if="pipeline.flags.stuck" variant="warning" data-testid="pipeline-url-stuck">{{
       __('stuck')
     }}</gl-badge>
+    <gl-badge
+      v-if="showTagBadge"
+      v-gl-tooltip
+      :title="s__(`Pipeline|This pipeline ran for a tag.`)"
+      variant="info"
+      data-testid="pipeline-url-tag"
+      >{{ s__('Pipeline|tag') }}</gl-badge
+    >
+    <gl-badge
+      v-if="showBranchBadge"
+      v-gl-tooltip
+      :title="s__(`Pipeline|This pipeline ran for a branch.`)"
+      variant="info"
+      data-testid="pipeline-url-branch"
+      >{{ s__('Pipeline|branch') }}</gl-badge
+    >
     <gl-badge
       v-if="pipeline.flags.detached_merge_request_pipeline"
       v-gl-tooltip

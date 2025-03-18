@@ -11,6 +11,7 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
   let_it_be(:version) { '0.0.1' }
   let_it_be(:model) { create(:ml_models, project: project, name: name) }
   let_it_be(:model_version) { create(:ml_model_versions, project: project, model: model, version: version) }
+  let_it_be(:candidate) { create(:ml_candidates, project: project) }
 
   let_it_be(:tokens) do
     {
@@ -145,9 +146,40 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
     let(:params) { { name: model_name, description: 'description-text' } }
     let(:request) { post api(route), params: params, headers: headers }
 
-    it 'returns the model', :aggregate_failures do
+    it 'returns the model version', :aggregate_failures do
       is_expected.to have_gitlab_http_status(:ok)
       is_expected.to match_response_schema('ml/get_model_version')
+    end
+
+    describe 'version from run id' do
+      context 'with wrong eid' do
+        let(:params) do
+          {
+            'name' => model_name,
+            'description' => 'description-text',
+            'run_id' => 'wrong eid'
+          }
+        end
+
+        it 'returns error', :aggregate_failures do
+          expect(json_response).to include("message" => ["Run with eid not found"])
+        end
+      end
+
+      context 'with correct eid' do
+        let(:params) do
+          {
+            'name' => model_name,
+            'description' => 'description-text',
+            'run_id' => candidate.eid
+          }
+        end
+
+        it 'returns error', :aggregate_failures do
+          is_expected.to have_gitlab_http_status(:ok)
+          is_expected.to match_response_schema('ml/get_model_version')
+        end
+      end
     end
 
     it 'increments the version if a model version already exists' do

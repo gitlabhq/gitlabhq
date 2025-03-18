@@ -12,15 +12,17 @@ title: Deploy tokens
 
 {{< /details >}}
 
-You can use a deploy token to enable authentication of deployment tasks, independent of a user
-account. In most cases you use a deploy token from an external host, like a build server or CI/CD
-server.
+Deploy tokens provide secure access to GitLab resources without tying permissions to individual user accounts. Use them with Git operations, container registries, and package registries, giving your deployment
+automation access to exactly what it needs.
 
-With a deploy token, automated tasks can:
+With deploy tokens, you have:
 
-- Clone Git repositories.
-- Pull from and push to a GitLab container registry.
-- Pull from and push to a GitLab package registry.
+- More secure deployments by removing personal credentials from automation systems
+- Fine-grained access control with specific permissions for each token
+- Simplified CI/CD pipelines with built-in authentication variables
+- Reliable deployment processes that won't break when team members change
+- Better audit trails by tracking deployments through dedicated token identities
+- Seamless integration with external build systems and deployment tools
 
 A deploy token is a pair of values:
 

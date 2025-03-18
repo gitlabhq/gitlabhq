@@ -91,7 +91,7 @@ module Autocomplete
       if project
         project_users
       elsif group
-        ::Autocomplete::GroupUsersFinder.new(group: group).execute # rubocop: disable CodeReuse/Finder
+        ::Autocomplete::GroupUsersFinder.new(group: group, current_user: current_user).execute # rubocop: disable CodeReuse/Finder
       elsif current_user
         User.all
       else

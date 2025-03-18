@@ -11,6 +11,7 @@ import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
+import ModelsTable from '~/ml/model_registry/components/models_table.vue';
 import { modelsQuery, modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -130,7 +131,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
     it('error message is displayed', () => {
       expect(findSearchableTable().props('errorMessage')).toBe(
-        'Failed to load model with error: Failure!',
+        'Failed to load models with error: Failure!',
       );
     });
 
@@ -162,12 +163,16 @@ describe('ml/model_registry/apps/index_ml_models', () => {
         await createWrapper({ resolver });
       });
 
+      it('passes ModelsTable to table prop', () => {
+        expect(findSearchableTable().props('table')).toBe(ModelsTable);
+      });
+
       it('calls query only once on setup', () => {
         expect(resolver).toHaveBeenCalledTimes(1);
       });
 
       it('passes items to list', () => {
-        expect(findSearchableTable().props('models')).toEqual([
+        expect(findSearchableTable().props('items')).toEqual([
           modelWithOneVersion,
           modelWithoutVersion,
         ]);
@@ -178,7 +183,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
       });
 
       it('displays model rows', () => {
-        expect(findSearchableTable().props('models')).toHaveLength(2);
+        expect(findSearchableTable().props('items')).toHaveLength(2);
       });
     });
   });

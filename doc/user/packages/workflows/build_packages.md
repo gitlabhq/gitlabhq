@@ -114,7 +114,7 @@ To build a package:
 
    {{< alert type="note" >}}
 
-If you use an [instance remote](../conan_repository/_index.md#add-a-remote-for-your-instance), you must
+   If you use an [instance remote](../conan_repository/_index.md#add-a-remote-for-your-instance), you must
    follow a specific [naming convention](../conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
 
    {{< /alert >}}

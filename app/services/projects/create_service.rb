@@ -178,9 +178,13 @@ module Projects
         # compare the inconsistency rates of both approaches, we still run
         # AuthorizedProjectsWorker but with some delay and lower urgency as a
         # safety net.
-        @project.group.refresh_members_authorized_projects(
-          priority: UserProjectAccessChangedService::LOW_PRIORITY
-        )
+        if Feature.enabled?(:project_authorizations_update_in_background, @project.group.root_ancestor)
+          AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(@project.group.id)
+        else
+          @project.group.refresh_members_authorized_projects(
+            priority: UserProjectAccessChangedService::LOW_PRIORITY
+          )
+        end
       else
         owner_user = @project.namespace.owner
         owner_member = @project.add_owner(owner_user, current_user: current_user)

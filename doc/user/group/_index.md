@@ -75,7 +75,7 @@ For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
 A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
-[Vulnerability Report](../application_security/vulnerability_report/_index.md),
+[Vulnerability report](../application_security/vulnerability_report/_index.md),
 [compliance center](../compliance/compliance_center/_index.md), and
 [value stream analytics](value_stream_analytics/_index.md).
 
@@ -442,7 +442,7 @@ Prerequisites:
    - Has a GitLab account, enter the user's username.
    - Doesn't have a GitLab account, enter the user's email address.
 
-1. Select a [default role](../permissions.md) or [custom role](../custom_roles.md).
+1. Select a [default role](../permissions.md) or [custom role](../custom_roles/_index.md).
 1. Optional. For **Access expiration date**, enter or select a date.
    From that date onward, the user can no longer access the project.
 
@@ -522,12 +522,12 @@ By default, users with at least the:
 - Maintainer role can fork projects into a group. This default prevents users with the Developer role from forking projects that
   contain protected branches and cannot be changed.
 
-To change the role that can create projects under a group:
+To specify which roles can create projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. From **Roles allowed to create projects**, select an option.
+1. From **Minimum role required to create projects**, select an option.
 1. Select **Save changes**.
 
-To change this setting globally, see [Default project creation protection](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+For more information about changing this setting globally, see [default minimum role required to create projects](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).

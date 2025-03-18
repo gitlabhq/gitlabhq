@@ -554,37 +554,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
-    describe 'project access requested' do
-      let(:project) do
-        create(:project, :public) do |project|
-          project.add_maintainer(project.first_owner)
-        end
-      end
-
-      let(:project_member) do
-        project.request_access(user)
-        project.requesters.find_by(user_id: user.id)
-      end
-
-      subject { described_class.member_access_requested_email('project', project_member.id, recipient.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        to_emails = subject.header[:to].addrs.map(&:address)
-        expect(to_emails).to eq([recipient.notification_email_or_default])
-
-        is_expected.to have_subject "Request to join the #{project.full_name} project"
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project_project_members_url(project)
-        is_expected.to have_body_text project_member.human_access
-      end
-    end
-
     describe 'project access changed' do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
       let(:project) { create(:project, :public, namespace: owner.namespace) }
@@ -637,33 +606,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         user: user,
         created_by: inviter
       )
-    end
-
-    describe 'project invitation accepted' do
-      let(:invited_user) { create(:user, name: 'invited user') }
-      let(:recipient) { create(:user, maintainer_of: project) }
-      let(:project_member) do
-        invitee = invite_to_project(project, inviter: recipient)
-        invitee.accept_invite!(invited_user)
-        invitee
-      end
-
-      subject { described_class.member_invite_accepted_email('project', project_member.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.web_url
-        is_expected.to have_body_text project_member.invite_email
-        is_expected.to have_body_text invited_user.name
-      end
     end
 
     context 'items that are noteable, the email for a note' do
@@ -1581,34 +1523,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
   end
 
   context 'for a group' do
-    describe 'group access requested' do
-      let(:group) { create(:group, :public) }
-      let(:organization) { group.organization }
-      let(:group_member) do
-        group.request_access(user)
-        group.requesters.find_by(user_id: user.id)
-      end
-
-      subject { described_class.member_access_requested_email('group', group_member.id, recipient.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        to_emails = subject.header[:to].addrs.map(&:address)
-        expect(to_emails).to eq([recipient.notification_email_or_default])
-
-        is_expected.to have_subject "Request to join the #{group.name} group"
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group_group_members_url(group)
-        is_expected.to have_body_text group_member.human_access
-      end
-    end
-
     describe 'group access changed' do
       let(:organization) { group.organization }
       let(:group_member) { create(:group_member, group: group, user: user) }
@@ -1660,32 +1574,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         user: user,
         created_by: inviter
       )
-    end
-
-    describe 'group invitation accepted' do
-      let(:invited_user) { create(:user, name: 'invited user') }
-      let(:owner) { create(:user, owner_of: group) }
-      let(:group_member) do
-        invitee = invite_to_group(group, inviter: owner)
-        invitee.accept_invite!(invited_user)
-        invitee
-      end
-
-      subject { described_class.member_invite_accepted_email('group', group_member.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-        is_expected.to have_body_text group_member.invite_email
-        is_expected.to have_body_text invited_user.name
-      end
     end
 
     describe 'group expiration date updated' do

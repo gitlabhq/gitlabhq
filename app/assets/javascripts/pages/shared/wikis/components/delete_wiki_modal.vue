@@ -70,8 +70,8 @@ export default {
     listItem() {
       return {
         text: this.deleteTemplateText,
+        variant: 'danger',
         extraAttrs: {
-          class: '!gl-text-red-500',
           'data-testid': 'page-delete-button',
         },
       };
@@ -115,7 +115,7 @@ export default {
       :item="listItem"
     >
       <template #list-item>
-        <gl-icon name="remove" class="gl-mr-2" variant="danger" />
+        <gl-icon name="remove" class="gl-mr-2" />
         {{ listItem.text }}
       </template>
     </gl-disclosure-dropdown-item>

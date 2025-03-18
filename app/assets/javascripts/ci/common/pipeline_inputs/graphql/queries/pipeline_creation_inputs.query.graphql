@@ -1,0 +1,14 @@
+query ciPipelineCreationInputs($fullPath: ID!, $ref: String!) {
+  project(fullPath: $fullPath) {
+    id
+    ciPipelineCreationInputs(ref: $ref) {
+      default
+      description
+      name
+      options
+      regex
+      required
+      type
+    }
+  }
+}

@@ -19,12 +19,15 @@ module Gitlab
       # and only do that when it's needed.
       def rate_limits # rubocop:disable Metrics/AbcSize
         {
+          autocomplete_users: { threshold: -> { application_settings.autocomplete_users_limit }, interval: 1.minute },
+          autocomplete_users_unauthenticated: { threshold: -> { application_settings.autocomplete_users_unauthenticated_limit }, interval: 1.minute },
           issues_create: { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
           notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
           project_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_download_export: { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
           project_repositories_archive: { threshold: 5, interval: 1.minute },
           project_repositories_changelog: { threshold: 5, interval: 1.minute },
+          project_repositories_health: { threshold: 5, interval: 1.hour },
           project_generate_new_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_import: { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
           play_pipeline_schedule: { threshold: 1, interval: 1.minute },
@@ -53,13 +56,13 @@ module Gitlab
           web_hook_event_resend: { threshold: 5, interval: 1.minute },
           users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists: { threshold: 20, interval: 1.minute },
-          user_followers: { threshold: 100, interval: 1.minute },
-          user_following: { threshold: 100, interval: 1.minute },
-          user_status: { threshold: 240, interval: 1.minute },
-          user_keys: { threshold: 120, interval: 1.minute },
-          user_specific_key: { threshold: 120, interval: 1.minute },
-          user_gpg_keys: { threshold: 120, interval: 1.minute },
-          user_specific_gpg_key: { threshold: 120, interval: 1.minute },
+          user_followers: { threshold: -> { application_settings.users_api_limit_followers }, interval: 1.minute },
+          user_following: { threshold: -> { application_settings.users_api_limit_following }, interval: 1.minute },
+          user_status: { threshold: -> { application_settings.users_api_limit_status }, interval: 1.minute },
+          user_ssh_keys: { threshold: -> { application_settings.users_api_limit_ssh_keys }, interval: 1.minute },
+          user_ssh_key: { threshold: -> { application_settings.users_api_limit_ssh_key }, interval: 1.minute },
+          user_gpg_keys: { threshold: -> { application_settings.users_api_limit_gpg_keys }, interval: 1.minute },
+          user_gpg_key: { threshold: -> { application_settings.users_api_limit_gpg_key }, interval: 1.minute },
           user_sign_up: { threshold: 20, interval: 1.minute },
           user_sign_in: { threshold: 5, interval: 10.minutes },
           profile_resend_email_confirmation: { threshold: 5, interval: 1.minute },
@@ -95,7 +98,8 @@ module Gitlab
           downstream_pipeline_trigger: {
             threshold: -> { application_settings.downstream_pipeline_trigger_limit_per_project_user_sha }, interval: 1.minute
           },
-          expanded_diff_files: { threshold: 6, interval: 1.minute }
+          expanded_diff_files: { threshold: 6, interval: 1.minute },
+          glql: { threshold: 1, interval: 15.minutes }
         }.freeze
       end
 
@@ -142,10 +146,10 @@ module Gitlab
       #     one registered in `.rate_limits`
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:)
+      def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
         strategy = IncrementResourceUsagePerAction.new(resource_key)
 
-        _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval)
+        _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval, peek: peek)
       end
 
       # Similar to #throttled? above but checks for the bypass header in the request and logs the request when it is over the rate limit
@@ -224,7 +228,7 @@ module Gitlab
           message: 'Application_Rate_Limiter_Request',
           env: type,
           remote_ip: request.ip,
-          request_method: request.request_method,
+          method: request.request_method,
           path: request_path(request)
         }
 

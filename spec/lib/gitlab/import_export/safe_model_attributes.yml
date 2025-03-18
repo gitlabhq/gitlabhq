@@ -1129,3 +1129,6 @@ Vulnerabilities::Identifier:
   - url
 Vulnerabilities::Read:
   - project_id
+Projects::BranchRules::SquashOption:
+  - squash_option
+  - project_id

@@ -1,9 +1,11 @@
 import { oauthCallback } from '@gitlab/web-ide';
 import { TEST_HOST } from 'helpers/test_constants';
+import { createAlert } from '~/alert';
 import { mountOAuthCallback } from '~/ide/mount_oauth_callback';
 import { getMockCallbackUrl } from './helpers';
 
 jest.mock('@gitlab/web-ide');
+jest.mock('~/alert');
 
 const TEST_USERNAME = 'gandalf.the.grey';
 const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/webpack/assets/gitlab-web-ide/public/path';
@@ -33,10 +35,10 @@ describe('~/ide/mount_oauth_callback', () => {
     document.body.innerHTML = '';
   });
 
-  it('calls oauthCallback', () => {
+  it('calls oauthCallback', async () => {
     expect(oauthCallback).not.toHaveBeenCalled();
 
-    mountOAuthCallback();
+    await mountOAuthCallback();
 
     expect(oauthCallback).toHaveBeenCalledTimes(1);
     expect(oauthCallback).toHaveBeenCalledWith({
@@ -47,8 +49,47 @@ describe('~/ide/mount_oauth_callback', () => {
         protectRefreshToken: true,
       },
       gitlabUrl: `${TEST_HOST}`,
-      baseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
       username: TEST_USERNAME,
+      embedderOriginUrl: TEST_HOST,
+      workbenchBaseUrl: `${TEST_HOST}/test/webpack/assets/gitlab-web-ide/public/path`,
+      extensionsHostBaseUrl:
+        'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
+    });
+  });
+
+  describe('when oauthCallback fails', () => {
+    const mockError = new Error('oauthCallback failed');
+
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation();
+      oauthCallback.mockRejectedValueOnce(mockError);
+    });
+
+    it('displays an alert when oauthCallback fails', async () => {
+      expect(createAlert).not.toHaveBeenCalled();
+
+      await mountOAuthCallback();
+
+      expect(oauthCallback).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Unable to authorize GitLab Web IDE access. For more information, see the developer console.',
+        containerSelector: '.alert-wrapper',
+        dismissible: false,
+        primaryButton: {
+          clickHandler: expect.any(Function),
+          text: 'Close tab',
+        },
+      });
+    });
+
+    it('logs the error in the console', async () => {
+      await mountOAuthCallback();
+      // eslint-disable-next-line no-console
+      expect(console.error).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line no-console
+      expect(console.error).toHaveBeenCalledWith(mockError);
     });
   });
 });

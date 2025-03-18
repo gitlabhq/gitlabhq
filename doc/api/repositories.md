@@ -30,6 +30,16 @@ in GitLab 15.0. Iterating pages of results with a number (`?page=2`) is unsuppor
 
 {{< /alert >}}
 
+{{< alert type="warning" >}}
+
+In version 17.7, the error handling behavior when a requested path is not found is updated.
+The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
+
+If your implementation relies on receiving a `200` status code with an empty array for
+missing paths, you must update your error handling to handle the new `404` responses.
+
+{{< /alert >}}
+
 ```plaintext
 GET /projects/:id/repository/tree
 ```
@@ -464,6 +474,14 @@ curl --request POST \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
+To specify a branch as a parameter, use the `to` attribute:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: token" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog?version=1.0.0&to=release/x.x.x"
+```
+
 ## Generate changelog data
 
 {{< history >}}
@@ -507,6 +525,54 @@ Example response, with line breaks added for readability:
     ([merge request](namespace13/project13!2))\n-
     [Title 1](namespace13/project13@3c6b80ff7034fa0d585314e1571cc780596ce3c8)
     ([merge request](namespace13/project13!1))\n"
+}
+```
+
+## Health
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182220) in GitLab 17.10. Guarded behind the
+  [project_repositories_health](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
+
+{{< /history >}}
+
+Get statistics related to the health of a project repository. This endpoint is rate-limited to 5 requests/hour per project.
+
+```plaintext
+GET /projects/:id/repository/health
+```
+
+Supported attributes:
+
+| Attribute  | Type    | Required | Description                                                                            |
+|:-----------|:--------|:---------|:---------------------------------------------------------------------------------------|
+| `generate` | boolean | no       | Whether a new health report should be generated. Set this if the endpoint returns 404. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/health"
+```
+
+Example response:
+
+```json
+{
+  "size": 42002816,
+  "references": {
+    "loose_count": 3,
+    "packed_size": 315703,
+    "reference_backend": "REFERENCE_BACKEND_FILES"
+  },
+  "objects": {
+    "size": 39651458,
+    "recent_size": 39461265,
+    "stale_size": 190193,
+    "keep_size": 0
+  },
+  "updated_at": "2025-02-26T03:42:13.015Z"
 }
 ```
 

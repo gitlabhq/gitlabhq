@@ -8,8 +8,8 @@ title: GLQL fields
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
@@ -17,8 +17,9 @@ title: GLQL fields
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
-- `iteration` and `cadence` fields [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/74) in GitLab 17.6.
-
+- Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
 {{< /history >}}
 
 {{< alert type="flag" >}}
@@ -39,6 +40,14 @@ the `fields:` option.
 This page lists fields available to use as filters when querying issues or work items.
 
 ## Type
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: The type of object to query: one of the work item types or merge requests.
 
 **Field name**: `type`
 
@@ -80,6 +89,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Approved by user
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query merge requests by one or more users who approved the merge request.
+
 **Field name**: `approver`
 
 **Allowed operators**: `=`, `!=`
@@ -105,6 +122,8 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Assignees
 
+**Description**: Query issues or merge requests by one or more users who are assigned to the issue or merge request.
+
 **Field name**: `assignee`
 
 **Allowed operators**: `=`, `in`, `!=`
@@ -123,6 +142,10 @@ This page lists fields available to use as filters when querying issues or work 
 - `Issue`
 - Work item types like `Task` or `Objective`
 - `MergeRequest`
+
+**Additional details:**
+
+- `List` values and the `in` operator are not supported for `MergeRequest` types.
 
 **Examples**:
 
@@ -156,11 +179,9 @@ This page lists fields available to use as filters when querying issues or work 
   type = MergeRequest and assignee = @johndoe
   ```
 
-**Additional details:**
-
-- `List` values and the `in` operator are not supported for `MergeRequest` types.
-
 ## Author
+
+**Description**: Query issues or merge request by their author.
 
 **Field name**: `author`
 
@@ -215,6 +236,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Cadence
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
+
+{{< /history >}}
+
+**Description**: Query issues by the [cadence](../group/iterations/_index.md#iteration-cadences) that the issue's iteration is a part of.
+
 **Field name**: `cadence`
 
 **Allowed operators**: `=`, `in`, `!=`
@@ -241,7 +270,7 @@ This page lists fields available to use as filters when querying issues or work 
 - List all issues with iteration that are a part of cadence ID `123456`:
 
   ```plaintext
-  cadences = 123456
+  cadence = 123456
   ```
 
 - List all issues with iterations that are a part of any cadences `123` or `456`:
@@ -251,6 +280,8 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Closed at
+
+**Description**: Query issues or merge requests by the date when they were closed.
 
 **Field name**: `closed`
 
@@ -295,6 +326,8 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Confidential
 
+**Description**: Query issues by their visibility to project members.
+
 **Field name**: `confidential`
 
 **Allowed operators**: `=`, `!=`
@@ -329,6 +362,8 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Created at
+
+**Description**: Query issues or merge requests by the date when they were created.
 
 **Field name**: `created`
 
@@ -374,6 +409,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Deployed at
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query merge requests by the date when they were deployed.
+
 **Field name**: `deployed`
 
 **Allowed operators**: `=`, `>`, `<`
@@ -408,6 +451,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Draft
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query merge requests by their draft status.
+
 **Field name**: `draft`
 
 **Allowed operators**: `=`, `!=`
@@ -435,6 +486,8 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Due date
+
+**Description**: Query issues by the date when they are due.
 
 **Field name**: `due`
 
@@ -485,6 +538,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Environment
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query merge requests by the environment to which they have been deployed.
+
 **Field name**: `environment`
 
 **Allowed operators**: `=`
@@ -504,6 +565,14 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Group
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/106) in GitLab 17.10: Group queries no longer search the entire hierarchy by default.
+
+{{< /history >}}
+
+**Description**: Query issues or merge requests within all projects in a given group.
 
 **Field name**: `group`
 
@@ -526,6 +595,8 @@ This page lists fields available to use as filters when querying issues or work 
 - If omitted when using inside a GLQL view in a group object (like an epic), `group` is assumed to
   be the current group.
 - Using the `group` field queries all objects in that group, all its subgroups, and child projects.
+- By default, issues or merge requests are searched only in direct descendant projects in a group.
+  To query in the entire hierarchy of a project use the [`includeSubgroups` field](#include-subgroups).
 
 **Examples**:
 
@@ -542,6 +613,8 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Health status
+
+**Description**: Query issues by their health status.
 
 **Field name**: `health`
 
@@ -574,6 +647,14 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## ID
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/92) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query issues or merge requests by their IDs.
 
 **Field name**: `id`
 
@@ -612,7 +693,61 @@ This page lists fields available to use as filters when querying issues or work 
   type = MergeRequest and id in (1, 2, 3)
   ```
 
+## Include subgroups
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/106) in GitLab 17.10.
+
+{{< /history >}}
+
+**Description**: Query within the entire hierarchy of a group.
+
+**Field name**: `includeSubgroups`
+
+**Allowed operators**: `=`, `!=`
+
+**Allowed value types**:
+
+- `Boolean` (either of `true` or `false`)
+
+**Allowed in columns of a GLQL view**: Yes
+
+**Supported for object types**:
+
+- `Issue`
+- Work item types like `Task` or `Objective`
+- `MergeRequest`
+
+**Additional details**:
+
+- This field can only be used with the `group` field.
+- The value of this field defaults to `false`.
+
+**Examples**:
+
+- List issues in any project that is a direct child of the `gitlab-org` group:
+
+  ```plaintext
+  group = "gitlab-org" and includeSubgroups = false
+  ```
+
+- List issues in any project within the entire hierarchy of the `gitlab-org` group:
+
+  ```plaintext
+  group = "gitlab-org" and includeSubgroups = true
+  ```
+
 ## Iteration
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
+- Support for iteration value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/79) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query issues by their associated [iteration](../group/iterations/_index.md).
 
 **Field name**: `iteration`
 
@@ -671,6 +806,14 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Labels
+
+{{< history >}}
+
+- Support for label value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/79) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query issues or merge requests by their associated labels.
 
 **Field name**: `label`
 
@@ -742,6 +885,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Merged at
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query merge requests by the date when they were merged.
+
 **Field name**: `merged`
 
 **Allowed operators**: `=`, `>`, `<`
@@ -776,6 +927,14 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Merged by user
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query merge requests by the user that merged the merge request.
+
 **Field name**: `merger`
 
 **Allowed operators**: `=`
@@ -800,6 +959,14 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Milestone
+
+{{< history >}}
+
+- Support for milestone value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/77) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Query issues or merge requests by their associated milestone.
 
 **Field name**: `milestone`
 
@@ -860,6 +1027,8 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Project
 
+**Description**: Query issues or merge requests within a particular project.
+
 **Field name**: `project`
 
 **Allowed operators**: `=`
@@ -890,6 +1059,8 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Reviewers
 
+**Description**: Query merge requests that were reviewed by one or more users.
+
 **Field name**: `reviewer`
 
 **Allowed operators**: `=`, `!=`
@@ -914,6 +1085,14 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## State
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/96) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: The state of this issue or merge request.
 
 **Field name**: `state`
 
@@ -965,6 +1144,8 @@ This page lists fields available to use as filters when querying issues or work 
 
 ## Updated at
 
+**Description**: Query issues or merge requests by when they were last updated.
+
 **Field name**: `updated`
 
 **Allowed operators**: `=`, `>`, `<`
@@ -1008,6 +1189,8 @@ This page lists fields available to use as filters when querying issues or work 
   ```
 
 ## Weight
+
+**Description**: Query issues by their weight.
 
 **Field name**: `weight`
 

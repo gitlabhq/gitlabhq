@@ -5,10 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import {
-  TRACKING_CATEGORY_SHOW,
-  I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS,
-} from '~/work_items/constants';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import searchQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
@@ -164,7 +161,9 @@ describe('WorkItemCrmContacts component', () => {
     showDropdown();
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS]]);
+    expect(wrapper.emitted('error')).toEqual([
+      ['Something went wrong when fetching CRM contacts. Please try again.'],
+    ]);
   });
 
   it('update items when items are updated', async () => {

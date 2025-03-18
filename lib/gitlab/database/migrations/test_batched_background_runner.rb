@@ -194,7 +194,7 @@ module Gitlab
         def export_migration_details(migration_name, attributes)
           directory = result_dir.join(migration_name)
 
-          FileUtils.mkdir_p(directory) unless Dir.exist?(directory)
+          FileUtils.mkdir_p(directory)
 
           File.write(directory.join(MIGRATION_DETAILS_FILE_NAME), attributes.to_json)
         end

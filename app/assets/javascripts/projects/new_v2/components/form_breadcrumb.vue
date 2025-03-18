@@ -10,6 +10,13 @@ export default {
     SuperSidebarToggle,
   },
   inject: ['rootPath', 'projectsUrl', 'parentGroupUrl', 'parentGroupName'],
+  props: {
+    selectedProjectType: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   computed: {
     breadcrumbs() {
       const breadcrumbs = this.parentGroupUrl
@@ -19,6 +26,14 @@ export default {
             { text: s__('ProjectsNew|Projects'), href: this.projectsUrl },
           ];
       breadcrumbs.push({ text: s__('ProjectsNew|New project'), href: '#' });
+
+      if (this.selectedProjectType) {
+        breadcrumbs.push({
+          text: this.selectedProjectType.title,
+          href: `#${this.selectedProjectType.value}`,
+        });
+      }
+
       return breadcrumbs;
     },
   },

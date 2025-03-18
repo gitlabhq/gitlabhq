@@ -299,6 +299,11 @@ module Gitlab
         token = extract_personal_access_token
         return unless token
 
+        # The runner sends the job token for PUT /api/jobs/:id in the PRIVATE-TOKEN header
+        # and the token JSON parameter. Ignore this personal access token so
+        # that the job token can be authenticated.
+        return if api_request? && token.start_with?(::Ci::Build::TOKEN_PREFIX)
+
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         PersonalAccessToken.find_by_token(token.to_s) || raise(UnauthorizedError)
       end

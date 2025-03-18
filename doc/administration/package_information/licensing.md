@@ -79,6 +79,6 @@ All trademarks, materials, documentation, and other intellectual property remain
 Use of GitLab Trademarks must be in compliance with the standards set forth in [our guidelines](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/) (as updated from time to time).
 CHEF® and all Chef marks are owned by Progress Software Corporation and must be used in accordance with the [Progress Software Trademark Usage Policy](https://www.progress.com/legal/trademarks).
 
-When using a GitLab or 3rd party trademark in documentation, include the (R) symbol in the first instance, for example, "Chef(R) is used for configuring...." You may omit the symbol in subsequent instances.
+When using a GitLab or third-party trademark in documentation, include the (R) symbol in the first instance, for example, "Chef(R) is used for configuring…" You may omit the symbol in subsequent instances.
 
 If a trademark owner requires a particular notice or trademark requirement, such notice or requirement should be stated above.

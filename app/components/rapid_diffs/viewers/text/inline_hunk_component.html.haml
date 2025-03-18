@@ -5,7 +5,7 @@
 
 - if @diff_hunk.lines
   - @diff_hunk.lines.each do |line|
-    %tr.rd-hunk-lines.rd-hunk-lines-inline{ data: { testid: testid } }
+    %tr.rd-hunk-lines.rd-hunk-lines-inline{ data: { testid: 'hunk-lines-inline', hunk_lines: true } }
       = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, line: line, position: :old)
       = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, line: line, position: :new, border: :right)
       = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: nil)

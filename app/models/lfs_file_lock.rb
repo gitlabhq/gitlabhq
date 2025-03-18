@@ -9,6 +9,10 @@ class LfsFileLock < ApplicationRecord
 
   validates :project_id, :user_id, :path, presence: true
 
+  def self.for_path!(path)
+    find_by!(path: path)
+  end
+
   def can_be_unlocked_by?(current_user, forced = false)
     return true if current_user.id == user_id
 

@@ -483,10 +483,10 @@ The default location where images are stored in self-compiled installations is
 
 ### Use object storage
 
-If you want to store your images on object storage, you can change the storage
-driver for the container registry.
+If you want to store your container registry images in object storage instead of the local file system,
+you can configure one of the supported storage drivers.
 
-[Read more about using object storage with GitLab](../object_storage.md).
+For more information, see [Object storage](../object_storage.md).
 
 {{< alert type="warning" >}}
 
@@ -496,98 +496,154 @@ desired.
 
 {{< /alert >}}
 
-#### Configure `s3` and `gcs` storage drivers for Linux package installations
+#### Configure object storage for Linux package installations
 
-The following configuration steps are for the `s3` and `gcs` storage drivers. Other [storage drivers](#configure-storage-for-the-container-registry) are supported.
+To configure object storage for your container registry:
 
-To configure the `s3` storage driver for a Linux package installation:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-regionendpoint'
-     }
-   }
-   ```
-
-   To avoid using static credentials, use an
-   [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
-   and omit `accesskey` and `secretkey`. Make sure that your IAM profile follows
-   [the permissions documented by Docker](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes).
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region'
-     }
-   }
-   ```
-
-   If using with an [AWS S3 VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html),
-   then set `regionendpoint` to your VPC endpoint address and set `pathstyle` to false:
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-vpc-endpoint',
-       'pathstyle' => false
-     }
-   }
-   ```
-
-   - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or
-     when using an AWS S3 VPC Endpoint.
-   - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
-   - `pathstyle` should be set to true to use `host/bucket_name/object` style paths instead of
-     `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
-
-   You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API. To do this,
-   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://repost.aws/knowledge-center/http-5xx-errors-s3):
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-regionendpoint',
-       'maxrequestspersecond' => 100
-     }
-   }
-   ```
-
+1. Choose the storage driver you want to use.
+1. Edit `/etc/gitlab/gitlab.rb` with the appropriate configuration.
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-To configure the `gcs` storage driver for a Linux package installation:
+{{< tabs >}}
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+{{< tab title="S3" >}}
 
-   ```ruby
-   registry['storage'] = {
-     'gcs' => {
-       'bucket' => 'BUCKET_NAME',
-       'keyfile' => 'PATH/TO/KEYFILE',
-       # If you have the bucket shared with other apps beyond the registry, uncomment the following:
-       # 'rootdirectory' => '/gcs/object/name/prefix'
-     }
-   }
-   ```
+The S3 storage driver integrates with Amazon S3 or any S3-compatible object storage service.
 
-   GitLab supports all available parameters.
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+{{< alert type="warning" >}}
+
+The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 18.0.
+Use the `s3_v2` driver instead when it becomes available in May 2025. This change is a breaking change.
+
+{{< /alert >}}
+
+<!--- end_remove -->
+
+```ruby
+# Deprecated: Will be removed in GitLab 18.0
+registry['storage'] = {
+  's3' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-regionendpoint'
+  }
+}
+
+# Recommended: s3_v2 driver
+registry['storage'] = {
+  's3_v2' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-regionendpoint'
+  }
+}
+```
+
+The `s3_v2` driver only supports Signature Version 4 for authentication.
+
+To avoid using static credentials, use an IAM role and omit `accesskey` and `secretkey`.
+Make sure that your IAM profile follows the [permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/).
+
+For S3 VPC endpoints:
+
+```ruby
+registry['storage'] = {
+  's3' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-vpc-endpoint',
+    'pathstyle' => false
+  }
+}
+```
+
+- `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or when using an AWS S3 VPC Endpoint.
+- `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
+- `pathstyle` should be set to `true` to use host/bucket_name/object style paths instead of bucket_name.host/object. Set to `false` for AWS S3.
+
+You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API:
+
+```ruby
+registry['storage'] = {
+  's3' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-regionendpoint',
+    'maxrequestspersecond' => 100
+  }
+}
+```
+
+{{< /tab >}}
+
+{{< tab title="Azure" >}}
+
+The Azure storage driver integrates with Microsoft Azure Blob Storage.
+
+{{< alert type="warning" >}}
+
+The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
+Use the `azure_v2` driver instead. This change is a breaking change.
+
+{{< /alert >}}
+
+```ruby
+# Deprecated: Will be removed in GitLab 19.0
+registry['storage'] = {
+  'azure' => {
+    'accountname' => '<your_storage_account_name>',
+    'accountkey' => '<base64_encoded_account_key>',
+    'container' => '<container_name>'
+  }
+}
+
+# Recommended: azure_v2 driver
+registry['storage'] = {
+  'azure_v2' => {
+    'credentials_type' => 'client_secret',
+    'tenant_id' => '<your_tenant_id>',
+    'client_id' => '<your_client_id>',
+    'secret' => '<your_secret>',
+    'container' => '<your_container>',
+    'accountname' => '<your_account_name>'
+  }
+}
+```
+
+By default, the Azure storage driver uses the `core.windows.net realm`. You can set another value for realm in the Azure section (for example, `core.usgovcloudapi.net` for Azure Government Cloud).
+
+{{< /tab >}}
+
+{{< tab title="GCS" >}}
+
+The GCS storage driver integrates with Google Cloud Storage.
+
+```ruby
+registry['storage'] = {
+  'gcs' => {
+    'bucket' => 'BUCKET_NAME',
+    'keyfile' => 'PATH/TO/KEYFILE',
+    # If you have the bucket shared with other apps beyond the registry, uncomment the following:
+    # 'rootdirectory' => '/gcs/object/name/prefix'
+  }
+}
+```
+
+GitLab supports all [available parameters](https://docs.docker.com/registry/storage-drivers/gcs/).
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Self-compiled installations
 
@@ -652,7 +708,7 @@ you can pull from the container registry, but you cannot push.
 
    {{< alert type="note" >}}
 
-If you have a lot of data, you may be able to improve performance by
+   If you have a lot of data, you may be able to improve performance by
    [running parallel sync operations](https://repost.aws/knowledge-center/s3-improve-transfer-sync-command).
 
    {{< /alert >}}
@@ -1046,7 +1102,7 @@ To configure a notification endpoint for a Linux package installation:
 
   {{< alert type="note" >}}
 
-  Replace `AUTHORIZATION_EXAMPLE_TOKEN` with a case sensitive alphanumeric string
+  Replace `AUTHORIZATION_EXAMPLE_TOKEN` with a case-sensitive alphanumeric string
   that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
   {{< /alert >}}
@@ -1115,7 +1171,7 @@ if registry_metadata_database
 else
   projects.each do |project|
     project_layers = {}
-    
+
     project.container_repositories.each do |repository|
       repository.tags.each do |tag|
         tag.layers.each do |layer|
@@ -1139,7 +1195,7 @@ end
 
 {{< alert type="note" >}}
 
-The script calculates size based on container image layers. Since layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
+The script calculates size based on container image layers. Because layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
 
 {{< /alert >}}
 
@@ -1194,7 +1250,11 @@ end
 
 {{< /details >}}
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+
+{{< /history >}}
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -1418,7 +1478,7 @@ and there are no scaling guides which target number of seats or requests per sec
 
 ### Registry server
 
-1. **Move to a separate node**: A [separate node](#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations)
+1. **Move to a separate node**: A [separate node](#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations)
    is one way to scale vertically to increase the resources available to the container registry server process.
 1. **Run multiple registry nodes behind a load balancer**: While the registry can handle
    a high amount of traffic with a single large node, the registry is generally intended to
@@ -1453,28 +1513,28 @@ cache improves performance, but also enables features such as renaming repositor
    with multi-node deployments, online garbage collection automatically scales without
    the need for configuration changes.
 
-## Configure GitLab and Registry to run on separate nodes (Linux package installations)
+## Configure GitLab and registry on separate nodes (Linux package installations)
 
-By default, package assumes that both services are running on the same node.
-To get GitLab and Registry to run on a separate nodes, separate configuration
-is necessary for Registry and GitLab.
+By default, the GitLab package assumes both services run on the same node.
+Running them on separate nodes requires separate configuration.
 
-### Configure Registry
+### Configuration options
 
-Below you can find configuration options you should set in `/etc/gitlab/gitlab.rb`,
-for Registry to run separately from GitLab:
+The following configuration options should be set in `/etc/gitlab/gitlab.rb` on the respective nodes.
 
-- `registry['registry_http_addr']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L50). Needs to be reachable by web server (or LB).
-- `registry['token_realm']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L53). Specifies the endpoint to use to perform authentication, usually the GitLab URL.
-  This endpoint needs to be reachable by user.
-- `registry['http_secret']`, [random string](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L32). A random piece of data used to sign state that may be stored with the client to protect against tampering.
-- `registry['internal_key']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L113-119). Contents of the key that GitLab uses to sign the tokens. They key gets created on the Registry server, but it is not used there.
-- `gitlab_rails['registry_key_path']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). This is the path where `internal_key` contents are written to disk.
-- `registry['internal_certificate']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60-66). Contents of the certificate that GitLab uses to sign the tokens.
-- `registry['rootcertbundle']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60). Path to certificate. This is the path where `internal_certificate`
-  contents are written to disk.
-- `registry['health_storagedriver_enabled']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-7-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L88). Configure whether health checks on the configured storage driver are enabled.
-- `gitlab_rails['registry_issuer']`, [default value](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). This setting needs to be set the same between Registry and GitLab.
+#### Registry node settings
+
+| Option                                     | Description |
+| ------------------------------------------ | ----------- |
+| `registry['registry_http_addr']`           | Network address and port that the registry listens on. Must be reachable by the web server or load balancer. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L50). |
+| `registry['token_realm']`                  | Authentication endpoint URL, typically the GitLab instance URL. Must be reachable by users. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L53). |
+| `registry['http_secret']`                  | Security token used to protect against client-side tampering. Generated as a [random string](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L32). |
+| `registry['internal_key']`                 | Token-signing key, created on the registry server but used by GitLab. Default: [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L113-119). |
+| `registry['internal_certificate']`         | Certificate for token signing. Default: [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60-66). |
+| `registry['rootcertbundle']`               | File path where the `internal_certificate` is stored. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60). |
+| `registry['health_storagedriver_enabled']` | Enables health monitoring of the storage driver. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-7-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L88). |
+| `gitlab_rails['registry_key_path']`        | File path where the `internal_key` is stored. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). |
+| `gitlab_rails['registry_issuer']`          | Token issuer name. Must match between registry and GitLab configurations. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). |
 
 <!--- start_remove The following content will be removed on remove_date: '2025/08/15' -->
 
@@ -1486,20 +1546,74 @@ Support for authenticating requests using Amazon S3 Signature Version 2 in the c
 
 <!--- end_remove -->
 
-### Configure GitLab
+#### GitLab node settings
 
-Below you can find configuration options you should set in `/etc/gitlab/gitlab.rb`,
-for GitLab to run separately from Registry:
+| Option                              | Description |
+| ----------------------------------- | ----------- |
+| `gitlab_rails['registry_enabled']`  | Enables the GitLab registry API integration. Must be set to `true`. |
+| `gitlab_rails['registry_api_url']`  | Internal registry URL used by GitLab (not visible to users). Uses `registry['registry_http_addr']` with scheme. Default: [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L52). |
+| `gitlab_rails['registry_host']`     | Public registry hostname without scheme (example: `registry.gitlab.example`). This address is shown to users. |
+| `gitlab_rails['registry_port']`     | Public registry port number shown to users. |
+| `gitlab_rails['registry_issuer']`   | Token issuer name that must match the registry's configuration. |
+| `gitlab_rails['registry_key_path']` | File path to the certificate key used by the registry. |
+| `gitlab_rails['internal_key']`      | Token-signing key content used by GitLab. |
 
-- `gitlab_rails['registry_enabled']`, must be set to `true`. This setting
-  signals to GitLab that it should allow Registry API requests.
-- `gitlab_rails['registry_api_url']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L52). This is the Registry URL used internally that users do not need to interact with, `registry['registry_http_addr']` with scheme.
-- `gitlab_rails['registry_host']`, for example, `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
-- `gitlab_rails['registry_port']`. Registry endpoint port, visible to the end user.
-- `gitlab_rails['registry_issuer']` must match the issuer in the Registry configuration.
-- `gitlab_rails['registry_key_path']`, path to the key that matches the certificate on the
-  Registry side.
-- `gitlab_rails['internal_key']`, contents of the key that GitLab uses to sign the tokens.
+### Set up the nodes
+
+To configure GitLab and the container registry on separate nodes:
+
+1. On the registry node, edit `/etc/gitlab/gitlab.rb` with the following settings:
+
+   ```ruby
+   # Registry server details
+   # - IP address: 10.30.227.194
+   # - Domain: registry.example.com
+
+   # Disable unneeded services
+   gitlab_workhorse['enable'] = false
+   puma['enable'] = false
+   sidekiq['enable'] = false
+   postgresql['enable'] = false
+   redis['enable'] = false
+   gitlab_kas['enable'] = false
+   gitaly['enable'] = false
+   nginx['enable'] = false
+
+   # Configure registry settings
+   registry['enable'] = true
+   registry['registry_http_addr'] = '0.0.0.0:5000'
+   registry['token_realm'] = 'https://gitlab.example.com'
+   registry['http_secret'] = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+
+   # Configure GitLab Rails settings
+   gitlab_rails['registry_issuer'] = 'omnibus-gitlab-issuer'
+   gitlab_rails['registry_key_path'] = '/etc/gitlab/gitlab-registry.key'
+   ```
+
+1. On the GitLab node, edit `/etc/gitlab/gitlab.rb` with the following settings:
+
+   ```ruby
+   # GitLab server details
+   # - IP address: 10.30.227.149
+   # - Domain: gitlab.example.com
+
+   # Configure GitLab URL
+   external_url 'https://gitlab.example.com'
+
+   # Configure registry settings
+   gitlab_rails['registry_enabled'] = true
+   gitlab_rails['registry_api_url'] = 'http://10.30.227.194:5000'
+   gitlab_rails['registry_host'] = 'registry.example.com'
+   gitlab_rails['registry_port'] = 5000
+   gitlab_rails['registry_issuer'] = 'omnibus-gitlab-issuer'
+   gitlab_rails['registry_key_path'] = '/etc/gitlab/gitlab-registry.key'
+   ```
+
+1. Synchronize the `/etc/gitlab/gitlab-secrets.json` file between both nodes:
+
+   1. Copy the file from the GitLab node to the registry node.
+   1. Ensure file permissions are correct.
+   1. Run `sudo gitlab-ctl reconfigure` on both nodes.
 
 ## Architecture of GitLab container registry
 
@@ -1523,7 +1637,7 @@ flowchart LR
 The flow described by the diagram above:
 
 1. A user runs `docker login registry.gitlab.example` on their client. This reaches the web server (or LB) on port 443.
-1. Web server connects to the Registry backend pool (by default, using port 5000). Since the user
+1. Web server connects to the Registry backend pool (by default, using port 5000). Because the user
    didn't provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
    Registry configuration) where to get one. This points to the GitLab API.
 1. The Docker client then connects to the GitLab API and obtains a token.

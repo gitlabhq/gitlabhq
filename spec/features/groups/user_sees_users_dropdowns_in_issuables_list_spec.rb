@@ -47,24 +47,5 @@ RSpec.describe 'Groups > User sees users dropdowns in issuables list', :js, feat
         end
       end
     end
-
-    context 'when vue_merge_request_list feature flag is disabled' do
-      before do
-        stub_feature_flags(vue_merge_request_list: false)
-      end
-
-      %w[author assignee].each do |dropdown|
-        describe "#{dropdown} dropdown" do
-          it 'only includes members of the project/group' do
-            visit merge_requests_group_path(group)
-
-            filtered_search.set("#{dropdown}:=")
-
-            expect(find("#js-dropdown-#{dropdown} .filter-dropdown")).to have_content(user_in_dropdown.name)
-            expect(find("#js-dropdown-#{dropdown} .filter-dropdown")).not_to have_content(user_not_in_dropdown.name)
-          end
-        end
-      end
-    end
   end
 end

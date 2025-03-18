@@ -2,12 +2,17 @@
 
 module DependencyProxy
   class RequestTokenService < DependencyProxy::BaseService
-    def initialize(image)
+    def initialize(image:, dependency_proxy_setting:)
       @image = image
+      @dependency_proxy_setting = dependency_proxy_setting
     end
 
     def execute
-      response = Gitlab::HTTP.get(auth_url)
+      response = Gitlab::HTTP.get(
+        auth_url,
+        headers: @dependency_proxy_setting&.authorization_header || {},
+        follow_redirects: true
+      )
 
       if response.success?
         success(token: Gitlab::Json.parse(response.body)['token'])

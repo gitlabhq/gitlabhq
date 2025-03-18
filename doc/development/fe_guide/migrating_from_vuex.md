@@ -39,7 +39,7 @@ At a high level, we could map each category with an equivalent non-VueX code pat
 
 - Static properties: Provide/Inject from Vue API.
 - Reactive mutable properties: Vue events and props, Apollo Client.
-- Getters: Utils functions, Apollo `update` hook, computed properties.
+- Getters: utility functions, Apollo `update` hook, computed properties.
 - API data: Apollo Client.
 
 Let's go through an example. In each section we refer to this state and slowly go through migrating it fully:

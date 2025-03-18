@@ -424,4 +424,25 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       end
     end
   end
+
+  describe 'enabling JWT by default for CI/CD job tokens for new groups' do
+    context 'when creating a root group' do
+      it 'enables JWT for CI/CD job tokens' do
+        expect(created_group.namespace_settings.jwt_ci_cd_job_token_enabled).to be(true)
+      end
+    end
+
+    context 'when creating a subgroup' do
+      let(:parent_group) { create(:group) }
+      let(:extra_params) { { parent_id: parent_group.id } }
+
+      before do
+        parent_group.add_owner(user)
+      end
+
+      it 'does not enable JWT for CI/CD job tokens' do
+        expect(created_group.namespace_settings.jwt_ci_cd_job_token_enabled).to be(false)
+      end
+    end
+  end
 end

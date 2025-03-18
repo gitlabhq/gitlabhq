@@ -14,7 +14,7 @@ module Preloaders
 
     def preload_all
       merge_request_diffs = MergeRequestDiff.latest_diff_for_merge_requests(@merge_requests)
-      cache = merge_request_diffs.index_by { |diff| diff.merge_request_id }
+      cache = merge_request_diffs.index_by(&:merge_request_id)
 
       @merge_requests.each do |merge_request|
         merge_request_diff = cache[merge_request.id]

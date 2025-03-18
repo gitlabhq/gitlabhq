@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor do
+RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor, feature_category: :importers do
   let(:graphql_client) { instance_double(BulkImports::Clients::Graphql) }
   let(:import_entity) { create(:bulk_import_entity) }
-  let(:response) { double(original_hash: { 'data' => { 'foo' => 'bar' }, 'page_info' => {} }) }
+  let(:response) { { 'data' => { 'foo' => 'bar' }, 'page_info' => {} } }
   let(:options) do
     {
       query:
@@ -32,7 +32,6 @@ RSpec.describe BulkImports::Common::Extractors::GraphqlExtractor do
   describe '#extract' do
     before do
       allow(subject).to receive(:graphql_client).and_return(graphql_client)
-      allow(graphql_client).to receive(:parse)
       allow(graphql_client).to receive(:execute).and_return(response)
     end
 

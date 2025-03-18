@@ -365,13 +365,11 @@ RSpec.describe TodoService, feature_category: :notifications do
         it 'updates when todos change' do
           create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
 
-          expect(john_doe.todos_done_count).to eq(0)
           expect(john_doe.todos_pending_count).to eq(1)
           expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
           service.resolve_todos_for_target(issue, john_doe)
 
-          expect(john_doe.todos_done_count).to eq(1)
           expect(john_doe.todos_pending_count).to eq(0)
         end
       end
@@ -790,13 +788,11 @@ RSpec.describe TodoService, feature_category: :notifications do
         it 'updates when todos change' do
           create(:todo, :assigned, user: john_doe, project: project, target: work_item, author: author)
 
-          expect(john_doe.todos_done_count).to eq(0)
           expect(john_doe.todos_pending_count).to eq(1)
           expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
           service.resolve_todos_for_target(work_item, john_doe)
 
-          expect(john_doe.todos_done_count).to eq(1)
           expect(john_doe.todos_pending_count).to eq(0)
         end
       end
@@ -1422,13 +1418,11 @@ RSpec.describe TodoService, feature_category: :notifications do
 
     context 'cached counts' do
       it 'updates when todos change' do
-        expect(john_doe.todos_done_count).to eq(0)
         expect(john_doe.todos_pending_count).to eq(1)
         expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
         service.resolve_todo(todo, john_doe)
 
-        expect(john_doe.todos_done_count).to eq(1)
         expect(john_doe.todos_pending_count).to eq(0)
       end
     end
@@ -1508,13 +1502,11 @@ RSpec.describe TodoService, feature_category: :notifications do
 
     context 'cached counts' do
       it 'updates when todos change' do
-        expect(john_doe.todos_done_count).to eq(1)
         expect(john_doe.todos_pending_count).to eq(0)
         expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
         service.restore_todo(todo, john_doe)
 
-        expect(john_doe.todos_done_count).to eq(0)
         expect(john_doe.todos_pending_count).to eq(1)
       end
     end

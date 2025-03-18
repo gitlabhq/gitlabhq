@@ -21,17 +21,25 @@ The LDAP check Rake task tests the `bind_dn` and `password` credentials
 executed as part of the `gitlab:check` task, but can run independently
 using the command below.
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  sudo gitlab-rake gitlab:ldap:check
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+sudo gitlab-rake gitlab:ldap:check
+```
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:check
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 By default, the task returns a sample of 100 LDAP users. Change this
 limit by passing a number to the check task:
@@ -61,17 +69,25 @@ instead.
 
 {{< /alert >}}
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  sudo gitlab-rake gitlab:ldap:group_sync
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+sudo gitlab-rake gitlab:ldap:group_sync
+```
 
-  ```shell
-  bundle exec rake gitlab:ldap:group_sync
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:group_sync
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Rename a provider
 
@@ -90,7 +106,7 @@ main:
   host: '_your_ldap_server'
   port: 389
   uid: 'sAMAccountName'
-  ...
+  # ...
 ```
 
 `main` is the LDAP server ID. Together, the unique provider is `ldapmain`.
@@ -103,17 +119,25 @@ correct provider as the `new_provider`.
 
 {{< /alert >}}
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider]
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider]
+```
 
-  ```shell
-  bundle exec rake gitlab:ldap:rename_provider[old_provider,new_provider] RAILS_ENV=production
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:rename_provider[old_provider,new_provider]
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Example
 
@@ -140,17 +164,25 @@ User identities were successfully updated
 If you do not specify an `old_provider` and `new_provider` the task prompts you
 for them:
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  sudo gitlab-rake gitlab:ldap:rename_provider
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+sudo gitlab-rake gitlab:ldap:rename_provider
+```
 
-  ```shell
-  bundle exec rake gitlab:ldap:rename_provider RAILS_ENV=production
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:rename_provider
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 **Example output:**
 
@@ -175,17 +207,25 @@ The following Rake tasks are provided for updating the contents of the encrypted
 
 Show the contents of the current LDAP secrets.
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  sudo gitlab-rake gitlab:ldap:secret:show
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+sudo gitlab-rake gitlab:ldap:secret:show
+```
 
-  ```shell
-  bundle exec rake gitlab:ldap:secret:show RAILS_ENV=production
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:secret:show
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 **Example output:**
 
@@ -199,33 +239,49 @@ main:
 
 Opens the secret contents in your editor, and writes the resulting content to the encrypted secret file when you exit.
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  sudo gitlab-rake gitlab:ldap:secret:edit EDITOR=vim
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+sudo gitlab-rake gitlab:ldap:secret:edit EDITOR=vim
+```
 
-  ```shell
-  bundle exec rake gitlab:ldap:secret:edit RAILS_ENV=production EDITOR=vim
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production EDITOR=vim -u git -H bundle exec rake gitlab:ldap:secret:edit
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Write raw secret
 
 Write new secret content by providing it on STDIN.
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  echo -e "main:\n  password: '123'" | sudo gitlab-rake gitlab:ldap:secret:write
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+echo -e "main:\n  password: '123'" | sudo gitlab-rake gitlab:ldap:secret:write
+```
 
-  ```shell
-  echo -e "main:\n  password: '123'" | bundle exec rake gitlab:ldap:secret:write RAILS_ENV=production
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+echo -e "main:\n  password: '123'" | sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:secret:write
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Secrets examples
 

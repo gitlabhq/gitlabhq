@@ -82,45 +82,30 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#group_title' do
+  describe '#push_group_breadcrumbs' do
     let_it_be(:group) { create(:group) }
     let_it_be(:nested_group) { create(:group, parent: group) }
     let_it_be(:deep_nested_group) { create(:group, parent: nested_group) }
     let_it_be(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
-    subject { helper.group_title(very_deep_nested_group) }
+    subject { helper.push_group_breadcrumbs(very_deep_nested_group) }
 
-    context 'traversal queries' do
-      shared_examples 'correct ancestor order' do
-        it 'outputs the groups in the correct order' do
-          expect(subject)
-            .to match(%r{<li.*><a.*>#{deep_nested_group.name}.*</li>.*<a.*>#{very_deep_nested_group.name}</a>}m)
-        end
-      end
-
-      before do
-        very_deep_nested_group.reload # make sure traversal_ids are reloaded
-      end
-
-      include_examples 'correct ancestor order'
-    end
-
-    it 'enqueues the elements in the breadcrumb schema list' do
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group), nil)
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group), nil)
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group), nil)
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group), nil)
+    it 'enqueues the elements in the breadcrumb schema list in the correct order' do
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group), nil).ordered
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group), nil).ordered
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group), nil).ordered
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group), nil).ordered
 
       subject
     end
 
     it 'avoids N+1 queries' do
       control = ActiveRecord::QueryRecorder.new do
-        helper.group_title(nested_group)
+        helper.push_group_breadcrumbs(nested_group)
       end
 
       expect do
-        helper.group_title(very_deep_nested_group)
+        helper.push_group_breadcrumbs(very_deep_nested_group)
       end.not_to exceed_query_limit(control)
     end
   end

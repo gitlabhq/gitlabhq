@@ -19,6 +19,7 @@ resource :profile, only: [] do
       member do
         delete :unlink
       end
+      post :generate_support_pin
     end
 
     resource :notifications, only: [:show, :update] do

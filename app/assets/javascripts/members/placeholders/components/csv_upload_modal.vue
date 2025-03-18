@@ -87,7 +87,7 @@ export default {
   },
   dropzoneAllowList: ['.csv'],
   docsLink: helpPagePath('user/project/import/_index', {
-    anchor: 'reassign-contributions-and-memberships',
+    anchor: 'request-reassignment-by-using-a-csv-file',
   }),
   i18n: {
     description: s__(

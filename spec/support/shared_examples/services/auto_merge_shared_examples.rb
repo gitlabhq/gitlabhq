@@ -157,7 +157,7 @@ RSpec.shared_examples 'auto_merge service #cancel' do
   it "resets all the pipeline succeeds params" do
     expect(mr_merge_if_green_enabled.merge_when_pipeline_succeeds).to be_falsey
     expect(mr_merge_if_green_enabled.merge_params).to eq({})
-    expect(mr_merge_if_green_enabled.merge_user).to be nil
+    expect(mr_merge_if_green_enabled.merge_user).to be_nil
   end
 
   it 'posts a system note' do

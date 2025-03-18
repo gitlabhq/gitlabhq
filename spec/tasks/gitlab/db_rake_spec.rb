@@ -150,13 +150,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'configure' do
-    let(:topology_service_enabled) { true }
     let(:configured_cell) { true }
     let(:skip_sequence_alteration) { false }
 
     before do
-      allow(Settings).to receive(:topology_service_enabled?).and_return(topology_service_enabled)
-      allow(Settings).to receive(:skip_sequence_alteration?).and_return(skip_sequence_alteration)
+      stub_config(cell: { enabled: true, id: 1, database: { skip_sequence_alteration: skip_sequence_alteration } })
     end
 
     context 'with a single database' do

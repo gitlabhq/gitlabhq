@@ -4,8 +4,6 @@ import VueRouter from 'vue-router';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
 import { resolvers, config } from '~/graphql_shared/issuable_client';
 import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphql';
-import { addShortcutsExtension } from '~/behaviors/shortcuts';
-import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import DesignDetail from '~/work_items/components/design_management/design_preview/design_details.vue';
 import { ROUTES } from '~/work_items/constants';
@@ -48,8 +46,6 @@ export async function mountJiraIssuesListApp() {
     render(createComponent) {
       return createComponent(JiraIssuesImportStatusApp, {
         props: {
-          canEdit,
-          isJiraConfigured,
           issuesPath,
           projectPath,
         },
@@ -64,8 +60,6 @@ export async function mountIssuesListApp() {
   if (!el) {
     return null;
   }
-
-  addShortcutsExtension(ShortcutsWorkItems);
 
   Vue.use(VueApollo);
   Vue.use(VueRouter);

@@ -107,7 +107,7 @@ characters in the source code. To fix this error, enable UTF-8 for your project'
 
 For Gradle builds, add the following to your `build.gradle` file:
 
-```gradle
+```groovy
 compileJava.options.encoding = 'UTF-8'
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

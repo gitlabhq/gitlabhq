@@ -7,7 +7,6 @@ import LinksLayer from '../../../common/private/job_links_layer.vue';
 import { DOWNSTREAM, MAIN, UPSTREAM, ONE_COL_WIDTH, STAGE_VIEW } from '../constants';
 import { validateConfigPaths } from '../utils';
 import LinkedGraphWrapper from './linked_graph_wrapper.vue';
-import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import StageColumnComponent from './stage_column_component.vue';
 
 export default {
@@ -15,7 +14,8 @@ export default {
   components: {
     LinksLayer,
     LinkedGraphWrapper,
-    LinkedPipelinesColumn,
+    LinkedPipelinesColumn: () =>
+      import(/* webpackChunkName: 'linked_pipelines_column' */ './linked_pipelines_column.vue'),
     StageColumnComponent,
   },
   props: {

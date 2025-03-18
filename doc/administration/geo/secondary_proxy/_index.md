@@ -103,7 +103,7 @@ routing configurations. To create a traffic policy:
 1. Select **Create traffic policy**.
 1. Fill in **Policy record DNS name** with `gitlab`.
 
-   ![Create policy records with traffic policy](img/single_url_create_policy_records_with_traffic_policy_v14_5.png)
+   ![Web form for creating DNS policy records with fields for traffic policy, version, hosted zone, and DNS configuration settings](img/single_url_create_policy_records_with_traffic_policy_v14_5.png)
 
 1. Select **Create policy records**.
 
@@ -202,12 +202,12 @@ If your secondary site uses the same external URL as the primary site:
 Considering that web traffic is proxied to the primary, the behavior of the secondary sites differs when the primary
 site is inaccessible:
 
-- UI and API traffic return the same errors as the primary (or fail if the primary is not accessible at all), since they are proxied.
+- UI and API traffic return the same errors as the primary (or fail if the primary is not accessible at all) because they are proxied.
 - For repositories that are fully up-to-date on the specific secondary site being accessed, Git read operations still work as expected,
   including authentication through HTTP(s) or SSH. However, Git reads performed by GitLab Runners will fail.
 - Git operations for repositories that are not replicated to the secondary site return the same errors
-  as the primary site, since they are proxied.
-- All Git write operations return the same errors as the primary site, since they are proxied.
+  as the primary site because they are proxied.
+- All Git write operations return the same errors as the primary site because they are proxied.
 
 ## Features accelerated by secondary Geo sites
 
@@ -242,6 +242,34 @@ To request acceleration of a feature, check if an issue already exists in [epic 
 ## Disable secondary site HTTP proxying
 
 Secondary site HTTP proxying is enabled by default on a secondary site when it uses a unified URL, meaning, it is configured with the same `external_url` as the primary site. Disabling proxying in this case tends not to be helpful due to completely different behavior being served at the same URL, depending on routing.
+
+### What happens if you disable secondary proxying
+
+Disabling the proxying feature flag has the following general effects:
+
+- The secondary site does not proxy HTTP requests to the primary site. Instead, it attempts to serve them itself, or fail.
+- Git requests generally succeed. Git pushes are redirected or proxied to the primary site.
+- Other than Git requests, any HTTP request which may write data fails. Read requests generally succeed.
+- The secondary site UI shows a banner: ![Secondary Site UI Banner for Read-Only](img/secondary_proxy_read_only_v17_8.png)
+
+| Feature / component                                 | Succeed                   | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| :-------------------------------------------------- | :------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Project, wiki, design repository (using the web UI) | **{dotted-circle}** Maybe | Reads are served from the locally stored data. Writes cause an error.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Project, wiki repository (using Git)                | **{check-circle}** Yes    | Git reads are served from the locally stored data, while pushes get proxied to the primary. If a repository doesn't exist locally on the Geo secondary, for example due to exclusion by selective sync, it causes a "not found" error.                                                                                                                                                                                                                                 |
+| Project, Personal Snippet (using the web UI)        | **{dotted-circle}** Maybe | Reads are served from the locally stored data. Writes cause an error.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Project, Personal Snippet (using Git)               | **{check-circle}** Yes    | Git reads are served from the locally stored data, while pushes get proxied to the primary. If a repository doesn't exist locally on the Geo secondary, for example due to exclusion by selective sync, it causes a "not found" error.                                                                                                                                                                                                                                 |
+| Group wiki repository (using the web UI)            | **{dotted-circle}** Maybe | Reads are served from the locally stored data. Writes cause an error.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Group wiki repository (using Git)                   | **{check-circle}** Yes    | Git reads are served from the locally stored data, while pushes get proxied to the primary. If a repository doesn't exist locally on the Geo secondary, for example due to exclusion by selective sync, it causes a "not found" error.                                                                                                                                                                                                                                 |
+| User uploads                                        | **{dotted-circle}** Maybe | Upload files are served from the locally stored data. Attempting to upload a file on a secondary causes an error.                                                                                                                                                                                                                                                                                                                                                          |
+| LFS objects (using the web UI)                      | **{dotted-circle}** Maybe | Reads are served from the locally stored data. Writes cause an error.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| LFS objects (using Git)                             | **{check-circle}** Yes    | LFS objects are served from the locally stored data, while pushes get proxied to the primary. If an LFS object doesn't exist locally on the Geo secondary, for example due to exclusion by selective sync, it causes a "not found" error.                                                                                                                                                                                                                              |
+| Pages                                               | **{dotted-circle}** Maybe | Pages can use the same URL (without access control), but must be configured separately and are not proxied.                                                                                                                                                                                                                                                                                                                                                                |
+| Advanced search (using the web UI)                  | **{dotted-circle}** No    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Container registry                                  | **{dotted-circle}** No    | The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site. Accelerating the container registry is planned, please upvote or comment in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) to indicate your interest or ask your GitLab representative to do so on your behalf. |
+| Dependency Proxy                                    | **{dotted-circle}** No    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| All other data                                      | **{dotted-circle}** Maybe | Reads are served from the locally stored data. Writes cause an error.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+
+You should use the feature flag over using the `GEO_SECONDARY_PROXY` environment variable.
 
 HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even without a unified URL. If proxying needs to be disabled on all secondary sites, it is easiest to disable the feature flag:
 

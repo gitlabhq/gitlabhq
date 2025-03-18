@@ -263,21 +263,21 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
         mediaType: 'application/vnd.docker.distribution.manifest.v2+json',
         config: {
           mediaType: 'application/vnd.docker.container.image.v1+json',
-          size: 21,
-          digest: 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3'
+          size: 18,
+          digest: 'sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf'
         }
       }
     end
 
     it 'uploads a random image and returns the manifest' do
-      stub_upload('path', "{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+      stub_upload('path', "{\n  \"config\": {}\n}", 'sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf')
 
       expect(subject).to eq(result_manifest)
     end
 
     context 'when upload fails' do
       before do
-        stub_upload('path', "{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3', 500)
+        stub_upload('path', "{\n  \"config\": {}\n}", 'sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf', 500)
       end
 
       it { is_expected.to be nil }

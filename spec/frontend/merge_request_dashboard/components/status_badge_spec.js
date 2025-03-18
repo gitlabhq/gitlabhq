@@ -46,4 +46,29 @@ describe('Merge request status badge component', () => {
 
     expect(findStatusBadge().element).toMatchSnapshot();
   });
+
+  describe('ready to merge', () => {
+    it('renders ready to merge badge when there is no failed merge checks', () => {
+      createComponent({
+        mergeRequest: {
+          mergeabilityChecks: [{ status: 'SUCCESS' }],
+        },
+      });
+
+      expect(findStatusBadge().text()).toBe('Ready to merge');
+      expect(findStatusBadge().attributes('icon')).toBe('status-success');
+    });
+
+    it('renders normal status badge when there is failed merge checks', () => {
+      createComponent({
+        mergeRequest: {
+          mergeabilityChecks: [{ status: 'FAILED' }],
+          reviewers: { nodes: [] },
+        },
+        listId: 'assigned_to_you',
+      });
+
+      expect(findStatusBadge().text()).toBe('Reviewers needed');
+    });
+  });
 });

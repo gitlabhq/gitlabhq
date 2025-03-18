@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :repository) }
 
   describe '#initialize' do
@@ -27,6 +27,39 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       let(:dry_run) { true }
 
       it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#linting?' do
+    subject { command.linting? }
+
+    let(:command) { described_class.new(linting: linting) }
+    let(:linting) { false }
+
+    it { is_expected.to eq(false) }
+
+    context 'when linting is true' do
+      let(:linting) { true }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#readonly?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { command.readonly? }
+
+    let(:command) { described_class.new(dry_run: dry_run, linting: linting) }
+
+    where(:dry_run, :linting, :result) do
+      false | false | false
+      true  | false | true
+      false | true  | true
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
     end
   end
 

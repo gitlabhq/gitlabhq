@@ -3,5 +3,5 @@ name: query_analyzer_gitlab_schema_metrics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73839
 milestone: '14.5'
 type: ops
-group: group::cells infrastructure
+group: group::database frameworks
 default_enabled: false

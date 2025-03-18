@@ -35,7 +35,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       milestone assignees reviewers participants subscribed labels discussion_locked time_estimate
       total_time_spent human_time_estimate human_total_time_spent reference author merged_at closed_at
       commit_count current_user_todos conflicts auto_merge_enabled approved_by source_branch_protected
-      squash_on_merge available_auto_merge_strategies
+      squash_on_merge squash_read_only available_auto_merge_strategies
       has_ci mergeable commits committers commits_without_merge_commits squash security_auto_fix default_squash_commit_message
       auto_merge_strategy merge_user award_emoji prepared_at codequality_reports_comparer supports_lock_on_merge
       mergeability_checks merge_after

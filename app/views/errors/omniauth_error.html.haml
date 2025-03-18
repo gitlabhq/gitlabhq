@@ -5,6 +5,8 @@
   %h1
     = _('422: Sign-in using %{provider} auth failed') % { provider: @provider }
   %p
+    = @error
+  %p
     = _('If you are unable to sign in or recover your password, contact a GitLab administrator.')
   .action-container
     = render Pajamas::ButtonComponent.new(variant: :confirm,

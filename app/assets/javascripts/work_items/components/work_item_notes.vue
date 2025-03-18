@@ -6,6 +6,7 @@ import {
   TYPENAME_DISCUSSION,
   TYPENAME_DISCUSSION_NOTE,
   TYPENAME_NOTE,
+  TYPENAME_GROUP,
 } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
@@ -66,6 +67,11 @@ export default {
       type: String,
       required: true,
     },
+    isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isModal: {
       type: Boolean,
       required: false,
@@ -77,6 +83,11 @@ export default {
       default: () => [],
     },
     canSetWorkItemMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canSummarizeComments: {
       type: Boolean,
       required: false,
       default: false,
@@ -115,6 +126,11 @@ export default {
       default: false,
       required: false,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -124,9 +140,13 @@ export default {
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
       workItemNamespace: null,
       previewNote: null,
+      workItemNotes: [],
     };
   },
   computed: {
+    shouldLoadPreviewNote() {
+      return this.previewNoteId && !this.isDrawer && !this.isModal;
+    },
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
     },
@@ -153,7 +173,7 @@ export default {
       return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
     },
     isGroupWorkItem() {
-      return this.workItemNamespace?.id?.includes?.('Group');
+      return this.workItemNamespace?.id?.includes?.(TYPENAME_GROUP);
     },
     autocompleteDataSources() {
       const { fullPath, workItemIid: iid } = this;
@@ -247,14 +267,14 @@ export default {
     },
   },
   mounted() {
-    if (this.targetNoteHash) {
-      this.cleanup = scrollToTargetOnResize();
+    if (this.shouldLoadPreviewNote) {
+      this.cleanupScrollListener = scrollToTargetOnResize();
     }
   },
   apollo: {
     previewNote: {
       skip() {
-        return !this.previewNoteId;
+        return !this.shouldLoadPreviewNote;
       },
       query: workItemNoteQuery,
       variables() {
@@ -273,15 +293,12 @@ export default {
         // make sure skeleton notes are placed below the preview note
         if (result?.data?.note && this.$apollo.queries.workItemNotes?.loading) {
           this.isLoadingMore = true;
-        } else {
-          this.cleanup?.();
         }
       },
       error(error) {
         Sentry.captureException(error);
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemNotes: {
       query: workItemNotesByIidQuery,
       variables() {
@@ -307,6 +324,8 @@ export default {
         this.isLoadingMore = false;
         if (this.hasNextPage) {
           this.fetchMoreNotes();
+        } else {
+          this.cleanupScrollListener?.();
         }
       },
       subscribeToMore: [
@@ -443,8 +462,10 @@ export default {
 <template>
   <div class="work-item-notes">
     <work-item-notes-activity-header
+      :can-summarize-comments="canSummarizeComments"
       :sort-order="sortOrder"
       :disable-activity-filter-sort="disableActivityFilterSort"
+      :work-item-id="workItemId"
       :work-item-type="workItemType"
       :discussion-filter="discussionFilter"
       :use-h2="useH2"
@@ -458,6 +479,8 @@ export default {
         <ul class="notes notes-form timeline">
           <work-item-add-note
             v-bind="workItemCommentFormProps"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :is-group-work-item="isGroupWorkItem"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
@@ -489,6 +512,8 @@ export default {
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="isWorkItemConfidential"
               :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
+              :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+              :is-group-work-item="isGroupWorkItem"
               @deleteNote="showDeleteNoteModal($event, discussion)"
               @reportAbuse="reportAbuse(true, $event)"
               @error="$emit('error', $event)"
@@ -508,6 +533,8 @@ export default {
         <ul class="notes notes-form timeline">
           <work-item-add-note
             v-bind="workItemCommentFormProps"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :is-group-work-item="isGroupWorkItem"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"

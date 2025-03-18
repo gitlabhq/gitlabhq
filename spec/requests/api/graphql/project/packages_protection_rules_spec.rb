@@ -37,6 +37,7 @@ RSpec.describe 'getting the packages protection rules linked to a project', :agg
           hash_including(
             'packageNamePattern' => package_protection_rule.package_name_pattern,
             'packageType' => 'NPM',
+            'minimumAccessLevelForDelete' => 'OWNER',
             'minimumAccessLevelForPush' => 'MAINTAINER'
           )
         )

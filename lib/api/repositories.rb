@@ -231,6 +231,35 @@ module API
         end
       end
 
+      desc 'Get repository health' do
+        success Entities::RepositoryHealth
+      end
+      params do
+        optional :generate, type: Boolean, default: false, desc: 'Triggers a new health report to be generated'
+      end
+      get ':id/repository/health', urgency: :low do
+        unless Feature.enabled?(:project_repositories_health, user_project)
+          not_found!
+        end
+
+        authorize! :admin_project, user_project
+
+        generate = params[:generate] || false
+        if generate
+          check_rate_limit!(:project_repositories_health, scope: [user_project]) do
+            render_api_error!({ error: 'Repository health has been requested too many times. Try again later.' }, 429)
+          end
+        end
+
+        health = user_project.repository.health(generate)
+
+        if health.nil?
+          not_found!
+        end
+
+        present health, with: Entities::RepositoryHealth
+      end
+
       desc 'Get repository contributors' do
         success Entities::Contributor
       end
@@ -293,7 +322,8 @@ module API
           desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases
+      route_setting :authorization, job_token_policies: :read_releases,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/changelog' do
         check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)

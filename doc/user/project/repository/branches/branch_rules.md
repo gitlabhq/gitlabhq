@@ -164,6 +164,7 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181370) in GitLab 17.9 with a flag named `branch_rule_squash_settings`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/506542) in GitLab 17.10.
 
 {{< /history >}}
 

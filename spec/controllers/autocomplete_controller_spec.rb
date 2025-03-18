@@ -238,7 +238,25 @@ RSpec.describe AutocompleteController do
       end
     end
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
+    context 'when autocomplete users feature flag is disabled' do
+      before do
+        stub_feature_flags(autocomplete_users_rate_limit: false)
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
+        let(:current_user) { user }
+
+        def request
+          get(:users, params: { search: 'foo@bar.com' })
+        end
+
+        before do
+          sign_in(current_user)
+        end
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :autocomplete_users do
       let(:current_user) { user }
 
       def request

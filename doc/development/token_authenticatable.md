@@ -14,9 +14,9 @@ This module provides a flexible way to add token-based authentication to your mo
 
 It supports three storage strategies:
 
-- `insecure`: the token is stored as-is (not encrypted) in the database
 - `digest`: the `SHA256` digests of the token is stored in the database
 - `encrypted`: the token is stored encrypted in the database using the AES 256 GCM algorithm
+- `insecure`: the token is stored as-is (not encrypted nor digested) in the database. We strongly discourage the usage of this strategy.
 
 It also supports several options for each storage strategies.
 
@@ -45,10 +45,11 @@ end
   Both `token_field` and `token_field_encrypted` columns need to exist.
 - `digest: true`: Stores the token's digest in the database.
   The `token_field_digest` column needs to exist.
+- `insecure: true`: Stores the token as-is (not encrypted nor digested) in the database. We strongly discourage the usage of this strategy.
 
 {{< alert type="note" >}}
 
-By default, tokens are stored as-is (not encrypted).
+By default, the `SHA256` digest of the tokens are stored in the database, if no storage strategy is chosen.
 
 {{< /alert >}}
 

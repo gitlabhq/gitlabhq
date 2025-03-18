@@ -32,4 +32,10 @@ module BlameHelper
   def entire_blame_path(id, project)
     namespace_project_blame_streaming_path(namespace_id: project.namespace, project_id: project, id: id)
   end
+
+  def blame_preferences(project)
+    {
+      has_revs_file: (!project.repository.ignore_revs_file_blob.nil?).to_json
+    }
+  end
 end

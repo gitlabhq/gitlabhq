@@ -38,6 +38,7 @@ const ICON_COLORS = {
   issues: 'system-note-icon-success',
   error: 'system-note-icon-danger',
   'review-warning': 'system-note-icon-warning',
+  'comment-lines': 'system-note-icon-info',
 };
 
 export default {
@@ -106,7 +107,7 @@ export default {
       return this.getNoteableData.noteableType === 'MergeRequest';
     },
     iconBgClass() {
-      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-strong gl-text-subtle';
+      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-text-subtle';
     },
     systemNoteIconName() {
       let icon = this.note.system_note_icon_name;
@@ -159,7 +160,7 @@ export default {
         iconBgClass,
         {
           'system-note-icon -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
-          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-subtle gl-bg-gray-900':
+          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-subtle':
             !isAllowedIcon,
         },
       ]"

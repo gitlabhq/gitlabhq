@@ -207,6 +207,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         pipeline.succeed!
       end
     end
+
+    describe 'to completed' do
+      # need pre-created object to avoid another InternalEvent being triggers in the models create hook
+      let!(:pipeline) { create(:ci_empty_pipeline, user: user, project: project) }
+
+      {
+        succeed!: 'success',
+        drop!: 'failed',
+        skip!: 'skipped',
+        cancel!: 'canceled'
+      }.each do |pipeline_event, status|
+        context "when transitioning to #{status}" do
+          it_behaves_like 'internal event tracking' do
+            let(:event) { 'completed_pipeline_execution' }
+            let(:additional_properties) { { label: status } }
+            let(:category) { described_class.name }
+
+            subject(:completed_pipeline) { pipeline.public_send(pipeline_event) }
+          end
+        end
+      end
+    end
   end
 
   describe 'callbacks' do
@@ -1404,7 +1426,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#retryable?' do
     subject { pipeline.retryable? }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project, created_at: 1.day.ago) }
 
     context 'no failed builds' do
       before do
@@ -1422,6 +1444,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'is retryable' do
           is_expected.to be_truthy
+        end
+
+        context 'with archived pipelines' do
+          before do
+            stub_application_setting(archive_builds_in_seconds: 3600)
+          end
+
+          it { is_expected.to be_falsey }
         end
       end
     end
@@ -2217,6 +2247,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when pipeline has no merge requests' do
         it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
+      end
+    end
+
+    describe 'pipeline status update subscription trigger' do
+      %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
+        context "when pipeline receives #{action} event" do
+          it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+
+            pipeline.public_send(action)
+          end
+        end
       end
     end
 
@@ -3442,6 +3484,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:pipeline_action) { action }
 
         it 'schedules a new PipelineHooksWorker job' do
+          # Need this so this test will not fail if there are other logging calls
+          # in this method and the methods it uses.
+          allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
           expect(Gitlab::AppLogger).to receive(:info).with(
             message: include("Enqueuing hooks for Pipeline #{pipeline.id}"),
             class: described_class.name,
@@ -6090,6 +6136,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
       end
+    end
+  end
+
+  describe '#archived?' do
+    subject { build_stubbed(:ci_pipeline, created_at: 1.day.ago, project: project) }
+
+    context 'when archive_builds_in is set' do
+      before do
+        stub_application_setting(archive_builds_in_seconds: 3600)
+      end
+
+      it { is_expected.to be_archived }
+    end
+
+    context 'when archive_builds_in is not set' do
+      before do
+        stub_application_setting(archive_builds_in_seconds: nil)
+      end
+
+      it { is_expected.not_to be_archived }
     end
   end
 end

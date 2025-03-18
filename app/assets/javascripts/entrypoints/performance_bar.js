@@ -1,3 +1,5 @@
 import '~/webpack';
 import '~/commons';
-import '~/performance_bar';
+import initPerformanceBarAndLog from '~/performance_bar';
+
+initPerformanceBarAndLog();

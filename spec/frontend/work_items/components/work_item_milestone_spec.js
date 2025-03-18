@@ -10,6 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
+import { ISSUE_MR_CHANGE_MILESTONE } from '~/behaviors/shortcuts/keybindings';
 import {
   projectMilestonesResponse,
   projectMilestonesResponseWithNoMilestones,
@@ -66,6 +67,12 @@ describe('WorkItemMilestone component', () => {
     createComponent();
 
     expect(findSidebarDropdownWidget().props('dropdownLabel')).toBe('Milestone');
+  });
+
+  it('has key shortcut tooltip', () => {
+    createComponent();
+
+    expect(findSidebarDropdownWidget().props('shortcut')).toBe(ISSUE_MR_CHANGE_MILESTONE);
   });
 
   describe('Default text with canUpdate false and milestone value', () => {

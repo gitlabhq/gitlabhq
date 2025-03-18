@@ -4,13 +4,11 @@ import { debounce, isEqual } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { s__, __, sprintf } from '~/locale';
-import createStore from '../stores';
 
 const SEARCH_DEBOUNCE_MS = 250;
 
 export default {
   name: 'MilestoneCombobox',
-  store: createStore(),
   components: {
     GlCollapsibleListbox,
     GlBadge,
@@ -50,8 +48,8 @@ export default {
     unselect: __('Unselect'),
   },
   computed: {
-    ...mapState(['matches', 'selectedMilestones']),
-    ...mapGetters(['isLoading']),
+    ...mapState('milestoneCombobox', ['matches', 'selectedMilestones']),
+    ...mapGetters('milestoneCombobox', ['isLoading']),
     allMilestones() {
       const { groupMilestones, projectMilestones } = this.matches || {};
       const milestones = [];
@@ -125,7 +123,7 @@ export default {
     this.fetchMilestones();
   },
   methods: {
-    ...mapActions([
+    ...mapActions('milestoneCombobox', [
       'setProjectId',
       'setGroupId',
       'setGroupMilestonesAvailable',

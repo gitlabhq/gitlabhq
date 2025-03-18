@@ -70,7 +70,7 @@ To manually configure a GitLab OpenTofu Report artifact:
 
    {{< alert type="note" >}}
 
-In distributions that use Bash (for example, Ubuntu), `alias` statements are not
+   In distributions that use Bash (for example, Ubuntu), `alias` statements are not
    expanded in non-interactive mode. If your pipelines fail with the error
    `convert_report: command not found`, alias expansion can be activated explicitly
    by adding a `shopt` command to your script:

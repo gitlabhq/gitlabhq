@@ -118,12 +118,13 @@ export default {
         <div
           v-if="isCollapsible"
           :class="{ 'md:gl-hidden': !collapseOnDesktop }"
-          class="gl-border-l gl-ml-3 gl-h-6 gl-pl-3"
+          class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button
             v-gl-tooltip
             :title="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
             :aria-label="collapsed ? expandDetailsTooltip : collapseDetailsTooltip"
+            :aria-expanded="collapsed ? 'false' : 'true'"
             :icon="collapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             size="small"

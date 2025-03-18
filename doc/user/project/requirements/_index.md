@@ -22,21 +22,13 @@ If an industry standard *requires* that your application has a certain feature o
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
-{{< alert type="note" >}}
-
-Requirements and [test cases](../../../ci/test_cases/_index.md) are being
-[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
-[Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
-For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
-
-{{< /alert >}}
-
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 <!-- Video published on 2020-04-09 -->
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0) (Feb 2021).
+For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0).
+<!-- Video published on 2020-02-12 -->
 
 ![requirements list view](img/requirements_list_v13_5.png)
 
@@ -227,7 +219,7 @@ requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI/CD variable.
 ```yaml
 requirements_confirmation:
   rules:
-    - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
+    - if: '$CI_HAS_OPEN_REQUIREMENTS == "true"'
       when: manual
     - when: never
   allow_failure: false
@@ -287,7 +279,7 @@ to you after the import is complete.
 When importing requirements from a CSV file, it must be formatted in a certain way:
 
 - **Header row:** CSV files must include the following headers:
-  `title` and `description`. The headers are case insensitive.
+  `title` and `description`. The headers are case-insensitive.
 - **Columns:** data from columns other than `title` and `description` is not imported.
 - **Separators:** the column separator is automatically detected from the header row.
   Supported separator characters are: commas (`,`), semicolons (`;`), and tabs (`\t`).

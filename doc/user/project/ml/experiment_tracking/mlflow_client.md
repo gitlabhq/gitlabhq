@@ -23,8 +23,6 @@ title: MLflow client compatibility
 GitLab [Model experiment tracking](_index.md) and GitLab
 [Model registry](../model_registry/_index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
 
-GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
-
 ## Enable MLflow client integration
 
 Prerequisites:
@@ -375,6 +373,8 @@ client.log_param(run_id, '<param_name>', '<param_value>')
 client.log_batch(run_id, metric_list, param_list, tag_list)
 ```
 
+Because each file has a size limit of 5 GB, you must partition larger models.
+
 #### Logging artifacts to a model version
 
 GitLab creates a package that can be used by the MLflow client to upload files.
@@ -420,8 +420,7 @@ if os.getenv('GITLAB_CI'):
 
 ## Supported MLflow client methods and caveats
 
-GitLab supports these methods from the MLflow client. Other methods might be supported but were not
-tested. More information can be found in the [MLflow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html). The MlflowClient counterparts
+GitLab supports the following methods from the MLflow client. More information can be found in the [MLflow Documentation](https://mlflow.org/docs/latest/index.html). The MlflowClient counterparts
 of the methods below are also supported with the same caveats.
 
 | Method                   | Supported       | Version Added | Comments                                                                                     |
@@ -453,6 +452,8 @@ of the methods below are also supported with the same caveats.
 | `update_run`             | Yes             | 15.11         |                                                                                              |
 | `log_model`              | Partial         | 15.11         | (15.11) Saves the artifacts, but not the model data. `artifact_path` must be empty.          |
 | `load_model`             | Yes             | 17.5          |                                                                                              |
+| `download_artifacts`     | Yes             | 17.9          |                                                                                              |
+| `list_artifacts`         | Yes             | 17.9          |                                                                                              |
 
 Other MLflowClient methods:
 
@@ -472,5 +473,5 @@ Other MLflowClient methods:
 ## Known issues
 
 - The API GitLab supports is the one defined at MLflow version 2.7.1.
-- MLflow client methods not listed above are not supported.
+- MLflow client methods not listed in [supported methods](#supported-mlflow-client-methods-and-caveats) might still work but have not been tested.
 - During creation of experiments and runs, ExperimentTags are stored, even though they are not displayed.

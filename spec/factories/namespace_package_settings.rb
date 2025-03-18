@@ -14,6 +14,7 @@ FactoryBot.define do
     nuget_duplicate_exception_regex { 'foo' }
 
     nuget_symbol_server_enabled { false }
+    audit_events_enabled { false }
 
     terraform_module_duplicates_allowed { false }
     terraform_module_duplicate_exception_regex { 'foo' }

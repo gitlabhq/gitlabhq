@@ -12,11 +12,21 @@ title: Back up and restore large reference architectures
 
 {{< /details >}}
 
-This document describes how to:
+GitLab backups preserve data consistency and enable disaster recovery for
+large-scale GitLab deployments. This process:
 
-- [Configure daily backups](#configure-daily-backups)
-- Take a backup now (planned)
-- [Restore a backup](#restore-a-backup)
+- Coordinates data backups across distributed storage components
+- Preserves PostgreSQL databases up to multiple terabytes in size
+- Protects object storage data in external services
+- Maintains backup integrity for large Git repository collections
+- Creates recoverable copies of configuration and secret files
+- Enables restoration of system data with minimal downtime
+
+Follow these procedures for GitLab environments running reference architectures
+that support 3,000+ users, with special considerations for cloud-based
+databases and object storage.
+
+{{< alert type="note" >}}
 
 This document is intended for environments using:
 
@@ -24,6 +34,8 @@ This document is intended for environments using:
 - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
 - [Amazon S3](https://aws.amazon.com/s3/) for object storage
 - [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
+
+{{< /alert >}}
 
 ## Configure daily backups
 
@@ -65,7 +77,7 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
 {{< tab title="Google" >}}
 
 1. [Create a backup bucket in GCS](https://cloud.google.com/storage/docs/creating-buckets).
-1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) which copy each GitLab object storage bucket to a backup bucket. You can create these jobs once, and [schedule them to run daily](https://cloud.google.com/storage-transfer/docs/schedule-transfer-jobs). However this mixes new and old object storage data, so files that were deleted in GitLab will still exist in the backup. This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to GitLab users since they do not exist in the GitLab database. You can delete [some of these orphaned files](../../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore, but this clean up Rake task only operates on a subset of files.
+1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) which copy each GitLab object storage bucket to a backup bucket. You can create these jobs once, and [schedule them to run daily](https://cloud.google.com/storage-transfer/docs/schedule-transfer-jobs). However this mixes new and old object storage data, so files that were deleted in GitLab will still exist in the backup. This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to GitLab users because they do not exist in the GitLab database. You can delete [some of these orphaned files](../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore, but this clean up Rake task only operates on a subset of files.
    1. For `When to overwrite`, choose `Never`. GitLab object stored files are intended to be immutable. This selection could be helpful if a malicious actor succeeded at mutating GitLab files.
    1. For `When to delete`, choose `Never`. If you sync the backup bucket to source, then you cannot recover if files are accidentally or maliciously deleted from source.
 1. Alternatively, it is possible to backup object storage into buckets or subdirectories segregated by day. This avoids the problem of orphaned files after restore, and supports backup of file versions if needed. But it greatly increases backup storage costs. This can be done with [a Cloud Function triggered by Cloud Scheduler](https://cloud.google.com/scheduler/docs/tut-gcf-pub-sub), or with a script run by a cronjob. A partial example:
@@ -456,7 +468,7 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
 1. For added assurance, you can perform
    [an integrity check on the uploaded files](../raketasks/check.md#uploaded-files-integrity):
 
-   Since these commands can take a long time because they iterate over all rows, run the following commands the GitLab Rails node,
+   These commands can take a long time because they iterate over all rows. So, run the following commands in the GitLab Rails node,
    rather than a Toolbox pod:
 
    ```shell

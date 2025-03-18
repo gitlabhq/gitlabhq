@@ -11,7 +11,8 @@ There are two software distributions of GitLab:
 
 - The open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE).
 - The open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE).
-  **Note:** The EE repository has been archived. GitLab now operates [under a single codebase](https://about.gitlab.com/blog/2019/08/23/a-single-codebase-for-gitlab-community-and-enterprise-edition/).
+
+The EE repository has been archived. GitLab now operates [under a single codebase](https://about.gitlab.com/blog/2019/08/23/a-single-codebase-for-gitlab-community-and-enterprise-edition/).
 
 GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
@@ -332,38 +333,38 @@ graph LR
   %% end subgraph External
   end
 
-click Alertmanager "./architecture.html#alertmanager"
-click Praefect "./architecture.html#praefect"
-click Geo "./architecture.html#gitlab-geo"
-click NGINX "./architecture.html#nginx"
-click Runner "./architecture.html#gitlab-runner"
-click Registry "./architecture.html#registry"
-click ObjectStorage "./architecture.html#minio"
-click Mattermost "./architecture.html#mattermost"
-click Gitaly "./architecture.html#gitaly"
-click Jaeger "./architecture.html#jaeger"
-click GitLabWorkhorse "./architecture.html#gitlab-workhorse"
-click LDAP "./architecture.html#ldap-authentication"
-click Puma "./architecture.html#puma"
-click GitLabShell "./architecture.html#gitlab-shell"
-click SSH "./architecture.html#ssh-request-22"
-click Sidekiq "./architecture.html#sidekiq"
-click Sentry "./architecture.html#sentry"
-click GitLabExporter "./architecture.html#gitlab-exporter"
-click Elasticsearch "./architecture.html#elasticsearch"
-click Migrations "./architecture.html#database-migrations"
-click PostgreSQL "./architecture.html#postgresql"
-click Consul "./architecture.html#consul"
-click PgBouncer "./architecture.html#pgbouncer"
-click PgBouncerExporter "./architecture.html#pgbouncer-exporter"
-click RedisExporter "./architecture.html#redis-exporter"
-click Redis "./architecture.html#redis"
-click Prometheus "./architecture.html#prometheus"
-click Grafana "./architecture.html#grafana"
-click GitLabPages "./architecture.html#gitlab-pages"
-click PostgreSQLExporter "./architecture.html#postgresql-exporter"
-click SMTP "./architecture.html#outbound-email"
-click NodeExporter "./architecture.html#node-exporter"
+click Alertmanager "#alertmanager"
+click Praefect "#praefect"
+click Geo "#gitlab-geo"
+click NGINX "#nginx"
+click Runner "#gitlab-runner"
+click Registry "#registry"
+click ObjectStorage "#minio"
+click Mattermost "#mattermost"
+click Gitaly "#gitaly"
+click Jaeger "#jaeger"
+click GitLabWorkhorse "#gitlab-workhorse"
+click LDAP "#ldap-authentication"
+click Puma "#puma"
+click GitLabShell "#gitlab-shell"
+click SSH "#ssh-request-22"
+click Sidekiq "#sidekiq"
+click Sentry "#sentry"
+click GitLabExporter "#gitlab-exporter"
+click Elasticsearch "#elasticsearch"
+click Migrations "#database-migrations"
+click PostgreSQL "#postgresql"
+click Consul "#consul"
+click PgBouncer "#pgbouncer"
+click PgBouncerExporter "#pgbouncer-exporter"
+click RedisExporter "#redis-exporter"
+click Redis "#redis"
+click Prometheus "#prometheus"
+click Grafana "#grafana"
+click GitLabPages "#gitlab-pages"
+click PostgreSQLExporter "#postgresql-exporter"
+click SMTP "#outbound-email"
+click NodeExporter "#node-exporter"
 ```
 
 ### Component legend

@@ -230,8 +230,11 @@ export default {
     isAllBranchesRule() {
       return this.branch === this.$options.i18n.allBranches;
     },
+    isAllProtectedBranchesRule() {
+      return this.branch === this.$options.i18n.allProtectedBranches;
+    },
     isPredefinedRule() {
-      return this.isAllBranchesRule || this.branch === this.$options.i18n.allProtectedBranches;
+      return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
     },
     hasPushAccessLevelSet() {
       return this.pushAccessLevels?.total > 0;
@@ -251,7 +254,11 @@ export default {
       return this.showApprovers || this.showSquashSetting;
     },
     showSquashSetting() {
-      return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
+      return (
+        this.glFeatures.branchRuleSquashSettings &&
+        !this.branch?.includes('*') &&
+        !this.isAllProtectedBranchesRule
+      ); // Squash settings are not available for wildcards or All protected branches
     },
     showEditSquashSetting() {
       return (
@@ -455,6 +462,20 @@ export default {
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
     <div v-else-if="!branchRule && !isPredefinedRule">{{ $options.i18n.noData }}</div>
     <div v-else>
+      <access-levels-drawer
+        :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
+        :roles="accessLevelsDrawerData.roles"
+        :users="accessLevelsDrawerData.users"
+        :groups="accessLevelsDrawerData.groups"
+        :deploy-keys="accessLevelsDrawerData.deployKeys"
+        :is-loading="isRuleUpdating"
+        :group-id="groupId"
+        :title="accessLevelsDrawerTitle"
+        :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
+        @editRule="onEditAccessLevels"
+        @close="closeAccessLevelsDrawer"
+      />
+
       <crud-component :title="$options.i18n.ruleTarget" data-testid="rule-target-card">
         <template #actions>
           <gl-button
@@ -521,20 +542,6 @@ export default {
           :is-edit-available="canAdminProtectedBranches"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
-        />
-
-        <access-levels-drawer
-          :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
-          :roles="accessLevelsDrawerData.roles"
-          :users="accessLevelsDrawerData.users"
-          :groups="accessLevelsDrawerData.groups"
-          :deploy-keys="accessLevelsDrawerData.deployKeys"
-          :is-loading="isRuleUpdating"
-          :group-id="groupId"
-          :title="accessLevelsDrawerTitle"
-          :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
-          @editRule="onEditAccessLevels"
-          @close="closeAccessLevelsDrawer"
         />
 
         <!-- Force push -->

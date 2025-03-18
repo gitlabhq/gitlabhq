@@ -10,6 +10,8 @@ import {
   TODO_TARGET_TYPE_MERGE_REQUEST,
   TODO_TARGET_TYPE_PIPELINE,
   TODO_TARGET_TYPE_SSH_KEY,
+  TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
 } from '~/todos/constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { DESIGN_TODO, MR_BUILD_FAILED_TODO } from '../mock_data';
@@ -56,6 +58,11 @@ describe('TodoItemTitle', () => {
         'Important issue › Screenshot_2024-11-22_at_16.11.25.png · Flightjs / Flight #35',
         DESIGN_TODO,
       ],
+      [
+        'to-do for duo pro access granted',
+        'Getting started with GitLab Duo',
+        { ...mockToDo, action: TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED },
+      ],
     ])(`renders %s as %s`, (_a, b, c) => {
       createComponent(c);
       expect(wrapper.findByTestId('todo-title').text()).toBe(b);
@@ -76,6 +83,23 @@ describe('TodoItemTitle', () => {
       ${'UNKNOWN_TYPE'}                 | ${''}              | ${false}
     `('renders "$icon" for the "$targetType" type', ({ targetType, icon, showsIcon }) => {
       createComponent({ ...mockToDo, targetType });
+
+      const glIcon = wrapper.findComponent(GlIcon);
+      expect(glIcon.exists()).toBe(showsIcon);
+
+      if (showsIcon) {
+        expect(glIcon.props('name')).toBe(icon);
+      }
+    });
+  });
+
+  describe('correct icon for action', () => {
+    it.each`
+      action                                            | icon      | showsIcon
+      ${TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED}        | ${'book'} | ${true}
+      ${TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED} | ${'book'} | ${true}
+    `('renders "$icon" for the "$action" action', ({ action, icon, showsIcon }) => {
+      createComponent({ ...mockToDo, action });
 
       const glIcon = wrapper.findComponent(GlIcon);
       expect(glIcon.exists()).toBe(showsIcon);

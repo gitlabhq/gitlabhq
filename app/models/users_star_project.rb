@@ -47,6 +47,9 @@ class UsersStarProject < ApplicationRecord
   end
 
   def decrement_project_star_count
-    Project.update_counters(project, star_count: -1) if user.active?
+    return unless user.active?
+    return unless project.star_count > 0
+
+    Project.update_counters(project, star_count: -1)
   end
 end

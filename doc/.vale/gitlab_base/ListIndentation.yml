@@ -5,7 +5,7 @@
 #
 extends: existence
 message: "Items nested under an ordered list must be indented three spaces. Items nested under an unordered list must be indented two spaces."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/#nesting-inside-a-list-item
+link: https://docs.gitlab.com/development/documentation/styleguide/#nesting-inside-a-list-item
 vocab: false
 level: error
 nonword: true

@@ -12,13 +12,7 @@ import {
   FORM_TYPES,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_TASK,
-  I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
-  I18N_WORK_ITEM_ADD_BUTTON_LABEL,
-  I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
-  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
-  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   WORK_ITEM_TYPE_VALUE_EPIC,
-  I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   MAX_WORK_ITEMS,
   sprintfWorkItem,
   WIDGET_TYPE_MILESTONE,
@@ -192,19 +186,26 @@ export default {
     },
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
-        return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.childrenTypeName);
+        return sprintfWorkItem(s__('WorkItem|Create %{workItemType}'), this.childrenTypeName);
       }
       if (this.workItemsToAdd.length > 1) {
-        return sprintfWorkItem(I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL, this.childrenTypeName);
+        return sprintfWorkItem(s__('WorkItem|Add %{workItemType}s'), this.childrenTypeName);
       }
-      return sprintfWorkItem(I18N_WORK_ITEM_ADD_BUTTON_LABEL, this.childrenTypeName);
+      return sprintfWorkItem(s__('WorkItem|Add %{workItemType}'), this.childrenTypeName);
     },
     confidentialityCheckboxLabel() {
-      return sprintfWorkItem(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, this.childrenTypeName);
+      return sprintfWorkItem(
+        s__(
+          'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
+        ),
+        this.childrenTypeName,
+      );
     },
     confidentialityCheckboxTooltip() {
       return sprintfWorkItem(
-        I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
+        s__(
+          'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
+        ),
         this.childrenTypeName,
         this.parentWorkItemType,
       );
@@ -416,7 +417,6 @@ export default {
     projectInputPlaceholder: s__('WorkItem|Select a project'),
     groupInputPlaceholder: s__('WorkItem|Select a group'),
     titleInputValidationMessage: __('Maximum of 255 characters'),
-    maxItemsErrorMessage: I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   },
 };
 </script>
@@ -514,7 +514,7 @@ export default {
         class="gl-mb-2 gl-text-red-500"
         data-testid="work-items-limit-error"
       >
-        {{ $options.i18n.maxItemsErrorMessage }}
+        {{ s__('WorkItem|Only 10 items can be added at a time.') }}
       </div>
     </div>
     <div class="gl-flex gl-gap-3">

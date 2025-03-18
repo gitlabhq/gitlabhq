@@ -21,11 +21,11 @@ module Keeps
 
     GROUP_LABEL = 'group::global search'
 
-    def initialize(logger: nil)
+    def initialize(...)
       @obsolete_migrations_to_delete = {}
       load_migrations_to_process
 
-      super(logger: logger)
+      super
     end
 
     def each_change

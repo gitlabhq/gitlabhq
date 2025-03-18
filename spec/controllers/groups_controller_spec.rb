@@ -434,77 +434,6 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       end
     end
 
-    context 'when creating a group with captcha protection' do
-      before do
-        sign_in(user)
-
-        stub_application_setting(recaptcha_enabled: true)
-      end
-
-      after do
-        # Avoid test ordering issue and ensure `verify_recaptcha` returns true
-        unless Recaptcha.configuration.skip_verify_env.include?('test')
-          Recaptcha.configuration.skip_verify_env << 'test'
-        end
-      end
-
-      context 'when the reCAPTCHA is not solved' do
-        before do
-          allow(controller).to receive(:verify_recaptcha).and_return(false)
-        end
-
-        it 'displays an error' do
-          post :create, params: { group: { name: 'new_group', path: "new_group" } }
-
-          expect(response).to render_template(:new)
-          expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
-        end
-
-        it 'sets gon variables' do
-          Gon.clear
-
-          post :create, params: { group: { name: 'new_group', path: "new_group" } }
-
-          expect(response).to render_template(:new)
-          expect(Gon.all_variables).not_to be_empty
-        end
-      end
-
-      it 'allows creating a group when the reCAPTCHA is solved' do
-        expect do
-          post :create, params: { group: { name: 'new_group', path: "new_group" } }
-        end.to change { Group.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:found)
-      end
-
-      it 'allows creating a sub-group without checking the captcha' do
-        expect(controller).not_to receive(:verify_recaptcha)
-
-        expect do
-          post :create, params: { group: { name: 'new_group', path: "new_group", parent_id: group.id } }
-        end.to change { Group.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:found)
-      end
-
-      context 'with feature flag switched off' do
-        before do
-          stub_feature_flags(recaptcha_on_top_level_group_creation: false)
-        end
-
-        it 'allows creating a group without the reCAPTCHA' do
-          expect(controller).not_to receive(:verify_recaptcha)
-
-          expect do
-            post :create, params: { group: { name: 'new_group', path: "new_group" } }
-          end.to change { Group.count }.by(1)
-
-          expect(response).to have_gitlab_http_status(:found)
-        end
-      end
-    end
-
     context 'when creating a group with the `setup_for_company` attribute present' do
       before do
         sign_in(user)
@@ -594,92 +523,6 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       expect(response).to render_template('groups/merge_requests')
     end
-
-    context 'sorting by votes' do
-      context 'when vue_merge_request_list is disabled' do
-        before do
-          stub_feature_flags(vue_merge_request_list: false)
-        end
-
-        it 'sorts most popular merge requests' do
-          get :merge_requests, params: { id: group.to_param, sort: 'upvotes_desc' }
-          expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
-        end
-
-        it 'sorts least popular merge requests' do
-          get :merge_requests, params: { id: group.to_param, sort: 'downvotes_desc' }
-          expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
-        end
-      end
-    end
-
-    context 'rendering views' do
-      before do
-        stub_feature_flags(vue_merge_request_list: false)
-      end
-
-      render_views
-
-      it 'displays MR counts in nav' do
-        get :merge_requests, params: { id: group.to_param }
-
-        expect(response.body).to have_content('Open 2 Merged 0 Closed 0 All 2')
-        expect(response.body).not_to have_content('Open Merged Closed All')
-      end
-
-      context 'when MergeRequestsFinder raises an exception' do
-        before do
-          allow_next_instance_of(MergeRequestsFinder) do |instance|
-            allow(instance).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
-          end
-        end
-
-        it 'does not display MR counts in nav' do
-          get :merge_requests, params: { id: group.to_param }
-
-          expect(response.body).to have_content('Open Merged Closed All')
-          expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
-        end
-      end
-    end
-
-    context 'when an ActiveRecord::QueryCanceled is raised' do
-      before do
-        stub_feature_flags(vue_merge_request_list: false)
-
-        allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|
-          allow(instance).to receive(:data).and_raise(ActiveRecord::QueryCanceled)
-        end
-      end
-
-      it 'sets :search_timeout_occurred' do
-        get :merge_requests, params: { id: group.to_param }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:search_timeout_occurred)).to eq(true)
-      end
-
-      it 'logs the exception' do
-        get :merge_requests, params: { id: group.to_param }
-      end
-
-      context 'rendering views' do
-        render_views
-
-        it 'shows error message' do
-          get :merge_requests, params: { id: group.to_param }
-
-          expect(response.body).to have_content('Too many results to display. Edit your search or add a filter.')
-        end
-
-        it 'does not display MR counts in nav' do
-          get :merge_requests, params: { id: group.to_param }
-
-          expect(response.body).to have_content('Open Merged Closed All')
-          expect(response.body).not_to have_content('Open 0 Merged 0 Closed 0 All 0')
-        end
-      end
-    end
   end
 
   describe 'DELETE #destroy' do
@@ -702,12 +545,23 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         sign_in(user)
       end
 
-      it 'schedules a group destroy and redirects to the root path' do
-        Sidekiq::Testing.fake! do
-          expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+      context 'for a html request' do
+        it 'schedules a group destroy and redirects to the root path' do
+          Sidekiq::Testing.fake! do
+            expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          end
+          expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
+          expect(response).to redirect_to(root_path)
         end
-        expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
-        expect(response).to redirect_to(root_path)
+      end
+
+      context 'for a json request' do
+        it 'schedules a group destroy and returns message' do
+          Sidekiq::Testing.fake! do
+            expect { delete :destroy, format: :json, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          end
+          expect(Gitlab::Json.parse(response.body)).to eq({ 'message' => "Group '#{group.full_name}' is being deleted." })
+        end
       end
     end
   end

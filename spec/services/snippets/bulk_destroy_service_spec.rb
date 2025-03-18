@@ -54,6 +54,7 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
         aggregate_failures do
           expect(response).to be_error
           expect(response.message).to eq error_message
+          expect(response.reason).to eq error_reason
         end
       end
 
@@ -68,7 +69,8 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
       let(:service_user) { create(:user) }
 
       it_behaves_like 'error is raised' do
-        let(:error_message) { "You don't have access to delete these snippets." }
+        let(:error_message) { described_class::NO_ACCESS_ERROR[:message] }
+        let(:error_reason) { described_class::NO_ACCESS_ERROR[:reason] }
       end
 
       context 'when skip_authorization option is passed' do
@@ -92,7 +94,8 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
       end
 
       it_behaves_like 'error is raised' do
-        let(:error_message) { 'Failed to delete snippet repositories.' }
+        let(:error_message) { described_class::SNIPPET_REPOSITORIES_DELETE_ERROR[:message] }
+        let(:error_reason) { described_class::SNIPPET_REPOSITORIES_DELETE_ERROR[:reason] }
       end
     end
 
@@ -102,7 +105,8 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
       end
 
       it_behaves_like 'error is raised' do
-        let(:error_message) { 'Failed to remove snippets.' }
+        let(:error_message) { described_class::SNIPPETS_DELETE_ERROR[:message] }
+        let(:error_reason) { described_class::SNIPPETS_DELETE_ERROR[:reason] }
       end
     end
 

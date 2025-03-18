@@ -1,7 +1,7 @@
 ---
 table_name: member_approvals
 classes:
-- Members::MemberApproval
+- GitlabSubscriptions::MemberManagement::MemberApproval
 feature_categories:
 - groups_and_projects
 description: Stores approval requests for Member promotions along with old and new

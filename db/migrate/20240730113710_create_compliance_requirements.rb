@@ -4,7 +4,7 @@ class CreateComplianceRequirements < Gitlab::Database::Migration[2.2]
   milestone '17.3'
 
   def change
-    create_table :compliance_requirements do |t| # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
+    create_table :compliance_requirements do |t|
       t.timestamps_with_timezone null: false
       t.bigint :framework_id, null: false
       t.bigint :namespace_id, null: false

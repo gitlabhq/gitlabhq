@@ -3,7 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useFakeDate } from 'helpers/fake_date';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
-import { NEVER_TIME_RANGE } from '~/set_status_modal/constants';
+import { NEVER_TIME_RANGE, STATUS_MAX_LENGTH } from '~/set_status_modal/constants';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { timeRanges } from '~/vue_shared/constants';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
@@ -74,6 +74,12 @@ describe('SetStatusForm', () => {
       await createComponent();
 
       expect(findMessageInput().element.value).toBe(defaultPropsData.message);
+    });
+
+    it(`caps message at ${STATUS_MAX_LENGTH} characters`, async () => {
+      await createComponent();
+
+      expect(findMessageInput().attributes('maxlength')).toBe(STATUS_MAX_LENGTH.toString());
     });
   });
 

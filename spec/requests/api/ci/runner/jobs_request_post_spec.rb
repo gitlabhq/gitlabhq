@@ -148,70 +148,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(runner_manager.runner).to eq runner
               expect(runner_manager.contacted_at).to eq Time.current
             end
-
-            # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/504963 (when ci_runners is swapped)
-            # This is because the new table will have check constraints for these scenarios, and therefore
-            # any orphaned runners will be missing
-            context 'when runner is missing sharding_key_id', :aggregate_failures do
-              let(:connection) { Ci::ApplicationRecord.connection }
-              let(:params) { { token: 'foo' } }
-              let(:non_partitioned_runner) do
-                connection.execute(<<~SQL)
-                  INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id)
-                    VALUES(NOW(), #{runner_type}, '#{params[:token]}', NULL);
-                SQL
-
-                Ci::Runner.where(runner_type: runner_type).last
-              end
-
-              before do
-                # Allow creating orphaned runners that are not present in the partitioned table and
-                # are not associated with any group or project (created when FK was not present)
-                connection.transaction do
-                  connection.execute(<<~SQL)
-                    ALTER TABLE ci_runners DISABLE TRIGGER ALL;
-                  SQL
-
-                  non_partitioned_runner
-
-                  connection.execute(<<~SQL)
-                    ALTER TABLE ci_runners ENABLE TRIGGER ALL;
-                  SQL
-                end
-              end
-
-              context 'when group runner is missing sharding_key_id' do
-                let(:runner_type) { 2 }
-                let(:runner) { non_partitioned_runner }
-
-                it 'returns forbidden status code', :aggregate_failures do
-                  expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
-                  expect(response).to have_gitlab_http_status(:forbidden)
-                  expect(response.body).to eq({ message: '403 Forbidden - Runner is orphaned' }.to_json)
-                end
-              end
-
-              context 'when project runner is missing sharding_key_id' do
-                let(:runner_type) { 3 }
-                let(:runner) { non_partitioned_runner }
-
-                it 'returns forbidden status code', :aggregate_failures do
-                  expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
-                  expect(response).to have_gitlab_http_status(:forbidden)
-                  expect(response.body).to eq({ message: '403 Forbidden - Runner is orphaned' }.to_json)
-                end
-              end
-
-              private
-
-              def partitioned_runner_exists?(runner)
-                result = connection.execute(<<~SQL)
-                  SELECT COUNT(*) FROM ci_runners_e59bb2812d WHERE id = #{runner.id};
-                SQL
-
-                result.first['count'].positive?
-              end
-            end
           end
 
           context 'when ci_runner_machines with same system_xid already exists', :freeze_time do
@@ -856,6 +792,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
 
             let(:trigger) { create(:ci_trigger, project: project) }
+            let(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project, ref: 'master') }
             let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, builds: [job], trigger: trigger) }
 
             before do

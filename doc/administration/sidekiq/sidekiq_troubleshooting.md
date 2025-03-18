@@ -258,7 +258,7 @@ docker run --cap-add SYS_PTRACE [...]
 ```yaml
 services:
   ruby_container_name:
-    ...
+    # ...
     cap_add:
       - SYS_PTRACE
 ```

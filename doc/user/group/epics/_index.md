@@ -12,35 +12,23 @@ title: Epics
 
 {{< /details >}}
 
-An epic in GitLab represents a significant body of work that can be broken down into smaller,
-manageable parts.
-Epics help organize user stories and features into a high-level theme or goal, making them a flexible
-tool for managing projects of all sizes.
+Epics in GitLab coordinate and track large initiatives by organizing work items into a work hierarchy.
+Epics make complex projects manageable. They:
 
-Epics often span multiple iterations or a longer period of time, reaching their conclusion when the
-defined goals are met.
-Teams use epics to stay focused and aligned with their project timelines.
+- Break down large features into smaller deliverables that add incremental value.
+- Track the progress of related work items with scheduled start and end dates.
+- Organize discussions and decisions about feature scope and requirements.
+- Create hierarchical structures that connect tasks to strategic goals.
+- Build visual roadmaps to monitor progress toward objectives.
 
-In the Ultimate tier, create hierarchical structures to align with various agile frameworks using
-[nested epics](manage_epics.md#multi-level-child-epics).
+Teams use epics to coordinate across multiple iterations and track progress toward long-term goals.
+
+In the Ultimate tier, [nested epics](manage_epics.md#multi-level-child-epics) provide additional
+structure through work hierarchies that align with agile frameworks.
 Break down complex projects into more manageable child epics, which can further contain their own
 sets of issues and tasks.
 This nested structure helps maintain clarity and ensures all aspects of a project are covered without
 losing sight of the overarching goals.
-
-Use epics to:
-
-- Break down large features into smaller deliverables that incrementally add user value.
-- Track the progress of a group of related issues, specifying when the work is scheduled to start
-  and end.
-- Facilitate high-level discussions and collaboration on feature ideas and scope, ensuring alignment
-  with the broader project objectives.
-- Organize complex projects into a hierarchy of work with nested epics, providing a clear structure
-- while connecting items to the larger goals of the project.
-- Collect smaller issues (user stories) for detailed tracking and efficient task management.
-
-By using epics effectively, teams can create visual roadmaps, monitor progress, and achieve their
-goals in the set time frames, driving successful project outcomes.
 
 <div class="video-fallback">
   See the video: <a href="https://www.youtube.com/watch?v=c0EwYYUZppw">GitLab Epics - Setting up your Organization with GitLab</a>.
@@ -48,6 +36,7 @@ goals in the set time frames, driving successful project outcomes.
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/c0EwYYUZppw" frameborder="0" allowfullscreen> </iframe>
 </figure>
+<!-- Video published on 2023-10-30 -->
 
 ## Relationships between epics and other items
 

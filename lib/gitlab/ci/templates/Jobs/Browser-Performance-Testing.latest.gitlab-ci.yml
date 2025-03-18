@@ -1,4 +1,4 @@
-# Read more about the feature here: https://docs.gitlab.com/ee/ci/testing/browser_performance_testing.html
+# Read more about the feature here: https://docs.gitlab.com/ci/testing/browser_performance_testing/
 
 browser_performance:
   stage: performance

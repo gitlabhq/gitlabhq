@@ -11,6 +11,10 @@ module HttpBasicAuthHelpers
     basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token)
   end
 
+  def job_token_auth_header(job)
+    { 'JOB-TOKEN' => job.token }
+  end
+
   def deploy_token_basic_auth_header(deploy_token)
     basic_auth_header(deploy_token.username, deploy_token.token)
   end

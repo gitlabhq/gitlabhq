@@ -362,7 +362,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
-        resources :work_items, only: [:show], param: :iid do
+        resources :work_items, only: [:show, :index], param: :iid do
           collection do
             post :import_csv
             post 'import_csv/authorize', to: 'work_items#authorize'

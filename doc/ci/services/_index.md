@@ -39,6 +39,8 @@ services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](htt
 Any image found at [Docker Hub](https://hub.docker.com/) or your private container registry can be
 used as a service.
 
+For information about using private images, see [Access an image from a private container registry](../docker/using_docker_images.md#access-an-image-from-a-private-container-registry).
+
 Services inherit the same DNS servers, search domains, and additional hosts as
 the CI container itself.
 

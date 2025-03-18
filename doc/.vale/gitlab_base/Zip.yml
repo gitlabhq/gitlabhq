@@ -7,7 +7,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Wrap '%s' in backticks to prevent unintentional links to .zip domain names."
-link: 'https://docs.gitlab.com/ee/development/documentation/styleguide/index.md#backticks-in-markdown'
+link: 'https://docs.gitlab.com/development/documentation/styleguide/#inline-code'
 vocab: false
 nonword: true
 level: error

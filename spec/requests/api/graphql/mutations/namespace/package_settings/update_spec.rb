@@ -148,7 +148,6 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
 
   RSpec.shared_examples 'accepting the mutation request creating the package settings' do
     it_behaves_like 'creating the namespace package setting'
-    it_behaves_like 'returning a success'
     it_behaves_like 'rejecting invalid regex'
   end
 

@@ -71,7 +71,7 @@ module ProjectsHelper
       testid: "author-link"
     }
 
-    inject_classes = ["author-link", opts[:extra_class]]
+    inject_classes = ["author-link gl-text-link", opts[:extra_class]]
 
     if opts[:name]
       inject_classes.concat(["js-user-link", opts[:mobile_classes]])
@@ -103,14 +103,18 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project)
-    namespace_link = build_namespace_breadcrumb_link(project)
-    project_link = build_project_breadcrumb_link(project)
+  def push_project_breadcrumbs(project)
+    if project.group
+      push_group_breadcrumbs(project.group)
+    else
+      owner = project.namespace.owner
+      name = sanitize(owner.name, tags: [])
+      url = user_path(owner)
 
-    namespace_link = breadcrumb_list_item(namespace_link) unless project.group
-    project_link = breadcrumb_list_item project_link
+      push_to_schema_breadcrumb(name, url)
+    end
 
-    "#{namespace_link} #{project_link}".html_safe
+    push_to_schema_breadcrumb(simple_sanitize(project.name), project_path(project), project.try(:avatar_url))
   end
 
   def remove_project_message(project)
@@ -440,7 +444,6 @@ module ProjectsHelper
   end
 
   def show_lfs_misconfiguration_banner?(project)
-    return false unless Feature.enabled?(:lfs_misconfiguration_banner, project)
     return false unless project.repository && project.lfs_enabled?
 
     Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
@@ -668,9 +671,9 @@ module ProjectsHelper
     project_settings_repository_path(@project, anchor: 'js-branch-rules')
   end
 
-  def visibility_level_content(project, css_class: nil, icon_css_class: nil)
+  def visibility_level_content(project, css_class: nil, icon_css_class: nil, icon_variant: nil)
     if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-      return hidden_resource_icon(project, css_class: css_class)
+      return hidden_resource_icon(project, css_class: css_class, variant: icon_variant)
     end
 
     title = visibility_icon_description(project)
@@ -687,7 +690,7 @@ module ProjectsHelper
       title: title,
       type: 'button',
       aria: { label: title }) do
-      visibility_level_icon(project.visibility_level, options: { class: icon_css_class })
+      visibility_level_icon(project.visibility_level, options: { class: icon_css_class, variant: icon_variant })
     end
   end
 
@@ -1069,38 +1072,6 @@ module ProjectsHelper
       html_confirmation_message: true.to_s,
       show_visibility_confirm_modal: show_visibility_confirm_modal?(project).to_s
     }
-  end
-
-  def build_project_breadcrumb_link(project)
-    project_name = simple_sanitize(project.name)
-
-    push_to_schema_breadcrumb(project_name, project_path(project), project.try(:avatar_url))
-
-    link_to project_path(project), class: '!gl-inline-flex' do
-      if project.avatar_url && !Rails.env.test?
-        icon = render Pajamas::AvatarComponent.new(
-          project,
-          alt: project.name,
-          size: 16,
-          class: 'avatar-tile'
-        )
-      end
-
-      [icon, content_tag("span", project_name, class: "js-breadcrumb-item-text")].join.html_safe
-    end
-  end
-
-  def build_namespace_breadcrumb_link(project)
-    if project.group
-      group_title(project.group)
-    else
-      owner = project.namespace.owner
-      name = sanitize(owner.name, tags: [])
-      url = user_path(owner)
-
-      push_to_schema_breadcrumb(name, url)
-      link_to(name, url)
-    end
   end
 
   def delete_inactive_projects?

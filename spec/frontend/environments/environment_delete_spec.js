@@ -31,7 +31,7 @@ describe('External URL Component', () => {
     it('should render a dropdown item to delete the environment', () => {
       expect(findDropdownItem().exists()).toBe(true);
       expect(findDropdownItem().props('item').text).toBe('Delete environment');
-      expect(findDropdownItem().props('item').extraAttrs.variant).toBe('danger');
+      expect(findDropdownItem().props('item').variant).toBe('danger');
     });
 
     it('emits requestDeleteEnvironment in the event hub when button is clicked', () => {
@@ -56,7 +56,7 @@ describe('External URL Component', () => {
     it('should render a dropdown item to delete the environment', () => {
       expect(findDropdownItem().exists()).toBe(true);
       expect(findDropdownItem().props('item').text).toBe('Delete environment');
-      expect(findDropdownItem().props('item').extraAttrs.variant).toBe('danger');
+      expect(findDropdownItem().props('item').variant).toBe('danger');
     });
 
     it('emits requestDeleteEnvironment in the event hub when button is clicked', () => {

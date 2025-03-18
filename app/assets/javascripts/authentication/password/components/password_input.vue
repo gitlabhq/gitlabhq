@@ -51,6 +51,11 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -89,6 +94,7 @@ export default {
       :data-track-action-for-errors="trackActionForErrors"
       :title="title"
       :type="type"
+      :disabled="disabled"
     />
     <gl-button
       v-gl-tooltip="toggleVisibilityLabel"
@@ -96,6 +102,7 @@ export default {
       category="tertiary"
       :aria-label="toggleVisibilityLabel"
       :icon="toggleVisibilityIcon"
+      :disabled="disabled"
       @click="handleToggleVisibilityButtonClick"
     />
   </div>

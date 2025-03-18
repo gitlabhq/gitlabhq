@@ -39,7 +39,7 @@ class MergeRequestDiffCommit < ApplicationRecord
 
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
-  def self.create_bulk(merge_request_diff_id, commits)
+  def self.create_bulk(merge_request_diff_id, commits, skip_commit_data: false)
     commit_hashes, user_tuples = prepare_commits_for_bulk_insert(commits)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_tuples)
 
@@ -59,7 +59,7 @@ class MergeRequestDiffCommit < ApplicationRecord
       commit_hash = commit_hash
         .except(:author_name, :author_email, :committer_name, :committer_email, :extended_trailers)
 
-      commit_hash.merge(
+      commit_hash = commit_hash.merge(
         commit_author_id: author.id,
         committer_id: committer.id,
         merge_request_diff_id: merge_request_diff_id,
@@ -69,6 +69,12 @@ class MergeRequestDiffCommit < ApplicationRecord
         committed_date: Gitlab::Database.sanitize_timestamp(commit_hash[:committed_date]),
         trailers: Gitlab::Json.dump(commit_hash.fetch(:trailers, {}))
       )
+
+      if skip_commit_data
+        commit_hash.merge(message: '')
+      else
+        commit_hash
+      end
     end
 
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
@@ -127,7 +133,39 @@ class MergeRequestDiffCommit < ApplicationRecord
     committer&.email
   end
 
+  def message
+    if ::Feature.enabled?(:commit_message_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
+      Gitlab::AppLogger.info(
+        event: 'mrdc_message_method',
+        message: "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first(4)}"
+      )
+    end
+
+    fetch_message
+  end
+
   def to_hash
-    super.merge({ 'id' => sha })
+    super(exclude_keys: [:message]).merge({
+      'id' => sha,
+      message: fetch_message,
+      log_message: ::Feature.enabled?(:commit_message_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
+    })
+  end
+
+  private
+
+  def fetch_message
+    if ::Feature.enabled?(:disable_message_attribute_on_mr_diff_commits, project)
+      ""
+    else
+      read_attribute("message")
+    end
+  end
+
+  # As of %17.10, we still don't have `project_id` on merge_request_diff_commit
+  #   records. Until we do, we have to fetch it from merge_request_diff.
+  #
+  def project
+    @_project ||= merge_request_diff.project
   end
 end

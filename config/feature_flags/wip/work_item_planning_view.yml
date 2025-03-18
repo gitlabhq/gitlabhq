@@ -1,0 +1,9 @@
+---
+name: work_item_planning_view
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512661
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180972
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520452
+milestone: '17.10'
+group: group::product planning
+type: wip
+default_enabled: false

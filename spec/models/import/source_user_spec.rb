@@ -79,6 +79,72 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
       it { is_expected.to validate_absence_of(:reassign_to_user_id) }
     end
+
+    context 'for validate_source_hostname' do
+      let(:namespace) { create(:namespace) }
+      let(:placeholder_user) { create(:import_source_user, namespace: namespace).placeholder_user }
+      let(:import_source_user) do
+        build(:import_source_user, placeholder_user: placeholder_user, namespace: namespace,
+          source_hostname: 'example.com')
+      end
+
+      context 'when source_hostname is changed' do
+        it 'validates the format of source_hostname' do
+          expect(import_source_user).not_to be_valid
+          expect(import_source_user.errors[:source_hostname]).to include(
+            "must contain scheme and host, and not path"
+          )
+        end
+
+        it 'passes validation for correct hostname' do
+          import_source_user.source_hostname = 'http://example.com:8080'
+          expect(import_source_user).to be_valid
+        end
+      end
+
+      context 'when source_hostname is not changed' do
+        it 'skips validation' do
+          # First save with invalid hostname but skip validation
+          import_source_user.save!(validate: false)
+
+          # Now update a different attribute
+          import_source_user.source_name = 'New Name'
+
+          # Validation should be skipped since source_hostname didn't change
+          expect(import_source_user).to be_valid
+        end
+      end
+
+      context 'when updating an existing record with the same source_hostname' do
+        it 'skips validation' do
+          # First save with invalid hostname but skip validation
+          import_source_user.save!(validate: false)
+
+          # Reload and try to save again without changing source_hostname
+          reloaded_user = described_class.find(import_source_user.id)
+
+          # Should be valid because source_hostname_changed? is false
+          expect(reloaded_user).to be_valid
+        end
+      end
+
+      context 'when updating an existing record with a new invalid source_hostname' do
+        it 'fails validation' do
+          # First save with valid hostname
+          import_source_user.source_hostname = 'http://example.com'
+          import_source_user.save!
+
+          # Now update to an invalid hostname
+          import_source_user.source_hostname = 'example.com'
+
+          # Should fail validation because source_hostname_changed? is true
+          expect(import_source_user).not_to be_valid
+          expect(import_source_user.errors[:source_hostname]).to include(
+            "must contain scheme and host, and not path"
+          )
+        end
+      end
+    end
   end
 
   describe 'scopes' do
@@ -209,17 +275,32 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
   describe '.sort_by_attribute' do
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace, status: 4, source_name: 'd') }
-    let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
+
+    let_it_be(:source_user_1) do
+      create(:import_source_user, namespace: namespace, status: 4, source_name: 'd',
+        created_at: '2024-12-03T10:42:20.000Z')
+    end
+
+    let_it_be(:source_user_2) do
+      create(:import_source_user, namespace: namespace, status: 3, source_name: 'c',
+        created_at: '2024-12-03T22:42:20.000Z')
+    end
+
     let_it_be(:source_user_3) do
       create(
-        :import_source_user, :with_reassign_to_user,
-        namespace: namespace, status: 1, source_name: 'a', reassignment_token: SecureRandom.hex
+        :import_source_user,
+        :with_reassign_to_user,
+        namespace: namespace,
+        status: 1,
+        source_name: 'a',
+        created_at: '2025-01-23T19:42:20.000Z',
+        reassignment_token: SecureRandom.hex
       )
     end
 
     let_it_be(:source_user_4) do
-      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b')
+      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b',
+        created_at: '2025-01-20T19:42:20.000Z')
     end
 
     let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(attribute) }
@@ -260,8 +341,36 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
     end
 
-    context 'with an unexpected method' do
+    context 'with method id_asc' do
       let(:method) { 'id_asc' }
+      let(:attribute) { :id }
+
+      it 'order by id_asc ascending' do
+        expect(sort_by_attribute).to eq([
+          source_user_1.id,
+          source_user_2.id,
+          source_user_3.id,
+          source_user_4.id
+        ])
+      end
+    end
+
+    context 'with method id_desc' do
+      let(:method) { 'id_desc' }
+      let(:attribute) { :id }
+
+      it 'order by id_desc descending' do
+        expect(sort_by_attribute).to eq([
+          source_user_4.id,
+          source_user_3.id,
+          source_user_2.id,
+          source_user_1.id
+        ])
+      end
+    end
+
+    context 'with an unexpected method' do
+      let(:method) { 'unknown_sort' }
       let(:attribute) { :source_name }
 
       it 'order by source_name_asc ascending' do

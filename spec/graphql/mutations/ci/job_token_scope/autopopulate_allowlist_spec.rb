@@ -49,6 +49,23 @@ RSpec.describe Mutations::Ci::JobTokenScope::AutopopulateAllowlist, feature_cate
           end.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
         end
 
+        it 'triggers the tracking events' do
+          expect do
+            resolver
+          end
+          .to trigger_internal_events('ci_job_token_autopopulate_allowlist')
+          .with(
+            user: current_user,
+            project: project,
+            additional_properties: {
+              label: 'ui'
+            }
+          ).exactly(:once)
+          .and increment_usage_metrics(
+            'counts.count_total_allowlist_autopopulation'
+          ).by(1)
+        end
+
         context 'when the clear service returns an error' do
           let(:service) { instance_double(::Ci::JobToken::ClearAutopopulatedAllowlistService) }
 

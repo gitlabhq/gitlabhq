@@ -7,7 +7,13 @@ module Import
         @upload = upload
         @current_user = current_user
         @namespace = namespace
-        @reassignment_errors = {}
+
+        @reassignment_stats = {
+          skipped: 0,
+          matched: 0,
+          failed: 0
+        }
+        @reassignment_error_csv_data = []
 
         raw_csv_data = upload.retrieve_uploader.file.read
         @csv_validator = ::Import::UserMapping::ReassignmentCsvValidator.new(raw_csv_data)
@@ -33,22 +39,31 @@ module Import
         process_csv
 
         ServiceResponse.success(payload: {
-          errors: reassignment_errors
+          stats: reassignment_stats,
+          failures_csv_data: failure_csv
         })
       end
 
       private
 
-      attr_reader :upload, :current_user, :namespace, :csv_validator, :reassignment_errors
+      attr_reader :upload, :current_user, :namespace, :csv_validator, :reassignment_stats, :reassignment_error_csv_data
 
       def process_csv
         csv_data.each do |row_array|
           row = row_array.to_h
 
           attributes = attributes_for(row)
+
+          (reassignment_stats[:skipped] += 1) && next if search_criteria(attributes).empty?
+
           result = process_line(attributes)
 
-          @reassignment_errors[attributes[:source_user_identifier]] = result.message if result.error?
+          if result.success?
+            reassignment_stats[:matched] += 1
+          else
+            reassignment_stats[:failed] += 1
+            reassignment_error_csv_data << row.merge(error: result.message.to_s)
+          end
         end
       end
 
@@ -77,6 +92,14 @@ module Import
           )
         end
 
+        # If the source user is already in some mid-reassignment state for the
+        # same reassign_to_user, we treat it as though the CSV line matched.
+        # This is to avoid misleading error messages if a worker restart causes
+        # the same CSV line to be processed multiple times.
+        if !source_user.reassignable_status? && source_user.reassign_to_user_id == reassign_to_user.id
+          return ServiceResponse.success(payload: source_user)
+        end
+
         ::Import::SourceUsers::ReassignService.new(
           source_user,
           reassign_to_user,
@@ -94,7 +117,7 @@ module Import
       end
 
       def find_reassign_to_user(attributes)
-        search_criteria = attributes.slice(:email, :username).compact_blank
+        search_criteria = search_criteria(attributes)
 
         if search_criteria[:email] && search_criteria[:username]
           user = User.by_username(search_criteria[:username])
@@ -111,8 +134,17 @@ module Import
         user || scope.with_public_email(email).first
       end
 
+      def search_criteria(attributes)
+        attributes.slice(:email, :username).compact_blank
+      end
+
       def current_user_is_admin?
         current_user.can_admin_all_resources?
+      end
+
+      def failure_csv
+        service_response = ::Import::SourceUsers::GenerateErrorCsvService.new(reassignment_error_csv_data).execute
+        service_response.payload
       end
     end
   end

@@ -1,14 +1,48 @@
-= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-users-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+= render ::Layouts::SettingsBlockComponent.new(_('Users API rate limits'),
+  id: 'js-users-api-limits-settings',
+  testid: 'users-api-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set the per-user and per-IP address rate limits for the requests to Users API.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-users-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
 
-  %fieldset
-    .form-group
-      = f.label :users_get_by_id_limit, _('Maximum requests per 10 minutes per user'), class: 'label-bold'
-      = f.number_field :users_get_by_id_limit, class: 'form-control gl-form-input'
-    .form-group
-      = f.label :users_get_by_id_limit_allowlist_raw, _('Users to exclude from the rate limit'), class: 'label-bold'
-      = f.text_area :users_get_by_id_limit_allowlist_raw, class: 'form-control gl-form-input', rows: 5, aria: { describedBy: 'users-api-limit-users-allowlist-field-description' }
-      .form-text.gl-text-subtle{ id: 'users-api-limit-users-allowlist-field-description' }
-        = _('List of users who are allowed to exceed the rate limit. Example: username1, username2')
+      %fieldset
+        = _('Set to 0 to disable rate limits.')
 
-  = f.submit _('Save changes'), pajamas_button: true
+      %fieldset
+        .form-group
+          = f.label :users_api_limit_followers, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/followers', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_followers, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_api_limit_following, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/following', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_following, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_api_limit_status, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/status', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_status, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_api_limit_ssh_keys, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/keys', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_ssh_keys, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_api_limit_ssh_key, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/keys/:key_id', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_ssh_key, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_api_limit_gpg_keys, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/gpg_keys', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_gpg_keys, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_api_limit_gpg_key, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/gpg_keys/:key_id', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :users_api_limit_gpg_key, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :users_get_by_id_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'), api_name: 'GET /users/:id', timeframe: '10 minutes'), class: 'label-bold'
+          = f.number_field :users_get_by_id_limit, min: 0, class: 'form-control gl-form-input'
+        .form-group
+          = f.label :users_get_by_id_limit_allowlist_raw, _('Excluded users'), class: 'label-bold'
+          = f.text_area :users_get_by_id_limit_allowlist_raw, class: 'form-control gl-form-input', rows: 5, aria: { describedBy: 'users-api-limit-users-allowlist-field-description' }
+          .form-text.gl-text-subtle{ id: 'users-api-limit-users-allowlist-field-description' }
+            = _('List of users allowed to exceed the rate limit. Example: username1, username2')
+
+      = f.submit _('Save changes'), pajamas_button: true

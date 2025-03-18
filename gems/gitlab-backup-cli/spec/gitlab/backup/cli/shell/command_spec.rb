@@ -86,6 +86,12 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Command do
 
       expect(result.stdout.chomp).to eq('variable value data')
     end
+
+    it 'switches to the directory set by @chdir' do
+      result = command.new('pwd', chdir: tmpdir).capture
+
+      expect(result.stdout.chomp).to eq(tmpdir.to_s)
+    end
   end
 
   describe '#run_single_pipeline!' do
@@ -103,6 +109,18 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Command do
       read_io.close
 
       expect(output).to eq('variable value data')
+    end
+
+    it 'switches to the directory set by @chdir' do
+      pwd_command = command.new('pwd', chdir: tmpdir)
+      read_io, write_io = IO.pipe
+
+      pwd_command.run_single_pipeline!(output: write_io)
+      write_io.close
+      output = read_io.read.chomp
+      read_io.close
+
+      expect(output).to eq(tmpdir.to_s)
     end
 
     it 'accepts stdin and stdout redirection' do

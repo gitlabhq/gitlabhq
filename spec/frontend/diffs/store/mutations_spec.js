@@ -994,16 +994,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_SHOW_TREE_LIST', () => {
-    it('sets showTreeList', () => {
-      const state = createState();
-
-      mutations[types.SET_SHOW_TREE_LIST](state, true);
-
-      expect(state.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
-    });
-  });
-
   describe('SET_CURRENT_DIFF_FILE', () => {
     it('updates currentDiffFileId', () => {
       const state = createState();

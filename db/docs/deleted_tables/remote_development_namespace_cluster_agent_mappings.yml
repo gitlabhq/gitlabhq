@@ -1,0 +1,15 @@
+---
+table_name: remote_development_namespace_cluster_agent_mappings
+classes:
+  - RemoteDevelopment::RemoteDevelopmentNamespaceClusterAgentMapping
+feature_categories:
+  - workspaces
+description: Moved to deleted because it got renamed to namespace_cluster_agent_mappings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145101
+milestone: '16.10'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181926
+removed_in_milestone: '17.10'

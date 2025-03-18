@@ -13,14 +13,15 @@ title: Squash and merge
 
 {{< /details >}}
 
-As you work on a feature branch, you often create small, self-contained commits. These small commits
-help describe the process of building a feature, but can clutter your Git history after the feature
-is finished. As you finish features, you can combine these commits and ensure a cleaner merge history
-in your Git repository by using the _squash and merge_ strategy.
+Squash and merge combines multiple small commits into a single meaningful commit.
+This strategy keeps your repository history clean and makes it easier to track or revert changes.
+When you work on multiple features at once, squashing separates each feature's changes into distinct, logical units.
 
 - Small commits are joined together, making it simpler to [revert all parts of a change](revert_changes.md).
 - When the single commit merges into the target branch, it retains the full commit history.
 - Your base branch remains clean, and contains meaningful commit messages.
+
+## Squash and merge workflow
 
 Each time a branch merges into your base branch, up to two commits are added:
 

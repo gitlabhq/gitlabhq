@@ -80,6 +80,7 @@ module):
 - No access (`0`)
 - [Minimal access](../../user/permissions.md#users-with-minimal-access) (`5`)
 - Guest (`10`)
+- Planner (`15`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)

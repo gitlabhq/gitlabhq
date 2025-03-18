@@ -73,13 +73,13 @@
   = render ::Layouts::SettingsSectionComponent.new(_('Progressive Web App (PWA)')) do |c|
     - c.with_body do
       .form-group
-        = f.label _("Name"), class: 'col-form-label'
+        = f.label :pwa_name, _("Name"), class: 'col-form-label'
         = f.text_field :pwa_name, class: "form-control gl-form-input"
       .form-group
-        = f.label _("Short name"), class: 'col-form-label'
+        = f.label :pwa_short_name, _("Short name"), class: 'col-form-label'
         = f.text_field :pwa_short_name, class: "form-control gl-form-input"
       .form-group
-        = f.label _("Description"), class: 'col-form-label'
+        = f.label :pwa_description, _("Description"), class: 'col-form-label'
         = f.text_area :pwa_description, class: "form-control gl-form-input", rows: 10
         .form-text.gl-text-subtle
           = parsed_with_gfm

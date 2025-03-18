@@ -9,7 +9,7 @@ For background of GitLab Cells, refer to the [design document](https://handbook.
 
 ## Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
-Depending on the use case, your feature may be [cell-local or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
+Depending on the use case, your feature may be [organization-level, or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
 When you choose the appropriate [schema](../database/multiple_databases.md#gitlab-schema) for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
 
@@ -21,6 +21,8 @@ The replication strategy will likely be different for each case, but will involv
 The application may also need to be modified to restrict writes to prevent conflicts.
 We may also ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
 
+Do not use cluster-wide database tables to store [static data](#static-data).
+
 To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
 
 After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
@@ -29,15 +31,15 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 - [Cross-database transactions](../database/multiple_databases.md#fixing-cross-database-transactions)
 - [Cross-database foreign keys](../database/multiple_databases.md#foreign-keys-that-cross-databases)
 
-## Defining a sharding key for all cell-local tables
+## Defining a sharding key for all organizational tables
 
-All tables with the following `gitlab_schema` are considered "cell-local":
+All tables with the following `gitlab_schema` are considered organization level:
 
 - `gitlab_main_cell`
 - `gitlab_ci`
 - `gitlab_sec`
 
-All newly created cell-local tables are required to have a `sharding_key`
+All newly created organization-level tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.
 
 The purpose of the sharding key is documented in the
@@ -180,7 +182,7 @@ table_name: security_findings
 classes:
 - Security::Finding
 
-...
+# ...
 
 desired_sharding_key:
   project_id:
@@ -250,3 +252,86 @@ Exempted tables must not have foreign key, or loose foreign key references, as
 this may cause the target cell's database to have foreign key violations when data is
 moved.
 See [#471182](https://gitlab.com/gitlab-org/gitlab/-/issues/471182) for examples and possible solutions.
+
+## Static data
+
+Problem: A clusterwide database table is used to store static data.
+But, the primary key of the table is used as a global reference.
+This primary key is not globally consistent which creates problems.
+
+Example: The `plans` table on a given Cell has the following data:
+
+```shell
+ id |             name             |              title
+----+------------------------------+----------------------------------
+  1 | default                      | Default
+  2 | bronze                       | Bronze
+  3 | silver                       | Silver
+  5 | gold                         | Gold
+  7 | ultimate_trial               | Ultimate Trial
+  8 | premium_trial                | Premium Trial
+  9 | opensource                   | Opensource
+  4 | premium                      | Premium
+  6 | ultimate                     | Ultimate
+ 10 | ultimate_trial_paid_customer | Ultimate Trial for Paid Customer
+(10 rows)
+```
+
+On another cell, the `plans` table has differing ids for the same `name`:
+
+```shell
+ id |             name             |            title
+----+------------------------------+------------------------------
+  1 | default                      | Default
+  2 | bronze                       | Bronze
+  3 | silver                       | Silver
+  4 | premium                      | Premium
+  5 | gold                         | Gold
+  6 | ultimate                     | Ultimate
+  7 | ultimate_trial               | Ultimate Trial
+  8 | ultimate_trial_paid_customer | Ultimate Trial Paid Customer
+  9 | premium_trial                | Premium Trial
+ 10 | opensource                   | Opensource
+ ```
+
+This `plans.id` column is then used as a reference in the `hosted_plan_id`
+column of `gitlab_subscriptions` table.
+
+Solution: Use globally unique references, not a database sequence.
+If possible, hard-code static data in application code, instead of using the
+database.
+
+In this case, the `plans` table can be dropped, and replaced with a fixed model:
+
+```ruby
+class Plan
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveRecord::FixedItemsModel::Model
+
+  ITEMS = [
+    {:id=>1, :name=>"default", :title=>"Default"},
+    {:id=>2, :name=>"bronze", :title=>"Bronze"},
+    {:id=>3, :name=>"silver", :title=>"Silver"},
+    {:id=>4, :name=>"premium", :title=>"Premium"},
+    {:id=>5, :name=>"gold", :title=>"Gold"},
+    {:id=>6, :name=>"ultimate", :title=>"Ultimate"},
+    {:id=>7, :name=>"ultimate_trial", :title=>"Ultimate Trial"},
+    {:id=>8, :name=>"ultimate_trial_paid_customer", :title=>"Ultimate Trial Paid Customer"},
+    {:id=>9, :name=>"premium_trial", :title=>"Premium Trial"},
+    {:id=>10, :name=>"opensource", :title=>"Opensource"}
+  ]
+
+  attribute :id, :integer
+  attribute :name, :string
+  attribute :title, :string
+end
+```
+
+The `hosted_plan_id` column will also be updated to refer to the fixed model's
+`id` value.
+
+Examples of hard-coding static data include:
+
+- [VisibilityLevel](https://gitlab.com/gitlab-org/gitlab/-/blob/5ae43dface737373c50798ccd909174bcdd9b664/lib/gitlab/visibility_level.rb#L25-27)
+- [Static defaults for work item statuses](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178180)

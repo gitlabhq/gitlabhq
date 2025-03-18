@@ -78,7 +78,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'reference' => work_item.to_reference,
         'createNoteEmail' => work_item_email,
         'archived' => false,
-        'userPermissions' => {
+        'userPermissions' => hash_including(
           'readWorkItem' => true,
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
@@ -92,7 +92,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'cloneWorkItem' => true,
           'reportSpam' => false,
           'summarizeComments' => false
-        },
+        ),
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
     end
@@ -791,6 +791,64 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
       end
+
+      context 'when filtering' do
+        context 'when selecting widgets' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets(onlyTypes: [DESCRIPTION]) {
+                type
+              }
+            GRAPHQL
+          end
+
+          it 'only returns selected widgets' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => [{
+                'type' => 'DESCRIPTION'
+              }]
+            )
+          end
+        end
+
+        context 'when excluding widgets' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets(exceptTypes: [DESCRIPTION]) {
+                type
+              }
+            GRAPHQL
+          end
+
+          it 'does not return excluded widgets' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => [
+                { "type" => "ASSIGNEES" },
+                { "type" => "AWARD_EMOJI" },
+                { "type" => "CRM_CONTACTS" },
+                { "type" => "CURRENT_USER_TODOS" },
+                { "type" => "DESIGNS" },
+                { "type" => "DEVELOPMENT" },
+                { "type" => "EMAIL_PARTICIPANTS" },
+                { "type" => "ERROR_TRACKING" },
+                { "type" => "HIERARCHY" },
+                { "type" => "LABELS" },
+                { "type" => "LINKED_ITEMS" },
+                { "type" => "MILESTONE" },
+                { "type" => "NOTES" },
+                { "type" => "NOTIFICATIONS" },
+                { "type" => "PARTICIPANTS" },
+                { "type" => "START_AND_DUE_DATE" },
+                { "type" => "TIME_TRACKING" }
+              ]
+            )
+          end
+        end
+      end
     end
 
     describe 'notes widget' do
@@ -1452,37 +1510,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             )
           )
         end
-      end
-    end
-
-    describe 'custom status widget' do
-      let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
-      let_it_be(:global_id) { task_work_item.to_global_id }
-      let(:work_item_fields) do
-        <<~GRAPHQL
-          id
-          widgets {
-            type
-            ... on WorkItemWidgetCustomStatus {
-              id
-              name
-              iconName
-            }
-          }
-        GRAPHQL
-      end
-
-      it 'returns mock custom status data' do
-        expect(work_item_data).to include(
-          'widgets' => array_including(
-            hash_including(
-              'type' => 'CUSTOM_STATUS',
-              'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
-              'name' => 'Custom Status',
-              'iconName' => 'custom_status icon'
-            )
-          )
-        )
       end
     end
 

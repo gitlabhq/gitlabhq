@@ -81,7 +81,6 @@ module Gitlab
 
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
-      push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:ui_for_organizations, current_user)
       push_frontend_feature_flag(:organization_switching, current_user)
@@ -90,8 +89,9 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_view_preference, current_user)
       push_frontend_feature_flag(:search_button_top_right, current_user)
-      push_frontend_feature_flag(:markdown_paste_url, current_user)
       push_frontend_feature_flag(:merge_request_dashboard, current_user, type: :wip)
+      push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
+      push_frontend_feature_flag(:work_items_client_side_boards, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.
@@ -119,7 +119,9 @@ module Gitlab
     # name - The name of the feature flag, e.g. `my_feature`.
     # enabled - Boolean to be pushed directly to the frontend. Should be fetched by checking a feature flag.
     def push_force_frontend_feature_flag(name, enabled)
-      push_to_gon_attributes(:features, name, !!enabled)
+      raise ArgumentError, 'enabled flag must be a Boolean' unless enabled.in?([true, false])
+
+      push_to_gon_attributes(:features, name, enabled)
     end
 
     def push_namespace_setting(key, object)

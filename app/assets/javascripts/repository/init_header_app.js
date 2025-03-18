@@ -138,9 +138,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
           props: {
             refType,
             currentRef: ref,
-            // BlobControls:
             projectPath,
-            // RefSelector:
             projectId,
           },
         });

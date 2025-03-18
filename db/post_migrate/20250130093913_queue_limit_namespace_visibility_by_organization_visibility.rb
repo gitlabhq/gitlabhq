@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable BackgroundMigration/DictionaryFile -- Batched background migration was re-enqueued by
+# 20250217075357_requeue_limit_namespace_visibility_by_organization_visibility.rb
 class QueueLimitNamespaceVisibilityByOrganizationVisibility < Gitlab::Database::Migration[2.2]
   milestone '17.9'
 
@@ -25,3 +27,4 @@ class QueueLimitNamespaceVisibilityByOrganizationVisibility < Gitlab::Database::
     delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
   end
 end
+# rubocop:enable BackgroundMigration/DictionaryFile

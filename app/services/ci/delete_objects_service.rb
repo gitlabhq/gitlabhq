@@ -9,6 +9,7 @@ module Ci
 
     def execute
       objects = load_next_batch
+
       destroy_everything(objects)
     end
 
@@ -47,10 +48,15 @@ module Ci
 
     def destroy_everything(objects)
       raise TransactionInProgressError, TRANSACTION_MESSAGE if transaction_open?
-      return unless objects.any?
+      return ServiceResponse.success if objects.empty?
 
+      deleted_at = Time.current
       deleted = objects.select(&:delete_file_from_storage)
+
+      latencies = deleted.map { |record| (deleted_at - record.created_at).seconds }
       Ci::DeletedObject.id_in(deleted.map(&:id)).delete_all
+
+      ServiceResponse.success(payload: { latencies: latencies })
     end
 
     def transaction_open?

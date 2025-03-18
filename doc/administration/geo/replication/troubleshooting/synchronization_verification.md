@@ -844,13 +844,13 @@ to start again from scratch, there are a few steps that can help you:
 
    1. Optional. If you disabled it, reactivate the Praefect internal load balancer.
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
    {{< alert type="note" >}}
 
-You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+   You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
    as soon as you confirmed that you don't need it anymore, to save disk space.
 
    {{< /alert >}}

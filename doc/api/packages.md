@@ -433,11 +433,14 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Can return the following status codes:
 
-- `204 No Content`, if the package was deleted successfully.
-- `404 Not Found`, if the package was not found.
+- `204 No Content`: The package was deleted successfully.
+- `403 Forbidden`: The package is protected from deletion.
+- `404 Not Found`: The package was not found.
 
 If [request forwarding](../user/packages/package_registry/supported_functionality.md#forwarding-requests) is enabled,
 deleting a package can introduce a [dependency confusion risk](../user/packages/package_registry/supported_functionality.md#deleting-packages).
+
+If a package is protected by a [protection rule](../user/packages/package_registry/package_protection_rules.md#protect-a-package), then deleting the package is forbidden.
 
 ## Delete a package file
 
@@ -467,5 +470,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 Can return the following status codes:
 
 - `204 No Content`: The package was deleted successfully.
-- `403 Forbidden`: The user does not have permission to delete the file.
+- `403 Forbidden`: The user does not have permission to delete the file or the package is protected from deletion.
 - `404 Not Found`: The package or package file was not found.
+
+If a package that a package file belongs to is protected by a [protection rule](../user/packages/package_registry/package_protection_rules.md#protect-a-package), then deleting the package file is forbidden.

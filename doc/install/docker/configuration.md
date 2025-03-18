@@ -140,7 +140,7 @@ port `2424`:
 
    {{< alert type="note" >}}
 
-The format to publish ports is `hostPort:containerPort`. Read more in the
+   The format to publish ports is `hostPort:containerPort`. Read more in the
    Docker documentation about
    [exposing incoming ports](https://docs.docker.com/network/#published-ports).
 

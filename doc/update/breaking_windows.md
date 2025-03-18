@@ -92,7 +92,6 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |
 | [GraphQL `target` field for to-do items replaced with `targetEntity`](https://gitlab.com/gitlab-org/gitlab/-/issues/484987) | Low | Foundations | Project |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
-| [Guest users can pull packages from private projects on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/336622) | High | Package | Project |
 | [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |
 | [Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`](https://gitlab.com/gitlab-org/gitlab/-/issues/514414) | Medium | Application_security_testing | Project |
 | [Updated tooling to release CI/CD components to the Catalog](https://gitlab.com/groups/gitlab-org/-/epics/12788) | High | Verify | Instance |
@@ -101,4 +100,5 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [Dependency Proxy token scope enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/426887) | High | Package | Group |
 | [REST API endpoint `pre_receive_secret_detection_enabled` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/514413) | Medium | Application_security_testing | Instance |
 | [Remove duoProAssignedUsersCount GraphQL field](https://gitlab.com/gitlab-org/gitlab/-/issues/498671) | Low | Plan | Group, project |
+| [S3 storage driver (AWS SDK v1) for the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) | Low | Package | Instance |
 | [Remove `previousStageJobsOrNeeds` from GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/424417) | Low | Verify | Instance |

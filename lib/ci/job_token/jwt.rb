@@ -49,15 +49,19 @@ module Ci
         end
 
         def build_payload(job)
-          base_payload = { cell_id: Gitlab.config.cell.id }
-          base_payload.merge(extra_payload(job)).compact_blank
+          base_payload = { scoped_user_id: job.scoped_user&.id }.compact_blank
+          base_payload.merge(routable_payload(job))
         end
 
-        def extra_payload(job)
+        # Creating routing information for routable tokens https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/routable_tokens/
+        def routable_payload(job)
           {
-            scoped_user_id: job.scoped_user&.id,
-            organization_id: job.project.organization_id
-          }
+            c: Gitlab.config.cell.id,
+            o: job.project.organization_id,
+            u: job.user_id,
+            p: job.project_id,
+            g: job.project.group&.id
+          }.compact_blank.transform_values { |id| id.to_s(36) }
         end
 
         def token_prefix
@@ -101,14 +105,30 @@ module Ci
       strong_memoize_attr :scoped_user
 
       def cell_id
-        @jwt.payload['cell_id']
+        decode(@jwt.payload['c'])
       end
-      strong_memoize_attr :cell_id
 
-      def organization
-        job&.project&.organization
+      def organization_id
+        decode(@jwt.payload['o'])
       end
-      strong_memoize_attr :organization
+
+      def project_id
+        decode(@jwt.payload['p'])
+      end
+
+      def user_id
+        decode(@jwt.payload['u'])
+      end
+
+      def group_id
+        decode(@jwt.payload['g'])
+      end
+
+      private
+
+      def decode(encoded_value)
+        encoded_value&.to_i(36)
+      end
     end
   end
 end

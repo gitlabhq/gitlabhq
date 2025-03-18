@@ -25,6 +25,7 @@ This indicates that something is wrong with your SSH setup.
 
 - Ensure that you generated your SSH key pair correctly and added the public SSH
   key to your GitLab profile.
+- Ensure that your SSH key format is compatible with your server OS configuration. For example, ED25519 key pairs might not work on [some FIPS systems](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
 - Try to manually register your private SSH key by using `ssh-agent`.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.

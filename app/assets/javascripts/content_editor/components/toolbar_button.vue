@@ -83,7 +83,7 @@ export default {
       :variant="variant"
       :category="category"
       :size="size"
-      :class="{ '!gl-bg-gray-100': showActiveState && isActive }"
+      :selected="showActiveState && isActive"
       :aria-label="label"
       :title="label"
       :icon="iconName"

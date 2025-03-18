@@ -40,7 +40,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
 
     before do
       helper.send(:default_branch_name, clusterable)
-      helper.send(:clusterable_project_path, clusterable)
+      helper.send(:clusterable_full_path, clusterable)
     end
 
     it 'displays endpoint path' do
@@ -78,10 +78,6 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       expect(subject[:default_branch_name]).to eq(project.default_branch)
     end
 
-    it 'displays project path' do
-      expect(subject[:project_path]).to eq(project.full_path)
-    end
-
     it 'displays kas address' do
       expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
     end
@@ -117,6 +113,14 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       it 'displays display_cluster_agents as true' do
         expect(subject[:display_cluster_agents]).to eq("true")
       end
+
+      it 'displays full path as project path' do
+        expect(subject[:full_path]).to eq(project.full_path)
+      end
+
+      it 'displays is_group property as false' do
+        expect(subject[:is_group]).to eq("false")
+      end
     end
 
     context 'group cluster' do
@@ -127,16 +131,20 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
         expect(subject[:empty_state_help_text]).to eq(s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.'))
       end
 
-      it 'displays display_cluster_agents as false' do
-        expect(subject[:display_cluster_agents]).to eq("false")
+      it 'displays display_cluster_agents as true' do
+        expect(subject[:display_cluster_agents]).to eq("true")
       end
 
       it 'does not include a default branch' do
         expect(subject[:default_branch_name]).to be_nil
       end
 
-      it 'does not include a project path' do
-        expect(subject[:project_path]).to be_nil
+      it 'displays full path as group path' do
+        expect(subject[:full_path]).to eq(group.full_path)
+      end
+
+      it 'displays is_group property as true' do
+        expect(subject[:is_group]).to eq("true")
       end
     end
 
@@ -281,8 +289,8 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     context 'when clusterable is a group' do
       let(:clusterable) { build(:group) }
 
-      it 'does not allow agents to display' do
-        expect(subject).to be_falsey
+      it 'allows agents to display' do
+        expect(subject).to be_truthy
       end
     end
   end
@@ -312,6 +320,62 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
 
       it 'does not allow default branch name to display' do
         expect(subject).to be_nil
+      end
+    end
+  end
+
+  describe '#migration_alert_config' do
+    let_it_be(:error_message) { 'Something went wrong' }
+
+    subject { helper.migration_alert_config(migration) }
+
+    context 'when migration is nil' do
+      let(:migration) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when migration has in_progress status' do
+      let(:migration) { build(:cluster_agent_migration, agent_install_status: :in_progress) }
+
+      it 'returns info alert config' do
+        expect(subject).to match(
+          variant: :info,
+          message: 'Installing agent in progress.'
+        )
+      end
+    end
+
+    context 'when migration has success status' do
+      let(:migration) { build(:cluster_agent_migration, agent_install_status: :success) }
+
+      it 'returns success alert config' do
+        expect(subject).to match(
+          variant: :success,
+          message: 'The agent connection is set up.'
+        )
+      end
+    end
+
+    context 'when migration has error status' do
+      let(:migration) { build(:cluster_agent_migration, agent_install_status: :error, agent_install_message: error_message) }
+
+      it 'returns error alert config with details' do
+        expect(subject).to match(
+          variant: :warning,
+          title: 'Agent setup failed',
+          message: 'The agent was not installed in the cluster.',
+          details: error_message,
+          show_help: true
+        )
+      end
+
+      context 'when error message is nil' do
+        let(:migration) { build(:cluster_agent_migration, agent_install_status: :error, agent_install_message: nil) }
+
+        it 'returns error alert config without details' do
+          expect(subject[:details]).to be_nil
+        end
       end
     end
   end

@@ -37,6 +37,7 @@ export const integrationFormSections = {
   GOOGLE_PLAY: 'google_play',
   GOOGLE_ARTIFACT_MANAGEMENT: 'google_artifact_management',
   GOOGLE_CLOUD_IAM: 'google_cloud_iam',
+  AMAZON_Q: 'amazon_q',
 };
 
 export const integrationFormSectionComponents = {
@@ -51,6 +52,7 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.GOOGLE_ARTIFACT_MANAGEMENT]:
     'IntegrationSectionGoogleArtifactManagement',
   [integrationFormSections.GOOGLE_CLOUD_IAM]: 'IntegrationSectionGoogleCloudIAM',
+  [integrationFormSections.AMAZON_Q]: 'IntegrationSectionAmazonQ',
 };
 
 export const integrationTriggerEvents = {

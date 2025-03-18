@@ -21,10 +21,10 @@ title: Container Scanning
 
 {{< /history >}}
 
-Your application's Docker image may itself be based on Docker images that contain known
-vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
-vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based
-apps.
+Security vulnerabilities in container images create risk throughout your application lifecycle.
+Container Scanning detects these risks early, before they reach production environments. When
+vulnerabilities appear in your base images or operating system's packages, Container Scanning identifies them and
+provides a remediation path for those that it can.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
@@ -242,7 +242,7 @@ container_scanning:
 ```
 
 When you enable this feature, you may see [duplicate findings](../terminology/_index.md#duplicate-finding)
-in the [Vulnerability Report](../vulnerability_report/_index.md)
+in the [vulnerability report](../vulnerability_report/_index.md)
 if [Dependency Scanning](../dependency_scanning/_index.md)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings
 across different types of scanning tools. To understand which types of dependencies are likely to be duplicated, see [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
@@ -703,7 +703,7 @@ keyword in the CI configuration file.
 
 Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
 the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../vulnerability_report/pipeline.md)
-and become part of the [Vulnerability Report](../vulnerability_report/_index.md).
+and become part of the [vulnerability report](../vulnerability_report/_index.md).
 
 These reports must follow a format defined in the
 [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/). See:
@@ -748,11 +748,11 @@ When a container image is pushed with the `latest` tag, a container scanning job
 
 Unlike regular container scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) to inspect the components detected by the scan.
 
-When security findings are identified, GitLab populates the [Vulnerability Report](../vulnerability_report/_index.md) with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the Vulnerability Report page.
+When security findings are identified, GitLab populates the [vulnerability report](../vulnerability_report/_index.md) with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
 {{< alert type="note" >}}
 
-Container Scanning for Registry populates the Vulnerability Report only when a new advisory is published to the [GitLab Advisory Database](../gitlab_advisory_database/_index.md). Support for populating the Vulnerability Report with all present advisory data, instead of only newly-detected data, is proposed in [epic 8026](https://gitlab.com/groups/gitlab-org/-/epics/8026).
+Container Scanning for Registry populates the vulnerability report only when a new advisory is published to the [GitLab Advisory Database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
 {{< /alert >}}
 

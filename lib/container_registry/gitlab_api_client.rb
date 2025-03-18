@@ -27,9 +27,7 @@ module ContainerRegistry
     UnsuccessfulResponseError = Class.new(StandardError)
 
     def self.supports_gitlab_api?
-      with_dummy_client(return_value_if_disabled: false) do |client|
-        client.supports_gitlab_api?
-      end
+      with_dummy_client(return_value_if_disabled: false, &:supports_gitlab_api?)
     end
 
     def self.deduplicated_size(path)

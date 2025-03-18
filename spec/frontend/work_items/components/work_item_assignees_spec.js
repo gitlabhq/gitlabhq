@@ -26,6 +26,7 @@ import {
   workItemResponseFactory,
 } from 'jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_IID } from '~/work_items/constants';
+import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 
 describe('WorkItemAssignees component', () => {
   Vue.use(VueApollo);
@@ -124,6 +125,12 @@ describe('WorkItemAssignees component', () => {
     createComponent();
 
     expect(findSidebarDropdownWidget().props('dropdownLabel')).toBe('Assignee');
+  });
+
+  it('has key shortcut tooltip', () => {
+    createComponent();
+
+    expect(findSidebarDropdownWidget().props('shortcut')).toBe(ISSUE_MR_CHANGE_ASSIGNEE);
   });
 
   describe('Dropdown search', () => {

@@ -1,0 +1,8 @@
+query getPipelineVariablesDefaultRoleGroupSetting($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    ciCdSettings {
+      pipelineVariablesDefaultRole
+    }
+  }
+}

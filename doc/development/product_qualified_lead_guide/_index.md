@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Acquisition
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Product Qualified Lead (PQL) development guidelines
 ---
 
@@ -50,7 +50,7 @@ You can import a hand-raise lead button in the following ways:
 
 For Haml:
 
-```haml
+```ruby
 .js-hand-raise-lead-trigger{ data: discover_page_hand_raise_lead_data(group) }
 ```
 

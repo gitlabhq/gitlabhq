@@ -38,8 +38,9 @@ module Metrics # rubocop:disable Gitlab/BoundedContexts -- Module already exists
 
     def take_lines(string, lines)
       string.each_line.reject do |line|
-        line.ends_with?("/db/structure.sql\n") ||
-          line.include?('/lib/ruby/gems/')
+        line.ends_with?("/structure.sql\n") ||
+          line.include?('/lib/ruby/gems/') ||
+          line.include?('/bin/')
       end.first(lines).join
     end
   end

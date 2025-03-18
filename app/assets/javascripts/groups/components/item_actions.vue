@@ -54,9 +54,9 @@ export default {
     leaveItem() {
       return {
         text: this.$options.i18n.leaveBtnTitle,
+        variant: 'danger',
         action: this.onLeaveGroup,
         extraAttrs: {
-          class: '!gl-text-danger',
           'data-testid': `leave-group-${this.group.id}-btn`,
         },
       };
@@ -65,8 +65,8 @@ export default {
       return {
         text: this.$options.i18n.removeBtnTitle,
         href: this.removeButtonHref,
+        variant: 'danger',
         extraAttrs: {
-          class: '!gl-text-danger',
           'data-testid': `remove-group-${this.group.id}-btn`,
         },
       };

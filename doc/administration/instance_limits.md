@@ -193,6 +193,27 @@ Search requests that exceed the search rate limit per minute return the followin
 This endpoint has been requested too many times. Try again later.
 ```
 
+### Autocomplete users rate limit
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
+
+{{< /history >}}
+
+This setting limits autocomplete users requests as follows:
+
+| Limit                | Default (requests per minute) |
+|----------------------|-------------------------------|
+| Authenticated user   | 300                           |
+| Unauthenticated user | 100                           |
+
+Autocomplete requests that exceed the autocomplete rate limit per minute return the following error:
+
+```plaintext
+This endpoint has been requested too many times. Try again later.
+```
+
 ### Pipeline creation rate limit
 
 {{< history >}}
@@ -560,7 +581,7 @@ To set this limit for a GitLab Self-Managed instance, run the following in the
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
-### Limit the number of pipelines created by a pipeline schedule per day
+### Limit the number of pipelines created by a pipeline schedule each day
 
 You can limit the number of pipelines that pipeline schedules can trigger per day.
 
@@ -731,7 +752,7 @@ To set a limit on your instance, use the
 When using [parallel Pages deployments](../user/project/pages/_index.md#parallel-deployments), the total number
 of parallel Pages deployments permitted for a top-level namespace is 1000.
 
-### Number of registered runners per scope
+### Number of registered runners for each scope
 
 {{< history >}}
 
@@ -791,6 +812,8 @@ Plan.default.actual_limits.update!(dast_profile_schedules: 50)
 ```
 
 ### Maximum size of the CI artifacts archive
+
+This setting is used to restrict YAML sizes for [dynamic child pipelines](../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines).
 
 The default maximum size of the CI artifacts archive is 5 megabytes.
 
@@ -997,6 +1020,27 @@ An upper and lower limit applies to each of these:
 The lower limits result in additional diffs being collapsed. The higher limits
 prevent any more changes from rendering. For more information about these limits,
 [read the development documentation](../development/merge_request_concepts/diffs/_index.md#diff-limits).
+
+### Diff version limit
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](feature_flags.md) named `merge_requests_diffs_limit`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+GitLab limits each merge request to 1000 [diff versions](../user/project/merge_requests/versions.md).
+Merge requests that reach this limit cannot be updated further. Instead,
+close the affected merge request and create a new merge request.
 
 ### Merge request reports size limit
 

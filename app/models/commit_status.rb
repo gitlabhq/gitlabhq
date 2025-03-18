@@ -9,8 +9,6 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include TaggableQueries
 
-  ignore_columns :stage, remove_with: '17.10', remove_after: '2025-03-14'
-
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id
@@ -174,6 +172,10 @@ class CommitStatus < Ci::ApplicationRecord
       transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
     end
 
+    event :force_cancel do
+      transition canceling: :canceled, if: :supports_force_cancel?
+    end
+
     before_transition [
       :created,
       :waiting_for_resource,
@@ -252,16 +254,14 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   def group_name
-    # [\b\s:] -> whitespace or column
-    # (\[.*\])|(\d+[\s:\/\\]+\d+) -> variables/matrix or parallel-jobs numbers
-    # {1,3} -> number of times that matches the variables/matrix or parallel-jobs numbers
-    #          we limit this to 3 because of possible abuse
-    regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
-
-    name.to_s.sub(regex, '').strip
+    Gitlab::Utils::Job.group_name(name)
   end
 
   def supports_canceling?
+    false
+  end
+
+  def supports_force_cancel?
     false
   end
 
@@ -291,8 +291,12 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
-  def archived?
+  def force_cancelable?
     false
+  end
+
+  def archived?
+    pipeline.archived?
   end
 
   def stuck?

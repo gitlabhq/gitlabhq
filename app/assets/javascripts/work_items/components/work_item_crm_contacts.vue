@@ -9,12 +9,7 @@ import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_c
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import {
-  i18n,
-  TRACKING_CATEGORY_SHOW,
-  I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS,
-  WIDGET_TYPE_CRM_CONTACTS,
-} from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_CRM_CONTACTS } from '../constants';
 import { newWorkItemFullPath, newWorkItemId } from '../utils';
 
 export default {
@@ -121,7 +116,10 @@ export default {
         return data.group?.contacts?.nodes;
       },
       error() {
-        this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong when fetching CRM contacts. Please try again.'),
+        );
       },
     },
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties

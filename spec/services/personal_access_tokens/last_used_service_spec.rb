@@ -45,25 +45,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         end
       end
 
-      context 'when PAT IP feature flag is disabled' do
-        let(:current_ip_address) { '127.0.0.1' }
-
-        before do
-          stub_feature_flags(pat_ip: false)
-        end
-
-        it "does not update the personal access token's last used ips" do
-          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
-
-          expect { service_execution }.not_to change { personal_access_token.last_used_ips.count }
-          expect(
-            Authn::PersonalAccessTokenLastUsedIp
-              .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
-              .exists?
-          ).to be_falsy
-        end
-      end
-
       context 'when the personal access token was used more than 1 minute ago', :freeze_time do
         let(:current_ip_address) { '::1' }
         let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }

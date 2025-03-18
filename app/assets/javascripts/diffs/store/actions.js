@@ -29,7 +29,6 @@ import {
 import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
-  MR_TREE_SHOW_KEY,
   TREE_LIST_STORAGE_KEY,
   OLD_LINE_KEY,
   NEW_LINE_KEY,
@@ -716,18 +715,6 @@ export const scrollToFile = ({ state, commit, getters }, { path }) => {
       handleLocationHash();
     });
   }
-};
-
-export const setShowTreeList = ({ commit }, { showTreeList, saving = true }) => {
-  commit(types.SET_SHOW_TREE_LIST, showTreeList);
-
-  if (saving) {
-    localStorage.setItem(MR_TREE_SHOW_KEY, showTreeList);
-  }
-};
-
-export const toggleTreeList = ({ state, commit }) => {
-  commit(types.SET_SHOW_TREE_LIST, !state.showTreeList);
 };
 
 export const openDiffFileCommentForm = ({ commit, getters }, formData) => {

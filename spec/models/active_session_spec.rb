@@ -197,6 +197,10 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
       end
     end
 
+    # Historically, sessions were written by Gitlab::Sessions::RedisStore in a different format
+    # than the current Gitlab::Sessions::CacheStore.
+    # The RedisStore is removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181637,
+    # but we'll keep this specs to ensure backwards compatibility.
     context 'with old session format from Gitlab::Sessions::RedisStore' do
       it 'uses the ActiveSession lookup to return original sessions' do
         Gitlab::Redis::Sessions.with do |redis|

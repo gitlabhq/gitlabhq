@@ -14,10 +14,12 @@ import {
   mockEpic,
   mockBlockingIssue1,
   mockBlockingIssue2,
+  mockBlockingIssue5,
   mockBlockingEpic1,
   mockBlockingIssuablesResponse1,
   mockBlockingIssuablesResponse2,
   mockBlockingIssuablesResponse3,
+  mockBlockingIssuablesResponse4,
   mockBlockedIssue1,
   mockBlockedIssue2,
   mockBlockedEpic1,
@@ -190,20 +192,23 @@ describe('IssuableBlockedIcon', () => {
 
     describe('with a single blocking issue', () => {
       beforeEach(async () => {
-        createWrapperWithApollo();
+        createWrapperWithApollo({
+          item: mockBlockedIssue1,
+          blockingIssuablesSpy: jest.fn().mockResolvedValue(mockBlockingIssuablesResponse4),
+        });
 
         await mouseenter();
       });
 
       it('should render a title of the issuable', () => {
-        expect(findIssuableTitle().text()).toBe(mockBlockingIssue1.title);
+        expect(findIssuableTitle().text()).toBe(mockBlockingIssue5.title);
       });
 
       it('should render issuable reference and link to the issuable', () => {
-        const formattedRef = mockBlockingIssue1.reference.split('/')[1];
+        const formattedRef = mockBlockingIssue5.reference.split('/').pop();
 
         expect(findGlLink().text()).toBe(formattedRef);
-        expect(findGlLink().attributes('href')).toBe(mockBlockingIssue1.webUrl);
+        expect(findGlLink().attributes('href')).toBe(mockBlockingIssue5.webUrl);
       });
 
       it('should render popover title with correct blocking issuable count', () => {

@@ -610,7 +610,6 @@ describe('CE IssuesListApp component', () => {
             currentTabCount: 0,
             exportCsvPathWithQuery: defaultProvide.exportCsvPath,
             showCsvButtons: true,
-            showIssuableByEmail: false,
             showNewIssueDropdown: false,
           });
         });
@@ -1230,6 +1229,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('updates the milestone field of active issuable', async () => {
+          const { projectMilestone, ...updatedMockMilestone } = mockMilestone;
           const {
             data: { workItem },
           } = workItemResponseFactory({ id: 'gid://gitlab/WorkItem/123456', iid: '789' });
@@ -1238,7 +1238,7 @@ describe('CE IssuesListApp component', () => {
           await waitForPromises();
 
           expect(findIssuableList().props('issuables')[0].milestone).toEqual({
-            ...mockMilestone,
+            ...updatedMockMilestone,
             __persist: true,
             expired: undefined,
             state: undefined,

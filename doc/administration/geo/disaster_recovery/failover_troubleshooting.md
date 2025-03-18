@@ -71,7 +71,7 @@ is displayed if you attempt to run this command on a primary site.
 
 If you notice for some reason there are more artifacts on the Geo
 **secondary** site than on the Geo **primary** site, you can use the Rake task
-to [cleanup orphan artifact files](../../../raketasks/cleanup.md#remove-orphan-artifact-files)
+to [cleanup orphan artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
 
 On a Geo **secondary** site, this command also cleans up all Geo
 registry record related to the orphan files on disk.

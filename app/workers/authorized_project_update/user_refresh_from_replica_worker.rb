@@ -7,7 +7,7 @@ module AuthorizedProjectUpdate
     sidekiq_options retry: 3
     feature_category :permissions
     urgency :low
-    data_consistency :delayed, feature_flag: :change_data_consistency_for_permissions_workers
+    data_consistency :delayed
     queue_namespace :authorized_project_update
 
     idempotent!

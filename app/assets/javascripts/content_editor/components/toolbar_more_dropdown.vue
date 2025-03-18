@@ -15,6 +15,10 @@ export default {
       toggleId: uniqueId('dropdown-toggle-btn-'),
       items: [
         {
+          text: __('Alert'),
+          action: () => this.execute('insertAlert', 'alert'),
+        },
+        {
           text: __('Code block'),
           action: () => this.insert('codeBlock'),
         },

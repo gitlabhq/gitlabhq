@@ -335,7 +335,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
 
         expect do
           push_access_check
-        end.to raise_error(described_class::ForbiddenError, /Your push has been rejected/)
+        end.to raise_error(described_class::ForbiddenError, /Your push to this repository cannot be completed/)
       end
 
       it_behaves_like 'migration bot does not err'
@@ -365,7 +365,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
 
         expect do
           push_access_check
-        end.to raise_error(described_class::ForbiddenError, /Your push to this repository would cause it to exceed the size limit/)
+        end.to raise_error(described_class::ForbiddenError, /Your push to this repository cannot be completed as it would exceed the allocated storage for your project/)
       end
 
       it_behaves_like 'migration bot does not err'

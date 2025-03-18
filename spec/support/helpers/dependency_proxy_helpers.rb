@@ -3,12 +3,13 @@
 module DependencyProxyHelpers
   include StubRequests
 
-  def stub_registry_auth(image, token, status = 200, body = nil)
+  def stub_registry_auth(image, token, status: 200, body: nil, request_headers: {})
     auth_body = { 'token' => token }.to_json
     auth_link = registry.auth_url(image)
 
-    stub_full_request(auth_link)
-      .to_return(status: status, body: body || auth_body)
+    stub = stub_full_request(auth_link)
+    stub = stub.with(headers: request_headers) unless request_headers.empty?
+    stub.to_return(status: status, body: body || auth_body)
   end
 
   def stub_manifest_download(image, tag, status: 200, body: nil, headers: {})

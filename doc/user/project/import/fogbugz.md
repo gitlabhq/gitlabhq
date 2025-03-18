@@ -47,10 +47,14 @@ To import your project from FogBugz:
 1. Select **Import project**.
 1. Select **FogBugz**.
 1. Enter your FogBugz URL, email address, and password.
-1. Create a mapping from FogBugz users to GitLab users.
-   ![User Map](img/fogbugz_import_user_map_v8.png)
-1. For the projects you want to import, select **Import**.
-   ![Import Project](img/fogbugz_import_select_project_v8.png)
+1. Create a mapping from FogBugz users to GitLab users. For each FogBugz user:
+   - To map a FogBugz account to a full name, without mapping it to a GitLab account, leave the **GitLab User**
+     text box empty. This mapping adds the user's full name to the description of all issues and comments, but
+     assigns the issues and comments to the project creator.
+   - To map a FogBugz account to a GitLab account, in **GitLab User**, select the GitLab user
+     you want to associate issues and comments with.
+1. When all users are mapped, select **Continue to the next step**.
+1. For each project you want to import, select **Import**.
 1. After the import finishes, select the link to go to the project
    dashboard. Follow the directions to push your existing repository.
 1. To import a project:

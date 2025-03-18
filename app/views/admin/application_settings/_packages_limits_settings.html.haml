@@ -1,0 +1,21 @@
+.gl-mt-7
+  %h4.gl-mb-1
+    = _('Package limits')
+  %p.gl-text-subtle
+    = _('Setting high package limits can impact database performance. Consider the size of your instance when configuring these values.')
+  .scrolling-tabs-container.inner-page-scroll-tabs
+    .tab-content
+      = gitlab_ui_form_for @application_setting,
+        url: ci_cd_admin_application_settings_path(anchor: 'js-package-settings'),
+        method: :patch, html: { class: 'fieldset-form' }, data: { testid: 'package-limits-form' } do |f|
+        = form_errors(@application_setting)
+        %fieldset
+
+          .form-group
+            = f.label :helm_max_packages_count, _('Maximum number of Helm packages per channel'), class: 'label-bold'
+            = f.number_field :helm_max_packages_count,
+              class: 'form-control gl-form-input',
+              placeholder: ::ApplicationSetting::DEFAULT_HELM_MAX_PACKAGES_COUNT
+            .form-text.text-muted
+              = _('Maximum number of Helm packages that can be listed per channel. Must be at least 1.')
+          = f.submit _('Save changes'), pajamas_button: true

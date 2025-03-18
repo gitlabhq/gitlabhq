@@ -41,7 +41,7 @@ module NavbarStructureHelper
     insert_after_sub_nav_item(
       _("Feature flags"),
       within: _('Deploy'),
-      new_sub_nav_item_name: _("Package Registry")
+      new_sub_nav_item_name: _("Package registry")
     )
   end
 
@@ -50,7 +50,7 @@ module NavbarStructureHelper
       before,
       new_nav_item: {
         nav_item: _("Deploy"),
-        nav_sub_items: [_("Package Registry")]
+        nav_sub_items: [_("Package registry")]
       }
     )
   end
@@ -65,7 +65,7 @@ module NavbarStructureHelper
 
   def insert_container_nav
     insert_after_sub_nav_item(
-      _('Package Registry'),
+      _('Package registry'),
       within: _('Deploy'),
       new_sub_nav_item_name: _('Container Registry')
     )
@@ -97,7 +97,7 @@ module NavbarStructureHelper
 
   def insert_harbor_registry_nav
     insert_after_sub_nav_item(
-      _('Package Registry'),
+      _('Package registry'),
       within: _('Deploy'),
       new_sub_nav_item_name: _('Harbor Registry')
     )

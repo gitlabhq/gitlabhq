@@ -1,14 +1,11 @@
-import { createAlert, VARIANT_INFO } from '~/alert';
 import * as commonUtils from '~/lib/utils/common_utils';
 import {
-  showForkSuggestionAlert,
   canFork,
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
   showForkSuggestion,
 } from '~/repository/utils/fork_suggestion_utils';
 
-jest.mock('~/alert');
 jest.mock('~/lib/utils/common_utils');
 
 describe('forkSuggestionUtils', () => {
@@ -104,45 +101,6 @@ describe('forkSuggestionUtils', () => {
           canModifyBlobWithWebIde: false,
         }),
       ).toBe(false);
-    });
-  });
-
-  describe('showForkSuggestionAlert', () => {
-    const forkAndViewPath = '/path/to/fork';
-
-    beforeEach(() => {
-      createAlert.mockClear();
-    });
-
-    it('calls createAlert with correct parameters', () => {
-      showForkSuggestionAlert(forkAndViewPath);
-
-      expect(createAlert).toHaveBeenCalledTimes(1);
-      expect(createAlert).toHaveBeenCalledWith({
-        message:
-          "You can't edit files directly in this project. Fork this project and submit a merge request with your changes.",
-        variant: VARIANT_INFO,
-        primaryButton: {
-          text: 'Fork',
-          link: forkAndViewPath,
-        },
-        secondaryButton: {
-          text: 'Cancel',
-          clickHandler: expect.any(Function),
-        },
-      });
-    });
-
-    it('secondary button click handler dismisses the alert', () => {
-      const mockAlert = { dismiss: jest.fn() };
-      createAlert.mockReturnValue(mockAlert);
-
-      showForkSuggestionAlert(forkAndViewPath);
-
-      const secondaryButtonClickHandler = createAlert.mock.calls[0][0].secondaryButton.clickHandler;
-      secondaryButtonClickHandler(mockAlert);
-
-      expect(mockAlert.dismiss).toHaveBeenCalledTimes(1);
     });
   });
 });

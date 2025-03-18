@@ -91,6 +91,8 @@ module EncryptedUserPassword
       return true if PBKDF2_SHA512_STRATEGY == password_strategy
     end
 
+    # We do not want to send a "your password changed" notification on stretch update
+    skip_password_change_notification!
     update_attribute(:password, password)
   end
 

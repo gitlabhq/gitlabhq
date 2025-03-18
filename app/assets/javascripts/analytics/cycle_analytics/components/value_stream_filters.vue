@@ -132,11 +132,7 @@ export default {
   <div
     class="gl-mt-3 gl-border-b-1 gl-border-t-1 gl-border-default gl-bg-subtle gl-p-5 gl-border-b-solid gl-border-t-solid"
   >
-    <filter-bar
-      data-testid="vsa-filter-bar"
-      class="filtered-search-box gl-flex gl-border-none"
-      :namespace-path="namespacePath"
-    />
+    <filter-bar data-testid="vsa-filter-bar" :namespace-path="namespacePath" />
     <hr v-if="shouldShowFilterDropdowns" class="-gl-mx-5 gl-my-5" />
     <div
       v-if="shouldShowFilterDropdowns"

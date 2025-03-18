@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Rewrite '%s' to be plural without parentheses."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#s
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#s
 vocab: false
 level: warning
 ignorecase: true

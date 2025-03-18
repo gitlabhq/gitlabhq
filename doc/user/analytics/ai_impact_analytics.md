@@ -33,6 +33,10 @@ see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md).
 
 For a click-through demo, see the [AI impact analytics product tour](https://gitlab.navattic.com/ai-impact).
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aUOE?si=7Yfc6xHm63c3BRwn).
+<!-- Video published on 2025-03-06 -->
+
 ## AI impact metrics
 
 AI impact analytics displays key metrics and metric trends for a project or group.

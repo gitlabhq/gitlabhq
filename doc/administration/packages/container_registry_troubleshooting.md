@@ -5,19 +5,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting the container registry
 ---
 
-Before diving in to the following sections, here's some basic troubleshooting:
+Before investigating specific issues, try these troubleshooting steps:
 
-1. Check to make sure that the system clock on your Docker client and GitLab server have
-   been synchronized (for example, via NTP).
+1. Verify that the system clock on your Docker client and GitLab server are synchronized (for example, through NTP).
 
-1. If you are using an S3-backed Registry, double check that the IAM
-   permissions and the S3 credentials (including region) are correct. See
-   [the sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/)
-   for more details.
+1. For S3-backed registries, verify your IAM permissions and S3 credentials (including region) are correct.
+   For more information, see the [sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/).
 
-1. Check the Registry logs (for example `/var/log/gitlab/registry/current`) and the GitLab production logs
-   for errors (for example `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
-   there.
+1. Check for errors in the registry logs (for example, `/var/log/gitlab/registry/current`) and the GitLab production logs
+   (for example, `/var/log/gitlab/gitlab-rails/production.log`).
+
+1. Review the NGINX configuration file for the container registry (for example, `/var/opt/gitlab/nginx/conf/gitlab-registry.conf`)
+   to confirm which port receives requests.
+
+1. Verify that requests are correctly forwarded to the container registry:
+
+   ```shell
+   curl --verbose --noproxy "*" https://<hostname>:<port>/v2/_catalog
+   ```
+
+   The response should include a line with `Www-Authenticate: Bearer` containing `service="container_registry"`. For example:
+
+   ```plaintext
+   < HTTP/1.1 401 Unauthorized
+   < Server: nginx
+   < Date: Fri, 07 Mar 2025 08:24:43 GMT
+   < Content-Type: application/json
+   < Content-Length: 162
+   < Connection: keep-alive
+   < Docker-Distribution-Api-Version: registry/2.0
+   < Www-Authenticate: Bearer realm="https://<hostname>/jwt/auth",service="container_registry",scope="registry:catalog:*"
+   < X-Content-Type-Options: nosniff
+   <
+   {"errors":[{"code":"UNAUTHORIZED","message":"authentication required","detail":
+   [{"Type":"registry","Class":"","Name":"catalog","ProjectPath":"","Action":"*"}]}]}
+   * Connection #0 to host <hostname> left intact
+   ```
 
 ## Using self-signed certificates with container registry
 
@@ -421,15 +444,15 @@ a08f14ef632e: Pushing [==================================================>] 2.04
 error parsing HTTP 403 response body: unexpected end of JSON input: ""
 ```
 
-This error is ambiguous, as it's not clear whether the 403 is coming from the
+This error is ambiguous because it's not clear whether the 403 is coming from the
 GitLab Rails application, the Docker Registry, or something else. In this
-case, since we know that since the login succeeded, we probably need to look
+case, because we know that the login succeeded, we probably need to look
 at the communication between the client and the Registry.
 
 The REST API between the Docker client and Registry is described
 [in the Docker documentation](https://distribution.github.io/distribution/spec/api/). Usually, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
-wrong. However, since all communications between Docker clients and servers
+wrong. However, because all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
@@ -499,24 +522,37 @@ Now that we have mitmproxy and Docker running, we can attempt to sign in and
 push a container image. You may need to run as root to do this. For example:
 
 ```shell
-docker login s3-testing.myregistry.com:5050
-docker push s3-testing.myregistry.com:5050/root/docker-test/docker-image
+docker login example.s3.amazonaws.com:5050
+docker push example.s3.amazonaws.com:5050/root/docker-test/docker-image
 ```
 
 In the example above, we see the following trace on the mitmproxy window:
 
-![mitmproxy output from Docker](img/mitmproxy_docker_v8_11.png)
+```plaintext
+PUT https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/uploads/(UUID)/(QUERYSTRING)
+    ← 201 text/plain [no content] 661ms
+HEAD https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/sha256:(SHA)
+    ← 307 application/octet-stream [no content] 93ms
+HEAD https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/sha256:(SHA)
+    ← 307 application/octet-stream [no content] 101ms
+HEAD https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/sha256:(SHA)
+    ← 307 application/octet-stream [no content] 87ms
+HEAD https://amazonaws.example.com/docker/registry/vs/blobs/sha256/dd/(UUID)/data(QUERYSTRING)
+    ← 403 application/xml [no content] 80ms
+HEAD https://amazonaws.example.com/docker/registry/vs/blobs/sha256/dd/(UUID)/data(QUERYSTRING)
+    ← 403 application/xml [no content] 62ms
+```
 
-The above image shows:
+This output shows:
 
-- The initial PUT requests went through fine with a 201 status code.
-- The 201 redirected the client to the S3 bucket.
-- The HEAD request to the AWS bucket reported a 403 Unauthorized.
+- The initial PUT requests went through fine with a `201` status code.
+- The `201` redirected the client to the Amazon S3 bucket.
+- The HEAD request to the AWS bucket reported a `403 Unauthorized`.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html).
 The solution: check the [IAM permissions again](https://distribution.github.io/distribution/storage-drivers/s3/).
-Once the right permissions were set, the error goes away.
+After the right permissions were set, the error went away.
 
 ## Missing `gitlab-registry.key` prevents container repository deletion
 

@@ -3,10 +3,10 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { setHTMLFixture } from 'helpers/fixtures';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
@@ -32,6 +32,10 @@ import {
   workItemNotesDeleteSubscriptionResponse,
   mockWorkItemNotesResponseWithComments,
 } from '../mock_data';
+
+jest.mock('~/lib/utils/resize_observer', () => ({
+  scrollToTargetOnResize: jest.fn(),
+}));
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
 const mockWorkItemIid = workItemQueryResponse.data.workItem.iid;
@@ -106,9 +110,11 @@ describe('WorkItemNotes component', () => {
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
     isGroup = false,
+    isDrawer = false,
     isModal = false,
     isWorkItemConfidential = false,
     parentId = null,
+    propsData = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
@@ -128,9 +134,11 @@ describe('WorkItemNotes component', () => {
         workItemIid,
         workItemType: 'task',
         reportAbusePath: '/report/abuse/path',
+        isDrawer,
         isModal,
         isWorkItemConfidential,
         parentId,
+        ...propsData,
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
@@ -139,7 +147,6 @@ describe('WorkItemNotes component', () => {
   };
 
   beforeEach(() => {
-    setHTMLFixture('<div id="content-body"></div>');
     createComponent();
   });
 
@@ -160,6 +167,7 @@ describe('WorkItemNotes component', () => {
       createComponent();
 
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
     });
 
     it('skips query for target note if invalid note_id in URL', () => {
@@ -168,6 +176,7 @@ describe('WorkItemNotes component', () => {
       createComponent();
 
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
     });
 
     it('skips query for target note if note_id is for a synthetic note', () => {
@@ -176,11 +185,10 @@ describe('WorkItemNotes component', () => {
       createComponent();
 
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
     });
 
     it('skips preview note if modal is open', async () => {
-      setWindowLocation('?show=true#note_174');
-
       const mockPreviewNote = {
         id: 'gid://gitlab/Note/174',
         discussion: { id: 'discussion-1' },
@@ -189,6 +197,7 @@ describe('WorkItemNotes component', () => {
       createComponent({
         propsData: {
           previewNote: mockPreviewNote,
+          isModal: true,
         },
       });
 
@@ -200,6 +209,33 @@ describe('WorkItemNotes component', () => {
 
       // Should still show loading state
       expect(findNotesLoading().exists()).toBe(true);
+      expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
+    });
+
+    it('skips preview note if open in drawer', async () => {
+      const mockPreviewNote = {
+        id: 'gid://gitlab/Note/174',
+        discussion: { id: 'discussion-1' },
+      };
+
+      createComponent({
+        propsData: {
+          previewNote: mockPreviewNote,
+          isDrawer: true,
+        },
+      });
+
+      await waitForPromises();
+
+      // Preview note should not be rendered when modal is open
+      const discussions = wrapper.findAllComponents(WorkItemDiscussion);
+      expect(discussions.length).toBe(0);
+
+      // Should still show loading state
+      expect(findNotesLoading().exists()).toBe(true);
+      expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
     });
 
     it('makes query for target note if note_id in URL', () => {
@@ -207,6 +243,7 @@ describe('WorkItemNotes component', () => {
 
       createComponent();
 
+      expect(scrollToTargetOnResize).toHaveBeenCalled();
       expect(workItemNoteQueryHandler).toHaveBeenCalledWith({
         id: 'gid://gitlab/Note/174',
       });
@@ -542,5 +579,22 @@ describe('WorkItemNotes component', () => {
     await waitForPromises();
 
     expect(findWorkItemAddNote().props('parentId')).toBe('example-id');
+  });
+
+  describe('when hideFullscreenMarkdownButton prop is true', () => {
+    beforeEach(async () => {
+      createComponent({
+        defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+        propsData: { hideFullscreenMarkdownButton: true },
+      });
+      await waitForPromises();
+    });
+
+    it('passes prop to work-item-add-note', () => {
+      expect(findWorkItemAddNote().props('hideFullscreenMarkdownButton')).toBe(true);
+    });
+    it('passes prop to work-item-discussion', () => {
+      expect(findAllWorkItemCommentNotes().at(0).props('hideFullscreenMarkdownButton')).toBe(true);
+    });
   });
 });

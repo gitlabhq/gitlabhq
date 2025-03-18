@@ -158,14 +158,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when running after_commit callbacks' do
-      it 'tracks creation event' do
-        expect(Gitlab::InternalEvents).to receive(:track_event).with(
-          'create_ci_build',
-          project: project,
-          user: user
-        )
+      let(:name) { 'test123' }
 
-        create(:ci_build, user: user, project: project)
+      subject(:create_ci_build) { create(:ci_build, user: user, project: project, name: name) }
+
+      it 'tracks creation event' do
+        expect { create_ci_build }
+          .to trigger_internal_events('create_ci_build')
+          .with(
+            category: 'InternalEventTracking',
+            user: user,
+            project: project,
+            additional_properties: { property: name }
+          )
       end
     end
   end
@@ -357,26 +362,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'does not select the build' do
         is_expected.to be_empty
       end
-    end
-  end
-
-  describe '.license_management_jobs' do
-    subject { described_class.license_management_jobs }
-
-    let!(:management_build) { create(:ci_build, :success, name: :license_management, pipeline: pipeline) }
-    let!(:scanning_build) { create(:ci_build, :success, name: :license_scanning, pipeline: pipeline) }
-    let!(:another_build) { create(:ci_build, :success, name: :another_type, pipeline: pipeline) }
-
-    it 'returns license_scanning jobs' do
-      is_expected.to include(scanning_build)
-    end
-
-    it 'returns license_management jobs' do
-      is_expected.to include(management_build)
-    end
-
-    it 'doesnt return filtered out jobs' do
-      is_expected.not_to include(another_build)
     end
   end
 
@@ -1837,6 +1822,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
           it { is_expected.to be_cancelable }
         end
+
+        context 'when build is canceling' do
+          let(:build) { create(:ci_build, :canceling, pipeline: pipeline) }
+
+          it { is_expected.to be_force_cancelable }
+        end
       end
 
       context 'when build is not cancelable' do
@@ -2555,6 +2546,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
+          { key: 'CI_JOB_GROUP_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
@@ -2580,6 +2572,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PROJECT_PATH', value: project.full_path, public: true, masked: false },
           { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true, masked: false },
+          { key: 'CI_PROJECT_NAMESPACE_SLUG', value: Gitlab::Utils.slugify(project.namespace.full_path), public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE_ID', value: project.namespace.id.to_s, public: true, masked: false },
           { key: 'CI_PROJECT_ROOT_NAMESPACE', value: project.namespace.root_ancestor.path, public: true, masked: false },
           { key: 'CI_PROJECT_URL', value: project.web_url, public: true, masked: false },
@@ -2589,6 +2582,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_DEFAULT_BRANCH', value: project.default_branch, public: true, masked: false },
           { key: 'CI_CONFIG_PATH', value: project.ci_config_path_or_default, public: true, masked: false },
           { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true, masked: false },
+          { key: 'CI_PAGES_HOSTNAME', value: pages_hostname, public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_SERVER', value: Gitlab.host_with_port, public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
             value: "#{Gitlab.host_with_port}/#{project.namespace.root_ancestor.path.downcase}#{DependencyProxy::URL_SUFFIX}",
@@ -2617,7 +2611,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },
           { key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp, public: true, masked: false },
           { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false },
-          { key: 'CI_PAGES_HOSTNAME', value: pages_hostname, public: true, masked: false },
           { key: 'CI_PAGES_URL', value: pages_url, public: true, masked: false }
         ]
       end
@@ -2689,7 +2682,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                build_yaml_var,
                job_dependency_var,
                { key: 'secret', value: 'value', public: false, masked: false },
-               { key: "CI_PAGES_HOSTNAME", value: pages_hostname, masked: false, public: true },
                { key: "CI_PAGES_URL", value: pages_url, masked: false, public: true }])
           end
         end
@@ -3265,6 +3257,30 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           is_expected.to include(
             { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
           )
+        end
+
+        it 'includes CI_JOB_GROUP_NAME' do
+          is_expected.to include(
+            { key: 'CI_JOB_GROUP_NAME', value: 'test', public: true, masked: false }
+          )
+        end
+      end
+
+      context 'when parallel is a matrix' do
+        let(:config) do
+          {
+            matrix: [
+              {
+                STACK: %w[ruby python],
+                DB: %w[postgresql mysql]
+              }
+            ],
+            total: 4
+          }
+        end
+
+        it_behaves_like 'parallelized jobs config' do
+          let(:total) { 4 }
         end
       end
 
@@ -4991,14 +5007,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#archived?' do
+    before do
+      pipeline.update!(created_at: 1.day.ago)
+    end
+
     context 'when build is degenerated' do
-      subject { create(:ci_build, :degenerated, pipeline: pipeline) }
+      subject { build_stubbed(:ci_build, :degenerated, pipeline: pipeline) }
 
       it { is_expected.to be_archived }
     end
 
-    context 'for old build' do
-      subject { create(:ci_build, created_at: 1.day.ago, pipeline: pipeline) }
+    context 'for old pipelines' do
+      subject { build_stubbed(:ci_build, pipeline: pipeline) }
 
       context 'when archive_builds_in is set' do
         before do
@@ -5112,79 +5132,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.clear_memoization(:build_data)
     end
 
-    context 'when ci_async_build_hooks_execution flag is disabled' do
-      before do
-        stub_feature_flags(ci_async_build_hooks_execution: false)
-      end
-
-      context 'with project services' do
-        before do
-          create(:integration, active: true, job_events: true, project: project)
-        end
-
-        it 'executes services' do
-          allow_next_instance_of(Integration) do |integration|
-            expect(integration).to receive(:async_execute)
-          end
-
-          build.execute_hooks
-        end
-      end
-
-      context 'without relevant project services' do
-        before do
-          create(:integration, active: true, job_events: false, project: project)
-        end
-
-        it 'does not execute services' do
-          allow_next_instance_of(Integration) do |integration|
-            expect(integration).not_to receive(:async_execute)
-          end
-
-          build.execute_hooks
-        end
-      end
-
-      context 'with project hooks' do
-        let(:build_data) { double(:BuildData, dup: double(:DupedData)) }
-
-        before do
-          create(:project_hook, project: project, job_events: true)
-        end
-
-        it 'executes hooks' do
-          expect(::Gitlab::DataBuilder::Build)
-            .to receive(:build).with(build).and_return(build_data)
-
-          expect(build.project)
-            .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
-
-          build.execute_hooks
-        end
-
-        context 'with blocked users' do
-          before do
-            allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
-          end
-
-          it 'does not execute hooks' do
-            expect(build.project).not_to receive(:execute_hooks)
-
-            build.execute_hooks
-          end
-        end
-      end
-
-      context 'without project hooks' do
-        it 'does not execute hooks' do
-          expect(build.project).not_to receive(:execute_hooks)
-
-          build.execute_hooks
-        end
-      end
-    end
-
-    context 'when ci_async_build_hooks_execution flag is enabled' do
+    context 'when project hooks exists' do
       let(:build_data) { double(:BuildData) }
 
       before do
@@ -5853,6 +5801,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#supports_force_cancel?' do
+    let(:job) { create(:ci_build, :canceling, project: project) }
+
+    context 'when the builds runner supports canceling' do
+      include_context 'when canceling support'
+      it 'returns true' do
+        expect(job.supports_force_cancel?).to be true
+      end
+    end
+  end
+
   describe '#runtime_runner_features' do
     subject do
       build.save!
@@ -6244,25 +6203,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     before do
       allow(::Ci::JobToken::Jwt).to receive(:encode).with(build).and_return(jwt_token)
+      build.set_token(database_token)
+      allow(build).to receive_message_chain(:user, :has_composite_identity?).and_return(composite_identity?)
+      allow(build).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings, :jwt_ci_cd_job_token_enabled?)
+        .and_return(jwt_enabled?)
     end
 
-    it { is_expected.to eq(jwt_token) }
+    where(:composite_identity?, :jwt_enabled?, :expected_token) do
+      true  | true  | ref(:jwt_token)
+      true  | false | ref(:jwt_token)
+      false | true  | ref(:jwt_token)
+      false | false | ref(:database_token)
+    end
 
-    context 'when ci_job_token_jwt feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_job_token_jwt: false)
-        build.set_token(database_token)
-      end
-
-      it { is_expected.to eq(database_token) }
-
-      context 'when job user requires composite identity' do
-        before do
-          allow(build).to receive_message_chain(:user, :has_composite_identity?).and_return(true)
-        end
-
-        it { is_expected.to eq(jwt_token) }
-      end
+    with_them do
+      it { is_expected.to eq(expected_token) }
     end
   end
 

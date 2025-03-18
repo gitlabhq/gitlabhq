@@ -36,7 +36,7 @@ In the Markdown doc for a resource (AKA endpoint):
   description also has both offering and tier, combine them. For
   example: _GitLab Self-Managed, Premium and Ultimate only._
 
-After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Examples](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/commits/main/data/navigation.yaml).
+After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Examples](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/commits/main/data/en-us/navigation.yaml).
 
 ## API topic template
 
@@ -145,11 +145,10 @@ To deprecate an attribute:
    ```markdown
    | Attribute     | Type   | Required | Description |
    |---------------|--------|----------|-------------|
-   | `widget_name` | string | No       | [Deprecated](https://link-to-issue) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
+   | `widget_name` | string | No       | [Deprecated](https://link-to-issue) in GitLab 14.7. Use `widget_id` instead. The name of the widget. |
    ```
 
-To widely announce a deprecation, or if it's a breaking change,
-[update the REST API deprecations and removals page](../../api/rest/deprecations.md).
+To widely announce a deprecation, [update the REST API deprecations page](../../api/rest/deprecations.md).
 
 ## Method description
 

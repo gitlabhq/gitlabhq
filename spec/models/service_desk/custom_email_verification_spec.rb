@@ -130,7 +130,7 @@ RSpec.describe ServiceDesk::CustomEmailVerification, feature_category: :service_
       context 'when triggered_at is not set' do
         it 'returns nil' do
           subject.triggered_at = nil
-          expect(subject.accepted_until).to be nil
+          expect(subject.accepted_until).to be_nil
         end
       end
     end

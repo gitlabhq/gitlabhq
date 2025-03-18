@@ -51,7 +51,7 @@ RSpec.describe Users::AutoBanService, feature_category: :instance_resiliency do
           response = execute
 
           expect(response[:status]).to eq(:error)
-          expect(response[:message]).to match('State cannot transition via "ban"')
+          expect(response[:message]).to match('You cannot ban blocked users.')
         end
 
         it 'does not modify the BannedUser record or user state' do
@@ -76,7 +76,7 @@ RSpec.describe Users::AutoBanService, feature_category: :instance_resiliency do
         end
 
         it 'raises an error and does not ban the user', :aggregate_failures do
-          expect { execute! }.to raise_error(StateMachines::InvalidTransition)
+          expect { execute! }.to raise_error(described_class::Error)
             .and not_change { Users::BannedUser.count }
             .and not_change { user.state }
         end

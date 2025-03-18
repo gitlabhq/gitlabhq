@@ -20,6 +20,7 @@ module Issues
     def execute(skip_system_notes: false)
       return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, container)
 
+      assign_description_from_template
       # We should not initialize the callback classes during the build service execution because these will be
       # initialized when we call #create below
       @issue = @build_service.execute(initialize_callbacks: false)
@@ -49,7 +50,6 @@ module Issues
     def before_create(issue)
       issue.check_for_spam(user: current_user, action: :create) if perform_spam_check
 
-      assign_description_from_template(issue)
       after_commit_tasks(current_user, issue)
     end
 
@@ -61,8 +61,20 @@ module Issues
       handle_escalation_status_change(issue)
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
+      publish_event(issue)
 
       super
+    end
+
+    def publish_event(issue)
+      event = ::WorkItems::WorkItemCreatedEvent.new(data: {
+        id: issue.id,
+        namespace_id: issue.namespace_id
+      })
+
+      issue.run_after_commit_or_now do
+        ::Gitlab::EventStore.publish(event)
+      end
     end
 
     def handle_changes(issue, options)
@@ -125,8 +137,8 @@ module Issues
       set_crm_contacts(issue, contacts)
     end
 
-    def assign_description_from_template(issue)
-      return if issue.description.present?
+    def assign_description_from_template
+      return if params[:description].present?
 
       # Find the exact name for the default template (if the project has one).
       # Since there are multiple possibilities regarding the capitalization(s) that the
@@ -151,7 +163,7 @@ module Issues
         nil
       end
 
-      issue.description = default_template.content if default_template.present?
+      params[:description] = default_template.content if default_template.present?
     end
 
     def after_commit_tasks(user, issue)

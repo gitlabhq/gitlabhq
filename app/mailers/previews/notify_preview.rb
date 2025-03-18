@@ -175,14 +175,6 @@ class NotifyPreview < ActionMailer::Preview
     Notify.member_access_granted_email(member.source_type, member.id).message
   end
 
-  def member_access_requested_email
-    Notify.member_access_requested_email(member.source_type, member.id, user.id).message
-  end
-
-  def member_invite_accepted_email
-    Notify.member_invite_accepted_email(member.source_type, member.id).message
-  end
-
   def member_about_to_expire_email
     cleanup do
       member = project.add_member(user, Gitlab::Access::GUEST, expires_at: 7.days.from_now.to_date)
@@ -400,11 +392,27 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def bulk_import_csv_user_mapping_success
-    Notify.bulk_import_csv_user_mapping(user.id, group.id, 94125, 0)
+    Notify.bulk_import_csv_user_mapping(
+      user.id,
+      group.id,
+      success_count: 94125,
+      failed_count: 0,
+      skipped_count: 50
+    )
   end
 
   def bulk_import_csv_user_mapping_failed
-    Notify.bulk_import_csv_user_mapping(user.id, group.id, 71249, 824)
+    Notify.bulk_import_csv_user_mapping(
+      user.id,
+      group.id,
+      success_count: 71249,
+      failed_count: 824,
+      skipped_count: 152
+    )
+  end
+
+  def csv_placeholder_reassignment_failed
+    Notify.csv_placeholder_reassignment_failed(user.id, group.id)
   end
 
   def import_source_user_reassign

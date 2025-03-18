@@ -490,7 +490,7 @@ export default {
             <li
               v-for="design in designs"
               :key="design.id"
-              class="col-md-6 col-lg-3 js-design-tile gl-bg-transparent gl-px-3 gl-shadow-none"
+              class="col-sm-6 col-lg-3 js-design-tile gl-bg-transparent gl-px-3 gl-shadow-none"
               @mousedown="onMouseDown"
               @pointerup="onPointerUp"
             >
@@ -509,9 +509,11 @@ export default {
               <gl-form-checkbox
                 v-if="isLatestVersion"
                 :id="`design-checkbox-${design.id}`"
+                :name="design.filename"
                 :checked="isDesignSelected(design.filename)"
                 class="no-drag gl-absolute gl-left-5 gl-top-4 gl-ml-2"
                 data-testid="design-checkbox"
+                :data-qa-design="design.filename"
                 :aria-label="checkboxAriaLabel(design.filename)"
                 @change="changeSelectedDesigns(design.filename)"
               />

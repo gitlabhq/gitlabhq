@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Remove the merge conflict marker '%s'."
-link: https://docs.gitlab.com/ee/development/code_review.html#merging-a-merge-request
+link: https://docs.gitlab.com/development/code_review/#merging-a-merge-request
 vocab: false
 level: error
 scope: raw

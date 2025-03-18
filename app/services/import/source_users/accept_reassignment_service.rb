@@ -23,8 +23,11 @@ module Import
 
         if accept_successful
           Import::ReassignPlaceholderUserRecordsWorker.perform_async(import_source_user.id)
+          track_reassignment_event('accept_placeholder_user_reassignment')
+
           ServiceResponse.success(payload: import_source_user)
         else
+          track_reassignment_event('fail_placeholder_user_reassignment')
           ServiceResponse.error(payload: import_source_user, message: import_source_user.errors.full_messages)
         end
       end

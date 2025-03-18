@@ -212,7 +212,10 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
     def go
       post :migrate,
         params: {
-          configuration_project_id: configuration_project.id,
+          cluster_migration: {
+            configuration_project_id: configuration_project.id,
+            agent_name: 'new-agent'
+          },
           id: cluster
         }
     end
@@ -226,6 +229,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
         Clusters::Migration::CreateService,
         an_object_having_attributes(class: cluster.class, id: cluster.id),
         current_user: admin,
+        agent_name: 'new-agent',
         configuration_project_id: configuration_project.id.to_s
       ) do |service|
         expect(service).to receive(:execute).and_call_original

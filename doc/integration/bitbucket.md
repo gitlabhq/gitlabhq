@@ -58,23 +58,17 @@ you to use.
 
 1. Grant at least the following permissions:
 
-   ```plaintext
-   Account: Email, Read
-   Projects: Read
-   Repositories: Read
-   Pull Requests: Read
-   Issues: Read
-   Wiki: Read and Write
-   ```
-
-   ![Bitbucket OAuth settings page](img/bitbucket_oauth_settings_page_v8_15.png)
+   - **Account**: `Email`, `Read`
+   - **Projects**: `Read`
+   - **Repositories**: `Read`
+   - **Pull Requests**: `Read`
+   - **Issues**: `Read`
+   - **Wikis**: `Read and write`
 
 1. Select **Save**.
 1. Select your newly created OAuth consumer, and you should now see a **Key** and
    **Secret** in the list of OAuth consumers. Keep this page open as you continue
    the configuration.
-
-   ![Bitbucket OAuth key](img/bitbucket_oauth_keys_v8_12.png)
 
 1. On your GitLab server, open the configuration file:
 

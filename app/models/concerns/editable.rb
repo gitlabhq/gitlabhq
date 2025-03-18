@@ -8,7 +8,7 @@ module Editable
   end
 
   def last_edited_by
-    return if last_edited_at.blank?
+    return unless edited?
 
     super || Users::Internal.ghost
   end

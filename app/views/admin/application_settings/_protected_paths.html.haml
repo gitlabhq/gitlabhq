@@ -7,17 +7,17 @@
         _('Enable rate limiting for requests to the specified paths'),
         help_text: _('Helps reduce request volume for protected paths.')
     .form-group
-      = f.label :throttle_protected_paths_requests_per_period, _('Maximum requests per period per user'), class: 'label-bold'
+      = f.label :throttle_protected_paths_requests_per_period, _('Maximum requests per period per user')
       = f.number_field :throttle_protected_paths_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_protected_paths_period_in_seconds, _('Rate limit period (in seconds)'), class: 'label-bold'
+      = f.label :throttle_protected_paths_period_in_seconds, _('Rate limit period (in seconds)')
       = f.number_field :throttle_protected_paths_period_in_seconds, class: 'form-control gl-form-input'
     .form-group
-      = f.label :protected_paths, class: 'label-bold' do
+      = f.label :protected_paths do
         = _('Paths with rate limiting for POST requests')
       = f.text_area :protected_paths_raw, placeholder: '/users/sign_in,/users/password', class: 'form-control gl-form-input', rows: 10
     .form-group
-      = f.label :protected_paths_for_get_request, class: 'label-bold' do
+      = f.label :protected_paths_for_get_request_raw do
         = _('Paths with rate limiting for GET requests')
       = f.text_area :protected_paths_for_get_request_raw, class: 'form-control gl-form-input', rows: 10
       %span.form-text.gl-text-subtle

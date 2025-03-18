@@ -8,6 +8,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -28,7 +29,9 @@ import {
   OPERATOR_IS,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CLOSED,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CREATED,
   TOKEN_TYPE_GROUP,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
@@ -72,7 +75,9 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueRouter);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
-  const countsQueryHandler = jest.fn().mockResolvedValue(groupWorkItemStateCountsQueryResponse);
+  const defaultCountsQueryHandler = jest
+    .fn()
+    .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
   const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
@@ -80,10 +85,12 @@ describeSkipVue3(skipReason, () => {
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
   const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
 
   const mountComponent = ({
     provide = {},
     queryHandler = defaultQueryHandler,
+    countsQueryHandler = defaultCountsQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
     workItemsViewPreference = false,
     workItemsToggleEnabled = true,
@@ -93,6 +100,7 @@ describeSkipVue3(skipReason, () => {
       ...window.gon,
       features: {
         workItemsViewPreference,
+        workItemsClientSideBoards: false,
       },
       current_user_use_work_items_view: workItemsToggleEnabled,
     };
@@ -113,6 +121,7 @@ describeSkipVue3(skipReason, () => {
         isGroup: true,
         isSignedIn: true,
         workItemType: null,
+        hasIssueDateFilterFeature: false,
         ...provide,
       },
       propsData: {
@@ -160,7 +169,6 @@ describeSkipVue3(skipReason, () => {
 
     it('renders IssueCardTimeInfo component', () => {
       expect(findIssueCardTimeInfo().exists()).toBe(true);
-      expect(findIssueCardTimeInfo().props('isWorkItemList')).toBe(true);
     });
 
     it('renders IssueHealthStatus component', () => {
@@ -339,6 +347,45 @@ describeSkipVue3(skipReason, () => {
           { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
+    });
+  });
+
+  describe('custom field tokens', () => {
+    it('combines eeSearchTokens with default search tokens', async () => {
+      const customToken = {
+        type: `custom`,
+        title: 'Custom Field',
+        token: () => {},
+      };
+
+      mountComponent({
+        props: {
+          eeSearchTokens: [customToken],
+        },
+      });
+
+      await waitForPromises();
+
+      const searchTokens = findIssuableList().props('searchTokens');
+
+      expect(searchTokens).toContainEqual(
+        expect.objectContaining({
+          type: customToken.type,
+          title: customToken.title,
+        }),
+      );
+
+      // Other tokens are still included
+      expect(searchTokens).toContainEqual(
+        expect.objectContaining({
+          type: TOKEN_TYPE_ASSIGNEE,
+        }),
+      );
+      expect(searchTokens).toContainEqual(
+        expect.objectContaining({
+          type: TOKEN_TYPE_LABEL,
+        }),
+      );
     });
   });
 
@@ -532,6 +579,14 @@ describeSkipVue3(skipReason, () => {
             expect(findDrawer().props('activeItem')).toEqual(payload);
           });
 
+          it('closes drawer when work item is clicked again', async () => {
+            findIssuableList().vm.$emit('select-issuable', payload);
+            await nextTick();
+
+            expect(findDrawer().props('open')).toBe(false);
+            expect(findDrawer().props('activeItem')).toBeNull();
+          });
+
           const checkThatDrawerPropsAreEmpty = () => {
             expect(findDrawer().props('activeItem')).toBeNull();
             expect(findDrawer().props('open')).toBe(false);
@@ -677,6 +732,104 @@ describeSkipVue3(skipReason, () => {
     });
     it('passes empty array in the tabs props', () => {
       expect(findIssuableList().props('tabs')).toEqual([]);
+    });
+  });
+
+  describe('empty states', () => {
+    const emptyWorkItemsResponse = cloneDeep(groupWorkItemsQueryResponse);
+    emptyWorkItemsResponse.data.group.workItems.nodes = [];
+
+    const emptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+    emptyCountsResponse.data.group.workItemStateCounts = {
+      all: 0,
+      closed: 0,
+      opened: 0,
+    };
+
+    describe('when filters are applied and no work items match', () => {
+      beforeEach(async () => {
+        setWindowLocation('?label_name=bug');
+        mountComponent({
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+        });
+        await waitForPromises();
+      });
+
+      it('renders IssuableList component with empty results', () => {
+        expect(findIssuableList().exists()).toBe(true);
+        expect(findIssuableList().props('issuables')).toEqual([]);
+      });
+    });
+
+    describe('when there are no work items', () => {
+      beforeEach(async () => {
+        mountComponent({
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+        });
+        await waitForPromises();
+      });
+
+      it('renders the list empty state', () => {
+        expect(findEmptyStateWithoutAnyIssues().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('group filter', () => {
+    describe('filtering by group', () => {
+      it('query excludes descendants and excludes projects', async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('filter', [
+          {
+            type: TOKEN_TYPE_GROUP,
+            value: { data: 'path/to/another/group', operator: OPERATOR_IS },
+          },
+        ]);
+        await nextTick();
+
+        expect(defaultQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeProjects: true,
+            includeDescendants: false,
+          }),
+        );
+      });
+    });
+
+    describe('not filtering by group', () => {
+      it('query includes descendants and includes projects', async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        ]);
+        await nextTick();
+
+        expect(defaultQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeProjects: false,
+            includeDescendants: true,
+          }),
+        );
+      });
+    });
+  });
+
+  describe('when issue_date_filter is enabled', () => {
+    it('includes created and closed date in searchTokens', async () => {
+      mountComponent({ provide: { hasIssueDateFilterFeature: true } });
+      await waitForPromises();
+
+      const tokenTypes = findIssuableList()
+        .props('searchTokens')
+        .map((token) => token.type);
+
+      expect(tokenTypes).toEqual(expect.arrayContaining([TOKEN_TYPE_CLOSED, TOKEN_TYPE_CREATED]));
     });
   });
 });

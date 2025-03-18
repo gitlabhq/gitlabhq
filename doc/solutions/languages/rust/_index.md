@@ -5,11 +5,9 @@ info: This page is owned by the Solutions Architecture team.
 title: Rust Language and Ecosystem Solutions Index
 ---
 
-Learn how to GitLab supports the Rust ecosystem.
+This page attempts to index the ways in which GitLab supports Rust. It does so whether the integration is the result of configuring general functionality, was built in to Rust or GitLab or is provided as a solution.
 
 Unless otherwise noted, all of this content applies to both GitLab.com and self-managed instances.
-
-This page attempts to index the ways in which GitLab supports Rust. It does so whether the integration is the result of configuring general functionality, was built in to Rust or GitLab or is provided as a solution.
 
 | Text Tag                 | Configuration / Built / Solution                             | Support/Maintenance                                          |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -32,7 +30,7 @@ This page attempts to index the ways in which GitLab supports Rust. It does so w
 
 ## Rust CD
 
-- GitLab Package Registry Support for Cargo - [Open for Contributions](https://gitlab.com/gitlab-org/gitlab/-/issues/33060)
+- GitLab package registry Support for Cargo - [Open for Contributions](https://gitlab.com/gitlab-org/gitlab/-/issues/33060)
 - [GitLab CICD Rust Component (Currently in Prerelease)](https://gitlab.com/explore/catalog/components/rust) `[GitLab Built]`
   - [How To Use the Rust Component](../../../ci/components/examples.md#example-test-a-rust-language-cicd-component) `[GitLab Built]`
 

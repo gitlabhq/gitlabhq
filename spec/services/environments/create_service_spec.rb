@@ -14,7 +14,10 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
   describe '#execute' do
     subject { service.execute }
 
-    let(:params) { { name: 'production', description: 'description', external_url: 'https://gitlab.com', tier: :production, auto_stop_setting: :always } }
+    let(:auto_stop_setting) { :always }
+    let(:env_name) { 'production' }
+    let(:tier) { nil }
+    let(:params) { { name: env_name, description: 'description', tier: tier, external_url: 'https://gitlab.com', auto_stop_setting: auto_stop_setting } }
 
     it 'creates an environment' do
       expect { subject }.to change { ::Environment.count }.by(1)
@@ -31,11 +34,123 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
       expect(response.payload[:environment].auto_stop_setting).to eq('always')
     end
 
+    context 'when tier is provided' do
+      let(:tier) { 'production' }
+      let(:env_name) { 'testing' }
+
+      it 'creates an environment' do
+        expect { subject }.to change { ::Environment.count }.by(1)
+      end
+
+      it 'returns successful response' do
+        response = subject
+
+        expect(response).to be_success
+        expect(response.payload[:environment].name).to eq('testing')
+        expect(response.payload[:environment].tier).to eq('production')
+        expect(response.payload[:environment].auto_stop_setting).to eq('always')
+      end
+    end
+
+    context 'when tier is not provided' do
+      context 'when environment name is production' do
+        let(:env_name) { 'production' }
+
+        it 'guesses tier to production' do
+          response = subject
+
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq('production')
+          expect(response.payload[:environment].tier).to eq('production')
+        end
+      end
+
+      context 'when environment name is testing' do
+        let(:env_name) { 'testing' }
+
+        it 'guesses tier to testing' do
+          response = subject
+
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq('testing')
+          expect(response.payload[:environment].tier).to eq('testing')
+        end
+      end
+    end
+
+    context 'when auto_stop_setting is not provided' do
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(new_default_for_auto_stop: false)
+        end
+
+        let(:tier) { 'production' }
+        let(:env_name) { 'production' }
+        let(:auto_stop_setting) { nil }
+
+        it 'creates an environment' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'sets :always for auto_stop_setting' do
+          expect_next_instance_of(Environment) do |instance|
+            expect(instance).to receive(:set_default_auto_stop_setting).and_call_original
+          end
+
+          response = subject
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq(env_name)
+          expect(response.payload[:environment].auto_stop_setting).to eq('always')
+        end
+      end
+
+      context 'when environment tier is production' do
+        let(:tier) { 'production' }
+        let(:env_name) { 'production' }
+        let(:auto_stop_setting) { nil }
+
+        it 'creates an environment' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'sets :with_action for auto_stop_setting' do
+          expect_next_instance_of(Environment) do |instance|
+            expect(instance).to receive(:set_default_auto_stop_setting).and_call_original
+          end
+
+          response = subject
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq(env_name)
+          expect(response.payload[:environment].auto_stop_setting).to eq('with_action')
+        end
+      end
+
+      context 'when environment tier is development' do
+        let(:tier) { 'development' }
+        let(:env_name) { 'development' }
+        let(:auto_stop_setting) { nil }
+
+        it 'creates an environment' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'sets :always for auto_stop_setting' do
+          expect_next_instance_of(Environment) do |instance|
+            expect(instance).to receive(:set_default_auto_stop_setting).and_call_original
+          end
+
+          response = subject
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq(env_name)
+          expect(response.payload[:environment].auto_stop_setting).to eq('always')
+        end
+      end
+    end
+
     context 'with a cluster agent' do
       let_it_be(:agent_management_project) { create(:project) }
       let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
 
-      let!(:authorization) { create(:agent_user_access_project_authorization, project: project, agent: cluster_agent) }
       let(:params) do
         {
           name: 'production',
@@ -45,24 +160,49 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
         }
       end
 
-      it 'returns successful response' do
-        response = subject
-
-        expect(response).to be_success
-        expect(response.payload[:environment].cluster_agent).to eq(cluster_agent)
-        expect(response.payload[:environment].kubernetes_namespace).to eq('default')
-        expect(response.payload[:environment].flux_resource_path).to eq('path/to/flux/resource')
-      end
-
-      context 'when user does not have permission to read the agent' do
+      context 'when skip_agent_auth is true' do
+        let(:params) { { name: 'production', skip_agent_auth: true } }
         let!(:authorization) { nil }
 
-        it 'returns an error' do
+        it 'creates an environment without checking the cluster agent authorization' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'returns successful response' do
           response = subject
 
-          expect(response).to be_error
-          expect(response.message).to eq('Unauthorized to access the cluster agent in this project')
-          expect(response.payload[:environment]).to be_nil
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq('production')
+          expect(response.payload[:environment].cluster_agent).to be_nil
+        end
+      end
+
+      context 'when skip_agent_auth is nil' do
+        context 'when user has permission to read the agent' do
+          let!(:authorization) do
+            create(:agent_user_access_project_authorization, project: project, agent: cluster_agent)
+          end
+
+          it 'returns successful response' do
+            response = subject
+
+            expect(response).to be_success
+            expect(response.payload[:environment].cluster_agent).to eq(cluster_agent)
+            expect(response.payload[:environment].kubernetes_namespace).to eq('default')
+            expect(response.payload[:environment].flux_resource_path).to eq('path/to/flux/resource')
+          end
+        end
+
+        context 'when user does not have permission to read the agent' do
+          let!(:authorization) { nil }
+
+          it 'returns an error' do
+            response = subject
+
+            expect(response).to be_error
+            expect(response.message).to eq('Unauthorized to access the cluster agent in this project')
+            expect(response.payload[:environment]).to be_nil
+          end
         end
       end
     end

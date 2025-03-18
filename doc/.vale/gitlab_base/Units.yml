@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Add a space between the number and the unit in '%s'."
-link: 'https://docs.gitlab.com/ee/development/documentation/styleguide/'
+link: 'https://docs.gitlab.com/development/documentation/styleguide/'
 vocab: false
 nonword: true
 level: warning

@@ -5,5 +5,6 @@ FactoryBot.define do
     package { association(:terraform_module_package) }
     project { package.project }
     fields { { root: { readme: 'README' }, submodules: { 'submodule1' => { readme: 'submodule1 README' } } } }
+    semver { package.version }
   end
 end

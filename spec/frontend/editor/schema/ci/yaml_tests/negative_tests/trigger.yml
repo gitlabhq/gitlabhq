@@ -62,3 +62,14 @@ trigger-include-trailing-slash:
     include:
       - file: '/path/to/child-pipeline.yml'
         project: 'slug/'
+
+trigger-inputs-and-include-inputs:
+  trigger:
+    project: 'group/project'
+    inputs:
+      example: a
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'group/project'
+        inputs:
+          example: 'a'

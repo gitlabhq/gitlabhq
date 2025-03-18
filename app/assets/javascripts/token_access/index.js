@@ -19,16 +19,18 @@ export const initTokenAccess = (containerId = 'js-ci-token-access-app') => {
     return false;
   }
 
-  const { fullPath, csvDownloadPath, enforceAllowlist } = containerEl.dataset;
+  const { csvDownloadPath, enforceAllowlist, fullPath, projectAllowlistLimit } =
+    containerEl.dataset;
 
   return new Vue({
     el: containerEl,
     name: 'TokenAccessAppsRoot',
     apolloProvider,
     provide: {
+      csvDownloadPath,
       enforceAllowlist: JSON.parse(enforceAllowlist),
       fullPath,
-      csvDownloadPath,
+      projectAllowlistLimit: Number(projectAllowlistLimit),
     },
     render(createElement) {
       return createElement(TokenAccessApp);

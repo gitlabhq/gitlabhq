@@ -4,7 +4,7 @@ module ActivityPub
   class ReleasesSubscription < ApplicationRecord
     belongs_to :project, optional: false
 
-    enum :status, [:requested, :accepted], default: :requested
+    enum :status, { requested: 0, accepted: 1 }, default: :requested
 
     attribute :payload, Gitlab::Database::Type::JsonPgSafe.new
 

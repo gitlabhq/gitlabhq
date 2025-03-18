@@ -19,6 +19,13 @@ module Resolvers
       required: false,
       description: 'Search query for group name or group full path.'
 
+    argument :ids, [GraphQL::Types::ID],
+      required: false,
+      description: 'Filter groups by IDs.',
+      prepare: ->(global_ids, _ctx) {
+        GitlabSchema.parse_gids(global_ids, expected_type: ::Group).map(&:model_id)
+      }
+
     alias_method :parent, :object
 
     private

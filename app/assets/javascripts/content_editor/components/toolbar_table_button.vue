@@ -85,7 +85,6 @@ export default {
       no-caret
       :aria-label="__('Insert table')"
       :toggle-text="__('Insert table')"
-      positioning-strategy="fixed"
       class="content-editor-table-dropdown gl-mr-2"
       text-sr-only
       :fluid-width="true"
@@ -102,7 +101,7 @@ export default {
           <div v-for="c of list(maxCols)" :key="c" role="gridcell">
             <gl-button
               :ref="`table-${r}-${c}`"
-              :class="{ 'active !gl-bg-blue-50': r <= rows && c <= cols }"
+              :class="{ active: r <= rows && c <= cols }"
               :aria-label="getButtonLabel(r, c)"
               class="table-creator-grid-item gl-m-2 !gl-rounded-none !gl-p-0"
               @mouseover="setRowsAndCols(r, c)"

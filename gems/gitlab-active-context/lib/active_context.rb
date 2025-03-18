@@ -14,10 +14,6 @@ module ActiveContext
     ActiveContext::Config.configure(...)
   end
 
-  def self.config
-    ActiveContext::Config.current
-  end
-
   def self.adapter
     ActiveContext::Adapter.current
   end

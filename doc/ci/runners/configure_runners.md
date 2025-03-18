@@ -139,6 +139,32 @@ job-artifact-upload-on-timeout:
     when: on_failure # on_failure because script termination after a timeout is treated as a failure
 ```
 
+### Ensuring `after_script` execution
+
+For `after_script` to run successfully, the total of `RUNNER_SCRIPT_TIMEOUT` +
+`RUNNER_AFTER_SCRIPT_TIMEOUT` must not exceed the job's configured timeout.
+
+The following example shows how to configure timeouts to ensure `after_script` runs even when the main script times out:
+
+```yaml
+job-with-script-timeouts:
+  timeout: 5m
+  variables:
+    RUNNER_SCRIPT_TIMEOUT: 1m
+    RUNNER_AFTER_SCRIPT_TIMEOUT: 1m
+  script:
+    - echo "Starting build..."
+    - sleep 120 # Wait 2 minutes to trigger timeout. Script aborts after 1 minute due to RUNNER_SCRIPT_TIMEOUT.
+    - echo "Build finished."
+  after_script:
+    - echo "Starting Clean-up..."
+    - sleep 15 # Wait just a few seconds. Runs successfully because it's within RUNNER_AFTER_SCRIPT_TIMEOUT.
+    - echo "Clean-up finished."
+```
+
+The `script` is canceled by `RUNNER_SCRIPT_TIMEOUT`, but the `after_script` runs successfully because it takes 15 seconds,
+which is less than both `RUNNER_AFTER_SCRIPT_TIMEOUT` and the job's `timeout` value.
+
 ## Protecting sensitive information
 
 The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance.
@@ -713,8 +739,13 @@ subcommand. However, `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few
 Git honors the last occurrence of a flag in the list of arguments, so manually
 providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
 
-You can use this variable to fetch the latest remote `HEAD` instead of the tracked commit in the repository.
-You can also use it to speed up the checkout by fetching submodules in multiple parallel jobs.
+For example, you can use this variable to:
+
+- Fetch the latest remote `HEAD` instead of the tracked commit in the
+  repository (default) to automatically updated all submodules with the
+  `--remote` flag.
+- Speed up the checkout by fetching submodules in multiple parallel jobs with
+  the `--jobs 4` flag.
 
 ```yaml
 variables:
@@ -732,11 +763,34 @@ git submodule update --init --depth 50 --recursive --remote --jobs 4
 
 {{< alert type="warning" >}}
 
-You should be aware of the implications for the security, stability, and reproducibility of
-your builds when using the `--remote` flag. In most cases, it is better to explicitly track
-submodule commits as designed, and update them using an auto-remediation/dependency bot.
+You should be aware of the implications for the security, stability, and
+reproducibility of your builds when using the `--remote` flag. In most cases,
+it is better to explicitly track submodule commits as designed, and update them
+using an auto-remediation/dependency bot.
+
+The `--remote` flag is not required to check out submodules at their committed
+revisions. Use this flag only when you want to automatically updated submodules
+to their latest remote versions.
 
 {{< /alert >}}
+
+The behavior of `--remote` depends on your Git version. Some Git versions might
+fail, with the error below, when the branch in the superproject's `.gitmodules`
+differs from the default branch of the submodule repository:
+
+`fatal: Unable to find refs/remotes/origin/<branch> revision in submodule path '<submodule-path>'`
+
+The runner implements a "best effort" fallback that attempts to
+pull remote refs when the submodule update fails.
+
+If this fallback does not work with your Git version, try one of the following
+workarounds:
+
+- Update the submodule repository's default branch to match the branch set in
+  `.gitmodules` in the superproject.
+- Set `GIT_SUBMODULE_DEPTH` to `0`.
+- Update the submodules separately and remove the `--remote` flag from
+  `GIT_SUBMODULE_UPDATE_FLAGS`.
 
 ### Rewrite submodule URLs to HTTPS
 
@@ -1037,7 +1091,7 @@ The following fields are populated by default:
 
 An example of provenance metadata that the GitLab Runner might generate is as follows:
 
-```yaml
+```json
 {
  "_type": "https://in-toto.io/Statement/v0.1",
  "predicateType": "https://slsa.dev/provenance/v1",

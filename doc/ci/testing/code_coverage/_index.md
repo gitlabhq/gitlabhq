@@ -65,7 +65,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
-| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/` |
+| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 | Simplecov  | Ruby     | `rspec spec`   | `/\(\d+.\d+\%\) covered/` |
 
 {{< /tab >}}
@@ -121,7 +121,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | Tool      | Language   | Command | Regex pattern |
 |-----------|------------|---------|---------------|
 | OpenCover | .NET       | None    | `/(Visited Points).*\((.*)\)/` |
-| dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\|*\s(\d+(?:\.\d+)?)/` |
+| dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\\|*\s(\d+(?:\.\d+)?)/` |
 | Pester    | PowerShell | None    | `/Covered (\d+\.\d+%)/` |
 
 {{< /tab >}}

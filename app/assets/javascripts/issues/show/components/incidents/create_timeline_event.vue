@@ -30,9 +30,6 @@ export default {
     return { createTimelineEventActive: false };
   },
   methods: {
-    clearForm() {
-      this.$refs.eventForm.clear();
-    },
     updateCache(store, { data }) {
       const { timelineEvent: event, errors } = data?.timelineEventCreate || {};
 

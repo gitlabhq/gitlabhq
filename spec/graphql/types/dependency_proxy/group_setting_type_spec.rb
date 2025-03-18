@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['DependencyProxySetting'] do
+RSpec.describe GitlabSchema.types['DependencyProxySetting'], feature_category: :virtual_registry do
   it 'includes dependency proxy blob fields' do
     expected_fields = %w[
-      enabled
+      enabled identity
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

@@ -31,6 +31,7 @@ For each of the vulnerabilities listed in this document, AppSec aims to have a S
 | [Archive operations](#working-with-archive-files) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_insecure_archive_operations.yml)  | ✅ |
 | [URL spoofing](#url-spoofing) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_url_spoofing.yml)  | ✅ |
 | [Request Parameter Typing](#request-parameter-typing) | `StrongParams` RuboCop | ✅ |
+| [Paid tiers for vulnerability mitigation](#paid-tiers-for-vulnerability-mitigation) | N/A <!-- This cannot be validated programmatically //--> | |
 
 ## Process for creating new guidelines and accompanying rules
 
@@ -1545,8 +1546,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 
 ### At rest
 
-- Credentials must be encrypted while at rest (database or file) with `attr_encrypted`. See [issue #26243](https://gitlab.com/gitlab-org/gitlab/-/issues/26243) before using `attr_encrypted`.
-  - Store the encryption keys separately from the encrypted credentials with proper access control. For instance, store the keys in a vault, KMS, or file. Here is an [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/user.rb#L70-74) use of `attr_encrypted` for encryption with keys stored in separate access controlled file.
+- Credentials must be encrypted while at rest (database or file) with `encrypts`.
   - When the intention is to only compare secrets, store only the salted hash of the secret instead of the encrypted value.
 - Salted hashes should be used to store any sensitive value where the plaintext value itself does not need to be retrieved.
 - Never commit credentials to repositories.
@@ -1578,28 +1578,24 @@ The prefix pattern should be:
 Add the new prefix to:
 
 - [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
-- The [GitLab Secret Detection gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-secret_detection)
+- The [GitLab Secret Detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules)
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
 - [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
 - [Token Overview](../security/tokens/_index.md) documentation
 
 ### Examples
 
-Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
-and used later. Use a binary column to store `attr_encrypted` attributes in the database,
-and then set both `encode` and `encode_iv` to `false`. For recommended algorithms, see
-the [GitLab Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards).
+Encrypting a token with `encrypts` so that the plaintext can be retrieved
+and used later. Use a JSONB to store `encrypts` attributes in the database, and add a length validation that
+[follows the Active Record Encryption recommendations](https://guides.rubyonrails.org/active_record_encryption.html#important-about-storage-and-column-size).
+For most encrypted attributes, a 510 max length should be enough.
 
 ```ruby
 module AlertManagement
   class HttpIntegration < ApplicationRecord
 
-    attr_encrypted :token,
-      mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
-      algorithm: 'aes-256-gcm',
-      encode: false,
-      encode_iv: false
+    encrypts :token
+    validates :token, length: { maximum: 510 }
 ```
 
 Hashing a sensitive value with `CryptoHelper` so that it can be compared in future, but the plaintext is irretrievable:
@@ -1940,6 +1936,59 @@ This class of issue applies to more than just email; other examples might includ
 - [Watch a walkthrough video](https://www.youtube.com/watch?v=ydg95R2QKwM) for an instance of this issue causing vulnerability CVE-2023-7028.
   The video covers what happened, how it worked, and what you need to know for the future.
 - Rails documentation for [ActionController::StrongParameters](https://api.rubyonrails.org/classes/ActionController/StrongParameters.html) and [ActionController::Parameters](https://api.rubyonrails.org/classes/ActionController/Parameters.html)
+
+## Paid tiers for vulnerability mitigation
+
+Secure code must not rely on subscription tiers (Premium/Ultimate) or
+separate SKUs as a control to mitigate security vulnerabilities.
+
+While requiring paid tiers can create friction for potential attackers,
+it does not provide meaningful security protection since adversaries
+can bypass licensing restrictions through various means like free
+trials or fraudulent payment.
+
+Requiring payment is a valid strategy for anti-abuse when the cost to
+the attacker exceeds the cost to GitLab. An example is limiting the
+abuse of CI minutes. Here, the important thing to note is that use of
+CI itself is not a security vulnerability.
+
+### Impact
+
+Relying on licensing tiers as a security control can:
+
+- Lead to patches which can be bypassed by attackers with the ability to
+  pay.
+- Create a false sense of security, leading to new vulnerabilities being
+  introduced.
+
+### Examples
+
+The following example shows an insecure implementation that relies on
+licensing tiers. The service reads files from disk and attempts to use
+the Ultimate subscription tier to prevent unauthorized access:
+
+```ruby
+class InsecureFileReadService
+  def execute
+    return unless License.feature_available?(:insecure_file_read_service)
+
+    return File.read(params[:unsafe_user_path])
+  end
+end
+```
+
+If the above code made it to production, an attacker could create a free
+trial, or pay for one with a stolen credit card. The resulting
+vulnerability would be a critical (severity 1) incident.
+
+### Mitigations
+
+- Instead of relying on licensing tiers, resolve the vulnerability in
+  all tiers.
+- Follow secure coding best practices specific to the feature's
+  functionality.
+- If licensing tiers are used as part of a defense-in-depth strategy,
+  combine it with other effective security controls.
 
 ## Who to contact if you have questions
 

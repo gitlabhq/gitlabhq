@@ -80,7 +80,7 @@ RSpec.describe TokenAuthenticatable, feature_category: :shared do
   describe '.token_authenticatable_sensitive_fields' do
     subject(:token_authenticatable_fields) { test_class.token_authenticatable_sensitive_fields }
 
-    it { is_expected.to contain_exactly(field.to_sym) }
+    it { is_expected.to contain_exactly(field.to_sym, digest_field.to_sym) }
 
     context 'with encrypted: true' do
       let(:options) { { encrypted: true } }
@@ -97,7 +97,7 @@ RSpec.describe TokenAuthenticatable, feature_category: :shared do
     context 'with expires_at option' do
       let(:options) { { expires_at: -> { Time.current } } }
 
-      it { is_expected.to contain_exactly(field.to_sym) }
+      it { is_expected.to contain_exactly(field.to_sym, digest_field.to_sym) }
     end
   end
 

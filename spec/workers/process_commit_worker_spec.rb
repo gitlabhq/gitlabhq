@@ -22,16 +22,6 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
     expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: described_class)).to eq(1000)
   end
 
-  context 'when concurrency_limit_process_commit_worker is disabled' do
-    before do
-      stub_feature_flags(concurrency_limit_process_commit_worker: false)
-    end
-
-    it 'does not have a concurrency limit' do
-      expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: described_class)).to eq(0)
-    end
-  end
-
   describe '#perform' do
     subject(:perform) { worker.perform(project_id, user_id, commit.to_hash, default) }
 

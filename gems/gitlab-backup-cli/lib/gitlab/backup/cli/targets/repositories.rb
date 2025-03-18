@@ -9,27 +9,25 @@ module Gitlab
         # Backup and restores repositories by querying the database
         class Repositories < Target
           def dump(destination)
-            strategy.start(:create, destination)
+            gitaly_backup.start(:create, destination)
             enqueue_consecutive
 
           ensure
-            strategy.finish!
+            gitaly_backup.finish!
           end
 
           def restore(source)
-            strategy.start(:restore,
-              source,
-              remove_all_repositories: remove_all_repositories)
+            gitaly_backup.start(:restore, source, remove_all_repositories: remove_all_repositories)
             enqueue_consecutive
 
           ensure
-            strategy.finish!
+            gitaly_backup.finish!
 
             restore_object_pools
           end
 
-          def strategy
-            @strategy ||= GitalyBackup.new(context)
+          def gitaly_backup
+            @gitaly_backup ||= Services::GitalyBackup.new(context)
           end
 
           private
@@ -54,16 +52,16 @@ module Gitlab
           end
 
           def enqueue_project(project)
-            strategy.enqueue(project, Gitlab::Backup::Cli::RepoType::PROJECT)
-            strategy.enqueue(project, Gitlab::Backup::Cli::RepoType::WIKI)
+            gitaly_backup.enqueue(project, Gitlab::Backup::Cli::RepoType::PROJECT)
+            gitaly_backup.enqueue(project, Gitlab::Backup::Cli::RepoType::WIKI)
 
             return unless project.design_management_repository
 
-            strategy.enqueue(project.design_management_repository, Gitlab::Backup::Cli::RepoType::DESIGN)
+            gitaly_backup.enqueue(project.design_management_repository, Gitlab::Backup::Cli::RepoType::DESIGN)
           end
 
           def enqueue_snippet(snippet)
-            strategy.enqueue(snippet, Gitlab::Backup::Cli::RepoType::SNIPPET)
+            gitaly_backup.enqueue(snippet, Gitlab::Backup::Cli::RepoType::SNIPPET)
           end
 
           def project_relation

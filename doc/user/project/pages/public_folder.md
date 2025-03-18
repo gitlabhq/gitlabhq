@@ -131,10 +131,7 @@ deploy-pages:
   script:
     - npm run build
     - mv out/* public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
 ```
 
 The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).

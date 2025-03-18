@@ -1,8 +1,9 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
@@ -51,6 +52,10 @@ export default {
         return this.query ? this.query.search : '';
       },
       set(value) {
+        if (this.isMultiMatch) {
+          this.debouncedSetQuery({ key: 'search', value });
+          return;
+        }
         this.setQuery({ key: 'search', value });
       },
     },
@@ -86,6 +91,7 @@ export default {
   created() {
     this.preloadStoredFrequentItems();
     this.regexEnabled = loadDataFromLS(LS_REGEX_HANDLE);
+    this.debouncedSetQuery = debounce(this.setQuery, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
     ...mapActions(['applyQuery', 'setQuery', 'preloadStoredFrequentItems']),

@@ -33,8 +33,6 @@ class Member < ApplicationRecord
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
 
-  has_many :member_approvals, inverse_of: :member, class_name: 'Members::MemberApproval'
-
   validates :expires_at, allow_blank: true, future_date: true
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
@@ -211,6 +209,8 @@ class Member < ApplicationRecord
   end
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
+  scope :with_source, ->(source) { where(source: source) }
+  scope :with_source_type, ->(source_type) { where(source_type: source_type) }
   scope :including_source, -> { includes(:source) }
   scope :including_user, -> { includes(:user) }
 
@@ -659,7 +659,12 @@ class Member < ApplicationRecord
   end
 
   def send_request
-    notification_service.new_access_request(self)
+    if notifiable?(:subscription)
+      source.access_request_approvers_to_be_notified.each do |recipient|
+        Members::AccessRequestedMailer.with(member: self, recipient: recipient.user).email.deliver_later
+      end
+    end
+
     todo_service.create_member_access_request_todos(self)
   end
 
@@ -714,9 +719,7 @@ class Member < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def after_accept_invite
-    run_after_commit_or_now do
-      notification_service.accept_invite(self)
-    end
+    run_after_commit_or_now { Members::InviteAcceptedMailer.with(member: self).email.deliver_later }
 
     update_two_factor_requirement
 

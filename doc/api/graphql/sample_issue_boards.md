@@ -25,11 +25,11 @@ You can use GraphiQL to list the issue boards for a project.
    - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
    - For GitLab Self-Managed, use: `https://gitlab.example.com/-/graphql-explorer`
 1. Copy the following text and paste it in the left window. This query
-   gets issue boards for the `gitlab-docs` repository.
+   gets issue boards for the `docs-gitlab-com` repository.
 
    ```graphql
    query {
-     project(fullPath: "gitlab-org/gitlab-docs") {
+     project(fullPath: "gitlab-org/technical-writing/docs-gitlab-com") {
        name
        forksCount
        statistics {
@@ -49,10 +49,10 @@ You can use GraphiQL to list the issue boards for a project.
 1. Select **Play**.
 
 To view one of these issue boards, copy a numeric identifier from the output.
-For example, if the identifier is `105011`, use this URL to go to the issue board:
+For example, if the identifier is `7174622`, use this URL to go to the issue board:
 
 ```http
-https://gitlab.com/gitlab-org/gitlab-docs/-/boards/105011
+https:/gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/boards/7174622
 ```
 
 ## Related topics

@@ -135,13 +135,21 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
       ])
     end
 
-    context 'when the description has user mentions' do
-      let(:description) { 'You can ask @knejad by emailing xyz@gitlab.com' }
+    context 'when the description is processed for formatting' do
+      let(:description) { "I said to @sam_allen\0 the code should follow @bob's\0 advice. @.ali-ce/group#9?\0" }
+      let(:expected_description) do
+        "I said to `@sam_allen` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?"
+      end
 
-      it 'adds backticks to the username' do
+      before do
+        allow(Gitlab::GithubImport::MarkdownText).to receive(:format).and_call_original
+
         importer.execute
+      end
 
-        expect(MergeRequest.last.description).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
+      it 'verify that the formatted description using MarkdownText equals the expected description' do
+        expect(Gitlab::GithubImport::MarkdownText).to have_received(:format)
+        expect(MergeRequest.last.description).to eq(expected_description)
       end
     end
 

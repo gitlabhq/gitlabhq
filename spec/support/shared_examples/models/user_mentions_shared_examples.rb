@@ -4,9 +4,9 @@ RSpec.shared_examples 'has user mentions' do
   describe '#has_mentions?' do
     context 'when no mentions' do
       it 'returns false' do
-        expect(subject.mentioned_users_ids).to be nil
-        expect(subject.mentioned_projects_ids).to be nil
-        expect(subject.mentioned_groups_ids).to be nil
+        expect(subject.mentioned_users_ids).to be_nil
+        expect(subject.mentioned_projects_ids).to be_nil
+        expect(subject.mentioned_groups_ids).to be_nil
         expect(subject.has_mentions?).to be false
       end
     end

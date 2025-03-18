@@ -49,11 +49,12 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:continue_indented_text, project&.continue_indented_text_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
-    push_frontend_feature_flag(:work_item_description_templates, project&.group)
+    push_frontend_feature_flag(:work_item_planning_view, project&.group)
+    push_force_frontend_feature_flag(:glql_integration, !!project&.glql_integration_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:continue_indented_text, !!project&.continue_indented_text_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
   end
 
   before_action only: [:index, :show] do
@@ -194,7 +195,13 @@ class Projects::IssuesController < Projects::ApplicationController
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      @issue = ::Issues::MoveService.new(container: project, current_user: current_user).execute(issue, new_project)
+      @issue = if Feature.enabled?(:work_item_move_and_clone, project)
+                 ::WorkItems::DataSync::MoveService.new(
+                   work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
+                 ).execute[:work_item]
+               else
+                 ::Issues::MoveService.new(container: project, current_user: current_user).execute(issue, new_project)
+               end
     end
 
     respond_to do |format|
@@ -259,7 +266,8 @@ class Projects::IssuesController < Projects::ApplicationController
     IssuableExportCsvWorker.perform_async(:issue, current_user.id, project.id, finder_options.to_h) # rubocop:disable CodeReuse/Worker
 
     index_path = project_issues_path(project)
-    message = _('Your CSV export has started. It will be emailed to %{email} when complete.') % { email: current_user.notification_email_or_default }
+    message = safe_format(_('Your CSV export has started. It will be emailed to %{email} when complete.'),
+      email: current_user.notification_email_or_default)
     redirect_to(index_path, notice: message)
   end
 

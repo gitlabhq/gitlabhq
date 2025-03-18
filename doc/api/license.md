@@ -272,7 +272,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 Example response:
 
-```csv
+```plaintext
 License Key,"eyJkYXRhIjoib1EwRWZXU3RobDY2Yl=
 "
 Email,user@example.com

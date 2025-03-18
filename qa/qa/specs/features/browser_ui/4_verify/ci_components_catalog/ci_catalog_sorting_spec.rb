@@ -113,7 +113,7 @@ module QA
       end
 
       def create_release(project)
-        project.create_release(tag)
+        project.create_release(tag, project.default_branch, legacy_catalog_publish: true)
       end
 
       def top_projects_from_ui(page_object)

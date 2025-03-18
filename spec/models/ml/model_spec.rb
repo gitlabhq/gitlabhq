@@ -150,13 +150,13 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     context 'if id has no match' do
       let(:id) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'if project id does not match' do
       let(:project_id) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

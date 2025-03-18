@@ -11,7 +11,6 @@ RSpec.describe 'groups/new.html.haml' do
     assign(:current_user, user)
 
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:captcha_required?).and_return(false)
     allow(view).to receive(:import_sources_enabled?).and_return(false)
 
     render

@@ -52,7 +52,7 @@ module QA
       end
 
       it 'resolving the registry returns nil' do
-        expect(service.third_party_registry).to be(nil)
+        expect(service.third_party_registry).to be_nil
       end
 
       it 'throws if environment is missing' do

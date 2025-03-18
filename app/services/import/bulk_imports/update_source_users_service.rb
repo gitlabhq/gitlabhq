@@ -55,32 +55,48 @@ module Import
 
       def fetch_users_data
         Enumerator.new do |yielder|
+          missing_ids = []
           source_users_with_missing_information.each_batch(of: BATCH_SIZE, order: :desc) do |batch|
             ids = user_global_ids(batch)
             has_next_page = true
             next_page = nil
+            returned_ids = []
 
             # Make subsequent API calls if the API is configured with a max
             # page size smaller than the default value
             while has_next_page
-              response = graphql_client.execute(parsed_query, ids: ids, after: next_page).original_hash
+              response = graphql_client.execute(query: query, variables: { ids: ids, after: next_page })
 
               data = response.dig('data', 'users')
               next_page = data.dig('pageInfo', 'next_page')
               has_next_page = data.dig('pageInfo', 'has_next_page')
               users = data['nodes']
 
-              unless users.present?
-                logger.error(message: 'No users present in response', response: response, user_ids: ids)
-                next
-              end
-
               users.each do |user|
+                returned_ids.push(user['id'])
                 yielder << user
               end
             end
+            # Add non-fetched source user IDs to the missing ID list
+            missing_ids.concat(ids - returned_ids)
+          end
+
+          # Use single user query to fetch source user details for missing IDs
+          missing_ids.each do |missing_id|
+            user = fetch_blocked_users(missing_id)
+            yielder << user if user
           end
         end
+      end
+
+      def fetch_blocked_users(missing_id)
+        response = graphql_client.execute(query: single_user_query, variables: { id: missing_id })
+
+        user = response.dig('data', 'user')
+
+        logger.error(message: 'Failed to fetch user details', response: response, user_id: missing_id) unless user
+
+        user
       end
 
       def update_source_user(user_data)
@@ -115,8 +131,12 @@ module Import
           bulk_import_id: bulk_import.id, importer: Import::SOURCE_DIRECT_TRANSFER)
       end
 
-      def parsed_query
-        @parsed_query ||= graphql_client.parse(Common::Graphql::GetUsersQuery.new.to_s)
+      def query
+        @query ||= Common::Graphql::GetUsersQuery.new.to_s
+      end
+
+      def single_user_query
+        @single_user_query ||= Common::Graphql::GetUserQuery.new.to_s
       end
 
       def logger

@@ -18,7 +18,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ## Architecture overview
 
-![Architecture for running Geo in a multi-node configuration with primary and secondary backend services](img/geo-ha-diagram_v12.png)
+![Architecture for running Geo in a multi-node configuration with primary and secondary backend services](img/geo-ha-diagram_v11_11.png)
 
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 

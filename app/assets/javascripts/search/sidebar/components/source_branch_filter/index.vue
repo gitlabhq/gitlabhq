@@ -8,9 +8,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { InternalEvents } from '~/tracking';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
-import { BRANCH_REF_TYPE_ICON } from '~/ref/constants';
 import {
-  SEARCH_ICON,
   EVENT_SELECT_SOURCE_BRANCH_FILTER_ON_MERGE_REQUEST_PAGE,
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,
@@ -45,9 +43,6 @@ export default {
     ...mapState(['groupInitialJson', 'projectInitialJson', 'query']),
     showDropdownPlaceholderText() {
       return !this.selectedBranch ? s__('GlobalSearch|Search') : this.selectedBranch;
-    },
-    showDropdownPlaceholderIcon() {
-      return !this.selectedBranch ? SEARCH_ICON : BRANCH_REF_TYPE_ICON;
     },
   },
   mounted() {
@@ -128,7 +123,6 @@ export default {
       :header-text="s__('GlobalSearch|Source branch')"
       :search-text="showDropdownPlaceholderText"
       :selected-item="selectedBranch"
-      :icon="showDropdownPlaceholderIcon"
       :is-loading="isLoading"
       @selected="handleSelected"
       @shown="getCachedSourceBranches"

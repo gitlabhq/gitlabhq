@@ -2,7 +2,7 @@
 
 require_relative 'base'
 
-class Database
+module Database
   class QueryAnalyzers
     class MultiplePartitionScanDetector < Database::QueryAnalyzers::Base
       def analyze(query)

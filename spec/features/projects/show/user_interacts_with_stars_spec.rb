@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > User interacts with project stars', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Show > User interacts with project stars', :js, feature_category: :groups_and_projects do
   let(:project) { create(:project, :public, :repository) }
 
   context 'when user is signed in', :js do
@@ -32,62 +32,32 @@ RSpec.describe 'Projects > Show > User interacts with project stars', feature_ca
       expect(page).to have_css('.star-count', text: 0)
     end
 
-    context 'when feature flag your_work_projects_vue is enabled', :js do
-      it 'validates starring a project' do
-        project.add_owner(user)
+    it 'validates starring a project' do
+      project.add_owner(user)
 
-        star_project
+      star_project
 
-        visit(member_dashboard_projects_path)
-        wait_for_requests
+      visit(member_dashboard_projects_path)
+      wait_for_requests
 
-        expect(find_link('Stars')).to have_content('1')
-      end
-
-      it 'validates un-starring a project' do
-        project.add_owner(user)
-
-        star_project
-
-        unstar_project
-
-        visit(member_dashboard_projects_path)
-        wait_for_requests
-
-        expect(find_link('Stars')).to have_content('0')
-      end
+      expect(find_link('Stars')).to have_content('1')
     end
 
-    context 'when feature flag your_work_projects_vue is disabled' do
-      before do
-        stub_feature_flags(your_work_projects_vue: false)
-      end
+    it 'validates un-starring a project' do
+      project.add_owner(user)
 
-      it 'validates starring a project' do
-        project.add_owner(user)
+      star_project
 
-        star_project
+      unstar_project
 
-        visit(dashboard_projects_path)
+      visit(member_dashboard_projects_path)
+      wait_for_requests
 
-        expect(page).to have_css('.stars', text: 1)
-      end
-
-      it 'validates un-starring a project' do
-        project.add_owner(user)
-
-        star_project
-
-        unstar_project
-
-        visit(dashboard_projects_path)
-
-        expect(page).to have_css('.stars', text: 0)
-      end
+      expect(find_link('Stars')).to have_content('0')
     end
   end
 
-  context 'when user is not signed in', :js do
+  context 'when user is not signed in' do
     before do
       visit(project_path(project))
     end

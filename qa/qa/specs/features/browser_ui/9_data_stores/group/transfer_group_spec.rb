@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Subgroup transfer', product_group: :tenant_scale do
+    describe 'Subgroup transfer', product_group: :organizations do
       let(:source_group) { create(:group, path: "source-group-for-transfer_#{SecureRandom.hex(8)}") }
 
       let!(:target_group) { create(:group, path: "target-group-for-transfer_#{SecureRandom.hex(8)}") }

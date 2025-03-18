@@ -4,7 +4,7 @@ module Authn
   module Tokens
     class FeedToken
       def self.prefix?(plaintext)
-        plaintext.start_with?(::User::FEED_TOKEN_PREFIX)
+        plaintext.start_with?(::User.prefix_for_feed_token)
       end
 
       attr_reader :revocable, :source

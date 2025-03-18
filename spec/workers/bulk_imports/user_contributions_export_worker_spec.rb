@@ -8,6 +8,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
 
   let(:job_args) { [project.id, project.class.name, user.id] }
   let(:current_time) { Time.current }
+  let_it_be(:stale_export_timeout) { 7.hours.ago }
 
   describe '#perform' do
     it_behaves_like 'an idempotent worker' do
@@ -92,6 +93,14 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
         end
 
         it_behaves_like 'user contributions are still being cached during export'
+
+        context 'if the export is stuck in started state' do
+          before do
+            merge_requests_export.update!(updated_at: stale_export_timeout)
+          end
+
+          it_behaves_like 'user contributions export is started'
+        end
       end
 
       context 'when an export not relating to users is still incomplete' do
@@ -100,11 +109,30 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
         it_behaves_like 'user contributions export is started'
       end
 
-      context 'when some exports relating to users and some not relating to users are still incomplete' do
+      context 'when both user-related and non-user-related exports exist with different statuses' do
         let!(:issues_export) { create(:bulk_import_export, :started, project: project, relation: 'issues') }
         let!(:labels_export) { create(:bulk_import_export, :started, project: project, relation: 'labels') }
 
         it_behaves_like 'user contributions are still being cached during export'
+
+        context 'when user-related exports are stale (older than timeout limit)' do
+          before do
+            issues_export.update!(updated_at: stale_export_timeout)
+          end
+
+          it_behaves_like 'user contributions export is started'
+        end
+
+        context 'when user-related exports are still active (not stale)' do
+          before do
+            # Make non-user exports stale, but this shouldn't affect the decision
+            labels_export.update!(updated_at: stale_export_timeout)
+          end
+
+          # Even though non-user-related exports are stale, the worker should still cache contributions
+          # because user-related exports are still active
+          it_behaves_like 'user contributions are still being cached during export'
+        end
       end
 
       context 'when no exports have been created yet' do

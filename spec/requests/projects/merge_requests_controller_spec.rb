@@ -25,6 +25,30 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
+
+    context 'when diff version limit is reached' do
+      before do
+        stub_const('MergeRequest::DIFF_VERSION_LIMIT', 1)
+      end
+
+      it 'displays a warning' do
+        get project_merge_request_path(project, merge_request)
+
+        expect(flash[:alert]).to include('This merge request has reached the maximum limit')
+      end
+
+      context 'when "merge_requests_diffs_limit" feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_requests_diffs_limit: false)
+        end
+
+        it 'does not display a warning' do
+          get project_merge_request_path(project, merge_request)
+
+          expect(flash[:alert]).to be_blank
+        end
+      end
+    end
   end
 
   describe 'GET #index' do
@@ -259,6 +283,28 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         ref: merge_request.source_branch,
         sha: merge_request.diff_head_sha
       )
+    end
+  end
+
+  describe 'GET #diff_files_metadata' do
+    before do
+      project.add_developer(user)
+      login_as(user)
+    end
+
+    let(:send_request) { get diff_files_metadata_project_merge_request_path(project, merge_request) }
+
+    include_examples 'diff files metadata'
+
+    context 'when merge_request_diff does not exist' do
+      let(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
+      let(:project) { merge_request.project }
+
+      it 'returns an empty array' do
+        send_request
+
+        expect(json_response['diff_files']).to be_empty
+      end
     end
   end
 

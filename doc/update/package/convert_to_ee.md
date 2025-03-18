@@ -53,7 +53,7 @@ To convert a Linux package CE instance to EE:
 
    Note down the returned version.
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -77,7 +77,7 @@ To convert a Linux package CE instance to EE:
    curl --silent "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -113,7 +113,7 @@ To convert a Linux package CE instance to EE:
    sudo gitlab-ctl reconfigure
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -136,7 +136,7 @@ To convert a Linux package CE instance to EE:
    sudo rm /etc/yum.repos.d/gitlab_gitlab-ce.repo
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

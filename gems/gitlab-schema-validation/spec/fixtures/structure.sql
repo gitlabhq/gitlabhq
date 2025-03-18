@@ -49,7 +49,8 @@ CREATE TABLE test_table (
   bytea_with_default_column bytea DEFAULT '\xDEADBEEF'::bytea,
   unmapped_column_type anyarray,
   partition_key bigint DEFAULT 1 NOT NULL,
-  created_at timestamp with time zone DEFAULT now() NOT NULL
+  created_at timestamp with time zone DEFAULT now() NOT NULL,
+  daterange date_range
 ) PARTITION BY HASH (partition_key, created_at);
 
 CREATE TABLE ci_project_mirrors (

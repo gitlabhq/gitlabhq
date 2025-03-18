@@ -25,7 +25,8 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
     before do
       visit group_clusters_path(group)
 
-      click_link 'Connect a cluster (deprecated)'
+      click_button(class: 'gl-new-dropdown-toggle', text: 'Create a cluster')
+      click_link 'Connect a cluster (certificate - deprecated)'
     end
 
     context 'when user filled form with valid parameters' do
@@ -137,7 +138,9 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
 
       it 'can visit the clusters index page', :aggregate_failures do
         expect(page).to have_title("Kubernetes Clusters · #{group.name} · #{_('GitLab')}")
-        expect(page).to have_content('Connect a cluster')
+
+        click_button(class: 'gl-new-dropdown-toggle', text: 'Create a cluster')
+        expect(page).to have_content('Connect a cluster (certificate - deprecated)')
       end
     end
   end

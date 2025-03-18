@@ -16,4 +16,4 @@
   #
   # OTHER OPTIONAL FIELDS
   #
-  documentation_url: "https://docs.gitlab.com/ee/api/graphql/reference/#sharedrunnerssetting"  # (optional) This is a link to the current documentation page
+  documentation_url: "https://docs.gitlab.com/api/graphql/reference/#sharedrunnerssetting"  # (optional) This is a link to the current documentation page

@@ -2,12 +2,6 @@ import { GlAvatarLabeled, GlLink, GlTableLite } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CandidateDetail from '~/ml/model_registry/components/candidate_detail.vue';
 import DetailRow from '~/ml/model_registry/components/candidate_detail_row.vue';
-import {
-  NO_PARAMETERS_MESSAGE,
-  NO_METRICS_MESSAGE,
-  NO_METADATA_MESSAGE,
-  NO_CI_MESSAGE,
-} from '~/ml/model_registry/translations';
 import { stubComponent } from 'helpers/stub_component';
 import { newCandidate } from '../mock_data';
 
@@ -139,19 +133,19 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
     );
 
     it('does not render params', () => {
-      expect(findNoDataMessage(NO_PARAMETERS_MESSAGE).exists()).toBe(true);
+      expect(findNoDataMessage('No logged parameters').exists()).toBe(true);
     });
 
     it('does not render metadata', () => {
-      expect(findNoDataMessage(NO_METADATA_MESSAGE).exists()).toBe(true);
+      expect(findNoDataMessage('No logged metadata').exists()).toBe(true);
     });
 
     it('does not render metrics', () => {
-      expect(findNoDataMessage(NO_METRICS_MESSAGE).exists()).toBe(true);
+      expect(findNoDataMessage('No logged metrics').exists()).toBe(true);
     });
 
     it('does not render CI info', () => {
-      expect(findNoDataMessage(NO_CI_MESSAGE).exists()).toBe(true);
+      expect(findNoDataMessage('Run not linked to a CI build').exists()).toBe(true);
     });
   });
 

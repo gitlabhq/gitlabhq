@@ -89,10 +89,6 @@ $black-divider: #666;
         .custom-control-label {
           display: flex;
           margin-bottom: 0;
-
-          .label-title {
-            margin-left: -$gl-spacing-scale-2;
-          }
         }
       }
     }
@@ -386,3 +382,7 @@ input[type='search'] {
   }
 }
 /* stylelint-enable property-no-vendor-prefix */
+
+.description.term p:last-child {
+  @apply gl-m-0;
+}

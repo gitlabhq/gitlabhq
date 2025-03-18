@@ -266,29 +266,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
           worker.perform
         end
 
-        context 'when feature flag extended_expiry_webhook_execution_setting is disabled' do
-          before do
-            stub_feature_flags(extended_expiry_webhook_execution_setting: false)
-          end
-
-          it "does not call execute_web_hooks for interval 30 days" do
-            expiring_token.update!(expires_at: 30.days.from_now)
-            project_hook = create(:project_hook, project: project, resource_access_token_events: true)
-
-            expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).not_to receive(:build)
-            expect(WebHookService)
-            .not_to receive(:new)
-            .with(
-              project_hook,
-              {},
-              'resource_access_token_hooks',
-              idempotency_key: anything
-            ) { fake_wh_service }
-
-            worker.perform
-          end
-        end
-
         context 'with multiple batches of tokens' do
           let_it_be(:expiring_tokens) { create_list(:resource_access_token, 4, expires_at: 6.days.from_now) }
 

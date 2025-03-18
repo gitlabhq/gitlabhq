@@ -80,6 +80,21 @@ step_using_git_reference:
       env:
         env1: value2
 
+step_using_oci_reference:
+  run:
+    - name: oci_reference_step
+      step:
+        oci:
+          registry: gitlab.com/components/script
+          repository: bash
+          tag: 1.0.4
+          dir: /path/to/step
+          file: my_step.yml
+      inputs:
+        param1: value1
+      env:
+        env1: value2
+
 step_using_action:
   run:
     - name: github_action_step

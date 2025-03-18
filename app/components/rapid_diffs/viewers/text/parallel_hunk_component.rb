@@ -26,10 +26,6 @@ module RapidDiffs
             }
           ]
         end
-
-        def testid
-          'hunk-lines-parallel'
-        end
       end
     end
   end

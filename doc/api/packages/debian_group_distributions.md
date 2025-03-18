@@ -12,7 +12,11 @@ title: Debian group distributions API
 
 {{< /details >}}
 
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+{{< history >}}
+
+- [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+
+{{< /history >}}
 
 This is the reference documentation for the Debian group distributions API. This API is behind a
 feature flag that is disabled by default. To use this API, you must [enable it](#enable-the-debian-group-api).

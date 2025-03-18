@@ -12,11 +12,14 @@ title: GitLab exporter
 
 {{< /details >}}
 
-The [GitLab exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) enables you to
-measure various GitLab metrics pulled from Redis and the database in Linux package
-instances.
+Monitor your GitLab instance's performance metrics with
+[GitLab exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter).
+For a Linux package installation, GitLab exporter takes metrics from Redis and the database
+and provides insights into bottlenecks, resource consumption patterns, and potential areas for optimization.
 
 For self-compiled installations, you must install and configure it yourself.
+
+## Enable GitLab exporter
 
 To enable the GitLab exporter in a Linux package instance:
 

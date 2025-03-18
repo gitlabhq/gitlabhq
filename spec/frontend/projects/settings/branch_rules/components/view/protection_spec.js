@@ -108,15 +108,34 @@ describe('Branch rule protection', () => {
   });
 
   describe('When `edit_branch_rules` FF is disabled', () => {
-    beforeEach(() => createComponent({ editBranchRules: false }));
-
     it('does not render `Edit` button', () => {
+      createComponent({ editBranchRules: false });
+
       expect(findEditButton().exists()).toBe(false);
     });
 
-    it('renders link to manage branch protections', () => {
-      expect(findLink().text()).toBe(protectionPropsMock.headerLinkTitle);
-      expect(findLink().attributes('href')).toBe(protectionPropsMock.headerLinkHref);
+    describe('when headerLinkHref and headerLinkTitle are set', () => {
+      beforeEach(() => {
+        createComponent({ editBranchRules: false });
+      });
+
+      it('renders link to manage branch protections', () => {
+        expect(findLink().text()).toBe(protectionPropsMock.headerLinkTitle);
+        expect(findLink().attributes('href')).toBe(protectionPropsMock.headerLinkHref);
+      });
+    });
+
+    describe('when headerLinkHref and headerLinkTitle are not set', () => {
+      beforeEach(() => {
+        createComponent(
+          { editBranchRules: false },
+          { headerLinkHref: null, headerLinkTitle: null },
+        );
+      });
+
+      it('does not render link to manage branch protections', () => {
+        expect(findLink().exists()).toBe(false);
+      });
     });
 
     it('renders a protection row for status checks', () => {

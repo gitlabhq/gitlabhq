@@ -1,0 +1,17 @@
+---
+description: User searches a merge request diff by using the built-in search function in the browser
+internal_events: true
+action: i_code_review_user_searches_diff
+identifiers:
+- project
+- namespace
+- user
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182580
+tiers:
+- free
+- premium
+- ultimate

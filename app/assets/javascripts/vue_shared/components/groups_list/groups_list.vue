@@ -41,7 +41,7 @@ export default {
       :key="group.id"
       :group="group"
       :show-group-icon="showGroupIcon"
-      :class="listItemClass"
+      :list-item-class="listItemClass"
       :timestamp-type="timestampType"
       @delete="$emit('delete', $event)"
     />

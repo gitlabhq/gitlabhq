@@ -75,8 +75,9 @@ export default {
           action: () => {
             this.openModal();
           },
+          variant: 'danger',
           extraAttrs: {
-            class: 'js-delete-branch-button !gl-text-red-500',
+            class: 'js-delete-branch-button',
             'aria-label': this.deleteBranchText,
             'data-testid': 'delete-branch-button',
           },

@@ -86,7 +86,7 @@ module Gitlab
         },
         'all_commits' => ->(merge_request, _, _) do
           merge_request
-            .recent_commits
+            .recent_commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, merge_request.target_project))
             .without_merge_commits
             .map do |commit|
               if commit.safe_message&.bytesize&.>(100.kilobytes)

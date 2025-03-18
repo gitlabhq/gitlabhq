@@ -76,6 +76,15 @@ validate-gem:
   script:
     - $CI_PROJECT_DIR/scripts/validate-monorepo-gem "$[[inputs.gem_name]]"
 
+validate-gemfile-lock:
+  extends: .ruby_matrix
+  rules:
+    # Validate all Gemfile.lock stored in `gems/`.
+    - if: "'$[[inputs.gem_path_prefix]]' == 'gems/'"
+      exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/Gemfile.lock"]
+  script:
+    - bundle lock --add-checksums
+
 rubocop:
   extends: .ruby_matrix
   rules:

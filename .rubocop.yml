@@ -5,6 +5,8 @@ inherit_gem:
 require:
   - ./rubocop/rubocop
   - rubocop-rspec
+  # Always load these cop even if disabled by default so RuboCop knows about rules in TODOs.
+  - rubocop/cop/internal_affairs
 
 inherit_from:
   <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
@@ -73,6 +75,10 @@ Rails/Pluck:
     - 'tooling/danger/**/*'
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
   AutoCorrect: false
+
+# Disabled by default and enabled via `.rubocop/internal_affairs.yml`.
+InternalAffairs:
+  Enabled: false
 
 RSpec:
   Language:
@@ -375,6 +381,11 @@ Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
   Enabled: false
 
+Rails/RenderInline:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94064#note_1157289970
 Rails/SquishedSQLHeredocs:
   Enabled: false
@@ -465,8 +476,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
 
 Gitlab/DocumentationLinks/Link:
   Enabled: true
-  Exclude:
-    - '**/*.haml'
 
 GitlabSecurity/PublicSend:
   Enabled: true
@@ -1260,3 +1269,16 @@ Tailwind/StringInterpolation:
 Cop/ActiveRecordDependent:
   Include:
     - ee/app/models/**/*.rb
+
+Gitlab/Rails/AttrEncrypted:
+  Enabled: true
+  Include:
+  - '{,ee/,jh/}app/models/**/*.rb'
+  - 'db/migrate/*.rb'
+  - '{,ee/,jh/}/lib/(ee/)?gitlab/background_migration/*.rb'
+
+Migration/PreventAddingAttrEncryptedColumns:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+  EnforcedSince: 20250311000000

@@ -266,7 +266,7 @@ a Rails form to Vue, or when [integrating components](https://gitlab.com/gitlab-
 The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility function can be used to parse the generated form input attributes so they can be passed to the Vue application.
 This enables us to integrate Vue components without changing how the form submits.
 
-```haml
+```ruby
 -# form.html.haml
 = form_for user do |form|
   .js-user-form

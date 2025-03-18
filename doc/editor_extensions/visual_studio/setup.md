@@ -8,10 +8,10 @@ title: Install and set up the GitLab extension for Visual Studio
 
 To get the extension, use any of these methods:
 
-- Inside Visual Studio, go to **Extensions > Manage extensions... > Browse**, and search for `GitLab`.
+- Inside Visual Studio, select **Extensions** from the activity bar, and search for `GitLab`.
 - From the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 - From GitLab, either from the
-  [list of releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases), or by 
+  [list of releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases), or by
   [downloading the latest version](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases/permalink/latest/downloads/GitLab.Extension.vsix)
   directly.
 

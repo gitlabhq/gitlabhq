@@ -4,10 +4,10 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { debounce, throttle } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState as mapPiniaState, mapActions as mapPiniaActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import api from '~/api';
 import {
   keysFor,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -18,7 +18,7 @@ import {
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
+import { parseBoolean, handleLocationHash, getCookie } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory, getLocationHash } from '~/lib/utils/url_utility';
@@ -27,9 +27,9 @@ import { __ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
-  MR_TREE_SHOW_KEY,
   ALERT_OVERFLOW_HIDDEN,
   ALERT_MERGE_CONFLICT,
   ALERT_COLLAPSED_FILES,
@@ -44,6 +44,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
   EVT_DISCUSSIONS_ASSIGNED,
+  FILE_BROWSER_VISIBLE,
 } from '../constants';
 
 import { isCollapsed } from '../utils/diff_file';
@@ -243,7 +244,6 @@ export default {
       'showWhitespace',
       'targetBranchName',
       'branchName',
-      'showTreeList',
       'addedLines',
       'removedLines',
     ]),
@@ -259,6 +259,7 @@ export default {
     ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     ...mapGetters('findingsDrawer', ['activeDrawer']),
+    ...mapPiniaState(useFileBrowser, ['fileBrowserVisible']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -316,7 +317,7 @@ export default {
       return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
     renderFileTree() {
-      return this.renderDiffFiles && this.showTreeList;
+      return this.renderDiffFiles && this.fileBrowserVisible;
     },
     hideTooltips() {
       const hide = () => {
@@ -455,12 +456,10 @@ export default {
       'setCurrentFileHash',
       'setHighlightedRow',
       'goToFile',
-      'setShowTreeList',
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
       'fetchLinkedFile',
-      'toggleTreeList',
       'expandAllFiles',
       'collapseAllFiles',
       'setDiffViewType',
@@ -468,6 +467,7 @@ export default {
       'goToFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
+    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility', 'toggleFileBrowserVisibility']),
     closeDrawer() {
       this.setDrawer({});
     },
@@ -639,15 +639,12 @@ export default {
 
       Mousetrap.bind(keysFor(MR_PREVIOUS_FILE_IN_DIFF), () => this.jumpToFile(-1));
       Mousetrap.bind(keysFor(MR_NEXT_FILE_IN_DIFF), () => this.jumpToFile(+1));
-
-      if (this.commit) {
-        Mousetrap.bind(keysFor(MR_COMMITS_NEXT_COMMIT), () =>
-          this.moveToNeighboringCommit({ direction: 'next' }),
-        );
-        Mousetrap.bind(keysFor(MR_COMMITS_PREVIOUS_COMMIT), () =>
-          this.moveToNeighboringCommit({ direction: 'previous' }),
-        );
-      }
+      Mousetrap.bind(keysFor(MR_COMMITS_NEXT_COMMIT), () =>
+        this.moveToNeighboringCommit({ direction: 'next' }),
+      );
+      Mousetrap.bind(keysFor(MR_COMMITS_PREVIOUS_COMMIT), () =>
+        this.moveToNeighboringCommit({ direction: 'previous' }),
+      );
 
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();
@@ -676,8 +673,7 @@ export default {
       if (delta >= 0 && delta < 1000) {
         this.disableVirtualScroller();
 
-        api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
-        api.trackRedisCounterEvent('diff_searches');
+        this.trackEvent('i_code_review_user_searches_diff');
       }
     },
     jumpToFile(step) {
@@ -687,16 +683,14 @@ export default {
       }
     },
     setTreeDisplay() {
-      const storedTreeShow = localStorage.getItem(MR_TREE_SHOW_KEY);
-      let showTreeList = true;
-
-      if (storedTreeShow !== null) {
-        showTreeList = parseBoolean(storedTreeShow);
-      } else if (!bp.isDesktop() || (!this.isBatchLoading && this.flatBlobsList.length <= 1)) {
-        showTreeList = false;
+      const hideBrowserPreference = getCookie(FILE_BROWSER_VISIBLE);
+      if (hideBrowserPreference) {
+        this.setFileBrowserVisibility(parseBoolean(hideBrowserPreference));
+      } else {
+        const shouldHide =
+          !bp.isDesktop() || (!this.isBatchLoading && this.flatBlobsList.length <= 1);
+        this.setFileBrowserVisibility(!shouldHide);
       }
-
-      return this.setShowTreeList({ showTreeList, saving: false });
     },
     async scrollVirtualScrollerToFileHash(hash) {
       const index = this.diffFiles.findIndex((f) => f.file_hash === hash);
@@ -744,7 +738,7 @@ export default {
       }
     },
     fileTreeToggled() {
-      this.toggleTreeList();
+      this.toggleFileBrowserVisibility();
       this.adjustView();
     },
     isDiffViewActive(item) {
@@ -771,7 +765,7 @@ export default {
       <div class="gl-flex gl-flex-wrap">
         <compare-versions :toggle-file-tree-visible="hasChanges" />
         <diff-app-controls
-          class="gl-ml-auto"
+          class="gl-ml-auto gl-px-5 gl-pb-2 gl-pt-3"
           :has-changes="hasChanges"
           :diffs-count="numTotalFiles"
           :added-lines="addedLines"

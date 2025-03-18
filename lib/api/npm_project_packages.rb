@@ -61,7 +61,8 @@ module API
         requires :file_name, type: String, desc: 'Package file name'
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_packages
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
       get '*package_name/-/*file_name', format: false do
         authorize_read_package!(project)
 
@@ -141,7 +142,8 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
         authenticate_non_public: true
-      route_setting :authorization, job_token_policies: :read_packages
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
       get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
         package_name = declared_params[:package_name]
         packages = ::Packages::Npm::PackageFinder.new(project: project_or_nil, params: { package_name: package_name }).execute

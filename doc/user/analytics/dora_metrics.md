@@ -12,16 +12,27 @@ title: DevOps Research and Assessment (DORA) metrics
 
 {{< /details >}}
 
-The [DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
-team has identified four metrics that measure DevOps performance.
-Using these metrics helps improve DevOps efficiency and communicate performance to business stakeholders, which can accelerate business results.
+[DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance) metrics
+deliver evidence-based insights about your DevOps performance.
+These four key measurements demonstrate how fast your team delivers changes
+and how well those changes perform in production.
+When tracked consistently, DORA metrics highlight improvement opportunities
+across your software delivery process.
 
-DORA includes four key metrics, divided into two core areas of DevOps:
+Use DORA metrics for strategic decision-making, to justify process improvement investments to stakeholders,
+or to compare your team's performance against industry benchmarks to identify competitive advantages.
 
-- [Deployment frequency](#deployment-frequency) and [Lead time for changes](#lead-time-for-changes) measure team *velocity*.
-- [Change failure rate](#change-failure-rate) and [Time to restore service](#time-to-restore-service) measure *stability*.
+The four DORA metrics measure two critical aspects of DevOps:
 
-For software leaders, tracking velocity alongside quality metrics ensures they're not sacrificing quality for speed.
+- **Velocity metrics** track how quickly your organization delivers software:
+  - [Deployment frequency](#deployment-frequency): How often code is deployed to production
+  - [Lead time for changes](#lead-time-for-changes): How long it takes code to reach production
+
+- **Stability metrics** measure your software's reliability:
+  - [Change failure rate](#change-failure-rate): How often deployments cause production failures
+  - [Time to restore service](#time-to-restore-service): How quickly service recovers after failures
+
+The dual focus on velocity and stability metrics helps leaders find the optimal balance between speed and quality in their delivery workflows.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video explanation, see [DORA metrics: User analytics](https://www.youtube.com/watch?v=jYQSH4EY6_U) and [GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw).
@@ -246,7 +257,7 @@ and use it to automatically:
 
 DORA metrics are displayed in the following analytics features:
 
-- [Value Streams Dashboard](value_streams_dashboard.md) includes the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panels) and [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
+- [Value Streams Dashboard](value_streams_dashboard.md) includes the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison) and [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score).
 - [CI/CD analytics charts](ci_cd_analytics.md) show the history of DORA metrics over time.
 - [Insights reports](../project/insights/_index.md) provide the option to create custom charts with [DORA query parameters](../project/insights/_index.md#dora-query-parameters).
 - [GraphQL API](../../api/graphql/reference/_index.md) (with the interactive [GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer)) and [REST API](../../api/dora/metrics.md) support the retrieval of metrics data.

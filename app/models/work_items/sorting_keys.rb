@@ -80,6 +80,14 @@ module WorkItems
           .reduce({}, :merge)
       end
       strong_memoize_attr :widgets_sorting_keys
+
+      def available?(key, widget_list: [])
+        key = key.to_sym
+        widget_list = Array.wrap(widget_list)
+
+        DEFAULT_SORTING_KEYS.key?(key) ||
+          widget_list.any? { |widget| widget.sorting_keys.key?(key) }
+      end
     end
   end
 end

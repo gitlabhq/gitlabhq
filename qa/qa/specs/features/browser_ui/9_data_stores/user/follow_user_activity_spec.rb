@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'User', :requires_admin, product_group: :tenant_scale do
+    describe 'User', :requires_admin, product_group: :organizations do
       let(:admin_api_client) { Runtime::User::Store.admin_api_client }
       let(:followed_user_api_client) { followed_user.api_client }
 

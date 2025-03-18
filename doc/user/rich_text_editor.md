@@ -72,7 +72,7 @@ Supported input rules:
 
 | Input rule syntax                                         | Content inserted     |
 | --------------------------------------------------------- | -------------------- |
-| `# Heading 1` <br>... <br> `###### Heading 6`             | Headings 1 through 6 |
+| `# Heading 1` through `###### Heading 6`                  | Headings 1 through 6 |
 | `**bold**` or `__bold__`                                  | Bold text            |
 | `_italics_` or `*italics*`                                | Italicized text      |
 | `~~strike~~`                                              | Strikethrough        |

@@ -10,11 +10,9 @@ status: active
 milestone: '14.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66522
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: diff
-  event: searches
+data_source: internal_events
+events:
+  - name: i_code_review_user_searches_diff
 tiers:
   - free
   - premium

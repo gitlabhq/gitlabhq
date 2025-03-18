@@ -15,6 +15,11 @@ query projectWorkItems(
         iid
         title
         confidential
+        workItemType {
+          id
+          name
+          iconName
+        }
       }
     }
     workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $searchByIid) {
@@ -23,6 +28,11 @@ query projectWorkItems(
         iid
         title
         confidential
+        workItemType {
+          id
+          name
+          iconName
+        }
       }
     }
   }

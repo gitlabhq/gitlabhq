@@ -139,7 +139,7 @@ describe('Tags List', () => {
         expect(resolver).toHaveBeenCalledTimes(2);
         expect(resolver).toHaveBeenCalledWith({
           ...queryData,
-          first: null,
+          first: undefined,
           before: tagsPageInfo.startCursor,
           last: GRAPHQL_PAGE_SIZE,
         });
@@ -251,7 +251,7 @@ describe('Tags List', () => {
 
         expect(resolver).toHaveBeenCalledWith({
           ...queryData,
-          first: null,
+          first: undefined,
           last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
           before: tagsPageInfo.startCursor,
         });
@@ -268,7 +268,7 @@ describe('Tags List', () => {
 
         expect(resolver).toHaveBeenLastCalledWith({
           ...queryData,
-          first: null,
+          first: undefined,
           before: tagsPageInfo.startCursor,
           last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
         });
@@ -338,7 +338,7 @@ describe('Tags List', () => {
       expect(resolver).toHaveBeenCalledTimes(2);
       expect(resolver).toHaveBeenLastCalledWith({
         ...queryData,
-        first: null,
+        first: undefined,
         before: tagsPageInfo.startCursor,
         last: GRAPHQL_PAGE_SIZE,
       });

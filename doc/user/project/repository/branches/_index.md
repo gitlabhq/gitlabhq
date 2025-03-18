@@ -13,15 +13,17 @@ title: Branches
 
 {{< /details >}}
 
-A branch is a version of a project's working tree. Branches are the
-foundation of development in a project. When you create a new
-[project](../../_index.md), GitLab creates a [default branch](default.md)
-for your repository. Default branch settings are configured in a project,
-subgroup, group, or instance.
+Branches keep your team's development work organized and separated. When multiple people work
+on different features simultaneously, branches prevent changes from conflicting with each other.
+Each branch acts as an isolated workspace where you implement new features, fix bugs, or
+experiment with ideas.
 
-As your project grows, your team creates more branches.
-Each branch represents a set of changes, which allows development work to be done
-in parallel. Development work in one branch does not affect another branch.
+With branches, your team can:
+
+- Work on separate features without disrupting the main codebase.
+- Review proposed changes before they affect the rest of the project.
+- Roll back problematic changes without affecting other work.
+- Deploy changes to production in a controlled, predictable way.
 
 The development workflow for branches is:
 

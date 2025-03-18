@@ -6,6 +6,13 @@ description: Available features and benefits.
 title: GitLab Dedicated for Government
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
+
 GitLab Dedicated for Government is a fully isolated, single-tenant SaaS solution that is:
 
 - Hosted and managed by GitLab, Inc.

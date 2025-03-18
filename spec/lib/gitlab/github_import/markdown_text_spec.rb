@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
       TEXT
     end
 
-    it { expect(described_class.convert_ref_links(text_in, project)).to eq text_out }
+    it { expect(described_class.format(text_in, project: project)).to eq text_out }
 
     context 'when Github EE with custom domain name' do
       let(:github_domain) { 'https://custom.github.com/' }
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
           .to receive(:config_for).with('github').and_return({ 'url' => github_domain })
       end
 
-      it { expect(described_class.convert_ref_links(text_in, project)).to eq text_out }
+      it { expect(described_class.format(text_in, project: project)).to eq text_out }
     end
   end
 
@@ -109,40 +109,63 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
     end
   end
 
-  describe '#to_s' do
+  describe '#perform' do
     it 'returns the text when the author was found' do
       author = double(:author, login: 'Alice')
       text = described_class.new('Hello', author, true)
 
-      expect(text.to_s).to eq('Hello')
+      expect(text.perform).to eq('Hello')
     end
 
     it 'returns the text when the author has no login' do
       author = double(:author, login: nil)
       text = described_class.new('Hello', author, true)
 
-      expect(text.to_s).to eq('Hello')
-    end
-
-    it 'returns empty text when it receives nil' do
-      author = double(:author, login: nil)
-      text = described_class.new(nil, author, true)
-
-      expect(text.to_s).to eq('')
+      expect(text.perform).to eq('Hello')
     end
 
     it 'returns the text with an extra header when the author was not found' do
       author = double(:author, login: 'Alice')
       text = described_class.new('Hello', author)
 
-      expect(text.to_s).to eq("*Created by: Alice*\n\nHello")
+      expect(text.perform).to eq("*Created by: Alice*\n\nHello")
     end
 
     it 'cleans invalid chars' do
       author = double(:author, login: 'Alice')
       text = described_class.format("\u0000Hello", author)
 
-      expect(text.to_s).to eq("*Created by: Alice*\n\nHello")
+      expect(text).to eq("*Created by: Alice*\n\nHello")
+    end
+
+    context "when the perform is called" do
+      let_it_be(:project) { create(:project) }
+      let(:text) { "I said to @sam_allen\0 the code" }
+      let(:instance) { described_class.new(text, project:) }
+
+      subject(:format) { instance.perform }
+
+      it 'calls wrap_mentions_in_backticks and convert_ref_links method as a cleaning step' do
+        expect(instance).to receive(:wrap_mentions_in_backticks)
+        expect(instance).to receive(:convert_ref_links)
+
+        format
+      end
+
+      context "when the text is blank?" do
+        let(:text) { nil }
+
+        it "skips formatting" do
+          expect(instance).not_to receive(:wrap_mentions_in_backticks)
+          expect(instance).not_to receive(:convert_ref_links)
+
+          format
+        end
+
+        it "returns nil as response" do
+          expect(format).to be_nil
+        end
+      end
     end
   end
 end

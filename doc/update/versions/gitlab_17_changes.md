@@ -22,6 +22,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 16.11
 
+- Background migration `AlterWebhookDeletedAuditEvent: audit_events` can take several hours to finish. You can read more in [merge request 161320](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161320).
+
 - You must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key from `gitlab.rb` before upgrading to GitLab 17.0 or later. After upgrading, any references to the key in `gitlab.rb` will cause `gitlab-ctl reconfigure` to fail.
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
@@ -215,6 +217,33 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    ```shell
    gitlab-rake db:migrate:up:ci VERSION=20241028085044
    ```
+
+## Issues to be aware of when upgrading to 17.8
+
+- Migration failures when upgrading to GitLab 17.8.
+
+  When upgrading to 17.8, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+
+  ```shell
+  ERROR:  duplicate key value violates unique constraint "work_item_types_pkey"
+  DETAIL:  Key (id)=(1) already exists.
+  ```
+
+  The migration producing the error would be `db/post_migrate/20241218223002_fix_work_item_types_id_column_values.rb`.
+
+  This error occurs because in some cases, records in the `work_item_types` table were not created in the database
+  in the same order as they were added to the application.
+
+  To safely resolve this issue, follow these steps:
+
+  1. **Only do this if you got this error when trying to upgrade to 17.8.**
+     Run the following SQL query in your `gitlab_main` database:
+
+      ```sql
+      UPDATE work_item_types set id = (id * 10);
+      ```
+
+  1. Retry running the failed migration. It should now succeed.
 
 ## 17.8.0
 

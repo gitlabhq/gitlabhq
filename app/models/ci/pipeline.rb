@@ -18,6 +18,7 @@ module Ci
     include UpdatedAtFilterable
     include EachBatch
     include FastDestroyAll::Helpers
+    include Gitlab::InternalEventsTracking
 
     self.table_name = :p_ci_pipelines
     self.primary_key = :id
@@ -303,6 +304,8 @@ module Ci
       end
 
       after_transition do |pipeline, transition|
+        GraphqlTriggers.ci_pipeline_status_updated(pipeline)
+
         next if transition.loopback?
 
         pipeline.run_after_commit do
@@ -361,6 +364,15 @@ module Ci
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::JobArtifacts::TrackArtifactReportWorker.perform_async(pipeline.id)
+
+          track_internal_event(
+            'completed_pipeline_execution',
+            project: pipeline.project,
+            user: pipeline.user,
+            additional_properties: {
+              label: pipeline.status
+            }
+          )
         end
       end
 
@@ -704,7 +716,14 @@ module Ci
     end
 
     def retryable?
+      return false if archived?
+
       retryable_builds.any?
+    end
+
+    def archived?
+      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
+      archive_builds_older_than.present? && created_at < archive_builds_older_than
     end
 
     def cancelable?
@@ -744,7 +763,7 @@ module Ci
     end
 
     def coverage
-      coverage_array = latest_statuses.map(&:coverage).compact
+      coverage_array = latest_statuses.filter_map(&:coverage)
       coverage_array.sum / coverage_array.size if coverage_array.size >= 1
     end
 
@@ -1346,6 +1365,10 @@ module Ci
 
     def dangling?
       Enums::Ci::Pipeline.dangling_sources.key?(source.to_sym)
+    end
+
+    def only_workload_variables?
+      Enums::Ci::Pipeline.workload_sources.key?(source.to_sym)
     end
 
     def source_ref_path

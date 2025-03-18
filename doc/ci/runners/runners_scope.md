@@ -94,7 +94,7 @@ in GitLab 18.0. Use runner authentication tokens instead. For more information, 
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
 - You must be an administrator.
 
 To create an instance runner:
@@ -223,7 +223,7 @@ When several CI/CD jobs run concurrently, the fair usage algorithm assigns jobs 
 1. Job 6 is next, because 6 is now the lowest job number from projects with no running jobs (Projects 1 and 2 have jobs running).
 1. Job 2 is next, because, of projects with the lowest number of jobs running (each has 1), it is the lowest job number.
 1. Job 5 is next, because Project 1 now has 2 jobs running and Job 5 is the lowest remaining job number between Projects 2 and 3.
-1. Finally is Job 3... because it's the only job left.
+1. Finally is Job 3 because it's the only job left.
 
 When only one job runs at a time, the fair usage algorithm assigns jobs in this order:
 
@@ -234,7 +234,7 @@ When only one job runs at a time, the fair usage algorithm assigns jobs in this 
 1. We finish Job 4.
 1. Job 5 is next, because having finished Job 4, Project 2 has no jobs running again.
 1. Job 6 is next, because Project 3 is the only project left with no running jobs.
-1. Lastly we choose Job 3... because, again, it's the only job left.
+1. Lastly we choose Job 3, because, again, it's the only job left.
 
 ## Group runners
 
@@ -758,7 +758,7 @@ To determine the IP address of an instance runner:
 1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![Instance runner IP address](img/shared_runner_ip_address_14_5.png)
+![Instance runner IP address](img/shared_runner_ip_address_v14_5.png)
 
 ### Determine the IP address of a project runner
 
@@ -792,7 +792,7 @@ In GitLab 17.0, the use of runner registration tokens is disabled in all GitLab 
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
 
 To enable the use of runner registration token in project and groups:
 

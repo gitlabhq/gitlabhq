@@ -314,7 +314,7 @@ To create group links with LDAP group CN:
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP Group cn`.
 1. In the **LDAP Group cn** field, begin typing the CN of the group. There is a dropdown list with matching CNs in the configured `group_base`. Select your CN from this list.
-1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles.md) for users synced in this group.
+1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles/_index.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
 <!-- vale gitlab_base.Spelling = YES -->
@@ -333,7 +333,7 @@ To create group links with an LDAP user filter:
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP user filter`.
 1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).
-1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles.md) for users synced in this group.
+1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles/_index.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
 ### Override user permissions

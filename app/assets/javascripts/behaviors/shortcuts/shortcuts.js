@@ -127,6 +127,12 @@ export default class Shortcuts {
     if (shouldDisableShortcuts()) {
       disableShortcuts();
     }
+
+    this.filterSelectors = [
+      'input[type=search]',
+      '.gl-filtered-search-term-input',
+      '.filtered-search',
+    ];
   }
 
   /**
@@ -269,10 +275,10 @@ export default class Shortcuts {
   }
 
   focusFilter(e) {
-    if (!this.filterInput) {
-      this.filterInput = $('input[type=search]', '.nav-controls');
-    }
-    this.filterInput.focus();
+    const elements = document.querySelectorAll(this.filterSelectors.join(','));
+    const visibleElement = Array.from(elements).find((el) => el.offsetParent);
+
+    visibleElement?.focus();
     e.preventDefault();
   }
 

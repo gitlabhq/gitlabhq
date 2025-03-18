@@ -49,7 +49,6 @@ module WorkItems
       super
 
       GraphqlTriggers.issuable_title_updated(work_item) if work_item.previous_changes.key?(:title)
-      publish_event(work_item, old_associations)
     end
 
     def payload(work_item)
@@ -62,20 +61,6 @@ module WorkItems
       Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_labels_changed_action(
         author: current_user
       )
-    end
-
-    def publish_event(work_item, old_associations)
-      event = WorkItems::WorkItemUpdatedEvent.new(data: {
-        id: work_item.id,
-        namespace_id: work_item.namespace_id,
-        previous_work_item_parent_id: old_associations[:work_item_parent_id],
-        updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
-        updated_widgets: @widget_params&.keys&.map(&:to_s)
-      }.tap(&:compact_blank!))
-
-      work_item.run_after_commit_or_now do
-        Gitlab::EventStore.publish(event)
-      end
     end
 
     def parent

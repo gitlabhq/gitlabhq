@@ -40,7 +40,7 @@ sast:
   extends: .sast-analyzer
   script:
     - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
-    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
+    - echo "For more information see https://docs.gitlab.com/update/deprecations/#sast-analyzer-coverage-changing-in-gitlab-170"
     - exit 1
   rules:
     - when: never
@@ -197,6 +197,15 @@ semgrep-sast:
         - '**/*.swift'
         - '**/*.m'
         - '**/*.kt'
+        - '**/*.properties'
+        - '**/application*.yml'
+        - '**/management*.yml'
+        - '**/actuator*.yml'
+        - '**/bootstrap*.yml'
+        - '**/application*.yaml'
+        - '**/management*.yaml'
+        - '**/actuator*.yaml'
+        - '**/bootstrap*.yaml'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
@@ -230,6 +239,15 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
+        - '**/*.properties'
+        - '**/application*.yml'
+        - '**/management*.yml'
+        - '**/actuator*.yml'
+        - '**/bootstrap*.yml'
+        - '**/application*.yaml'
+        - '**/management*.yaml'
+        - '**/actuator*.yaml'
+        - '**/bootstrap*.yaml'
 
 sobelow-sast:
   extends: .sast-analyzer

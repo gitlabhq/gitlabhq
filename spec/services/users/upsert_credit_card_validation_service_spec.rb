@@ -43,7 +43,7 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
     context 'successfully set credit card validation record for the user' do
       context 'when user does not have credit card validation record' do
         it 'creates the credit card validation and returns a success', :aggregate_failures do
-          expect(user.credit_card_validated_at).to be nil
+          expect(user.credit_card_validated_at).to be_nil
 
           service_result = service.execute
 

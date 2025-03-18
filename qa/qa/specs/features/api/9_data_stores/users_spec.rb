@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Data Stores' do
     include Support::API
 
-    describe 'Users API', :smoke, product_group: :tenant_scale do
+    describe 'Users API', :smoke, product_group: :organizations do
       let(:api_client) { Runtime::User::Store.test_user.api_client }
       let(:username) { Runtime::User::Store.test_user.username }
 

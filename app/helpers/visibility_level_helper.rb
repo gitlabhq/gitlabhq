@@ -118,7 +118,7 @@ module VisibilityLevelHelper
   end
 
   def multiple_visibility_levels_restricted?
-    restricted_visibility_levels.many? # rubocop: disable CodeReuse/ActiveRecord
+    restricted_visibility_levels.many? # rubocop:disable CodeReuse/ActiveRecord -- False positive, not AR object
   end
 
   def all_visibility_levels_restricted?
@@ -139,11 +139,9 @@ module VisibilityLevelHelper
     current_level = Gitlab::VisibilityLevel::PRIVATE
 
     Gitlab::VisibilityLevel.values.sort.each do |value|
-      if disallowed_visibility_level?(form_model, value)
-        break
-      else
-        current_level = value
-      end
+      break if disallowed_visibility_level?(form_model, value)
+
+      current_level = value
     end
 
     current_level
@@ -154,19 +152,13 @@ module VisibilityLevelHelper
     when Gitlab::VisibilityLevel::PRIVATE
       s_(
         "VisibilityLevel|Project access must be granted explicitly to each user. " \
-           "If this project is part of a group, access is granted to members of the group."
+          "If this project is part of a group, access is granted to members of the group."
       )
     when Gitlab::VisibilityLevel::INTERNAL
       s_("VisibilityLevel|The project can be accessed by any logged in user except external users.")
     when Gitlab::VisibilityLevel::PUBLIC
       s_("VisibilityLevel|The project can be accessed without any authentication.")
     end
-  end
-
-  def show_updated_public_description_for_setting(group)
-    group &&
-      !group.new_record? &&
-      Gitlab::CurrentSettings.current_application_settings.try(:should_check_namespace_plan?)
   end
 
   def group_visibility_level_description(level, group = nil)
@@ -178,25 +170,12 @@ module VisibilityLevelHelper
         "VisibilityLevel|The group and any internal projects can be viewed by any logged in user except external users."
       )
     when Gitlab::VisibilityLevel::PUBLIC
-      unless show_updated_public_description_for_setting(group)
-        return s_('VisibilityLevel|The group and any public projects can be viewed without any authentication.')
-      end
-
-      Kernel.format(
-        s_(
-          'VisibilityLevel|The group, any public projects, and any of their members, issues, ' \
-            'and merge requests can be viewed without authentication. ' \
-          'Public groups and projects will be indexed by search engines. ' \
-          'Read more about %{free_user_limit_doc_link_start}free user limits%{link_end}, ' \
-          'or %{group_billings_link_start}upgrade to a paid tier%{link_end}.'
-        ),
-        free_user_limit_doc_link_start: "<a href='#{help_page_path('user/free_user_limit.md')}' target='_blank' " \
-          "rel='noopener noreferrer'>".html_safe,
-        group_billings_link_start: "<a href='#{group_billings_path(group)}' target='_blank' " \
-          "rel='noopener noreferrer'>".html_safe,
-        link_end: "</a>".html_safe
-      ).html_safe
+      group_public_visibility_description(group)
     end
+  end
+
+  def group_public_visibility_description(_group)
+    s_('VisibilityLevel|The group and any public projects can be viewed without any authentication.')
   end
 
   def project_visibility_icon_description(level)
@@ -207,3 +186,5 @@ module VisibilityLevelHelper
     "#{visibility_level_label(level)} - #{group_visibility_level_description(level)}"
   end
 end
+
+VisibilityLevelHelper.prepend_mod

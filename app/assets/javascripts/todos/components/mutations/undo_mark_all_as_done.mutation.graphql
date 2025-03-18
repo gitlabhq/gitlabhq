@@ -1,3 +1,5 @@
+# TODO: Rename this to `bulkRestoreTodos` after
+# https://gitlab.com/gitlab-org/gitlab/-/issues/16564 is done.
 mutation undoMarkAllAsDone($todoIDs: [TodoID!]!) {
   undoMarkAllAsDone: todoRestoreMany(input: { ids: $todoIDs }) {
     todos {

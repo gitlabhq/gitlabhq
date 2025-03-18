@@ -145,7 +145,7 @@ Test the pipeline by creating a commit with a message like:
 fix: testing patch releases
 ```
 
-Push the commit to the default branch. The pipeline should create a new release (`v1.0.0`) on the project's **Releases** page and publish a new version of the package to the project's **Package Registry** page.
+Push the commit to the default branch. The pipeline should create a new release (`v1.0.0`) on the project's **Releases** page and publish a new version of the package to the project's **Package registry** page.
 
 To create a minor release, use a commit message like:
 

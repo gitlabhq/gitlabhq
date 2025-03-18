@@ -167,3 +167,129 @@ describe('issue_note_body component', () => {
     );
   });
 });
+
+describe('duo code review feedback text', () => {
+  const createMockStoreWithDiscussion = (discussionId, discussionNotes) => {
+    return new Vuex.Store({
+      getters: {
+        getDiscussion: () => (id) => {
+          if (id === discussionId) {
+            return { notes: discussionNotes };
+          }
+          return {};
+        },
+        suggestionsCount: () => 0,
+        getSuggestionsFilePaths: () => [],
+      },
+      modules: {
+        diffs: {
+          namespaced: true,
+          getters: {
+            suggestionCommitMessage: () => () => '',
+          },
+        },
+        notes: {
+          state: { batchSuggestionsInfo: [] },
+        },
+        page: {
+          state: { failedToLoadMetadata: false },
+        },
+      },
+    });
+  };
+
+  const createDuoNote = (props = {}) => ({
+    ...note,
+    id: '1',
+    type: 'DiffNote',
+    discussion_id: 'discussion1',
+    author: {
+      ...note.author,
+      user_type: 'duo_code_review_bot',
+    },
+    ...props,
+  });
+
+  it('renders feedback text for the first DiffNote from GitLabDuo', () => {
+    const duoNote = createDuoNote();
+    const mockStore = createMockStoreWithDiscussion('discussion1', [duoNote]);
+
+    const wrapper = createComponent({
+      props: { note: duoNote },
+      store: mockStore,
+    });
+
+    const feedbackDiv = wrapper.find('.gl-text-md.gl-mt-4.gl-text-gray-500');
+    expect(feedbackDiv.exists()).toBe(true);
+  });
+
+  it('does not render feedback text for non-DiffNote from GitLabDuo', () => {
+    const duoNote = createDuoNote({ type: 'DiscussionNote' });
+
+    const wrapper = createComponent({
+      props: { note: duoNote },
+    });
+
+    const feedbackDiv = wrapper.find('.gl-text-md.gl-mt-4.gl-text-gray-500');
+    expect(feedbackDiv.exists()).toBe(false);
+  });
+
+  it('does not render feedback text for follow-up DiffNote from GitLabDuo', () => {
+    const duoNote = createDuoNote({ id: '2' });
+    const mockStore = createMockStoreWithDiscussion('discussion1', [
+      { id: '1' }, // First note has different ID
+      duoNote,
+    ]);
+
+    const wrapper = createComponent({
+      props: { note: duoNote },
+      store: mockStore,
+    });
+
+    const feedbackDiv = wrapper.find('.gl-text-md.gl-mt-4.gl-text-gray-500');
+    expect(feedbackDiv.exists()).toBe(false);
+  });
+
+  it('shows default awards list with thumbsup and thumbsdown for first DiffNote from GitLabDuo', () => {
+    const duoNote = createDuoNote();
+    const mockStore = createMockStoreWithDiscussion('discussion1', [duoNote]);
+
+    const wrapper = createComponent({
+      props: { note: duoNote },
+      store: mockStore,
+    });
+
+    const awardsList = wrapper.findComponent(NoteAwardsList);
+    expect(awardsList.exists()).toBe(true);
+    expect(awardsList.props('defaultAwards')).toEqual(['thumbsup', 'thumbsdown']);
+  });
+
+  it('uses empty default awards list for non-Duo comments', () => {
+    const regularNote = {
+      ...note,
+      id: '1',
+      author: {
+        ...note.author,
+        user_type: 'human',
+      },
+    };
+
+    const wrapper = createComponent({
+      props: { note: regularNote },
+    });
+
+    const awardsList = wrapper.findComponent(NoteAwardsList);
+    expect(awardsList.props('defaultAwards')).toEqual([]);
+  });
+
+  describe('duoFeedbackText computed property', () => {
+    it('returns the expected feedback text', () => {
+      const wrapper = createComponent();
+
+      const result = wrapper.vm.duoFeedbackText;
+      expect(result).toContain('Rate this response');
+      expect(result).toContain('@GitLabDuo');
+      expect(result).toContain('in reply for more questions');
+    });
+  });
+});

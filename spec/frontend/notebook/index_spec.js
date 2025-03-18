@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import json from 'test_fixtures/blob/notebook/basic.json';
+import jsonWithRawCell from 'test_fixtures/blob/notebook/raw-output.json';
 import jsonWithWorksheet from 'test_fixtures/blob/notebook/worksheets.json';
 import Notebook from '~/notebook/index.vue';
 
@@ -43,6 +44,20 @@ describe('Notebook component', () => {
 
     it('renders code cell', () => {
       expect(vm.$el.querySelector('pre')).not.toBeNull();
+    });
+  });
+
+  describe('with JSON of raw cell', () => {
+    beforeEach(() => {
+      vm = buildComponent(jsonWithRawCell);
+      return nextTick();
+    });
+    it('renders code cell when cell type is raw', () => {
+      expect(vm.$el.querySelector('.code')).not.toBeNull();
+    });
+
+    it('renders cells', () => {
+      expect(vm.$el.querySelectorAll('.cell').length).toBe(jsonWithRawCell.cells.length);
     });
   });
 

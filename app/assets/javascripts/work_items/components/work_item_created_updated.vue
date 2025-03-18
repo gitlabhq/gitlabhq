@@ -56,6 +56,15 @@ export default {
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
     },
+    workItemMovedToWorkItemUrl() {
+      return this.workItem?.movedToWorkItemUrl;
+    },
+    workItemDuplicatedToWorkItemUrl() {
+      return this.workItem?.duplicatedToWorkItemUrl;
+    },
+    workItemPromotedToEpicUrl() {
+      return this.workItem?.promotedToEpicUrl;
+    },
     isDiscussionLocked() {
       return findNotesWidget(this.workItem)?.discussionLocked;
     },
@@ -93,7 +102,13 @@ export default {
     <gl-loading-icon inline />
   </div>
   <div v-else class="gl-mb-3 gl-mt-3 gl-text-subtle">
-    <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
+    <work-item-state-badge
+      v-if="workItemState"
+      :work-item-state="workItemState"
+      :duplicated-to-work-item-url="workItemDuplicatedToWorkItemUrl"
+      :moved-to-work-item-url="workItemMovedToWorkItemUrl"
+      :promoted-to-epic-url="workItemPromotedToEpicUrl"
+    />
     <gl-loading-icon v-if="updateInProgress" inline />
     <confidentiality-badge
       v-if="isWorkItemConfidential"

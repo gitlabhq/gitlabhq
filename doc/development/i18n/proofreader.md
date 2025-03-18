@@ -48,6 +48,8 @@ are very appreciative of the work done by translators and proofreaders!
   - Proofreaders needed.
 - Estonian
   - Proofreaders needed.
+- Farsi
+  - Iman manati   [GitLab](https://gitlab.com/baratiiman3), [Crowdin](https://crowdin.com/profile/iman31)
 - Filipino
   - Proofreaders needed.
 - French

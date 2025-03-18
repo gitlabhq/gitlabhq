@@ -56,8 +56,13 @@ export default {
         {{ __('None') }}
         <template v-if="editable">
           -
-          <gl-button variant="link" data-testid="assign-yourself" @click="assignSelf">
-            <span class="gl-text-subtle hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
+          <gl-button
+            class="!gl-text-inherit hover:!gl-text-link"
+            variant="link"
+            data-testid="assign-yourself"
+            @click="assignSelf"
+          >
+            {{ __('assign yourself') }}
           </gl-button>
         </template>
       </span>

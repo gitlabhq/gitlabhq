@@ -895,7 +895,7 @@ describe('ReadyToMerge', () => {
     });
 
     it('should display the correct merge text', () => {
-      expect(findMergeButton().text()).toBe('Merge...');
+      expect(findMergeButton().text()).toBe('Merge…');
     });
 
     it('should display confirmation modal when merge button is clicked', async () => {
@@ -1009,22 +1009,10 @@ describe('ReadyToMerge', () => {
   describe('rebase button', () => {
     describe('when rebasing', () => {
       let axiosSpy;
-      const rebaseModalHide = jest.fn();
-
-      const MockGlModal = {
-        template: `
-          <div>
-            <slot></slot>
-            <slot name="modal-footer"></slot>
-          </div>
-        `,
-        methods: {
-          hide: rebaseModalHide,
-        },
-      };
 
       beforeEach(() => {
         axiosSpy = jest.spyOn(axios, 'post').mockResolvedValue({});
+
         createComponent(
           {
             mr: {
@@ -1035,41 +1023,77 @@ describe('ReadyToMerge', () => {
               state: 'readyToMerge',
               userPermissions: { canMerge: true },
               availableAutoMergeStrategies: [],
+              canPushToSourceBranch: true,
             },
           },
           true,
-          shallowMountExtended,
-          {},
-          {
-            stubs: {
-              GlModal: MockGlModal,
-              RebaseConfirmationDialog: true,
-            },
-          },
         );
       });
 
-      afterEach(() => {
-        rebaseModalHide.mockReset();
-      });
-
-      it('shows confirmation dialog when clicking rebase', async () => {
-        await wrapper.findByTestId('rebase-button').trigger('click');
+      it('shows confirmation dialog when clicking rebase button handler', async () => {
+        wrapper.vm.handleRebaseClick();
         await nextTick();
 
-        expect(wrapper.findComponent({ name: 'RebaseConfirmationDialog' }).exists()).toBe(true);
+        expect(wrapper.vm.isRebaseModalVisible).toBe(true);
       });
 
       it('calls rebase endpoint when confirmed', async () => {
         const expectedPath = joinPaths('/', 'namespace/project/-/merge_requests/123/rebase');
 
-        await wrapper.findByTestId('rebase-button').trigger('click');
-        await nextTick();
+        wrapper.vm.isRebaseModalVisible = true;
+        wrapper.vm.rebaseConfirmed();
 
-        wrapper.findComponent({ name: 'RebaseConfirmationDialog' }).vm.$emit('rebase-confirmed');
         await waitForPromises();
 
         expect(axiosSpy).toHaveBeenCalledWith(expectedPath);
+        expect(wrapper.vm.isRebaseInProgress).toBe(false);
+      });
+
+      it('has correct computed properties for showing rebase button', () => {
+        expect(wrapper.vm.sourceHasDivergedFromTarget).toBe(true);
+        expect(wrapper.vm.mr.canPushToSourceBranch).toBe(true);
+        expect(wrapper.vm.canRebase).toBe(true);
+      });
+    });
+
+    describe('rebase button permissions', () => {
+      const findRebaseButton = () => wrapper.find('[data-testid="rebase-button"]');
+
+      describe('when source branch has diverged from target', () => {
+        it('shows rebase button when user can push to source branch', () => {
+          createComponent({
+            mr: {
+              divergedCommitsCount: 5,
+              canPushToSourceBranch: true,
+            },
+          });
+
+          expect(findRebaseButton().exists()).toBe(true);
+        });
+
+        it('hides rebase button when user cannot push to source branch', () => {
+          createComponent({
+            mr: {
+              divergedCommitsCount: 5,
+              canPushToSourceBranch: false,
+            },
+          });
+
+          expect(findRebaseButton().exists()).toBe(false);
+        });
+      });
+
+      describe('when source branch is up to date with target', () => {
+        it('hides rebase button even if user can push to source branch', () => {
+          createComponent({
+            mr: {
+              divergedCommitsCount: 0,
+              canPushToSourceBranch: true,
+            },
+          });
+
+          expect(findRebaseButton().exists()).toBe(false);
+        });
       });
     });
   });

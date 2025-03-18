@@ -22,12 +22,15 @@ const createMockReassignUser = (index) => {
   };
 };
 
+export const importSourceUserCreatedAt = '2024-09-17T00:41:28.000Z';
+
 const createMockSourceUser = (
   index,
   { status, placeholderUser = true, reassignToUser = false, sourceUserExists = true } = {},
 ) => {
   return {
     __typename: 'ImportSourceUser',
+    createdAt: importSourceUserCreatedAt,
     id: `gid://gitlab/Import::SourceUser/${index}`,
     sourceHostname: 'https://gitlab.com',
     sourceName: sourceUserExists ? `Old User ${index}` : null,

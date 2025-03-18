@@ -7,7 +7,12 @@
 .flash-container.flash-container-page.sticky{ data: { testid: 'flash-container' }, class: flash_container_class }
   - flash.each do |key, value|
     - if key == 'toast' && value
-      .js-toast-message{ data: { message: value } }
+      -# Frontend renders toast messages as text and not as HTML.
+      -# Since toast messages are escaped on the backend via `safe_format` we
+      -# need to unescape to avoid double escaping HTML.
+      -# The spec spec/features/flash_messages_spec.rb ensures toasts always render plain text.
+      -# See https://gitlab.com/gitlab-org/gitlab/-/issues/520690
+      .js-toast-message{ data: { message: CGI.unescapeHTML(value) } }
     - elsif key == 'raw' && value
       = value
     - elsif value == I18n.t('devise.failure.unconfirmed')

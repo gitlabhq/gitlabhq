@@ -18,6 +18,10 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :groups_and_projects do
     end
 
     describe 'pressing "y"' do
+      before do
+        stub_feature_flags(blob_overflow_menu: false)
+      end
+
       it 'redirects to permalink with commit sha' do
         visit_blob
         wait_for_requests

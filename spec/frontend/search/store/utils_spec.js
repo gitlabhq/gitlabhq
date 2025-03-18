@@ -1,3 +1,4 @@
+// rspec spec/frontend/fixtures/search_navigation.rb to generate these files
 import subItemActive from 'test_fixtures/search_navigation/sub_item_active.json';
 import noActiveItems from 'test_fixtures/search_navigation/no_active_items.json';
 import partialNavigationActive from 'test_fixtures/search_navigation/partial_navigation_active.json';
@@ -17,6 +18,7 @@ import {
   injectRegexSearch,
   scopeCrawler,
   skipBlobESCount,
+  buildDocumentTitle,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -445,6 +447,48 @@ describe('Global Search Store Utils', () => {
       window.gon.features.zoektMultimatchFrontend = true;
 
       expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(false);
+    });
+  });
+
+  describe('buildDocumentTitle', () => {
+    const SEARCH_WINDOW_TITLE = `Search`; // Make sure this matches your actual constant
+    let originalTitle;
+
+    beforeEach(() => {
+      originalTitle = document.title;
+    });
+
+    afterEach(() => {
+      document.title = originalTitle;
+    });
+
+    it('returns original title when document title does not include search title', () => {
+      document.title = 'GitLab';
+      expect(buildDocumentTitle('test')).toBe('test');
+    });
+
+    it('prepends new title when document title starts with search title', () => {
+      document.title = `${SEARCH_WINDOW_TITLE} · GitLab`;
+      const result = buildDocumentTitle('test');
+      expect(result).toBe(`test · ${SEARCH_WINDOW_TITLE} · GitLab`);
+    });
+
+    it('prepends new title when document title starts with dot and search title', () => {
+      document.title = ` · ${SEARCH_WINDOW_TITLE} · GitLab`;
+      const result = buildDocumentTitle('test');
+      expect(result).toBe(`test · ${SEARCH_WINDOW_TITLE} · GitLab`);
+    });
+
+    it('replaces title before search title with new title', () => {
+      document.title = `Issues · ${SEARCH_WINDOW_TITLE} · GitLab`;
+      const result = buildDocumentTitle('test');
+      expect(result).toBe(`test · ${SEARCH_WINDOW_TITLE} · GitLab`);
+    });
+
+    it('handles complex titles correctly', () => {
+      document.title = `Something · With · Dots · ${SEARCH_WINDOW_TITLE} · GitLab`;
+      const result = buildDocumentTitle('test');
+      expect(result).toBe(`test · ${SEARCH_WINDOW_TITLE} · GitLab`);
     });
   });
 });

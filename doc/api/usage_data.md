@@ -31,7 +31,9 @@ wait for the cron job to be executed, or [generate payload data manually](../dev
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/service_ping"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/usage_data/service_ping"
 ```
 
 Example response:
@@ -71,7 +73,8 @@ GET /usage_data/metric_definitions
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/usage_data/metric_definitions"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/usage_data/metric_definitions"
 ```
 
 Example response:
@@ -112,7 +115,9 @@ GET /usage_data/queries
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/queries"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/usage_data/queries"
 ```
 
 Example response:
@@ -176,7 +181,9 @@ Return all non-SQL metrics data used in the Service ping.
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/non_sql_metrics"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/usage_data/non_sql_metrics"
 ```
 
 Sample response:
@@ -236,7 +243,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
          "lang": "eng"
        }
      }' \
-     "https://gitlab.example.com/api/v4/usage_data/track_event"
+     --url "https://gitlab.example.com/api/v4/usage_data/track_event"
 ```
 
 If multiple events tracking is required, send an array of events to the `/track_events` endpoint:
@@ -265,5 +272,5 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
          }
        ]
      }' \
-     "https://gitlab.example.com/api/v4/usage_data/track_events"
+     --url "https://gitlab.example.com/api/v4/usage_data/track_events"
 ```

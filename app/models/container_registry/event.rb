@@ -53,7 +53,15 @@ module ContainerRegistry
         track_internal_event("delete_manifest_from_container_registry", project: project)
       else
         event = usage_data_event_for(tracking_action)
-        ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: originator.id) if event
+        return unless event
+
+        event_attributes = if origin_class == DeployToken
+                             { additional_properties: { property: originator.id.to_s } }
+                           elsif origin_class == User
+                             { user: originator }
+                           end
+
+        track_internal_event(event, event_attributes)
       end
     end
 

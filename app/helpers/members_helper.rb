@@ -64,24 +64,6 @@ module MembersHelper
       params: pagination[:params] || {}
     }
   end
-
-  def member_request_access_link(member)
-    user = member.user
-    member_source = member.source
-
-    member_link = link_to user.name, user, class: :highlight
-    member_role = content_tag :span, member.human_access, class: :highlight
-    target_source_link = link_to member_source.human_name, polymorphic_url([member_source, :members]), class: :highlight
-    target_type = member_source.model_name.singular
-
-    safe_format(s_(
-      'Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}.'
-    ),
-      member_link: member_link,
-      member_role: member_role,
-      target_source_link: target_source_link,
-      target_type: target_type)
-  end
 end
 
 MembersHelper.prepend_mod_with('MembersHelper')

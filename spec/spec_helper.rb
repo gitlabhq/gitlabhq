@@ -201,6 +201,7 @@ RSpec.configure do |config|
   config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
   config.include SidekiqMiddleware
+  config.include SidekiqJSONMatcher
   config.include StubActionCableConnection, type: :channel
   config.include StubMemberAccessLevel
   config.include SnowplowHelpers
@@ -223,6 +224,7 @@ RSpec.configure do |config|
   include StubFeatureFlags
   include StubSnowplow
   include StubMember
+  include VersionCheckHelpers
 
   if ENV['CI'] || ENV['RETRIES']
     # Gradually stop using rspec-retry
@@ -342,6 +344,10 @@ RSpec.configure do |config|
 
       # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
       stub_feature_flags(cleanup_data_source_work_item_data: false)
+
+      # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
+      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
+      stub_feature_flags(your_work_groups_vue: false)
     else
       unstub_all_feature_flags
     end
@@ -376,7 +382,7 @@ RSpec.configure do |config|
     # See also spec/support/helpers/admin_mode_helpers.rb
     if example.metadata[:enable_admin_mode] && !example.metadata[:do_not_mock_admin_mode]
       allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
-        current_user_mode.send(:user)&.admin?
+        current_user_mode.send(:user)&.can_access_admin_area?
       end
     end
 
@@ -496,7 +502,7 @@ RSpec.configure do |config|
 
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
-    allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
+    stub_version_check({ "severity" => "success" })
   end
 
   [:migration, :delete].each do |spec_type|

@@ -173,7 +173,7 @@ module Ci
     end
 
     def execute_select_query(query)
-      ::ClickHouse::Client.select(query.to_sql, :main).map(&:symbolize_keys)
+      ::ClickHouse::Client.select(query, :main).map(&:symbolize_keys)
     end
 
     def collect_metrics

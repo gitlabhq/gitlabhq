@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project activity', :smoke, product_group: :tenant_scale do
+    describe 'Project activity', :smoke, product_group: :organizations do
       context 'with git push' do
         it 'creates an event in the activity page',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347879' do

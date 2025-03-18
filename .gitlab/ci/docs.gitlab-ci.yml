@@ -6,31 +6,25 @@
   stage: review
   needs: []
   variables:
-    # We're cloning the repo instead of downloading the script for now
-    # because some repos are private and CI_JOB_TOKEN cannot access files.
-    # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
-    # By default, deploy the Review App using the `main` branch of the `gitlab-org/gitlab-docs` project
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing/docs-gitlab-com` project
     DOCS_BRANCH: main
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
-    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
-    # Discussion: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14236/diffs#note_40140693
     auto_stop_in: 2 weeks
-    url: http://${DOCS_BRANCH}-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}.${DOCS_REVIEW_APPS_DOMAIN}/${DOCS_GITLAB_REPO_SUFFIX}
+    url: https://docs.gitlab.com/upstream-review-mr-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}
     on_stop: review-docs-cleanup
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
 
-# Always trigger a docs build in gitlab-docs only on docs-only branches.
-# Useful to preview the docs changes live.
+# Deploy documentation review app by using GitLab Docs project (gitlab-org/technical-writing/docs-gitlab-com)
 review-docs-deploy:
   extends: .review-docs
   script:
     - ./scripts/trigger-build.rb docs deploy
 
-# Cleanup remote environment of gitlab-docs
+# Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
 review-docs-cleanup:
   extends: .review-docs
   environment:
@@ -38,41 +32,6 @@ review-docs-cleanup:
     action: stop
   script:
     - ./scripts/trigger-build.rb docs cleanup
-
-.review-docs-hugo:
-  extends:
-    - .default-retry
-    - .docs:rules:review-docs
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
-  stage: review
-  needs: []
-  variables:
-    GIT_DEPTH: 1
-    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing/docs-gitlab-com` project
-    DOCS_BRANCH: main
-  environment:
-    name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
-    auto_stop_in: 2 weeks
-    url: https://new.docs.gitlab.com/upstream-review-mr-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}
-    on_stop: review-docs-hugo-cleanup
-  before_script:
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
-
-# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing/docs-gitlab-com)
-review-docs-hugo-deploy:
-  extends: .review-docs-hugo
-  script:
-    - ./scripts/trigger-build.rb docs-hugo deploy
-
-# Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
-review-docs-hugo-cleanup:
-  extends: .review-docs-hugo
-  environment:
-    name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
-    action: stop
-  script:
-    - ./scripts/trigger-build.rb docs-hugo cleanup
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
@@ -88,10 +47,15 @@ docs-lint markdown:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - yarn_install_script
-    - install_gitlab_gem
-    - scripts/lint-doc.sh
-    - scripts/lint/check_mermaid.mjs
+    - |
+      function docs_lint_markdown() {
+        yarn_install_script
+        install_gitlab_gem
+        scripts/lint-doc.sh
+        scripts/lint/check_mermaid.mjs
+      }
+
+      run_with_custom_exit_code docs_lint_markdown
 
 docs code_quality:
   extends:
@@ -112,7 +76,7 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: hugomods/hugo:exts-0.142.0
+  image: registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.142.0
   extends:
     - .default-retry
     - .docs:rules:docs-lint
@@ -120,7 +84,6 @@ docs hugo_build:
   needs: []
   dependencies: []
   before_script:
-    - apk add --no-cache git make nodejs npm bash
     - git clone --depth 1 --filter=tree:0 https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
     - cd docs-gitlab-com
     - make add-latest-icons
@@ -139,18 +102,10 @@ docs-lint links:
     - .docs-markdown-lint-image
   stage: lint
   needs: []
+  before_script:
+    - source scripts/utils.sh
   script:
-    - lychee --offline --no-progress --include-fragments doc
-
-ui-docs-links lint:
-  extends:
-    - .docs:rules:docs-lint
-    - .static-analysis-base
-    - .ruby-cache
-  stage: lint
-  needs: []
-  script:
-    - bundle exec haml-lint -i DocumentationLinks
+    - run_with_custom_exit_code lychee --offline --no-progress --include-fragments doc
 
 docs-lint deprecations-and-removals:
   variables:
@@ -163,8 +118,13 @@ docs-lint deprecations-and-removals:
   stage: lint
   needs: []
   script:
-    - bundle exec rake gitlab:docs:check_deprecations
-    - bundle exec rake gitlab:docs:check_windows
+    - |
+      function docs_lint_deprecations_and_removals() {
+        bundle exec rake gitlab:docs:check_deprecations
+        bundle exec rake gitlab:docs:check_windows
+      }
+
+      run_with_custom_exit_code docs_lint_deprecations_and_removals
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -173,5 +133,7 @@ docs-lint redirects:
     - .default-retry
     - .docs:rules:redirect-check
   needs: []
+  before_script:
+    - source scripts/utils.sh
   script:
-    - ./scripts/lint-docs-redirects.rb
+    - run_with_custom_exit_code ./scripts/lint-docs-redirects.rb

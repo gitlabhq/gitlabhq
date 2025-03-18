@@ -231,8 +231,8 @@ export default {
       @click="toggleSubscribed"
     >
       <gl-animated-notification-icon
-        :class="{ '!gl-text-status-info': subscribed }"
         :is-on="!subscribed"
+        :class="{ '!gl-text-status-info': subscribed }"
       />
     </gl-button>
     <gl-button
@@ -246,8 +246,8 @@ export default {
       @click="toggleSubscribed"
     >
       <gl-animated-notification-icon
-        :class="{ '!gl-text-status-info': subscribed }"
         :is-on="!subscribed"
+        :class="{ '!gl-text-status-info': subscribed }"
       />
     </gl-button>
   </div>

@@ -1,6 +1,6 @@
 ---
 stage: Software Supply Chain Security
-group: Pipeline Security
+group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Fine-grained permissions for CI/CD job tokens
 ---
@@ -23,10 +23,43 @@ Status: Experiment
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15234) in GitLab 17.10. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints.
+These permissions are applied to the CI/CD job tokens in a specified project.
+This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+
+## Enable fine-grained permissions
+
+### On GitLab Self-Managed
+
+1. Start the GitLab Rails console. For information, see [Enable and disable GitLab features deployed behind feature flags](../../administration/feature_flags.md#enable-or-disable-the-feature)
+1. Turn on the [feature flag](../../administration/feature_flags.md):
+
+```ruby
+# You must include a specific project ID with this command.
+Feature.enable(:add_policies_to_ci_job_token, <project_id>)
+```
+
+### On GitLab.com
+
+Add a comment on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575) with your project ID.
+
 ## Available API endpoints
 
 The following endpoints are available for CI/CD job tokens.
-You can use fine-grained permissions to explicitly allow access to a limited set of the following API endpoints.
 
 `None` means fine-grained permissions cannot control access to this endpoint.
 
@@ -60,6 +93,8 @@ You can use fine-grained permissions to explicitly allow access to a limited set
 | None |  | `GET /group/:id/-/packages/composer/p/:sha` | Composer packages endpoint at group level for packages list |
 | None |  | `GET /group/:id/-/packages/composer/p2/*package_name` | Composer v2 packages p2 endpoint at group level for package versions metadata |
 | None |  | `GET /group/:id/-/packages/composer/packages` | Composer packages endpoint at group level |
+| None |  | `GET /groups/:id/-/packages/npm/*package_name` | NPM registry metadata endpoint |
+| None |  | `GET /groups/:id/-/packages/pypi/files/:sha256/*file_identifier` | Download a package file from a group |
 | None |  | `GET /groups/:id/-/packages/pypi/simple/*package_name` | The PyPi Simple Group Package Endpoint |
 | None |  | `GET /groups/:id/-/packages/pypi/simple` | The PyPi Simple Group Index Endpoint |
 | None |  | `GET /job/allowed_agents` | Get current agents |
@@ -68,6 +103,7 @@ You can use fine-grained permissions to explicitly allow access to a limited set
 | None |  | `GET /packages/conan/v1/ping` | Ping the Conan API |
 | None |  | `GET /packages/conan/v1/users/authenticate` | Authenticate user against conan CLI |
 | None |  | `GET /packages/conan/v1/users/check_credentials` | Check for valid user credentials per conan CLI |
+| None |  | `GET /packages/npm/*package_name` | NPM registry metadata endpoint |
 | None |  | `GET /projects/:id/packages/conan/v1/conans/search` | Search for packages |
 | None |  | `GET /projects/:id/packages/conan/v1/ping` | Ping the Conan API |
 | None |  | `GET /projects/:id/packages/conan/v1/users/authenticate` | Authenticate user against conan CLI |
@@ -98,6 +134,8 @@ You can use fine-grained permissions to explicitly allow access to a limited set
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | Upload recipe package files |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse authorize the conan package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | Upload package files |
+| Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | Workhorse authorize the conan recipe file |
+| Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | Upload recipe package files |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name/authorize` | Workhorse authorize generic package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | Upload package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/maven/*path/:file_name/authorize` | Workhorse authorize the maven package file upload |
@@ -105,9 +143,7 @@ You can use fine-grained permissions to explicitly allow access to a limited set
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | Create or Update the given tag for the given NPM package and version |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/npm/:package_name` | Create or deprecate NPM package |
 | Packages: Read | `READ_PACKAGES` | `GET /groups/:id/-/packages/maven/*path/:file_name` | Download the maven package file at a group level |
-| Packages: Read | `READ_PACKAGES` | `GET /groups/:id/-/packages/npm/*package_name` | NPM registry metadata endpoint |
 | Packages: Read | `READ_PACKAGES` | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | Get all tags for a given an NPM package |
-| Packages: Read | `READ_PACKAGES` | `GET /groups/:id/-/packages/pypi/files/:sha256/*file_identifier` | Download a package file from a group |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | Recipe Digest |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls` | Recipe Download Urls |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest` | Package Digest |
@@ -117,7 +153,6 @@ You can use fine-grained permissions to explicitly allow access to a limited set
 | Packages: Read | `READ_PACKAGES` | `GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | Download recipe files |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | Download package files |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/maven/*path/:file_name` | Download the maven package file at instance level |
-| Packages: Read | `READ_PACKAGES` | `GET /packages/npm/*package_name` | NPM registry metadata endpoint |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/npm/-/package/*package_name/dist-tags` | Get all tags for a given an NPM package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id/package_files` | List package files |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id/pipelines` | Get the pipelines for a single project package |

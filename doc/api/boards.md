@@ -40,6 +40,8 @@ Example response:
   {
     "id" : 1,
     "name": "board1",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",
@@ -124,6 +126,8 @@ Example response:
   {
     "id": 1,
     "name": "project issue board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",
@@ -200,6 +204,9 @@ Example response:
 ```json
   {
     "id": 1,
+    "name": "newboard",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",
@@ -209,7 +216,6 @@ Example response:
       "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
       "web_url": "http://example.com/diaspora/diaspora-project-site"
     },
-    "name": "newboard",
     "lists" : [],
     "group": null,
     "milestone": null,
@@ -232,6 +238,8 @@ PUT /projects/:id/boards/:board_id
 | `id`                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id`                   | integer        | yes      | The ID of a board. |
 | `name`                       | string         | no       | The new name of the board. |
+| `hide_backlog_list`          | boolean        | no       | Hide the Open list. |
+| `hide_closed_list`           | boolean        | no       | Hide the Closed list. |
 | `assignee_id`                | integer        | no       | The assignee the board should be scoped to. Premium and Ultimate only. |
 | `milestone_id`               | integer        | no       | The milestone the board should be scoped to. Premium and Ultimate only. |
 | `labels`                     | string         | no       | Comma-separated list of label names which the board should be scoped to. Premium and Ultimate only. |
@@ -246,6 +254,9 @@ Example response:
 ```json
   {
     "id": 1,
+    "name": "new_name",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",
@@ -266,7 +277,6 @@ Example response:
       "last_activity_at": "2018-07-03T05:48:49.982Z"
     },
     "lists": [],
-    "name": "new_name",
     "group": null,
     "milestone": {
       "id": 43,
@@ -427,6 +437,7 @@ POST /projects/:id/boards/:board_id/lists
 | `label_id` | integer | no | The ID of a label. |
 | `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
 | `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
+| `iteration_id` | integer | no | The ID of a iteration. Premium and Ultimate only. |
 
 {{< alert type="note" >}}
 

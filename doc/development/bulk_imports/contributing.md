@@ -71,7 +71,7 @@ associations that require them. For example, documents must be imported before m
 
    {{< alert type="note" >}}
 
-If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
+   If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
    and imported in Enterprise Edition instances of GitLab.
 
    {{< /alert >}}

@@ -27,7 +27,7 @@ RSpec.describe WorkItems::DataSync::Widgets::EmailParticipants, feature_category
         expect(callback).to receive(:new_work_item_email_participants).and_call_original
         expect(::IssueEmailParticipant).to receive(:insert_all).and_call_original
 
-        callback.after_create
+        callback.after_save_commit
 
         target_email_participants = target_work_item.reload.issue_email_participants.map(&:email)
         expect(target_email_participants).to match_array([participant1, participant2].map(&:email))
@@ -41,7 +41,7 @@ RSpec.describe WorkItems::DataSync::Widgets::EmailParticipants, feature_category
         expect(callback).not_to receive(:new_work_item_email_participants)
         expect(::IssueEmailParticipant).not_to receive(:insert_all)
 
-        callback.after_create
+        callback.after_save_commit
 
         expect(target_work_item.reload.issue_email_participants).to be_empty
       end
@@ -57,7 +57,7 @@ RSpec.describe WorkItems::DataSync::Widgets::EmailParticipants, feature_category
         expect(callback).not_to receive(:new_work_item_email_participants)
         expect(::IssueEmailParticipant).not_to receive(:insert_all)
 
-        callback.after_create
+        callback.after_save_commit
 
         expect(target_work_item.reload.issue_email_participants).to be_empty
       end

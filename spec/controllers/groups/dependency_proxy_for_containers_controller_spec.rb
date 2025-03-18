@@ -86,6 +86,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       context 'with insufficient scopes' do
         it { is_expected.to have_gitlab_http_status(:not_found) }
 
+        # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
         context 'packages_dependency_proxy_containers_scope_check disabled' do
           before do
             stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)

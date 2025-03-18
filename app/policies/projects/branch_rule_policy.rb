@@ -8,6 +8,8 @@ module Projects
       enable :update_branch_rule
       enable :destroy_branch_rule
     end
+
+    rule { can?(:update_branch_rule) }.enable :update_squash_option
   end
 end
 

@@ -126,8 +126,8 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
     end
   end
 
-  context 'in a group with DEVELOPER_MAINTAINER_PROJECT_ACCESS project_creation_level' do
-    let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+  context 'in a group with DEVELOPER_PROJECT_ACCESS project_creation_level' do
+    let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
 
     before do
       group.add_developer(user)

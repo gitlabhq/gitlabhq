@@ -173,11 +173,6 @@ export default {
       required: false,
       default: TYPE_ISSUE,
     },
-    canAttachFile: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     lockVersion: {
       type: Number,
       required: false,
@@ -539,7 +534,6 @@ export default {
     <div v-if="canUpdate && showForm">
       <h1 class="gl-sr-only">{{ __('Edit issue') }}</h1>
       <form-component
-        :endpoint="endpoint"
         :form-state="formState"
         :initial-description-text="initialDescriptionText"
         :issuable-templates="formState.issuableTemplates"
@@ -548,7 +542,6 @@ export default {
         :project-path="projectPath"
         :project-id="projectId"
         :project-namespace="projectNamespace"
-        :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
         @updateForm="setFormState"
@@ -558,7 +551,6 @@ export default {
       <title-component
         ref="title"
         :issuable-ref="issuableRef"
-        :can-update="canUpdate"
         :title-html="state.titleHtml"
         :title-text="state.titleText"
       >

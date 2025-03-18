@@ -158,16 +158,6 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::FilterService, featur
           it 'does not return any authorizations' do
             expect(execute_filter).to eq []
           end
-
-          context 'when kubernetes_agent_protected_branches is disabled' do
-            before do
-              stub_feature_flags(kubernetes_agent_protected_branches: false)
-            end
-
-            it 'does not filter for protected_ref' do
-              expect(execute_filter).to match_array agent_authorizations_with_protected_agent
-            end
-          end
         end
       end
 

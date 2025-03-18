@@ -5,7 +5,7 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { getBaseURL, getParameterByName } from '~/lib/utils/url_utility';
+import { getBaseURL } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
@@ -335,6 +335,8 @@ export const setNewWorkItemCache = async (
   const availableWidgets = widgetDefinitions?.flatMap((i) => i.type) || [];
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
+  const isValidWorkItemTitle = workItemTitle.trim().length > 0;
+  const isValidWorkItemDescription = workItemDescription.trim().length > 0;
 
   const widgets = [];
 
@@ -346,13 +348,10 @@ export const setNewWorkItemCache = async (
   const draftDescriptionWidget =
     findWidget(WIDGET_TYPE_DESCRIPTION, draftData?.workspace?.workItem) || {};
   const draftDescription = draftDescriptionWidget?.description || null;
-  const isWorkItemToResolveDiscussion = getParameterByName(
-    'merge_request_to_resolve_discussions_of',
-  );
 
   widgets.push({
     type: WIDGET_TYPE_DESCRIPTION,
-    description: isWorkItemToResolveDiscussion ? workItemDescription : draftDescription,
+    description: isValidWorkItemDescription ? workItemDescription : draftDescription,
     descriptionHtml: '',
     lastEditedAt: null,
     lastEditedBy: null,
@@ -436,6 +435,7 @@ export const setNewWorkItemCache = async (
         widgets.push({
           type: 'MILESTONE',
           milestone: null,
+          projectMilestone: false,
           __typename: 'WorkItemWidgetMilestone',
         });
       }
@@ -562,7 +562,7 @@ export const setNewWorkItemCache = async (
           id: newWorkItemId(workItemType),
           iid: NEW_WORK_ITEM_IID,
           archived: false,
-          title: isWorkItemToResolveDiscussion ? workItemTitle : draftTitle,
+          title: isValidWorkItemTitle ? workItemTitle : draftTitle,
           state: 'OPEN',
           description: null,
           confidential: false,
@@ -572,6 +572,9 @@ export const setNewWorkItemCache = async (
           webUrl: `${baseURL}/groups/gitlab-org/-/work_items/new`,
           reference: '',
           createNoteEmail: null,
+          movedToWorkItemUrl: null,
+          duplicatedToWorkItemUrl: null,
+          promotedToEpicUrl: null,
           project: null,
           namespace: {
             id: newWorkItemPath,
@@ -596,14 +599,16 @@ export const setNewWorkItemCache = async (
             __typename: 'WorkItemType',
           },
           userPermissions: {
-            deleteWorkItem: true,
-            updateWorkItem: true,
             adminParentLink: true,
-            setWorkItemMetadata: true,
-            createNote: true,
             adminWorkItemLink: true,
+            createNote: true,
+            deleteWorkItem: true,
             markNoteAsInternal: true,
+            moveWorkItem: true,
             reportSpam: true,
+            setWorkItemMetadata: true,
+            summarizeComments: true,
+            updateWorkItem: true,
             __typename: 'WorkItemPermissions',
           },
           widgets,
@@ -616,14 +621,16 @@ export const setNewWorkItemCache = async (
 };
 
 export const optimisticUserPermissions = {
-  deleteWorkItem: false,
-  updateWorkItem: false,
   adminParentLink: false,
-  setWorkItemMetadata: false,
-  createNote: false,
   adminWorkItemLink: false,
+  createNote: false,
+  deleteWorkItem: false,
   markNoteAsInternal: false,
+  moveWorkItem: false,
   reportSpam: false,
+  setWorkItemMetadata: false,
+  summarizeComments: false,
+  updateWorkItem: false,
   __typename: 'WorkItemPermissions',
 };
 

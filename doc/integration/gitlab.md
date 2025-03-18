@@ -112,7 +112,7 @@ GitLab.com generates an application ID and secret key for you to use.
 
    {{< alert type="note" >}}
 
-In GitLab 15.1 and earlier, the `site` parameter requires an `/api/v4` suffix.
+   In GitLab 15.1 and earlier, the `site` parameter requires an `/api/v4` suffix.
    We recommend you drop this suffix after you upgrade to GitLab 15.2 or later.
 
    {{< /alert >}}

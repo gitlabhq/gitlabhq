@@ -103,15 +103,6 @@ updating the active and current stable releases only, with no backports. Factors
 the very low likelihood of exploitation, the low impact of the vulnerability, the complexity of security fixes and
 the eventual risk to stability. We always address high and critical security issues with a patch release.
 
-In cases where a strategic user has a requirement to test a feature before it is
-officially released, we can offer to create a Release Candidate (RC) version that
-includes the specific feature. This should be needed only in extreme cases and can be requested for
-consideration by raising an issue in the [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
-It is important to note that the Release Candidate contains other features and changes as
-it is not possible to easily isolate a specific feature (similar reasons as noted above). The
-Release Candidate is no different than any code that is deployed to GitLab.com or is publicly
-accessible.
-
 ### Backporting to older releases
 
 Backporting to more than one stable release is usually reserved for [security fixes](#patch-releases).

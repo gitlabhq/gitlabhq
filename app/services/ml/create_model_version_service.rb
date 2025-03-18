@@ -10,6 +10,7 @@ module Ml
       @user = params[:user]
       @metadata = params[:metadata]
       @candidate_id = params[:candidate_id]
+      @candidate_eid = params[:candidate_eid]
     end
 
     def execute
@@ -25,8 +26,9 @@ module Ml
 
         error(@model_version.errors.full_messages) unless @model_version.persisted?
 
-        package = find_or_create_candidate
-        package ||= find_or_create_package(@model.name, @version)
+        candidate = find_or_create_candidate
+        package = candidate.package || find_or_create_package(@model.name, @version)
+
         error(_("Can't create model version package")) unless package
 
         @model_version.update! package: package
@@ -43,7 +45,7 @@ module Ml
 
         ServiceResponse.success(message: [], payload: { model_version: @model_version })
       end
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
       ServiceResponse.error(message: [e.message], payload: { model_version: nil })
     rescue ModelVersionCreationError => e
       ServiceResponse.error(message: e.errors, payload: { model_version: nil })
@@ -52,26 +54,28 @@ module Ml
     private
 
     def find_or_create_candidate
-      if @candidate_id
+      if @candidate_id # global id
         candidate = ::Ml::Candidate.with_project_id_and_id(@model.project_id, @candidate_id.model_id)
-        error(_("Run not found")) unless candidate
+        error(_("Run with id not found")) unless candidate
+      elsif @candidate_eid
+        candidate = ::Ml::Candidate.with_project_id_and_eid(@model.project_id, @candidate_eid)
+        error(_("Run with eid not found")) unless candidate
+      end
+
+      if candidate
         error(_("Run has already a model version")) if candidate.model_version_id
 
         candidate.update! model_version: @model_version, experiment: @model.default_experiment
 
         package = candidate.package
         package.update!(name: @model_version.name, version: @model_version.version) if package
+        candidate
       else
-        candidate = ::Ml::CreateCandidateService.new(
+        ::Ml::CreateCandidateService.new(
           @model.default_experiment,
           { model_version: @model_version }
         ).execute
-        error(_("Version must be semantic version")) unless candidate
-
-        package = @package
       end
-
-      package
     end
 
     def find_or_create_package(model_name, model_version)

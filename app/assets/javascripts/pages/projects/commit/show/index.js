@@ -18,7 +18,9 @@ import ZenMode from '~/zen_mode';
 import '~/sourcegraph/load';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 import { initReportAbuse } from '~/projects/report_abuse';
+import * as popovers from '~/popovers';
 
+popovers.initPopovers();
 initDiffStatsDropdown();
 new ZenMode();
 addShortcutsExtension(ShortcutsNavigation);

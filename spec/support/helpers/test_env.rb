@@ -124,7 +124,8 @@ module TestEnv
     'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432',
     'expanded-whitespace-target' => '279aa723d4688e711652d230c93f1fc33801dcb8',
     'expanded-whitespace-source' => 'e6f8b802fe2288b1b5e367c5dde736594971ebd1',
-    'submodule-with-dot' => 'b4a4435df7e7605dd9930d0c5402087b37da99bf'
+    'submodule-with-dot' => 'b4a4435df7e7605dd9930d0c5402087b37da99bf',
+    'raw-cell-type' => '9b33108'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -418,7 +419,7 @@ module TestEnv
 
     # Updating old_id to simulate an environment that has gone through the process of cleaning
     # the issues.work_item_type_id column. old_id is used as a fallback id.
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/520023
     WorkItems::Type.find_each do |work_item_type|
       work_item_type.update!(old_id: -work_item_type.id)
     end

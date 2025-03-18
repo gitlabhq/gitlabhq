@@ -75,4 +75,4 @@ To remove a group from the DevOps Reports:
 
 - From the **Add or remove groups** dropdown list, clear the group you want to remove.
 - From the **Adoption by group** table, in the row of the group you want to remove, select
-**Remove Group from the table** ({{< icon name="remove" >}}).
+  **Remove Group from the table** ({{< icon name="remove" >}}).

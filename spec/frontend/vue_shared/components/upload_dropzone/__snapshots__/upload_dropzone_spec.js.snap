@@ -14,6 +14,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -68,6 +69,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -124,6 +126,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -180,6 +183,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -236,6 +240,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -292,6 +297,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -348,6 +354,7 @@ exports[`Upload dropzone component when dragging with design upload overlay enab
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -382,6 +389,7 @@ exports[`Upload dropzone component when dragging with design upload overlay enab
         <gl-animated-upload-icon-stub
           ison="true"
           name="upload"
+          variant="current"
         />
         <span
           class="gl-ml-2"
@@ -408,6 +416,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
     >
       <gl-animated-upload-icon-stub
         class="gl-mb-3"
+        variant="current"
       />
       <p
         class="gl-mb-0"

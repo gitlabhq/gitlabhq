@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { createAlert } from '~/alert';
@@ -7,21 +7,22 @@ import { s__, __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
+import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 
 export default {
   name: 'JobSidebarRetryButton',
   i18n: {
-    retryJobLabel: s__('Job|Retry'),
-    runAgainJobButtonLabel: s__('Job|Run again'),
     updateVariables: s__('Job|Update CI/CD variables'),
   },
   components: {
     GlButton,
-    GlDisclosureDropdown,
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
+  mixins: [PipelineVariablesPermissionsMixin],
+  inject: ['projectPath', 'userRole'],
   props: {
     modalId: {
       type: String,
@@ -44,40 +45,39 @@ export default {
       type: String,
       required: true,
     },
+    retryButtonTitle: {
+      type: String,
+      required: false,
+      default: __('Retry'),
+    },
+  },
+  data() {
+    return {
+      isLoading: false,
+    };
   },
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
-    dropdownItems() {
-      return [
-        {
-          text: this.$options.i18n.runAgainJobButtonLabel,
-          action: async () => {
-            if (this.confirmationMessage !== null) {
-              const confirmed = await confirmJobConfirmationMessage(
-                this.jobName,
-                this.confirmationMessage,
-              );
-              if (!confirmed) {
-                return;
-              }
-            }
-            axios
-              .post(this.href)
-              .then((response) => {
-                visitUrl(response.request.responseURL);
-              })
-              .catch(() => {
-                createAlert({
-                  message: __('An error occurred while making the request.'),
-                });
-              });
-          },
-        },
-        {
-          text: this.$options.i18n.updateVariables,
-          action: () => this.$emit('updateVariablesClicked'),
-        },
-      ];
+  },
+  methods: {
+    async retryManualJob() {
+      if (this.confirmationMessage) {
+        const confirmed = await confirmJobConfirmationMessage(
+          this.jobName,
+          this.confirmationMessage,
+        );
+        if (!confirmed) return;
+      }
+
+      try {
+        this.isLoading = true;
+        const { request } = await axios.post(this.href);
+        visitUrl(request.responseURL);
+      } catch {
+        createAlert({ message: __('There was an error retrying the job.') });
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
 };
@@ -86,25 +86,45 @@ export default {
   <gl-button
     v-if="hasForwardDeploymentFailure"
     v-gl-modal="modalId"
-    :aria-label="$options.i18n.retryJobLabel"
+    v-gl-tooltip.bottom
+    :title="retryButtonTitle"
+    :aria-label="retryButtonTitle"
     category="primary"
     variant="confirm"
     icon="retry"
     data-testid="retry-job-button"
   />
-  <gl-disclosure-dropdown
-    v-else-if="isManualJob"
-    icon="retry"
-    category="primary"
-    placement="bottom-end"
-    positioning-strategy="fixed"
-    variant="confirm"
-    :items="dropdownItems"
-  />
+  <div v-else-if="isManualJob" class="gl-flex gl-gap-3">
+    <gl-button
+      v-if="canViewPipelineVariables"
+      v-gl-tooltip.bottom
+      :title="$options.i18n.updateVariables"
+      :aria-label="$options.i18n.updateVariables"
+      category="secondary"
+      variant="confirm"
+      icon="pencil-square"
+      data-testid="manual-run-edit-btn"
+      @click="$emit('updateVariablesClicked')"
+    />
+    <gl-button
+      v-gl-tooltip.bottom
+      :title="retryButtonTitle"
+      :aria-label="retryButtonTitle"
+      category="primary"
+      variant="confirm"
+      icon="retry"
+      data-testid="manual-run-again-btn"
+      :loading="isLoading"
+      @click="retryManualJob"
+    />
+  </div>
+
   <gl-button
     v-else
+    v-gl-tooltip.bottom
     :href="href"
-    :aria-label="$options.i18n.retryJobLabel"
+    :title="retryButtonTitle"
+    :aria-label="retryButtonTitle"
     category="primary"
     variant="confirm"
     icon="retry"

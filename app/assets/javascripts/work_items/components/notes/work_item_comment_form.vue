@@ -171,6 +171,16 @@ export default {
       required: false,
       default: null,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroupWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -234,6 +244,17 @@ export default {
     },
     currentUserId() {
       return window.gon.current_user_id;
+    },
+    restrictedToolBarItems() {
+      if (this.hideFullscreenMarkdownButton) {
+        return ['full-screen'];
+      }
+      return [];
+    },
+    uploadsPath() {
+      return this.isGroupWorkItem
+        ? `/groups/${this.fullPath}/-/uploads`
+        : `/${this.fullPath}/uploads`;
     },
   },
   apollo: {
@@ -357,9 +378,11 @@ export default {
             :autocomplete-data-sources="autocompleteDataSources"
             :form-field-props="formFieldProps"
             :add-spacing-classes="false"
+            :uploads-path="uploadsPath"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"
+            :restricted-tool-bar-items="restrictedToolBarItems"
             @input="setCommentText"
             @keydown.meta.enter="submitForm()"
             @keydown.ctrl.enter="submitForm()"

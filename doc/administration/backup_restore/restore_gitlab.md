@@ -12,12 +12,20 @@ title: Restore GitLab
 
 {{< /details >}}
 
-GitLab provides a command-line interface to restore your entire installation,
-and is flexible enough to fit your needs.
+GitLab restore operations recover data from backups to maintain system
+continuity and recover from data loss. Restore operations:
 
-The [restore prerequisites section](#restore-prerequisites) includes crucial
-information. Be sure to read and test the complete restore process at least
-once before attempting to perform it in a production environment.
+- Recover database records and configuration
+- Restore Git repositories, container registry images, and uploaded content
+- Reinstate package registry data and CI/CD artifacts
+- Restore account and group settings
+- Recover project and group wikis
+- Restore project-level secure files
+- Recover external merge request diffs
+
+The restore process requires an existing GitLab installation of the same
+version as the backup. Follow the [prerequisites](#restore-prerequisites) and
+test the complete restore process before using it in production.
 
 ## Restore prerequisites
 
@@ -182,7 +190,7 @@ Kubernetes cluster, the restore task expects the restore directories to be
 empty. However, with Docker and Kubernetes volume mounts, some system level
 directories may be created at the volume roots, such as the `lost+found`
 directory found in Linux operating systems. These directories are usually owned
-by `root`, which can cause access permission errors since the restore Rake task
+by `root`, which can cause access permission errors because the restore Rake task
 runs as the `git` user. To restore a GitLab installation, users have to confirm
 the restore target directories are empty.
 

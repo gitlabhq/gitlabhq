@@ -21,7 +21,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   describe 'GET /api/v4/packages/conan/v1/conans/search' do
     let_it_be(:url) { '/packages/conan/v1/conans/search' }
 
-    it_behaves_like 'conan search endpoint'
+    it_behaves_like 'conan search endpoint', scope: :instance
 
     it_behaves_like 'conan FIPS mode' do
       let(:params) { { q: package.conan_recipe } }
@@ -144,7 +144,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       '/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
       subject(:request) do
         get api("/packages/conan/v1/files/#{recipe_path}/#{package_file_metadata.recipe_revision_value}/package" \
-          "/#{package_file_metadata.conan_package_reference}/#{package_file_metadata.package_revision_value}" \
+          "/#{package_file_metadata.package_reference_value}/#{package_file_metadata.package_revision_value}" \
           "/#{package_file.file_name}"),
           headers: headers
       end
@@ -156,6 +156,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
 
   context 'with file upload endpoints' do
     include_context 'for conan file upload endpoints'
+    let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/export/:file_name/authorize' do
@@ -182,14 +183,14 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/export/:file_name' do
-      let(:url) { "/api/v4/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}" }
+      let(:url) { "/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}" }
 
       it_behaves_like 'workhorse recipe file upload endpoint'
     end
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name' do
-      let(:url) { "/api/v4/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}" }
+      let(:url) { "/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}" }
 
       it_behaves_like 'workhorse package file upload endpoint'
     end

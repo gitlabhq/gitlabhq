@@ -76,9 +76,6 @@ export default {
           return I18N_REGISTER_RUNNER;
       }
     },
-    isRegistrationTokenPresent() {
-      return Boolean(this.registrationToken);
-    },
     state() {
       if (this.registrationToken && this.allowRegistrationToken) {
         // Legacy registration with registration token can be used, will be fully removed by 18.0

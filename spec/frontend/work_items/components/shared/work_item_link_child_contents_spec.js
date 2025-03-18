@@ -35,6 +35,7 @@ describe('WorkItemLinkChildContents', () => {
   const mockLabels = LABELS.labels.nodes;
 
   const mockRouterPush = jest.fn();
+  const defaultGetRoutesMock = jest.fn().mockReturnValue([{ name: 'workItem' }]);
 
   const findLinkChild = () => wrapper.findByTestId('links-child');
   const findStatusBadgeComponent = () =>
@@ -55,6 +56,7 @@ describe('WorkItemLinkChildContents', () => {
     showLabels = true,
     workItemFullPath = 'test-project-path',
     isGroup = false,
+    getRoutesMock = defaultGetRoutesMock,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
@@ -69,6 +71,7 @@ describe('WorkItemLinkChildContents', () => {
       mocks: {
         $router: {
           push: mockRouterPush,
+          getRoutes: getRoutesMock,
         },
       },
     });
@@ -169,6 +172,27 @@ describe('WorkItemLinkChildContents', () => {
 
       it('does not emit a click event', () => {
         expect(wrapper.emitted('click')).not.toBeDefined();
+      });
+    });
+
+    describe('when the router is missing the workItem route', () => {
+      beforeEach(() => {
+        createComponent({
+          childItem: workItemEpic,
+          isGroup: true,
+          workItemFullPath: 'gitlab-org/gitlab-test',
+          getRoutesMock: jest.fn().mockReturnValue([]),
+        });
+
+        findLinkChild().trigger('click');
+      });
+
+      it('does not push router state', () => {
+        expect(mockRouterPush).not.toHaveBeenCalled();
+      });
+
+      it('emits a click event', () => {
+        expect(wrapper.emitted('click')).toBeDefined();
       });
     });
   });

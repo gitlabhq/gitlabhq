@@ -5,5 +5,7 @@ FactoryBot.define do
     group
 
     enabled { true }
+    identity { 'username' }
+    secret { 'secret' }
   end
 end

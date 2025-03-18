@@ -76,21 +76,19 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 Example response:
 
 ```json
-[
-  {
-    "id": 1,
-    "url": "https://gitlab.example.com/hook",
-    "name": "Hook name",
-    "description": "Hook description",
-    "created_at": "2016-10-31T12:32:15.192Z",
-    "push_events": true,
-    "tag_push_events": false,
-    "merge_requests_events": true,
-    "repository_update_events": true,
-    "enable_ssl_verification": true,
-    "url_variables": []
-  }
-]
+{
+  "id": 1,
+  "url": "https://gitlab.example.com/hook",
+  "name": "Hook name",
+  "description": "Hook description",
+  "created_at": "2016-10-31T12:32:15.192Z",
+  "push_events": true,
+  "tag_push_events": false,
+  "merge_requests_events": true,
+  "repository_update_events": true,
+  "enable_ssl_verification": true,
+  "url_variables": []
+}
 ```
 
 ## Add new system hook
@@ -152,7 +150,7 @@ PUT /hooks/:hook_id
 | Attribute                   | Type    | Required | Description |
 |-----------------------------|---------|----------|-------------|
 | `hook_id`                   | integer | Yes      | The ID of the system hook |
-| `url`                       | string  | yes      | The hook URL |
+| `url`                       | string  | no       | The hook URL |
 | `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events`               | boolean | no       | When true, the hook fires on push events |
 | `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |

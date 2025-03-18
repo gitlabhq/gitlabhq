@@ -3,15 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/gitlab_version/_security_patch_upgrade_alert' do
+  include VersionCheckHelper
+
   let_it_be(:user) { build_stubbed(:user) }
-  let(:version_check_response) { { 'critical_vulnerability' => 'true' } }
 
   before do
     stub_application_setting(version_check_enabled: true)
-
-    allow_next_instance_of(VersionCheck) do |service|
-      allow(service).to receive(:response).and_return(version_check_response)
-    end
+    stub_version_check({ 'critical_vulnerability' => 'true' })
   end
 
   describe 'when version check is enabled and is admin' do

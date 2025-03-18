@@ -40,10 +40,10 @@ To read or write Git data, a request has to be made to Gitaly. This means that
 if you're developing a new feature where you need data that's not yet available
 in `lib/gitlab/git` changes have to be made to Gitaly.
 
-There should be no new code that touches Git repositories via disk access
+There should be no new code that touches Git repositories by using disk access
 anywhere in the `gitlab` repository. Anything that
 needs direct access to the Git repository *must* be implemented in Gitaly, and
-exposed via an RPC.
+exposed through an RPC.
 
 It's often easier to develop a new feature in Gitaly if you make the changes to
 GitLab that intends to use the new feature in a separate merge request, to be merged
@@ -76,7 +76,7 @@ Raise an issue in the GitLab CE or EE repositories to report the issue. Include 
 ~performance ~"technical debt". Ensure that the issue contains the full stack trace and error message of the
 `TooManyInvocationsError`. Also include any known failing tests if possible.
 
-Isolate the source of the n+1 problem. This is usually a loop that results in Gitaly being called for each
+Isolate the source of the n+1 problem, which is usually a loop that results in Gitaly being called for each
 element in an array. If you are unable to isolate the problem, contact a member
 of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/-/group_members) for assistance.
 

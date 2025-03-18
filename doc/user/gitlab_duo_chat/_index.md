@@ -9,7 +9,7 @@ title: GitLab Duo Chat
 
 - Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
+- LLMs: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet), Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2), Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3.5 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
 
 {{< /details >}}
 
@@ -24,8 +24,14 @@ title: GitLab Duo Chat
 
 {{< /history >}}
 
-GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
-It can assist various tasks of your daily work with the AI-generated content.
+GitLab Duo Chat is an AI-powered assistant that accelerates development with
+contextual, conversational AI. Duo Chat:
+
+- Explains code and suggests improvements directly in your development environment.
+- Analyzes code, merge requests, issues, and other GitLab artifacts.
+- Generates code, tests, and documentation based on your requirements and codebase.
+- Integrates directly in the GitLab UI, Web IDE, VS Code, JetBrains IDEs, and Visual Studio.
+- Can include information from your repositories and projects to deliver targeted improvements.
 
 ## Supported editor extensions
 

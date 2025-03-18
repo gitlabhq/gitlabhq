@@ -7,9 +7,6 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
   let(:expiry_date) { Time.zone.today + 1.week }
   let(:params) { {} }
 
-  let_it_be(:current_user) { create(:user, :project_bot) }
-  let_it_be(:other_user) { create(:user, :project_bot) }
-
   subject(:rotate_token) { post(api(path, personal_access_token: token), params: params) }
 
   shared_examples 'rotating token succeeds' do
@@ -173,6 +170,9 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
 
   context 'when the resource is a project' do
     let_it_be(:resource) { create(:project) }
+    let_it_be(:namespace) { resource.project_namespace }
+    let_it_be(:current_user) { create(:user, :project_bot, bot_namespace: namespace) }
+    let_it_be(:other_user) { create(:user, :project_bot, bot_namespace: namespace) }
 
     before_all { resource.add_guest(current_user) }
 
@@ -181,6 +181,9 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
 
   context 'when the resource is a group' do
     let_it_be(:resource) { create(:group) }
+    let_it_be(:namespace) { resource }
+    let_it_be(:current_user) { create(:user, :project_bot, bot_namespace: namespace) }
+    let_it_be(:other_user) { create(:user, :project_bot, bot_namespace: namespace) }
 
     before_all { resource.add_guest(current_user) }
 

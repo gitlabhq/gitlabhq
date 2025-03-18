@@ -9,7 +9,7 @@ class Projects::CommitController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include SourcegraphDecorator
-  include DiffsStreamResource
+  include RapidDiffsResource
 
   # Authorize
   before_action :require_non_empty_project
@@ -161,6 +161,7 @@ class Projects::CommitController < Projects::ApplicationController
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
 
     streaming_offset = 5
+    @reload_stream_url = diffs_stream_url(@commit)
     @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
     @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
 
@@ -296,6 +297,10 @@ class Projects::CommitController < Projects::ApplicationController
     return unless diffs_expanded?
 
     check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
+  end
+
+  def diffs_resource
+    commit&.diffs(commit_diff_options)
   end
 end
 

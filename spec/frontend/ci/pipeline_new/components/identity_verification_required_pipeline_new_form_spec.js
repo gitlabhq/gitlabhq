@@ -18,9 +18,6 @@ import {
 
 Vue.use(VueApollo);
 
-const pipelinesPath = '/root/project/-/pipelines';
-const pipelinesEditorPath = '/root/project/-/ci/editor';
-const projectPath = '/root/project/-/pipelines/config_variables';
 const defaultBranch = 'main';
 
 describe('Pipeline New Form', () => {
@@ -46,20 +43,20 @@ describe('Pipeline New Form', () => {
     wrapper = shallowMountExtended(PipelineNewForm, {
       apolloProvider: mockApollo,
       provide: {
+        canViewPipelineEditor: true,
         identityVerificationRequired: true,
         identityVerificationPath: '/test',
+        pipelineEditorPath: '/root/project/-/ci/editor',
+        pipelinesPath: '/root/project/-/pipelines',
+        projectPath: '/root/project/-/pipelines/config_variables',
+        userRole: 'Maintainer',
       },
       propsData: {
         projectId: mockProjectId,
-        pipelinesPath,
-        pipelinesEditorPath,
-        canViewPipelineEditor: true,
-        projectPath,
         defaultBranch,
         refParam: defaultBranch,
         settingsLink: '',
         maxWarnings: 25,
-        isMaintainer: false,
         ...props,
       },
     });

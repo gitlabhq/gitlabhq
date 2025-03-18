@@ -4,12 +4,20 @@ module Gitlab
   module Backup
     module Cli
       module Services
+        # GitLab installations may include multiple databases
+        # in a denormalized setup
+        #
+        # This represents either the main one or one of the denormalized
+        # with the required connection params
         class Database
           # @return [ActiveRecord::DatabaseConfigurations::HashConfig] database configuration
           attr_reader :configuration
 
           # @return [String] Snapshot ID from the database
           attr_reader :snapshot_id
+
+          # @return [String] Name used in database yml for connection params
+          attr_reader :connection_name
 
           # Mapping of activerecord config keys to corresponding ENV variables
           DATABASE_ENV_VARIABLES = {
@@ -33,6 +41,7 @@ module Gitlab
           def initialize(configuration)
             @configuration = configuration
             @snapshot_id = nil
+            @connection_name = configuration.name
           end
 
           # Database connection params and credentials as PG ENV variables

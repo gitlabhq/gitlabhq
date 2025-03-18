@@ -8,14 +8,6 @@ description: Metrics recorded for a Machine Learning model candidate
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95168
 milestone: '15.4'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: candidate_id
-        table: ml_candidates
-        sharding_key: project_id
-        belongs_to: candidate
-desired_sharding_key_migration_job_name: BackfillMlCandidateMetricsProjectId
 table_size: small
+sharding_key:
+  project_id: projects

@@ -11,7 +11,7 @@ module Gitlab
 
             def perform!
               if pipeline_config&.exists?
-                @pipeline.build_pipeline_config(content: pipeline_config.content, project_id: @pipeline.project_id)
+                build_pipeline_config
                 @command.config_content = pipeline_config.content
                 @pipeline.config_source = pipeline_config.source
                 @command.pipeline_config = pipeline_config
@@ -34,9 +34,20 @@ module Gitlab
                   pipeline_source: @command.source, pipeline_source_bridge: @command.bridge,
                   triggered_for_branch: @pipeline.branch?,
                   ref: @pipeline.ref,
-                  pipeline_policy_context: @command.pipeline_policy_context
+                  pipeline_policy_context: @command.pipeline_policy_context,
+                  inputs: ::Ci::PipelineCreation::Inputs.parse_params(@command.inputs)
                 )
               end
+            end
+
+            def build_pipeline_config
+              # Inputs may contain secrets, so we don't want to save them in the DB as plain text.
+              # It's safe to not save a pipeline-config because we are currently considering
+              # dropping the `p_ci_pipelines_config` table because it's not used anywhere.
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/520828#note_2364398251
+              return if @command.inputs.present?
+
+              @pipeline.build_pipeline_config(content: pipeline_config.content, project_id: @pipeline.project_id)
             end
           end
         end

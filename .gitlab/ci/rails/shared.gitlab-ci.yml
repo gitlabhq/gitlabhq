@@ -209,80 +209,50 @@ include:
   after_script:
     - !reference [.rspec-base, after_script]
 
-.rspec-base-pg14:
+# Current PG version for CI
+.rspec-base-pg16:
   needs:
     - !reference [.rspec-base, needs]
-    - job: "db:setup pg14"
+    - job: "db:setup pg16"
       optional: true
   extends:
     - .rspec-base
-    - .use-pg14
+    - .use-pg16
 
-.rspec-base-pg14-clickhouse23:
+.rspec-base-pg16-clickhouse23:
   extends:
     - .rspec-base
-    - .use-pg14-clickhouse23
+    - .use-pg16-clickhouse23
   script:
     - cp config/click_house.yml.example config/click_house.yml
     - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
     - !reference [.base-script, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
+.rspec-base-pg14:
+  extends:
+    - .rspec-base
+    - .use-pg14
+
 .rspec-base-pg15:
   extends:
     - .rspec-base
     - .use-pg15
 
-.rspec-base-pg16:
+.rspec-base-pg17:
   extends:
     - .rspec-base
-    - .use-pg16
+    - .use-pg17
 
 .rspec-ee-base-pg14:
   extends:
     - .rspec-base
     - .use-pg14-es7-ee
 
-.rspec-ee-base-pg14-es8:
-  extends:
-    - .rspec-base
-    - .use-pg14-es8-ee
-    - .rails:rules:run-search-tests
-
-.rspec-ee-base-pg14-opensearch1:
-  extends:
-    - .rspec-base
-    - .use-pg14-opensearch1-ee
-    - .rails:rules:run-search-tests
-
-.rspec-ee-base-pg14-opensearch2:
-  extends:
-    - .rspec-base
-    - .use-pg14-opensearch2-ee
-    - .rails:rules:run-search-tests
-
 .rspec-ee-base-pg15:
   extends:
     - .rspec-base
     - .use-pg15-es7-ee
-
-.rspec-ee-base-pg15-es8:
-  extends:
-    - .rspec-base
-    - .use-pg15-es8-ee
-    - .rails:rules:run-search-tests
-
-.rspec-ee-base-pg15-opensearch1:
-  extends:
-    - .rspec-base
-    - .use-pg15-opensearch1-ee
-    - .rails:rules:run-search-tests
-
-.rspec-ee-base-pg15-opensearch2:
-  extends:
-    - .rspec-base
-    - .use-pg15-opensearch2-ee
-    - .rails:rules:run-search-tests
 
 .rspec-ee-base-pg16:
   extends:
@@ -307,9 +277,14 @@ include:
     - .use-pg16-opensearch2-ee
     - .rails:rules:run-search-tests
 
+.rspec-ee-base-pg17:
+  extends:
+    - .rspec-base
+    - .use-pg17-es7-ee
+
 .ci-config-validation-base:
   extends:
-    - .rspec-base-pg14
+    - .rspec-base-pg16
     - .rails:rules:rspec-ci-config-validation
   stage: test
   after_script: []  # override after_script from .rspec-base
@@ -318,7 +293,7 @@ include:
   extends:
     - .rails-job-base
     - .rails:rules:ee-and-foss-migration
-    - .use-pg14
+    - .use-pg16
   stage: test
   needs: ["setup-test-env"]
 # rspec job base specs

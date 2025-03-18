@@ -32,7 +32,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
       context 'when permission is :create_projects' do
         let(:group_arguments) { { permission_scope: :create_projects } }
 
-        specify do
+        it 'returns expected groups' do
           is_expected.to match(
             [
               public_maintainer_group,
@@ -47,7 +47,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
       context 'when permission is :transfer_projects' do
         let(:group_arguments) { { permission_scope: :transfer_projects } }
 
-        specify do
+        it 'returns expected groups' do
           is_expected.to match(
             [
               public_maintainer_group,
@@ -58,7 +58,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
         end
       end
 
-      specify do
+      it 'returns expected additional groups' do
         is_expected.to match(
           [
             public_maintainer_group,
@@ -73,7 +73,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
       context 'when search is provided' do
         let(:group_arguments) { { search: 'maintainer' } }
 
-        specify do
+        it 'returns expected groups' do
           is_expected.to match(
             [
               public_maintainer_group,
@@ -96,7 +96,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
           enable_admin_mode!(current_user)
         end
 
-        specify do
+        it 'returns expected groups' do
           is_expected.to match(
             [
               public_maintainer_group,

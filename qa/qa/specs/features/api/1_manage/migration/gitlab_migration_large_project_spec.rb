@@ -44,7 +44,7 @@ module QA
 
       # generate unique target group because source group has a static name
       let!(:target_sandbox) do
-        create(:sandbox, api_client: admin_api_client, path: "qa-sandbox-#{SecureRandom.hex(4)}")
+        create(:sandbox, api_client: admin_api_client, path: "e2e-sandbox-#{SecureRandom.hex(4)}")
       end
 
       let!(:api_client) do

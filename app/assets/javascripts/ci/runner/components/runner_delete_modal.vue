@@ -52,6 +52,8 @@ export default {
     },
   },
   methods: {
+    // show() can be invoked by parent components to show the modal
+    // eslint-disable-next-line vue/no-unused-properties
     show() {
       this.$refs.modal.show();
     },

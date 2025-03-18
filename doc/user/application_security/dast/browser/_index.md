@@ -13,7 +13,11 @@ title: DAST browser-based analyzer
 
 {{< /details >}}
 
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
+{{< history >}}
+
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
+
+{{< /history >}}
 
 {{< alert type="warning" >}}
 
@@ -83,6 +87,8 @@ DAST uses an element uniqueness calculation based on HTML attributes to discard 
 ### Passive scans
 
 Passive scans check for vulnerabilities in the pages discovered during the crawl phase of the scan.
+Passive scans attempt to interact with a site in the same way as a normal user, including by performing destructive actions like deleting data.
+However, passive scans do not simulate adversarial behavior.
 Passive scans are enabled by default.
 
 The checks search HTTP messages, cookies, storage events, console events, and DOM for vulnerabilities.
@@ -93,7 +99,7 @@ See [checks](checks/_index.md) for more information about individual checks.
 ### Active scans
 
 Active scans check for vulnerabilities by injecting attack payloads into HTTP requests recorded during the crawl phase of the scan.
-Active scans are disabled by default due to the nature of their probing attacks.
+Active scans are disabled by default because they simulate adversarial behavior.
 
 DAST analyzes each recorded HTTP request for injection locations, such as query values, header values, cookie values, form posts, and JSON string values.
 Attack payloads are injected into the injection location, forming a new request.

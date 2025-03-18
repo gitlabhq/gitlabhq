@@ -319,6 +319,22 @@ describe('View branch rules', () => {
 
       expect(findSquashSettingSection().exists()).toBe(false);
     });
+
+    it.each`
+      branch                      | expectedExists | description
+      ${'main'}                   | ${true}        | ${'shows squash section for regular branch'}
+      ${'All branches'}           | ${true}        | ${'shows squash section for all branches'}
+      ${'All protected branches'} | ${false}       | ${'hides squash section for protected branches'}
+      ${'feature-*'}              | ${false}       | ${'hides squash section for wildcard branches'}
+    `('$description', async ({ branch, expectedExists }) => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
+
+      await createComponent({
+        glFeatures: { branchRuleSquashSettings: true },
+      });
+
+      expect(findSquashSettingSection().exists()).toBe(expectedExists);
+    });
   });
 
   it('renders page title', () => {

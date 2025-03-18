@@ -161,7 +161,7 @@ job:
   artifacts:
     name: "$CI_COMMIT_REF_NAME"
     paths:
-      - binaries/${CI_PROJECT_NAME}/"
+      - binaries/${CI_PROJECT_NAME}/
 ```
 
 When your branch name contains forward slashes (for example, `feature/my-feature`),
@@ -282,6 +282,8 @@ build_submodule:
     - unzip artifacts.zip
 ```
 
+To fetch artifacts from a job in the same pipeline, use the [`needs:artifacts`](../yaml/_index.md#needsartifacts) keyword.
+
 ## Browse the contents of the artifacts archive
 
 You can browse the contents of the artifacts from the UI without downloading the artifact locally,
@@ -383,19 +385,14 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 
 {{< /history >}}
 
-By default artifacts are always kept for successful pipelines for the most recent commit on each ref.
-Any [`expire_in`](#with-an-expiry) configuration does not apply to the most recent artifacts.
+By default, artifacts are always kept for the most recent successful pipeline on each ref. Any `expire_in` configuration does not apply to the most recent artifacts.
 
-A pipeline's artifacts are only deleted according to the `expire_in` configuration
-if a new pipeline runs for the same ref and:
+When a new pipeline on the same ref completes successfully, the previous pipeline's artifacts are deleted according to the `expire_in` configuration. The artifacts of the new pipeline are kept automatically.
+
+A pipeline’s artifacts are only deleted according to the `expire_in` configuration if a new pipeline runs for the same ref and:
 
 - Succeeds.
-- Fails.
 - Stops running due to being blocked by a manual job.
-
-Additionally, artifacts are kept for the ref's last successful pipeline even if it
-is not the latest pipeline. As a result, if a new pipeline run fails, the last successful pipeline's
-artifacts are still kept.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in

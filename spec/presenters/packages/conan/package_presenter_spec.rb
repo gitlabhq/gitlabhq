@@ -41,6 +41,15 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
     end
   end
 
+  shared_examples 'excludes files with recipe revisions' do
+    context 'when there are files with recipe revisions' do
+      let_it_be(:recipe_revision) { create(:conan_recipe_revision, package: package) }
+      let_it_be(:conan_package_file) { create(:conan_package_file, :conan_recipe_file, package: package, conan_recipe_revision: recipe_revision) }
+
+      it { is_expected.to eq(expected_result) }
+    end
+  end
+
   describe '#recipe_urls' do
     subject { presenter.recipe_urls }
 
@@ -56,6 +65,8 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       end
 
       it { is_expected.to eq(expected_result) }
+
+      it_behaves_like 'excludes files with recipe revisions'
 
       context 'when there are multiple channels for the same package' do
         let(:conan_metadatum) { create(:conan_metadatum, package_channel: 'newest') }
@@ -97,6 +108,8 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       end
 
       it { is_expected.to eq(expected_result) }
+
+      it_behaves_like 'excludes files with recipe revisions'
     end
   end
 
@@ -129,6 +142,8 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       end
 
       it { is_expected.to eq(expected_result) }
+
+      it_behaves_like 'excludes files with recipe revisions'
 
       context 'with package_scope of project' do
         # #package_file_url checks for params[:id]
@@ -197,6 +212,8 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       end
 
       it { is_expected.to eq(expected_result) }
+
+      it_behaves_like 'excludes files with recipe revisions'
 
       context 'when requested with invalid reference' do
         let(:reference) { 'invalid' }

@@ -580,7 +580,6 @@ still use this API to remove them.
 {{< alert type="note" >}}
 
 Member removal is handled asynchronously, so the changes complete within a few minutes.
-Asynchronous removal is being rolled out, and may not become available to all groups at the same time.
 
 {{< /alert >}}
 

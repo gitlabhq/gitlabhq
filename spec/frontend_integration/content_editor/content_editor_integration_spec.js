@@ -1,3 +1,4 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { ContentEditor } from '~/content_editor';
@@ -57,7 +58,7 @@ describe('content_editor', () => {
 
         await waitUntilContentIsLoaded();
 
-        expect(wrapper.findByTestId('content-editor-loading-indicator').exists()).toBe(false);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       });
     });
 
@@ -72,8 +73,9 @@ describe('content_editor', () => {
 
         await waitUntilContentIsLoaded();
       });
+
       it('hides the loading indicator', () => {
-        expect(wrapper.findByTestId('content-editor-loading-indicator').exists()).toBe(false);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       });
 
       it('displays the initial content', () => {

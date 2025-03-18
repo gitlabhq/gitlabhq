@@ -14,8 +14,8 @@ title: Syntax options
 | `"class foo"`        | `"class foo"`                                           | `class foo` |
 | `class foo`          | `class foo`                                             | `class` and `foo` |
 | `foo or bar`         | `foo or bar`                                            | `foo` or `bar` |
-| `class Foo`          | `class Foo` (case sensitive)                            | `class` (case insensitive) and `Foo` (case sensitive) |
-| `class Foo case:yes` | `class Foo` (case sensitive)                            | `class` and `Foo` (both case sensitive) |
+| `class Foo`          | `class Foo` (case-sensitive)                            | `class` (case-insensitive) and `Foo` (case-sensitive) |
+| `class Foo case:yes` | `class Foo` (case-sensitive)                            | `class` and `Foo` (both case-sensitive) |
 | `foo -bar`           | `foo -bar`                                              | `foo` but not `bar` |
 | `foo file:js`        | `foo` in files with names that contain `js`             | `foo` in files with names that contain `js` |
 | `foo -file:test`     | `foo` in files with names that do not contain `test`    | `foo` in files with names that do not contain `test` |

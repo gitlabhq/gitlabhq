@@ -1,6 +1,9 @@
 query getWorkItemStateCounts(
+  $excludeProjects: Boolean = false
   $includeDescendants: Boolean = true
+  $isGroup: Boolean = true
   $fullPath: ID!
+  $search: String
   $sort: WorkItemSort
   $state: IssuableState
   $assigneeWildcardId: AssigneeWildcardId
@@ -12,14 +15,20 @@ query getWorkItemStateCounts(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $types: [IssueType!]
+  $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
-  $isGroup: Boolean = true
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
     workItemStateCounts(
+      excludeProjects: $excludeProjects
       includeDescendants: $includeDescendants
+      search: $search
       sort: $sort
       state: $state
       assigneeUsernames: $assigneeUsernames
@@ -31,8 +40,13 @@ query getWorkItemStateCounts(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      in: $in
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       all
       closed
@@ -42,6 +56,7 @@ query getWorkItemStateCounts(
   project(fullPath: $fullPath) @skip(if: $isGroup) {
     id
     workItemStateCounts(
+      search: $search
       sort: $sort
       state: $state
       assigneeUsernames: $assigneeUsernames
@@ -53,8 +68,13 @@ query getWorkItemStateCounts(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      in: $in
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       all
       closed

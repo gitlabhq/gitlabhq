@@ -55,7 +55,22 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
-    it { expect(subject.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
+    it { expect(subject.reload.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
+
+    it 'creates commits with empty messages' do
+      expect(subject.commits).to all(have_attributes(message: ''))
+    end
+
+    context 'when feature flag "optimized_commit_storage" is disabled' do
+      before do
+        stub_feature_flags(disable_message_attribute_on_mr_diff_commits: false)
+        stub_feature_flags(optimized_commit_storage: false)
+      end
+
+      it 'creates commits with messages' do
+        expect(subject.commits).to all(have_attributes(message: be_present))
+      end
+    end
 
     it 'calls GraphqlTriggers.merge_request_diff_generated' do
       merge_request = create(:merge_request, :skip_diff_creation)
@@ -145,6 +160,20 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
       it 'returns empty result' do
         expect(by_commit_sha).to be_empty
+      end
+    end
+
+    context 'when commit_sha_scope_logger is disabled' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      before do
+        stub_feature_flags(commit_sha_scope_logger: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        by_commit_sha
       end
     end
   end
@@ -843,6 +872,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     describe '#get_patch_id_sha' do
       let(:mr_diff) { create(:merge_request).merge_request_diff }
 
+      before do
+        mr_diff.reload
+      end
+
       context 'when the patch_id exists on the model' do
         it 'returns the patch_id' do
           expect(mr_diff.patch_id_sha).not_to be_nil
@@ -858,7 +891,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           mr_diff.update!(patch_id_sha: nil)
 
           expect(mr_diff.get_patch_id_sha).to eq(patch_id)
-          expect(mr_diff.reload.patch_id_sha).to eq(patch_id)
+          expect(mr_diff.patch_id_sha).to eq(patch_id)
         end
 
         context 'when base_sha is nil' do
@@ -868,7 +901,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'returns nil' do
-            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+            expect(mr_diff.get_patch_id_sha).to be_nil
           end
         end
 
@@ -879,7 +912,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'returns nil' do
-            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+            expect(mr_diff.get_patch_id_sha).to be_nil
           end
         end
 
@@ -891,7 +924,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'returns nil' do
-            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+            expect(mr_diff.get_patch_id_sha).to be_nil
           end
         end
       end
@@ -1244,11 +1277,31 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it 'returns first commit' do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
     end
+
+    context 'when "more_commits_from_gitaly" feature flag is disabled' do
+      before do
+        stub_feature_flags(more_commits_from_gitaly: false)
+      end
+
+      it 'returns first commit' do
+        expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
+      end
+    end
   end
 
   describe '#last_commit' do
     it 'returns last commit' do
       expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
+    end
+
+    context 'when "more_commits_from_gitaly" feature flag is disabled' do
+      before do
+        stub_feature_flags(more_commits_from_gitaly: false)
+      end
+
+      it 'returns last commit' do
+        expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
+      end
     end
   end
 

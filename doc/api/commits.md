@@ -706,7 +706,11 @@ The commit status API for use with GitLab.
 
 ### List the statuses of a commit
 
-> - `pipeline_id`, `order_by`, and `sort` fields [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176142) in GitLab 17.9.
+{{< history >}}
+
+- `pipeline_id`, `order_by`, and `sort` fields [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176142) in GitLab 17.9.
+
+{{< /history >}}
 
 List the statuses of a commit in a project.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.

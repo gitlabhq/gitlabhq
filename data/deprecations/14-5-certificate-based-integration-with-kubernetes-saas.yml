@@ -17,4 +17,4 @@
   stage: Configure
   tiers: [Free, Premium, Ultimate]
   issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'
-  documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/clusters/#certificate-based-kubernetes-integration-deprecated'
+  documentation_url: 'https://docs.gitlab.com/user/infrastructure/clusters/#certificate-based-kubernetes-integration-deprecated'

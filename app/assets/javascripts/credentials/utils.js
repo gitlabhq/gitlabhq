@@ -1,26 +1,18 @@
-import { queryToObject } from '~/lib/utils/url_utility';
+import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import {
   OPERATORS_BEFORE,
   OPERATORS_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { TOKENS } from './constants';
+import { DEFAULT_SORT, SORT_OPTIONS, TOKENS } from '~/access_tokens/constants';
 
 /**
- * @typedef {{type: string, value: {data: string, operator: string}}} Token
+ * @param {Object<string, string>} filters
+ * @param {string} [search]
  */
-
-/**
- * Initialize token values based on the URL parameters
- * @param {string} query - document.location.search
- *
- * @returns {Array<string|Token>}
- */
-export function initializeValuesFromQuery(query = document.location.search) {
+function initializeFilters(filters, search) {
   const tokens = [];
 
-  const { search, ...terms } = queryToObject(query);
-
-  for (const [key, value] of Object.entries(terms)) {
+  for (const [key, value] of Object.entries(filters)) {
     const isBefore = key.endsWith('_before');
     const isAfter = key.endsWith('_after');
 
@@ -55,4 +47,59 @@ export function initializeValuesFromQuery(query = document.location.search) {
   }
 
   return tokens;
+}
+
+/**
+ * @param {string} [sort]
+ */
+function initializeSort(sort) {
+  let sorting = DEFAULT_SORT;
+
+  const sortOption = SORT_OPTIONS.find((item) => [item.sort.desc, item.sort.asc].includes(sort));
+  if (sort && sortOption) {
+    sorting = {
+      value: sortOption.value,
+      isAsc: sortOption.sort.asc === sort,
+    };
+  }
+
+  return sorting;
+}
+
+/**
+ * Initialize tokens and sort based on the URL parameters
+ * @param {string} query - document.location.search
+ */
+export function initializeValuesFromQuery(query = document.location.search) {
+  const { sort, search, ...filters } = queryToObject(query);
+  const sorting = initializeSort(sort);
+  const tokens = initializeFilters(filters, search);
+
+  return { sorting, tokens };
+}
+
+/**
+ * @param {string} sortValue
+ * @param {boolean} sortIsAsc
+ * @param {Array<string|{type: string, value:{data: string, operator: string}}>} tokens
+ */
+export function goTo(sortValue, sortIsAsc, tokens) {
+  const newParams = { page: 1 };
+
+  tokens?.forEach((token) => {
+    if (typeof token === 'string') {
+      newParams.search = token;
+    } else if (['created', 'expires', 'last_used'].includes(token.type)) {
+      const isBefore = token.value.operator === '<';
+      const key = `${token.type}${isBefore ? '_before' : '_after'}`;
+      newParams[key] = token.value.data;
+    } else {
+      newParams[token.type] = token.value.data;
+    }
+  });
+
+  const sortOption = SORT_OPTIONS.find((item) => item.value === sortValue).sort;
+  newParams.sort = sortIsAsc ? sortOption.asc : sortOption.desc;
+  const newUrl = setUrlParams(newParams, window.location.href, true);
+  visitUrl(newUrl);
 }

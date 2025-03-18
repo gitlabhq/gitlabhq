@@ -1,8 +1,37 @@
 import $ from 'jquery';
-import { n__ } from '~/locale';
+import { n__, s__ } from '~/locale';
+import { createAlert } from '~/alert';
+import createDefaultClient from '~/lib/graphql';
+import { sanitize } from '~/lib/dompurify';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
+import commitDetailsQuery from '~/projects/commits/graphql/queries/commit_details.query.graphql';
 import axios from './lib/utils/axios_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
+
+const NEWLINE_CHAR = '&#x000A;';
+
+const defaultClient = createDefaultClient();
+
+const handleError = () =>
+  createAlert({ message: s__('Commits|Something went wrong while fetching commit details') });
+
+const fetchCommitDetails = async (commitId) => {
+  const { projectFullPath: projectPath } = document.body.dataset;
+  let commit;
+
+  try {
+    const { data } = await defaultClient.query({
+      query: commitDetailsQuery,
+      variables: { projectPath, ref: commitId },
+    });
+    commit = data?.project?.repository?.commit || {};
+  } catch (error) {
+    handleError();
+  }
+
+  return commit;
+};
 
 export default class CommitsList {
   constructor(limit = 0) {
@@ -16,6 +45,7 @@ export default class CommitsList {
     this.searchField = $('#commits-search');
     this.lastSearch = this.searchField.val();
     this.initSearch();
+    this.initCommitDetails();
   }
 
   initSearch() {
@@ -24,6 +54,32 @@ export default class CommitsList {
       clearTimeout(this.timer);
       this.timer = setTimeout(this.filterResults.bind(this), 500);
     });
+  }
+
+  initCommitDetails() {
+    if (!gon?.features?.loadCommitDetailsAsync) return;
+    this.content.on('click', '.js-toggle-button', ({ currentTarget }) =>
+      this.handleToggleCommitDetails(currentTarget.dataset),
+    );
+  }
+
+  async handleToggleCommitDetails({ commitId }) {
+    const contentElement = this.content.find(`.js-toggle-content[data-commit-id="${commitId}"]`);
+    if (!contentElement || contentElement.data('content-loaded')) return;
+    contentElement.html(loadingIconForLegacyJS({ inline: true, size: 'sm' }));
+
+    const commit = await fetchCommitDetails(commitId);
+    let descriptionHtml = commit?.descriptionHtml;
+    if (!descriptionHtml) {
+      handleError();
+      return;
+    }
+
+    if (descriptionHtml.startsWith(NEWLINE_CHAR))
+      descriptionHtml = descriptionHtml.substring(NEWLINE_CHAR.length); // remove newline to avoid extra empty line before the description
+
+    contentElement.html(sanitize(descriptionHtml));
+    contentElement.attr('data-content-loaded', 'true');
   }
 
   filterResults() {

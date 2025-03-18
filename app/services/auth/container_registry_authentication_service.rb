@@ -7,6 +7,7 @@ module Auth
       :read_container_image,
       :create_container_image,
       :destroy_container_image,
+      :destroy_container_image_tag,
       :update_container_image,
       :admin_container_image,
       :build_read_container_image,

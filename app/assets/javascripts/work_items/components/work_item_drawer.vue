@@ -229,6 +229,7 @@ export default {
     '.work-item-link-child',
     '.modal-content',
     '#create-merge-request-modal',
+    '#b-toaster-bottom-left',
   ],
 };
 </script>

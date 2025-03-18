@@ -79,6 +79,8 @@
   - 1
 - - authorized_keys
   - 2
+- - authorized_project_update:authorized_project_update_enqueue_group_members_refresh_authorized_projects
+  - 1
 - - authorized_project_update:authorized_project_update_project_recalculate
   - 1
 - - authorized_project_update:authorized_project_update_project_recalculate_per_user
@@ -224,6 +226,24 @@
 - - click_house_ci_finished_builds_sync
   - 1
 - - cluster_agent
+  - 1
+- - clusters_agents_auto_flow_merge_requests_closed_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_created_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_merged_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_reopened_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_updated_event
+  - 1
+- - clusters_agents_auto_flow_work_items_closed_event
+  - 1
+- - clusters_agents_auto_flow_work_items_created_event
+  - 1
+- - clusters_agents_auto_flow_work_items_reopened_event
+  - 1
+- - clusters_agents_auto_flow_work_items_updated_event
   - 1
 - - compliance_management_chain_of_custody_report
   - 1
@@ -462,6 +482,8 @@
 - - import_reassign_placeholder_user_records
   - 1
 - - import_refresh_import_jid
+  - 1
+- - import_remove_import_file
   - 1
 - - import_user_mapping_assignment_from_csv
   - 1
@@ -779,6 +801,8 @@
   - 1
 - - sbom_sync_project_traversal_ids
   - 1
+- - search_elastic_commit_indexer
+  - 1
 - - search_elastic_default_branch_changed
   - 1
 - - search_elastic_delete
@@ -805,8 +829,6 @@
   - 1
 - - search_zoekt_index_marked_as_to_delete_event
   - 1
-- - search_zoekt_index_over_watermark_event
-  - 1
 - - search_zoekt_index_to_evict_event
   - 1
 - - search_zoekt_index_watermark_changed_event
@@ -818,8 +840,6 @@
 - - search_zoekt_lost_node_event
   - 1
 - - search_zoekt_namespace_indexer
-  - 1
-- - search_zoekt_namespace_initial_indexing
   - 1
 - - search_zoekt_node_with_negative_unclaimed_storage_event
   - 1
@@ -845,6 +865,8 @@
   - 1
 - - security_create_security_policy_project
   - 1
+- - security_delete_approval_policy_rules
+  - 1
 - - security_delete_orchestration_configuration
   - 1
 - - security_delete_security_policy
@@ -852,6 +874,8 @@
 - - security_generate_policy_violation_comment
   - 1
 - - security_orchestration_configuration_create_bot
+  - 1
+- - security_orchestration_configuration_create_bot_for_namespace
   - 1
 - - security_orchestration_configuration_remove_bot
   - 1
@@ -955,6 +979,12 @@
   - 1
 - - users_track_namespace_visits
   - 1
+- - vulnerabilities_archival_archive
+  - 1
+- - vulnerabilities_archival_export_export
+  - 1
+- - vulnerabilities_archival_export_purge
+  - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1
 - - vulnerabilities_namespace_historical_statistics_process_transfer_events
@@ -962,6 +992,8 @@
 - - vulnerabilities_namespace_historical_statistics_update_traversal_ids
   - 1
 - - vulnerabilities_process_archived_events
+  - 1
+- - vulnerabilities_process_bulk_dismissed_events
   - 1
 - - vulnerabilities_process_transfer_events
   - 1
@@ -1004,6 +1036,8 @@
 - - work_items_rolledup_dates_update_rolledup_dates_event_handler
   - 1
 - - work_items_update_parent_objectives_progress
+  - 1
+- - work_items_user_preferences_destroy
   - 1
 - - work_items_validate_epic_work_item_sync
   - 1

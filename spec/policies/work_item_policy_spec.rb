@@ -11,11 +11,15 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
 
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:non_member_user) { create(:user) }
+  let_it_be(:author) { create(:user) }
+  let_it_be(:assignee) { create(:user) }
+  let_it_be(:support_bot) { Users::Internal.support_bot }
 
   let_it_be(:guest) { create(:user, guest_of: [private_project, public_project]) }
   let_it_be(:guest_author) { create(:user, guest_of: [private_project, public_project]) }
   let_it_be(:planner) { create(:user, planner_of: [private_project, public_project]) }
   let_it_be(:reporter) { create(:user, reporter_of: [private_project, public_project]) }
+  let_it_be(:owner) { create(:user, owner_of: [private_project, public_project]) }
 
   let_it_be(:group_guest) { create(:user, guest_of: [private_group, public_group]) }
   let_it_be(:group_planner) { create(:user, planner_of: [private_group, public_group]) }
@@ -41,6 +45,9 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let_it_be(:incident_work_item) { create(:work_item, :incident, project: private_project) }
 
       it_behaves_like 'checks abilities for project level work items'
+      it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :work_item do
+        let_it_be(:project) { private_project }
+      end
 
       it 'checks non-member abilities' do
         # disallowed
@@ -77,6 +84,9 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let_it_be(:incident_work_item) { create(:work_item, :incident, project: public_project) }
 
       it_behaves_like 'checks abilities for project level work items'
+      it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :work_item do
+        let_it_be(:project) { public_project }
+      end
 
       it 'checks non-member abilities' do
         # allowed

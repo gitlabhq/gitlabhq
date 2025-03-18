@@ -60,7 +60,7 @@ export default {
     CodeBlockHighlighted,
   },
   mixins: [trackingMixin],
-  inject: ['projectPath', 'emptyStateImage'],
+  inject: ['fullPath', 'emptyStateImage'],
   props: {
     kasDisabled: {
       type: Boolean,
@@ -121,7 +121,7 @@ export default {
           variables: {
             input: {
               name: this.agentName,
-              projectPath: this.projectPath,
+              projectPath: this.fullPath,
             },
           },
         })
@@ -147,7 +147,7 @@ export default {
               cloneDeep(this.clusterAgent),
               getAgentsQuery,
               {
-                projectPath: this.projectPath,
+                fullPath: this.fullPath,
               },
             );
           },

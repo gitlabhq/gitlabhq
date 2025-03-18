@@ -18,7 +18,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
-import { getPageParams } from '~/packages_and_registries/dependency_proxy/utils';
+import { getPageParams } from '~/packages_and_registries/shared/utils';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -87,7 +87,7 @@ export default {
     },
     pageParams() {
       const { before, after } = this.$route.query;
-      return getPageParams({ before, after });
+      return getPageParams({ before, after }, GRAPHQL_PAGE_SIZE);
     },
     manifests() {
       return this.group.dependencyProxyManifests?.nodes ?? [];

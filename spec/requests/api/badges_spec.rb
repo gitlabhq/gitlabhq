@@ -272,8 +272,8 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
     include_context 'source helpers'
 
     let(:source) { get_source(source_type) }
-    let(:example_url) { 'http://www.example.com' }
-    let(:example_url2) { 'http://www.example1.com' }
+    let(:example_url) { 'http://www.example.com/test?key=Test White Space' }
+    let(:example_url2) { 'http://www.example1.com/test?key=Test White Space' }
 
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
@@ -305,8 +305,8 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
           expect(json_response.keys).to contain_exactly('name', 'link_url', 'rendered_link_url', 'image_url', 'rendered_image_url')
           expect(json_response['link_url']).to eq(example_url)
           expect(json_response['image_url']).to eq(example_url2)
-          expect(json_response['rendered_link_url']).to eq(example_url)
-          expect(json_response['rendered_image_url']).to eq(example_url2)
+          expect(json_response['rendered_link_url']).to eq(Addressable::URI.escape(example_url))
+          expect(json_response['rendered_image_url']).to eq(Addressable::URI.escape(example_url2))
         end
       end
 

@@ -1,5 +1,5 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dast-API.gitlab-ci.yml
 
@@ -19,7 +19,7 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/
 
 # Configure DAST API scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
-# List of available variables: https://docs.gitlab.com/ee/user/application_security/api_security_testing/configuration/variables.html#available-cicd-variables
+# List of available variables: https://docs.gitlab.com/user/application_security/api_security_testing/configuration/variables/#available-cicd-variables
 
 variables:
   # Setting this variable affects all Security templates

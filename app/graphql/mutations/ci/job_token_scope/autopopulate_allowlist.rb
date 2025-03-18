@@ -7,6 +7,7 @@ module Mutations
         graphql_name 'CiJobTokenScopeAutopopulateAllowlist'
 
         include FindsProject
+        include Gitlab::InternalEventsTracking
 
         authorize :admin_project
 
@@ -21,6 +22,15 @@ module Mutations
 
         def resolve(project_path:)
           project = authorized_find!(project_path)
+
+          track_internal_event(
+            'ci_job_token_autopopulate_allowlist',
+            user: current_user,
+            project: project,
+            additional_properties: {
+              label: 'ui'
+            }
+          )
 
           result = ::Ci::JobToken::ClearAutopopulatedAllowlistService.new(project, current_user).execute
           result = ::Ci::JobToken::AutopopulateAllowlistService.new(project, current_user).execute if result.success?

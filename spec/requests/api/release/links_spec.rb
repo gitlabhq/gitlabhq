@@ -25,7 +25,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   end
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links' do
-    it_behaves_like 'enforcing job token policies', :read_releases do
+    it_behaves_like 'enforcing job token policies', :read_releases,
+      allow_public_access_for_enabled_project_features: :releases do
       let_it_be(:user) { maintainer }
       let(:request) do
         get api("/projects/#{source_project.id}/releases/v0.1/assets/links"),
@@ -114,7 +115,8 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   describe 'GET /projects/:id/releases/:tag_name/assets/links/:link_id' do
     let!(:release_link) { create(:release_link, release: release) }
 
-    it_behaves_like 'enforcing job token policies', :read_releases do
+    it_behaves_like 'enforcing job token policies', :read_releases,
+      allow_public_access_for_enabled_project_features: :releases do
       let_it_be(:user) { maintainer }
       let(:request) do
         get api("/projects/#{source_project.id}/releases/v0.1/assets/links/#{release_link.id}"),

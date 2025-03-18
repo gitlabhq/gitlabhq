@@ -8,7 +8,7 @@ title: GitLab Duo Self-Hosted supported platforms
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -66,7 +66,7 @@ Example response:
       "created": 1739421415,
       "owned_by": "vllm",
       "root": "mistralai/Mixtral-8x22B-Instruct-v0.1",
-      // ... other fields ...
+      // Additional fields removed for readability
     }
   ]
 }

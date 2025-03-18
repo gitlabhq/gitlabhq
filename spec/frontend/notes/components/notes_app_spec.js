@@ -75,9 +75,12 @@ describe('note_app', () => {
   const findCommentButton = () => wrapper.find('[data-testid="comment-button"]');
 
   const getComponentOrder = () => {
-    return wrapper
-      .findAll('#notes-list,.js-comment-form')
-      .wrappers.map((node) => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
+    const nodes = wrapper.findAll('#notes-list,.js-comment-form');
+    const wrappers = nodes.wrappers || nodes; // Vue 2: use wrappers; Vue 3: nodes is the array
+
+    return wrappers.map((node) =>
+      node.findComponent(CommentForm).exists() ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST,
+    );
   };
 
   beforeEach(() => {

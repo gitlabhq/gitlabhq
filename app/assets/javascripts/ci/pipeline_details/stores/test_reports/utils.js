@@ -38,7 +38,7 @@ export const formattedTime = (seconds = 0) => {
     });
   }
 
-  const hoursAndMinutes = stringifyTime(parseSeconds(seconds));
+  const hoursAndMinutes = stringifyTime(parseSeconds(seconds, { hoursPerDay: 24, daysPerWeek: 7 }));
   const remainingSeconds =
     seconds % 60 >= 1
       ? sprintf(__('%{seconds}s'), {

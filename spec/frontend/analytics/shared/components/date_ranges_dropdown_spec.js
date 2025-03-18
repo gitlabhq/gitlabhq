@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import DateRangesDropdown from '~/analytics/shared/components/date_ranges_dropdown.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -44,11 +44,19 @@ describe('DateRangesDropdown', () => {
 
   const findListBox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findDateRangeString = () => wrapper.findByTestId('predefined-date-range-string');
-  const findHelpIcon = () => wrapper.findComponent(GlIcon);
+  const findHelpIcon = () => wrapper.findComponent('[name="information-o"]');
+  const findDropdownButton = () => wrapper.findByTestId('selected-date-range');
+  const findDropdownIcon = () => wrapper.findByTestId('dropdown-icon');
 
   describe('default state', () => {
     beforeEach(() => {
       createComponent();
+    });
+
+    it('should render custom toggle button with icon and text', () => {
+      expect(findDropdownButton().exists()).toBe(true);
+      expect(findDropdownIcon().exists()).toBe(true);
+      expect(findDropdownButton().text()).toBe('Date range');
     });
 
     it('should pass items to listbox `items` prop in correct order', () => {

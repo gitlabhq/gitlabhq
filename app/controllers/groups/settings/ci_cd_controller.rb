@@ -95,7 +95,11 @@ module Groups
       end
 
       def update_group_params
-        params.require(:group).permit(:max_artifacts_size, :allow_runner_registration_token)
+        params.require(:group).permit(
+          :max_artifacts_size,
+          :allow_runner_registration_token,
+          :jwt_ci_cd_job_token_enabled
+        )
       end
 
       # Overridden in EE

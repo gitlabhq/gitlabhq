@@ -31,13 +31,13 @@
           - c.with_body do
             = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
       - else
-        .form-group.gl-form-group{ role: 'group' }
+        .form-group.gl-form-group.gl-form-input-lg{ role: 'group' }
           = f.label :password, _('Password'), class: 'gl-block col-form-label'
-          = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation gl-form-input-lg'
+          = f.password_field :password, class: 'form-control gl-form-input js-password-complexity-validation js-password', data: { autocomplete: 'new-password', disabled: f.object.force_random_password, required: false, id: 'user_password', name: 'user[password]' }
           = render_if_exists 'shared/password_requirements_list'
-        .form-group.gl-form-group{ role: 'group' }
+        .form-group.gl-form-group.gl-form-input-lg{ role: 'group' }
           = f.label :password_confirmation, _('Password confirmation'), class: 'gl-block col-form-label'
-          = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input gl-form-input-lg'
+          = f.password_field :password_confirmation, class: 'form-control gl-form-input js-password', data: { autocomplete: 'new-password', disabled: f.object.force_random_password, required: false, id: 'user_password_confirmation', name: 'user[password_confirmation]' }
 
     = render partial: 'access', locals: { f: f }
 

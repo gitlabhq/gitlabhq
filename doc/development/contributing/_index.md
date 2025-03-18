@@ -54,7 +54,7 @@ and filter specifically for [documentation `~quick win`](https://gitlab.com/grou
 or [frontend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=frontend&first_page_size=100).
 
 When you find an issue you want to work on, leave a comment on it.
-This helps the GitLab team and members of the wider GitLab community know that you will be working on that issue.
+This helps the GitLab team and members of the wider GitLab community know that you are working on that issue.
 
 This is a good opportunity to [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
 Confirm that the issue is still valid, clarify your intended approach, and ask if a feature or change is likely to be accepted.

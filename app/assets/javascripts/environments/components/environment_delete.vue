@@ -32,10 +32,7 @@ export default {
       isLoading: false,
       item: {
         text: s__('Environments|Delete environment'),
-        extraAttrs: {
-          variant: 'danger',
-          class: '!gl-text-red-500',
-        },
+        variant: 'danger',
       },
     };
   },

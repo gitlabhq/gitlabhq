@@ -2,6 +2,40 @@ import { s__ } from '~/locale';
 
 export const BASE_IMPORT_TABLE_ROW_GRID_CLASSES = 'gl-grid-cols-[repeat(2,1fr),200px,200px]';
 
+export const SOURCE_TYPE_GROUP = 'group';
+export const SOURCE_TYPE_PROJECT = 'project';
+export const SOURCE_TYPE_FILE = 'file';
+
+export const RELATION_STATUS = {
+  pending: 'pending',
+  inProgress: 'in-progress',
+  complete: 'complete',
+  failed: 'failed',
+};
+
+export const RELATION_STATUS_DATA = {
+  [RELATION_STATUS.pending]: {
+    ariaLabel: s__('Import|Pending'),
+    variant: 'subtle',
+    name: 'status-scheduled',
+  },
+  [RELATION_STATUS.inProgress]: {
+    ariaLabel: s__('Import|Importing'),
+    variant: 'warning',
+    name: 'spinner',
+  },
+  [RELATION_STATUS.complete]: {
+    ariaLabel: s__('Import|Complete'),
+    variant: 'success',
+    name: 'check',
+  },
+  [RELATION_STATUS.failed]: {
+    ariaLabel: s__('Import|Failed'),
+    variant: 'danger',
+    name: 'merge-request-close-m',
+  },
+};
+
 export const IMPORT_HISTORY_TABLE_STATUS = {
   inProgress: 'started',
   complete: 'finished',

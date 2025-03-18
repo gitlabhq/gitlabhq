@@ -156,7 +156,7 @@ After developer tools have been enabled, obtain a session cookie as follows:
 1. Select the `results?request_id=<some-request-id>` request on the left hand side.
 1. The session cookie is displayed under the `Request Headers` section of the `Headers` panel. Right-click on the cookie value and select `Copy value`.
 
-![Obtaining a session cookie for request](img/obtaining-a-session-cookie-for-request_v14_3.png)
+![Viewing a session cookie in the Developer Tools panel of a browser](img/obtaining-a-session-cookie-for-request_v14_3.png)
 
 You have the value of the session cookie copied to your clipboard, for example:
 
@@ -191,11 +191,11 @@ You can then view the database details for this request:
 
 1. Paste the `x-request-id` value into the `request details` field of the [performance bar](../monitoring/performance/performance_bar.md) and press <kbd>Enter/Return</kbd>. This example uses the `x-request-id` value `01FGN8P881GF2E5J91JYA338Y3`, returned by the above response:
 
-   ![Paste request ID into progress bar](img/paste-request-id-into-progress-bar_v14_3.png)
+   ![The request details field of the performance bar containing an example value](img/paste-request-id-into-progress-bar_v14_3.png)
 
 1. A new request is inserted into the `Request Selector` dropdown list on the right-hand side of the Performance Bar. Select the new request to view the metrics of the API request:
 
-   ![Select request ID from request selector drop down menu](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
+   ![A highlighted example request in an open Request Selector dropdown list](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
 
    <!-- vale gitlab_base.Substitutions = NO -->
 1. Select the `pg` link in the Progress Bar to view the database queries executed by the API request:

@@ -184,6 +184,58 @@ To open the epic in full view, either:
 
 ![Epic opened in a drawer.](img/epic_drawer_v17_4.png)
 
+## Prevent truncating descriptions with "Read more"
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+<!-- When epics as work items are GA and feature flag `work_item_epics` is removed, remove the prerequisite below. -->
+
+If an epic description is long, GitLab displays only part of it.
+To see the whole description, you must select **Read more**.
+This truncation makes it easier to find other elements on the page without scrolling through lengthy text.
+
+Prerequisites:
+
+- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+
+To change whether descriptions are truncated:
+
+1. On an epic, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Toggle **Truncate descriptions** according to your preference.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+## Hide the right sidebar
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+<!-- When epics as work items are GA and feature flag `work_item_epics` is removed, remove the prerequisite below. -->
+
+Epic attributes are shown in a sidebar to the right of the description when space allows.
+
+Prerequisites:
+
+- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+
+To hide the sidebar and increase space for the description:
+
+1. On an epic, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Hide sidebar**.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+To show the sidebar again:
+
+- Repeat the previous steps and select **Show sidebar**.
+
 ## Assignees
 
 {{< details >}}

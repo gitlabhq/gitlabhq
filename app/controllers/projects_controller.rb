@@ -44,6 +44,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_frontend_feature_flag(:blob_repository_vue_header_app, @project)
     push_frontend_feature_flag(:blob_overflow_menu, current_user)
+    push_frontend_feature_flag(:filter_blob_path, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
 
@@ -51,12 +52,9 @@ class ProjectsController < Projects::ApplicationController
       push_licensed_feature(:security_orchestration_policies)
     end
 
-    push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
-    # FF to enable setting to allow webhook execution on 30D and 60D notification delivery too
-    push_frontend_feature_flag(:extended_expiry_webhook_execution_setting, @project&.namespace)
-    push_frontend_feature_flag(:work_item_description_templates, @project&.group)
+    push_force_frontend_feature_flag(:work_items, !!@project&.work_items_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, !!@project&.work_items_beta_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
   end
 
   layout :determine_layout
@@ -112,7 +110,7 @@ class ProjectsController < Projects::ApplicationController
     if @project.saved?
       redirect_to(
         project_path(@project, custom_import_params),
-        notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
+        notice: safe_format(_("Project '%{project_name}' was successfully created."), project_name: @project.name)
       )
     else
       render 'new'
@@ -174,7 +172,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
+      flash.now[:alert] = safe_format(_("Project '%{project_name}' queued for deletion."), project_name: @project.name)
     end
 
     @ref_type = 'heads'
@@ -197,7 +195,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:toast] = format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
+    flash[:toast] = safe_format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
 
     redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => e
@@ -472,10 +470,7 @@ class ProjectsController < Projects::ApplicationController
       emails_enabled
     ]
 
-    if ::Feature.enabled?(:extended_expiry_webhook_execution_setting, @project&.namespace) &&
-        can?(current_user, :admin_project, project)
-      attributes << :extended_prat_expiry_webhooks_execute
-    end
+    attributes << :extended_prat_expiry_webhooks_execute if can?(current_user, :admin_project, project)
 
     attributes
   end
@@ -599,9 +594,9 @@ class ProjectsController < Projects::ApplicationController
   def check_export_rate_limit!
     prefixed_action = "project_#{params[:action]}".to_sym
 
-    group_scope = params[:action] == 'download_export' ? @project.namespace : nil
+    project_scope = params[:action] == 'download_export' ? @project : nil
 
-    check_rate_limit!(prefixed_action, scope: [current_user, group_scope].compact)
+    check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
   end
 
   def render_edit

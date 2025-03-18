@@ -67,24 +67,17 @@ Our custom elements are:
 - GitLab SVG icons
 - Tabs
 
-For example, before:
+For example:
 
 ```markdown
-WARNING:
-Don't delete your gitlabs!
+{{</* alert type="warning" */>}}
+
+Don't delete your docs!
+
+{{</* /alert */>}}
 ```
 
-And after:
-
-```markdown
-{{< alert type="warning" >}}
-
-Don't delete your gitlabs!
-
-{{< /alert >}}
-```
-
-See the [Shortcodes reference](https://new.docs.gitlab.com/shortcodes) for syntax and examples.
+See the [Shortcodes reference](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/shortcodes.md) for syntax and examples.
 
 **Why:** Shortcodes are the standard Hugo method for creating custom templated
 bits of content.
@@ -256,7 +249,7 @@ For February 2025, run the checks for broken external links and `start_remove` c
 
 {{< alert type="note" >}}
 
-This does not impact the release post [structural check](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#structural-check) or [monthly documentation release](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md) tasks. The assigned Technical Writer should continue to do these tasks as previously scheduled.
+This does not impact the release post [structural check](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#structural-check) or [monthly documentation release](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/releases.md) tasks. The assigned Technical Writer should continue to do these tasks as previously scheduled.
 
 {{< /alert >}}
 

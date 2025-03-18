@@ -1,0 +1,9 @@
+---
+name: manage_pat_by_group_owners_ready
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510346
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176992
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/511922
+milestone: '17.8'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

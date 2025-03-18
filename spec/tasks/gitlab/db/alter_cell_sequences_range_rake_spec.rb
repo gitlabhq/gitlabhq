@@ -37,16 +37,18 @@ RSpec.describe 'gitlab:db:alter_cell_sequences_range', :silence_stdout, feature_
   context 'when run in non Gitlab.com/dev/test environment' do
     before do
       allow(Gitlab).to receive_messages(com_except_jh?: false, dev_or_test_env?: false)
-      allow(Settings).to receive(:skip_sequence_alteration?).and_return(false)
+      stub_config(cell: { enabled: true, database: { skip_sequence_alteration: false } })
     end
 
     it_behaves_like 'does not alter cell sequences range'
   end
 
-  context 'when run for legacy cell' do
+  # This setting (skip_sequence_alteration) is meant for the Legacy cell
+  # All additional Cells are still considered .com
+  context 'when skipping database sequence alteration' do
     before do
       allow(Gitlab).to receive_messages(com_except_jh?: true, dev_or_test_env?: true)
-      allow(Settings).to receive(:skip_sequence_alteration?).and_return(true)
+      stub_config(cell: { enabled: true, database: { skip_sequence_alteration: true } })
     end
 
     it_behaves_like 'does not alter cell sequences range'
@@ -55,7 +57,7 @@ RSpec.describe 'gitlab:db:alter_cell_sequences_range', :silence_stdout, feature_
   context 'when run in Gitlab.com but not jh instance' do
     before do
       allow(Gitlab).to receive(:com_except_jh?).and_return(true)
-      allow(Settings).to receive(:skip_sequence_alteration?).and_return(false)
+      stub_config(cell: { enabled: true, database: { skip_sequence_alteration: false } })
     end
 
     it_behaves_like 'alters cell sequences range'
@@ -64,7 +66,7 @@ RSpec.describe 'gitlab:db:alter_cell_sequences_range', :silence_stdout, feature_
   context 'when run in dev or test env' do
     before do
       allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
-      allow(Settings).to receive(:skip_sequence_alteration?).and_return(false)
+      stub_config(cell: { enabled: true, database: { skip_sequence_alteration: false } })
     end
 
     it_behaves_like 'alters cell sequences range'

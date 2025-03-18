@@ -1,17 +1,18 @@
 - if Gitlab.config.packages.enabled
-  = render ::Layouts::SettingsBlockComponent.new(_('Package Registry'),
+  = render ::Layouts::SettingsBlockComponent.new(_('Package registry'),
     id: 'js-package-settings',
     expanded: expanded_by_default?) do |c|
     - c.with_description do
-      = s_('PackageRegistry|Configure package forwarding and package file size limits.')
+      = s_('PackageRegistry|Configure package forwarding, package limits, and package file size limits.')
     - c.with_body do
       = render_if_exists 'admin/application_settings/ee_package_registry'
       = render 'admin/application_settings/nuget_skip_metadata_url_validation' unless Gitlab.ee?
+      = render 'admin/application_settings/packages_limits_settings'
 
       .gl-mt-7
-        %h4
+        %h4.gl-mb-1
           = _('Package file size limits')
-        %p
+        %p.gl-text-subtle
           = _('Set limit to 0 to allow any file size.')
         .scrolling-tabs-container.inner-page-scroll-tabs
           - if @plans.size > 1

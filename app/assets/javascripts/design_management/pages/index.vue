@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlButton, GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlAlert, GlFormCheckbox, GlLink, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
@@ -49,6 +49,7 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlFormCheckbox,
     GlSprintf,
     GlLink,
     CrudComponent,
@@ -158,6 +159,11 @@ export default {
     document.removeEventListener('paste', this.onDesignPaste);
   },
   methods: {
+    checkboxAriaLabel(design) {
+      return this.isDesignSelected(design)
+        ? s__('DesignManagement|Unselect the design')
+        : s__('DesignManagement|Select the design');
+    },
     resetFilesToBeSaved() {
       this.filesToBeSaved = [];
     },
@@ -460,7 +466,7 @@ export default {
           <li
             v-for="design in designs"
             :key="design.id"
-            class="col-md-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
+            class="col-sm-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
           >
             <design-dropzone
               :display-as-card="hasDesigns"
@@ -472,7 +478,7 @@ export default {
               <design
                 v-bind="design"
                 :is-uploading="isDesignToBeSaved(design.filename)"
-                class="gl-bg-white"
+                class="gl-bg-default"
               />
               <template #upload-text="{ openFileUpload }">
                 <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
@@ -485,15 +491,15 @@ export default {
               </template>
             </design-dropzone>
 
-            <input
+            <gl-form-checkbox
               v-if="canSelectDesign(design.filename)"
+              :id="`design-checkbox-${design.id}`"
               :name="design.filename"
               :checked="isDesignSelected(design.filename)"
-              type="checkbox"
-              class="design-checkbox gl-absolute gl-left-6 gl-top-4 gl-ml-2"
+              class="no-drag gl-absolute gl-left-6 gl-top-3 gl-ml-2 gl-mt-2"
               data-testid="design-checkbox"
               :data-qa-design="design.filename"
-              :aria-label="design.filename"
+              :aria-label="checkboxAriaLabel(design.filename)"
               @change="changeSelectedDesigns(design.filename)"
             />
           </li>

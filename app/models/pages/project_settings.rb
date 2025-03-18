@@ -6,7 +6,7 @@ module Pages
       @project = project
     end
 
-    def url = url_builder.pages_url
+    def url = project.pages_url
 
     def deployments = project.pages_deployments.active
 
@@ -19,9 +19,5 @@ module Pages
     private
 
     attr_reader :project
-
-    def url_builder
-      @url_builder ||= ::Gitlab::Pages::UrlBuilder.new(project)
-    end
   end
 end

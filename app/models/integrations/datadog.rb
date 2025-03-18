@@ -196,7 +196,7 @@ module Integrations
       build_help_page_url(
         'integration/datadog.md',
         s_('DatadogIntegration|Connect your GitLab projects to your Datadog account to synchronize repository metadata and enrich telemetry on your Datadog account.'),
-        _('How do I set up this integration?')
+        link_text: _('How do I set up this integration?')
       )
     end
 

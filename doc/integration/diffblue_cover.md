@@ -67,7 +67,7 @@ Here we'll create a merge request pipeline for the project that will download th
 
    {{< alert type="note" >}}
 
-When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
+   When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
    For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
 
    {{< /alert >}}

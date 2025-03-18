@@ -17,11 +17,9 @@ this provider also allows Crowd authentication for Git-over-https requests.
 
 ## Configure a new Crowd application
 
-1. Choose 'Applications' in the top menu, then 'Add application'.
-1. Go through the 'Add application' steps, entering the appropriate details.
-   The screenshot below shows an example configuration.
-
-   ![Final confirmation page in Crowd for application configuration](img/crowd_application_v9_0.png)
+1. On the top menu, select **Applications > Add application**.
+1. Go through the **Add application** steps, entering the appropriate details.
+1. When complete, select **Add application**.
 
 ## Configure GitLab
 

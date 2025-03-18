@@ -7,11 +7,10 @@ class Projects::IncidentsController < Projects::ApplicationController
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
   before_action do
-    push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items, !!@project&.work_items_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, !!@project&.work_items_beta_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:work_item_description_templates, @project&.group)
   end
 
   feature_category :incident_management

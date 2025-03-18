@@ -342,18 +342,6 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
           is_expected.to match_array(all_tokens.values)
         end
       end
-
-      context 'when the feature flag pat_organization_filter is disabled' do
-        before do
-          stub_feature_flags(pat_organization_filter: false)
-        end
-
-        let(:params) { { organization: first_organization } }
-
-        it 'returns tokens by organization' do
-          is_expected.to match_array(all_tokens.values)
-        end
-      end
     end
 
     describe 'sort' do

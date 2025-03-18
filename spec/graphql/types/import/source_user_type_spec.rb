@@ -20,6 +20,7 @@ RSpec.describe GitlabSchema.types['ImportSourceUser'], feature_category: :import
       sourceUsername
       status
       reassignmentError
+      createdAt
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

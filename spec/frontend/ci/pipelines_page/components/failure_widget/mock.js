@@ -56,7 +56,6 @@ const createFailedJobsMock = (nodes, active = false) => {
         id: 'gid://gitlab/Project/20',
         pipeline: {
           active,
-          troubleshootJobWithAi: true,
           id: 'gid://gitlab/Pipeline/20',
           jobs: {
             count: nodes.length,

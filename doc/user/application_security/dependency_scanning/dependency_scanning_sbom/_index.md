@@ -19,7 +19,8 @@ title: Dependency scanning by using SBOM
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.5.
 - Released [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment-features) in GitLab 17.4.
 - Released [Dependency Scanning CI/CD Component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
-- [Enabled by default with the latest Dependency Scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods and Swift in GitLab 17.9.
+- [Enabled by default with the latest Dependency Scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
+- Feature flag `dependency_scanning_using_sbom_reports` removed in GitLab 17.10.
 
 {{< /history >}}
 
@@ -128,6 +129,8 @@ To enable the (deprecated) Gemnasium analyzer please refer to the enablement ins
 The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
 application can't generate such a report, you can use the GitLab analyzer to produce one.
 
+Please share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+
 Prerequisites:
 
 - A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
@@ -225,7 +228,7 @@ include:
 
 build:
   # Running in the build stage ensures that the dependency-scanning job
-  # receives the maven.graph.json artifacts.
+  # receives the dependencies.lock artifacts.
   stage: build
   script:
     - gradle generateLock saveLock
@@ -249,6 +252,8 @@ build:
 The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
 component on a Maven project. The dependency graph is output as a job artifact
 in the `build` stage, before dependency scanning runs.
+
+Requirement: use at least version `3.7.0` of the maven-dependency-plugin.
 
 ```yaml
 stages:
@@ -299,6 +304,7 @@ build:
   stage: build
   image: "python:latest"
   script:
+    - "pip install -r requirements.txt"
     - "pip install pipdeptree"
     - "pipdeptree --json > pipdeptree.json"
   artifacts:
@@ -329,8 +335,10 @@ include:
 
 build:
   stage: build
-  image: "python:latest"
+  image: "python:3.12"
   script:
+    - "pip install pipenv"
+    - "pipenv install"
     - "pipenv graph --json-tree > pipenv.graph.json"
   artifacts:
     when: on_success
@@ -373,8 +381,50 @@ build:
 
 ## Customizing analyzer behavior
 
-The analyzer can be customized by configuring the CI/CD component's
-[inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
+How to customize the analyzer varies depending on the enablement solution.
+
+{{< alert type="warning" >}}
+
+Test all customization of GitLab analyzers in a merge request before merging these changes to the
+default branch. Failure to do so can give unexpected results, including a large number of false
+positives.
+
+{{< /alert >}}
+
+### Customizing behavior with the CI/CD template
+
+When using the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` or [Scan Execution Policies](../../policies/scan_execution_policies.md) please use [CI/CD variables](#available-cicd-variables).
+
+#### Available CI/CD variables
+
+The following variables allow configuration of global dependency scanning settings.
+
+| CI/CD variables             | Description |
+| ----------------------------|------------ |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied _before_ the scan is executed. Default: `"spec, test, tests, tmp"`. |
+| `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
+| `DS_INCLUDE_DEV_DEPENDENCIES` | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"` |
+| `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN`   | Defines which requirement files to process using glob pattern matching (for example, `requirements*.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details. |
+| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
+
+#### Overriding dependency scanning jobs
+
+To override a job definition declare a new job with the same name as the one to override.
+Place this new job after the template inclusion and specify any additional keys under it.
+For example, this configures the  `dependencies: []` attribute for the dependency-scanning job:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+dependency-scanning:
+  dependencies: ["build"]
+```
+
+### Customizing behavior with the CI/CD component
+
+When using the Dependency Scanning CI/CD component, the analyzer can be customized by configuring the [inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
 
 ## Output
 
@@ -383,7 +433,11 @@ lock file or dependency graph export detected.
 
 ### CycloneDX Software Bill of Materials
 
-> - Generally available in GitLab 15.7.
+{{< history >}}
+
+- Generally available in GitLab 15.7.
+
+{{< /history >}}
 
 The dependency scanning analyzer outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
 for each supported lock or dependency graph export it detects. The CycloneDX SBOMs are created as job artifacts.

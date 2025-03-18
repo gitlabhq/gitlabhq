@@ -32,6 +32,14 @@ RSpec.describe 'Create issue work item', :js, feature_category: :team_planning d
         expect(page).to have_css('h1', text: 'I am a new issue')
         expect(page).to have_text 'Issue created'
       end
+
+      context 'when using keyboard' do
+        it 'supports shortcuts' do
+          find('body').native.send_key('l')
+
+          expect(find('.js-labels')).to have_selector('.gl-new-dropdown-panel')
+        end
+      end
     end
   end
 end

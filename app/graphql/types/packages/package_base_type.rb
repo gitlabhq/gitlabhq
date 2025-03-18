@@ -4,7 +4,7 @@ module Types
   module Packages
     class PackageBaseType < ::Types::BaseObject
       graphql_name 'PackageBase'
-      description 'Represents a package in the Package Registry'
+      description 'Represents a package in the package registry'
 
       PROTECTION_RULE_EXISTS_BATCH_SIZE = 20
 

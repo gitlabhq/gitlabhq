@@ -30,8 +30,9 @@ RSpec.describe Import::SourceUsers::KeepAllAsPlaceholderService, :aggregate_fail
         reassignable_source_users = [
           source_user_pending_assignment_1, source_user_pending_assignment_2, source_user_rejected
         ]
-
-        service.execute
+        expect { service.execute }
+          .to trigger_internal_events('keep_all_as_placeholder_user')
+          .with(namespace: namespace, user: current_user)
 
         reassignable_source_users.each(&:reload)
         expect(reassignable_source_users.all?(&:keep_as_placeholder?)).to be(true)

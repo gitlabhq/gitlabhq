@@ -16,6 +16,32 @@ module Types
       resolver: Resolvers::Users::RecentlyViewedIssuesResolver,
       description: 'Most-recently viewed issues for the current user.',
       experiment: { milestone: '17.9' }
+
+    field :recently_viewed_merge_requests, # rubocop:disable GraphQL/ExtractType -- To be refactored
+      resolver: Resolvers::Users::RecentlyViewedMergeRequestsResolver,
+      description: 'Most-recently viewed merge requests for the current user.',
+      experiment: { milestone: '17.10' }
+
+    field :work_items,
+      null: true,
+      resolver: Resolvers::WorkItems::UserWorkItemsResolver,
+      description: 'Find work items visible to the current user.',
+      experiment: { milestone: '17.10' }
+
+    field :work_item_preferences, # rubocop:disable GraphQL/ExtractType -- fields with different contexts
+      resolver: ::Resolvers::WorkItems::UserPreferenceResolver,
+      null: true,
+      experiment: { milestone: '17.10' },
+      description: 'User preferences for the given work item type and namespace.'
+
+    field :activity,
+      Users::ActivityStreamType,
+      description: 'Recent user activity.',
+      experiment: { milestone: '17.10' }
+
+    def activity
+      object if Feature.enabled?(:activity_stream_graphql, current_user)
+    end
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

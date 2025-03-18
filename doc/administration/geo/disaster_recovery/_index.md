@@ -284,7 +284,7 @@ changing Git remotes and API URLs.
 
    {{< alert type="note" >}}
 
-Changing `external_url` does not prevent access through the old secondary URL, as
+   Changing `external_url` does not prevent access through the old secondary URL, as
    long as the secondary DNS records are still intact.
 
    {{< /alert >}}

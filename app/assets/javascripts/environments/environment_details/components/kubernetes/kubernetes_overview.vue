@@ -163,6 +163,12 @@ export default {
 
       return { conditions, suspend: spec?.suspend };
     },
+    hasFluxResourceAnnotations() {
+      const metadata = this.fluxKustomization.metadata || this.fluxHelmRelease.metadata || {};
+      const { annotations } = metadata;
+
+      return !isEmpty(annotations);
+    },
     fluxNamespace() {
       return (
         this.fluxKustomization?.metadata?.namespace || this.fluxHelmRelease?.metadata?.namespace
@@ -254,7 +260,14 @@ export default {
         });
     },
     onFluxReconcile() {
-      this.onFluxEvent({ trackingEvent: 'click_trigger_flux_reconciliation' });
+      const updateData = !this.hasFluxResourceAnnotations
+        ? {
+            path: '/metadata/annotations',
+            value: { 'reconcile.fluxcd.io/requestedAt': new Date() },
+          }
+        : undefined;
+
+      this.onFluxEvent({ updateData, trackingEvent: 'click_trigger_flux_reconciliation' });
     },
     onFluxSuspend() {
       this.onFluxEvent({

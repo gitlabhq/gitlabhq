@@ -15,8 +15,9 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
   let(:gl_repository) { "project-#{project.id}" }
   let(:branch_name) { 'feature' }
   let(:reference_counter) { double('ReferenceCounter') }
-  let(:push_options) { ['ci.skip', 'another push option'] }
+  let(:push_options) { ['secret_push_protection.skip_all', 'another-ignored-option'] }
   let(:repository) { project.repository }
+  let(:gitaly_context) { {} }
 
   let(:changes) do
     "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
@@ -27,7 +28,8 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
       gl_repository: gl_repository,
       identifier: identifier,
       changes: changes,
-      push_options: push_options
+      push_options: push_options,
+      gitaly_context: gitaly_context
     }
   end
 
@@ -72,7 +74,9 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
 
       it 'enqueues a PostReceive worker job' do
         expect(PostReceive).to receive(:perform_async)
-          .with(gl_repository, identifier, changes, { 'ci' => { 'skip' => true } })
+          .with(gl_repository, identifier, changes, {
+            'secret_push_protection' => { 'skip_all' => true }
+          })
 
         subject
       end
@@ -81,9 +85,38 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
     context 'when rename_post_receive_worker feature flag is enabled' do
       it 'enqueues a PostReceiveWorker worker job' do
         expect(Repositories::PostReceiveWorker).to receive(:perform_async)
-          .with(gl_repository, identifier, changes, { 'ci' => { 'skip' => true } })
+          .with(gl_repository, identifier, changes, {
+            'secret_push_protection' => { 'skip_all' => true }
+          })
 
         subject
+      end
+    end
+
+    context 'when gitaly_context includes skip-ci' do
+      let(:gitaly_context) { { 'skip-ci' => 'true' } }
+
+      it 'adds ci.skip to push options for PostReceiveWorker' do
+        expect(Repositories::PostReceiveWorker).to receive(:perform_async)
+          .with(gl_repository, identifier, changes, {
+            'secret_push_protection' => { 'skip_all' => true },
+            'ci' => { 'skip' => true }
+          })
+
+        subject
+      end
+
+      context 'when push_options are not present' do
+        let(:push_options) { nil }
+
+        it 'only includes ci.skip in push options for PostReceiveWorker' do
+          expect(Repositories::PostReceiveWorker).to receive(:perform_async)
+            .with(gl_repository, identifier, changes, {
+              'ci' => { 'skip' => true }
+            })
+
+          subject
+        end
       end
     end
 

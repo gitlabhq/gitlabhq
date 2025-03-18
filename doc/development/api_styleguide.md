@@ -74,36 +74,53 @@ end
 
 ## Breaking changes
 
-We must not make breaking changes to our REST API v4, even in major GitLab releases.
+We must not make breaking changes to our REST API v4, even in major GitLab releases. See [what is a breaking change](#what-is-a-breaking-change) and [what is not a breaking change](#what-is-not-a-breaking-change).
 
 Our REST API maintains its own versioning independent of GitLab versioning.
-The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/_index.md),
-which means we cannot make breaking changes until a major version change (most likely, `5`).
+The current REST API version is `4`. Because [we commit to follow semantic versioning for our REST API](../api/rest/_index.md), we cannot make breaking changes to it. A major version change for our REST API (most likely, `5`) is currently not planned, or scheduled.
 
-Because version `5` is not scheduled, we allow rare [exceptions](#exceptions).
+The exception is API features that are [marked as experimental or beta](#experimental-beta-and-generally-available-features). These features can be removed or changed at any time.
 
-### Accommodating backward compatibility instead of breaking changes
+### What to do instead of a breaking change
 
-Backward compatibility can often be accommodated in the API by continuing to adapt a changed feature to
-the old API schema. For example, our REST API
-[exposes](https://gitlab.com/gitlab-org/gitlab/-/blob/c104f6b8/lib/api/entities/merge_request_basic.rb#L43-47) both
-`work_in_progress` and `draft` fields.
+The following sections suggest alternatives to making breaking changes.
 
-### Exceptions
+#### Adapt the schema to the change without breaking it
 
-The exception is only when:
+If a feature changes, we should aim to accommodate backwards-compatibility without making a breaking
+change to the API.
 
-- A feature must be removed in a major GitLab release.
-- Backward compatibility cannot be maintained
-  [in any form](#accommodating-backward-compatibility-instead-of-breaking-changes).
-- The feature was previously [marked as experimental or beta](#experimental-beta-and-generally-available-features).
+Instead of introducing a breaking change, change the API controller layer to adapt to the feature change in a way that
+does not present any change to the API consumer.
 
-This exception should be rare.
+For example, we renamed the merge request _WIP_ feature to _Draft_. To accomplish the change, we:
 
-Even in this exception, rather than removing a field or argument, we must always do the following:
+- Added a new `draft` field to the API response.
+- Also kept the old [`work_in_progress`](https://gitlab.com/gitlab-org/gitlab/-/blob/c104f6b8/lib/api/entities/merge_request_basic.rb#L47) field.
 
-- Return an empty response for a field (for example, `"null"` or `[]`).
-- Turn an argument into a no-op.
+Customers did not experience any disruption to their existing API integrations.
+
+#### Maintain API backwards-compatibility for feature removals
+
+Even when a feature that an endpoint interfaced with is [removed](deprecation_guidelines/_index.md) in a major GitLab version, we must still maintain API backwards-compatibility.
+
+Acceptable solutions for maintaining API backwards-compatibility include:
+
+- Return a sensible static value from a field, or an empty response (for example,
+  `null` or `[]`).
+- Turn an argument into a no-op by continuing to accept the argument but having it
+  no longer be operational.
+
+The key principle is that existing customer API integrations must not experience errors.
+The endpoints continue to respond with the same fields and accept the same
+arguments, although the underlying feature interaction is no longer operational.
+
+The intended changes must be documented ahead of time
+[following the v4 deprecation guide](../development/documentation/restful_api_styleguide.md#deprecations).
+
+For example, when we removed an application setting, we
+[kept the old API field](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83984)
+which now returns a sensible static value.
 
 ## What is a breaking change
 
@@ -132,7 +149,7 @@ Some examples of non-breaking changes:
 You can add API elements as [experimental and beta features](../policy/development_stages_support.md). They must be additive changes, otherwise they are categorized as
 [a breaking change](#what-is-not-a-breaking-change).
 
-API elements marked as experiment or beta are exempt from the [ensuring backward compatibility](#accommodating-backward-compatibility-instead-of-breaking-changes) policy,
+API elements marked as experiment or beta are exempt from the [breaking changes](#breaking-changes) policy,
 and can be changed or removed at any time without prior notice.
 
 While in the [experiment status](../policy/development_stages_support.md#experiment):
@@ -291,7 +308,7 @@ helper usage must be in wrapped into the `expose_path` helper call.
 
 For instance:
 
-```haml
+```ruby
 - endpoint = expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid))
 ```
 

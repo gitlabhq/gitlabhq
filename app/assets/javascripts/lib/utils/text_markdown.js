@@ -10,6 +10,7 @@ const INLINE_CODE_TAG_PATTERN = '`';
 const ITALIC_TAG_PATTERN = '_';
 const LINK_TAG_PATTERN = '[{text}](url)';
 const STRIKETHROUGH_TAG_PATTERN = '~~';
+const QUOTE_TAG_PATTERN = '> ';
 
 const ALLOWED_UNDO_TAGS = [
   BOLD_TAG_PATTERN,
@@ -21,6 +22,11 @@ const ALLOWED_UNDO_TAGS = [
 const INDENT_CHAR = ' ';
 const INDENT_LENGTH = 2;
 
+// detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
+const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;
+
+const INDENTED_LINE_PATTERN = /^(?<indent>\s+)(?<content>.)?/;
+
 // at the start of a line, find any amount of whitespace followed by
 // a bullet point character (*+-) and an optional checkbox ([ ] [x])
 // OR a number with a . after it and an optional checkbox ([ ] [x])
@@ -28,10 +34,7 @@ const INDENT_LENGTH = 2;
 const LIST_LINE_HEAD_PATTERN =
   /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([xX~\s])\])?\s)(?<content>.)?/;
 
-const INDENTED_LINE_PATTERN = /^(?<indent>\s+)(?<content>.)?/;
-
-// detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
-const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;
+const QUOTE_LINE_PATTERN = /^\s{0,3}>\s?/;
 
 let compositioningNoteText = false;
 
@@ -223,26 +226,6 @@ function setNewSelectionRange(
   textArea.setSelectionRange(newStart, newEnd);
 }
 
-function isURL(text) {
-  // Extracted as part of markdown_paste_url feature. Retaining
-  // old behavior for Add a link if flag is disabled. Replace
-  // isURL call sites with isValidURL when removing the flag
-  if (gon.features?.markdownPasteUrl) {
-    return isValidURL(text);
-  }
-  if (URL) {
-    try {
-      const url = new URL(text);
-      if (url.origin !== 'null' || url.origin === null) {
-        return true;
-      }
-    } catch (e) {
-      // ignore - no valid url
-    }
-  }
-  return false;
-}
-
 function convertMonacoSelectionToAceFormat(sel) {
   return {
     start: {
@@ -354,6 +337,50 @@ function moveCursor({
 }
 
 /**
+ * This function returns some strategy values that inform the rest of the legacy code
+ * on how to behave
+ *
+ * 1. `getSelectedWithoutTags` this is a function that returns `selected` without the given `tag`.
+ *     NOTE: For the most part, this is relevant in a non-multiline selection.
+ * 2. `shouldUseSelectedWithoutTags` this is a function that returns whether we should use
+ *     the `getSelectedWithoutTags`. NOTE: For the most part, this is relevant only in a
+ *     non-multiline selection.
+ * 3. `shouldRemoveTagFromLine` in a multiline selection, this is a function that returns whether
+ *    we want to remove the tag from the line.
+ * 4. `removeTagFromLine` in a multiline selection, this is a function that  removes
+ *    the tag from the line.
+ *
+ * @param {Object} options
+ * @param {string} selected - the selected bit of the text area which is to be replaced
+ * @param {string} tag - this is the Markdown tag we want to insert
+ * @param {string} selectedSplit - this is selected that has been split by lines `.split('\n')`
+ */
+function prepareInsertMarkdownText({ selected, tag, selectedSplit }) {
+  if (tag === QUOTE_TAG_PATTERN) {
+    const shouldRemoveQuote = selectedSplit.every((val) => QUOTE_LINE_PATTERN.test(val));
+
+    return {
+      getSelectedWithoutTags: () =>
+        selected.slice(selected.match(QUOTE_LINE_PATTERN)[0].length, selected.length),
+      shouldUseSelectedWithoutTags: QUOTE_LINE_PATTERN.test(selected),
+      removeTagFromLine: (line) => line.replace(QUOTE_LINE_PATTERN, ''),
+      shouldRemoveTagFromLine: () => shouldRemoveQuote,
+    };
+  }
+
+  return {
+    getSelectedWithoutTags: () => selected.slice(tag.length, selected.length - tag.length),
+    shouldUseSelectedWithoutTags:
+      selected.length >= tag.length * 2 &&
+      selected.startsWith(tag) &&
+      selected.endsWith(tag) &&
+      ALLOWED_UNDO_TAGS.includes(tag),
+    removeTagFromLine: (line) => line.replace(tag, ''),
+    shouldRemoveTagFromLine: (line) => line.indexOf(tag) === 0,
+  };
+}
+
+/**
  * Inserts the given MarkdownText into the given textArea or editor
  *
  * WARNING: This is a bit of legacy code that has some complicated logic.
@@ -409,7 +436,7 @@ export function insertMarkdownText({
   // check for link pattern and selected text is an URL
   // if so fill in the url part instead of the text part of the pattern.
   if (tag === LINK_TAG_PATTERN) {
-    if (isURL(selected)) {
+    if (isValidURL(selected)) {
       tag = '[text]({text})';
       select = 'text';
     }
@@ -457,12 +484,14 @@ export function insertMarkdownText({
 
   const startChar = !wrap && !currentLineEmpty && !isBeginning ? '\n' : '';
   const textPlaceholder = '{text}';
-  const shouldRemoveTags =
-    selected.length >= tag.length * 2 &&
-    selected.startsWith(tag) &&
-    selected.endsWith(tag) &&
-    ALLOWED_UNDO_TAGS.includes(tag);
-  const getSelectedWithoutTags = () => selected.slice(tag.length, selected.length - tag.length);
+
+  const {
+    shouldUseSelectedWithoutTags,
+    removeTagFromLine,
+    shouldRemoveTagFromLine,
+    getSelectedWithoutTags,
+  } = prepareInsertMarkdownText({ selected, tag, selectedSplit });
+
   const getSelectedWithTags = () => `${startChar}${tag}${selected}${wrap ? tag : ''}`;
 
   if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
@@ -472,14 +501,14 @@ export function insertMarkdownText({
         : blockTagText(text, textArea, blockTag, selected);
     } else {
       textToUpdate = selectedSplit
-        .map((val) => {
+        .map((line) => {
           if (tag.indexOf(textPlaceholder) > -1) {
-            return tag.replace(textPlaceholder, val);
+            return tag.replace(textPlaceholder, line);
           }
-          if (val.indexOf(tag) === 0) {
-            return String(val.replace(tag, ''));
+          if (shouldRemoveTagFromLine(line)) {
+            return removeTagFromLine(line);
           }
-          return String(tag) + val;
+          return String(tag) + line;
         })
         .join('\n');
     }
@@ -487,7 +516,7 @@ export function insertMarkdownText({
     textToUpdate = tag.replace(textPlaceholder, () =>
       selected.replace(/\\n/g, '\n').replace(/%br/g, '\\n'),
     );
-  } else if (shouldRemoveTags) {
+  } else if (shouldUseSelectedWithoutTags) {
     textToUpdate = getSelectedWithoutTags();
   } else {
     textToUpdate = getSelectedWithTags();
@@ -865,7 +894,7 @@ function handleMarkdownPasteUrl(e) {
   let pastedText = e.clipboardData.getData('text');
   if (!pastedText) return;
   pastedText = pastedText.trim();
-  if (isURL(pastedText)) {
+  if (isValidURL(pastedText)) {
     e.preventDefault();
     e.stopImmediatePropagation();
     const selected = selectedText(text, textArea);
@@ -877,7 +906,6 @@ function handleMarkdownPasteUrl(e) {
 }
 
 export function handlePasteModifications(e) {
-  if (!gon.features?.markdownPasteUrl) return;
   // Transparently unwrap event in case we're bound through jQuery.
   // Need the original event to access the clipboard.
   const event = e?.originalEvent ? e.originalEvent : e;

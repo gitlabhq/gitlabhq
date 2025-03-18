@@ -75,6 +75,31 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         )
       end
 
+      it 'creates member only once when source_xid and entity_type are the same' do
+        member = extracted_data(
+          email: member_user1.email,
+          id: member_user1.id
+        )
+
+        extracted = BulkImports::Pipeline::ExtractedData.new(
+          data: member.data,
+          page_info: { 'has_next_page' => false }
+        )
+
+        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
+          allow(extractor).to receive(:extract).and_return(extracted)
+        end
+
+        expect { pipeline.run }.to change(portable.members, :count).by(1)
+
+        # Run again with exact same configuration
+        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
+          allow(extractor).to receive(:extract).and_return(extracted)
+        end
+
+        expect { pipeline.run }.not_to change(portable.members, :count)
+      end
+
       context 'when importer_user_mapping is enabled' do
         let!(:import_source_user) do
           create(:import_source_user,
@@ -202,6 +227,15 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         subject.load(context, member_data)
       end
 
+      it 'removes source_xid and entity_type from data before creating member' do
+        data = member_data.merge('source_xid' => '123', 'entity_type' => 'group')
+
+        expect { pipeline.load(context, data) }.to change(portable.members, :count).by(1)
+
+        created_member = portable.members.last
+        expect(created_member.attributes).not_to include('source_xid', 'entity_type')
+      end
+
       context 'when user_id is current user id' do
         it 'does not create new membership' do
           data = { user_id: user.id }
@@ -275,6 +309,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
             source_user: source_user,
             access_level: 30,
             expires_at: '2020-01-01T00:00:00Z',
+            ignore_duplicate_errors: true,
             group: portable.is_a?(Group) ? portable : nil,
             project: portable.is_a?(Project) ? portable : nil) do |service|
               expect(service).to receive(:execute).and_return(ServiceResponse.success)

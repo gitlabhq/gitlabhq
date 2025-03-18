@@ -1,12 +1,15 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import ManualVariablesForm from '~/ci/job_details/components/manual_variables_form.vue';
+import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
+import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 
 export default {
   components: {
     GlButton,
-    ManualVariablesForm,
+    ManualJobForm,
   },
+  mixins: [PipelineVariablesPermissionsMixin],
+  inject: ['projectPath', 'userRole'],
   props: {
     illustrationPath: {
       type: String,
@@ -70,31 +73,43 @@ export default {
     shouldRenderManualVariables() {
       return this.playable && !this.scheduled;
     },
+    shouldRenderPipelineVariablesText() {
+      return this.canViewPipelineVariables && this.shouldRenderManualVariables && !this.isRetryable;
+    },
   },
 };
 </script>
 <template>
   <div class="gl-empty-state gl-flex gl-flex-col gl-text-center">
     <div :class="illustrationSizeClass" class="gl-max-w-full">
-      <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
-      <img alt="" class="gl-max-w-full" :src="illustrationPath" />
+      <img
+        :alt="s__('CiVariables|Manual job empty state image')"
+        class="gl-max-w-full"
+        :src="illustrationPath"
+      />
     </div>
     <div class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5">
-      <h1
+      <h2
         class="gl-mb-0 gl-mt-0 gl-text-size-h-display gl-leading-36"
         data-testid="job-empty-state-title"
       >
         {{ title }}
-      </h1>
+      </h2>
       <p v-if="content" class="gl-mb-0 gl-mt-4" data-testid="job-empty-state-content">
         {{ content }}
+        <template v-if="shouldRenderPipelineVariablesText">{{
+          s__(
+            'CiVariables|You can add CI/CD variables below for last-minute configuration changes before starting the job.',
+          )
+        }}</template>
       </p>
-      <manual-variables-form
+      <manual-job-form
         v-if="shouldRenderManualVariables"
         :is-retryable="isRetryable"
         :job-id="jobId"
         :job-name="jobName"
         :confirmation-message="confirmationMessage"
+        :can-view-pipeline-variables="canViewPipelineVariables"
         @hideManualVariablesForm="$emit('hideManualVariablesForm')"
       />
       <div

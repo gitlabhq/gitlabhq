@@ -521,15 +521,15 @@ For example, in a Bamboo build plan:
 ```yaml
 version: 2
 # ...
+Build:
+  # ...
   artifacts:
-    -
-      name: Test Reports
+    - name: Test Reports
       location: target/reports
       pattern: '*.xml'
       required: false
       shared: false
-    -
-      name: Special Reports
+    - name: Special Reports
       location: target/reports
       pattern: 'special/*.xml'
       shared: true
@@ -543,8 +543,7 @@ for example:
 ```yaml
 Test app:
   artifact-subscriptions:
-    -
-      artifact: Test Reports
+    - artifact: Test Reports
       destination: deploy
 ```
 
@@ -553,6 +552,8 @@ Test app:
 ```yaml
 version: 2
 # ...
+Build:
+  # ...
   tasks:
     - artifact-download:
         source-plan: PROJECTKEY-PLANKEY

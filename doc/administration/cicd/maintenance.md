@@ -56,7 +56,7 @@ mr.project.try(:ci_integration)
 
 ```ruby
 project = Project.find_by_full_path('<project_path>')
-content = p.ci_config_for(project.repository.root_ref_sha)
+content = project.ci_config_for(project.repository.root_ref_sha)
 Gitlab::Ci::Lint.new(project: project, current_user: User.first).validate(content)
 ```
 
@@ -99,7 +99,7 @@ in GitLab 18.0. Runner authentication tokens should be used instead. For more in
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../settings/continuous_integration.md#allow-runner-registrations-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
 
 ```ruby
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token

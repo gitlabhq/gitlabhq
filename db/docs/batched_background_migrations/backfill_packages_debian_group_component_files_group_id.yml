@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillPackagesDebianGroupComponentFilesGroupId
+description: Backfills sharding key `packages_debian_group_component_files.group_id` from `packages_debian_group_components`.
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182117
+milestone: '17.10'
+queued_migration_version: 20250220131534
+finalized_by: # version of the migration that finalized this BBM

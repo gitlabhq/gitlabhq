@@ -27,7 +27,7 @@ import {
   getPageParams,
   getNextPageParams,
   getPreviousPageParams,
-} from '~/packages_and_registries/package_registry/utils';
+} from '~/packages_and_registries/shared/utils';
 
 export default {
   components: {
@@ -174,15 +174,15 @@ export default {
       }
     },
     handleSearchUpdate({ sort, filters, pageInfo }) {
-      this.pageParams = getPageParams(pageInfo);
+      this.pageParams = getPageParams(pageInfo, GRAPHQL_PAGE_SIZE);
       this.sort = sort;
       this.filters = { ...filters };
     },
     fetchNextPage() {
-      this.pageParams = getNextPageParams(this.pageInfo.endCursor);
+      this.pageParams = getNextPageParams(this.pageInfo.endCursor, GRAPHQL_PAGE_SIZE);
     },
     fetchPreviousPage() {
-      this.pageParams = getPreviousPageParams(this.pageInfo.startCursor);
+      this.pageParams = getPreviousPageParams(this.pageInfo.startCursor, GRAPHQL_PAGE_SIZE);
     },
   },
   i18n: {

@@ -47,6 +47,19 @@ RSpec.shared_examples 'streaming audit event model' do
         audit_event.stream_to_external_destinations(event_name: event_name)
       end
     end
+
+    context 'when silent mode is enabled' do
+      before do
+        stub_application_setting(silent_mode_enabled: true)
+      end
+
+      it 'does not enqueue worker' do
+        expect(AuditEvents::AuditEventStreamingWorker).not_to receive(:perform_async)
+        expect(Gitlab::HTTP).not_to receive(:post)
+
+        audit_event.stream_to_external_destinations(event_name: event_name)
+      end
+    end
   end
 
   describe '#entity_is_group_or_project?' do

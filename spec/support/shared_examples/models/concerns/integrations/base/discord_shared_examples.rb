@@ -40,6 +40,15 @@ RSpec.shared_examples Integrations::Base::Discord do
     end
   end
 
+  describe '.help' do
+    it 'links to help page correctly' do
+      expect(described_class.help).to include(
+        'user/project/integrations/discord_notifications.md',
+        'How do I set up this integration?'
+      )
+    end
+  end
+
   describe '#execute' do
     include StubRequests
 

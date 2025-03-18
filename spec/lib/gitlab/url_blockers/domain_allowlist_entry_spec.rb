@@ -10,7 +10,7 @@ RSpec.describe Gitlab::UrlBlockers::DomainAllowlistEntry do
       domain_allowlist_entry = described_class.new(domain)
 
       expect(domain_allowlist_entry.domain).to eq(domain)
-      expect(domain_allowlist_entry.port).to be(nil)
+      expect(domain_allowlist_entry.port).to be_nil
     end
 
     it 'initializes with port' do

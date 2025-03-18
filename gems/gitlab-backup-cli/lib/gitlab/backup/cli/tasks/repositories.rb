@@ -7,7 +7,7 @@ module Gitlab
         class Repositories < Task
           def self.id = 'repositories'
 
-          def human_name = _('repositories')
+          def human_name = 'Repositories'
 
           def destination_path = 'repositories'
 

@@ -23,10 +23,10 @@ describe('Diffs tree list component', () => {
 
   Vue.use(Vuex);
 
-  const createComponent = ({ hideFileStats = false } = {}) => {
+  const createComponent = ({ hideFileStats = false, ...rest } = {}) => {
     wrapper = shallowMountExtended(TreeList, {
       store,
-      propsData: { hideFileStats },
+      propsData: { hideFileStats, ...rest },
       stubs: {
         // eslint will fail if we import the real component
         RecycleScroller: stubComponent(
@@ -37,7 +37,8 @@ describe('Diffs tree list component', () => {
             },
           },
           {
-            template: '<div><slot :item="{ tree: [] }"></slot></div>',
+            template:
+              '<div><template v-for="item in items"><slot :item="item"></slot></template></div>',
           },
         ),
       },
@@ -422,5 +423,38 @@ describe('Diffs tree list component', () => {
         expect(wrapper.findByTestId(selectedToggle).props('selected')).toBe(true);
       },
     );
+  });
+
+  describe('loading state', () => {
+    const getLoadedFiles = (offset = 1) =>
+      store.state.diffs.tree.slice(offset).reduce((acc, el) => {
+        acc[el.fileHash] = true;
+        return acc;
+      }, {});
+
+    beforeEach(() => {
+      setupFilesInState();
+    });
+
+    it('sets loading state for loading files', () => {
+      const loadedFiles = getLoadedFiles();
+      createComponent({ loadedFiles });
+      const [firstItem, secondItem] = getScroller().props('items');
+      expect(firstItem.loading).toBe(true);
+      expect(secondItem.loading).toBe(false);
+    });
+
+    it('is not focusable', () => {
+      const loadedFiles = getLoadedFiles();
+      createComponent({ loadedFiles });
+      expect(wrapper.findAllComponents(DiffFileRow).at(0).attributes('tabindex')).toBe('-1');
+    });
+
+    it('ignores clicks on loading files', () => {
+      const loadedFiles = getLoadedFiles();
+      createComponent({ loadedFiles });
+      wrapper.findAllComponents(DiffFileRow).at(0).vm.$emit('clickFile', {});
+      expect(wrapper.emitted('clickFile')).toBe(undefined);
+    });
   });
 });

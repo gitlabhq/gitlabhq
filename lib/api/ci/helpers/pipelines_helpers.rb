@@ -33,6 +33,7 @@ module API
               values: ::Ci::PipelineVariable.variable_types.keys, default: 'env_var',
               desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
           end
+          optional :inputs, type: Hash, desc: 'The list of inputs to be used to create the pipeline.'
         end
       end
     end

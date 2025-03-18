@@ -2,7 +2,7 @@
 
 module ClustersHelper
   def display_cluster_agents?(clusterable)
-    clusterable.is_a?(Project)
+    clusterable.is_a?(Project) || clusterable.is_a?(Group)
   end
 
   def js_clusters_list_data(clusterable)
@@ -24,7 +24,8 @@ module ClustersHelper
       display_cluster_agents: display_cluster_agents?(clusterable).to_s,
       certificate_based_clusters_enabled: clusterable.certificate_based_clusters_enabled?.to_s,
       default_branch_name: default_branch_name(clusterable),
-      project_path: clusterable_project_path(clusterable),
+      full_path: clusterable_full_path(clusterable),
+      is_group: clusterable.is_a?(Group).to_s,
       kas_address: Gitlab::Kas.external_url,
       kas_install_version: Gitlab::Kas.install_version_info,
       kas_check_version: Gitlab::Kas.display_version_info
@@ -101,13 +102,43 @@ module ClustersHelper
     can?(user, :admin_cluster, cluster)
   end
 
+  def migration_alert_config(migration)
+    return unless migration
+
+    status = migration.agent_install_status.to_sym
+    config = migration_alert_configs[status]
+
+    return config unless config && status == :error && migration.agent_install_message.present?
+
+    config.merge(details: migration.agent_install_message)
+  end
+
   private
 
   def default_branch_name(clusterable)
     clusterable.default_branch if clusterable.is_a?(Project)
   end
 
-  def clusterable_project_path(clusterable)
-    clusterable.full_path if clusterable.is_a?(Project)
+  def clusterable_full_path(clusterable)
+    clusterable.full_path if clusterable.is_a?(Group) || clusterable.is_a?(Project)
+  end
+
+  def migration_alert_configs
+    {
+      in_progress: {
+        variant: :info,
+        message: s_('ClusterIntegration|Installing agent in progress.')
+      },
+      success: {
+        variant: :success,
+        message: s_('ClusterIntegration|The agent connection is set up.')
+      },
+      error: {
+        variant: :warning,
+        title: s_('ClusterIntegration|Agent setup failed'),
+        message: s_('ClusterIntegration|The agent was not installed in the cluster.'),
+        show_help: true
+      }
+    }.freeze
   end
 end

@@ -18,6 +18,7 @@ RSpec.describe Projects::BranchRulePolicy, feature_category: :source_code_manage
     end
 
     it_behaves_like 'allows branch rule crud'
+    it { is_expected.to be_allowed(:update_squash_option) }
   end
 
   context 'as a developer' do
@@ -26,6 +27,7 @@ RSpec.describe Projects::BranchRulePolicy, feature_category: :source_code_manage
     end
 
     it_behaves_like 'disallows branch rule crud'
+    it { is_expected.not_to be_allowed(:update_squash_option) }
   end
 
   context 'as a guest' do
@@ -34,5 +36,6 @@ RSpec.describe Projects::BranchRulePolicy, feature_category: :source_code_manage
     end
 
     it_behaves_like 'disallows branch rule crud'
+    it { is_expected.not_to be_allowed(:update_squash_option) }
   end
 end

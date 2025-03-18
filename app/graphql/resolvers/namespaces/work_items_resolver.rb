@@ -4,6 +4,8 @@ module Resolvers
   module Namespaces
     # rubocop:disable Graphql/ResolverType -- inherited from Resolvers::WorkItemsResolver
     class WorkItemsResolver < ::Resolvers::WorkItemsResolver
+      include TimeFrameArguments
+
       argument :include_ancestors, GraphQL::Types::Boolean,
         required: false,
         default_value: false,
@@ -30,7 +32,7 @@ module Resolvers
       def finder(args)
         ::WorkItems::WorkItemsFinder.new(
           current_user,
-          args.merge(group_id: resource_parent)
+          args.merge(group_id: resource_parent, **transform_timeframe_parameters(args))
         )
       end
     end

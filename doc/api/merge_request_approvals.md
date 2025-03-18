@@ -23,261 +23,107 @@ Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/_index.md)
 in the project. All endpoints require authentication.
 
-## Group approval rules
+## Approve merge request
 
-{{< details >}}
-
-- Status: Experiment
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `approval_group_rules`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
-
-Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [experiment](../policy/development_stages_support.md).
-
-### Get group approval rules
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440638) in GitLab 16.10.
-
-{{< /history >}}
-
-Group admins can request information about a group's approval rules using the following endpoint:
+Users with the appropriate role can approve a merge request using this endpoint:
 
 ```plaintext
-GET /groups/:id/approval_rules
-```
-
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to restrict the list of approval rules.
-
-Supported attributes:
-
-| Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-
-Example request:
-
-```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules"
-```
-
-Example response:
-
-```json
-[
-  {
-    "id": 2,
-    "name": "rule1",
-    "rule_type": "any_approver",
-    "report_type": null,
-    "eligible_approvers": [],
-    "approvals_required": 3,
-    "users": [],
-    "groups": [],
-    "contains_hidden_groups": false,
-    "protected_branches": [],
-    "applies_to_all_protected_branches": true
-  },
-  {
-    "id": 3,
-    "name": "rule2",
-    "rule_type": "code_owner",
-    "report_type": null,
-    "eligible_approvers": [],
-    "approvals_required": 2,
-    "users": [],
-    "groups": [],
-    "contains_hidden_groups": false,
-    "protected_branches": [],
-    "applies_to_all_protected_branches": true
-  },
-  {
-    "id": 4,
-    "name": "rule2",
-    "rule_type": "report_approver",
-    "report_type": "code_coverage",
-    "eligible_approvers": [],
-    "approvals_required": 2,
-    "users": [],
-    "groups": [],
-    "contains_hidden_groups": false,
-    "protected_branches": [],
-    "applies_to_all_protected_branches": true
-  }
-]
-
-```
-
-### Create group approval rules
-
-Group admins can create approval rules for a group using the following endpoint:
-
-```plaintext
-POST /groups/:id/approval_rules
+POST /projects/:id/merge_requests/:merge_request_iid/approve
 ```
 
 Supported attributes:
 
-| Attribute            | Type              | Required | Description |
-|----------------------|-------------------|----------|-------------|
-| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/_index.md#namespaced-paths). |
-| `approvals_required` | integer           | Yes      | The number of required approvals for this rule. |
-| `name`               | string            | Yes      | The name of the approval rule. |
-| `group_ids`          | array             | No       | The IDs of groups as approvers. |
-| `rule_type`          | string            | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/merge_request_approval_policies.md). |
-| `user_ids`           | array             | No       | The IDs of users as approvers. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
+| `approval_password` | string            | No       | Current user's password. Required if [**Require user re-authentication to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. Always fails if the group or GitLab Self-Managed instance is configured to force SAML authentication. |
+| `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
+| `sha`               | string            | No       | The `HEAD` of the merge request. |
 
-Example request:
-
-```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules?name=security&approvals_required=2"
-```
-
-Example response:
+The `sha` parameter works in the same way as
+when [accepting a merge request](merge_requests.md#merge-a-merge-request): if passed, then it must
+match the current HEAD of the merge request to add the approval. If it
+does not match, the response code is `409`.
 
 ```json
 {
   "id": 5,
-  "name": "security",
-  "rule_type": "any_approver",
-  "eligible_approvers": [],
+  "iid": 5,
+  "project_id": 1,
+  "title": "Approvals API",
+  "description": "Test",
+  "state": "opened",
+  "created_at": "2016-06-08T00:19:52.638Z",
+  "updated_at": "2016-06-09T21:32:14.105Z",
+  "merge_status": "can_be_merged",
   "approvals_required": 2,
-  "users": [],
-  "groups": [],
-  "contains_hidden_groups": false,
-  "protected_branches": [
+  "approvals_left": 0,
+  "approved_by": [
     {
-      "id": 5,
-      "name": "master",
-      "push_access_levels": [
-        {
-          "id": 5,
-          "access_level": 40,
-          "access_level_description": "Maintainers",
-          "deploy_key_id": null,
-          "user_id": null,
-          "group_id": null
-        }
-      ],
-      "merge_access_levels": [
-        {
-          "id": 5,
-          "access_level": 40,
-          "access_level_description": "Maintainers",
-          "user_id": null,
-          "group_id": null
-        }
-      ],
-      "allow_force_push": false,
-      "unprotect_access_levels": [],
-      "code_owner_approval_required": false,
-      "inherited": false
+      "user": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/root"
+      }
+    },
+    {
+      "user": {
+        "name": "Nico Cartwright",
+        "username": "ryley",
+        "id": 2,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/ryley"
+      }
     }
-  ],
-  "applies_to_all_protected_branches": true
+  ]
 }
 ```
 
-### Update group approval rules
+## Unapprove merge request
 
-{{< history >}}
+If you did approve a merge request, you can unapprove it using the following
+endpoint:
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440639) in GitLab 16.10.
-
-{{< /history >}}
-
-Group admins can update group approval rules using the following endpoint:
-
-```shell
-PUT /groups/:id/approval_rules/:approval_rule_id
+```plaintext
+POST /projects/:id/merge_requests/:merge_request_iid/unapprove
 ```
 
 Supported attributes:
 
-| Attribute            | Type              | Required | Description |
-|----------------------|-------------------|----------|-------------|
-| `approval_rule_id`.  | integer           | Yes      | The ID of the approval rule. |
-| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/_index.md#namespaced-paths). |
-| `approvals_required` | string            | No       | The number of required approvals for this rule. |
-| `group_ids`          | integer           | No       | The IDs of users as approvers. |
-| `name`               | string            | No       | The name of the approval rule. |
-| `rule_type`          | array             | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/merge_request_approval_policies.md). |
-| `user_ids`           | array             | No       | The IDs of groups as approvers. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
 
-Example request:
+## Reset approvals of a merge request
+
+Clear all approvals of merge request.
+
+Available only for [bot users](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
+based on project or group tokens. Users without bot permissions receive a `401 Unauthorized` response.
+
+```plaintext
+PUT /projects/:id/merge_requests/:merge_request_iid/reset_approvals
+```
+
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
 
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules/5?name=security2&approvals_required=1"
-```
-
-Example response:
-
-```json
-{
-  "id": 5,
-  "name": "security2",
-  "rule_type": "any_approver",
-  "eligible_approvers": [],
-  "approvals_required": 1,
-  "users": [],
-  "groups": [],
-  "contains_hidden_groups": false,
-  "protected_branches": [
-    {
-      "id": 5,
-      "name": "master",
-      "push_access_levels": [
-        {
-          "id": 5,
-          "access_level": 40,
-          "access_level_description": "Maintainers",
-          "deploy_key_id": null,
-          "user_id": null,
-          "group_id": null
-        }
-      ],
-      "merge_access_levels": [
-        {
-          "id": 5,
-          "access_level": 40,
-          "access_level_description": "Maintainers",
-          "user_id": null,
-          "group_id": null
-        }
-      ],
-      "allow_force_push": false,
-      "unprotect_access_levels": [],
-      "code_owner_approval_required": false,
-      "inherited": false
-    }
-  ],
-  "applies_to_all_protected_branches": true
-}
+  --url "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/reset_approvals"
 ```
 
 ## Project approval rules
 
-> - Use the [project approval rules](#get-all-approval-rules-for-project) to access this information.
+Use the [project approval rules](#get-all-approval-rules-for-project) to access this information.
 
 You can request information about a project's approval configuration using the
 following endpoint:
@@ -1428,100 +1274,254 @@ Supported attributes:
 | `approval_rule_id`  | integer           | Yes      | The ID of an approval rule. |
 | `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
 
-## Approve merge request
+## Group approval rules
 
-Users with the appropriate role can approve a merge request using this endpoint:
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `approval_group_rules`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+{{< /alert >}}
+
+Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [experiment](../policy/development_stages_support.md).
+
+### Get group approval rules
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440638) in GitLab 16.10.
+
+{{< /history >}}
+
+Group admins can request information about a group's approval rules using the following endpoint:
 
 ```plaintext
-POST /projects/:id/merge_requests/:merge_request_iid/approve
+GET /groups/:id/approval_rules
+```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to restrict the list of approval rules.
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 2,
+    "name": "rule1",
+    "rule_type": "any_approver",
+    "report_type": null,
+    "eligible_approvers": [],
+    "approvals_required": 3,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  },
+  {
+    "id": 3,
+    "name": "rule2",
+    "rule_type": "code_owner",
+    "report_type": null,
+    "eligible_approvers": [],
+    "approvals_required": 2,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  },
+  {
+    "id": 4,
+    "name": "rule2",
+    "rule_type": "report_approver",
+    "report_type": "code_coverage",
+    "eligible_approvers": [],
+    "approvals_required": 2,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  }
+]
+
+```
+
+### Create group approval rules
+
+Group admins can create approval rules for a group using the following endpoint:
+
+```plaintext
+POST /groups/:id/approval_rules
 ```
 
 Supported attributes:
 
-| Attribute           | Type              | Required | Description |
-|---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `approval_password` | string            | No       | Current user's password. Required if [**Require user re-authentication to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. Always fails if the group or GitLab Self-Managed instance is configured to force SAML authentication. |
-| `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
-| `sha`               | string            | No       | The `HEAD` of the merge request. |
+| Attribute            | Type              | Required | Description |
+|----------------------|-------------------|----------|-------------|
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/_index.md#namespaced-paths). |
+| `approvals_required` | integer           | Yes      | The number of required approvals for this rule. |
+| `name`               | string            | Yes      | The name of the approval rule. Limited to 1024 characters. |
+| `group_ids`          | array             | No       | The IDs of groups as approvers. |
+| `rule_type`          | string            | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/merge_request_approval_policies.md). |
+| `user_ids`           | array             | No       | The IDs of users as approvers. |
 
-The `sha` parameter works in the same way as
-when [accepting a merge request](merge_requests.md#merge-a-merge-request): if passed, then it must
-match the current HEAD of the merge request to add the approval. If it
-does not match, the response code is `409`.
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules?name=security&approvals_required=2"
+```
+
+Example response:
 
 ```json
 {
   "id": 5,
-  "iid": 5,
-  "project_id": 1,
-  "title": "Approvals API",
-  "description": "Test",
-  "state": "opened",
-  "created_at": "2016-06-08T00:19:52.638Z",
-  "updated_at": "2016-06-09T21:32:14.105Z",
-  "merge_status": "can_be_merged",
+  "name": "security",
+  "rule_type": "any_approver",
+  "eligible_approvers": [],
   "approvals_required": 2,
-  "approvals_left": 0,
-  "approved_by": [
+  "users": [],
+  "groups": [],
+  "contains_hidden_groups": false,
+  "protected_branches": [
     {
-      "user": {
-        "name": "Administrator",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/root"
-      }
-    },
-    {
-      "user": {
-        "name": "Nico Cartwright",
-        "username": "ryley",
-        "id": 2,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
-        "web_url": "http://localhost:3000/ryley"
-      }
+      "id": 5,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "deploy_key_id": null,
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "allow_force_push": false,
+      "unprotect_access_levels": [],
+      "code_owner_approval_required": false,
+      "inherited": false
     }
-  ]
+  ],
+  "applies_to_all_protected_branches": true
 }
 ```
 
-## Unapprove merge request
+### Update group approval rules
 
-If you did approve a merge request, you can unapprove it using the following
-endpoint:
+{{< history >}}
 
-```plaintext
-POST /projects/:id/merge_requests/:merge_request_iid/unapprove
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440639) in GitLab 16.10.
+
+{{< /history >}}
+
+Group admins can update group approval rules using the following endpoint:
+
+```shell
+PUT /groups/:id/approval_rules/:approval_rule_id
 ```
 
 Supported attributes:
 
-| Attribute           | Type              | Required | Description |
-|---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+| Attribute            | Type              | Required | Description |
+|----------------------|-------------------|----------|-------------|
+| `approval_rule_id`.  | integer           | Yes      | The ID of the approval rule. |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/_index.md#namespaced-paths). |
+| `approvals_required` | string            | No       | The number of required approvals for this rule. |
+| `group_ids`          | integer           | No       | The IDs of users as approvers. |
+| `name`               | string            | No       | The name of the approval rule. Limited to 1024 characters. |
+| `rule_type`          | array             | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/merge_request_approval_policies.md). |
+| `user_ids`           | array             | No       | The IDs of groups as approvers. |
 
-## Reset approvals of a merge request
-
-Clear all approvals of merge request.
-
-Available only for [bot users](../user/project/settings/project_access_tokens.md#bot-users-for-projects)
-based on project or group tokens. Users without bot permissions receive a `401 Unauthorized` response.
-
-```plaintext
-PUT /projects/:id/merge_requests/:merge_request_iid/reset_approvals
-```
-
-| Attribute           | Type              | Required | Description |
-|---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
+Example request:
 
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/reset_approvals"
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules/5?name=security2&approvals_required=1"
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "name": "security2",
+  "rule_type": "any_approver",
+  "eligible_approvers": [],
+  "approvals_required": 1,
+  "users": [],
+  "groups": [],
+  "contains_hidden_groups": false,
+  "protected_branches": [
+    {
+      "id": 5,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "deploy_key_id": null,
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "allow_force_push": false,
+      "unprotect_access_levels": [],
+      "code_owner_approval_required": false,
+      "inherited": false
+    }
+  ],
+  "applies_to_all_protected_branches": true
+}
 ```

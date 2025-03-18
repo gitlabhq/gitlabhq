@@ -1,6 +1,6 @@
-import { PROJECT_VIEW_TYPE } from './constants';
-import { getStorageTabMetadata } from './storage/tab_metadata';
+import { getProjectStorageTabMetadata } from './storage/project/tab_metadata';
+import { mountUsageQuotasApp } from './utils';
 
-export const usageQuotasTabsMetadata = [
-  getStorageTabMetadata({ viewType: PROJECT_VIEW_TYPE }),
-].filter(Boolean);
+const usageQuotasTabsMetadata = [getProjectStorageTabMetadata()].filter(Boolean);
+
+export default () => mountUsageQuotasApp(usageQuotasTabsMetadata);

@@ -3,6 +3,7 @@
 module Resolvers
   class GroupsResolver < BaseResolver
     include ResolvesGroups
+    include Gitlab::Graphql::Authorize::AuthorizeResource
 
     type Types::GroupType.connection_type, null: true
 
@@ -32,12 +33,37 @@ module Resolvers
         "for example: `id_desc` or `name_asc`",
       default_value: 'name_asc'
 
+    argument :parent_path, GraphQL::Types::ID,
+      required: false,
+      description: 'Full path of the parent group.'
+
+    argument :all_available, GraphQL::Types::Boolean,
+      required: false,
+      default_value: true,
+      replace_null_with_default: true,
+      description: <<~DESC
+        When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.
+        Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence.
+      DESC
+
     private
 
-    def resolve_groups(**args)
+    def resolve_groups(parent_path: nil, **args)
+      args[:parent] = find_authorized_parent!(parent_path) if parent_path
+
       GroupsFinder
         .new(context[:current_user], args)
         .execute
+    end
+
+    def find_authorized_parent!(path)
+      group = Group.find_by_full_path(path)
+
+      unless Ability.allowed?(current_user, :read_group, group)
+        raise_resource_not_available_error! format(_('Could not find parent group with path %{path}'), path: path)
+      end
+
+      group
     end
   end
 end

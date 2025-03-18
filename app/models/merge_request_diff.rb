@@ -75,6 +75,13 @@ class MergeRequestDiff < ApplicationRecord
   scope :viewable, -> { without_state(:empty) }
   scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
   scope :by_commit_sha, ->(sha) do
+    if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
+      Gitlab::AppLogger.info(
+        event: 'merge_request_diff_by_commit_sha_call',
+        message: "MergeRequestDiff.by_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
+      )
+    end
+
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
 
@@ -205,6 +212,7 @@ class MergeRequestDiff < ApplicationRecord
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+  after_create_commit :set_patch_id_sha, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
   after_create_commit :trigger_diff_generated_subscription, unless: :importing?
 
@@ -223,7 +231,6 @@ class MergeRequestDiff < ApplicationRecord
   # and save it to the database as serialized data
   def save_git_content
     ensure_commit_shas
-    set_patch_id_sha
 
     save_commits
     save_diffs
@@ -242,10 +249,12 @@ class MergeRequestDiff < ApplicationRecord
     return unless base_commit_sha && head_commit_sha
     return if base_commit_sha == head_commit_sha
 
-    self.patch_id_sha = project.repository&.get_patch_id(
+    patch_id_sha = project.repository&.get_patch_id(
       base_commit_sha,
       head_commit_sha
     )
+
+    update_column(:patch_id_sha, patch_id_sha)
   end
 
   def get_patch_id_sha
@@ -255,7 +264,6 @@ class MergeRequestDiff < ApplicationRecord
 
     return unless patch_id_sha.present?
 
-    save
     patch_id_sha
   end
 
@@ -345,11 +353,19 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def first_commit
-    commits.last
+    if Feature.enabled?(:more_commits_from_gitaly, project)
+      commits(load_from_gitaly: true).last
+    else
+      commits.last
+    end
   end
 
   def last_commit
-    commits.first
+    if Feature.enabled?(:more_commits_from_gitaly, project)
+      commits(load_from_gitaly: true).first
+    else
+      commits.first
+    end
   end
 
   def base_commit
@@ -847,7 +863,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def save_commits
-    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
+    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
     self.class.uncached { merge_request_diff_commits.reset }
   end
 

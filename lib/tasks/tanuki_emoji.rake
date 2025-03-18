@@ -80,7 +80,7 @@ namespace :tanuki_emoji do
     puts "Importing emojis into: #{emoji_dir} ..."
 
     # Re-create the assets folder and copy emojis renaming them to use name instead of unicode hex
-    FileUtils.rm_rf(emoji_dir) if Dir.exist?(emoji_dir)
+    FileUtils.rm_rf(emoji_dir)
     FileUtils.mkdir_p(emoji_dir, mode: 0700)
 
     TanukiEmoji.index.all.find_each do |emoji|

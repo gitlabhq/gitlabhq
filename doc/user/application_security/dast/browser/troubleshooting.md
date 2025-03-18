@@ -90,7 +90,7 @@ Log messages have the format `[time] [log level] [log module] [message] [additio
 
 For example, the following log entry has level `INFO`, is part of the `CRAWL` log module, has the message `Crawled path` and the additional properties `nav_id` and `path`.
 
-```txt
+```plaintext
 2021-04-21T00:34:04.000 INF CRAWL Crawled path nav_id=0cc7fd path="LoadURL [https://my.site.com:8090]"
 ```
 

@@ -2,19 +2,19 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue from 'vue';
 
 export function parseAttributes(el) {
-  const { items: itemsString, selected, placement } = el.dataset;
+  const { items: itemsString, selected, placement, headerText } = el.dataset;
 
   const items = JSON.parse(itemsString);
 
   const { className } = el;
 
-  return { items, selected, placement, className };
+  return { items, selected, placement, className, headerText };
 }
 
 export function initListbox(el, { onChange } = {}) {
   if (!el) return null;
 
-  const { items, selected, placement, className } = parseAttributes(el);
+  const { items, selected, placement, className, headerText } = parseAttributes(el);
 
   return new Vue({
     el,
@@ -35,6 +35,7 @@ export function initListbox(el, { onChange } = {}) {
           placement,
           selected: this.selected,
           toggleText: this.text,
+          headerText,
         },
         class: className,
         on: {

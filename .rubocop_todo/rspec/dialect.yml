@@ -12,7 +12,6 @@ RSpec/Dialect:
     - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/merge_request_spec.rb'
-    - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/models/work_items/type_spec.rb'
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/requests/api/epic_boards_spec.rb'

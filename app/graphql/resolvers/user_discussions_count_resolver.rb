@@ -22,7 +22,7 @@ module Resolvers
     def load_discussions_counts
       BatchLoader::GraphQL.for(object.id).batch do |ids, loader, args|
         counts = Note.count_for_collection(
-          ids, object.class.name, 'COUNT(DISTINCT discussion_id) as count'
+          ids, object.class.base_class.name, 'COUNT(DISTINCT discussion_id) as count'
         ).index_by(&:noteable_id)
 
         ids.each do |id|

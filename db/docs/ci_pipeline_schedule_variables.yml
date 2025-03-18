@@ -8,14 +8,6 @@ description: Stores the variables used in pipeline schedules
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/d278da48f837292491aaf81649afef1da3a1eb09
 milestone: '9.4'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: pipeline_schedule_id
-        table: ci_pipeline_schedules
-        sharding_key: project_id
-        belongs_to: pipeline_schedule
-desired_sharding_key_migration_job_name: BackfillCiPipelineScheduleVariablesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

@@ -1,10 +1,8 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Sidebar from '~/right_sidebar';
 import { getSidebarOptions } from '~/sidebar/mount_sidebar';
 import CsvImportExportButtons from './components/csv_import_export_buttons.vue';
-import IssuableByEmail from './components/issuable_by_email.vue';
 import issuableBulkUpdateActions from './issuable_bulk_update_actions';
 import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 import IssuableContext from './issuable_context';
@@ -60,39 +58,6 @@ export function initCsvImportExportButtons() {
           issuableCount: parseInt(issuableCount, 10),
         },
       }),
-  });
-}
-
-export function initIssuableByEmail() {
-  const el = document.querySelector('.js-issuable-by-email');
-
-  if (!el) {
-    return null;
-  }
-
-  Vue.use(GlToast);
-
-  const {
-    initialEmail,
-    issuableType,
-    emailsHelpPagePath,
-    quickActionsHelpPath,
-    markdownHelpPath,
-    resetPath,
-  } = el.dataset;
-
-  return new Vue({
-    el,
-    name: 'IssuableByEmailRoot',
-    provide: {
-      initialEmail,
-      issuableType,
-      emailsHelpPagePath,
-      quickActionsHelpPath,
-      markdownHelpPath,
-      resetPath,
-    },
-    render: (createElement) => createElement(IssuableByEmail),
   });
 }
 

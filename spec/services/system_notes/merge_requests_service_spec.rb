@@ -375,4 +375,18 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
       end
     end
   end
+
+  describe '#reviewed' do
+    subject { described_class.new(noteable: noteable, container: project, author: author).reviewed }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'reviewed' }
+    end
+
+    context 'when the user submits the review without approving or requesting changes' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "left review comments"
+      end
+    end
+  end
 end

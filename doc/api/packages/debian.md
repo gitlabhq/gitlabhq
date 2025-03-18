@@ -12,7 +12,11 @@ title: Debian API
 
 {{< /details >}}
 
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+{{< history >}}
+
+- [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+
+{{< /history >}}
 
 This is the API documentation for [Debian](../../user/packages/debian_repository/_index.md).
 

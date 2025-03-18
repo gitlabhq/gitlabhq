@@ -28,7 +28,7 @@ func TestCopyBytes(t *testing.T) {
 
 	result := copyBytes(bytes)
 	require.Equal(t, bytes, result)
-	require.NotSame(t, bytes, result)
+	require.NotSame(t, &bytes, &result)
 }
 
 func TestSetBytes(t *testing.T) {

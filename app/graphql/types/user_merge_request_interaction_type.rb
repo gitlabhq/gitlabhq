@@ -17,30 +17,30 @@ module Types
       null: false,
       calls_gitaly: true,
       method: :can_merge?,
-      description: 'Whether this user can merge this merge request.'
+      description: 'Whether the user can merge the merge request.'
 
     field :can_update,
       type: ::GraphQL::Types::Boolean,
       null: false,
       method: :can_update?,
-      description: 'Whether this user can update this merge request.'
+      description: 'Whether the user can update the merge request.'
 
     field :review_state,
       ::Types::MergeRequestReviewStateEnum,
       null: true,
-      description: 'State of the review by this user.'
+      description: 'State of the review by the user.'
 
     field :reviewed,
       type: ::GraphQL::Types::Boolean,
       null: false,
       method: :reviewed?,
-      description: 'Whether this user has provided a review for this merge request.'
+      description: 'Whether the user has provided a review for the merge request.'
 
     field :approved,
       type: ::GraphQL::Types::Boolean,
       null: false,
       method: :approved?,
-      description: 'Whether this user has approved this merge request.'
+      description: 'Whether the user has approved the merge request.'
   end
 end
 

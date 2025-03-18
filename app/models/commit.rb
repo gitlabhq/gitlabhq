@@ -413,7 +413,11 @@ class Commit
     message_body = ["(cherry picked from commit #{sha})"]
 
     if merged_merge_request?(user)
-      commits_in_merge_request = merged_merge_request(user).commits
+      commits_in_merge_request = if Feature.enabled?(:more_commits_from_gitaly, project)
+                                   merged_merge_request(user).commits(load_from_gitaly: true)
+                                 else
+                                   merged_merge_request(user).commits
+                                 end
 
       if commits_in_merge_request.present?
         message_body << ""
@@ -550,12 +554,6 @@ class Commit
     "commit:#{sha}"
   end
 
-  def broadcast_notes_changed
-    super
-
-    broadcast_notes_changed_for_related_mrs
-  end
-
   def readable_by?(user)
     Ability.allowed?(user, :read_commit, self)
   end
@@ -604,7 +602,7 @@ class Commit
   def first_diffs_slice(limit, diff_options = {})
     diff_options[:max_files] = limit
 
-    diffs(diff_options)
+    diffs(diff_options).diff_files
   end
 
   private
@@ -614,10 +612,6 @@ class Commit
       refs = repository.refs_by_oid(oid: id, ref_patterns: [ref_prefix], limit: limit)
       refs.map { |n| n.delete_prefix(ref_prefix) }
     end
-  end
-
-  def broadcast_notes_changed_for_related_mrs
-    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:broadcast_notes_changed)
   end
 
   def commit_reference(from, referable_commit_id, full: false)

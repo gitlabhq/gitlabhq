@@ -8,4 +8,4 @@
   stage: Foundations
   tiers: [FREE]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332323
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#queryusagetrendsmeasurements
+  documentation_url: https://docs.gitlab.com/api/graphql/reference/#queryusagetrendsmeasurements

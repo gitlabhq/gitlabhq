@@ -7,7 +7,6 @@ module Mutations
 
       include FindsProject
       include Gitlab::Utils::StrongMemoize
-      include ::Ci::JobToken::InternalEventsTracking
 
       authorize :admin_project
 
@@ -38,6 +37,11 @@ module Mutations
         description: 'Indicates the ability to push to the original project ' \
           'repository using a job token'
 
+      argument :pipeline_variables_minimum_override_role,
+        GraphQL::Types::String,
+        required: false,
+        description: 'Minimum role required to set variables when creating a pipeline or running a job.'
+
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
         null: false,
@@ -48,23 +52,40 @@ module Mutations
           raise Gitlab::Graphql::Errors::ArgumentError, 'job_token_scope_enabled can only be set to false'
         end
 
-        settings = project(full_path).ci_cd_settings
-        settings.update(args)
+        project = authorized_find!(full_path)
 
-        track_job_token_scope_setting_changes(settings, current_user) unless settings.errors.any?
+        response = ::Projects::UpdateService.new(
+          project,
+          current_user,
+          project_update_params(project, **args)
+        ).execute
 
-        {
-          ci_cd_settings: settings,
-          errors: errors_on_object(settings)
-        }
+        settings = project.ci_cd_settings
+
+        if response[:status] == :success
+          {
+            ci_cd_settings: settings,
+            errors: errors_on_object(settings)
+          }
+        else
+          {
+            ci_cd_settings: settings,
+            errors: [response[:message]]
+          }
+        end
       end
 
       private
 
-      def project(full_path)
-        strong_memoize_with(:project, full_path) do
-          authorized_find!(full_path)
-        end
+      def project_update_params(_project, **args)
+        {
+          keep_latest_artifact: args[:keep_latest_artifact],
+          ci_outbound_job_token_scope_enabled: args[:job_token_scope_enabled],
+          ci_inbound_job_token_scope_enabled: args[:inbound_job_token_scope_enabled],
+          ci_push_repository_for_job_token_allowed: args[:push_repository_for_job_token_allowed],
+          restrict_user_defined_variables: args[:restrict_user_defined_variables],
+          ci_pipeline_variables_minimum_override_role: args[:pipeline_variables_minimum_override_role]
+        }.compact
       end
     end
   end

@@ -151,8 +151,12 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
     end
   end
 
-  describe '#register' do
+  describe '#register', :freeze_time do
     subject(:register) { get :register, params: { group_id: group, id: new_runner } }
+
+    let(:new_runner) do
+      create(:ci_runner, :unregistered, *runner_traits, :group, groups: [group], registration_type: :authenticated_user)
+    end
 
     context 'when user is owner' do
       before_all do
@@ -160,7 +164,7 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
       end
 
       context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) { create(:ci_runner, :group, groups: [group], registration_type: :authenticated_user) }
+        let(:runner_traits) { [:created_before_registration_deadline] }
 
         it 'renders a :register template' do
           register
@@ -171,7 +175,7 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
       end
 
       context 'when runner cannot be registered after creation' do
-        let_it_be(:new_runner) { runner }
+        let(:runner_traits) { [:created_after_registration_deadline] }
 
         it 'returns :not_found' do
           register
@@ -187,7 +191,7 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
       end
 
       context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) { create(:ci_runner, :group, groups: [group], registration_type: :authenticated_user) }
+        let(:runner_traits) { [:created_before_registration_deadline] }
 
         it 'returns :not_found' do
           register

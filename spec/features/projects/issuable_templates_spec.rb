@@ -144,7 +144,7 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
     end
   end
 
-  context 'user creates a merge request using templates' do
+  context 'user applies template to a merge request' do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:bug_template_content) { 'this is merge request bug template' }
     let(:template_override_warning) { 'Applying a template will replace the existing issue description.' }
@@ -164,42 +164,62 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
         bug_template_content,
         message: 'added merge request bug template',
         branch_name: 'master')
-      visit edit_project_merge_request_path project, merge_request
-      fill_in :'merge_request[title]', with: 'test merge request title'
     end
 
-    it 'user selects "feature-proposal" template' do
-      select_template 'feature-proposal'
-      wait_for_requests
-      assert_template
-      save_changes
-    end
-
-    context 'changes template' do
+    context 'creating merge request' do
       before do
-        select_template 'bug'
-        wait_for_requests
-        fill_in :'merge_request[description]', with: updated_description
+        visit project_new_merge_request_path(project, merge_request: { source_branch: 'feature' })
+      end
+
+      it 'user selects "feature-proposal" template' do
         select_template 'feature-proposal'
-        expect(page).to have_content template_override_warning
+        click_button 'Apply template'
+        wait_for_requests
+        click_button 'Create merge request'
+        wait_for_requests
+        expect(find('.description')).to have_content template_content
+      end
+    end
+
+    context 'editing merge request' do
+      before do
+        visit edit_project_merge_request_path project, merge_request
+        fill_in :'merge_request[title]', with: 'test merge request title'
       end
 
-      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then cancels template change' do
-        page.find('.js-template-warning .js-close-btn.js-cancel-btn').click
-        expect(find('textarea')['value']).to eq(updated_description)
-        expect(page).not_to have_content template_override_warning
-      end
-
-      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then dismiss the template warning' do
-        page.find('.js-template-warning .js-close-btn.js-dismiss-btn').click
-        expect(find('textarea')['value']).to eq(updated_description)
-        expect(page).not_to have_content template_override_warning
-      end
-
-      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then applies template change' do
-        page.find('.js-template-warning .js-override-template').click
+      it 'user selects "feature-proposal" template for existing merge request' do
+        select_template 'feature-proposal'
         wait_for_requests
         assert_template
+        save_changes
+      end
+
+      context 'changes template' do
+        before do
+          select_template 'bug'
+          wait_for_requests
+          fill_in :'merge_request[description]', with: updated_description
+          select_template 'feature-proposal'
+          expect(page).to have_content template_override_warning
+        end
+
+        it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then cancels template change' do
+          page.find('.js-template-warning .js-close-btn.js-cancel-btn').click
+          expect(find('textarea')['value']).to eq(updated_description)
+          expect(page).not_to have_content template_override_warning
+        end
+
+        it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then dismiss the template warning' do
+          page.find('.js-template-warning .js-close-btn.js-dismiss-btn').click
+          expect(find('textarea')['value']).to eq(updated_description)
+          expect(page).not_to have_content template_override_warning
+        end
+
+        it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then applies template change' do
+          page.find('.js-template-warning .js-override-template').click
+          wait_for_requests
+          assert_template
+        end
       end
     end
   end

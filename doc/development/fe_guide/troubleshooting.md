@@ -25,14 +25,14 @@ See [this video](https://youtu.be/-BkEhghP-kM) for an in-depth overview and inve
 
 **Remedy - Try cloning the object that has Vue watchers**
 
-```patch
+```diff
 - expect(wrapper.findComponent(ChildComponent).props()).toEqual(...);
 + expect(cloneDeep(wrapper.findComponent(ChildComponent).props())).toEqual(...)
 ```
 
 **Remedy - Try using `toMatchObject` instead of `toEqual`**
 
-```patch
+```diff
 - expect(wrapper.findComponent(ChildComponent).props()).toEqual(...);
 + expect(wrapper.findComponent(ChildComponent).props()).toMatchObject(...);
 ```
@@ -82,7 +82,7 @@ See this [closed MR](https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/20
 
 VueApollo will skip manually running `provide()` if it sees that an `apolloProvider` is provided in the `$options`.
 
-```patch
+```diff
   new Vue(
     el,
 +   apolloProvider: {},
@@ -155,7 +155,7 @@ query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 100, $endCursor: Stri
 }
 ```
 
-```patch
+```diff
 query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 100, $endCursor: String) {
   workItem(id: $id) {
     namespace {

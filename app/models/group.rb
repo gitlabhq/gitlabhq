@@ -151,6 +151,9 @@ class Group < Namespace
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :force_pages_access_control, :force_pages_access_control=, to: :namespace_settings, allow_nil: true
 
+  delegate :require_dpop_for_manage_api_endpoints, :require_dpop_for_manage_api_endpoints=, to: :namespace_settings
+  delegate :require_dpop_for_manage_api_endpoints?, to: :namespace_settings
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :group_feature, update_only: true
 
@@ -409,7 +412,7 @@ class Group < Namespace
     # the group owner and is a placeholder value for inheriting the value from the ApplicationSetting.
     def project_creation_levels_for_user(user)
       project_creation_allowed_on_levels = [
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS,
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
         ::Gitlab::Access::OWNER_PROJECT_ACCESS,
         nil
@@ -1004,12 +1007,21 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
+  def work_item_status_feature_available?
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :wip) &&
+      licensed_feature_available?(:work_item_status)
+  end
+
   def continue_indented_text_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:continue_indented_text, type: :wip)
   end
 
   def glql_integration_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
+  end
+
+  def glql_load_on_click_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click)
   end
 
   # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature

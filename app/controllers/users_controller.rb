@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   include RendersProjectsList
   include ControllerWithCrossProjectAccessCheck
   include Gitlab::NoteableMetadata
+  include SafeFormatHelper
 
   FOLLOWERS_FOLLOWING_USERS_PER_PAGE = 21
 
@@ -65,7 +66,8 @@ class UsersController < ApplicationController
       end
 
       format.json do
-        msg = "This endpoint is deprecated. Use %s instead." % user_activity_path
+        msg = safe_format("This endpoint is deprecated. Use %{user_activity_path} instead.",
+          user_activity_path: user_activity_path)
         render json: { message: msg }, status: :not_found
       end
     end

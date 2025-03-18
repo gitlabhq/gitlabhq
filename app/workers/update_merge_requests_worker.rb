@@ -3,7 +3,7 @@
 class UpdateMergeRequestsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  data_consistency :sticky, feature_flag: :update_merge_request_worker_sticky
+  data_consistency :sticky
 
   sidekiq_options retry: 3
 

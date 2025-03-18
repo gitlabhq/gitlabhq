@@ -12,7 +12,7 @@ module API
       end
 
       def self.awardable_id_desc
-        "The ID of an Issue, Merge Request or Snippet"
+        'ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.'
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

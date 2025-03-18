@@ -10,7 +10,7 @@
           = link_to user_path(user), class: 'gl-text-default', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position } do
             .gl-inline-block.gl-font-bold= simple_search_highlight_and_truncate(user.name, @search_term)
             = user_status(user)
-            %div{ class: '!gl-text-left' }= simple_search_highlight_and_truncate(user.to_reference, @search_term)
+            %div{ class: '!gl-text-left gl-text-subtle' }= simple_search_highlight_and_truncate(user.to_reference, @search_term)
   %td.gl-text-right{ data: { label: _('Activity') } }
     %div
       %span.gl-font-bold= _('User created:')

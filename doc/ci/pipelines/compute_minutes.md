@@ -160,7 +160,7 @@ The cost factors on GitLab Self-Managed [are different](../../administration/cic
 
 Community contributors can use up to 300,000 minutes on instance runners when contributing to open source projects
 maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects
-[part of the GitLab product](https://handbook.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product).
+[part of the GitLab product](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#projects-that-are-part-of-the-product).
 The total number of minutes available on instance runners is reduced by the compute minutes used by pipelines from
 other projects. The 300,000 minutes applies to all GitLab.com tiers.
 

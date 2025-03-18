@@ -14,7 +14,11 @@ title: Stacked diffs
 
 {{< /details >}}
 
-> - Released in [v1.42.0 of the GitLab CLI](https://gitlab.com/gitlab-org/cli/-/releases/v1.42.0) as an [experiment](../../../policy/development_stages_support.md#experiment).
+{{< history >}}
+
+- Released in [v1.42.0 of the GitLab CLI](https://gitlab.com/gitlab-org/cli/-/releases/v1.42.0) as an [experiment](../../../policy/development_stages_support.md#experiment).
+
+{{< /history >}}
 
 In the [GitLab CLI](https://gitlab.com/gitlab-org/cli), stacked diffs are a way of
 creating small changes that build upon each other to ultimately deliver a feature.

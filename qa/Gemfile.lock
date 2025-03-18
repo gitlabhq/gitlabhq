@@ -8,9 +8,9 @@ PATH
       rake (~> 13.0)
 
 PATH
-  remote: gems/gitlab-cng
+  remote: gems/gitlab-orchestrator
   specs:
-    gitlab-cng (0.0.1)
+    gitlab-orchestrator (0.0.1)
       activesupport (>= 7)
       rainbow (~> 3.1)
       require_all (~> 3.0)
@@ -35,10 +35,10 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    allure-rspec (2.25.0)
-      allure-ruby-commons (= 2.25.0)
+    allure-rspec (2.26.0)
+      allure-ruby-commons (= 2.26.0)
       rspec-core (>= 3.8, < 4)
-    allure-ruby-commons (2.25.0)
+    allure-ruby-commons (2.26.0)
       mime-types (>= 3.3, < 4)
       require_all (>= 2, < 4)
       rspec-expectations (~> 3.12)
@@ -118,7 +118,7 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (15.2.0)
+    gitlab-qa (15.3.0)
       activesupport (>= 6.1, < 7.2)
       ffi (~> 1.17)
       gitlab (~> 4.19)
@@ -128,7 +128,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (2.7.0)
+    gitlab_quality-test_tooling (2.8.0)
       activesupport (>= 7.0, < 7.2)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -227,7 +227,7 @@ GEM
       sawyer (~> 0.9)
     os (1.1.4)
     parallel (1.26.3)
-    parallel_tests (4.9.0)
+    parallel_tests (4.10.1)
       parallel
     parser (3.3.7.0)
       ast (~> 2.4.1)
@@ -303,7 +303,7 @@ GEM
     sawyer (0.9.2)
       addressable (>= 2.3.5)
       faraday (>= 0.17.3, < 3)
-    selenium-webdriver (4.28.0)
+    selenium-webdriver (4.29.1)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -350,14 +350,14 @@ GEM
     wisper (2.0.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.1)
+    zeitwerk (2.7.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   activesupport (~> 7.0.8.7)
-  allure-rspec (~> 2.25.0)
+  allure-rspec (~> 2.26.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
   deprecation_toolkit (~> 2.2.2)
@@ -366,10 +366,10 @@ DEPENDENCIES
   faraday-retry (~> 2.2, >= 2.2.1)
   fog-core (= 2.1.0)
   fog-google (~> 1.24, >= 1.24.1)
-  gitlab-cng!
-  gitlab-qa (~> 15, >= 15.2.0)
+  gitlab-orchestrator!
+  gitlab-qa (~> 15, >= 15.3.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 2.7.0)
+  gitlab_quality-test_tooling (~> 2.8.0)
   googleauth (~> 1.9.0)
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)
@@ -378,7 +378,7 @@ DEPENDENCIES
   nokogiri (~> 1.18, >= 1.18.1)
   octokit (~> 9.2.0)
   parallel (~> 1.26, >= 1.26.3)
-  parallel_tests (~> 4.9)
+  parallel_tests (~> 4.10, >= 4.10.1)
   pry-byebug (~> 3.10.1)
   rainbow (~> 3.1.1)
   rake (~> 13, >= 13.2.1)
@@ -388,11 +388,11 @@ DEPENDENCIES
   rspec-parameterized (~> 1.0.2)
   rspec_junit_formatter (~> 0.6.0)
   ruby-debug-ide (~> 0.7.5)
-  selenium-webdriver (= 4.28.0)
+  selenium-webdriver (= 4.29.1)
   slack-notifier (~> 2.4)
   terminal-table (~> 3.0.2)
   warning (~> 1.4)
-  zeitwerk (~> 2.7, >= 2.7.1)
+  zeitwerk (~> 2.7, >= 2.7.2)
 
 BUNDLED WITH
-   2.5.11
+   2.6.5

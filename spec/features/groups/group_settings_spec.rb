@@ -91,7 +91,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     it 'shows the selection menu' do
       visit edit_group_path(group)
 
-      expect(page).to have_content('Roles allowed to create projects')
+      expect(page).to have_content('Minimum role required to create projects')
     end
   end
 

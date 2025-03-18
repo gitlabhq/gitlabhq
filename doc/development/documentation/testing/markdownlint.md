@@ -50,9 +50,8 @@ To install `markdownlint-cli2`, run:
 yarn global add markdownlint-cli2
 ```
 
-You should install the version of `markdownlint-cli` or `markdownlint-cli2`
-[used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml) when building
-the `image:docs-lint-markdown`.
+You should install the version of `markdownlint-cli` or `markdownlint-cli2` that matches the version used in the GitLab Docs project.
+You can find the correct version in the [`variables:` section](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab-ci.yml?ref_type=heads#L16).
 
 ## Configure markdownlint in your editor
 

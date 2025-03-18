@@ -2595,7 +2595,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
 
         context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_keys do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
             def request
               get api(path, current_user)
             end
@@ -2605,7 +2605,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         context 'when user is unauthenticated' do
           let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_keys do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
             def request
               get api(path, current_user)
             end
@@ -2643,7 +2643,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     context 'when the rate limit has been reached' do
       it 'returns status 429 Too Many Requests', :aggregate_failures do
         ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_keys, scope: ip).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_ssh_keys, scope: ip).and_return(true)
 
         get api(path), env: { REMOTE_ADDR: ip }
 
@@ -2690,7 +2690,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
 
         context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
             def request
               get api(path, current_user)
             end
@@ -2700,7 +2700,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         context 'when user is unauthenticated' do
           let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
             def request
               get api(path, current_user)
             end
@@ -2871,7 +2871,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
 
         context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_gpg_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
             def request
               get api(path, current_user)
             end
@@ -2881,7 +2881,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         context 'when user is unauthenticated' do
           let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_gpg_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
             def request
               get api(path, current_user)
             end
@@ -5084,9 +5084,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     let(:name) { 'new pat' }
     let(:description) { 'new pat description' }
+    let(:expires_at) { 3.days.from_now.to_date.to_s }
     let(:scopes) { %w[k8s_proxy] }
     let(:path) { "/user/personal_access_tokens" }
-    let(:params) { { name: name, scopes: scopes, description: description } }
+    let(:params) { { name: name, expires_at: expires_at, description: description, scopes: scopes } }
 
     let(:all_scopes) do
       ::Gitlab::Auth::API_SCOPES + ::Gitlab::Auth::AI_FEATURES_SCOPES + ::Gitlab::Auth::OPENID_SCOPES +
@@ -5155,7 +5156,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['name']).to eq(name)
       expect(json_response['description']).to eq(description)
       expect(json_response['scopes']).to eq(scopes)
-      expect(json_response['expires_at']).to eq(1.day.from_now.to_date.to_s)
+      expect(json_response['expires_at']).to eq(expires_at)
       expect(json_response['id']).to be_present
       expect(json_response['created_at']).to be_present
       expect(json_response['active']).to be_truthy
@@ -5174,25 +5175,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['active']).to be_falsey
-        end
-      end
-
-      context 'when expires_at is in the future' do
-        let(:expires_at) { 1.month.from_now.to_date }
-
-        it 'creates a personal access token' do
-          post api(path, user), params: params
-
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['name']).to eq(name)
-          expect(json_response['description']).to eq(description)
-          expect(json_response['scopes']).to eq(scopes)
-          expect(json_response['expires_at']).to eq(1.month.from_now.to_date.to_s)
-          expect(json_response['id']).to be_present
-          expect(json_response['created_at']).to be_present
-          expect(json_response['active']).to be_truthy
-          expect(json_response['revoked']).to be_falsey
-          expect(json_response['token']).to be_present
         end
       end
     end

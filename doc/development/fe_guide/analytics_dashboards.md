@@ -66,6 +66,8 @@ Dashboards support the following filters:
 
 - **Date range**: Date selector to filter data by date.
 - **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
+- **Project**: Dropdown list to filter data by project.
+- **Filtered search**: Filter bar to filter data by selected attributes.
 
 #### Dashboard status
 
@@ -96,6 +98,8 @@ You're not limited to these options though - you can create new visualization ty
 
 A data source is a connection to a database, an endpoint or a collection of data which can be used by your dashboard to query, retrieve, filter, and visualize results.
 While there's a core set of supported data sources (see `Data.type` enum in [`analytics_visualizations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json)), you can add new ones to meet your needs.
+
+To support all visualization types, ensure your data source returns data as a single aggregated value and a time series with a value for each point in time.
 
 Note that each panel fetches data from the data source separately and independently from other panels.
 
@@ -132,6 +136,16 @@ To create a built-in analytics dashboard:
        enabled: true
      dateRange:
        enabled: true
+     projects:
+       enabled: true
+     filteredSearch:
+       enabled: true
+       # Use `options` to define an array of tokens to override the default ones
+       options:
+         - token: assignee
+           unique: false
+         - token: label
+           maxSuggestions: 10
    ```
 
    Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.

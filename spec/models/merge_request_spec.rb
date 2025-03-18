@@ -804,6 +804,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(by_commit_sha).to be_empty
       end
     end
+
+    context 'when commit_sha_scope_logger is disabled' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      before do
+        stub_feature_flags(commit_sha_scope_logger: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        by_commit_sha
+      end
+    end
   end
 
   describe '.by_merged_commit_sha' do
@@ -937,6 +951,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit_sha_scope_logger is disabled' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      before do
+        stub_feature_flags(commit_sha_scope_logger: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        subject
+      end
     end
   end
 
@@ -1457,6 +1485,29 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         expect { subject.cache_merge_request_closes_issues!(subject.author) }
           .to change(subject.merge_requests_closing_issues, :count).by(1)
+      end
+    end
+  end
+
+  describe '#source_branch_ref' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:or_sha, :source_branch, :source_branch_sha, :expected) do
+      true | nil | 'sha' | 'sha'
+      true | 'branch' | 'sha' | 'sha'
+      true | 'branch' | nil | 'refs/heads/branch'
+      false | nil | 'sha' | nil
+      false | 'branch' | 'sha' | 'refs/heads/branch'
+      false | 'branch' | 'sha' | 'refs/heads/branch'
+    end
+
+    with_them do
+      specify do
+        merge_request = build(:merge_request, source_branch:)
+        merge_request.source_branch_sha = source_branch_sha
+        result = merge_request.source_branch_ref(or_sha:)
+
+        expect(result).to eq(expected)
       end
     end
   end
@@ -4231,17 +4282,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           expect(mr.has_ci_enabled?).to eq(true)
         end
       end
-
-      context 'when change_ci_enabled_hurestic is disabled and project does not have ci' do
-        before do
-          stub_feature_flags(change_ci_enabled_hurestic: false)
-          allow(mr.project).to receive(:has_ci?).and_return(false)
-        end
-
-        it 'returns true' do
-          expect(mr.has_ci_enabled?).to eq(true)
-        end
-      end
     end
 
     context 'when MR has_ci? is false' do
@@ -4260,32 +4300,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       context 'when pipeline has no creation request' do
         it 'returns false' do
           expect(mr.has_ci_enabled?).to eq(false)
-        end
-      end
-
-      context 'when change_ci_enabled_hurestic is disabled' do
-        before do
-          stub_feature_flags(change_ci_enabled_hurestic: false)
-        end
-
-        context 'when the project has ci enabled' do
-          before do
-            allow(mr.project).to receive(:has_ci?).and_return(true)
-          end
-
-          it 'returns true' do
-            expect(mr.has_ci_enabled?).to eq(true)
-          end
-        end
-
-        context 'when the project does not have ci enabled' do
-          before do
-            allow(mr.project).to receive(:has_ci?).and_return(false)
-          end
-
-          it 'returns false' do
-            expect(mr.has_ci_enabled?).to eq(false)
-          end
         end
       end
     end
@@ -5018,19 +5032,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#fetch_ref!' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
 
-    subject { create(:merge_request, source_project: project) }
+    before_all do
+      repository = project.repository
+      repository.add_branch(project.creator, 'ambiguous', 'feature')
+      repository.add_tag(project.creator, 'ambiguous', 'master')
+    end
 
     it 'fetches the ref and expires the ancestor cache' do
-      expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
+      expect { merge_request.target_project.repository.delete_refs(merge_request.ref_path) }.not_to raise_error
 
-      expect(project.repository).to receive(:expire_ancestor_cache).with(subject.target_branch_sha, subject.diff_head_sha).and_call_original
-      expect(subject).to receive(:expire_ancestor_cache).and_call_original
+      expect(project.repository).to receive(:expire_ancestor_cache).with(merge_request.target_branch_sha, merge_request.diff_head_sha).and_call_original
+      expect(merge_request).to receive(:expire_ancestor_cache).and_call_original
 
-      subject.fetch_ref!
+      merge_request.fetch_ref!
 
-      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
+      expect(merge_request.target_project.repository.ref_exists?(merge_request.ref_path)).to be_truthy
+    end
+
+    context 'when source branch is ambiguous' do
+      let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'ambiguous') }
+
+      it 'fetches the branch, not the tag' do
+        merge_request.fetch_ref!
+
+        ref_path_sha = merge_request.target_project.commit(merge_request.ref_path).sha
+        expect(ref_path_sha).to eq(merge_request.source_branch_sha)
+        expect(ref_path_sha).not_to eq(project.commit('refs/tags/ambiguous').sha)
+      end
     end
   end
 

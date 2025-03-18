@@ -212,7 +212,7 @@ processing is done in the background and requires **no downtime**.
    sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -288,7 +288,7 @@ processing is done in the background and requires **no downtime**.
    sudo find /home/git/gitlab/shared/lfs-objects -type f | grep -v tmp | wc -l
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -399,7 +399,10 @@ To migrate back to local storage:
 
 {{< alert type="warning" >}}
 
-This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880). If you clone a repository with multiple Git LFS objects using the pure SSH protocol, the client might crash due to a `nil` pointer reference.
+This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880)
+(resolved in [Git LFS 3.6.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#360-20-november-2024)).
+If you clone a repository with multiple Git LFS objects using the pure SSH protocol,
+the client might crash due to a `nil` pointer reference.
 
 {{< /alert >}}
 

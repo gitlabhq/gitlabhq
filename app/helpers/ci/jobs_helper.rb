@@ -14,7 +14,8 @@ module Ci
         "runner_settings_url" => project_runners_path(build.project, anchor: 'js-runners-settings'),
         "retry_outdated_job_docs_url" => help_page_path('ci/pipelines/settings.md', anchor: 'prevent-outdated-deployment-jobs'),
         "pipeline_test_report_url" => test_report_project_pipeline_path(project, build.pipeline),
-        "log_viewer_path" => viewer_project_job_path(project, build)
+        "log_viewer_path" => viewer_project_job_path(project, build),
+        "user_role" => project.team.human_max_access(current_user&.id)
       }
     end
 

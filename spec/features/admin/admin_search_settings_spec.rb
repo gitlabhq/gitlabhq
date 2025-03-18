@@ -24,6 +24,6 @@ RSpec.describe 'Admin searches application settings', :js, feature_category: :gl
       visit(ci_cd_admin_application_settings_path)
     end
 
-    it_behaves_like 'can search settings', 'Variables', 'Package Registry'
+    it_behaves_like 'can search settings', 'Variables', 'Package registry'
   end
 end

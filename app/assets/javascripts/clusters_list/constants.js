@@ -71,6 +71,7 @@ export const I18N_AGENT_TABLE = {
   lastContactLabel: s__('ClusterAgents|Last contact'),
   versionLabel: __('Version'),
   configurationLabel: s__('ClusterAgents|Configuration'),
+  projectLabel: s__('ClusterAgents|Project'),
   optionsLabel: __('Options'),
   troubleshootingText: s__('ClusterAgents|Learn how to troubleshoot'),
   neverConnectedText: s__('ClusterAgents|Never'),

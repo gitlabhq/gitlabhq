@@ -83,7 +83,7 @@ More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticse
 If the results:
 
 - Sync up, check that you are using [supported syntax](../../../user/search/advanced_search.md#syntax). Advanced search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
-- Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
+- Do not match up, this indicates a problem with the documents generated from the project. It is best to [reindex that project](../../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
 {{< alert type="note" >}}
 
@@ -104,6 +104,16 @@ If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error duri
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced search settings](../../advanced_search/elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
 - If changing `Bulk request concurrency` didn't help, you can use the [routing rules](../../../administration/sidekiq/processing_specific_job_classes.md#routing-rules) option to [limit indexing jobs only to specific Sidekiq nodes](../../advanced_search/elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
+## Error: `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
+
+```plaintext
+[413] {"Message":"Request size exceeded 10485760 bytes"}
+```
+
+This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10 MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
+
+AWS has [network limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) on the maximum size of HTTP request payloads based on the size of the underlying instance. Set the maximum bulk request size to a value lower than 10 MiB.
+
 ## Indexing is very slow or fails with `rejected execution of coordinating operation`
 
 Bulk requests getting rejected by the Elasticsearch nodes are likely due to load and lack of available memory.
@@ -113,7 +123,7 @@ to perform bulk operations. See also the error ["429 (Too Many Requests)"](#inde
 ## Indexing fails with `strict_dynamic_mapping_exception`
 
 Indexing might fail if all [advanced search migrations were not finished before doing a major upgrade](../../advanced_search/elasticsearch.md#all-migrations-must-be-finished-before-doing-a-major-upgrade).
-A large Sidekiq backlog might accompany this error. To fix the indexing failures, you must re-index the database, repositories, and wikis.
+A large Sidekiq backlog might accompany this error. To fix the indexing failures, you must reindex the database, repositories, and wikis.
 
 1. Pause indexing so Sidekiq can catch up:
 

@@ -4,7 +4,7 @@
 # implements functionality in https://gitlab.com/gitlab-org/gitlab/-/issues/420118
 
 module QA
-  RSpec.describe 'Data Stores', :skip_live_env, :requires_admin, product_group: :tenant_scale do
+  RSpec.describe 'Data Stores', :skip_live_env, :requires_admin, product_group: :cells_infrastructure do
     describe 'Demo 3' do
       let(:debug) { false }
       let(:cell1_url) { ENV.fetch('CELL1_URL', 'http://gdk.test:3000/') }

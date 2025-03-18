@@ -54,7 +54,15 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
 
     before do
       service_double = double
-      expect(expected_service_class).to receive(:new).with(repository, tags).and_return(service_double)
+
+      if expected_service_class == ::Projects::ContainerRepository::Gitlab::DeleteTagsService
+        expect(expected_service_class).to receive(:new).with(
+          { current_user: user, container_repository: repository, tag_names: tags }
+        ).and_return(service_double)
+      elsif expected_service_class == ::Projects::ContainerRepository::ThirdParty::DeleteTagsService
+        expect(expected_service_class).to receive(:new).with(repository, tags).and_return(service_double)
+      end
+
       expect(excluded_service_class).not_to receive(:new)
       expect(service_double).to receive(:execute).and_return(service_response)
     end

@@ -26,7 +26,7 @@ Silent Mode allows you to silence outbound communication, such as emails, from G
   [disaster recovery](../geo/disaster_recovery/_index.md) solution. You want to
   regularly test promoting it to become a primary Geo site, as a best practice
   to ensure your disaster recovery plan actually works. But you don't want to
-  actually perform an entire failover, since the primary site lives in a region
+  actually perform an entire failover because the primary site lives in a region
   which provides the lowest latency to your users. And you don't want to take
   downtime during every regular test. So, you let the primary site remain up,
   while you promote the secondary site. You start smoke testing the promoted

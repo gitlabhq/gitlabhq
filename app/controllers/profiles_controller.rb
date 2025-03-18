@@ -3,6 +3,7 @@
 class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include Gitlab::Tracking
+  include SafeFormatHelper
 
   before_action :user
   before_action :authorize_change_username!, only: :update_username
@@ -14,9 +15,7 @@ class ProfilesController < Profiles::ApplicationController
     :reset_static_object_token, :update_username]
 
   def reset_incoming_email_token
-    Users::UpdateService.new(current_user, user: @user).execute! do |user|
-      user.reset_incoming_email_token!
-    end
+    Users::UpdateService.new(current_user, user: @user).execute!(&:reset_incoming_email_token!)
 
     flash[:notice] = s_("Profiles|Incoming email token was successfully reset")
 
@@ -36,9 +35,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_static_object_token
-    Users::UpdateService.new(current_user, user: @user).execute! do |user|
-      user.reset_static_object_token!
-    end
+    Users::UpdateService.new(current_user, user: @user).execute!(&:reset_static_object_token!)
 
     redirect_to user_settings_personal_access_tokens_path,
       notice: s_('Profiles|Static object token was successfully reset')
@@ -54,7 +51,7 @@ class ProfilesController < Profiles::ApplicationController
         format.html { redirect_back_or_default(default: user_settings_profile_path, options: { notice: message }) }
         format.json { render json: { message: message }, status: :ok }
       else
-        message = s_("Profiles|Username change failed - %{message}") % { message: result[:message] }
+        message = safe_format(s_("Profiles|Username change failed - %{message}"), message: result[:message])
 
         format.html { redirect_back_or_default(default: user_settings_profile_path, options: { alert: message }) }
         format.json { render json: { message: message }, status: :unprocessable_entity }

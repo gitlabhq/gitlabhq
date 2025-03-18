@@ -10,7 +10,7 @@ module WorkItems
       BASE_ASSOCIATIONS = {
         base_associations: [
           :author, :updated_by, :project, :duplicated_to, :last_edited_by, :closed_by, :work_item_type,
-          :correct_work_item_type, :moved_to, :moved_from, :namespace
+          :moved_to, :moved_from, :namespace
         ]
       }.freeze
 

@@ -48,6 +48,10 @@
     &:last-child:has(input:checked) {
       margin: -1px;
     }
+
+    .custom-control {
+      min-height: auto;
+    }
   }
 
   &-click-area {

@@ -118,7 +118,7 @@
     @apply gl-heading-1-fixed gl-mt-7 gl-pb-2 gl-border-b;
   }
 
-  h2 {
+  h2:not(:where(.crud-header) h2) {
     @apply gl-heading-2-fixed gl-mt-6 gl-pb-2 gl-border-b;
   }
 
@@ -175,6 +175,55 @@
     margin: 10px 0;
   }
 
+  @keyframes gl-table-shadow {
+    0% {
+      box-shadow:
+        inset -16px 0 14px -14px var(--gl-shadow-color-default),
+        inset 0 0 0 0 var(--gl-shadow-color-default);
+    }
+
+    5% {
+      box-shadow:
+        inset -16px 0 14px -14px var(--gl-shadow-color-default),
+        inset 16px 0 14px -14px var(--gl-shadow-color-default);
+    }
+
+    95% {
+      box-shadow:
+        inset -16px 0 14px -14px var(--gl-shadow-color-default),
+        inset 16px 0 14px -14px var(--gl-shadow-color-default);
+    }
+
+    100% {
+      box-shadow:
+          inset 0 0 0 0 var(--gl-shadow-color-default),
+          inset 16px 0 14px -14px var(--gl-shadow-color-default);
+    }
+  }
+
+  .gl-table-shadow {
+    overflow-x: auto;
+    overflow-y: hidden;
+    animation: gl-table-shadow $gl-easing-out-cubic;
+    animation-timeline: scroll(self inline);
+    // Needs to stay white because we use mix-blend-mode
+    // to make it work in both light and darkmode.
+    background-color: var(--gl-color-neutral-0);
+
+    > table:not(.code) {
+      display: table;
+      overflow-x: initial;
+      mix-blend-mode: multiply;
+      // strech is not available yet, so we have to rely
+      // on the vendor prefixed ones below
+      min-width: strech;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      min-width: -webkit-fill-available;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      min-width: -moz-available;
+    }
+  }
+
   table:not(.code) {
     margin: 16px 0;
     @apply gl-text-default;
@@ -184,8 +233,7 @@
     overflow-x: auto;
 
     tbody {
-      background-color: $white;
-
+      @apply gl-bg-default;
     }
 
     td,
@@ -195,7 +243,7 @@
 
     tr {
       th {
-        border-bottom: solid 2px $gray-200;
+        @apply gl-border-b;
       }
     }
 
@@ -522,11 +570,14 @@
   h4,
   h5,
   h6 {
+    $anchor-offset: 20px;
+
     a.anchor {
-      float: left;
-      margin-left: -20px;
+      margin-left: calc(-1 * $anchor-offset);
       text-decoration: none;
       outline: none;
+      position: absolute;
+      width: $anchor-offset;
 
       &::after {
         @include gl-dark-invert-keep-hue;

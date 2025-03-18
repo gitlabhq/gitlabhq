@@ -47,8 +47,14 @@ module Namespaces
       end
 
       def package_settings_params
-        @params.slice(*ALLOWED_ATTRIBUTES)
+        @params.slice(*allowed_attributes)
+      end
+
+      def allowed_attributes
+        ALLOWED_ATTRIBUTES
       end
     end
   end
 end
+
+Namespaces::PackageSettings::UpdateService.prepend_mod

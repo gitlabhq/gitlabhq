@@ -5,12 +5,15 @@ import FormBreadcrumb from '~/projects/new_v2/components/form_breadcrumb.vue';
 describe('New project form breadcrumbs', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(FormBreadcrumb, {
+      propsData: {
+        ...props,
+      },
       provide: {
         rootPath: '/',
         projectsUrl: '/dashboard/projects',
-        ...props,
+        ...provide,
       },
     });
   };
@@ -18,7 +21,7 @@ describe('New project form breadcrumbs', () => {
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
 
   it('renders personal namespace breadcrumbs', () => {
-    createComponent({ parentGroupUrl: null, parentGroupName: null });
+    createComponent({ provide: { parentGroupUrl: null, parentGroupName: null } });
 
     expect(findBreadcrumb().props('items')).toStrictEqual([
       { text: 'Your work', href: '/' },
@@ -28,11 +31,36 @@ describe('New project form breadcrumbs', () => {
   });
 
   it('renders group namespace breadcrumbs', () => {
-    createComponent({ parentGroupUrl: '/group/projects', parentGroupName: 'test group' });
+    createComponent({
+      provide: { parentGroupUrl: '/group/projects', parentGroupName: 'test group' },
+    });
 
     expect(findBreadcrumb().props('items')).toStrictEqual([
       { text: 'test group', href: '/group/projects' },
       { text: 'New project', href: '#' },
+    ]);
+  });
+
+  it('renders breadcrumbs with additional hash', () => {
+    createComponent({
+      props: {
+        selectedProjectType: {
+          key: 'blank',
+          value: 'blank_project',
+          selector: '#blank-project-pane',
+          title: 'Create blank project',
+          description:
+            'Create a blank project to store your files, plan your work, and collaborate on code, among other things.',
+        },
+      },
+      provide: { parentGroupUrl: null, parentGroupName: null },
+    });
+
+    expect(findBreadcrumb().props('items')).toStrictEqual([
+      { text: 'Your work', href: '/' },
+      { text: 'Projects', href: '/dashboard/projects' },
+      { text: 'New project', href: '#' },
+      { text: 'Create blank project', href: '#blank_project' },
     ]);
   });
 });

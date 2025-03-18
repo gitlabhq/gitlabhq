@@ -1,0 +1,10 @@
+mutation updatePipelineVariablesDefaultRoleGroupSetting(
+  $fullPath: ID!
+  $pipelineVariablesDefaultRole: PipelineVariablesDefaultRoleType!
+) {
+  namespaceSettingsUpdate(
+    input: { fullPath: $fullPath, pipelineVariablesDefaultRole: $pipelineVariablesDefaultRole }
+  ) {
+    errors
+  }
+}

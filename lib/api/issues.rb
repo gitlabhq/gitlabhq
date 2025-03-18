@@ -372,7 +372,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/move' do
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20776', new_threshold: 205)
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20776', new_threshold: 260)
 
         issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
@@ -381,7 +381,20 @@ module API
         not_found!('Project') unless new_project
 
         begin
-          issue = ::Issues::MoveService.new(container: user_project, current_user: current_user).execute(issue, new_project)
+          issue = if Feature.enabled?(:work_item_move_and_clone, user_project)
+                    response = ::WorkItems::DataSync::MoveService.new(
+                      work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
+                    ).execute
+
+                    render_api_error!(response.message, 400) if response.error?
+
+                    response.payload[:work_item]
+                  else
+                    ::Issues::MoveService.new(
+                      container: user_project, current_user: current_user
+                    ).execute(issue, new_project)
+                  end
+
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)
@@ -408,8 +421,20 @@ module API
         not_found!('Project') unless target_project
 
         begin
-          issue = ::Issues::CloneService.new(container: user_project, current_user: current_user)
-            .execute(issue, target_project, with_notes: params[:with_notes])
+          issue = if Feature.enabled?(:work_item_move_and_clone, target_project)
+                    response = ::WorkItems::DataSync::CloneService.new(
+                      work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace,
+                      params: { clone_with_notes: params[:with_notes] }
+                    ).execute
+
+                    render_api_error!(response.message, 400) if response.error?
+
+                    response.payload[:work_item]
+                  else
+                    ::Issues::CloneService.new(container: user_project, current_user: current_user)
+                      .execute(issue, target_project, with_notes: params[:with_notes])
+                  end
+
           present issue, with: Entities::Issue, current_user: current_user, project: target_project
         rescue ::Issues::CloneService::CloneError => error
           render_api_error!(error.message, 400)

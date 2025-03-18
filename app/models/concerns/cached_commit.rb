@@ -3,13 +3,13 @@
 module CachedCommit
   extend ActiveSupport::Concern
 
-  def to_hash
-    Gitlab::Git::Commit::SERIALIZE_KEYS.index_with do |key|
+  def to_hash(exclude_keys: [])
+    (Gitlab::Git::Commit::SERIALIZE_KEYS - exclude_keys).index_with do |key|
       public_send(key) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
-  # We don't save these, because they would need a table or a serialised
+  # We don't save these, because they would need a table or a serialized
   # field. They aren't used anywhere, so just pretend the commit has no parents.
   def parent_ids
     []

@@ -178,7 +178,7 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
 
     context 'non-existing mailbox_type' do
       it 'returns nil' do
-        expect(described_class.worker_for('another_mailbox_type')).to be(nil)
+        expect(described_class.worker_for('another_mailbox_type')).to be_nil
       end
     end
   end

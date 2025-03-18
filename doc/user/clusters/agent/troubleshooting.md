@@ -93,8 +93,9 @@ Add `--set-file config.kasCaCert=my-custom-ca.pem` to the `helm install` command
 
 When you deploy `agentk` with a set `config.kasCaCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
 
+For example, with the command `kubectl get configmap -lapp=gitlab-agent -o yaml`:
+
 ```yaml
-$ kubectl get configmap -lapp=gitlab-agent -o yaml
 apiVersion: v1
 items:
 - apiVersion: v1

@@ -2,7 +2,6 @@
 
 module ReleasesHelper
   IMAGE_PATH = 'illustrations/rocket-launch-md.svg'
-  DOCUMENTATION_PATH = 'user/project/releases/_index'
 
   # This needs to be kept in sync with the constant in
   # app/assets/javascripts/releases/constants.js
@@ -12,16 +11,12 @@ module ReleasesHelper
     image_path(IMAGE_PATH)
   end
 
-  def releases_help_page_path(anchor: nil)
-    help_page_path(DOCUMENTATION_PATH, anchor: anchor)
-  end
-
   def data_for_releases_page
     {
       project_id: @project.id,
       project_path: @project.full_path,
       illustration_path: illustration,
-      documentation_path: releases_help_page_path,
+      documentation_path: help_page_path('user/project/releases/_index.md'),
       atom_feed_path: project_releases_path(@project, rss_url_options)
     }.tap do |data|
       if can?(current_user, :create_release, @project)
@@ -56,7 +51,7 @@ module ReleasesHelper
     new_edit_pages_shared_data.merge(
       tag_name: @release.tag,
       releases_page_path: project_releases_path(@project, anchor: @release.tag),
-      delete_release_docs_path: releases_help_page_path(anchor: 'delete-a-release')
+      delete_release_docs_path: help_page_path('user/project/releases/_index.md', anchor: 'delete-a-release')
     )
   end
 
@@ -82,11 +77,11 @@ module ReleasesHelper
       project_path: @project.full_path,
       markdown_preview_path: preview_markdown_path(@project),
       markdown_docs_path: help_page_path('user/markdown.md'),
-      release_assets_docs_path: releases_help_page_path(anchor: 'release-assets'),
+      release_assets_docs_path: help_page_path('user/project/releases/release_fields.md', anchor: 'release-assets'),
       manage_milestones_path: project_milestones_path(@project),
       new_milestone_path: new_project_milestone_path(@project, redirect_path: 'new_release'),
-      edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release'),
-      upcoming_release_docs_path: releases_help_page_path(anchor: 'upcoming-releases')
+      edit_release_docs_path: help_page_path('user/project/releases/_index.md', anchor: 'edit-a-release'),
+      upcoming_release_docs_path: help_page_path('user/project/releases/_index.md', anchor: 'upcoming-releases')
     }
   end
 

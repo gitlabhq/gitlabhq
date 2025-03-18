@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_category: :importers do
+RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:importable, reload: true) do
     create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
   end
@@ -150,6 +150,55 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_cate
           expect(relation_tree_restorer).to receive(:save_relation_object).once
 
           restore_relations
+        end
+      end
+    end
+
+    describe 'progress tracking' do
+      let(:relation_key) { 'issues' }
+      let(:skip_on_duplicate_iid) { true }
+
+      before do
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'issues')
+          .and_return([[build(:issue, iid: 123, title: 'Issue', author_id: user.id), 0]])
+      end
+
+      it 'tracks processed entry' do
+        expect(relation_tree_restorer).to receive(:process_relation_item!).once
+
+        restore_relations
+        restore_relations
+
+        expect(
+          relation_tree_restorer.processed_entry?(
+            scope: {
+              'project_id' => importable.id,
+              'relation_key' => 'issues'
+            },
+            data: 0
+          )
+        ).to be(true)
+      end
+
+      context 'when extra tracking scope is provided' do
+        it 'tracks processed entry' do
+          expect(relation_tree_restorer).to receive(:process_relation_item!).once
+
+          relation_tree_restorer.restore_single_relation(relation_key, extra_track_scope: { tracker_id: 1 })
+          relation_tree_restorer.restore_single_relation(relation_key, extra_track_scope: { tracker_id: 1 })
+
+          expect(
+            relation_tree_restorer.processed_entry?(
+              scope: {
+                'project_id' => importable.id,
+                'relation_key' => 'issues',
+                'tracker_id' => 1
+              },
+              data: 0
+            )
+          ).to be(true)
         end
       end
     end

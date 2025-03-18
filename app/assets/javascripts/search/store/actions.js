@@ -1,4 +1,5 @@
 import { omitBy } from 'lodash';
+import { nextTick } from 'vue';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -23,6 +24,7 @@ import {
   prepareSearchAggregations,
   setDataToLS,
   skipBlobESCount,
+  buildDocumentTitle,
 } from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
@@ -103,7 +105,45 @@ export const setFrequentProject = ({ state, commit }, item) => {
   commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
-export const setQuery = ({ state, commit, getters }, { key, value }) => {
+export const fetchSidebarCount = ({ commit, state }) => {
+  const items = Object.values(state.navigation)
+    .filter(
+      (navigationItem) =>
+        !navigationItem.active &&
+        navigationItem.count_link &&
+        skipBlobESCount(state, navigationItem.scope),
+    )
+    .map((navItem) => {
+      const navigationItem = { ...navItem };
+
+      const modifications = {
+        search: state.query?.search || '*',
+      };
+
+      if (navigationItem.scope === SCOPE_BLOB && loadDataFromLS(LS_REGEX_HANDLE)) {
+        modifications[REGEX_PARAM] = true;
+      }
+
+      navigationItem.count_link = setUrlParams(
+        modifications,
+        getNormalizedURL(navigationItem.count_link),
+      );
+      return navigationItem;
+    });
+
+  const promises = items.map((navigationItem) =>
+    axios
+      .get(navigationItem.count_link)
+      .then(({ data: { count } }) => {
+        commit(types.RECEIVE_NAVIGATION_COUNT, { key: navigationItem.scope, count });
+      })
+      .catch((e) => logError(e)),
+  );
+
+  return Promise.all(promises);
+};
+
+export const setQuery = async ({ state, commit, getters }, { key, value }) => {
   commit(types.SET_QUERY, { key, value });
 
   if (SIDEBAR_PARAMS.includes(key)) {
@@ -117,10 +157,14 @@ export const setQuery = ({ state, commit, getters }, { key, value }) => {
   if (
     state.searchType === SEARCH_TYPE_ZOEKT &&
     getters.currentScope === SCOPE_BLOB &&
-    gon.features.zoektMultimatchFrontend
+    gon.features?.zoektMultimatchFrontend
   ) {
     const newUrl = setUrlParams({ ...state.query }, window.location.href, false, true);
-    updateHistory({ state: state.query, url: newUrl, replace: true });
+    document.title = buildDocumentTitle(state.query.search);
+    updateHistory({ state: state.query, title: state.query.search, url: newUrl, replace: false });
+
+    await nextTick();
+    fetchSidebarCount({ state, commit });
   }
 };
 
@@ -148,51 +192,14 @@ export const resetQuery = ({ state }) => {
   );
 };
 
-export const closeLabel = ({ state, commit }, { title }) => {
-  const labels = state?.query?.[LABEL_FILTER_PARAM].filter((labelName) => labelName !== title);
-  setQuery({ state, commit }, { key: LABEL_FILTER_PARAM, value: labels });
+export const closeLabel = ({ state, commit, getters }, { title }) => {
+  const labels =
+    state?.query?.[LABEL_FILTER_PARAM]?.filter((labelName) => labelName !== title) || [];
+  setQuery({ state, commit, getters }, { key: LABEL_FILTER_PARAM, value: labels });
 };
 
 export const setLabelFilterSearch = ({ commit }, { value }) => {
   commit(types.SET_LABEL_SEARCH_STRING, value);
-};
-
-export const fetchSidebarCount = ({ commit, state }) => {
-  const items = Object.values(state.navigation)
-    .filter(
-      (navigationItem) =>
-        !navigationItem.active &&
-        navigationItem.count_link &&
-        skipBlobESCount(state, navigationItem.scope),
-    )
-    .map((navItem) => {
-      const navigationItem = { ...navItem };
-      const modifications = {
-        search: state.query?.search || '*',
-      };
-
-      if (navigationItem.scope === SCOPE_BLOB && loadDataFromLS(LS_REGEX_HANDLE)) {
-        modifications[REGEX_PARAM] = true;
-      }
-
-      navigationItem.count_link = setUrlParams(
-        modifications,
-        getNormalizedURL(navigationItem.count_link),
-      );
-
-      return navigationItem;
-    });
-
-  const promises = items.map((navigationItem) =>
-    axios
-      .get(navigationItem.count_link)
-      .then(({ data: { count } }) => {
-        commit(types.RECEIVE_NAVIGATION_COUNT, { key: navigationItem.scope, count });
-      })
-      .catch((e) => logError(e)),
-  );
-
-  return Promise.all(promises);
 };
 
 export const fetchAllAggregation = ({ commit, state }) => {

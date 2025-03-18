@@ -19,13 +19,17 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, fe
     end
 
     describe 'Click "Permalink" button' do
+      before do
+        stub_feature_flags(blob_overflow_menu: false)
+      end
+
       it 'works with no initial line number fragment hash' do
         visit_blob
 
         expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path))))
       end
 
-      it 'maintains intitial fragment hash' do
+      it 'maintains initial fragment hash' do
         fragment = "L3"
 
         visit_blob(fragment)
@@ -61,7 +65,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, fe
         expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path))))
       end
 
-      it 'maintains intitial fragment hash' do
+      it 'maintains initial fragment hash' do
         fragment = "L3"
 
         visit_blob(fragment)

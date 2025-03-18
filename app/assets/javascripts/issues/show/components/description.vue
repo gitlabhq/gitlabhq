@@ -75,11 +75,6 @@ export default {
       required: false,
       default: null,
     },
-    issueIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
     isUpdating: {
       type: Boolean,
       required: false,

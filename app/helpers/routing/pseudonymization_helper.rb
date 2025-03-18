@@ -4,6 +4,7 @@ module Routing
   module PseudonymizationHelper
     PSEUDONOMIZED_NAMESPACE = "namespace"
     PSEUDONOMIZED_PROJECT = "project"
+    PSEUDONOMIZED_USERNAME = "username"
     PSEUDONOMIZED_GROUP = "group"
     PSEUDONOMIZED_ID = "id"
 
@@ -38,6 +39,8 @@ module Routing
           case key
           when :project_id
             [key, "project#{@project&.id}"]
+          when :username
+            [key, PSEUDONOMIZED_USERNAME]
           when :namespace_id, :group_id
             namespace = @group || @project&.namespace
             [key, "namespace#{namespace&.id}"]
@@ -72,6 +75,7 @@ module Routing
           request_params.key?(:group_id) ||
           request_params.key?(:project_id) ||
           request_params.key?(:id) ||
+          request_params.key?(:username) ||
           @request.query_string.present?
       end
 
@@ -118,6 +122,8 @@ module Routing
         params[:id] = PSEUDONOMIZED_NAMESPACE
       when 'projects'
         params[:id] = PSEUDONOMIZED_PROJECT
+      when 'users'
+        params[:username] = PSEUDONOMIZED_USERNAME
       else
         params[:id] = PSEUDONOMIZED_ID if params[:id]
       end

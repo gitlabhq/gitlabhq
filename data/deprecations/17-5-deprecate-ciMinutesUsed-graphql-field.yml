@@ -15,4 +15,4 @@
     Update all references to `ciMinutesUsed` from these types to `ciDuration`.
 
   tiers: Ultimate
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#cirunnerusage
+  documentation_url: https://docs.gitlab.com/api/graphql/reference/#cirunnerusage

@@ -10,6 +10,8 @@ module API
 
     feature_category :system_access
 
+    helpers ::API::Helpers::PersonalAccessTokensHelpers
+
     %w[project group].each do |source_type|
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get list of all access tokens for the specified resource' do
@@ -20,15 +22,14 @@ module API
         end
         params do
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
-          optional :state, type: String, desc: 'Filter tokens which are either active or inactive',
-            values: %w[active inactive], documentation: { example: 'active' }
+          use :access_token_params
         end
         get ":id/access_tokens" do
           resource = find_source(source_type, params[:id])
 
           next unauthorized! unless current_user.can?(:read_resource_access_tokens, resource)
 
-          tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false, state: params[:state] }).execute.preload_users
+          tokens = PersonalAccessTokensFinder.new(declared(params, include_missing: false).merge({ user: resource.bots, impersonation: false })).execute.preload_users
 
           resource.members.load
           present paginate(tokens), with: Entities::ResourceAccessToken, resource: resource
@@ -94,14 +95,11 @@ module API
           success Entities::ResourceAccessTokenWithToken
         end
         params do
+          use :create_personal_access_token_params
           requires :id,
             type: String,
             desc: "The #{source_type} ID",
             documentation: { example: 2 }
-          requires :name,
-            type: String,
-            desc: "Resource access token name",
-            documentation: { example: 'test' }
           requires :scopes,
             type: Array[String],
             values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
@@ -112,10 +110,6 @@ module API
             desc: "The expiration date of the token",
             default: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now,
             documentation: { example: '"2021-01-31' }
-          optional :description,
-            type: String,
-            desc: "Resource access token description",
-            documentation: { example: 'test description' }
           optional :access_level,
             type: Integer,
             values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,

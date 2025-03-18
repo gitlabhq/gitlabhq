@@ -1,7 +1,13 @@
 import { GlAvatarLabeled, GlButton } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CandidateDetail from '~/ml/experiment_tracking/routes/candidates/show/candidate_detail.vue';
 import { newCandidate } from 'jest/ml/model_registry/mock_data';
+import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+
+Vue.use(VueApollo);
 
 describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', () => {
   let wrapper;
@@ -10,8 +16,10 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
     candidate: newCandidate(),
   };
 
-  const createWrapper = (props = {}) => {
-    return mountExtended(CandidateDetail, {
+  const createWrapper = (props = {}, mountFn = mountExtended) => {
+    const apolloProvider = createMockApollo();
+    return mountFn(CandidateDetail, {
+      apolloProvider,
       propsData: {
         ...defaultProps,
         ...props,
@@ -27,7 +35,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
   const findMetadata = () => wrapper.findByTestId('metadata');
   const findMlflowRunId = () => wrapper.findByTestId('mlflow-run-id');
   const findCiJobPathLink = () => wrapper.findByTestId('ci-job-path');
-  const findArtifactLink = () => wrapper.findByTestId('artifacts-link');
+  const findPackageFiles = () => wrapper.findComponent(PackageFiles);
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findParametersSection = () => wrapper.findByTestId('parameters');
   const findParametersTable = () => wrapper.findByTestId('parameters-table');
@@ -169,9 +177,15 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
   });
 
   describe('Artifacts tab', () => {
-    it('renders artifact link when available', () => {
-      wrapper = createWrapper();
-      expect(findArtifactLink().attributes('href')).toBe('path_to_artifact');
+    it('renders files', () => {
+      wrapper = createWrapper({});
+      expect(findPackageFiles().props()).toEqual({
+        packageId: 'gid://gitlab/Packages::Package/12',
+        projectPath: 'some/project',
+        packageType: 'ml_model',
+        canDelete: false,
+        deleteAllFiles: false,
+      });
     });
 
     it('shows no artifacts message when artifact path is missing', () => {

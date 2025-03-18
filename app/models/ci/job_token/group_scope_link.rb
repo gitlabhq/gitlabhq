@@ -7,6 +7,7 @@ module Ci
   module JobToken
     class GroupScopeLink < Ci::ApplicationRecord
       include BulkInsertSafe
+      include ExpandedJobTokenPolicies
 
       self.table_name = 'ci_job_token_group_scope_links'
 

@@ -86,7 +86,7 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
       it 'filters select tag' do
         switch_ref_to('v1.0.0')
 
-        expect(page).to have_css 'title', text: 'Graph · v1.0.0', visible: false
+        expect(page).to have_css 'title', text: 'Repository graph · v1.0.0', visible: false
         page.within '.network-graph' do
           expect(page).to have_content 'Change some files'
         end

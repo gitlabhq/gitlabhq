@@ -15,6 +15,10 @@ class Projects::PipelinesController < Projects::ApplicationController
     push_frontend_feature_flag(:ci_improved_project_pipeline_analytics, project)
   end
 
+  before_action only: [:new, :create, :manual_variables] do
+    push_frontend_feature_flag(:ci_inputs_for_pipelines, project)
+  end
+
   before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
@@ -91,7 +95,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def create
     service_response = Ci::CreatePipelineService
       .new(project, current_user, create_params)
-      .execute(:web, ignore_skip_ci: true, save_on_errors: false)
+      .execute(:web, ignore_skip_ci: true, save_on_errors: false, **create_execute_params)
 
     @pipeline = service_response.payload
 
@@ -161,8 +165,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   def stage
     @stage = pipeline.stage(params[:stage])
     return not_found unless @stage
-
-    return unless stage_stale?
 
     render json: StageSerializer
       .new(project: @project, current_user: @current_user)
@@ -260,6 +262,10 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.require(:pipeline).permit(:ref, variables_attributes: %i[key variable_type secret_value])
   end
 
+  def create_execute_params
+    params.require(:pipeline).permit(inputs: {}).to_h.symbolize_keys
+  end
+
   def ensure_pipeline
     render_404 unless pipeline
   end
@@ -268,14 +274,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     return unless %w[running pending].include?(params[:scope])
 
     redirect_to url_for(safe_params.except(:scope).merge(status: safe_params[:scope])), status: :moved_permanently
-  end
-
-  def stage_stale?
-    return true if Feature.disabled?(:pipeline_stage_set_last_modified, @current_user)
-
-    last_modified = [@stage.updated_at.utc, @stage.statuses.maximum(:updated_at)].max
-
-    stale?(last_modified: last_modified, etag: @stage)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

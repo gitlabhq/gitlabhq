@@ -8,14 +8,12 @@ title: GitLab Workflow extension for VS Code
 
 The [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 for Visual Studio Code integrates GitLab Duo and other GitLab features directly into your IDE. It adds a
-GitLab Workflow panel to the VS Code sidebar. You can view your issues, merge requests, and pipelines,
+GitLab Workflow panel to the VS Code sidebar where you can view issues, merge requests, and pipelines,
 and extend your view with [custom queries](custom_queries.md).
 
-[Install and configure the extension](setup.md).
+To get started, [install and configure the extension](setup.md).
 
-## Features
-
-This extension brings the GitLab features you use every day directly into your VS Code environment:
+When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
 
 - [View issues and merge requests](#view-issues-and-merge-requests).
 - [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
@@ -41,17 +39,6 @@ When you view a GitLab project in VS Code, the extension shows you information a
 - A link to the merge request for this branch.
 - If the merge request includes an [issue closing pattern](../../user/project/issues/managing_issues.md#closing-issues-automatically),
   a link to the issue.
-
-### Customize keyboard shortcuts
-
-You can assign different keyboard shortcuts for **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
-or **Accept Next Line Of Inline Suggestion**:
-
-1. In VS Code, run the `Preferences: Open Keyboard Shortcuts` command.
-1. Find the shortcut you want to edit, and select **Change keybinding** ({{< icon name="pencil" >}}).
-1. Assign your preferred shortcuts to **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
-   or **Accept Next Line Of Inline Suggestion**.
-1. Press <kbd>Enter</kbd> to save your changes.
 
 ## Switch GitLab accounts in VS Code
 
@@ -367,6 +354,17 @@ This search query looks for:
 - Assignee: `jschatz1`
 - Labels: `frontend` and `performance`
 - Milestone: `17.5`
+
+## Customize keyboard shortcuts
+
+You can assign different keyboard shortcuts for **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
+or **Accept Next Line Of Inline Suggestion**:
+
+1. In VS Code, run the `Preferences: Open Keyboard Shortcuts` command.
+1. Find the shortcut you want to edit, and select **Change keybinding** ({{< icon name="pencil" >}}).
+1. Assign your preferred shortcuts to **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
+   or **Accept Next Line Of Inline Suggestion**.
+1. Press <kbd>Enter</kbd> to save your changes.
 
 ## Related topics
 

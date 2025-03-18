@@ -26,7 +26,7 @@ RSpec.shared_context 'project navbar structure' do
       {
         nav_item: _('Plan'),
         nav_sub_items: [
-          _('Issues'),
+          s_('WorkItem|Work items'),
           _('Issue boards'),
           _('Milestones'),
           _('Wiki')
@@ -166,7 +166,7 @@ RSpec.shared_context 'group navbar structure' do
   end
 
   let(:plan_nav_items) do
-    [_("Issues"), _("Issue board"), _("Milestones"), (_('Iterations') if Gitlab.ee?)]
+    [s_("WorkItem|Work items"), _("Issue board"), _("Milestones"), (_('Iterations') if Gitlab.ee?)]
   end
 
   let(:customer_relations_nav_item) do

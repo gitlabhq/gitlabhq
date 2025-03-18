@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors, feature_category: :g
   describe '#user_actor' do
     context 'when user is not available in ApplicationContext' do
       it 'returns nil' do
-        expect(service.user_actor).to be(nil)
+        expect(service.user_actor).to be_nil
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors, feature_category: :g
       end
 
       it 'returns corresponding user record' do
-        expect(service.user_actor).to be(nil)
+        expect(service.user_actor).to be_nil
       end
     end
   end

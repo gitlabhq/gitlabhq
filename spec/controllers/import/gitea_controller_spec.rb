@@ -53,7 +53,7 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
           get :status, format: :json
 
           expect(controller).to redirect_to(new_import_url)
-          expect(flash[:alert]).to eq("Specified URL cannot be used: \"#{expected_error}\"")
+          expect(flash[:alert]).to eq("Specified URL cannot be used: &quot;#{expected_error}&quot;")
         end
       end
 

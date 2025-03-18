@@ -14,7 +14,7 @@ module Ci
 
       case status
       when :online
-        title = s_("Runners|Runner is online; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
+        title = safe_format(s_("Runners|Runner is online; last contact was %{runner_contact} ago"), runner_contact: time_ago_in_words(contacted_at))
         icon = 'status-active'
         span_class = 'gl-text-success'
       when :never_contacted
@@ -23,7 +23,7 @@ module Ci
       when :offline
         title =
           if contacted_at
-            s_("Runners|Runner is offline; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
+            safe_format(s_("Runners|Runner is offline; last contact was %{runner_contact} ago"), runner_contact: time_ago_in_words(contacted_at))
           else
             s_("Runners|Runner is offline; it has never contacted this instance")
           end
@@ -32,7 +32,7 @@ module Ci
         span_class = 'gl-text-subtle'
       when :stale
         # runner may have contacted (or not) and be stale: consider both cases.
-        title = contacted_at ? s_("Runners|Runner is stale; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) } : s_("Runners|Runner is stale; it has never contacted this instance")
+        title = contacted_at ? safe_format(s_("Runners|Runner is stale; last contact was %{runner_contact} ago"), runner_contact: time_ago_in_words(contacted_at)) : s_("Runners|Runner is stale; it has never contacted this instance")
         icon = 'time-out'
         span_class = 'gl-text-warning'
       end
@@ -79,6 +79,15 @@ module Ci
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         can_admin_runners: true.to_s
       })
+    end
+
+    def admin_runners_fleet_dashboard_data
+      {
+        admin_runners_path: admin_runners_path,
+        new_runner_path: new_admin_runner_path,
+        clickhouse_ci_analytics_available: ::Gitlab::ClickHouse.configured?.to_s,
+        can_admin_runners: current_user.can_admin_all_resources?.to_s
+      }
     end
 
     def group_shared_runners_settings_data(group)

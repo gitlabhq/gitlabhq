@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe CommitStatus, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
-  let_it_be(:pipeline) do
+  let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
@@ -202,6 +202,12 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
         it { is_expected.to be_empty }
       end
     end
+  end
+
+  describe '#supports_force_cancel?' do
+    subject { commit_status.supports_force_cancel? }
+
+    it { is_expected.to eq(false) }
   end
 
   describe '#started?' do
@@ -1045,5 +1051,29 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     let(:attr_value) { :unknown_failure }
 
     it_behaves_like 'having enum with nil value'
+  end
+
+  describe '#archived?' do
+    before do
+      pipeline.update!(created_at: 1.day.ago)
+    end
+
+    subject { build_stubbed(:commit_status, pipeline: pipeline) }
+
+    context 'when archive_builds_in is set' do
+      before do
+        stub_application_setting(archive_builds_in_seconds: 3600)
+      end
+
+      it { is_expected.to be_archived }
+    end
+
+    context 'when archive_builds_in is not set' do
+      before do
+        stub_application_setting(archive_builds_in_seconds: nil)
+      end
+
+      it { is_expected.not_to be_archived }
+    end
   end
 end

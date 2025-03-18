@@ -173,7 +173,6 @@ describe('ModelCreate', () => {
       createWrapper();
       findNameInput().vm.$emit('input', 'gpt-alice-1');
       findDescriptionInput().vm.$emit('input', 'My model description');
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
     });
@@ -190,7 +189,6 @@ describe('ModelCreate', () => {
           .fn()
           .mockResolvedValue(createModelResponses.validationFailure);
         createWrapper(failedCreateModelResolver);
-        jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
         findNameInput().vm.$emit('input', 'gpt-alice-1');
         await submitForm();
@@ -207,15 +205,17 @@ describe('ModelCreate', () => {
 
     it('Logs to sentry upon an exception', async () => {
       const error = new Error('Runtime error');
-      createWrapper();
-      jest.spyOn(apolloProvider.defaultClient, 'mutate').mockImplementation(() => {
+      const errorResolver = jest.fn().mockImplementation(() => {
         throw error;
       });
+      createWrapper(errorResolver);
 
       findNameInput().vm.$emit('input', 'gpt-alice-1');
       await submitForm();
 
-      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        new Error('Unexpected error whilst calling request handler: Runtime error'),
+      );
     });
   });
 });

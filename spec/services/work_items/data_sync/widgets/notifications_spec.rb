@@ -32,6 +32,23 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
 
   describe '#after_save_commit' do
     context 'when target work item has notifications widget' do
+      shared_examples 'notifies participants' do
+        it 'notifies participants' do
+          email_notification = case params[:operation]
+                               when :move
+                                 :issue_moved
+                               when :clone
+                                 :issue_cloned
+                               end
+
+          expect_next_instance_of(NotificationService) do |notification|
+            expect(notification).to receive_message_chain(:async, email_notification.to_sym)
+          end
+
+          callback.after_save_commit
+        end
+      end
+
       before do
         allow(target_work_item).to receive(:get_widget).with(:notifications).and_return(true)
         allow(work_item).to receive(:from_service_desk?).and_return(true)
@@ -54,6 +71,8 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
           expect(subscriptions).to match_array(expected_subscriptions)
           expect(sent_notifications).to match_array(expected_sent_notifications)
         end
+
+        it_behaves_like 'notifies participants'
       end
 
       context 'when cloning work item' do
@@ -70,6 +89,8 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
           expect(target_work_item.reload.subscriptions).to be_empty
           expect(target_work_item.reload.sent_notifications).to be_empty
         end
+
+        it_behaves_like 'notifies participants'
       end
 
       context 'when work item is not a service desk work item' do
@@ -110,6 +131,12 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
 
         expect(target_work_item.reload.subscriptions).to be_empty
         expect(target_work_item.reload.sent_notifications).to be_empty
+      end
+
+      it 'does not notify participants' do
+        expect(NotificationService).not_to receive(:new)
+
+        callback.after_save_commit
       end
     end
   end

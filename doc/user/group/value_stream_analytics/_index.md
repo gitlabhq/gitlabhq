@@ -12,7 +12,7 @@ title: Value stream analytics
 
 {{< /details >}}
 
-Value stream analytics measures the time it takes to go from an idea to production.
+Value stream analytics measures the time it takes to go from an idea to production by tracking merge request or issue events.
 
 A **value stream** is the entire work process that delivers value to customers. For example,
 the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
@@ -30,7 +30,7 @@ Value stream analytics helps businesses:
 
 - Visualize their end-to-end DevSecOps workstreams.
 - Identify and solve inefficiencies.
-- Optimize their workstreams to deliver more value, faster.
+- Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/2025/02/20/how-we-reduced-mr-review-time-with-value-stream-management/)).
 
 Value stream analytics is available for projects and groups.
 
@@ -118,6 +118,8 @@ The following stage events are available:
 These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
 
 To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
+
+You can share your ideas or feedback about stage events in [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).
 
 ### How value stream analytics aggregates data
 
@@ -367,12 +369,6 @@ You can filter value stream analytics to view data that matches specific criteri
 - Milestone
 - Label
 
-{{< alert type="note" >}}
-
-For the "Tasks by type" chart, only the Date range and Project selector filters are available. Labels and other filters are not applied, and you need to select labels separately from the dropdown list next to the chart.
-
-{{< /alert >}}
-
 ## Value stream analytics metrics
 
 The **Overview** page in value stream analytics displays key metrics of the DevSecOps lifecycle performance for projects and groups.
@@ -481,20 +477,17 @@ selected stage finished for the given item.
 
 {{< /details >}}
 
-The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
+The **Tasks by type** chart displays the cumulative number of completed tasks (closed issues and merged merge requests) per day for your group.
 
-The chart uses the global page filters to display data based on the selected
-group and time frame.
+The chart uses the global page filters to display data based on the selected group and time frame.
 
 To view tasks by type:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Value stream analytics**.
 1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
-1. To switch between the task type, select the **Settings** ({{< icon name="settings" >}}) dropdown list
-   and select **Issues** or **Merge Requests**.
-1. To add or remove labels, select the **Settings** ({{< icon name="settings" >}}) dropdown list
-   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
+1. Optional. To filter the tasks by type, select **Settings** ({{< icon name="settings" >}}), then **Issues** or **Merge Requests**.
+1. Optional. To filter the tasks by label, select **Settings** ({{< icon name="settings" >}}), then one or more labels. By default the top group labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
 ## Create a value stream
 
@@ -708,7 +701,7 @@ group(fullPath: "your-group-path") {
 Similarly, to request metrics for a project, run:
 
 ```graphl
-project(fullPath: "your-group-path") {
+project(fullPath: "your-project-path") {
   valueStreams {
     nodes {
       id

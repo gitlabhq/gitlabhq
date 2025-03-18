@@ -58,7 +58,7 @@ type routeOptions struct {
 const (
 	apiPattern           = `^/api/`
 	gitProjectPattern    = `^/.+\.git/`
-	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
+	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	groupPattern         = `^/groups/([^/]+/){0,}[^/]+/`
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
@@ -391,6 +391,8 @@ func configureRoutes(u *upstream) {
 			newRoute(apiPattern+`v4/projects/import`, "api_projects_import", railsBackend), mimeMultipartUploader),
 		u.route("POST",
 			newRoute(apiPattern+`v4/projects/import-relation`, "api_projects_import_relation", railsBackend), mimeMultipartUploader),
+		u.route("POST",
+			newRoute(apiGroupPattern+`/placeholder_reassignments`, "api_group_placeholder_assignment", railsBackend), mimeMultipartUploader),
 		u.route("POST",
 			newRoute(groupPattern+`-/group_members/bulk_reassignment_file`, "group_placeholder_assignment", railsBackend), mimeMultipartUploader),
 		// Project Import via UI upload acceleration

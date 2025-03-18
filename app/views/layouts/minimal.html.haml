@@ -1,6 +1,6 @@
 - @with_header = true
 - page_classes = page_class.push(@html_class, user_application_color_mode).flatten.compact
-- body_classes = [system_message_class, @body_class]
+- body_classes = [system_message_class, @body_class, content_for(:body_class)]
 
 !!! 5
 %html.gl-h-full{ lang: I18n.locale, class: page_classes }

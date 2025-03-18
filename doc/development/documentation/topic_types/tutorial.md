@@ -29,7 +29,7 @@ In general, you might consider using a tutorial when:
 For tutorial Markdown files, you can either:
 
 - Save the file in a directory with the product documentation.
-- Create a subfolder under `doc/tutorials` and name the file `index.md`.
+- Create a subfolder under `doc/tutorials` and name the file `_index.md`.
 
 In the left nav, add the tutorial near the relevant feature documentation.
 
@@ -42,6 +42,8 @@ Tutorials should be in this format:
 ```markdown
 title: Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
 ---
+
+<!-- vale gitlab_base.FutureTense = NO -->
 
 A paragraph that explains what the tutorial does, and the expected outcome.
 
@@ -109,6 +111,7 @@ you can:
 - Add encouraging or congratulatory phrases after tasks.
 - Use future tense from time to time, especially when you're introducing
   steps. For example, `Next, you will associate your issues with your epics`.
+  Disable the Vale rule `gitlab_base.FutureTense` to avoid false positives.
 - Be more conversational. For example, `This task might take a while to complete`.
 
 ## Metadata

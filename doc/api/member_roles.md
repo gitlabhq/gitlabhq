@@ -367,7 +367,7 @@ Example response:
 In GitLab 16.3 and later, you can use the API to:
 
 - Add a name (required) and description (optional) when you
-  [create a new custom role](../user/custom_roles.md#create-a-custom-role).
+  [create a new custom role](../user/custom_roles/_index.md#create-a-custom-role).
 - Update an existing custom role's name and description.
 
 ### Remove member role of a group

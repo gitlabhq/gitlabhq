@@ -164,13 +164,13 @@ point of view), making it extremely hard to track data dependency.
 
 We're trying to use something like this instead:
 
-```haml
+```ruby
 = render 'projects/commits/commit', commit: commit, ref: ref, project: project
 ```
 
 And in the partial:
 
-```haml
+```ruby
 - ref = local_assigns.fetch(:ref)
 - commit = local_assigns.fetch(:commit)
 - project = local_assigns.fetch(:project)

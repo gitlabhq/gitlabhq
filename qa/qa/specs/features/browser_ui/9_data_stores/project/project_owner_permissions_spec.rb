@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project owner permissions', :smoke, :requires_admin, product_group: :tenant_scale do
+    describe 'Project owner permissions', :smoke, :requires_admin, product_group: :organizations do
       let!(:owner) { Runtime::User::Store.test_user }
       let!(:owner_api_client) { owner.api_client }
       let!(:maintainer) { create(:user) }

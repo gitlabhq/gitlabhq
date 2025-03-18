@@ -129,7 +129,7 @@ a.ci-icon:focus {
     $icon-color,
     $icon-background-color,
   ) {
-    color: $text-color;
+    color: $text-color !important;
     background-color: $background-color;
     border: 2px solid $background-color;
 

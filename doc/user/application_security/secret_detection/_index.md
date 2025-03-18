@@ -43,13 +43,13 @@ You should take a multi-layered security approach and enable all available secre
   or comment.
 
 If a secret is committed to a repository, GitLab records the exposure
-in the Vulnerability Report. For some secret types, GitLab can even
+in the vulnerability report. For some secret types, GitLab can even
 automatically revoke the exposed secret. You should always revoke and
 replace exposed secrets as soon as possible.
 
 ## Related topics
 
 - [Secret detection exclusions](exclusions.md)
-- [Vulnerability Report](../vulnerability_report/_index.md)
+- [Vulnerability report](../vulnerability_report/_index.md)
 - [Automatic response to leaked secrets](automatic_response.md)
 - [Push rules](../../project/repository/push_rules.md)

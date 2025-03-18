@@ -40,6 +40,17 @@ module Types
         description: 'ID of the pipeline creation request.'
     end
 
+    field :ci_pipeline_creation_inputs, [Types::Ci::Inputs::InputSpecType],
+      authorize: :create_pipeline,
+      null: true,
+      calls_gitaly: true,
+      experiment: { milestone: '17.10' },
+      description: 'Inputs to create a pipeline.' do
+      argument :ref, GraphQL::Types::String,
+        required: true,
+        description: 'Ref where to create the pipeline.'
+    end
+
     field :full_path, GraphQL::Types::ID,
       null: false,
       description: 'Full path of the project.'
@@ -132,7 +143,7 @@ module Types
 
     field :max_access_level, Types::AccessLevelType,
       null: false,
-      description: 'The maximum access level of the current user in the project.'
+      description: 'Maximum access level of the current user in the project.'
 
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -557,7 +568,7 @@ module Types
 
     field :label, Types::LabelType,
       null: true,
-      description: 'Label available on this project.' do
+      description: 'Label available on the project.' do
       argument :title, GraphQL::Types::String,
         required: true,
         description: 'Title of the label.'
@@ -669,6 +680,11 @@ module Types
       resolver: Resolvers::Projects::ForkDetailsResolver,
       description: 'Details of the fork project compared to its upstream project.'
 
+    field :forked_from, Types::ProjectType,
+      null: true,
+      description: 'Project the project was forked from.',
+      method: :forked_from_project
+
     field :branch_rules, Types::Projects::BranchRuleType.connection_type,
       null: true,
       description: "Branch rules configured for the project.",
@@ -761,7 +777,7 @@ module Types
 
     field :protectable_branches,
       [GraphQL::Types::String],
-      description: 'List of unprotected branches, ignoring any wildcard branch rules',
+      description: 'List of unprotected branches, ignoring any wildcard branch rules.',
       null: true,
       calls_gitaly: true,
       experiment: { milestone: '16.9' },
@@ -781,17 +797,13 @@ module Types
       authorize: :admin_project do
         argument :title_query, GraphQL::Types::String,
           required: false,
-          description: 'Term by which to search deploy key titles'
+          description: 'Term by which to search deploy key titles.'
       end
 
     field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,
       resolver: Resolvers::PagesDeploymentsResolver,
       connection: true,
       description: "List of the project's Pages Deployments."
-
-    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
-      null: true, description: 'Allowed custom statuses for the project.',
-      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
 
     field :pages_force_https, GraphQL::Types::Boolean,
       null: false,
@@ -912,6 +924,17 @@ module Types
 
     def container_repositories_count
       project.container_repositories.size
+    end
+
+    def ci_pipeline_creation_inputs(ref:)
+      response = ::Ci::PipelineCreation::FindPipelineInputsService.new(
+        current_user: context[:current_user],
+        project: object,
+        ref: ref).execute
+
+      raise Gitlab::Graphql::Errors::ArgumentError, response.message if response.error?
+
+      response.payload[:inputs].all_inputs
     end
 
     def ci_config_variables(ref:)

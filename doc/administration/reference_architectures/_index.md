@@ -308,23 +308,27 @@ linkStyle default fill:none,stroke:#7759C2
 
 Before implementing a reference architecture, see the following requirements and guidance.
 
-### Supported CPUs
+### Supported machine types
 
-The architectures are built and tested across various cloud providers, primarily GCP and AWS.
-To ensure the widest range of compatibility, CPU targets are intentionally set to the lowest common denominator across these platforms:
+The architectures are designed to be flexible in terms of machine type selection while ensuring consistent performance. While we provide specific machine type examples in each reference architecture, these are not intended to be prescriptive defaults.
 
-- The [`n1` series](https://cloud.google.com/compute/docs/general-purpose-machines#n1_machines) for GCP.
-- The [`m5` series](https://aws.amazon.com/ec2/instance-types/) for AWS.
+You can use any machine types that meet or exceed the specified requirements for each component, such as:
 
-Depending on other requirements such as memory or network bandwidth and cloud provider availability, different machine types are used accordingly throughout the architectures. We expect that the target CPUs above perform well.
+- Newer generation machine types (like GCP `n2` series or AWS `m6` series)
+- Different architectures like ARM-based instances (such as AWS Graviton)
+- Alternative machine type families that better match your specific workload characteristics (such as higher network bandwidth)
 
-If you want, you can select a newer machine type series and have improved performance as a result.
-
-Additionally, ARM CPUs are supported for Linux package environments and for any [cloud provider services](#cloud-provider-services).
+This guidance is also applicable for any Cloud Provider services such as AWS RDS.
 
 {{< alert type="note" >}}
 
 Any "burstable" instance types are not recommended due to inconsistent performance.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+For details about what machine types we test against and how, refer to [validation and test results](#validation-and-test-results).
 
 {{< /alert >}}
 
@@ -521,9 +525,7 @@ Additionally, the following cloud provider services are recommended for use as p
 
 ### Best practices for the database services
 
-Use an [external database service](../postgresql/external.md) that runs a standard, performant, and [supported PostgreSQL version](../../install/requirements.md#postgresql).
-
-If you choose to use a third-party external service:
+If you choose to use a third-party external service, use an [external database service](../postgresql/external.md) that runs a standard, performant, and [supported PostgreSQL version](../../install/requirements.md#postgresql) and take note of the following considerations:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer, and Consul. All of these components are no longer required when using a third party external service.
 1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard
@@ -540,7 +542,7 @@ If you choose to use a third-party external service:
 
 The following database cloud provider services are not recommended due to lack of support or known issues:
 
-- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. For more details, see [14.4.0](https://docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1440).
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. For more details, see [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 - [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported as the service is now deprecated and runs on an unsupported version of PostgreSQL. It also has notable performance and stability issues.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) are not tested and are not recommended. Both solutions are not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
@@ -613,39 +615,25 @@ For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo
 
 ## Validation and test results
 
-The [Test Platform team](https://handbook.gitlab.com/handbook/engineering/quality/)
+The [Framework team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/)
 does regular smoke and performance tests for these architectures to ensure they
 remain compliant.
 
-### Why we perform the tests
-
-The Quality Department measures and improves the performance of GitLab. They create and validate architectures
-to ensure reliable configurations for GitLab Self-Managed.
-
-For more information, see our [handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/performance-and-scalability/).
-
 ### How we perform the tests
 
-Testing occurs against all architectures and cloud providers in an automated and ad-hoc fashion. Two tools are used for testing:
+Testing is conducted using specific coded workloads derived from sample customer data with the following tools:
 
-- The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts for building the environments.
-- The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
+- [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Terraform and Ansible scripts for building the environments.
+- [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) - Test wrapper tool based on k6.
 
-Network latency on the test environments between components on all cloud providers were measured at <5 ms. This an observation, not a recommendation.
+We test architectures across cloud providers, primarily GCP and AWS, using the following as baseline machine types:
 
-We aim to have a _test smart_ approach where architectures tested have a good range and can also apply to others. Testing focuses on installing a 10k Linux package
-on GCP. This approach serves as a reliable indicator for other architectures, cloud providers, and Cloud Native Hybrids.
+- The [`n1` series](https://cloud.google.com/compute/docs/general-purpose-machines#n1_machines) for GCP
+- The [`m5` series](https://aws.amazon.com/ec2/instance-types/) for AWS
 
-The architectures are cross-platform. Everything runs on VMs through [the Linux package](https://docs.gitlab.com/omnibus/). Testing occurs primarily on GCP.
-However, they perform similarly on hardware with equivalent specifications on other cloud providers or if run on-premises (bare-metal).
+These machine types were selected as a lowest common denominator target to ensure broad compatibility. Using different or newer machine types that meet the CPU and memory requirements is fully supported - see [Supported Machine Types](#supported-machine-types) for more information. The architectures are expected to perform similarly on any hardware meeting the specifications, whether on other cloud providers or on-premises.
 
-GitLab tests these architectures using the
-[GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance).
-We use specific coded workloads based on sample customer data. Select the
-[architecture](#available-reference-architectures) that matches your scale.
-
-Each endpoint type is tested with the following number of RPS
-per 1,000 users:
+Each reference architecture is tested against specific throughput targets based on real customer data. For every 1,000 users, we test:
 
 - API: 20 RPS
 - Web: 2 RPS
@@ -653,6 +641,12 @@ per 1,000 users:
 - Git (Push): 0.4 RPS (rounded to the nearest integer)
 
 The above RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
+
+{{< alert type="note" >}}
+
+Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
+
+{{< /alert >}}
 
 ### How to interpret the results
 
@@ -891,6 +885,10 @@ GitLab application is bundled with [Prometheus and various Prometheus compatible
 The following is a history of notable updates for reference architectures (2021-01-01 onward, ascending order). We aim to update it at least once per quarter.
 
 You can find a full history of changes [on the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&state=merged&label_name%5B%5D=Reference%20Architecture&label_name%5B%5D=documentation).
+
+**2025:**
+
+- [2025-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181145): Added further clarity around supported machine types and that the listed examples are not intended as prescriptive defaults.
 
 **2024:**
 

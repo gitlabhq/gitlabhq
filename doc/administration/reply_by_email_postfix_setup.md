@@ -99,7 +99,7 @@ The instructions make the assumption that you are using the email address `incom
 
    {{< alert type="note" >}}
 
-The `.` is a literal period on its own line.
+   The `.` is a literal period on its own line.
 
    {{< /alert >}}
 

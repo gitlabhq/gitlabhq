@@ -21,9 +21,15 @@ import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '~/repository/utils/dom';
+import {
+  showSingleFileEditorForkSuggestion,
+  showWebIdeForkSuggestion,
+} from '~/repository/utils/fork_suggestion_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
+import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
-import { TEXT_FILE_TYPE, DEFAULT_BLOB_INFO } from '../../constants';
+import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
 import OverflowMenu from './blob_overflow_menu.vue';
 
 export default {
@@ -36,8 +42,10 @@ export default {
   },
   buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
   components: {
+    OpenMrBadge,
     GlButton,
     OverflowMenu,
+    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -61,15 +69,27 @@ export default {
         createAlert({ message: this.$options.i18n.errorMessage });
       },
     },
+    currentUser: {
+      query: userGitpodInfo,
+      error() {
+        createAlert({ message: this.$options.i18n.errorMessage });
+      },
+    },
   },
+  inject: ['currentRef', 'gitpodEnabled'],
   provide() {
     return {
       blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
+      currentRef: computed(() => this.currentRef ?? this.blobInfo.ref),
     };
   },
   props: {
     projectPath: {
       type: String,
+      required: true,
+    },
+    projectIdAsNumber: {
+      type: Number,
       required: true,
     },
     refType: {
@@ -86,7 +106,7 @@ export default {
   data() {
     return {
       project: {},
-      isEmptyRepository: false,
+      currentUser: {},
     };
   },
   computed: {
@@ -101,6 +121,9 @@ export default {
     },
     blobInfo() {
       return this.project?.repository?.blobs?.nodes[0] || {};
+    },
+    userPermissions() {
+      return this.project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
     },
     storageInfo() {
       const { storedExternally, externalStorage } = this.blobInfo;
@@ -118,7 +141,11 @@ export default {
       return this.storageInfo.isLfs;
     },
     isBinaryFileType() {
-      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
+      return (
+        this.isBinary ||
+        (this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE &&
+          this.blobInfo.simpleViewer?.fileType !== EMPTY_FILE)
+      );
     },
     rawPath() {
       return this.blobInfo.externalStorageUrl || this.blobInfo.rawPath;
@@ -150,8 +177,22 @@ export default {
       const description = this.$options.i18n.permalinkTooltip;
       return this.formatTooltipWithShortcut(description, this.shortcuts.permalink);
     },
-    isEmpty() {
-      return this.blobInfo.rawSize === '0';
+    showWebIdeLink() {
+      return !this.blobInfo.archived && this.blobInfo.editBlobPath;
+    },
+    shouldShowSingleFileEditorForkSuggestion() {
+      return showSingleFileEditorForkSuggestion(
+        this.userPermissions,
+        this.isUsingLfs,
+        this.blobInfo.canModifyBlob,
+      );
+    },
+    shouldShowWebIdeForkSuggestion() {
+      return showWebIdeForkSuggestion(
+        this.userPermissions,
+        this.isUsingLfs,
+        this.blobInfo.canModifyBlobWithWebIde,
+      );
     },
   },
   watch: {
@@ -194,6 +235,11 @@ export default {
 </script>
 <template>
   <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+    <open-mr-badge
+      v-if="glFeatures.filterBlobPath"
+      :project-path="projectPath"
+      :blob-path="filePath"
+    />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
@@ -214,6 +260,7 @@ export default {
     </gl-button>
 
     <gl-button
+      v-if="!glFeatures.blobOverflowMenu"
       v-gl-tooltip.html="permalinkTooltip"
       :aria-keyshortcuts="permalinkShortcutKey"
       data-testid="permalink"
@@ -224,11 +271,33 @@ export default {
       {{ $options.i18n.permalink }}
     </gl-button>
 
+    <web-ide-link
+      v-if="glFeatures.blobOverflowMenu && showWebIdeLink"
+      :show-edit-button="!isBinaryFileType"
+      class="!gl-ml-auto gl-mr-0"
+      :edit-url="blobInfo.editBlobPath"
+      :web-ide-url="blobInfo.ideEditPath"
+      :needs-to-fork="shouldShowSingleFileEditorForkSuggestion"
+      :needs-to-fork-with-web-ide="shouldShowWebIdeForkSuggestion"
+      :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
+      :pipeline-editor-url="blobInfo.pipelineEditorPath"
+      :gitpod-url="blobInfo.gitpodBlobUrl"
+      :show-gitpod-button="gitpodEnabled"
+      :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+      :project-path="projectPath"
+      :project-id="projectIdAsNumber"
+      :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
+      :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
+      is-blob
+      disable-fork-modal
+      v-on="$listeners"
+    />
+
     <overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
+      :user-permissions="userPermissions"
       :project-path="projectPath"
-      :is-binary="isBinaryFileType"
-      :is-empty="isEmpty"
+      :is-binary-file-type="isBinaryFileType"
       :override-copy="true"
       :is-empty-repository="project.repository.empty"
       :is-using-lfs="isUsingLfs"

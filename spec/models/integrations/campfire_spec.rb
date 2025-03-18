@@ -35,6 +35,12 @@ RSpec.describe Integrations::Campfire, feature_category: :integrations do
     end
   end
 
+  describe '.help' do
+    it 'links to the help page correctly' do
+      expect(described_class.help).to include('help/api/integrations.md#campfire', 'Learn More')
+    end
+  end
+
   describe "#execute" do
     let(:user)    { build_stubbed(:user) }
     let(:project) { build_stubbed(:project, :repository) }

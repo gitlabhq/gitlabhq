@@ -25,6 +25,8 @@ export default {
 <template>
   <gl-link
     class="gfm gfm-project_member js-user-link"
+    data-reference-type="user"
+    :data-original="`@${data.username}`"
     :href="data.webUrl"
     :title="data.name"
     :data-user="userId"

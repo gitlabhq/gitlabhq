@@ -2161,7 +2161,7 @@
           "oneOf": [
             {
               "type": "object",
-              "markdownDescription": "Trigger a multi-project pipeline. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#specify-a-downstream-pipeline-branch).",
+              "markdownDescription": "Trigger a multi-project pipeline. [Learn More](https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#multi-project-pipelines).",
               "additionalProperties": false,
               "properties": {
                 "project": {
@@ -2179,6 +2179,9 @@
                   "enum": [
                     "depend"
                   ]
+                },
+                "inputs": {
+                  "$ref": "#/definitions/inputs"
                 },
                 "forward": {
                   "description": "Specify what to forward to the downstream pipeline.",
@@ -2209,7 +2212,7 @@
             },
             {
               "type": "object",
-              "description": "Trigger a child pipeline. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/parent_child_pipelines.html).",
+              "description": "Trigger a child pipeline. [Learn More](https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#parent-child-pipelines).",
               "additionalProperties": false,
               "properties": {
                 "include": {
@@ -2551,7 +2554,10 @@
                   "type": "string"
                 },
                 {
-                  "$ref": "#/definitions/stepReference"
+                  "$ref": "#/definitions/stepGitReference"
+                },
+                {
+                  "$ref": "#/definitions/stepOciReference"
                 }
               ]
             }
@@ -2560,31 +2566,6 @@
         {
           "description": "Run a sequence of steps.",
           "oneOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "steps"
-              ],
-              "properties": {
-                "env": {
-                  "$ref": "#/definitions/stepNamedStrings"
-                },
-                "steps": {
-                  "description": "Deprecated. Use `run` instead.",
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/step"
-                  }
-                },
-                "outputs": {
-                  "$ref": "#/definitions/stepNamedValues"
-                },
-                "delegate": {
-                  "type": "string"
-                }
-              }
-            },
             {
               "type": "object",
               "additionalProperties": false,
@@ -2704,36 +2685,94 @@
       },
       "additionalProperties": false
     },
-    "stepReference": {
+    "stepGitReference": {
       "type": "object",
-      "description": "Git a reference to a step in a Git repository.",
+      "description": "GitReference is a reference to a step in a Git repository.",
       "additionalProperties": false,
       "required": [
         "git"
       ],
       "properties": {
         "git": {
-          "$ref": "#/definitions/stepGitReference"
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "rev"
+          ],
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "dir": {
+              "type": "string"
+            },
+            "rev": {
+              "type": "string"
+            },
+            "file": {
+              "type": "string"
+            }
+          }
         }
       }
     },
-    "stepGitReference": {
+    "stepOciReference": {
       "type": "object",
-      "description": "GitReference is a reference to a step in a Git repository containing the full set of configuration options.",
+      "description": "OCIReference is a reference to a step hosted in an OCI repository.",
       "additionalProperties": false,
       "required": [
-        "url",
-        "rev"
+        "oci"
       ],
       "properties": {
-        "url": {
-          "type": "string"
-        },
-        "dir": {
-          "type": "string"
-        },
-        "rev": {
-          "type": "string"
+        "oci": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "registry",
+            "repository",
+            "tag"
+          ],
+          "properties": {
+            "registry": {
+              "type": "string",
+              "description": "The <host>[:<port>] of the container registry server.",
+              "examples": [
+                "registry.gitlab.com"
+              ]
+            },
+            "repository": {
+              "type": "string",
+              "description": "A path within the registry containing related OCI images. Typically the namespace, project, and image name.",
+              "examples": [
+                "my_group/my_project/image"
+              ]
+            },
+            "tag": {
+              "type": "string",
+              "description": "A pointer to the image manifest hosted in the OCI repository.",
+              "examples": [
+                "latest",
+                "1",
+                "1.5",
+                "1.5.0"
+              ]
+            },
+            "dir": {
+              "type": "string",
+              "description": "A directory inside the OCI image where the step can be found.",
+              "examples": [
+                "/my_steps/hello_world"
+              ]
+            },
+            "file": {
+              "type": "string",
+              "description": "The name of the file that defines the step, defaults to step.yml.",
+              "examples": [
+                "step.yml"
+              ]
+            }
+          }
         }
       }
     },

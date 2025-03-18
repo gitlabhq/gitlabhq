@@ -17,7 +17,7 @@ module MergeRequests
 
       ::MergeRequests::CreatePipelineWorker.perform_async(
         project.id, current_user.id, merge_request.id,
-        params.merge(pipeline_creation_request: pipeline_creation_request)
+        params.merge(pipeline_creation_request: pipeline_creation_request).deep_stringify_keys
       )
     end
 
@@ -52,7 +52,7 @@ module MergeRequests
       if can_create_pipeline_in_target_project?(merge_request)
         [merge_request.target_project, merge_request.ref_path]
       else
-        [merge_request.source_project, merge_request.source_branch]
+        [merge_request.source_project, merge_request.source_branch_ref(or_sha: false)]
       end
     end
 

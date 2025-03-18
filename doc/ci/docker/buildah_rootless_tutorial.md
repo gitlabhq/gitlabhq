@@ -44,10 +44,10 @@ We start by preparing a custom image based on the `quay.io/buildah/stable:v1.23.
    && echo build:10000:65536 > /etc/subuid \
    && echo build:10000:65536 > /etc/subgid
 
-   # Use chroot since the default runc does not work when running rootless
+   # Use chroot because the default runc does not work when running rootless
    RUN echo "export BUILDAH_ISOLATION=chroot" >> /home/build/.bashrc
 
-   # Use VFS since fuse does not work
+   # Use VFS because fuse does not work
    RUN mkdir -p /home/build/.config/containers \
    && (echo '[storage]';echo 'driver = "vfs"') > /home/build/.config/containers/storage.conf
 

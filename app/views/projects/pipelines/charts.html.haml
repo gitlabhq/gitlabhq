@@ -1,5 +1,7 @@
 - page_title _('CI/CD Analytics')
 
+= render ::Layouts::PageHeadingComponent.new(_("CI/CD Analytics"))
+
 #js-project-pipelines-charts-app{ data: { project_path: @project.full_path,
   project_id: @project.id,
   should_render_dora_charts: should_render_dora_charts.to_s,

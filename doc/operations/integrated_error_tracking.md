@@ -96,12 +96,12 @@ To view the full timestamp of an error:
 
 In the following example, the error happened at 11:41 CEST:
 
-![MonitorDetailErrors](img/last_seen_v16.10.png)
+![MonitorDetailErrors](img/last_seen_v16_10.png)
 
 The **Last 24 hours** graph measures how many times this error occurred per hour.
 By pointing at the `11 am` bar, the dialog shows the error was seen 239 times:
 
-![MonitorDetailErrors](img/error_bucket_v16.10.png)
+![MonitorDetailErrors](img/error_bucket_v16_10.png)
 
 The **Last seen** field does not update until the full hour is complete, due to
 the library used for the call

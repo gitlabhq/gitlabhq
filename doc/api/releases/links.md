@@ -12,7 +12,11 @@ title: Release links API
 
 {{< /details >}}
 
-> Support for [GitLab CI/CD job token](../../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250819) in GitLab 15.1.
+{{< history >}}
+
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/250819) authentication with a [GitLab CI/CD job token](../../ci/jobs/ci_job_token.md) in GitLab 15.1.
+
+{{< /history >}}
 
 Use this API to manipulate GitLab [Release](../../user/project/releases/_index.md)
 links. For manipulating other Release assets, see [Release API](_index.md).

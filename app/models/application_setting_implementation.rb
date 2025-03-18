@@ -44,6 +44,8 @@ module ApplicationSettingImplementation
         allow_possible_spam: false,
         asset_proxy_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
+        autocomplete_users_limit: 300,
+        autocomplete_users_unauthenticated_limit: 100,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
@@ -136,7 +138,7 @@ module ApplicationSettingImplementation
         max_import_remote_file_size: 10240,
         max_login_attempts: nil,
         max_terraform_state_size_bytes: 0,
-        max_yaml_size_bytes: 2.megabyte,
+        max_yaml_size_bytes: 2.megabytes,
         max_yaml_depth: 100,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
@@ -149,6 +151,7 @@ module ApplicationSettingImplementation
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
         personal_access_token_prefix: 'glpat-',
+        instance_token_prefix: 'gl',
         plantuml_enabled: false,
         plantuml_url: nil,
         diagramsnet_enabled: true,
@@ -299,7 +302,15 @@ module ApplicationSettingImplementation
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,
         user_starred_projects_api_limit: 100,
+        users_api_limit_followers: 100,
+        users_api_limit_following: 100,
+        users_api_limit_status: 240,
+        users_api_limit_ssh_keys: 120,
+        users_api_limit_ssh_key: 120,
+        users_api_limit_gpg_keys: 120,
+        users_api_limit_gpg_key: 120,
         nuget_skip_metadata_url_validation: false,
+        helm_max_packages_count: 1000,
         ai_action_api_rate_limit: 160,
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,
@@ -308,7 +319,7 @@ module ApplicationSettingImplementation
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
         ropc_without_client_credentials: true,
-        vscode_extension_marketplace: {}
+        vscode_extension_marketplace_enabled: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end
@@ -574,6 +585,10 @@ module ApplicationSettingImplementation
 
   def allow_signup?
     signup_enabled? && password_authentication_enabled_for_web?
+  end
+
+  def product_usage_data_enabled?
+    true
   end
 
   def password_authentication_enabled?

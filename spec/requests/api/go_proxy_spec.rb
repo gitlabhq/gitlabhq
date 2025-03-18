@@ -190,7 +190,8 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       it_behaves_like 'a missing module version list resource'
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:module_name) { base }
       let(:resource) { 'list' }
       let(:request) { get_resource(job_token: target_job.token) }
@@ -250,7 +251,8 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       end
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:module_name) { base }
       let(:resource) { 'v1.0.1.info' }
       let(:request) { get_resource(job_token: target_job.token) }
@@ -278,7 +280,8 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       it_behaves_like 'a missing module file resource', 'v1.0.1', path: '/mod'
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:module_name) { base }
       let(:resource) { 'v1.0.1.mod' }
       let(:request) { get_resource(job_token: target_job.token) }
@@ -306,7 +309,8 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       it_behaves_like 'a module archive resource', 'v2.0.0', ['go.mod', 'a.go', 'x.go'], path: '/v2'
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:module_name) { base }
       let(:resource) { 'v1.0.1.zip' }
       let(:request) { get_resource(job_token: target_job.token) }

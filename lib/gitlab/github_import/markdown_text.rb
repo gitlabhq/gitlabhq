@@ -6,6 +6,7 @@ module Gitlab
   module GithubImport
     class MarkdownText
       include Gitlab::EncodingHelper
+      include Gitlab::Import::UsernameMentionRewriter
 
       # On github.com we have base url for docs and CDN url for media.
       # On github EE as far as we can know there is no CDN urls and media is placed on base url.
@@ -16,26 +17,7 @@ module Gitlab
 
       class << self
         def format(...)
-          new(...).to_s
-        end
-
-        # Links like `https://domain.github.com/<namespace>/<project>/pull/<iid>` needs to be converted
-        def convert_ref_links(text, project)
-          matcher_options = { github_url: github_url, import_source: project.import_source }
-          issue_ref_matcher = ISSUE_REF_MATCHER % matcher_options
-          pull_ref_matcher = PULL_REF_MATCHER % matcher_options
-
-          url_helpers = Rails.application.routes.url_helpers
-          text.gsub(issue_ref_matcher, url_helpers.project_issues_url(project))
-              .gsub(pull_ref_matcher, url_helpers.project_merge_requests_url(project))
-        end
-
-        # Returns github domain without slash in the end
-        def github_url
-          oauth_config = Gitlab::Auth::OAuth::Provider.config_for('github') || {}
-          url = oauth_config['url'].presence || 'https://github.com'
-          url = url.chop if url.end_with?('/')
-          url
+          new(...).perform
         end
 
         def fetch_attachments(text)
@@ -51,6 +33,14 @@ module Gitlab
           attachments
         end
 
+        # Returns github domain without slash in the end
+        def github_url
+          oauth_config = Gitlab::Auth::OAuth::Provider.config_for('github') || {}
+          url = oauth_config['url'].presence || 'https://github.com'
+          url = url.chop if url.end_with?('/')
+          url
+        end
+
         private
 
         def extract_attachment(node)
@@ -61,27 +51,43 @@ module Gitlab
       # text - The Markdown text as a String.
       # author - An instance of `Gitlab::GithubImport::Representation::User`
       # exists - Boolean that indicates the user exists in the GitLab database.
-      def initialize(text, author, exists = false)
-        @text = text.to_s
+      # project - An instance of `Project`.
+      def initialize(text, author = nil, exists = false, project: nil)
+        @text = text
         @author = author
         @exists = exists
+        @project = project
       end
 
-      def to_s
+      def perform
+        return if text.blank?
+
         # Gitlab::EncodingHelper#clean remove `null` chars from the string
-        clean(format)
+        text = clean(formatted_text)
+        text = convert_ref_links(text, project) if project.present?
+        wrap_mentions_in_backticks(text)
       end
 
       private
 
-      attr_reader :text, :author, :exists
+      attr_reader :text, :author, :exists, :project
 
-      def format
-        if author&.login.present? && !exists
-          "*Created by: #{author.login}*\n\n#{text}"
-        else
-          text
-        end
+      def formatted_text
+        login = author.respond_to?(:fetch) ? author.fetch(:login, nil) : author.try(:login)
+        return "*Created by: #{login}*\n\n#{text}" if login.present? && !exists
+
+        text
+      end
+
+      # Links like `https://domain.github.com/<namespace>/<project>/pull/<iid>` needs to be converted
+      def convert_ref_links(text, project)
+        matcher_options = { github_url: self.class.github_url, import_source: project.import_source }
+        issue_ref_matcher = ISSUE_REF_MATCHER % matcher_options
+        pull_ref_matcher = PULL_REF_MATCHER % matcher_options
+
+        url_helpers = Rails.application.routes.url_helpers
+        text.gsub(issue_ref_matcher, url_helpers.project_issues_url(project))
+            .gsub(pull_ref_matcher, url_helpers.project_merge_requests_url(project))
       end
     end
   end

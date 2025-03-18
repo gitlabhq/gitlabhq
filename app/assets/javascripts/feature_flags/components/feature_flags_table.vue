@@ -17,6 +17,7 @@ export default {
   i18n: {
     deleteLabel: __('Delete'),
     editLabel: __('Edit'),
+    editAriaLabel: (name) => sprintf(__('Edit %{name}'), { name }),
     toggleLabel: __('Feature flag status'),
   },
   components: {
@@ -207,7 +208,7 @@ export default {
               data-testid="feature-flag-edit-button"
               class="gl-flex-grow"
               icon="pencil"
-              :aria-label="$options.i18n.editLabel"
+              :aria-label="$options.i18n.editAriaLabel(item.name)"
               :href="item.edit_path"
             />
           </template>
@@ -234,7 +235,7 @@ export default {
               data-testid="feature-flag-edit-button"
               class="gl-flex-grow"
               icon="pencil"
-              :aria-label="$options.i18n.editLabel"
+              :aria-label="$options.i18n.editAriaLabel(item.name)"
               :href="item.edit_path"
             />
           </template>

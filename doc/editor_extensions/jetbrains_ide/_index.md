@@ -69,7 +69,7 @@ From the IDE:
 ## Report issues with the plugin
 
 You can report any issues, bugs, or feature requests in the
-[`gitlab-jetbrains-plugin` issue queue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues).
+[`gitlab-jetbrains-plugin` issue tracker](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues).
 Use the `Bug` or `Feature Proposal` template.
 
 If you encounter an error while using GitLab Duo, you can also report it with your IDE's

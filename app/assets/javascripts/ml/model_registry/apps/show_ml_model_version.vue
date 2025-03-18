@@ -9,7 +9,6 @@ import { setUrlFragment, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ModelVersionDetail from '../components/model_version_detail.vue';
@@ -145,7 +144,7 @@ export default {
       return this.$apollo.queries.modelWithModelVersion.loading;
     },
     title() {
-      return `${this.modelName} / ${this.versionName}`;
+      return `${this.modelName} / ${this.$options.i18n.versionLabelText} ${this.versionName}`;
     },
     queryVariables() {
       return {
@@ -186,7 +185,12 @@ export default {
   },
   methods: {
     handleError(error) {
-      this.errorMessage = makeLoadVersionsErrorMessage(error.message);
+      this.errorMessage = sprintf(
+        s__('MlModelRegistry|Failed to load model version with error: %{message}'),
+        {
+          message: error.message,
+        },
+      );
       Sentry.captureException(error, {
         tags: {
           vue_component: 'show_ml_model_version',
@@ -240,6 +244,7 @@ export default {
       performance: s__('MlModelRegistry|Performance'),
     },
     noneText: __('None'),
+    versionLabelText: s__('MlModelRegistry|version'),
   },
   ROUTE_DETAILS,
   ROUTE_ARTIFACTS,

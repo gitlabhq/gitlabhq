@@ -25,7 +25,9 @@ RSpec.describe Deployments::HooksWorker, feature_category: :continuous_delivery 
       project = deployment.project
       service = create(:integrations_slack, project: project, deployment_events: true)
 
-      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(service.id, an_instance_of(Hash))
+      expect(Integrations::ExecuteWorker)
+        .to receive(:perform_async)
+        .with(service.id, an_instance_of(ActiveSupport::HashWithIndifferentAccess))
 
       worker.perform(deployment_id: deployment.id, status_changed_at: Time.current)
     end

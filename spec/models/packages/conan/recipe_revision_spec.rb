@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::RecipeRevision, type: :model, feature_category: :package_registry do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it 'belongs to package' do
       is_expected.to belong_to(:package).class_name('Packages::Conan::Package').inverse_of(:conan_recipe_revisions)
@@ -30,24 +32,30 @@ RSpec.describe Packages::Conan::RecipeRevision, type: :model, feature_category: 
 
     it 'has unique revision scoped to package_id' do
       # ignore case, same revision string with different case are converted to same hexa binary
-      is_expected.to validate_uniqueness_of(:revision).scoped_to(:package_id).case_insensitive
+      is_expected.to validate_uniqueness_of(:revision).scoped_to(:package_id).case_insensitive.on(%i[create update])
     end
 
-    context 'when validating the byte size of revision' do
-      let(:invalid_revision) { 'a' * (Packages::Conan::RecipeRevision::REVISION_LENGTH_MAX + 1) }
-
-      it 'is not valid if revision exceeds maximum byte size', :aggregate_failures do
-        recipe_revision.revision = invalid_revision
-
-        expect(recipe_revision).not_to be_valid
-        expect(recipe_revision.errors[:revision]).to include(
-          "is too long (#{Packages::Conan::RecipeRevision::REVISION_LENGTH_MAX + 1} B). " \
-            "The maximum size is #{Packages::Conan::RecipeRevision::REVISION_LENGTH_MAX} B.")
+    context 'when validating hex format and length' do
+      where(:revision, :valid, :error_message) do
+        OpenSSL::Digest.hexdigest('MD5', 'test string')  | true  | nil
+        OpenSSL::Digest.hexdigest('SHA1', 'test string') | true  | nil
+        'df28fd816be3a119de5ce4d374436b2g'               | false | 'Revision is invalid'
+        ('a' * 41)                                       | false | 'Revision is invalid'
       end
 
-      it 'is valid if revision is within byte size limit' do
-        # recipe revision is set correclty in the factory
-        expect(recipe_revision).to be_valid
+      with_them do
+        before do
+          recipe_revision.revision = revision
+        end
+
+        if params[:valid]
+          it { expect(recipe_revision).to be_valid }
+        else
+          it 'is invalid with the expected error message' do
+            expect(recipe_revision).not_to be_valid
+            expect(recipe_revision.errors).to contain_exactly(error_message)
+          end
+        end
       end
     end
   end

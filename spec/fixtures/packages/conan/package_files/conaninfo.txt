@@ -7,7 +7,9 @@
     os=Macos
 
 [requires]
-
+    cli11/1.Y.Z
+    fmt/7.Y.Z
+    prometheus-cpp/1.Y.Z
 
 [options]
     shared=False
@@ -21,7 +23,13 @@
     os=Macos
 
 [full_requires]
-
+    civetweb/1.15:77e8df9f2be98ef80d2a9f31ea49eb14597b20b0
+    cli11/1.9.1:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    fmt/7.1.3:80138d4a58def120da0b8c9199f2b7a4e464a85b
+    libcurl/7.86.0:a097455223234e250d01a2687cf7c15446fbd5d5
+    openssl/1.1.1s:6841fe8f0f22f6fa260da36a43a94ab525c7ed8d
+    prometheus-cpp/1.1.0:b39e1754fc610f750a6d595455854696692ec5bc
+    zlib/1.2.13:6841fe8f0f22f6fa260da36a43a94ab525c7ed8d
 
 [full_options]
     shared=False
@@ -30,4 +38,5 @@
     b4b91125b36b40a7076a98310588f820
 
 [env]
-
+    CC=clang-10
+    CXX=clang++-10

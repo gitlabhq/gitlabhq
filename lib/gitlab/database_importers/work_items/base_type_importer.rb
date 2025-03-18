@@ -16,7 +16,7 @@ module Gitlab
           weight: 'Weight',
           health_status: 'Health status',
           progress: 'Progress',
-          status: 'Status',
+          verification_status: 'Verification status',
           requirement_legacy: 'Requirement legacy',
           test_reports: 'Test reports',
           notifications: 'Notifications',
@@ -30,9 +30,10 @@ module Gitlab
           development: 'Development',
           crm_contacts: 'CRM contacts',
           email_participants: 'Email participants',
-          custom_status: 'Custom status',
+          status: 'Status',
           custom_fields: 'Custom fields',
-          error_tracking: 'Error tracking'
+          error_tracking: 'Error tracking',
+          vulnerabilities: 'Vulnerabilities'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -58,6 +59,7 @@ module Gitlab
             :participants,
             :start_and_due_date,
             :time_tracking,
+            :vulnerabilities,
             [:weight, { editable: true, rollup: false }]
           ],
           incident: [
@@ -100,7 +102,7 @@ module Gitlab
             :notifications,
             :participants,
             :requirement_legacy,
-            :status,
+            :verification_status,
             :test_reports,
             :time_tracking
           ],
@@ -123,7 +125,7 @@ module Gitlab
             :start_and_due_date,
             :time_tracking,
             [:weight, { editable: true, rollup: false }],
-            :custom_status
+            :status
           ],
           objective: [
             :assignees,
@@ -169,11 +171,12 @@ module Gitlab
             :hierarchy,
             :labels,
             :linked_items,
+            :milestone,
             :notes,
             :notifications,
             :participants,
             :start_and_due_date,
-            :status,
+            :verification_status,
             :time_tracking,
             [:weight, { editable: false, rollup: true }]
           ],

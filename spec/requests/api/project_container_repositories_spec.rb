@@ -116,6 +116,14 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     let(:method) { :delete }
     let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}" }
 
+    shared_examples 'destroying the container repository' do
+      it 'marks the repository as delete_scheduled' do
+        expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
+
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+
     ['using API user', 'using job token'].each do |context|
       context context do
         include_context context
@@ -127,6 +135,8 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
         context 'for maintainer' do
           let(:api_user) { maintainer }
 
+          it_behaves_like 'destroying the container repository'
+
           it 'marks the repository as delete_scheduled' do
             expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
 
@@ -137,6 +147,71 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    context 'with delete protection rule', :enable_admin_mode do
+      using RSpec::Parameterized::TableSyntax
+
+      include_context 'using API user'
+
+      let_it_be(:owner) { create(:user, owner_of: [project, project2]) }
+      let_it_be(:instance_admin) { create(:admin) }
+
+      let_it_be_with_reload(:container_registry_protection_rule) do
+        create(:container_registry_protection_rule, project: project)
+      end
+
+      let(:params) { { admin_mode: admin_mode } }
+
+      before do
+        container_registry_protection_rule.update!(
+          repository_path_pattern: root_repository.path,
+          minimum_access_level_for_delete: minimum_access_level_for_delete
+        )
+      end
+
+      shared_examples 'protected deletion of container repository' do
+        it 'returns the expected status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'returns error message' do
+          subject
+
+          expect(json_response).to include('message' => '403 Forbidden - Deleting protected container repository forbidden.')
+        end
+
+        context 'when feature flag :container_registry_protected_containers_delete is disabled' do
+          before do
+            stub_feature_flags(container_registry_protected_containers_delete: false)
+          end
+
+          it_behaves_like 'destroying the container repository'
+        end
+      end
+
+      where(:minimum_access_level_for_delete, :api_user, :admin_mode, :expected_shared_example) do
+        nil         | ref(:maintainer)     | false | 'destroying the container repository'
+        nil         | ref(:owner)          | false | 'destroying the container repository'
+
+        :maintainer | ref(:maintainer)     | false | 'destroying the container repository'
+        :maintainer | ref(:owner)          | false | 'destroying the container repository'
+        :maintainer | ref(:instance_admin) | true  | 'destroying the container repository'
+
+        :owner      | ref(:maintainer)     | false | 'protected deletion of container repository'
+        :owner      | ref(:owner)          | false | 'destroying the container repository'
+        :owner      | ref(:instance_admin) | true  | 'destroying the container repository'
+
+        :admin      | ref(:maintainer)     | false | 'protected deletion of container repository'
+        :admin      | ref(:owner)          | false | 'protected deletion of container repository'
+        :admin      | ref(:instance_admin) | true  | 'destroying the container repository'
+      end
+
+      with_them do
+        it_behaves_like params[:expected_shared_example]
+      end
+    end
   end
 
   describe 'GET /projects/:id/registry/repositories/:repository_id/tags' do
@@ -579,8 +654,9 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
   describe 'DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name' do
     let(:method) { :delete }
-    let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags/rootA" }
+    let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags/#{tag_name_param}" }
     let(:service) { double('service') }
+    let(:tag_name_param) { 'rootA' }
 
     ['using API user', 'using job token'].each do |context|
       context context do
@@ -595,16 +671,16 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
             [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'i_package_container_user').to_h]
           end
 
-          context 'when there are multiple tags' do
+          before do
+            stub_container_registry_tags(repository: root_repository.path, tags: [tag_name_param], with_manifest: true)
+          end
+
+          context 'when the delete tags service returns success' do
             before do
-              stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA rootB], with_manifest: true)
+              stub_delete_tags_service(status: :success)
             end
 
             it 'properly removes tag' do
-              expect(service).to receive(:execute).with(root_repository) { { status: :success } }
-              expect(Projects::ContainerRepository::DeleteTagsService)
-                .to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
-
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
@@ -621,29 +697,34 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
             end
           end
 
-          context 'when there\'s only one tag' do
+          context 'when the delete tags service returns a protection error' do
             before do
-              stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
+              stub_delete_tags_service(
+                status: :forbidden,
+                message: ::Projects::ContainerRepository::Gitlab::DeleteTagsService::PROTECTED_TAGS_ERROR_MESSAGE)
             end
 
-            it 'properly removes tag' do
-              expect(service).to receive(:execute).with(root_repository) { { status: :success } }
-              expect(Projects::ContainerRepository::DeleteTagsService)
-                .to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
-
+            it 'returns a forbidden response' do
               subject
 
-              expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(
-                category: described_class.name,
-                action: 'delete_tag',
-                project: project,
-                user: api_user,
-                namespace: project.namespace.reload,
-                label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
-                property: 'i_package_container_user',
-                context: service_ping_context
-              )
+              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response.body).to include(::Projects::ContainerRepository::Gitlab::DeleteTagsService::PROTECTED_TAGS_ERROR_MESSAGE)
+            end
+          end
+
+          context 'when the delete tags service returns a different error' do
+            before do
+              allow_next_instance_of(ContainerRegistry::Client) do |instance|
+                allow(instance).to receive(:supports_tag_delete?).and_return(false)
+              end
+
+              stub_delete_tags_service(status: :bad_request)
+            end
+
+            it 'returns an bad request response' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
         end
@@ -651,5 +732,11 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    def stub_delete_tags_service(status:, message: '')
+      allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |instance|
+        allow(instance).to receive(:execute).with(root_repository).and_return({ status: status, message: message })
+      end
+    end
   end
 end

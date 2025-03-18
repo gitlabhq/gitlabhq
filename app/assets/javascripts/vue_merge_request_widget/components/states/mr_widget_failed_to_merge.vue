@@ -40,8 +40,8 @@ export default {
     },
     timerText() {
       return n__(
-        'Refreshing in a second to show the updated status...',
-        'Refreshing in %d seconds to show the updated status...',
+        'Refreshing in a second to show the updated status…',
+        'Refreshing in %d seconds to show the updated status…',
         this.timer,
       );
     },

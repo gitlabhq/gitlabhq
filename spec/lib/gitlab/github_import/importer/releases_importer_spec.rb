@@ -429,8 +429,20 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
           expect(release_hash[:tag]).to eq('1.0')
         end
 
-        it 'includes the release description' do
-          expect(release_hash[:description]).to eq('This is my release')
+        context 'when the description is processed for formatting' do
+          let(:body) { "I said to @sam_allen\0 the code should follow @bob's\0 advice. @.ali-ce/group#9?\0" }
+          let(:expected_body) { "I said to `@sam_allen` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+
+          before do
+            allow(Gitlab::GithubImport::MarkdownText).to receive(:format).and_call_original
+
+            release_hash
+          end
+
+          it 'verify that the formatted description using MarkdownText equals the expected description' do
+            expect(Gitlab::GithubImport::MarkdownText).to have_received(:format)
+            expect(release_hash[:description]).to eq(expected_body)
+          end
         end
 
         it 'includes the project ID' do

@@ -3,7 +3,6 @@
 RSpec/VerifiedDoubleReference:
   Exclude:
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
-    - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
     - 'ee/spec/features/custom_models/code_suggestions_spec.rb'
     - 'ee/spec/features/custom_models/duo_chat_spec.rb'
     - 'ee/spec/features/merge_request/user_sees_security_policy_rules_licence_compliance_spec.rb'
@@ -49,7 +48,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/requests/api/graphql/project/google_cloud/artifact_registry/docker_images_spec.rb'
     - 'ee/spec/requests/api/graphql/user_code_suggestions_available_spec.rb'
     - 'ee/spec/requests/api/security_scans_spec.rb'
-    - 'ee/spec/requests/projects/security/policies_controller_spec.rb'
     - 'ee/spec/serializers/dashboard_environments_project_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_entity_spec.rb'
     - 'ee/spec/services/analytics/cycle_analytics/consistency_check_service_spec.rb'

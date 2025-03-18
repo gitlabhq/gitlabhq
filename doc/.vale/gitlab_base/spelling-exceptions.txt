@@ -74,6 +74,7 @@ Azure
 B-tree
 backfilling
 backfills
+backoff
 backport
 backported
 backporting
@@ -182,9 +183,10 @@ Coinbase
 colocate
 colocated
 colocating
+Colorama
+Command Palette
 commit's
 committer's
-Command Palette
 CommonMark
 compilable
 composable
@@ -252,6 +254,7 @@ deduplicated
 deduplicates
 deduplicating
 deduplication
+Deepin
 delegators
 deliverables
 denormalization
@@ -378,6 +381,7 @@ Flutterwave
 Flycheck
 focusable
 Forgerock
+Forky
 formatters
 Fortanix
 Fortinet
@@ -515,6 +519,7 @@ kaniko
 Karma
 Kata
 KCachegrind
+keepalive
 Kerberos
 KEV
 Keycloak
@@ -549,6 +554,7 @@ Lemmy
 libFuzzer
 Libgcrypt
 Libravatar
+LinuxMint
 liveness
 LLM
 LLMs
@@ -567,6 +573,7 @@ Lookbook
 lookups
 loopback
 LSP
+Lts
 Lua
 Lucene
 Lucidchart
@@ -650,6 +657,7 @@ nosniff
 noteable
 noteables
 npm
+NTFSSecurity
 NuGet
 nullability
 nullable
@@ -663,7 +671,6 @@ offboarded
 offboarding
 offboards
 OIDs
-OKRs
 OKRs
 Okta
 OLM
@@ -681,6 +688,7 @@ OSs
 OTel
 outdent
 Overcommit
+Packagecloud
 Packagist
 packfile
 packfiles
@@ -1069,6 +1077,7 @@ triaged
 triages
 triaging
 Trivy
+Trixie
 Truststore
 truthy
 Twilio
@@ -1080,6 +1089,11 @@ Ubuntu
 Udemy
 UI
 UIDs
+ulimit
+Ulyana
+Ulyssa
+Uma
+Una
 unapplied
 unapprove
 unapproved
@@ -1234,7 +1248,9 @@ worktree
 worktrees
 Worldline
 Xcode
+Xenial
 Xeon
+Xerus
 XPath
 Yandex
 YouTrack

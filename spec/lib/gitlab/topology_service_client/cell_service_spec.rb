@@ -18,16 +18,16 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
   describe '#get_cell_info' do
     context 'when topology service is disabled' do
       it 'raises an error when topology service is not enabled' do
-        expect(Gitlab.config.cell.topology_service).to receive(:enabled).and_return(false)
+        expect(Gitlab.config.cell).to receive(:enabled).and_return(false)
 
         expect { cell_service }.to raise_error(NotImplementedError)
       end
     end
 
-    context 'when topology service is enabled' do
+    context 'when cell is enabled' do
       before do
         allow(Gitlab.config.cell).to receive(:id).twice.and_return(1)
-        allow(Gitlab.config.cell.topology_service).to receive(:enabled).once.and_return(true)
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
       end
 
       it 'returns the cell information' do
@@ -55,10 +55,10 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
   end
 
   describe '#cell_sequence_range' do
-    context 'when topology service is enabled' do
+    context 'when cell is enabled' do
       before do
         allow(Gitlab.config.cell).to receive(:id).twice.and_return(1)
-        allow(Gitlab.config.cell.topology_service).to receive(:enabled).once.and_return(true)
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
       end
 
       context 'when a cell exists in topology service' do

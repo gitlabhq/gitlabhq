@@ -20,9 +20,17 @@ module ActiveContext
             number_of_partitions: number_of_partitions,
             fields: builder.fields
           )
+
+          create_collection_record(full_name, number_of_partitions)
         end
 
         private
+
+        def create_collection_record(name, number_of_partitions)
+          collection = adapter.connection.collections.find_or_initialize_by(name: name)
+          collection.update(number_of_partitions: number_of_partitions)
+          collection.save!
+        end
 
         def do_create_collection(...)
           raise NotImplementedError

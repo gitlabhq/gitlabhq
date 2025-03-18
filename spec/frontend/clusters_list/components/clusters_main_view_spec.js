@@ -27,6 +27,7 @@ describe('ClustersMainViewComponent', () => {
   const defaultProvide = {
     certificateBasedClustersEnabled: true,
     displayClusterAgents: true,
+    isGroup: false,
   };
 
   const createWrapper = (extendedProvide = {}) => {
@@ -176,7 +177,36 @@ describe('ClustersMainViewComponent', () => {
       });
     });
 
-    describe('when on group or admin level', () => {
+    describe('when on group level', () => {
+      beforeEach(() => {
+        createWrapper({ isGroup: true });
+      });
+
+      it('renders correct number of tabs', () => {
+        expect(findAllTabs()).toHaveLength(CLUSTERS_TABS.length);
+      });
+
+      describe('tabs', () => {
+        it.each`
+          tabTitle         | queryParamValue      | lineNumber
+          ${'All'}         | ${'all'}             | ${0}
+          ${'Agent'}       | ${AGENT}             | ${1}
+          ${'Certificate'} | ${CERTIFICATE_BASED} | ${2}
+        `(
+          'renders correct tab title and query param value',
+          ({ tabTitle, queryParamValue, lineNumber }) => {
+            expect(findGlTabAtIndex(lineNumber).attributes('title')).toBe(tabTitle);
+            expect(findGlTabAtIndex(lineNumber).props('queryParamValue')).toBe(queryParamValue);
+          },
+        );
+      });
+
+      it('does not render agent installation modal', () => {
+        expect(findModal().exists()).toBe(false);
+      });
+    });
+
+    describe('when on admin level', () => {
       beforeEach(() => {
         createWrapper({ displayClusterAgents: false });
       });

@@ -79,6 +79,14 @@ module Enums
         )
       end
 
+      # Workloads are always dangling but they also have almost all sources of CI variables disabled by default as they
+      # do not need access most of the kinds of CI variables.
+      def self.workload_sources
+        dangling_sources.slice(
+          :duo_workflow
+        )
+      end
+
       # CI sources are those pipeline events that affect the CI status of the ref
       # they run for. By definition it excludes dangling pipelines.
       def self.ci_sources

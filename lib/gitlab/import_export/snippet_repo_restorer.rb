@@ -3,6 +3,8 @@
 module Gitlab
   module ImportExport
     class SnippetRepoRestorer < RepoRestorer
+      include ::Import::Framework::ProgressTracking
+
       attr_reader :snippet, :user
 
       SnippetRepositoryError = Class.new(StandardError)
@@ -16,13 +18,15 @@ module Gitlab
       end
 
       def restore
-        if File.exist?(path_to_bundle)
-          create_repository_from_bundle
-        else
-          create_repository_from_db
-        end
+        with_progress_tracking(**progress_tracking_options(snippet)) do
+          if File.exist?(path_to_bundle)
+            create_repository_from_bundle
+          else
+            create_repository_from_db
+          end
 
-        true
+          true
+        end
       rescue StandardError => e
         shared.error(e)
         false
@@ -53,6 +57,10 @@ module Gitlab
         unless snippet.reset.snippet_repository
           raise SnippetRepositoryError, _("Error creating repository for snippet with id %{snippet_id}") % { snippet_id: snippet.id }
         end
+      end
+
+      def progress_tracking_options(snippet)
+        { scope: { project_id: snippet.project_id }, data: snippet.id }
       end
     end
   end

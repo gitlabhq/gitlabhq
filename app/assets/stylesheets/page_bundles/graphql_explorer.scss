@@ -1,10 +1,16 @@
 @use 'graphiql/graphiql.css';
+@use 'framework/variables';
 
 html, body, #graphiql-container {
   height: 100%;
   margin: 0;
   overflow: hidden;
   width: 100%;
+}
+
+.with-performance-bar #graphiql-container {
+  padding-top: variables.$performance-bar-height;
+  height: calc(100% - variables.$performance-bar-height);
 }
 
 .graphiql-container .graphiql-logo {

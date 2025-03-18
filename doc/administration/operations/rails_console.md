@@ -822,14 +822,14 @@ sudo gitlab-rails runner /scripts/helloworld.rb
 Some output in the console might be filtered by default to prevent leaks of certain values
 like variables, logs, or secrets. This output displays as `[FILTERED]`. For example:
 
-```plain_text
+```plaintext
 > Plan.default.actual_limits
 => ci_instance_level_variables: "[FILTERED]",
 ```
 
 To work around the filtering, read the values directly from the object. For example:
 
-```plain_text
+```plaintext
 > Plan.default.limits.ci_instance_level_variables
 => 25
 ```

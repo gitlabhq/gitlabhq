@@ -42,6 +42,7 @@ describe('HeaderArea', () => {
   const findPageHeading = () => wrapper.findByTestId('repository-heading');
   const findFileIcon = () => wrapper.findComponent(FileIcon);
   const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
+  const findBlobControls = () => wrapper.findComponent(BlobControls);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -183,6 +184,10 @@ describe('HeaderArea', () => {
         httpUrl: headerAppInjected.httpUrl,
         kerberosUrl: headerAppInjected.kerberosUrl,
         xcodeUrl: headerAppInjected.xcodeUrl,
+        webIdeUrl: headerAppInjected.webIdeUrl,
+        gitpodUrl: headerAppInjected.gitpodUrl,
+        showWebIdeButton: headerAppInjected.showWebIdeButton,
+        showGitpodButton: headerAppInjected.showGitpodButton,
         currentPath: defaultMockRoute.params.path,
         directoryDownloadLinks: headerAppInjected.downloadLinks,
       });
@@ -206,10 +211,9 @@ describe('HeaderArea', () => {
   describe('when rendered for blob view', () => {
     it('renders BlobControls component with correct props', () => {
       wrapper = createComponent({ refType: 'branch' });
-      const blobControls = wrapper.findComponent(BlobControls);
-      expect(blobControls.exists()).toBe(true);
-      expect(blobControls.props('projectPath')).toBe('test/project');
-      expect(blobControls.props('refType')).toBe('');
+      expect(findBlobControls().exists()).toBe(true);
+      expect(findBlobControls().props('projectPath')).toBe('test/project');
+      expect(findBlobControls().props('refType')).toBe('');
     });
 
     it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {

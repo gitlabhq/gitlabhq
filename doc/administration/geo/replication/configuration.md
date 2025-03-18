@@ -181,7 +181,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
 
    {{< alert type="note" >}}
 
-The output for private keys and public keys command should generate the same fingerprint.
+   The output for private keys and public keys command should generate the same fingerprint.
 
    {{< /alert >}}
 

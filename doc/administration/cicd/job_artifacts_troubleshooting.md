@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Job artifact troubleshooting for administrators
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 When administering job artifacts, you might encounter the following issues.
 
 ## Job artifacts using too much disk space
@@ -17,10 +24,10 @@ reasons are:
 - Job logs are larger than expected, and have accumulated over time.
 - The file system might run out of inodes because
   [empty directories are left behind by artifact housekeeping](https://gitlab.com/gitlab-org/gitlab/-/issues/17465).
-  [The Rake task for _orphaned_ artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
+  [The Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   removes these.
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
-  [Rake task for _orphaned_ artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
+  [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
 - [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-150-to-152), and you might need to enable a feature flag to use the updated system.
 - The [keep latest artifacts from most recent success jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
@@ -109,7 +116,7 @@ You can check the database to confirm if your instance has artifacts with the `u
    sudo -u git -H psql -d gitlabhq_production
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -169,6 +176,148 @@ There is a related `ci_job_artifacts_backlog_large_loop_limit` feature flag
 which causes the worker to process `unknown` artifacts
 [in batches that are five times larger](https://gitlab.com/gitlab-org/gitlab/-/issues/356319).
 This flag is not recommended for use.
+
+#### `@final` artifacts not deleted from object store
+
+An issue in GitLab 16.1 and 16.2 caused [`@final` artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920).
+
+Administrators of GitLab instances that ran GitLab 16.1 or 16.2 for some time could see an increase
+in object storage used by artifacts. Follow this procedure to check for and remove these artifacts.
+
+Removing the files is a two stage process:
+
+1. [Identify which files have been orphaned](#list-orphaned-job-artifacts).
+1. [Delete the identified files from object storage](#delete-orphaned-job-artifacts).
+
+##### List orphaned job artifacts
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+```shell
+docker exec -it <container-id> bash
+gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+```
+
+Either write to a persistent volume mounted in the container, or when the command completes: copy the output file out of the session.
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:cleanup:list_orphan_job_artifact_final_objects RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+```shell
+# find the pod
+kubectl get pods --namespace <namespace> -lapp=toolbox
+
+# open the Rails console
+kubectl exec -it -c toolbox <toolbox-pod-name> bash
+gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+```
+
+When the command complete, copy the file out of the session onto persistent storage.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The Rake task has some additional features that apply to all types of GitLab deployment:
+
+- Scanning object storage can be interrupted. Progress is recorded in Redis, this is used to resume
+  scanning artifacts from that point.
+- By default, the Rake task generates a CSV file:
+  `/opt/gitlab/embedded/service/gitlab-rails/tmp/orphan_job_artifact_final_objects.csv`
+- Set an environment variable to specify a different filename:
+
+  ```shell
+  # Packaged GitLab
+  sudo su -
+  FILENAME='custom_filename.csv' gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+  ```
+
+- If the output file exists already (the default, or the specified file) it appends entries to the file.
+- Each row contains the fields `object_path,object_size` comma separated, with no file header. For example:
+
+  ```plaintext
+  35/13/35135aaa6cc23891b40cb3f378c53a17a1127210ce60e125ccf03efcfdaec458/@final/1a/1a/5abfa4ec66f1cc3b681a4d430b8b04596cbd636f13cdff44277211778f26,201
+  ```
+
+##### Delete orphaned job artifacts
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
+```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+```shell
+docker exec -it <container-id> bash
+gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
+```
+
+- Copy the output file out of the session when the command completes, or write it to a volume that has been mounted by the container.
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:cleanup:delete_orphan_job_artifact_final_objects RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+```shell
+# find the pod
+kubectl get pods --namespace <namespace> -lapp=toolbox
+
+# open the Rails console
+kubectl exec -it -c toolbox <toolbox-pod-name> bash
+gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
+```
+
+- When the command complete, copy the file out of the session onto persistent storage.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The following applies to all types of GitLab deployment:
+
+- Specify the input filename using the `FILENAME` variable. By default the script looks for:
+  `/opt/gitlab/embedded/service/gitlab-rails/tmp/orphan_job_artifact_final_objects.csv`
+- As the script deletes files, it writes out a CSV file with the deleted files:
+  - the file is in the same directory as the input file
+  - the filename is prefixed with `deleted_from--`. For example: `deleted_from--orphan_job_artifact_final_objects.csv`.
+  - The rows in the file are: `object_path,object_size,object_generation/version`, for example:
+
+    ```plaintext
+    35/13/35135aaa6cc23891b40cb3f378c53a17a1127210ce60e125ccf03efcfdaec458/@final/1a/1a/5abfa4ec66f1cc3b681a4d430b8b04596cbd636f13cdff44277211778f26,201,1711616743796587
+    ```
 
 ### List projects and builds with artifacts with a specific expiration (or no expiration)
 
@@ -367,6 +516,56 @@ Rerun the deletion with shorter durations as needed, for example `3.months.ago`,
 The method `erase_erasable_artifacts!` is synchronous, and upon execution the artifacts are immediately removed;
 they are not scheduled by a background queue.
 
+### Deleting artifacts does not immediately reclaim disk space
+
+When artifacts are deleted, the process occurs in two phases:
+
+1. **Marked as ready for deletion**: `Ci::JobArtifact` records are removed from the database and
+   converted to `Ci::DeletedObject` records with a future `pick_up_at` timestamp.
+1. **Remove from storage**: The artifact files remain on disk until the `Ci::ScheduleDeleteObjectsCronWorker` worker
+   processes the `Ci::DeletedObject` records and physically removes the files.
+
+The removal is deliberately limited to prevent overwhelming system resources:
+
+- The worker runs once per hour, at the 16-minute mark.
+- It processes objects in batches with a maximum of 20 concurrent jobs.
+- Each deleted object has a `pick_up_at` timestamp that determines when it becomes
+  eligible for physical deletion
+
+For large-scale deletions, the physical cleanup can take a significant amount of time
+before disk space is fully reclaimed. Cleanup could take several days for very large deletions.
+
+If you need to reclaim disk space quickly, you can expedite artifact deletion.
+
+#### Expedite artifact removal
+
+If you need to reclaim disk space quickly after deleting a large number of artifacts,
+you can bypass the standard scheduling limitations and expedite the deletion process.
+
+{{< alert type="warning" >}}
+
+These commands put significant load on your system if you are deleting a large number of artifacts.
+
+{{< /alert >}}
+
+```ruby
+# Set the pick_up_date to the current time on all artifacts
+# This will mark them for immediate deletion
+Ci::DeletedObject.update_all(pick_up_at: Time.current)
+
+# Get the count of artifacts marked for deletion
+Ci::DeletedObject.where("pick_up_at < ?", Time.current)
+
+# Delete the artifacts from disk
+while Ci::DeletedObject.where("pick_up_at < ?", Time.current).count > 0
+  Ci::DeleteObjectsService.new.execute 
+  sleep(10) 
+end
+
+# Get the count of artifacts marked for deletion (should now be zero)
+Ci::DeletedObject.count
+```
+
 ### Delete old pipelines
 
 {{< alert type="warning" >}}
@@ -475,7 +674,7 @@ gitlab-rake gitlab:refresh_project_statistics_build_artifacts_size[https://examp
 The `https://example.com/path/file.csv` file must list the project IDs for
 all projects for which you want to recalculate artifact storage usage. Use this format for the file:
 
-```csv
+```plaintext
 PROJECT_ID
 1
 2

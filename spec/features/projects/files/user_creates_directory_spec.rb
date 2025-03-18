@@ -14,7 +14,6 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(blob_overflow_menu: false)
     project.add_developer(user)
     sign_in(user)
     visit project_tree_path(project, 'master')
@@ -42,7 +41,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
-      expect(page).to have_content('Error creating new directory. Please try again.')
+      expect(page).to have_content('A directory with this name already exists')
       expect(page).to have_current_path(project_tree_path(project, 'master'), ignore_query: true)
     end
   end

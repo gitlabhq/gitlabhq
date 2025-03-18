@@ -38,7 +38,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Package Registry'),
+            title: _('Package registry'),
             link: project_packages_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: :packages },

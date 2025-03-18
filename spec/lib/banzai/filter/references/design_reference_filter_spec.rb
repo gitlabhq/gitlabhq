@@ -131,7 +131,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
   describe '#data_attributes_for' do
     let(:subject) { filter_instance.data_attributes_for(input_text, project, design) }
 
-    specify do
+    it 'includes expected attributes' do
       is_expected.to include(
         issue: design.issue_id,
         original: input_text,

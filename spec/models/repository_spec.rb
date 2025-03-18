@@ -10,7 +10,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
   let(:broken_repository) { create(:project, :broken_storage).repository }
@@ -1799,7 +1799,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it "calls Gitaly's OperationService" do
       expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-        .to receive(:user_create_branch).with(branch_name, user, target)
+        .to receive(:user_create_branch).with(branch_name, user, target, skip_ci: false)
         .and_return(nil)
 
       subject
@@ -1830,6 +1830,41 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(repository).not_to receive(:expire_branches_cache)
 
         repository.add_branch(user, branch_name, target, expire_cache: false)
+      end
+    end
+
+    context 'skip_ci' do
+      context 'when skip_ci: true' do
+        it 'passes skip-ci: true gitaly context' do
+          allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+
+          repository.add_branch(user, branch_name, target, skip_ci: true)
+
+          expect(::Gitlab::GitalyClient).to have_received(:call)
+            .with(anything, anything, :user_create_branch, anything, gitaly_context: { 'skip-ci' => true }, timeout: anything)
+        end
+      end
+
+      context 'when skip_ci: false' do
+        it 'does not pass gitaly_context' do
+          allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+
+          repository.add_branch(user, branch_name, target, skip_ci: false)
+
+          expect(::Gitlab::GitalyClient).to have_received(:call)
+            .with(anything, anything, :user_create_branch, anything, timeout: anything)
+        end
+      end
+
+      context 'when skip_ci not provided' do
+        it 'does not pass gitaly_context' do
+          allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+
+          repository.add_branch(user, branch_name, target)
+
+          expect(::Gitlab::GitalyClient).to have_received(:call)
+            .with(anything, anything, :user_create_branch, anything, timeout: anything)
+        end
       end
     end
   end
@@ -3872,6 +3907,37 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#diffs_by_changed_paths' do
+    let(:diff_refs) do
+      Gitlab::Diff::DiffRefs.new(
+        base_sha: "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        head_sha: "874797c3a73b60d2187ed6e2fcabd289ff75171e"
+      )
+    end
+
+    it 'delegates diffs retrieval to BlobPairsService and verifies the returned diff files' do
+      expected_diff_files = [
+        instance_double(Gitlab::Diff::File, new_path: 'a.md'),
+        instance_double(Gitlab::Diff::File, new_path: 'b.md')
+      ]
+
+      allow_next_instance_of(Gitlab::Git::BlobPairsDiffs) do |svc|
+        allow(svc)
+          .to receive(:diffs_by_changed_paths)
+          .with(diff_refs, 0, 10)
+          .and_yield(expected_diff_files)
+      end
+
+      retrieved_diff_files = []
+
+      repository.diffs_by_changed_paths(diff_refs, 0, 10) do |diff_files|
+        retrieved_diff_files.concat(diff_files)
+      end
+
+      expect(retrieved_diff_files).to eq(expected_diff_files)
+    end
+  end
+
   describe '#change_head' do
     let_it_be(:project) { create(:project, :repository) }
 
@@ -4072,6 +4138,30 @@ RSpec.describe Repository, feature_category: :source_code_management do
           )
 
         repository.get_patch_id('HEAD~', 'HEAD')
+      end
+    end
+
+    context 'when a Gitlab::Git::CommandTimedOut is raised' do
+      before do
+        expect(repository.raw_repository)
+          .to receive(:get_patch_id).and_raise(Gitlab::Git::CommandTimedOut)
+      end
+
+      it 'returns nil' do
+        expect(repository.get_patch_id('HEAD', 'f' * 40)).to be_nil
+      end
+
+      it 'reports the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            instance_of(Gitlab::Git::CommandTimedOut),
+            project_id: repository.project.id,
+            old_revision: 'HEAD',
+            new_revision: 'HEAD'
+          )
+
+        repository.get_patch_id('HEAD', 'HEAD')
       end
     end
 
@@ -4373,15 +4463,68 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     context 'with an empty branch' do
       let_it_be(:project) { create(:project, :empty_repo) }
-      let(:target_sha) { nil }
 
-      it 'calls UserCommitFiles RPC' do
-        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
-          expect(client).to receive(:user_commit_files).with(*expected_params)
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(commit_files_target_sha: true)
         end
 
-        subject
+        let(:target_sha) { repository.blank_ref }
+
+        it 'calls UserCommitFiles RPC' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_commit_files).with(*expected_params)
+          end
+
+          subject
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        let(:project) { create(:project, :empty_repo) }
+        let(:target_sha) { nil }
+
+        before do
+          stub_feature_flags(commit_files_target_sha: false)
+        end
+
+        it 'calls UserCommitFiles RPC with nil target_sha' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_commit_files).with(*expected_params)
+          end
+
+          subject
+        end
       end
     end
+  end
+
+  describe '#ignore_revs_file_blob' do
+    subject { repository.ignore_revs_file_blob }
+
+    context 'when there is a ignore revs file on the default branch' do
+      let(:file_content) { project.commit.id }
+      let(:project_files) do
+        { Gitlab::Blame::IGNORE_REVS_FILE_NAME => file_content }
+      end
+
+      around do |example|
+        create_and_delete_files(project, project_files) do
+          example.run
+        end
+      end
+
+      it { is_expected.to be_a_kind_of(Blob) }
+
+      context 'when the blame_ignore_revs is not enabled' do
+        before do
+          stub_feature_flags(blame_ignore_revs: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    it { is_expected.to be_nil }
   end
 end

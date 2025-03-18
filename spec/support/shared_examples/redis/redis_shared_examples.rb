@@ -24,6 +24,11 @@ RSpec.shared_examples "redis_shared_examples" do
   before do
     allow(described_class).to receive(:config_file_name).and_return(Rails.root.join(config_file_name).to_s)
     allow(described_class).to receive(:redis_yml_path).and_return('/dev/null')
+    clear_params
+  end
+
+  after do
+    clear_params
   end
 
   describe '.config_file_name' do
@@ -102,12 +107,14 @@ RSpec.shared_examples "redis_shared_examples" do
       end
     end
 
-    it 'withstands mutation' do
+    it 'cannot be mutated' do
       params1 = described_class.params
       params2 = described_class.params
-      params1[:foo] = :bar
 
-      expect(params2).not_to have_key(:foo)
+      expect { params1[:foo] = :bar }.to raise_exception(FrozenError)
+
+      expect(params1).to eq(params2)
+      expect(params1.object_id).to eq(params2.object_id)
     end
 
     context 'with command to generate extra config specified' do
@@ -664,6 +671,13 @@ RSpec.shared_examples "redis_shared_examples" do
         end
       end
     end
+  end
+
+  def clear_params
+    described_class.remove_instance_variable(:@params)
+    described_class.config_fallback&.remove_instance_variable(:@params)
+  rescue NameError
+    # raised if @params was not set; ignore
   end
 
   def clear_pool

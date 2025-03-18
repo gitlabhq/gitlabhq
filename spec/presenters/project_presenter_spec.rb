@@ -285,7 +285,7 @@ RSpec.describe ProjectPresenter do
 
     describe '#storage_anchor_data' do
       it 'does not return storage data for non-admin users' do
-        expect(presenter.storage_anchor_data).to be(nil)
+        expect(presenter.storage_anchor_data).to be_nil
       end
 
       it 'returns storage data with usage quotas link for admin users' do
@@ -305,7 +305,7 @@ RSpec.describe ProjectPresenter do
 
         context 'when user cannot collaborate' do
           it 'returns no value' do
-            expect(presenter.gitlab_ci_anchor_data).to be(nil)
+            expect(presenter.gitlab_ci_anchor_data).to be_nil
           end
         end
 

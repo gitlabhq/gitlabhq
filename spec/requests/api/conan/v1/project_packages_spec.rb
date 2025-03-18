@@ -170,7 +170,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       '/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
       let(:url) do
         "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}" \
-          "/#{package_file_metadata.recipe_revision_value}/package/#{package_file_metadata.conan_package_reference}" \
+          "/#{package_file_metadata.recipe_revision_value}/package/#{package_file_metadata.package_reference_value}" \
           "/#{package_file_metadata.package_revision_value}/#{package_file.file_name}"
       end
 
@@ -182,6 +182,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
 
   context 'with file upload endpoints' do
     include_context 'for conan file upload endpoints'
+    let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username' \
       '/:package_channel/:recipe_revision/export/:file_name/authorize' do
@@ -210,7 +211,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username' \
       '/:package_channel/:recipe_revision/export/:file_name' do
-      let(:url) { "/api/v4/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}" }
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}" }
 
       it_behaves_like 'workhorse recipe file upload endpoint'
     end
@@ -218,7 +219,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
     describe 'PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username' \
       '/:package_channel/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name' do
       let(:url) do
-        "/api/v4/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}"
+        "/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}"
       end
 
       it_behaves_like 'workhorse package file upload endpoint'

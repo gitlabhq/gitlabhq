@@ -31,8 +31,8 @@ This Rake task:
 
 The `e2e:test-on-cng` child pipeline runs tests against a [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) installation.
 
-Deployment is managed by the [`cng`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-cng/README.md)
-orchestrator tool, which you can also use to locally recreate CI/CD deployments.
+Deployment is managed by the [`orchestrator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-orchestrator/README.md)
+CLI tool, which you can also use to locally recreate CI/CD deployments.
 
 The `e2e:test-on-cng` child pipeline is executed in merge requests and is part of pre-merge validation lifecycle. If any test fails, you can't merge introduced
 code changes.
@@ -67,10 +67,9 @@ This stage is responsible for [allure test report](_index.md#allure-report) gene
 
 To help with debugging:
 
-- Each test job prints a list of arguments that you can pass to the [`cng`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-cng/README.md)
-  orchestrator to exactly recreate the same deployment for local debugging.
+- Each test job prints a list of arguments that you can pass to the [`orchestrator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/gems/gitlab-orchestrator/README.md) to exactly recreate the same deployment for local debugging.
 - Cluster events log and all pod logs are saved in E2E test job artifacts.
-- `cng` orchestrator automatically outputs all cluster events with errors in the case of failed deployment.
+- `orchestrator` automatically outputs all cluster events with errors in the case of failed deployment.
 
 ## `e2e:test-on-omnibus`
 
@@ -164,7 +163,7 @@ A typical job definition in one of the e2e test pipeline definition YAML files w
 
 ```yaml
 my-new-test-job:
-  ...
+  # ...
   variables:
     QA_SCENARIO: Test::Integration::MyNewTestScenario
 ```

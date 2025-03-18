@@ -24,10 +24,6 @@ describe('content/components/wrappers/table_cell_header', () => {
 
   it('renders a TableCellBase component', () => {
     createWrapper();
-    expect(wrapper.findComponent(TableCellBaseWrapper).props()).toEqual({
-      editor,
-      node,
-      cellType: 'th',
-    });
+    expect(wrapper.findComponent(TableCellBaseWrapper).props('cellType')).toEqual('th');
   });
 });

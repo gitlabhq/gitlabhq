@@ -70,7 +70,8 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :read_jobs
+        route_setting :authorization, job_token_policies: :read_jobs,
+          allow_public_access_for_enabled_project_features: [:repository, :builds]
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
           urgency: :low,
           format: false,

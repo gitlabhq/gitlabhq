@@ -33,12 +33,13 @@ module Gitlab
       private
 
       # Necessary temporarily as new version might process jobs enqueued in old version
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/520048
       def ensure_correct_work_item_type(attributes)
-        return attributes unless attributes.key?('work_item_type_id')
+        return attributes unless attributes.key?('correct_work_item_type_id')
 
-        work_item_type = ::WorkItems::Type.find_by_correct_id_with_fallback(attributes['work_item_type_id'])
+        work_item_type_id = attributes['correct_work_item_type_id']
 
-        attributes.except('work_item_type_id').merge('correct_work_item_type_id' => work_item_type&.correct_id)
+        attributes.except('correct_work_item_type_id').merge('work_item_type_id' => work_item_type_id)
       end
 
       def create_issue(issue_attributes, project_id)

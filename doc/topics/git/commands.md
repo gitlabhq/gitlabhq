@@ -5,7 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Common Git commands
 ---
 
-Learn more about the most commonly used Git commands.
+Git commands save you time throughout your development workflow. This reference page contains
+frequently used commands for common tasks such as code changes, branch management,
+and history review. Each command section provides the exact syntax, practical examples,
+and links to additional documentation.
 
 ## `git add`
 

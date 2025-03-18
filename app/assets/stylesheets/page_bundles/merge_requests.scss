@@ -355,12 +355,20 @@
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid var(--gl-border-color-default);
+    @apply gl-border-b gl-border-b-section;
   }
 }
 
+.diff-file-row {
+  transition: color 0.2s ease-in-out;
+}
+
 .diff-file-row.is-active {
-  background-color: var(--gray-50, $gray-50);
+  @apply gl-bg-strong;
+}
+
+.diff-file-row.is-loading {
+  @apply gl-text-disabled;
 }
 
 .mr-info-list {
@@ -962,7 +970,7 @@
   }
 
   .note-discussion {
-    border-bottom: 1px solid var(--gray-100, $gray-100) !important;
+    @apply gl-border-b #{!important};
   }
 
   .discussion-collapsible {

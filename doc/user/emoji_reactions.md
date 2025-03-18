@@ -25,7 +25,7 @@ and thumbs-ups. React with emoji on:
 
 - [Issues](project/issues/_index.md).
 - [Tasks](tasks.md).
-- [Merge requests](project/merge_requests/_index.md), [snippets](snippets.md).
+- [Merge requests](project/merge_requests/_index.md) and [snippets](snippets.md).
 - [Epics](group/epics/_index.md).
 - [Objectives and key results](okrs.md).
 - Anywhere else you can have a comment thread.

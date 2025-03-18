@@ -5,24 +5,20 @@ module Packages
     class CreatePackageService < ::Packages::CreatePackageService
       include Gitlab::Utils::StrongMemoize
 
+      EMPTY_VERSION_ERROR = ServiceResponse.error(message: 'Version is empty.', reason: :bad_request).freeze
+      NAMESPACE_DUPLICATION_ERROR = ServiceResponse.error(
+        message: 'A module with the same name already exists in the namespace.',
+        reason: :forbidden
+      ).freeze
+      PROJECT_DUPLICATION_ERROR = ServiceResponse.error(
+        message: 'A module with the same name & version already exists in the project.',
+        reason: :forbidden
+      ).freeze
+
       def execute
-        if params[:module_version].blank?
-          return ServiceResponse.error(message: 'Version is empty.', reason: :bad_request)
-        end
-
-        if duplicates_not_allowed? && current_package_exists_elsewhere?
-          return ServiceResponse.error(
-            message: 'A module with the same name already exists in the namespace.',
-            reason: :forbidden
-          )
-        end
-
-        if current_package_version_exists?
-          return ServiceResponse.error(
-            message: 'A module with the same name & version already exists in the project.',
-            reason: :forbidden
-          )
-        end
+        return EMPTY_VERSION_ERROR if params[:module_version].blank?
+        return NAMESPACE_DUPLICATION_ERROR if duplicates_not_allowed? && current_package_exists_elsewhere?
+        return PROJECT_DUPLICATION_ERROR if current_package_version_exists?
 
         package, package_file = ApplicationRecord.transaction { create_terraform_module_package! }
 
@@ -36,7 +32,15 @@ module Packages
       private
 
       def create_terraform_module_package!
-        package = create_package!(:terraform_module, name: name, version: params[:module_version])
+        package = create_package!(
+          :terraform_module,
+          name: name,
+          version: params[:module_version],
+          terraform_module_metadatum_attributes: {
+            project: project,
+            semver: params[:module_version]
+          }
+        )
         package_file = ::Packages::CreatePackageFileService.new(package, file_params).execute
         [package, package_file]
       end

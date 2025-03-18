@@ -131,7 +131,7 @@ module Gitlab
       # 15 tries will never complete within the maximum time with exponential
       # backoff. So our limit is the runtime, not the number of tries.
       Retriable.retriable(max_elapsed_time: cleanup_time, base_interval: 0.1, tries: 15) do
-        FileUtils.remove_entry(tmp_dir) if File.exist?(tmp_dir)
+        FileUtils.rm_rf(tmp_dir)
       end
     rescue StandardError => e
       raise CleanupError, e

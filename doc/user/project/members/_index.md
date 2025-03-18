@@ -12,9 +12,12 @@ title: Members of a project
 
 {{< /details >}}
 
-Members are the users and groups who have access to your project.
+Members are the users and groups who have access to your project. Members can be added directly to your
+project or inherit access through groups.
 
-Each member gets a role, which determines what they can do in the project.
+Each member has a role that determines what they can do in the project. Project members with the
+appropriate role can add users to projects, remove users from projects, and manage access requests to
+control access to project resources.
 
 ## Membership types
 
@@ -104,7 +107,7 @@ To add a user to a project:
    - Has a GitLab account, enter their username.
    - Doesn't have a GitLab account, enter their email address.
 
-1. Select a [default role](../../permissions.md) or [custom role](../../custom_roles.md).
+1. Select a [default role](../../permissions.md) or [custom role](../../custom_roles/_index.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
 

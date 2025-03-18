@@ -1,0 +1,4 @@
+fragment TroubleshootJob on Pipeline {
+  # Overridden in EE
+  id
+}

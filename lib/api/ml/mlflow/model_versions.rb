@@ -28,6 +28,7 @@ module API
             optional :description, type: String,
               desc: 'Optional description for model version.'
             optional :tags, type: Array, desc: 'Additional metadata for a model version.'
+            optional :run_id, type: String, desc: 'Run ID of the candidate to be promoted to a model version'
           end
           post 'create', urgency: :low do
             result = ::Ml::CreateModelVersionService.new(
@@ -37,7 +38,8 @@ module API
                 description: params[:description],
                 metadata: params[:tags],
                 version: custom_version,
-                user: current_user
+                user: current_user,
+                candidate_eid: params[:run_id]
               }
             ).execute
 

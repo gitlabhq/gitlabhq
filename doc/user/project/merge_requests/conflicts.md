@@ -111,14 +111,16 @@ The merge conflict resolution editor helps you resolve these conflicts in GitLab
 If your merge request is stuck with a `Checking ability to merge automatically`
 message, you can:
 
-- Use the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics) in the GitLab UI.
+- In a comment in the merge request, run the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+- In the merge widget, select **Rebase source branch**.
 - [Rebase with Git](../../../topics/git/git_rebase.md#rebase).
 
 To troubleshoot CI/CD pipeline issues, see [Debugging CI/CD pipelines](../../../ci/debugging.md).
 
-### Rebase with a quick action
+### Rebase in the GitLab UI
 
-You can rebase a merge request from the GitLab UI with the `/rebase` [quick action](../quick_actions.md).
+To trigger a rebase from the GitLab UI, use the `/rebase` [quick action](../quick_actions.md), or the
+rebase option in the merge request widget.
 
 Prerequisites:
 
@@ -127,13 +129,16 @@ Prerequisites:
 - If the merge request is in a fork, the fork must allow commits
   [from members of the upstream project](allow_collaboration.md).
 
-To rebase with the quick action:
+To rebase a merge request's branch from the GitLab UI:
 
-1. Go to your merge request.
-1. Type `/rebase` in a comment.
-1. Select **Comment**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find the merge request.
+1. Either:
+   - On the **Overview** tab, scroll to the merge request widget and select **Rebase source branch**.
+   - In a comment, enter `/rebase` and select **Comment**.
 
-GitLab schedules and executes a rebase of the branch against the default branch.
+GitLab schedules, then runs, a rebase of the branch against the default branch.
+GitLab shows the completed rebase as a system note.
 
 ## Related topics
 

@@ -122,7 +122,7 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :project_id,
         :pipelines_path,
         :default_branch,
-        :pipelines_editor_path,
+        :pipeline_editor_path,
         :can_view_pipeline_editor,
         :ref_param,
         :var_param,
@@ -131,29 +131,31 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :project_refs_endpoint,
         :settings_link,
         :max_warnings,
-        :is_maintainer
+        :user_role
       )
     end
 
-    describe 'is_maintainer' do
-      subject(:data) { helper.new_pipeline_data(project)[:is_maintainer] }
-
-      let_it_be(:user) { create(:user) }
-
-      before do
-        sign_in(user)
+    describe 'user_role' do
+      context 'when there is no current user' do
+        it 'is nil' do
+          expect(helper.new_pipeline_data(project)[:user_role]).to be_nil
+        end
       end
 
-      context 'when user is signed in but not a maintainer' do
-        it { expect(subject).to be_falsy }
-      end
+      context 'when there is a current_user' do
+        let_it_be(:user) { create(:user) }
 
-      context 'when user is signed in with a role that is maintainer or above' do
         before_all do
-          project.add_maintainer(user)
+          project.add_developer(user)
         end
 
-        it { expect(subject).to be_truthy }
+        before do
+          sign_in(user)
+        end
+
+        it "returns the human readable access level that the current user has in the pipeline's project" do
+          expect(helper.new_pipeline_data(project)[:user_role]).to eq('Developer')
+        end
       end
     end
   end

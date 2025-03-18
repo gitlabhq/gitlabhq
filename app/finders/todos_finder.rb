@@ -20,6 +20,7 @@ class TodosFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
+  include SafeFormatHelper
 
   requires_cross_project_access unless: -> { project? }
 
@@ -143,9 +144,8 @@ class TodosFinder
   end
 
   def invalid_type_message
-    _("Unsupported todo type passed. Supported todo types are: %{todo_types}") % {
-      todo_types: self.class.todo_types.to_a.join(', ')
-    }
+    safe_format(_("Unsupported todo type passed. Supported todo types are: %{todo_types}"),
+      todo_types: self.class.todo_types.to_a.join(', '))
   end
 
   def sort(items)
@@ -168,7 +168,7 @@ class TodosFinder
   # We only need to surface snoozed to-dos when querying pending items. The special sort order is
   # unnecessary in the `Done` and `All` tabs where we can simply sort by ID (= creation date).
   def use_snooze_custom_sort?
-    Feature.enabled?(:snoozed_todos_sort_order, current_user) && filter_pending_only?
+    filter_pending_only?
   end
 
   def by_action(items)

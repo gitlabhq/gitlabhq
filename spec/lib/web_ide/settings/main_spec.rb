@@ -9,6 +9,8 @@ RSpec.describe WebIde::Settings::Main, feature_category: :web_ide do
   let(:rop_steps) do
     [
       [WebIde::Settings::SettingsInitializer, :map],
+      [WebIde::Settings::ExtensionMarketplaceGenerator, :map],
+      [WebIde::Settings::ExtensionMarketplaceHomeUrlGenerator, :map],
       [WebIde::Settings::ExtensionMarketplaceMetadataGenerator, :map],
       [Gitlab::Fp::Settings::EnvVarOverrideProcessor, :and_then],
       [WebIde::Settings::ExtensionMarketplaceValidator, :and_then],

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring,
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523094',
+      type: :investigating
+    } do
     describe 'Pipeline with customizable variable' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let(:pipeline_job_name) { 'customizable-variable' }

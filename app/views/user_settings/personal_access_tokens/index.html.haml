@@ -32,4 +32,6 @@
       - c.with_body do
         #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json } }
 
+= render 'user_settings/personal_access_tokens/dpop' if Feature.enabled?(:dpop_authentication, current_user)
+
 #js-tokens-app{ data: { tokens_data: tokens_app_data } }

@@ -88,6 +88,12 @@ For submodules not located on the same GitLab server, always use the full URL:
 
 ## Use Git submodules in CI/CD jobs
 
+Prerequisites:
+
+- If you use the [`CI_JOB_TOKEN`](../jobs/ci_job_token.md) to clone a submodule in a
+  pipeline job, you must have at least the Reporter role for the submodule repository to pull the code.
+- [CI/CD job token access](../jobs/ci_job_token.md#control-job-token-access-to-your-project) must be properly configured in the upstream submodule project.
+
 To make submodules work correctly in CI/CD jobs:
 
 1. You can set the `GIT_SUBMODULE_STRATEGY` variable to either `normal` or `recursive`
@@ -124,11 +130,6 @@ To make submodules work correctly in CI/CD jobs:
      GIT_SUBMODULE_STRATEGY: recursive
      GIT_SUBMODULE_UPDATE_FLAGS: --jobs 4
    ```
-
-If you use the [`CI_JOB_TOKEN`](../jobs/ci_job_token.md) to clone a submodule in a
-pipeline job, the user executing the job must be assigned to a role that has
-[permission](../../user/permissions.md#cicd) to trigger a pipeline
-in the upstream submodule project. Additionally, [CI/CD job token access](../jobs/ci_job_token.md#control-job-token-access-to-your-project) must be properly configured in the upstream submodule project.
 
 ## Troubleshooting
 

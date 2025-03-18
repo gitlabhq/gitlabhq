@@ -3,13 +3,12 @@
 
   %fieldset
     .form-group
-      = f.label :notes_create_limit, _('Maximum requests per minute'), class: 'label-bold'
+      = f.label :notes_create_limit, _('Maximum requests per minute')
       = f.number_field :notes_create_limit, class: 'form-control gl-form-input'
     .form-group
-      = f.label :notes_create_limit_allowlist, _('Users to exclude from the rate limit'), class: 'label-bold'
-      = f.text_area :notes_create_limit_allowlist_raw, class: 'form-control gl-form-input', rows: 5, aria: { describedBy: 'note-create-limits-allowlist-field-description' }
+      = f.label :notes_create_limit_allowlist_raw, _('Users to exclude from the rate limit')
+      = f.text_area :notes_create_limit_allowlist_raw, class: 'form-control gl-form-input', rows: 5
       .form-text.gl-text-subtle{ id: 'note-create-limits-allowlist-field-description' }
         = _('List of users who are allowed to exceed the rate limit. Example: username1, username2')
-
 
   = f.submit _('Save changes'), pajamas_button: true

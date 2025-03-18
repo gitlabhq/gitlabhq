@@ -44,7 +44,7 @@ Do not add new content to these folders:
 
 When working with directories and files:
 
-1. When you create a new directory, always start with an `index.md` file.
+1. When you create a new directory, always start with an `_index.md` file.
    Don't use another filename and do not create `README.md` files.
 1. Do not use special characters and spaces, or capital letters in file
    names, directory names, branch names, and anything that generates a path.
@@ -76,18 +76,17 @@ place for it.
 Do not include the same information in multiple places.
 Link to a single source of truth instead.
 
-For example, if you have code in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md),
+For example, if you have code in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/architecture.md),
 and documentation in the same repository, you can keep the documentation in that repository.
 
 Then you can either:
 
 - Publish it to <https://docs.gitlab.com>.
 - Link to it from <https://docs.gitlab.com> by adding an entry in the global navigation.
-  View [an example](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fedb6378a3c92274ba3b6031df0d34455594e4cc/content/_data/navigation.yaml#L2944).
 
 ## References across documents
 
-- Give each folder an `index.md` page that introduces the topic, and both introduces
+- Give each folder an `_index.md` page that introduces the topic, and both introduces
   and links to the child pages, including to the index pages of
   any next-level sub-paths.
 - To ensure discoverability, ensure each new or renamed doc is linked from its

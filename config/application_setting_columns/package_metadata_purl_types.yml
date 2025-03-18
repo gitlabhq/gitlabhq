@@ -7,7 +7,7 @@ db_type: smallint[]
 default: "'{1"
 description: List of [package registry metadata to sync](../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync).
   See [the list](https://gitlab.com/gitlab-org/gitlab/-/blob/ace16c20d5da7c4928dd03fb139692638b557fe3/app/models/concerns/enums/package_metadata.rb#L5)
-  of the available values. Self-managed, Ultimate only.
+  of the available values. GitLab Self-Managed, Ultimate only.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

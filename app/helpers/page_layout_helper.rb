@@ -88,14 +88,10 @@ module PageLayoutHelper
   end
 
   def header_title(title = nil, title_url = nil)
-    if title
-      @header_title     = title
-      @header_title_url = title_url
-    else
-      return @header_title unless @header_title_url
+    return @header_title unless title
 
-      breadcrumb_list_item(link_to(@header_title, @header_title_url))
-    end
+    @header_title     = title
+    @header_title_url = title_url
   end
 
   def sidebar(name = nil)

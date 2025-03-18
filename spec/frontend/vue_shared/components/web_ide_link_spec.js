@@ -96,7 +96,10 @@ describe('vue_shared/components/web_ide_link', () => {
   let wrapper;
   let trackingSpy;
 
-  function createComponent(props, { mountFn = shallowMountExtended, slots = {} } = {}) {
+  function createComponent(
+    props,
+    { mountFn = shallowMountExtended, slots = {}, featureFlagValue = false } = {},
+  ) {
     const fakeApollo = createMockApollo([
       [getWritableForksQuery, jest.fn().mockResolvedValue(getWritableForksResponse)],
     ]);
@@ -122,6 +125,11 @@ describe('vue_shared/components/web_ide_link', () => {
         GlDisclosureDropdownItem,
       },
       apolloProvider: fakeApollo,
+      provide: {
+        glFeatures: {
+          directoryCodeDropdownUpdates: featureFlagValue,
+        },
+      },
     });
 
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
@@ -205,9 +213,33 @@ describe('vue_shared/components/web_ide_link', () => {
       props: { showEditButton: false },
       expectedActions: [ACTION_WEB_IDE],
     },
-  ])('for a set of props', ({ props, expectedActions }) => {
+    {
+      props: {
+        showWebIdeButton: true,
+        showGitpodButton: true,
+        gitpodEnabled: true,
+        isBlob: true,
+      },
+      expectedActions: [
+        { ...ACTION_WEB_IDE, text: 'Open in Web IDE' },
+        ACTION_EDIT,
+        { ...ACTION_GITPOD, text: 'Open in Gitpod' },
+      ],
+      featureFlagValue: true,
+    },
+    {
+      props: {
+        showWebIdeButton: true,
+        showGitpodButton: true,
+        gitpodEnabled: true,
+        isBlob: false,
+      },
+      expectedActions: [ACTION_EDIT],
+      featureFlagValue: true,
+    },
+  ])('for a set of props', ({ props, expectedActions, featureFlagValue }) => {
     beforeEach(() => {
-      createComponent(props);
+      createComponent(props, { featureFlagValue });
     });
 
     it('renders the appropiate actions', () => {

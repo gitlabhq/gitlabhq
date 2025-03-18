@@ -27,7 +27,7 @@ module Gitlab
           author_id: reporter,
           assignee_ids: assignees,
           label_ids: label_ids,
-          correct_work_item_type_id: @work_item_type.correct_id
+          work_item_type_id: @work_item_type.id
         }
       end
 

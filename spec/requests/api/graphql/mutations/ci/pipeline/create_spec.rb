@@ -72,6 +72,105 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
         expect(created_pipeline.source).to eq('api')
         expect(mutation_response['pipeline']['id']).to eq(created_pipeline.to_global_id.to_s)
       end
+
+      context 'when passing inputs' do
+        let(:inputs) do
+          [
+            { name: 'deploy_strategy', value: 'blue-green' },
+            { name: 'job_stage', value: 'deploy' },
+            { name: 'test_script', value: ['echo "test"'] },
+            { name: 'test_rules', value: [{ if: '$CI_PIPELINE_SOURCE == "api"' }] }, # static source of the mutation
+            { name: 'test_framework', value: '$TEST_FRAMEWORK' }
+          ]
+        end
+
+        let(:params) { { ref: 'master', inputs: inputs } }
+
+        before do
+          stub_ci_pipeline_yaml_file(
+            File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+          )
+        end
+
+        it 'creates a pipeline using the inputs' do
+          expect do
+            post_graphql_mutation(mutation, current_user: user)
+          end.to change { ::Ci::Pipeline.count }.by(1)
+
+          created_pipeline = ::Ci::Pipeline.last
+          expect(created_pipeline.builds.map(&:name)).to contain_exactly(
+            'my-job-build 1/2', 'my-job-build 2/2', 'my-job-test', 'my-job-test-2', 'my-job-deploy'
+          )
+        end
+
+        context 'when passing some inputs multiple times' do
+          let(:inputs) do
+            [
+              { name: 'deploy_strategy', value: 'blue-green' },
+              { name: 'job_stage', value: 'deploy' },
+              { name: 'test_script', value: ['echo "test"'] },
+              { name: 'job_stage', value: 'test' }
+            ]
+          end
+
+          it 'creates a pipeline using the inputs considering the last key' do
+            expect do
+              post_graphql_mutation(mutation, current_user: user)
+            end.to change { ::Ci::Pipeline.count }.by(1)
+
+            created_pipeline = ::Ci::Pipeline.last
+            expect(created_pipeline.stages.map(&:name)).to contain_exactly('test')
+          end
+        end
+
+        context 'when the FF ci_inputs_for_pipelines is disabled' do
+          before do
+            stub_feature_flags(ci_inputs_for_pipelines: false)
+          end
+
+          it 'behaves like the inputs are never passed and returns errors' do
+            post_graphql_mutation(mutation, current_user: user)
+
+            expect(mutation_response['errors'].first).to include(
+              '`deploy_strategy` input: required value has not been provided'
+            )
+          end
+        end
+
+        context 'when there are errors in the inputs' do
+          let(:inputs) do
+            [{ name: 'deploy_strategy', value: 'invalid' }]
+          end
+
+          it 'returns errors' do
+            post_graphql_mutation(mutation, current_user: user)
+
+            expect(mutation_response['errors'].first).to include(
+              '`deploy_strategy` input: `invalid` cannot be used because it is not in the list of allowed options'
+            )
+            expect(mutation_response['errors'].first).to include(
+              '`job_stage` input: required value has not been provided'
+            )
+            expect(mutation_response['errors'].first).to include(
+              '`test_script` input: required value has not been provided'
+            )
+          end
+
+          context 'when the FF ci_inputs_for_pipelines is disabled' do
+            before do
+              stub_feature_flags(ci_inputs_for_pipelines: false)
+            end
+
+            it 'behaves like the inputs are never passed and returns errors' do
+              post_graphql_mutation(mutation, current_user: user)
+
+              expect(mutation_response['errors'].first).to include(
+                '`deploy_strategy` input: required value has not been provided'
+              )
+            end
+          end
+        end
+      end
     end
 
     context 'when the `async` argument is `true`' do

@@ -265,7 +265,7 @@ export default {
       return axios
         .post(url, { text: markdown })
         .then(({ data: { html, body, ...otherData } = {} } = {}) => ({
-          body: body || html,
+          body: body || html || '',
           ...otherData,
         }));
     },

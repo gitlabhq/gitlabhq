@@ -9,7 +9,7 @@ module Types
       ::UserPreference::NOTES_FILTERS.each_pair do |key, value|
         value key.upcase,
           value: value,
-          description: UserPreference.notes_filters.invert[::UserPreference::NOTES_FILTERS[key]]
+          description: ::UserPreference.notes_filters.invert[::UserPreference::NOTES_FILTERS[key]]
       end
 
       def self.default_value

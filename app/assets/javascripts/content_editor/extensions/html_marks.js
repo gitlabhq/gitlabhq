@@ -10,7 +10,6 @@ const marks = [
   'dfn',
   'small',
   'span',
-  'time',
   'kbd',
   'q',
   'samp',
@@ -21,7 +20,6 @@ const marks = [
 ];
 
 const attrs = {
-  time: ['datetime'],
   abbr: ['title'],
   span: ['dir'],
   bdo: ['dir'],

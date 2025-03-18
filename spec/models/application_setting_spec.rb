@@ -25,6 +25,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.enforce_email_subaddress_restrictions).to be(false) }
+    it { expect(setting.helm_max_packages_count).to eq(1000) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
@@ -37,6 +38,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.concurrent_bitbucket_server_import_jobs_limit).to eq(100) }
     it { expect(setting.nuget_skip_metadata_url_validation).to be(false) }
     it { expect(setting.silent_admin_exports_enabled).to be(false) }
+    it { expect(setting.autocomplete_users_limit).to eq(300) }
+    it { expect(setting.autocomplete_users_unauthenticated_limit).to eq(100) }
     it { expect(setting.group_api_limit).to eq(400) }
     it { expect(setting.group_invited_groups_api_limit).to eq(60) }
     it { expect(setting.group_projects_api_limit).to eq(600) }
@@ -46,9 +49,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
+    it { expect(setting.instance_token_prefix).to eq('gl') }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
+    it { expect(setting.users_api_limit_followers).to eq(100) }
+    it { expect(setting.users_api_limit_following).to eq(100) }
+    it { expect(setting.users_api_limit_status).to eq(240) }
+    it { expect(setting.users_api_limit_ssh_keys).to eq(120) }
+    it { expect(setting.users_api_limit_ssh_key).to eq(120) }
+    it { expect(setting.users_api_limit_gpg_keys).to eq(120) }
+    it { expect(setting.users_api_limit_gpg_key).to eq(120) }
     it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to be(false) }
     it { expect(setting.root_moved_permanently_redirection).to be(false) }
     it { expect(setting.resource_usage_limits).to eq({}) }
@@ -59,7 +70,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.global_search_merge_requests_enabled).to be(true) }
     it { expect(setting.global_search_snippet_titles_enabled).to be(true) }
     it { expect(setting.global_search_users_enabled).to be(true) }
-    it { expect(setting.vscode_extension_marketplace).to eq({}) }
+    it { expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false }) }
+    it { expect(setting.vscode_extension_marketplace_enabled?).to be(false) }
 
     it do
       expect(setting.sign_in_restrictions).to eq({
@@ -294,6 +306,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           user_projects_api_limit
           user_starred_projects_api_limit
           users_get_by_id_limit
+          users_api_limit_followers
+          users_api_limit_following
+          users_api_limit_status
+          users_api_limit_ssh_keys
+          users_api_limit_ssh_key
+          users_api_limit_gpg_keys
+          users_api_limit_gpg_key
         ]
       end
 
@@ -320,6 +339,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     context 'for non-null integer attributes starting from 1' do
       where(:attribute) do
         %i[
+          helm_max_packages_count
+          autocomplete_users_limit
+          autocomplete_users_unauthenticated_limit
           bulk_import_concurrent_pipeline_batch_limit
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit
@@ -1755,7 +1777,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
-  describe 'vscode_extension_marketplace' do
+  describe '#vscode_extension_marketplace' do
     let(:invalid_custom) { { enabled: false, preset: "custom", custom_values: {} } }
     let(:valid_open_vsx) { { enabled: true, preset: "open_vsx" } }
     let(:valid_custom) do
@@ -1779,6 +1801,24 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value({ enabled: false, preset: "foo" }).for(:vscode_extension_marketplace) }
     it { is_expected.not_to allow_value({ enabled: true, preset: "custom" }).for(:vscode_extension_marketplace) }
     it { is_expected.not_to allow_value(invalid_custom).for(:vscode_extension_marketplace) }
+  end
+
+  describe '#vscode_extension_marketplace_enabled' do
+    it 'is updated when underlying vscode_extension_marketplace changes' do
+      expect(setting.vscode_extension_marketplace_enabled).to be(false)
+
+      setting.vscode_extension_marketplace = { enabled: true, preset: "open_vsx" }
+
+      expect(setting.vscode_extension_marketplace_enabled).to be(true)
+    end
+
+    it 'updates the underlying vscode_extension_marketplace when changed' do
+      setting.vscode_extension_marketplace = { enabled: true, preset: "open_vsx" }
+
+      setting.vscode_extension_marketplace_enabled = false
+
+      expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false, "preset" => "open_vsx" })
+    end
   end
 
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do

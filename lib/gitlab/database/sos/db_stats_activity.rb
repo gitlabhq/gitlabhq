@@ -49,7 +49,7 @@ module Gitlab
               c.relname, con.conname;
           SQL
 
-          platform_info: <<~SQL
+          platform_info: <<~SQL,
             SELECT
               name AS key,
               setting AS value
@@ -57,6 +57,18 @@ module Gitlab
             WHERE name IN ('server_version', 'data_directory', 'rds.extensions', 'cloudsql.supported_extensions')
             UNION ALL
             SELECT 'System information', version();
+          SQL
+
+          collation_check: <<~SQL,
+            SELECT collname AS collation_name,
+              collversion AS version,
+              pg_collation_actual_version(oid) AS actual_version
+            FROM pg_collation
+            WHERE collprovider = 'c';
+          SQL
+
+          pg_class_settings: <<~SQL
+            SELECT * FROM pg_class;
           SQL
         }.freeze
 

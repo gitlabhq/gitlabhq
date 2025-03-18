@@ -59,7 +59,11 @@ This project provides you with:
 
 ## Register the agent
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9: A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
+
+{{< /history >}}
 
 To create a GitLab agent for Kubernetes:
 
@@ -97,7 +101,7 @@ To set up your project to communicate to GCP and the GitLab API:
    base64 /path/to/sa-key.json | tr -d \\n
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

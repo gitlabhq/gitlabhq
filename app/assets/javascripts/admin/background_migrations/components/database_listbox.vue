@@ -31,14 +31,15 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-grow gl-items-center gl-justify-end">
+  <li role="presentation" class="gl-flex gl-grow gl-items-center gl-justify-end">
+    <label id="database-selector-label" class="gl-sr-only">{{ __('Selected database') }}</label>
     <gl-collapsible-listbox
       v-model="selected"
       :items="databases"
       placement="bottom-end"
       :toggle-text="selectedDatabase"
-      toggle-aria-labelled-by="label"
+      toggle-aria-labelled-by="database-selector-label"
       @select="selectDatabase"
     />
-  </div>
+  </li>
 </template>

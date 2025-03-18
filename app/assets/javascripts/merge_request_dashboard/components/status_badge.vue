@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { BADGE_METHODS } from '../utils/status_badge';
@@ -29,6 +30,21 @@ export default {
       return this.mergeRequest.reviewers.nodes.find((r) => r.id === this.currentUserId);
     },
     badgeData() {
+      if (this.mergeRequest.mergeabilityChecks) {
+        const failedChecks = this.mergeRequest.mergeabilityChecks.filter(
+          ({ status }) => status === 'FAILED',
+        );
+
+        if (failedChecks.length === 0) {
+          return {
+            icon: 'status-success',
+            variant: 'success',
+            text: __('Ready to merge'),
+            iconOpticallyAligned: true,
+          };
+        }
+      }
+
       return BADGE_METHODS[this.listId]?.(this);
     },
   },

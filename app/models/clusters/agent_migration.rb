@@ -4,6 +4,8 @@ module Clusters
   class AgentMigration < ApplicationRecord
     self.table_name = 'cluster_agent_migrations'
 
+    attr_accessor :agent_name
+
     belongs_to :cluster, optional: false, class_name: 'Clusters::Cluster'
     belongs_to :project, optional: false, class_name: '::Project'
     belongs_to :agent, optional: false, class_name: 'Clusters::Agent'

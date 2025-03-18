@@ -30,11 +30,6 @@ export default {
       type: Object,
       required: true,
     },
-    compact: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   emits: ['done'],
   data() {

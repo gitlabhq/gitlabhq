@@ -351,7 +351,7 @@ To enable filters, in the `.yaml` configuration file set the filter's `enabled` 
 
 ```yaml
 title: My dashboard
-...
+# ...
 filters:
   excludeAnonymousUsers:
     enabled: true

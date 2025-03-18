@@ -38,7 +38,7 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 
 {{< /history >}}
 
-You can assign users a default role or a [custom role](custom_roles.md).
+You can assign users a default role or a [custom role](custom_roles/_index.md).
 
 The available default roles are:
 
@@ -259,11 +259,10 @@ Project permissions for [tasks](tasks.md):
 | ------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View tasks                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create tasks                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. |
-| Edit tasks, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
+| Edit tasks, including metadata, item locking, and resolving threads |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
 | Add a linked item                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Convert to another item type                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Convert to another item type                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Remove from issue                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Edit tasks                                                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Add internal note                                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Delete tasks                                                        |       |    ✓    |          |           |            |   ✓   | Users who don't have the Planner or Owner role can delete the tasks they authored. |
 
@@ -362,7 +361,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
 
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View project code                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users. |
+| View project code                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign that role to the users. |
 | Pull project code                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | View commit status                                                    |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create commit status                                                  |       |         |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
@@ -381,6 +380,8 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | Remove fork relationship                                              |       |         |          |           |            |   ✓   |       |
 | Force push to protected branches                                      |       |         |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push-on-a-protected-branch). |
 
+### Merge requests
+
 Project permissions for [merge requests](project/merge_requests/_index.md):
 
 | Action                                                                                                     | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
@@ -388,7 +389,8 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | [View](project/merge_requests/_index.md#view-merge-requests) a merge request                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | Create [snippets](snippets.md)                                                                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create [merge request](project/merge_requests/creating_merge_requests.md)                                  |       |         |          |     ✓     |     ✓      |   ✓   | In projects that accept contributions from external members, users can create, edit, and close their own merge requests. For **private** projects, this excludes the Guest role as those users [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal** projects, includes users with read-only access to the project, as [they can clone internal projects](public_access.md#internal-projects-and-groups). |
-| Update merge request including assign, review, Code Suggestions, approve, labels, lock and resolve threads |       |         |          |     ✓     |     ✓      |   ✓   | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
+| Comment and add suggestions to a merge request |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |  |
+| Update merge request including assign, review, approve, labels, lock threads, and resolve threads          |       |         |          |     ✓     |     ✓      |   ✓   | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
 | Manage [merge request settings](project/merge_requests/approvals/settings.md)                              |       |         |          |           |     ✓      |   ✓   |       |
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)                           |       |         |          |           |     ✓      |   ✓   |       |
 | Add internal note                                                                                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -469,8 +471,8 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 | View [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
 | View licenses in the [dependency list](application_security/dependency_list/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | View the [compliance center](compliance/compliance_center/_index.md)                  |       |         |          |           |            |   ✓   |       |
-| Manage [compliance frameworks](group/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
-| Assign [compliance frameworks](group/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |
+| Manage [compliance frameworks](compliance/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
+| Assign [compliance frameworks](compliance/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                           |       |         |          |           |            |   ✓   |       |
 
 ### GitLab Duo group permissions
@@ -495,7 +497,7 @@ Group permissions for [group features](group/_index.md):
 | View group [audit events](compliance/audit_events.md)                                      |       |         |          |     ✓     |     ✓      |   ✓   | Developers and Maintainers can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
 | Create project in group                                                                    |       |         |          |     ✓     |     ✓      |   ✓   | Developers, Maintainers and Owners: Only if the project creation role is set [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
 | Create subgroup                                                                            |       |         |          |           |     ✓      |   ✓   | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups). |
-| Change custom settings for the [project integrations](project/integrations/_index.md)       |       |         |          |           |     ✓      |   ✓   |       |
+| Change custom settings for [project integrations](project/integrations/_index.md)           |       |         |          |           |           |   ✓   |       |
 | Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |       |
 | Fork project into a group                                                                  |       |         |          |           |     ✓      |   ✓   |       |
 | View [Billing](../subscriptions/gitlab_com/_index.md#view-gitlabcom-subscription)          |       |         |          |           |            |   ✓   | Does not apply to subgroups |
@@ -650,7 +652,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 
 ## Related topics
 
-- [Custom roles](custom_roles.md)
+- [Custom roles](custom_roles/_index.md)
 - [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/categories/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/_index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)

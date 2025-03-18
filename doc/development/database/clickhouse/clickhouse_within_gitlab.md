@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: ClickHouse within GitLab
 ---
 
@@ -18,7 +18,6 @@ Most of the tooling and APIs are considered unstable.
 ### Setup ClickHouse server
 
 1. Install ClickHouse locally as described in [ClickHouse installation documentation](https://clickhouse.com/docs/en/install). If you use QuickInstall it will be installed in current directory, if you use Homebrew it will be installed to `/opt/homebrew/bin/clickhouse`
-1. Enable experimental services with `gdk config set gdk.experimental.ruby_services true`
 1. Add ClickHouse section to your `gdk.yml`. See [`gdk.example.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/gdk.example.yml)
 1. Adjust the `gdk.yml` ClickHouse configuration file to point to your local ClickHouse installation and local data storage. E.g.
 
@@ -43,10 +42,10 @@ Most of the tooling and APIs are considered unstable.
    cp config/click_house.yml.example config/click_house.yml
    ```
 
-1. Create the database using the `clickhouse-client` CLI tool:
+1. Create the database using the bundled `clickhouse client`:
 
    ```shell
-   clickhouse client --port 9001
+   gdk clickhouse
    ```
 
    ```sql

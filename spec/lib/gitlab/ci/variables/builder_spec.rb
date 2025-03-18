@@ -75,6 +75,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.full_path_slug },
       { key: 'CI_PROJECT_NAMESPACE',
         value: project.namespace.full_path },
+      { key: 'CI_PROJECT_NAMESPACE_SLUG',
+        value: Gitlab::Utils.slugify(project.namespace.full_path) },
       { key: 'CI_PROJECT_NAMESPACE_ID',
         value: project.namespace.id.to_s },
       { key: 'CI_PROJECT_ROOT_NAMESPACE',
@@ -93,6 +95,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.ci_config_path_or_default },
       { key: 'CI_PAGES_DOMAIN',
         value: Gitlab.config.pages.host },
+      { key: 'CI_PAGES_HOSTNAME',
+        value: project.pages_hostname },
       { key: 'CI_API_V4_URL',
         value: API::Helpers::Version.new('v4').root_url },
       { key: 'CI_API_GRAPHQL_URL',
@@ -127,6 +131,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: 'rspec:test 1' },
           { key: 'CI_JOB_NAME_SLUG',
             value: 'rspec-test-1' },
+          { key: 'CI_JOB_GROUP_NAME',
+            value: 'rspec:test 1' },
           { key: 'CI_JOB_STAGE',
             value: job.stage_name },
           { key: 'CI_NODE_TOTAL',
@@ -244,6 +250,40 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
     end
 
+    context 'with instance of parallel job' do
+      let(:job) do
+        create(:ci_build,
+          name: 'rspec:test 2/3',
+          pipeline: pipeline,
+          user: user
+        )
+      end
+
+      subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test 2/3')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
+      end
+    end
+
+    context 'with instance of parallel:matrix job' do
+      let(:job) do
+        create(:ci_build,
+          name: 'rspec:test: [ruby, rust]',
+          pipeline: pipeline,
+          user: user
+        )
+      end
+
+      subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test: [ruby, rust]')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
+      end
+    end
+
     context 'with schedule variables' do
       let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
       let_it_be(:schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: schedule) }
@@ -313,13 +353,85 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         end
       end
     end
+
+    context 'when pipeline disables all except yaml variables' do
+      before do
+        pipeline.source = :duo_workflow
+      end
+
+      it 'only includes the YAML and project predefined variables' do
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
+        )
+      end
+    end
+
+    context 'when pipeline has trigger request' do
+      let_it_be(:trigger) { create(:ci_trigger, project: project) }
+
+      before do
+        pipeline.update!(trigger: trigger)
+      end
+
+      it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+        expect(subject.to_hash).to include(
+          'CI_PIPELINE_TRIGGERED' => 'true',
+          'CI_TRIGGER_SHORT_TOKEN' => trigger.trigger_short_token
+        )
+      end
+
+      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+        let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, pipeline: pipeline) }
+
+        before do
+          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+          job.update!(trigger_request: trigger_request)
+        end
+
+        it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+          expect(subject.to_hash).to include(
+            'CI_PIPELINE_TRIGGERED' => 'true',
+            'CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token
+          )
+        end
+      end
+    end
+  end
+
+  describe '#unprotected_scoped_variables' do
+    let(:expose_project_variables) { true }
+    let(:expose_group_variables) { true }
+    let(:environment_name) { job.expanded_environment_name }
+    let(:dependencies) { true }
+
+    subject { builder.unprotected_scoped_variables(job, expose_project_variables: expose_project_variables, expose_group_variables: expose_group_variables, environment: environment_name, dependencies: dependencies) }
+
+    it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
+
+    context 'when pipeline disables all except yaml variables' do
+      before do
+        pipeline.source = :duo_workflow
+      end
+
+      it 'only includes the YAML and project predefined variables' do
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
+        )
+      end
+    end
   end
 
   describe '#scoped_variables_for_pipeline_seed' do
     let(:environment_name) { 'test/master' }
     let(:kubernetes_namespace) { nil }
     let(:extra_attributes) { {} }
-    let(:trigger_request) { nil }
+    let(:trigger_or_request) { nil }
     let(:yaml_variables) { [{ key: 'YAML_VARIABLE', value: 'value' }] }
 
     let(:predefined_variables) do
@@ -329,6 +441,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: 'rspec:test 2' },
           { key: 'CI_JOB_NAME_SLUG',
             value: 'rspec-test-2' },
+          { key: 'CI_JOB_GROUP_NAME',
+            value: 'rspec:test 2' },
           { key: 'CI_JOB_STAGE',
             value: 'test' },
           { key: 'CI_NODE_TOTAL',
@@ -405,7 +519,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         environment: environment_name,
         kubernetes_namespace: kubernetes_namespace,
         user: user,
-        trigger_request: trigger_request
+        trigger_or_request: trigger_or_request
       )
     end
 
@@ -470,6 +584,36 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
     end
 
+    context 'with instance of parallel job' do
+      let(:job_attr) do
+        {
+          name: 'rspec:test 1/2',
+          stage: 'test',
+          **extra_attributes
+        }
+      end
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test 1/2')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
+      end
+    end
+
+    context 'with instance of parallel:matrix job' do
+      let(:job_attr) do
+        {
+          name: 'rspec:test: [ubuntu, ruby]',
+          stage: 'test',
+          **extra_attributes
+        }
+      end
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test: [ubuntu, ruby]')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
+      end
+    end
+
     context 'with schedule variables' do
       let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
       let_it_be(:schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: schedule) }
@@ -516,13 +660,26 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     end
 
     context 'when pipeline has trigger request' do
-      let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
+      context 'for trigger' do
+        let!(:trigger_or_request) { create(:ci_trigger, project: project) }
 
-      it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
-        expect(subject.to_hash).to include(
-          'CI_PIPELINE_TRIGGERED' => 'true',
-          'CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token
-        )
+        it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+          expect(subject.to_hash).to include(
+            'CI_PIPELINE_TRIGGERED' => 'true',
+            'CI_TRIGGER_SHORT_TOKEN' => trigger_or_request.trigger_short_token
+          )
+        end
+      end
+
+      context 'for trigger_request' do
+        let!(:trigger_or_request) { create(:ci_trigger_request, pipeline: pipeline) }
+
+        it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+          expect(subject.to_hash).to include(
+            'CI_PIPELINE_TRIGGERED' => 'true',
+            'CI_TRIGGER_SHORT_TOKEN' => trigger_or_request.trigger_short_token
+          )
+        end
       end
     end
 
@@ -556,6 +713,21 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           expect(subject.to_hash).to include('CI_ENVIRONMENT_TIER' => 'testing')
           expect(subject.to_hash).to include('CI_ENVIRONMENT_URL' => 'https://hello.test')
         end
+      end
+    end
+
+    context 'when pipeline disables all except yaml variables' do
+      before do
+        pipeline.source = :duo_workflow
+      end
+
+      it 'only includes the YAML and project predefined variables' do
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
+        )
       end
     end
   end

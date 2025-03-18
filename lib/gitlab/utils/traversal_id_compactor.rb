@@ -34,6 +34,7 @@ module Gitlab
         # If it cannot achieve the limit it raises a CompactionLimitCannotBeAchievedError.
 
         def compact(traversal_ids, limit)
+          traversal_ids = traversal_ids.sort_by(&:size).reverse
           traversal_ids = compact_once(traversal_ids) while traversal_ids.size > limit
 
           traversal_ids

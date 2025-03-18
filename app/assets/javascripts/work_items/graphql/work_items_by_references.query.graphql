@@ -5,6 +5,11 @@ query getWorkItemsByReferences($contextNamespacePath: ID!, $refs: [String!]!) {
       iid
       title
       confidential
+      workItemType {
+        id
+        name
+        iconName
+      }
     }
   }
 }

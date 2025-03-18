@@ -44,7 +44,7 @@ module API
           produces %w[application/octet-stream application/json]
         end
         get ':id/export/download' do
-          check_rate_limit! :project_download_export, scope: [current_user, user_project.namespace]
+          check_rate_limit! :project_download_export, scope: [current_user, user_project]
 
           if user_project.export_file_exists?(current_user)
             if user_project.export_archive_exists?(current_user)
@@ -110,7 +110,8 @@ module API
 
       resource do
         before do
-          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
+          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled? ||
+            Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
 
           authorize_admin_project
         end

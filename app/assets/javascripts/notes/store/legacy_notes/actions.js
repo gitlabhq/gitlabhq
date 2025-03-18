@@ -21,6 +21,7 @@ import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import { useBatchComments } from '~/batch_comments/store';
+import { uuids } from '~/lib/utils/uuids';
 import notesEventHub from '../../event_hub';
 
 import promoteTimelineEvent from '../../graphql/promote_timeline_event.mutation.graphql';
@@ -494,6 +495,7 @@ export function saveNote(noteData) {
 
   if (placeholderText.length) {
     this[types.SHOW_PLACEHOLDER_NOTE]({
+      id: uuids()[0],
       noteBody: placeholderText,
       replyId,
     });
@@ -501,6 +503,7 @@ export function saveNote(noteData) {
 
   if (hasQuickActions) {
     this[types.SHOW_PLACEHOLDER_NOTE]({
+      id: uuids()[0],
       isSystemNote: true,
       noteBody: utils.getQuickActionText(note),
       replyId,

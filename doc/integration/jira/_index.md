@@ -12,8 +12,20 @@ title: Jira
 
 {{< /details >}}
 
-You can [import your Jira issues to GitLab](../../user/project/import/jira.md).
-If you want to continue to use Jira, you can integrate Jira with GitLab instead.
+Connect your GitLab projects with Jira to maintain a streamlined development workflow across both platforms.
+When your team uses Jira for issue tracking and GitLab for development,
+Jira integrations make the connection between planning and execution.
+
+With Jira integrations:
+
+- Development teams access Jira issues directly in GitLab without context switching.
+- Project managers track development progress in Jira as teams work in GitLab.
+- Jira issues update automatically when developers reference them in commits and merge requests.
+- Team members discover connections between code changes and requirements tracked in Jira issues.
+- Vulnerability findings from GitLab create issues in Jira for proper tracking and resolution.
+
+You can [import your Jira issues to GitLab](../../user/project/import/jira.md) or
+integrate Jira with GitLab and continue to use both platforms together.
 
 ## Jira integrations
 

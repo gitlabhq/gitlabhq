@@ -221,7 +221,7 @@ describe('tags list row', () => {
       expect(popoverText).toContain('This tag is protected');
       expect(popoverText).toContain('Minimum role to push:');
       expect(popoverText).toContain('Minimum role to delete:');
-      expect(popoverText).toContain('MAINTAINER');
+      expect(popoverText).toContain('Maintainer');
     });
   });
 
@@ -388,8 +388,8 @@ describe('tags list row', () => {
         mountComponent();
 
         expect(findDeleteButton().exists()).toBe(true);
+        expect(findDeleteButton().props('item').variant).toBe('danger');
         expect(findDeleteButton().props('item').extraAttrs).toMatchObject({
-          class: '!gl-text-red-500',
           'data-testid': 'single-delete-button',
         });
 

@@ -3,11 +3,17 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobChunks from '~/search/results/components/blob_chunks.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { isUnsupportedLanguage } from '~/search/results/utils';
 import {
   EVENT_CLICK_BLOB_RESULT_BLAME_LINE,
   EVENT_CLICK_BLOB_RESULT_LINE,
 } from '~/search/results/tracking';
 import { mockDataForBlobChunk } from '../../mock_data';
+
+jest.mock('~/search/results/utils', () => ({
+  isUnsupportedLanguage: jest.fn(),
+  initLineHighlight: jest.fn(),
+}));
 
 describe('BlobChunks', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -78,6 +84,11 @@ describe('BlobChunks', () => {
 
   describe('when frontend highlighting', () => {
     beforeEach(async () => {
+      const mockHighlightedText = 'console.log("test")';
+      jest.spyOn(BlobChunks.methods, 'codeHighlighting').mockResolvedValue(mockHighlightedText);
+
+      isUnsupportedLanguage.mockReturnValue(false);
+
       createComponent(mockDataForBlobChunk);
       await waitForPromises();
     });
@@ -85,6 +96,56 @@ describe('BlobChunks', () => {
     it('renders proper colors', () => {
       expect(findHighlightedLineCode().exists()).toBe(true);
       expect(findHighlightedLineCode().at(2).text()).toBe('console.log("test")');
+    });
+  });
+
+  describe('processLine method', () => {
+    const mockHighlightedText = 'highlighted code';
+
+    beforeEach(() => {
+      jest.spyOn(BlobChunks.methods, 'codeHighlighting').mockResolvedValue(mockHighlightedText);
+    });
+
+    describe('with unsupported language', () => {
+      beforeEach(async () => {
+        isUnsupportedLanguage.mockReturnValue(true);
+
+        createComponent({
+          ...mockDataForBlobChunk,
+          language: 'unsupported-lang',
+        });
+
+        await waitForPromises();
+      });
+
+      it('sets line text directly when language is unsupported', () => {
+        const lineElements = wrapper.findAllByTestId('search-blob-line-code-non-highlighted');
+
+        expect(lineElements.exists()).toBe(true);
+        expect(wrapper.vm.lines[0].text).toBe(mockHighlightedText);
+        expect(wrapper.vm.lines[0].richText).toBeNull();
+      });
+    });
+
+    describe('with supported language', () => {
+      beforeEach(async () => {
+        isUnsupportedLanguage.mockReturnValue(false);
+
+        createComponent({
+          ...mockDataForBlobChunk,
+          language: 'javascript',
+        });
+
+        await waitForPromises();
+      });
+
+      it('sets richText when language is supported', () => {
+        const lineElements = wrapper.findAllByTestId('search-blob-line-code-highlighted');
+
+        expect(lineElements.exists()).toBe(true);
+        expect(wrapper.vm.lines[0].richText).toBe(mockHighlightedText);
+        expect(wrapper.vm.lines[0].text).not.toBe(mockHighlightedText);
+      });
     });
   });
 });

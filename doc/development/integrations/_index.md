@@ -147,7 +147,53 @@ module Integrations
 end
 ```
 
-### Security enhancement features
+### Define event attribute defaults
+
+Integrations have a problem, tracked in [issue #382999](https://gitlab.com/gitlab-org/gitlab/-/issues/382999),
+where due to the default for most
+[event attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/cd5edf7d6fe31db22d0f3a024ee1c704d817535b/app/models/concerns/integrations/base/integration.rb#L490-504)
+being `true`, we load integrations more frequently than necessary.
+Until we address that issue integrations must define all event `attribute` properties in the following way:
+
+- For notification integrations (ones that include `Integrations::Base::ChatNotification`), set all event attributes to `false`.
+  This presents a form with checkboxes per event trigger that are unchecked by default.
+- For other integrations:
+  - Set event attributes that match the integration's [trigger events](#define-trigger-events) to `true`.
+  - Set all other event `attributes` to `false`.
+
+For example, an integration that responds to only commit and merge request [trigger events](#define-trigger-events) should set its event attributes as below:
+
+```ruby
+attribute :commit_events, default: true
+attribute :merge_requests_events, default: true
+
+attribute :alert_events, default: false
+attribute :incident_events, default: false
+attribute :confidential_issues_events, default: false
+attribute :confidential_note_events, default: false
+attribute :issues_events, default: false
+attribute :job_events, default: false
+attribute :note_events, default: false
+attribute :pipeline_events, default: false
+attribute :push_events, default: false
+attribute :tag_push_events, default: false
+attribute :wiki_page_events, default: false
+```
+
+#### Changing event attribute defaults
+
+If an event attribute for an existing integration changes to `true`,
+this requires a data migration to back-fill the attribute value for old records.
+
+### Security requirements
+
+#### All HTTP calls must use `Gitlab::HTTP`
+
+Integrations must always make HTTP calls using `Gitlab::HTTP`, which:
+
+- Ensures that [network settings](../../security/webhooks.md) are enforced for HTTP calls.
+- Has additional [security hardening](../../security/webhooks.md#enforce-dns-rebinding-attack-protection) features.
+- Is our single source of truth for making secure HTTP calls.
 
 #### Masking channel values
 
@@ -163,6 +209,23 @@ def mask_configurable_channels?
   true
 end
 ```
+
+## No Ruby gems that make HTTP calls
+
+GitLab integrations must not add Ruby gems that make HTTP calls.
+Other gems that add small abstractions should also not be added.
+
+Certain utility-like gems from official sources, like `atlassian-jwt` gem can be used if required.
+
+Gems that wrap interactions with third-party services may look convenient at first glance,
+but they offer minimal benefit compared to the costs involved:
+
+- They increase the potential surface area of security problems and the effort required to fix them.
+- Often these gems make HTTP calls on your behalf. As integrations can make HTTP calls to remote
+  servers configured by users, it is critical that we
+  [fully control the network calls](#all-http-calls-must-use-gitlabhttp).
+- There is a maintenance cost of managing gem upgrades.
+- They can block us from using newer features.
 
 ## Define configuration test
 
@@ -397,7 +460,7 @@ Add documentation for the integration:
 - Add a page in `doc/user/project/integrations`.
 - Link it from the [Integrations overview](../../user/project/integrations/_index.md).
 - After the documentation has merged, [add an entry](../documentation/site_architecture/global_nav.md#add-a-navigation-entry)
-  to the documentation navigation under the [Integrations category title](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/24c8ab629383b47a6d6351a9d48325cb43ed5287/content/_data/navigation.yaml?page=3#L2822).
+  to the documentation navigation under [Integrations](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml?ref_type=heads#L2936).
 
 You can also refer to our general [documentation guidelines](../documentation/_index.md).
 

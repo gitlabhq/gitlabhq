@@ -28,9 +28,11 @@ module Import
 
         if reassign_successful
           send_user_reassign_email
+          track_reassignment_event('propose_placeholder_user_reassignment')
 
           ServiceResponse.success(payload: import_source_user)
         else
+          track_reassignment_event('fail_placeholder_user_reassignment')
           ServiceResponse.error(payload: import_source_user, message: import_source_user.errors.full_messages)
         end
       end

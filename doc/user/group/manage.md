@@ -14,7 +14,7 @@ For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
 A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
-[Vulnerability Report](../application_security/vulnerability_report/_index.md),
+[Vulnerability report](../application_security/vulnerability_report/_index.md),
 [compliance center](../compliance/compliance_center/_index.md), and
 [value stream analytics](value_stream_analytics/_index.md).
 
@@ -185,6 +185,7 @@ To disable diff previews for all projects in a group:
 {{< history >}}
 
 - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 
 {{< /history >}}
 

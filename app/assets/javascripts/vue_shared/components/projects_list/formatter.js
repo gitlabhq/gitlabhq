@@ -10,12 +10,12 @@ export const formatGraphQLProjects = (projects, callback = () => {}) =>
       issuesAccessLevel,
       forkingAccessLevel,
       maxAccessLevel: accessLevel,
+      group,
       ...project
     }) => {
       const baseProject = {
         ...project,
         id: getIdFromGraphQLId(id),
-        name: nameWithNamespace,
         nameWithNamespace,
         avatarLabel: nameWithNamespace,
         mergeRequestsAccessLevel: mergeRequestsAccessLevel.stringValue,
@@ -24,6 +24,7 @@ export const formatGraphQLProjects = (projects, callback = () => {}) =>
         isForked: false,
         accessLevel,
         availableActions: availableGraphQLProjectActions(project),
+        isPersonal: group === null,
       };
 
       return {

@@ -9,14 +9,6 @@ description: Persists information about on-call rotation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49058
 milestone: '13.7'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: oncall_schedule_id
-        table: incident_management_oncall_schedules
-        sharding_key: project_id
-        belongs_to: schedule
-desired_sharding_key_migration_job_name: BackfillIncidentManagementOncallRotationsProjectId
+sharding_key:
+  project_id: projects
 table_size: small

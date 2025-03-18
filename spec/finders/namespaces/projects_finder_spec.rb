@@ -110,6 +110,32 @@ RSpec.describe Namespaces::ProjectsFinder, feature_category: :groups_and_project
         end
       end
 
+      context 'when archived_only param is present' do
+        context 'when archived_only is true' do
+          let(:params) { { archived_only: true } }
+
+          it 'returns only archived projects' do
+            expect(projects).to contain_exactly(project_7)
+          end
+        end
+
+        context 'when archived_only is false' do
+          let(:params) { { archived_only: false } }
+
+          it 'returns all projects' do
+            expect(projects).to contain_exactly(project_1, project_2, project_4, project_6, project_7)
+          end
+        end
+
+        context 'when archived_only is invalid' do
+          let(:params) { { archived_only: 'invalid' } }
+
+          it 'returns all projects' do
+            expect(projects).to contain_exactly(project_1, project_2, project_4, project_6, project_7)
+          end
+        end
+      end
+
       context 'when ids are provided' do
         let(:params) { { ids: [project_1.id] } }
 

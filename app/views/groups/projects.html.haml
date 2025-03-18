@@ -26,7 +26,7 @@
                       \/
                   %span.project-name
                     = project.name
-              = visibility_level_content(project, css_class: 'visibility-icon gl-fill-icon-subtle gl-ml-2', icon_css_class: 'icon')
+              = visibility_level_content(project, css_class: 'visibility-icon gl-ml-2', icon_css_class: 'icon', icon_variant: 'subtle')
 
             - if project.description.present?
               .description

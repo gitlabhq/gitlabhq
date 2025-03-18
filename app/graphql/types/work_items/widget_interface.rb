@@ -33,7 +33,6 @@ module Types
         ::WorkItems::Widgets::Development => ::Types::WorkItems::Widgets::DevelopmentType,
         ::WorkItems::Widgets::CrmContacts => ::Types::WorkItems::Widgets::CrmContactsType,
         ::WorkItems::Widgets::EmailParticipants => ::Types::WorkItems::Widgets::EmailParticipantsType,
-        ::WorkItems::Widgets::CustomStatus => ::Types::WorkItems::Widgets::CustomStatusType,
         ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType,
         ::WorkItems::Widgets::ErrorTracking => ::Types::WorkItems::Widgets::ErrorTrackingType
       }.freeze

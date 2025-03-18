@@ -44,12 +44,8 @@ module Projects
       path_prefix.present?
     end
 
-    def url_builder
-      @url_builder ||= ::Gitlab::Pages::UrlBuilder.new(project, config)
-    end
-
     def path_prefix
-      url_builder.path_prefix
+      project.pages_url_builder(config).path_prefix
     end
 
     def success

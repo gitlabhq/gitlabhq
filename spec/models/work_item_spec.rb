@@ -187,16 +187,79 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#widgets' do
-    subject { build(:work_item).widgets }
+    subject(:work_item) { build(:work_item) }
 
     it 'returns instances of supported widgets' do
-      is_expected.to include(
+      expect(work_item.widgets).to match_array([
+        instance_of(WorkItems::Widgets::Assignees),
+        instance_of(WorkItems::Widgets::AwardEmoji),
+        instance_of(WorkItems::Widgets::CrmContacts),
+        instance_of(WorkItems::Widgets::CurrentUserTodos),
         instance_of(WorkItems::Widgets::Description),
+        instance_of(WorkItems::Widgets::Designs),
+        instance_of(WorkItems::Widgets::Development),
+        instance_of(WorkItems::Widgets::EmailParticipants),
+        instance_of(WorkItems::Widgets::ErrorTracking),
         instance_of(WorkItems::Widgets::Hierarchy),
         instance_of(WorkItems::Widgets::Labels),
-        instance_of(WorkItems::Widgets::Assignees),
-        instance_of(WorkItems::Widgets::StartAndDueDate)
-      )
+        instance_of(WorkItems::Widgets::LinkedItems),
+        instance_of(WorkItems::Widgets::Milestone),
+        instance_of(WorkItems::Widgets::Notes),
+        instance_of(WorkItems::Widgets::Notifications),
+        instance_of(WorkItems::Widgets::Participants),
+        instance_of(WorkItems::Widgets::StartAndDueDate),
+        instance_of(WorkItems::Widgets::TimeTracking)
+      ])
+    end
+
+    context 'when filters are given' do
+      context 'when both only_types and except_types are given' do
+        it 'raises an error' do
+          expect { work_item.widgets(only_types: [true], except_types: [true]) }
+            .to raise_error(ArgumentError, 'Only one filter is allowed')
+        end
+      end
+
+      context 'when filtering by only_types' do
+        it 'only returns widgets on the given list' do
+          expect(work_item.widgets(only_types: [:milestone, :description])).to match_array([
+            instance_of(WorkItems::Widgets::Milestone),
+            instance_of(WorkItems::Widgets::Description)
+          ])
+        end
+      end
+
+      context 'when passing explicitly nil to except_types' do
+        it 'only returns widgets on the given list' do
+          expect(work_item.widgets(only_types: [:milestone, :description], except_types: nil)).to match_array([
+            instance_of(WorkItems::Widgets::Milestone),
+            instance_of(WorkItems::Widgets::Description)
+          ])
+        end
+      end
+
+      context 'when filtering by except_types' do
+        it 'only returns widgets on the given list' do
+          expect(work_item.widgets(except_types: [:milestone, :description])).to match_array([
+            instance_of(WorkItems::Widgets::Assignees),
+            instance_of(WorkItems::Widgets::AwardEmoji),
+            instance_of(WorkItems::Widgets::CrmContacts),
+            instance_of(WorkItems::Widgets::CurrentUserTodos),
+            instance_of(WorkItems::Widgets::Designs),
+            instance_of(WorkItems::Widgets::Development),
+            instance_of(WorkItems::Widgets::EmailParticipants),
+            instance_of(WorkItems::Widgets::ErrorTracking),
+            instance_of(WorkItems::Widgets::Hierarchy),
+            instance_of(WorkItems::Widgets::Labels),
+            instance_of(WorkItems::Widgets::LinkedItems),
+            instance_of(WorkItems::Widgets::Notes),
+            instance_of(WorkItems::Widgets::Notifications),
+            instance_of(WorkItems::Widgets::Participants),
+            instance_of(WorkItems::Widgets::StartAndDueDate),
+            instance_of(WorkItems::Widgets::TimeTracking)
+          ])
+        end
+      end
     end
   end
 
@@ -960,6 +1023,26 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
           allow(work_item).to receive_message_chain(:hierarchy, :base_and_ancestors, :count).and_return(max_depth - 1)
           expect(work_item.max_depth_reached?(child_type)).to be false
         end
+      end
+    end
+  end
+
+  describe '#supports_parent?' do
+    context 'when the work item type is an issue' do
+      let_it_be(:issue_work_item) { create(:work_item, :issue) }
+
+      it 'returns false' do
+        expect(issue_work_item).not_to receive(:hierarchy_supports_parent?)
+        expect(issue_work_item.supports_parent?).to be false
+      end
+    end
+
+    context 'when the work item type is not an issue' do
+      let_it_be(:task_work_item) { create(:work_item, :task) }
+
+      it 'defers to hierarchy_supports_parent?' do
+        expect(task_work_item).to receive(:hierarchy_supports_parent?).and_call_original
+        expect(task_work_item.supports_parent?).to be true
       end
     end
   end

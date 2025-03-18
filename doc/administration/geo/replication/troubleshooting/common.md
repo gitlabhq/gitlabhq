@@ -416,9 +416,23 @@ The PostgreSQL read-replica database would be producing these errors:
 2023-01-17_17:44:54.64271 STATEMENT:  /*application:web,db_config_name:main*/ INSERT INTO "shards" ("name") VALUES ('storage1') RETURNING "id"
 ```
 
-This situation can occur during initial configuration when a secondary site is not yet aware that it is a secondary site.
+This situation can occur:
 
-To resolve the error, follow [Step 3. Add the secondary site](../configuration.md#step-3-add-the-secondary-site).
+- During initial configuration when a secondary site is not yet aware that it is a secondary site. To resolve the error, follow [Step 3. Add the secondary site](../configuration.md#step-3-add-the-secondary-site).
+- During the upgrade of a Geo secondary site. It's possible that `gitlab_rails['auto_migrate']` is set to `true`, causing GitLab to attempt database migrations on the replica database, which is not required. To resolve the error:
+
+  1. SSH as root to the GitLab Rails node of the secondary site.
+  1. Edit `/etc/gitlab/gitlab.rb`, and comment out this setting or set it to false:
+
+     ```ruby
+     gitlab_rails['auto_migrate'] = false
+     ```
+
+  1. Reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
 
 ### Check if PostgreSQL replication is working
 
@@ -498,7 +512,7 @@ Geo cannot reuse an existing tracking database.
 It is safest to use a fresh secondary, or reset the whole secondary by following
 [Resetting Geo secondary site replication](synchronization_verification.md#resetting-geo-secondary-site-replication).
 
-It is risky to reuse a secondary site without resetting it because the secondary site may have missed some Geo events. For example, missed deletion events lead to the secondary site permanently having data that should be deleted. Similarly, losing an event which physically moves the location of data leads to data permanently orphaned in one location, and missing in the other location until it is re-verified. This is why GitLab switched to hashed storage, since it makes moving data unnecessary. There may be other unknown problems due to lost events.
+It is risky to reuse a secondary site without resetting it because the secondary site may have missed some Geo events. For example, missed deletion events lead to the secondary site permanently having data that should be deleted. Similarly, losing an event which physically moves the location of data leads to data permanently orphaned in one location, and missing in the other location until it is re-verified. This is why GitLab switched to hashed storage, which makes moving data unnecessary. There may be other unknown problems due to lost events.
 
 If these kinds of risks do not apply, for example in a test environment, or if you know that the main Postgres database still contains all Geo events since the Geo site was added, then you can bypass this health check:
 

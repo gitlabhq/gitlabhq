@@ -27,7 +27,7 @@ package registry, see the [Composer package registry documentation](../../user/p
 {{< alert type="note" >}}
 
 These endpoints do not adhere to the standard API authentication methods.
-See the [Composer Package Registry documentation](../../user/packages/composer_repository/_index.md)
+See the [Composer package registry documentation](../../user/packages/composer_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 {{< /alert >}}

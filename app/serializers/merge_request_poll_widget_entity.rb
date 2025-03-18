@@ -29,7 +29,11 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   end
 
   expose :default_merge_commit_message_with_description do |merge_request|
-    merge_request.default_merge_commit_message(include_description: true)
+    if Feature.enabled?(:disable_widget_responses, merge_request.target_project)
+      ''
+    else
+      merge_request.default_merge_commit_message(include_description: true)
+    end
   end
 
   expose :only_allow_merge_if_pipeline_succeeds do |merge_request|

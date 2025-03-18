@@ -2,7 +2,7 @@
 data_category: optional
 key_path: settings.patched_files
 description: Information about any GitLab files which have been patched
-product_group: distribution_deploy
+product_group: self_managed
 product_categories:
   - delivery
 value_type: string

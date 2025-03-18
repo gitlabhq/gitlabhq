@@ -7,6 +7,7 @@ import { GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
@@ -35,6 +36,7 @@ export default {
     ApprovalSummary: () =>
       import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     mediator: {
       type: Object,
@@ -191,6 +193,10 @@ export default {
     },
     toggleDrawerOpen(drawerOpen = !this.drawerOpen) {
       this.drawerOpen = drawerOpen;
+
+      if (drawerOpen) {
+        this.trackEvent('open_reviewer_sidebar_panel_in_mr');
+      }
     },
   },
 };
@@ -213,7 +219,7 @@ export default {
         category="tertiary"
         variant="confirm"
         class="gl-ml-2 !gl-text-sm"
-        data-testid="sidebar-reviewers-assign-buton"
+        data-testid="sidebar-reviewers-assign-button"
         @click="toggleDrawerOpen()"
       >
         {{ __('Assign') }}

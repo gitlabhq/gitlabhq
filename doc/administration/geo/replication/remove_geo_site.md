@@ -32,7 +32,7 @@ stop and uninstall this site. For each node on your secondary Geo site:
 
    {{< alert type="note" >}}
 
-If GitLab data has to be cleaned from the instance as well, see how to [uninstall the Linux package and all its data](https://docs.gitlab.com/omnibus/installation/#uninstall-the-linux-package-omnibus).
+   If GitLab data has to be cleaned from the instance as well, see how to [uninstall the Linux package and all its data](https://docs.gitlab.com/omnibus/installation/#uninstall-the-linux-package-omnibus).
 
    {{< /alert >}}
 
@@ -57,7 +57,7 @@ When GitLab has been uninstalled from each node on the **secondary** site, the r
 
    {{< alert type="note" >}}
 
-Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
 
    {{< /alert >}}
 

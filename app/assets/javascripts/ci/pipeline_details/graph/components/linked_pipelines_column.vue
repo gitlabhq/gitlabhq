@@ -16,7 +16,7 @@ import LinkedPipeline from './linked_pipeline.vue';
 export default {
   components: {
     LinkedPipeline,
-    PipelineGraph: () => import('./graph_component.vue'),
+    PipelineGraph: () => import(/* webpackChunkName: 'pipeline_graph' */ './graph_component.vue'),
   },
   props: {
     columnTitle: {

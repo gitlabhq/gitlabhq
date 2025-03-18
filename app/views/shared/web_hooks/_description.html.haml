@@ -1,4 +1,4 @@
-- webhooks_link = tag_pair(link_to('', help_page_path(hook.help_path), target: '_blank', rel: 'noopener noreferrer'), :webhooks_link_start, :webhooks_link_end)
+- webhooks_link = tag_pair(link_to('', hook.help_path, target: '_blank', rel: 'noopener noreferrer'), :webhooks_link_start, :webhooks_link_end)
 
 - if @project
   - integrations_link = tag_pair(link_to('', scoped_integrations_path(project: @project)), :integrations_link_start, :integrations_link_end)

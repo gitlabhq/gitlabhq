@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineEndStringConcatenationIndentation:
   Exclude:
-    - 'app/helpers/visibility_level_helper.rb'
     - 'app/models/abuse_report.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/clusters/agent.rb'
@@ -51,7 +50,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/controllers/concerns/insights_actions.rb'
     - 'ee/app/controllers/ee/ldap/omniauth_callbacks_controller.rb'
     - 'ee/app/finders/geo/framework_registry_finder.rb'
-    - 'ee/app/graphql/ee/mutations/ci/project_ci_cd_settings_update.rb'
     - 'ee/app/graphql/ee/mutations/issues/create.rb'
     - 'ee/app/graphql/ee/mutations/merge_requests/update.rb'
     - 'ee/app/graphql/ee/resolvers/ci/all_jobs_resolver.rb'
@@ -116,7 +114,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/graphql/types/vulnerability_type.rb'
     - 'ee/app/helpers/ee/members_helper.rb'
-    - 'ee/app/helpers/groups/discovers_helper.rb'
     - 'ee/app/helpers/namespaces/free_user_cap_helper.rb'
     - 'ee/app/helpers/push_rules_helper.rb'
     - 'ee/app/helpers/users/identity_verification_helper.rb'
@@ -200,7 +197,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/helpers/users/identity_verification_helper_spec.rb'
     - 'ee/spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/validators/schema_validator_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/ci/status/build/manual_spec.rb'
     - 'ee/spec/lib/ee/gitlab/namespace_storage_size_error_message_spec.rb'
     - 'ee/spec/lib/environments/protected_environment_authorization_rule_changes_auditor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/entry/secret_spec.rb'
@@ -263,7 +259,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/requests/api/graphql/mutations/iterations/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/delete_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/update_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/member_role/create_member_role_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/projects/initialize_product_analytics_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/projects/product_analytics_project_settings_update_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/projects/set_compliance_framework_spec.rb'
@@ -490,7 +485,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/lib/gitlab/ci/config/external/file/remote_spec.rb'
     - 'spec/lib/gitlab/ci/config/interpolation/interpolator_spec.rb'
     - 'spec/lib/gitlab/ci/config/yaml/loader_spec.rb'
-    - 'spec/lib/gitlab/ci/status/build/manual_spec.rb'
     - 'spec/lib/gitlab/ci/status/stage/play_manual_spec.rb'
     - 'spec/lib/gitlab/ci/trace/stream_spec.rb'
     - 'spec/lib/gitlab/ci/variables/downstream/generator_spec.rb'

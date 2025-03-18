@@ -11,12 +11,11 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107918
 time_frame:
 - 28d
 - 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-  - i_container_registry_create_repository_user
+events:
+- name: i_container_registry_create_repository_user
+  unique: user.id
 performance_indicator_type: []
 tiers:
 - free

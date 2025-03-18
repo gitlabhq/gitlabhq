@@ -7,8 +7,13 @@ RSpec.describe VsCode::Settings::DeleteService, feature_category: :web_ide do
     let_it_be(:user) { create(:user) }
     let_it_be(:other_user) { create(:user) }
     let_it_be(:setting_one) { create(:vscode_setting, user: user) }
-    let_it_be(:setting_two) { create(:vscode_setting, setting_type: 'extensions', user: user) }
-    let_it_be(:setting_three) { create(:vscode_setting, setting_type: 'extensions', user: other_user) }
+    let_it_be(:setting_two) do
+      create(:vscode_setting, setting_type: 'extensions', settings_context_hash: '1234', user: user)
+    end
+
+    let_it_be(:setting_three) do
+      create(:vscode_setting, setting_type: 'extensions', settings_context_hash: '5678', user: other_user)
+    end
 
     subject { described_class.new(current_user: user).execute }
 

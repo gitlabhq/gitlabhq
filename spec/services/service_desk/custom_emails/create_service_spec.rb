@@ -42,8 +42,8 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
 
         expect(response).to be_error
         expect(response.message).to eq(expected_error_message)
-        expect(project.service_desk_custom_email_verification).to be nil
-        expect(project.service_desk_custom_email_credential).to be nil
+        expect(project.service_desk_custom_email_verification).to be_nil
+        expect(project.service_desk_custom_email_credential).to be_nil
         expect(project.service_desk_setting).to have_attributes(
           custom_email: nil,
           custom_email_enabled: false

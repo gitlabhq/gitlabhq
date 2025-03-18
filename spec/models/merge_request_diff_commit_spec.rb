@@ -24,16 +24,53 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   describe '#to_hash' do
     subject { merge_request.commits.first }
 
-    it 'returns the same results as Commit#to_hash, except for parent_ids' do
-      commit_from_repo = project.repository.commit(subject.sha)
-      commit_from_repo_hash = commit_from_repo.to_hash.merge(parent_ids: [])
+    context 'when disable_message_attribute_on_mr_diff_commits is false' do
+      # Both these feature flags are can interact to suppress display of the message
+      #   attribute. Without disabling both feature flags, we can not prove the
+      #  isolated case of disable_message_attribute_on_mr_diff_commits.
+      #
+      before do
+        stub_feature_flags(disable_message_attribute_on_mr_diff_commits: false)
+        stub_feature_flags(optimized_commit_storage: false)
+      end
 
-      expect(subject.to_hash).to eq(commit_from_repo_hash)
+      it 'returns the same results as Commit#to_hash, except for parent_ids' do
+        commit_from_repo = project.repository.commit(subject.sha)
+        commit_from_repo_hash = commit_from_repo.to_hash.merge(parent_ids: [])
+
+        expect(subject.to_hash).to eq(commit_from_repo_hash)
+      end
+    end
+
+    context 'when disable_message_attribute_on_mr_diff_commits is true' do
+      before do
+        # Strictly speaking, we don't need to set this flag to `true` but let's
+        #   be explicit.
+        #
+        stub_feature_flags(disable_message_attribute_on_mr_diff_commits: true)
+        stub_feature_flags(optimized_commit_storage: false)
+      end
+
+      it 'returns the same results as Commit#to_hash, except for parent_ids and message' do
+        commit_from_repo = project.repository.commit(subject.sha)
+        commit_from_repo_hash = commit_from_repo.to_hash.merge(parent_ids: [], message: "")
+
+        expect(subject.to_hash).to eq(commit_from_repo_hash)
+      end
+    end
+
+    it 'logs the event with the expected info' do
+      expect(Gitlab::AppLogger).to receive(:info).at_least(:once)
+
+      subject.to_hash
     end
   end
 
   describe '.create_bulk' do
+    subject { described_class.create_bulk(merge_request_diff_id, commits, skip_commit_data: skip_commit_data) }
+
     let(:merge_request_diff_id) { merge_request.merge_request_diff.id }
+    let(:skip_commit_data) { false }
     let(:commits) do
       [
         project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e'),
@@ -68,8 +105,6 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       ]
     end
 
-    subject { described_class.create_bulk(merge_request_diff_id, commits) }
-
     it 'inserts the commits into the database en masse' do
       expect(ApplicationRecord).to receive(:legacy_bulk_insert)
         .with(described_class.table_name, rows)
@@ -90,6 +125,19 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
 
       expect(commit_row.commit_author).to eq(commit_user_row)
       expect(commit_row.committer).to eq(commit_user_row)
+    end
+
+    context 'when "skip_commit_data: true"' do
+      let(:skip_commit_data) { true }
+
+      it 'inserts the commits into the database en masse' do
+        rows_with_empty_messages = rows.map { |h| h.merge(message: '') }
+
+        expect(ApplicationRecord).to receive(:legacy_bulk_insert)
+          .with(described_class.table_name, rows_with_empty_messages)
+
+        subject
+      end
     end
 
     context 'with dates larger than the DB limit' do

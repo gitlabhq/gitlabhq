@@ -7,7 +7,7 @@ module API
         class Run < Grape::Entity
           expose :itself, using: RunInfo, as: :info
           expose :data do
-            expose :metrics, using: Metric
+            expose :latest_metrics, as: :metrics, using: Metric
             expose :params, using: KeyValue
             expose :metadata, as: :tags, using: KeyValue
           end

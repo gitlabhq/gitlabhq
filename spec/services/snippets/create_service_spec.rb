@@ -25,6 +25,10 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
 
     let(:snippet) { subject.payload[:snippet] }
 
+    before do
+      create(:organization, :default)
+    end
+
     shared_examples 'a service that creates a snippet' do
       it 'creates a snippet with the provided attributes' do
         expect(snippet.title).to eq(opts[:title])
@@ -118,12 +122,32 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
         expect(blob.data).to eq base_opts[:content]
       end
 
-      it 'passes along correct commit attributes' do
-        expect_next_instance_of(Repository) do |repository|
-          expect(repository).to receive(:commit_files).with(anything, a_hash_including(skip_target_sha: true))
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(commit_files_target_sha: true)
         end
 
-        subject
+        it 'does not pass skip_target_sha' do
+          expect_next_instance_of(Repository) do |repository|
+            expect(repository).to receive(:commit_files).with(anything, hash_excluding(:skip_target_sha))
+          end
+
+          subject
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(commit_files_target_sha: false)
+        end
+
+        it 'passes skip_target_sha as true' do
+          expect_next_instance_of(Repository) do |repository|
+            expect(repository).to receive(:commit_files).with(anything, a_hash_including(skip_target_sha: true))
+          end
+
+          subject
+        end
       end
 
       context 'when repository creation action fails' do

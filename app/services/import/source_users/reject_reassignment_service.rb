@@ -25,6 +25,7 @@ module Import
 
         if reject_successful
           send_user_reassign_rejected_email
+          track_reassignment_event('reject_placeholder_user_reassignment')
 
           ServiceResponse.success(payload: import_source_user)
         else

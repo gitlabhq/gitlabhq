@@ -5,6 +5,9 @@ module Gitlab
     module Group
       class RelationTreeRestorer
         include Gitlab::Utils::StrongMemoize
+        include ::Import::Framework::ProgressTracking
+
+        attr_reader :importable
 
         def initialize( # rubocop:disable Metrics/ParameterLists
           user:,
@@ -38,7 +41,7 @@ module Gitlab
           end
         end
 
-        def restore_single_relation(relation_key)
+        def restore_single_relation(relation_key, extra_track_scope: {})
           # NO-OP. This is currently only available for file-based project import.
         end
 
@@ -86,9 +89,11 @@ module Gitlab
           end
         end
 
-        def process_relation!(relation_key, relation_definition)
+        def process_relation!(relation_key, relation_definition, extra_track_scope: {})
           @relation_reader.consume_relation(@importable_path, relation_key).each do |data_hash, relation_index|
-            process_relation_item!(relation_key, relation_definition, relation_index, data_hash)
+            with_progress_tracking(**progress_tracking_options(relation_key, relation_index, extra_track_scope)) do
+              process_relation_item!(relation_key, relation_definition, relation_index, data_hash)
+            end
           end
         end
 
@@ -365,6 +370,17 @@ module Gitlab
 
         def persist_relation(attributes)
           @relation_factory.create(**attributes)
+        end
+
+        def progress_tracking_options(relation_key, relation_index, extra_track_scope)
+          {
+            scope: {
+              "#{importable_class_sym}_id" => @importable.id,
+              'relation_key' => relation_key,
+              **extra_track_scope
+            },
+            data: relation_index
+          }
         end
       end
     end

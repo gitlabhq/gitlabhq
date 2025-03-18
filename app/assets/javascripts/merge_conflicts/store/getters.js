@@ -72,7 +72,7 @@ export const isReadyToCommit = (state) => {
 
 export const getCommitButtonText = (state) => {
   const initial = s__('MergeConflict|Commit to source branch');
-  const inProgress = s__('MergeConflict|Committing...');
+  const inProgress = s__('MergeConflict|Committing…');
 
   return state.isSubmitting ? inProgress : initial;
 };

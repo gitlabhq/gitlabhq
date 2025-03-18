@@ -1,18 +1,28 @@
-- breadcrumb_title _("Graph")
-- page_title _("Graph"), @ref
+- title = _("Repository graph")
+- breadcrumb_title title
+- page_title title, @ref
 - network_path = project_network_path(@project, @ref, ref_type: @ref_type)
-= render "head"
-.gl-mt-5
-  .project-network.gl-border-1.gl-border-solid.gl-border-gray-300
-    .controls.gl-bg-strong.gl-p-2.gl-text-base.gl-text-subtle.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-300
-      = form_tag network_path, method: :get, class: 'form-inline network-form' do |f|
-        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control gl-form-input input-mx-250 search-sha gl-mr-2'
-        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, icon: 'search', button_options: {'aria-label': _("Search"), 'title': _("Search")})
-        .form-group{ class: 'gl-ml-5 !gl-mb-3' }
+
+.project-network-header.gl-flex.gl-flex-col.gl-overflow-hidden
+  = render ::Layouts::PageHeadingComponent.new(title) do |c|
+    - c.with_description do
+      = _("You can move around the graph by using the arrow keys.")
+
+  .project-network
+    .gl-flex.gl-flex-wrap.gl-items-start.gl-gap-3.gl-p-5.gl-bg-subtle.gl-border-t.gl-border-b
+      .gl-min-w-26
+        #js-graph-ref-switcher{ data: { project_id: @project.id, ref: @ref, network_path: project_network_path(@project, @ref, ref_type: @ref_type) } }
+
+      = form_tag network_path, method: :get, class: 'gl-grow gl-flex gl-flex-wrap gl-gap-3 gl-items-center network-form' do |f|
+        .gl-flex
+          = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control gl-form-input search-sha !gl-rounded-r-none'
+          = render Pajamas::ButtonComponent.new(type: :submit, icon: 'search', button_options: { class: '!gl-rounded-l-none -gl-ml-[1px]', 'aria-label': _("Search"), 'title': _("Search") })
+
+        .gl-mt-3
           = render Pajamas::CheckboxTagComponent.new(name: :filter_ref, checked: @options[:filter_ref]) do |c|
             - c.with_label do
               = _("Begin with the selected commit")
 
     - if @commit
-      .network-graph.gl-bg-white.gl-overflow-scroll.gl-overflow-x-hidden{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
-        = gl_loading_icon(size: 'md', css_class: 'gl-mt-3')
+      .network-graph.gl-overflow-scroll.gl-overflow-x-hidden{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
+        = gl_loading_icon(size: 'md', css_class: 'gl-mt-5')

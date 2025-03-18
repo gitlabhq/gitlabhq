@@ -17,5 +17,5 @@ desired_sharding_key:
         table: packages_debian_project_components
         sharding_key: project_id
         belongs_to: component
-    awaiting_backfill_on_parent: true
 table_size: small
+desired_sharding_key_migration_job_name: BackfillPackagesDebianProjectComponentFilesProjectId

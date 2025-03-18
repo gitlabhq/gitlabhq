@@ -9,7 +9,7 @@ module Types
             graphql_name 'CiCatalogResourceComponentInputType'
             description 'Available input types'
 
-            ::Gitlab::Ci::Config::Interpolation::Inputs.input_types.each do |input_type|
+            ::Ci::PipelineCreation::Inputs::SpecInputs.input_types.each do |input_type|
               value input_type.upcase, description: "#{input_type.capitalize} input", value: input_type
             end
           end

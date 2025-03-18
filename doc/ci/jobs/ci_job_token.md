@@ -19,7 +19,7 @@ is revoked and you cannot use the token anymore.
 
 Use a CI/CD job token to authenticate with certain GitLab features from running jobs.
 The token receives the same access level as the user that triggered the pipeline,
-but has [access to fewer resources](#job-token-feature-access) than a personal access token. A user can cause a job to run
+but has [access to fewer resources](#job-token-access) than a personal access token. A user can cause a job to run
 with an action like pushing a commit, triggering a manual job, or being the owner of a scheduled pipeline.
 This user must have a [role that has the required privileges](../../user/permissions.md#cicd)
 to access the resources.
@@ -31,30 +31,30 @@ If a project is public or internal, you can access some features without being o
 For example, you can fetch artifacts from the project's public pipelines.
 This access can also [be restricted](#limit-job-token-scope-for-public-or-internal-projects).
 
-## Job token feature access
+## Job token access
 
-The CI/CD job token can only access the following features and API endpoints:
+CI/CD job tokens can access the following resources:
 
-| Feature                                                                                               | Additional details |
-|-------------------------------------------------------------------------------------------------------|--------------------|
-| [Container registry API](../../api/container_registry.md)                                             | The token is scoped to the container registry of the job's project only. |
-| [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | The `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) is the CI/CD job token. Both are scoped to the container registry of the job's project only. |
-| [Deployments API](../../api/deployments.md)                                                           | `GET` requests are public by default. |
-| [Environments API](../../api/environments.md)                                                         | `GET` requests are public by default. |
-| [Job artifacts API](../../api/job_artifacts.md#get-job-artifacts)                                     | `GET` requests are public by default. |
-| [API endpoint to get the job of a job token](../../api/jobs.md#get-job-tokens-job)                    | To get the job token's job. |
-| [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                   |         |
-| [Packages API](../../api/packages.md)                                                                 | `GET` requests are public by default. |
-| [Pipeline triggers](../../api/pipeline_triggers.md)                                                   | Used with the `token=` parameter to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api). |
-| [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)              | To update pipeline metadata. |
-| [Release links API](../../api/releases/links.md)                                                      |         |
-| [Releases API](../../api/releases/_index.md)                                                           | `GET` requests are public by default. |
-| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Generates changelog data based on commits in a repository. |
-| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
-| [Terraform plan](../../user/infrastructure/_index.md)                                                  |         |
+| Resource                                                                                              | Notes |
+| ----------------------------------------------------------------------------------------------------- | ----- |
+| [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
+| [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                  | Used to authenticate with the registry. |
+| [Terraform module registry](../../user/packages/terraform_module_registry/_index.md)                  | Used to authenticate with the registry. |
+| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                               | Used by the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files) tool to use secure files in jobs. |
+| [Container registry API](../../api/container_registry.md)                                             | Can authenticate only with the container registry associated with the job's project. |
+| [Deployments API](../../api/deployments.md)                                                           | Can access all endpoints in this API. |
+| [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
+| [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
+| [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access all endpoints in this API. |
+| [Packages API](../../api/packages.md)                                                                 | Can access all endpoints in this API. |
+| [Pipeline trigger tokens API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)         | Can access only the `POST /projects/:id/trigger/pipeline` endpoint. |
+| [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | Can access only the `PUT /projects/:id/pipelines/:pipeline_id/metadata` endpoint. |
+| [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
+| [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
+| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint. |
 
-Other API endpoints are not accessible using a job token. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
-to redesign the feature for more granular control of access permissions.
+An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
+more granular.
 
 ## GitLab CI/CD job token security
 
@@ -135,6 +135,139 @@ To add a group or project to the allowlist:
 1. Input the path to the group or project to add to the allowlist, and select **Add**.
 
 You can also add a group or project to the allowlist [with the API](../../api/graphql/reference/_index.md#mutationcijobtokenscopeaddgrouporproject).
+
+### Auto-populate a project's allowlist
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478540) in GitLab 17.10.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can populate a project's allowlist using the data from the [job token authentication log](#job-token-authentication-log)
+with the UI or a Rake task.
+
+In either case, GitLab uses the authentication log to determine which projects or groups to add to the allowlist
+and adds those entries for you.
+
+This process creates at most 200 entries in the project's allowlist. If more than 200 entries exist in the authentication log,
+it [compacts the allowlist](#allowlist-compaction) to stay under the 200 entry limit.
+
+#### With the UI
+
+{{< history >}}
+
+- Introduced in [GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/498125).
+
+{{< /history >}}
+
+To auto-populate the allowlist through the UI:
+
+1. On the left sidebar, select **Search or go** to and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Job token permissions**.
+1. Select **Add** and choose **All projects in authentication log** from the dropdown list.
+1. A dialog asks you to confirm the action, select **Add entries**.
+
+After the process completes, the allowlist contains the entries from the authentication log.
+If not already set, the **Authorized groups and projects** is set to **Only this project and any groups and projects in the allowlist**.
+
+#### With a Rake task
+
+GitLab administrators with [rails console access](../../administration/operations/rails_console.md)
+can run a Rake task to auto-populate the allowlist for all or a subset of projects on an instance.
+This task also sets the **Authorized groups and projects** setting to **Only this project and any groups and projects in the allowlist**.
+
+The `ci:job_tokens:allowlist:autopopulate_and_enforce` Rake task has the following configuration options:
+
+- `PREVIEW`: Do a dry run and output the steps that would have been taken, but do not change any data.
+- `ONLY_PROJECT_IDS`: Do the migration for only the supplied project IDs (maximum of 1000 IDs).
+- `EXCLUDE_PROJECT_IDS`: Do the migration for all projects on the instance, except
+  for the supplied project IDs (maximum of 1000 IDs).
+
+`ONLY_PROJECT_IDS` and `EXCLUDE_PROJECT_IDS` cannot be used at the same time.
+
+For example:
+
+- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true ONLY_PROJECT_IDS=2,3`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true EXCLUDE_PROJECT_IDS=2,3`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce ONLY_PROJECT_IDS=2,3`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce EXCLUDE_PROJECT_IDS=2,3`
+
+To run the Rake task for:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake ci:job_tokens:allowlist:autopopulate_and_enforce
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake ci:job_tokens:allowlist:autopopulate_and_enforce
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+#### Allowlist compaction
+
+The allowlist compaction algorithm:
+
+1. Scans the authorization log to identify the nearest common groups for projects.
+1. Consolidates multiple project-level entries into single group-level entries.
+1. Updates the allowlist with these consolidated entries.
+
+For example, with an allowlist similar to:
+
+```plaintext
+group1/group2/group3/project1
+group1/group2/group3/project2
+group1/group2/group4/project3
+group1/group2/group4/project4
+group1/group5/group6/project5
+```
+
+The compaction algorithm:
+
+1. Compacts the list to:
+
+   ```plaintext
+   group1/group2/group3
+   group1/group2/group4
+   group1/group2/group6
+   ```
+
+1. If the allowlist is over the 200 entry limit, the algorithm compacts again:
+
+   ```plaintext
+   group1/group2
+   group1/group5
+   ```
+
+1. If the allowlist is still over the 200 entry limit, the algorithm continues:
+
+   ```plaintext
+   group1
+   ```
+
+This process is performed until the number of allowlist entries is 200 or fewer.
 
 ### Limit job token scope for public or internal projects
 
@@ -253,6 +386,10 @@ cannot push to the repository in your project.
 You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-a-project)
 parameter in the `projects` REST API endpoint.
 
+## Fine-grained permissions for job tokens
+
+Fine-grained permissions for job tokens are an [experiment](../../policy/development_stages_support.md#experiment). For information on this feature and the available resources, see [Fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+
 ## Use a job token
 
 ### To `git clone` a private project's repository
@@ -348,6 +485,25 @@ The authentication log displays a maximum of 100 authentication events. If the n
 is more than 100, download the CSV file to view the log.
 
 New authentications to a project can take up to 5 minutes to appear in the authentication log.
+
+## Use legacy format for CI/CD tokens
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/514860) in GitLab 17.10.
+
+{{< /history >}}
+
+Beginning in GitLab 18.0, CI/CD job tokens use the JWT standard by default. All new projects created after February 21, 2025 on GitLab.com or from 17.10 on GitLab Self-Managed use this standard. Existing projects can continue to use the legacy format by configuring the top-level group for their project. This setting is only available until the GitLab 18.3 release.
+
+To use the legacy format for your CI/CD tokens:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Turn off **Enable JWT format for CI/CD job tokens**.
+
+Your CI/CD tokens now use the legacy format. If you want to use the JWT format again later, you can re-enable this setting.
 
 ## Troubleshooting
 

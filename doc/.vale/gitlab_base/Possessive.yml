@@ -8,7 +8,7 @@ extends: existence
 message: "Remove 's from %s."
 level: error
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#gitlab
 vocab: false
 tokens:
   - GitLab's

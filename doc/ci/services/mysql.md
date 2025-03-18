@@ -80,7 +80,7 @@ GitLab Runner with the Shell executor.
 
    {{< alert type="note" >}}
 
-As a security measure, you can run `mysql_secure_installation` to
+   As a security measure, you can run `mysql_secure_installation` to
    remove anonymous users, drop the test database, and disable remote logins by
    the root user.
 

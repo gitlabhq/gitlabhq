@@ -49,12 +49,18 @@ Using the `:latest` tag is **not recommended** as it can cause incompatibility i
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
-    ```
+   ```
 
    Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.9.0`, use `self-hosted-v17.9.0-ee`.
-   From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
+   From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
-1. Ensure that port `5052` is forwarded to the container from the host and is included in the `AI_GATEWAY_URL` environment variable.
+1. Ensure that port `5052` is forwarded to the container from the host and configure the AI gateway URL through the [Rails console](../administration/operations/rails_console.md):
+
+   ```ruby
+   Ai::Setting.instance.update!(ai_gateway_url: 'http://ai-gateway-host.example.com:5052')
+   ```
+
+   You should configure the URL this way because the URL is stored in the database, and you can then manage it through the Admin area. Although the `AI_GATEWAY_URL` environment variable is still supported for legacy reasons, using the database setting is preferred for better configuration management.
 
 If you encounter issues loading the PEM file, resulting in errors like `JWKError`, you may need to resolve an SSL certificate error.
 
@@ -79,7 +85,7 @@ For more information, see [Test the GitLab chart on GKE or EKS](https://docs.git
 
 ### Add the AI gateway Helm repository
 
-Add the AI gateway Helm repository to Helm’s configuration:
+Add the AI gateway Helm repository to the Helm configuration:
 
 ```shell
 helm repo add ai-gateway \
@@ -181,7 +187,7 @@ sudo gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 Ensure that:
 
-- The environment variable `AI_GATEWAY_URL` is correctly set.
+- The AI gateway URL is correctly configured (through `Ai::Setting.instance.ai_gateway_url`).
 - Duo access has been explicitly enabled for the root user through `/admin/code_suggestions`.
 
 If access issues persist, check that authentication is correctly configured, and that the health check passes.
@@ -194,7 +200,7 @@ These tests are performed for offline environments:
 
 | Test | Description |
 |-----------------|-------------|
-| Network | Tests whether: <br>- The environment variable `AI_GATEWAY_URL` has been set to a valid URL.<br> - Your instance can connect to the URL specified by `AI_GATEWAY_URL`.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../user/gitlab_duo/setup.md). |
+| Network | Tests whether: <br>- The AI gateway URL has been properly configured in the database through the `ai_settings` table.<br> - Your instance can connect to the configured URL.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../user/gitlab_duo/setup.md). Although the environment variable `AI_GATEWAY_URL` is still supported for legacy compatibility, configuring the URL through the database is recommended for better manageability. |
 | License | Tests whether your license has the ability to access Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
@@ -274,10 +280,53 @@ You can deploy a single AI gateway to support multiple GitLab instances, or depl
 
 ## Co-locate your AI gateway and instance
 
-The AI gateway is available in multiple regions globally to ensure optimal performance for users regardless of location, through: 
+The AI gateway is available in multiple regions globally to ensure optimal performance for users regardless of location, through:
 
 - Improved response times for Duo features.
 - Reduced latency for geographically distributed users.
 - Data sovereignty requirements compliance.
 
 You should locate your AI gateway in the same geographic region as your GitLab instance to help provide a frictionless developer experience, particularly for latency-sensitive features like Code Suggestions.
+
+## Troubleshooting
+
+### OpenShift Permission Issues
+
+When deploying the AI gateway on OpenShift, you might encounter permission errors due to OpenShift's security model.
+
+By default, the AI Gateway uses `/home/aigateway/.hf` for caching HuggingFace models, which may not be writable in OpenShift's
+security-restricted environment. This can result in permission errors like:
+
+```shell
+[Errno 13] Permission denied: '/home/aigateway/.hf/...'
+```
+
+To resolve this, set the `HF_HOME` environment variable to a writable location. You can use `/var/tmp/huggingface` or any other directory that is writable by the container.
+
+You can configure this in either of the following ways:
+
+- Add to your `values.yaml`:
+
+  ```yaml
+  extraEnvironmentVariables:
+    - name: HF_HOME
+      value: /var/tmp/huggingface  # Use any writable directory
+  ```
+
+- Or include in your Helm upgrade command:
+
+  ```shell
+  --set "extraEnvironmentVariables[0].name=HF_HOME" \
+  --set "extraEnvironmentVariables[0].value=/var/tmp/huggingface"  # Use any writable directory
+  ```
+
+This configuration ensures the AI Gateway can properly cache HuggingFace models while respecting OpenShift's security constraints. The exact directory you choose may depend on your specific OpenShift configuration and security policies.
+
+### Self-signed certificate error
+
+A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI gateway
+when the gateway tries to connect to a GitLab instance using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate:
+
+- The use of custom CA certificates in the Helm chart configuration when deploying the AI gateway is not supported. For more information, see [issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3). Use the [workaround](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3#workaround) detailed in this issue.
+
+- The use of a self-signed certificate by the GitLab instance is not supported. For more information, see [issue 799](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/799).

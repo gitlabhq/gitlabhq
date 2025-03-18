@@ -703,6 +703,7 @@ describe('Actions Notes Store', () => {
         },
         [{ type: mutationTypes.UPDATE_DISCUSSION, payload: discussion }],
         [
+          { type: 'updateOrCreateNotes', payload: [] },
           { type: 'updateMergeRequestWidget' },
           { type: 'startTaskList' },
           { type: 'updateResolvableDiscussionsCounts' },

@@ -113,13 +113,13 @@ Messages in the API (`lib/api/` or `app/graphql`) do not need to be externalized
 
 Given the following content in HAML:
 
-```haml
+```ruby
 %h1 Hello world!
 ```
 
 You can mark that content for translation with:
 
-```haml
+```ruby
 %h1= _("Hello world!")
 ```
 

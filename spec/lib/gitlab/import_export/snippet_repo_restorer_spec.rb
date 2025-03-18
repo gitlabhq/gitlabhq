@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
+RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, namespace: user.namespace) }
@@ -107,6 +107,29 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
 
         expect(restorer.restore).to be_truthy
         expect(snippet.snippet_repository.shard_name).to eq 'picked'
+      end
+
+      describe 'progress tracking' do
+        it 'tracks processed repo' do
+          restorer.restore
+
+          expect(
+            restorer.processed_entry?(
+              scope: { project_id: project.id },
+              data: snippet.id
+            )
+          ).to be(true)
+        end
+
+        context 'when repo is already processed' do
+          it 'does not process repo again' do
+            restorer.restore
+
+            expect(restorer).not_to receive(:save_processed_entry)
+
+            restorer.restore
+          end
+        end
       end
     end
 

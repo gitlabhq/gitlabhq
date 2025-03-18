@@ -1,6 +1,3 @@
-include:
-  - local: .gitlab/ci/rules.gitlab-ci.yml
-
 # FF changes
 .feature-flags-set: &feature-flags-set
   if: $FEATURE_FLAGS =~ /enabled|disabled/
@@ -24,11 +21,11 @@ include:
   if: '$SKIP_OMNIBUS_TRIGGER == "true"'
   when: never
 
-# Selective test execution against omnibus instance have following execution scenarios:
-#   * only e2e spec files changed - runs only changed specs
-#   * qa framework changes - runs full test suite
-#   * feature flag changed - runs full test suite with base gitlab instance configuration with both ff states
-#   * quarantined e2e spec - skips execution of e2e tests by creating a no-op pipeline
+.mr-code-patterns: &mr-code-patterns
+  if: $MR_CODE_PATTERNS == "true"
+
+.mr-stable-branch-code-patterns: &mr-stable-branch-code-patterns
+  if: $MR_STABLE_BRANCH_CODE_PATTERNS == "true"
 
 # ------------------------------------------
 # Prepare
@@ -88,8 +85,20 @@ include:
       when: never
     # update jobs are only relevant in testing app updates that can be affected by code changes only
     # by checking code patterns, skip running job on changes that can't affect the outcome
-    - !reference [.qa:rules:code-merge-request, rules]
+    - *mr-code-patterns
     - *default-branch
+    - *mr-stable-branch-code-patterns
+
+.rules:test:update-patch:
+  rules:
+    # skip upgrade jobs if gitlab version is not in semver compatible format
+    # these jobs need gitlab version because we can't reliably detect it from just the image
+    - if: $GITLAB_SEMVER_VERSION !~ /^\d+\.\d+\.\d+/
+      when: never
+    # update jobs are only relevant in testing app updates that can be affected by code changes only
+    # by checking code patterns, skip running job on changes that can't affect the outcome
+    # subset of update jobs only applicable for backport MRs to verify patch upgrade paths
+    - *mr-stable-branch-code-patterns
 
 .rules:test:never-schedule-pipeline:
   rules:
@@ -104,6 +113,19 @@ include:
     - if: '$CI_PROJECT_NAME == "omnibus-gitlab" && $PIPELINE_TYPE =~ /TRIGGERED_(CE|EE)_PIPELINE/ && $QA_OMNIBUS_MR_TESTS == "except-smoke"'
       variables:
         QA_RSPEC_TAGS: "--tag ~smoke --tag ~orchestrated --tag ~skip_live_env"
+
+.rules:test:dependency-update:
+  rules:
+    - if: '$DEPENDENCY_UPDATE == "true"'
+
+.rules:test:dependency-update-never:
+  rules:
+    - if: '$DEPENDENCY_UPDATE == "true"'
+      when: never
+
+.rules:test:mr-code-patterns:
+  rules:
+    - *mr-code-patterns
 
 # ------------------------------------------
 # Report

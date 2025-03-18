@@ -79,7 +79,11 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 ### Run a pipeline manually
 
-> - **Run pipeline** name [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+{{< history >}}
+
+- **Run pipeline** name [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+
+{{< /history >}}
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/_index.md).
 
@@ -137,9 +141,9 @@ In this example:
 
 {{< alert type="note" >}}
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_pipelines.md) can have prefilled variables not appear
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/compliance/compliance_pipelines.md) can have prefilled variables not appear
 when running a pipeline manually. To workaround this issue,
-[change the compliance pipeline configuration](../../user/group/compliance_pipelines.md#prefilled-variables-are-not-shown).
+[change the compliance pipeline configuration](../../user/compliance/compliance_pipelines.md#prefilled-variables-are-not-shown).
 
 {{< /alert >}}
 
@@ -212,7 +216,7 @@ For example, your pipeline can start automatically, but require a manual action 
 [deploy to production](../environments/deployments.md#configure-manual-deployments).
 In the example below, the `production` stage has a job with a manual action:
 
-![Pipelines example](img/manual_job_v17_9.png)
+![Pipeline graph that shows four stages: build, test, canary, and production. First three stages show completed jobs with green checkmarks, while production stage shows a pending deploy job.](img/manual_job_v17_9.png)
 
 #### Start all manual jobs in a stage
 

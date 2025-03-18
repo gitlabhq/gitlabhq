@@ -1,14 +1,16 @@
 import '~/webpack';
-
 import gitlabLogo from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?raw';
 import { gql } from '@apollo/client';
 import { GraphiQL } from 'graphiql';
 /* eslint-disable no-restricted-imports */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { Mousetrap } from '~/lib/mousetrap';
 import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 /* eslint-enable no-restricted-imports */
 import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
+import { keysFor, TOGGLE_PERFORMANCE_BAR } from '~/behaviors/shortcuts/keybindings';
+import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 
 const apolloClient = createDefaultClient(
   {},
@@ -107,3 +109,5 @@ function apolloFetcher(graphQLParams, { headers }) {
 createRoot(graphiqlContainer).render(
   React.createElement(GraphiQL, { defaultQuery, fetcher: apolloFetcher }, GraphiQLLogo),
 );
+
+Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);

@@ -25,7 +25,7 @@ For more information, see the [Value Stream Management category direction page](
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
 The centralized UI in the Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
-The Value Streams Dashboard includes [panels](#value-streams-dashboard-panels) that visualize the following metrics:
+The Value Streams Dashboard includes panels that visualize the following metrics:
 
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/_index.md)
@@ -55,11 +55,11 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 {{< /alert >}}
 
-## Value Streams Dashboard panels
+## Panels
 
-The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
+The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-dashboard-panels).
 
-### Overview panel
+### Overview
 
 {{< history >}}
 
@@ -90,7 +90,7 @@ To view metrics on the Overview panel, the [background aggregation](#enable-or-d
 
 {{< /alert >}}
 
-### DevSecOps metrics comparison panels
+### DevSecOps metrics comparison
 
 {{< history >}}
 
@@ -120,7 +120,7 @@ The sparkline for the past six months represents value trends over this time per
 The sparkline color ranges from blue to green, where green indicates a positive trend, and blue indicates a negative trend.
 Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
 
-#### Filter a DevSecOps metrics comparison panel by labels
+#### Filter panels by label
 
 Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
 If a comparison panel from the configuration file is enabled with `filters.labels`, the drill-down links inherit the labels from the panel filter.
@@ -143,7 +143,7 @@ Only labels that exactly match the specified filters are applied.
 
 {{< /alert >}}
 
-### DORA Performers score panel
+### DORA Performers score
 
 {{< history >}}
 
@@ -175,7 +175,7 @@ For example, if a project has a high score for deployment frequency (velocity), 
 
 To learn more, see the blog post [Inside DORA Performers score in GitLab Value Streams Dashboard](https://about.gitlab.com/blog/2024/01/18/inside-dora-performers-score-in-gitlab-value-streams-dashboard/).
 
-#### Filter the DORA Performers score by project topics
+#### Filter the panel by project topic
 
 When you customize dashboards with a YAML configuration,
 you can filter the displayed projects by assigned [topics](../project/project_topics.md).
@@ -240,13 +240,15 @@ To retrieve aggregated usage counts in the group, use the [GraphQL API](../../ap
 
 ## View the Value Streams Dashboard
 
+### For groups
+
 Prerequisites:
 
 - You must have at least the Reporter role for the group.
 - Overview background aggregation for Value Streams Dashboards must be enabled.
 - To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
-To view the Value Streams Dashboard:
+To view the Value Streams Dashboard for a group:
 
 - From Analytics Dashboards:
 
@@ -260,7 +262,7 @@ To view the Value Streams Dashboard:
   1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
   1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
-### View the Value Streams Dashboard for a project
+### For projects
 
 {{< history >}}
 
@@ -280,7 +282,7 @@ To view the Value Streams Dashboard as an analytics dashboard for a project:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
-### Schedule Value Streams Dashboard reports
+## Schedule reports
 
 You can schedule reports using the CI/CD component
 [Value Streams Dashboard Scheduled Reports tool](https://gitlab.com/components/vsd-reports-generator).
@@ -294,7 +296,7 @@ The issue includes a comparison metrics table in Markdown format.
 
 See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report). To learn more, see the blog post [New Scheduled Reports Generation tool simplifies value stream management](https://about.gitlab.com/blog/2024/06/20/new-scheduled-reports-generation-tool-simplifies-value-stream-management/).
 
-## Customize the dashboard panels
+## Customize dashboard panels
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
@@ -460,7 +462,7 @@ Filters for the `usage_overview` visualization.
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/_index.md) | `vulnerability_critical` |
 | High vulnerabilities over time | High vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/_index.md) | `vulnerability_high` |
 
-## Value Streams Dashboard metrics with Jira
+## Metrics with Jira
 
 The following metrics do not depend on using Jira:
 

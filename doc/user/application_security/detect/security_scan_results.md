@@ -47,8 +47,6 @@ Security scans produce at least one of these [CI `artifacts:reports` types](../.
 - `artifacts:reports:sast`
 - `artifacts:reports:secret_detection`
 
-In the Free tier, the reports above aren't parsed by GitLab. As a result, the widget does not change based on the results of the security scans.
-
 ### Ultimate
 
 A merge request contains a security widget which displays a summary of the _new_ results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the commit when the feature branch was created from the target branch.

@@ -233,7 +233,7 @@ analysis.
 Example of what the Job Summary output looks like:
 
 ```plaintext
-# ... job output ... #
+# Job output #
 
 [=== libbehave: New packages detected ===]
 🔺 4 new packages have been detected in this MR.

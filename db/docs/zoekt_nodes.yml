@@ -8,6 +8,5 @@ description: Describes a Zoekt server that will be used for indexing and search 
   some configured namespaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134901
 milestone: '16.6'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 table_size: small

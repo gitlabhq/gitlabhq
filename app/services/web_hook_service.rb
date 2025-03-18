@@ -35,7 +35,7 @@ class WebHookService
   RESPONSE_BODY_SIZE_LIMIT = 8.kilobytes
   # The headers are for debugging purpose. They are displayed on the UI only.
   RESPONSE_HEADERS_COUNT_LIMIT = 50
-  RESPONSE_HEADERS_SIZE_LIMIT = 1.kilobytes
+  RESPONSE_HEADERS_SIZE_LIMIT = 1.kilobyte
 
   CUSTOM_TEMPLATE_INTERPOLATION_REGEX = /{{(.+?)}}/
 

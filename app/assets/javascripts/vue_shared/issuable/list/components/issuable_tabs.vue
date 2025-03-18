@@ -50,6 +50,7 @@ export default {
 
 <template>
   <div class="top-area">
+    <slot name="title"></slot>
     <gl-tabs
       class="mobile-separator issuable-state-filters gl-m-0 gl-flex gl-grow gl-p-0"
       nav-class="gl-border-b-0"

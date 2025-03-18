@@ -3,16 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Work items list filters', :js, feature_category: :team_planning do
-  include WorkItemFeedbackHelpers
   include FilteredSearchHelpers
 
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:sub_group) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, :public, group: group, developers: [user1, user2]) }
-  let_it_be(:sub_group_project) { create(:project, :public, group: sub_group, developers: [user1, user2]) }
 
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
@@ -37,7 +34,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
   end
 
   let_it_be(:task) do
-    create(:work_item, :task, project: sub_group_project,
+    create(:work_item, :task, project: project,
       assignees: [user2],
       author: user2,
       confidential: true,
@@ -50,8 +47,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
     before do
       sign_in(user1)
       visit group_work_items_path(group)
-
-      close_work_item_feedback_popover_if_present
     end
 
     describe 'assignee' do
@@ -134,15 +129,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
         expect(page).to have_css('.issue', count: 2)
         expect(page).to have_link(incident.title)
         expect(page).to have_link(issue.title)
-      end
-    end
-
-    describe 'group' do
-      it 'filters', :aggregate_failures do
-        select_tokens 'Group', sub_group.name, submit: true
-
-        expect(page).to have_css('.issue', count: 1)
-        expect(page).to have_link(task.title)
       end
     end
 

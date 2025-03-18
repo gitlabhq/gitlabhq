@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Using `ReactiveCaching`
 ---
 
-> - This doc refers to [`reactive_caching.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/reactive_caching.rb).
+This doc refers to [`reactive_caching.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/reactive_caching.rb).
 
 The `ReactiveCaching` concern is used for fetching some data in the background and storing it
 in the Rails cache, keeping it up-to-date for as long as it is being requested. If the

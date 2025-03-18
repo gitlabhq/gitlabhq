@@ -112,14 +112,22 @@ export default {
     filteredPods() {
       return this.k8sPods.filter((pod) => {
         const matchesStatus = !this.statusFilter || pod.status === this.statusFilter;
-        const matchesSearch = !this.podsSearch || pod.name.includes(this.podsSearch);
+        const matchesSearch = !this.podsSearch || this.search(this.podsSearch, pod.name);
         return matchesStatus && matchesSearch;
       });
     },
   },
   methods: {
+    search(searchTerm, podName) {
+      return podName.includes(searchTerm);
+    },
     countPodsByPhase(phase) {
-      const filteredPods = this.k8sPods?.filter((item) => item.status === phase) || [];
+      const pods = this.k8sPods || [];
+      const filteredPods = pods.filter((item) => {
+        const matchesPhase = item.status === phase;
+        if (!this.podsSearch) return matchesPhase;
+        return matchesPhase && this.search(this.podsSearch, item.name);
+      });
 
       const hasFailedState = Boolean(phase === STATUS_FAILED && filteredPods.length);
       this.$emit('update-failed-state', { pods: hasFailedState });
@@ -155,8 +163,6 @@ export default {
     <gl-loading-icon v-if="loading" />
 
     <template v-else-if="!error">
-      <workload-stats v-if="podStats" :stats="podStats" class="gl-mt-3" @select="filterPods" />
-
       <gl-search-box-by-type
         v-model.trim="podsSearch"
         :placeholder="$options.i18n.searchPlaceholder"
@@ -172,6 +178,8 @@ export default {
           <template #status>{{ statusFilter }}</template>
         </gl-sprintf>
       </div>
+
+      <workload-stats v-if="podStats" :stats="podStats" class="gl-mt-3" @select="filterPods" />
 
       <workload-table
         v-if="k8sPods"

@@ -15,11 +15,6 @@ export default {
       type: [String, Number],
       required: true,
     },
-    canUpdate: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
     titleHtml: {
       type: String,
       required: true,

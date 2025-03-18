@@ -42,7 +42,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
-  condition(:create_projects_disabled, scope: :subject) do
+  condition(:create_projects_disabled) do
     next true if @user.nil?
 
     visibility_levels = if @user.can_admin_all_resources?
@@ -59,7 +59,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Group.prevent_project_creation?(user, @subject.project_creation_level) || allowed_visibility_levels.empty?
   end
 
-  condition(:create_subgroup_disabled, scope: :subject) do
+  condition(:create_subgroup_disabled) do
     Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
   end
 
@@ -72,7 +72,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:developer_project_creation_level, scope: :subject) do
-    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
   end
 
   condition(:maintainer_can_create_group, scope: :subject) do

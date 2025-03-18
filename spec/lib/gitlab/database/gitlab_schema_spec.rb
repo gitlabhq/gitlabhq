@@ -10,6 +10,21 @@ RSpec.shared_examples 'validate schema data' do |tables_and_views|
 end
 
 RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
+  describe 'lock_gitlab_schemas for main and related databases' do
+    it 'all gitlab_schema is locked in other database_connections', :aggregate_failures do
+      database_connections = Gitlab::Database.all_database_connections
+        .select { |_, db| db.name == :main || db.fallback_database == :main }
+        .values
+
+      database_connections.permutation(2) do |db, other_db|
+        gitlab_schemas = db.gitlab_schemas - [:gitlab_shared, :gitlab_internal]
+
+        expect(other_db.lock_gitlab_schemas).to include(*gitlab_schemas),
+          "Expected `#{other_db.name}` lock_gitlab_schemas to include `#{db.name}` gitlab_schemas:"
+      end
+    end
+  end
+
   shared_examples 'maps table name to table schema' do
     using RSpec::Parameterized::TableSyntax
 

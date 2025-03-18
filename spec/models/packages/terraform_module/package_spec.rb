@@ -10,6 +10,10 @@ RSpec.describe Packages::TerraformModule::Package, type: :model, feature_categor
     end
   end
 
+  describe 'nested attributes' do
+    it { is_expected.to accept_nested_attributes_for(:terraform_module_metadatum) }
+  end
+
   describe 'validations' do
     describe '#name' do
       subject { build_stubbed(:terraform_module_package) }

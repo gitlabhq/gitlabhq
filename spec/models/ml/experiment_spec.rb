@@ -86,7 +86,7 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
     context 'if does not exist' do
       let(:iid) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

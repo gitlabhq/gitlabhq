@@ -41,7 +41,7 @@ Note: Please make sure to run the chatops commands in the Slack channel that get
       - test kicked off: `Feature flag <feature-flag-name> has been set to true on **gstg**`
       - test result: `This pipeline was triggered due to toggling of <feature-flag-name> feature flag`
 
-For assistance with end-to-end test failures, please reach out via the [`#test-platform` Slack channel](https://gitlab.slack.com/archives/C3JJET4Q6). Note that end-to-end test failures on `staging-ref` [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).
+For assistance with end-to-end test failures, please reach out via the [`#s_developer_experience` Slack channel](https://gitlab.enterprise.slack.com/archives/C07TWBRER7H). Note that end-to-end test failures on `staging-ref` [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).
 
 ### Specific rollout on production
 
@@ -154,6 +154,7 @@ or use the checklist below in this same issue.
 
 /label <group-label>
 /label ~"feature flag"
+/relate <feature-issue-link>
 <!-- Uncomment the appropriate type label
 /label ~"type::feature" ~"feature::addition"
 /label ~"type::maintenance"

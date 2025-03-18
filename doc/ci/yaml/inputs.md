@@ -454,7 +454,7 @@ when you include the file. For example:
 include:
   - component: $CI_SERVER_FQDN/project/path/component@1.0.0
     inputs:
-      test_job_needs: [ my-other-job ]
+      test_job_needs: [my-other-job]
 
 my-other-job:
   script:
@@ -516,7 +516,7 @@ The format supported is the following:
 $[[ input.input-id | <function1> | <function2> | ... <functionN> ]]
 ```
 
-Details:
+With functions:
 
 - Only [predefined interpolation functions](#predefined-interpolation-functions) are permitted.
 - A maximum of 3 functions may be specified in a single interpolation block.

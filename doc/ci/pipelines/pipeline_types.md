@@ -27,6 +27,7 @@ These types of pipelines all appear on the **Pipelines** tab of a merge request.
 Your pipeline can run every time you commit changes to a branch.
 
 This type of pipeline is called a *branch pipeline*.
+They display a `branch` label in pipeline lists.
 
 This pipeline runs by default. No configuration is required.
 
@@ -43,6 +44,7 @@ Branch pipelines:
 A pipeline can run every time you create or push a new [tag](../../user/project/repository/tags/_index.md).
 
 This type of pipeline is called a *tag pipeline*.
+They display a `tag` label in pipeline lists.
 
 This pipeline runs by default. No configuration is required.
 
@@ -60,6 +62,7 @@ Instead of a branch pipeline, you can configure your pipeline to run every time 
 source branch in a merge request.
 
 This type of pipeline is called a *merge request pipeline*.
+They display a `merge request` label in pipeline lists.
 
 Merge request pipelines do not run by default. You must configure
 the jobs in the `.gitlab-ci.yml` file to run as merge request pipelines.

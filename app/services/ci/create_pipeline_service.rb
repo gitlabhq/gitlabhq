@@ -18,6 +18,7 @@ module Ci
       Gitlab::Ci::Pipeline::Chain::Skip,
       Gitlab::Ci::Pipeline::Chain::Config::Content,
       Gitlab::Ci::Pipeline::Chain::Config::Process,
+      Gitlab::Ci::Pipeline::Chain::StopLinting,
       Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig,
       Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
       Gitlab::Ci::Pipeline::Chain::SeedBlock,
@@ -62,7 +63,12 @@ module Ci
     #
     # @return [Ci::Pipeline]                                  The created Ci::Pipeline object.
     # rubocop: disable Metrics/ParameterLists, Metrics/AbcSize
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, bridge: nil, **options, &block)
+    def execute(
+      source,
+      ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil,
+      external_pull_request: nil, bridge: nil, inputs: {},
+      **options, &block
+    )
       @logger = build_logger
       @command_logger = Gitlab::Ci::Pipeline::CommandLogger.new
       @pipeline = Ci::Pipeline.new
@@ -92,10 +98,10 @@ module Ci
         bridge: bridge,
         logger: @logger,
         partition_id: params[:partition_id],
+        inputs: ::Feature.enabled?(:ci_inputs_for_pipelines, project) ? inputs : {},
         **extra_options(**options))
 
-      # Ensure we never persist the pipeline when dry_run: true
-      @pipeline.readonly! if command.dry_run?
+      @pipeline.readonly! if command.readonly?
 
       Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
@@ -154,8 +160,8 @@ module Ci
     # :nocov:
     # rubocop:enable Gitlab/NoCodeCoverageComment
 
-    def extra_options(content: nil, dry_run: false)
-      { content: content, dry_run: dry_run }
+    def extra_options(content: nil, dry_run: false, linting: false)
+      { content: content, dry_run: dry_run, linting: linting }
     end
 
     def build_logger

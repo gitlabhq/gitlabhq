@@ -148,7 +148,7 @@ record. For example:
 | `max_replica_pools`  | The maximum number of replicas each Rails process connects to. This is useful if you run a lot of Postgres replicas and a lot of Rails processes because without this limit every Rails process connects to every replica by default. The default behavior is unlimited if not set. | nil     |
 
 If `record_type` is set to `SRV`, then GitLab continues to use round-robin algorithm
-and ignores the `weight` and `priority` in the record. Since `SRV` records usually
+and ignores the `weight` and `priority` in the record. Because `SRV` records usually
 return hostnames instead of IPs, GitLab needs to look for the IPs of returned hostnames
 in the additional section of the `SRV` response. If no IP is found for a hostname, GitLab
 needs to query the configured `nameserver` for `ANY` record for each such hostname looking for `A` or `AAAA`

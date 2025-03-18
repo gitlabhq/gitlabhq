@@ -1,3 +1,4 @@
+// Fixture located at spec/frontend/fixtures/pipeline_details.rb
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { unwrapPipelineData } from '~/ci/pipeline_details/graph/utils';
 import {

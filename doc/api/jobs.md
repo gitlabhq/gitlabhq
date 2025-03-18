@@ -41,10 +41,12 @@ GET /projects/:id/jobs
 | `scope`   | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
-curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running"
+curl --globoff \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running"
 ```
 
-Example of response
+Example of response:
 
 ```json
 [
@@ -230,10 +232,12 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 | `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running"
+curl --globoff \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running"
 ```
 
-Example of response
+Example of response:
 
 ```json
 [
@@ -409,10 +413,12 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 | `scope`       | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/6/bridges?scope[]=pending&scope[]=running"
+curl --globoff \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/6/bridges?scope[]=pending&scope[]=running"
 ```
 
-Example of response
+Example of response:
 
 ```json
 [
@@ -496,12 +502,19 @@ GET /job
 Examples (must run as part of the [`script`](../ci/yaml/_index.md#script) section of a [CI/CD job](../ci/jobs/_index.md)):
 
 ```shell
-curl --header "Authorization: Bearer $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
-curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
-curl "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
+# Option 1
+curl --header "Authorization: Bearer $CI_JOB_TOKEN" \
+  --url "${CI_API_V4_URL}/job"
+
+# Option 2
+curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+  --url "${CI_API_V4_URL}/job"
+
+# Option 3
+curl --url "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
 ```
 
-Example of response
+Example of response:
 
 ```json
 {
@@ -583,8 +596,12 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "JOB-TOKEN: <CI_JOB_TOKEN>" "https://gitlab.example.com/api/v4/job/allowed_agents"
-curl "https://gitlab.example.com/api/v4/job/allowed_agents?job_token=<CI_JOB_TOKEN>"
+# Option 1
+curl --header "JOB-TOKEN: <CI_JOB_TOKEN>" \
+  --url "https://gitlab.example.com/api/v4/job/allowed_agents"
+
+# Option 2
+curl --url "https://gitlab.example.com/api/v4/job/allowed_agents?job_token=<CI_JOB_TOKEN>"
 ```
 
 Example response:
@@ -638,7 +655,7 @@ Example response:
 
 ## Get a single job
 
-Get a single job of a project
+Get a single job of a project.
 
 ```plaintext
 GET /projects/:id/jobs/:job_id
@@ -650,10 +667,11 @@ GET /projects/:id/jobs/:job_id
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/8"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/8"
 ```
 
-Example of response
+Example of response:
 
 ```json
 {
@@ -721,7 +739,7 @@ Example of response
 
 ## Get a log file
 
-Get a log (trace) of a specific job of a project:
+Get a log (trace) of a specific job of a project.
 
 ```plaintext
 GET /projects/:id/jobs/:job_id/trace
@@ -733,7 +751,9 @@ GET /projects/:id/jobs/:job_id/trace
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
-curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
+curl --location \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
 ```
 
 Possible response status codes:
@@ -745,7 +765,7 @@ Possible response status codes:
 
 ## Cancel a job
 
-Cancel a single job of a project
+Cancel a single job of a project.
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/cancel
@@ -755,12 +775,15 @@ POST /projects/:id/jobs/:job_id/cancel
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
+| `force`   | boolean        | No       | [Forces cancellation](../ci/jobs/job_logs.md#force-cancel-a-job) of a job in `canceling` state when set to `true`. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/1/cancel"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/1/cancel"
 ```
 
-Example of response
+Example of response:
 
 ```json
 {
@@ -813,10 +836,12 @@ POST /projects/:id/jobs/:job_id/retry
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/1/retry"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/1/retry"
 ```
 
-Example of response
+Example of response:
 
 ```json
 {
@@ -879,10 +904,12 @@ Parameters
 Example of request
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/1/erase"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/1/erase"
 ```
 
-Example of response
+Example of response:
 
 ```json
 {
@@ -946,10 +973,11 @@ POST /projects/:id/jobs/:job_id/play
 Example request:
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/projects/1/jobs/1/play" \
-     --header "Content-Type: application/json" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data @variables.json
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data @variables.json \
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/1/play"
 ```
 
 `@variables.json` is structured like:

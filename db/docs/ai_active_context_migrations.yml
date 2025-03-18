@@ -1,0 +1,13 @@
+---
+table_name: ai_active_context_migrations
+classes:
+- Ai::ActiveContext::Migration
+feature_categories:
+- global_search
+description: Tracks the state and progress of AI active context migrations.
+  Each migration is identified by a unique version timestamp and is used for computing or updating collections in ai context abstraction layer.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181238
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true
+table_size: small

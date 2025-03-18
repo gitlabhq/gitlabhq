@@ -46,6 +46,9 @@ module Types
     field :create_note_email, GraphQL::Types::String,
       null: true,
       description: 'User specific email address for the work item.'
+    field :user_discussions_count, GraphQL::Types::Int, null: false,
+      description: 'Number of user discussions in the work item.',
+      resolver: Resolvers::UserDiscussionsCountResolver
 
     field :reference, GraphQL::Types::String, null: false,
       description: 'Internal reference of the work item. Returned in shortened format by default.',
@@ -57,7 +60,19 @@ module Types
     field :widgets,
       [Types::WorkItems::WidgetInterface],
       null: true,
-      description: 'Collection of widgets that belong to the work item.'
+      description: 'Collection of widgets that belong to the work item.' do
+        argument :except_types, [::Types::WorkItems::WidgetTypeEnum],
+          required: false,
+          default_value: nil,
+          description: 'Except widgets of the given types.'
+        argument :only_types, [::Types::WorkItems::WidgetTypeEnum],
+          required: false,
+          default_value: nil,
+          description: 'Only widgets of the given types.'
+
+        validates mutually_exclusive: %i[except_types only_types]
+      end
+
     field :work_item_type, Types::WorkItems::TypeType, null: false,
       description: 'Type assigned to the work item.'
 

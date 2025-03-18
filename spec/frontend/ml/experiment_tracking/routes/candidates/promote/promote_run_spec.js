@@ -25,6 +25,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('PromoteRun', () => {
   let wrapper;
   let apolloProvider;
+  const successfulResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success);
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -34,10 +35,7 @@ describe('PromoteRun', () => {
     apolloProvider = null;
   });
 
-  const createWrapper = (
-    createResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success),
-    withModel = true,
-  ) => {
+  const createWrapper = (createResolver = successfulResolver, withModel = true) => {
     const requestHandlers = [[createModelVersionMutation, createResolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
@@ -200,24 +198,18 @@ describe('PromoteRun', () => {
       createWrapper();
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model version description');
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
     });
 
     it('makes a create mutation upon confirm', () => {
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: createModelVersionMutation,
-          variables: {
-            modelId: 'gid://gitlab/Ml::Model/1',
-            projectPath: 'some/project',
-            version: '1.0.0',
-            description: 'My model version description',
-            candidateId: 'gid://gitlab/Ml::Candidate/1',
-          },
-        }),
-      );
+      expect(successfulResolver).toHaveBeenCalledWith({
+        modelId: 'gid://gitlab/Ml::Model/1',
+        projectPath: 'some/project',
+        version: '1.0.0',
+        description: 'My model version description',
+        candidateId: 'gid://gitlab/Ml::Candidate/1',
+      });
     });
 
     it('visits the model versions page upon successful create mutation', async () => {
@@ -295,22 +287,16 @@ describe('PromoteRun', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model version description');
       findModelSelectionDropdown().vm.$emit('input', model42);
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
 
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: createModelVersionMutation,
-          variables: {
-            modelId: 'gid://gitlab/Ml::Model/42',
-            projectPath: 'some/project',
-            version: '1.0.0',
-            description: 'My model version description',
-            candidateId: 'gid://gitlab/Ml::Candidate/1',
-          },
-        }),
-      );
+      expect(successfulResolver).toHaveBeenCalledWith({
+        modelId: 'gid://gitlab/Ml::Model/42',
+        projectPath: 'some/project',
+        version: '1.0.0',
+        description: 'My model version description',
+        candidateId: 'gid://gitlab/Ml::Candidate/1',
+      });
     });
   });
 });

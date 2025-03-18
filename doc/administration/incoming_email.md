@@ -225,7 +225,7 @@ Reply by email should now be working.
 
    {{< alert type="note" >}}
 
-This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
+   This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
    [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
 
    {{< /alert >}}
@@ -555,7 +555,7 @@ incoming_email:
     ssl: true
 
     # If you are using Microsoft Graph instead of IMAP, set this to false to retain
-    # messages in the inbox since deleted messages are auto-expunged after some time.
+    # messages in the inbox because deleted messages are auto-expunged after some time.
     delete_after_delivery: true
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
@@ -622,7 +622,7 @@ incoming_email:
     ssl: true
 
     # If you are using Microsoft Graph instead of IMAP, set this to false to retain
-    # messages in the inbox since deleted messages are auto-expunged after some time.
+    # messages in the inbox because deleted messages are auto-expunged after some time.
     delete_after_delivery: true
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
@@ -649,14 +649,14 @@ to receive sub-addressed mail.
 
 To enable sub-addressing:
 
-1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/2.0.5).
+1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/3.7.1).
 1. In PowerShell, run the following commands:
 
    ```powershell
    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
    Import-Module ExchangeOnlineManagement
    Connect-ExchangeOnline
-   Set-OrganizationConfig -AllowPlusAddressInRecipients $true
+   Set-OrganizationConfig -DisablePlusAddressInRecipients $false
    Disconnect-ExchangeOnline
    ```
 

@@ -56,7 +56,7 @@ export default {
   <file-row
     :file="file"
     v-bind="$attrs"
-    :class="{ 'is-active': isActive }"
+    :class="{ 'is-active': isActive, 'is-loading': file.loading }"
     class="diff-file-row"
     truncate-middle
     :file-classes="fileClasses"

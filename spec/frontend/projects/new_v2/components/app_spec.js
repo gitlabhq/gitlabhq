@@ -1,25 +1,28 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { getLocationHash, setLocationHash } from '~/lib/utils/url_utility';
 import App from '~/projects/new_v2/components/app.vue';
 import FormBreadcrumb from '~/projects/new_v2/components/form_breadcrumb.vue';
 import CommandLine from '~/projects/new_v2/components/command_line.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 
+jest.mock('~/lib/utils/url_utility');
+
 describe('New project creation app', () => {
   let wrapper;
 
-  const createComponent = (props = {}, provide = {}) => {
+  const createComponent = (provide = {}) => {
     wrapper = shallowMountExtended(App, {
-      propsData: {
+      provide: {
+        userNamespaceId: '1',
+        canCreateProject: true,
         rootPath: '/',
         projectsUrl: '/dashboard/projects',
         userProjectLimit: 10000,
         canSelectNamespace: true,
-        ...props,
-      },
-      provide: {
-        userNamespaceId: '1',
-        canCreateProject: true,
+        isCiCdAvailable: true,
+        canImportProjects: true,
+        importSourcesEnabled: true,
         ...provide,
       },
       stubs: {
@@ -61,6 +64,37 @@ describe('New project creation app', () => {
     expect(findSingleChoiceSelector().props('checked')).toBe('blank_project');
   });
 
+  describe('when location hash is present', () => {
+    afterEach(() => {
+      getLocationHash.mockReset();
+    });
+
+    describe('and is valid projectType', () => {
+      beforeEach(() => {
+        getLocationHash.mockReturnValue('cicd_for_external_repo');
+
+        createComponent({ isCiCdAvailable: true });
+      });
+
+      it('renders step 2 component from hash', () => {
+        expect(findStep2().exists()).toBe(true);
+        expect(findStep2().props('option').value).toBe('cicd_for_external_repo');
+      });
+    });
+
+    describe('and is invalid projectType', () => {
+      beforeEach(() => {
+        getLocationHash.mockReturnValue('nonexistent');
+
+        createComponent();
+      });
+
+      it('renders step 1', () => {
+        expect(findStep1().exists()).toBe(true);
+      });
+    });
+  });
+
   describe('personal namespace project', () => {
     it('starts with personal namespace when no namespaceId provided', () => {
       createComponent();
@@ -76,7 +110,7 @@ describe('New project creation app', () => {
     });
 
     it('renders error when user reached a limit of projects', () => {
-      createComponent({}, { canCreateProject: false });
+      createComponent({ canCreateProject: false });
 
       expect(findSingleChoiceSelector().exists()).toBe(false);
       expect(findAlert().text()).toBe(
@@ -85,7 +119,7 @@ describe('New project creation app', () => {
     });
 
     it('renders error when user can not create personal projects', () => {
-      createComponent({ userProjectLimit: 0 }, { canCreateProject: false });
+      createComponent({ userProjectLimit: 0, canCreateProject: false });
 
       expect(findSingleChoiceSelector().exists()).toBe(false);
       expect(findAlert().text()).toBe(
@@ -133,6 +167,10 @@ describe('New project creation app', () => {
         expect(findStep2().props('option').value).toBe('create_from_template');
       });
 
+      it('updates location hash', () => {
+        expect(setLocationHash).toHaveBeenLastCalledWith('create_from_template');
+      });
+
       describe('and "Back" event is emitted from step 2', () => {
         beforeEach(() => {
           findStep2().vm.$emit('back');
@@ -144,6 +182,10 @@ describe('New project creation app', () => {
 
         it('hides step 2 component', () => {
           expect(findStep2().exists()).toBe(false);
+        });
+
+        it('removes location hash', () => {
+          expect(setLocationHash).toHaveBeenLastCalledWith();
         });
       });
     });

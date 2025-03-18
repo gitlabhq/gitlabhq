@@ -42,14 +42,22 @@ module Mutations
           required: false,
           description: 'Variables for the pipeline schedule.'
 
+        argument :inputs, [Types::Ci::Inputs::InputType],
+          required: false,
+          description: 'Inputs for the pipeline schedule.',
+          experiment: { milestone: '17.10' }
+
         field :pipeline_schedule,
           Types::Ci::PipelineScheduleType,
           description: 'Created pipeline schedule.'
 
-        def resolve(project_path:, variables: [], **pipeline_schedule_attrs)
+        def resolve(project_path:, variables: [], inputs: [], **pipeline_schedule_attrs)
           project = authorized_find!(project_path)
-
           params = pipeline_schedule_attrs.merge(variables_attributes: variables.map(&:to_h))
+
+          if Feature.enabled?(:ci_inputs_for_pipelines, project)
+            params = params.merge(inputs_attributes: inputs.map(&:to_h))
+          end
 
           response = ::Ci::PipelineSchedules::CreateService
                         .new(project, current_user, params)

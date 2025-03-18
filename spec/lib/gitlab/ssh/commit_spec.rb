@@ -26,6 +26,10 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
       .with(Gitlab::Git::Repository, commit.sha)
       .and_return(signature_data)
 
+    allow_next_instance_of(Commit) do |instance|
+      allow(instance).to receive(:author_email).and_return(user_author.email)
+    end
+
     allow(verifier).to receive_messages({
       verification_status: verification_status,
       signed_by_key: signed_by_key,

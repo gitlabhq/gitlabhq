@@ -1,0 +1,22 @@
+- title: "PostgreSQL 14 and 15 no longer supported"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  reporter: clemensbeck
+  impact: medium
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521663
+  body: |
+    GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+
+    Support for PostgreSQL 14 and 15 is scheduled for removal in GitLab 18.0.
+    In GitLab 18.0, PostgreSQL 16 becomes the minimum required PostgreSQL version.
+
+    PostgreSQL 14 and 15 will be supported for the full GitLab 17 release cycle.
+    PostgreSQL 16 will also be supported for instances that want to upgrade prior to GitLab 18.0.
+
+    If you are running a single PostgreSQL instance you installed by using an Omnibus Linux package, an automatic upgrade may be attempted with 17.11.
+    Make sure you have enough disk space to accommodate the upgrade. For more information, see the [Omnibus database documentation](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).

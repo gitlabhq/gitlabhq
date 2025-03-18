@@ -271,7 +271,8 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
       {{< alert type="note" >}}
 
-      For GitLab deployments on EC2 instances, you do not have to enter access keys.
+      GitLab deployments that run directly on EC2 instances (not in containers)
+      don't have to enter access keys.
       Your GitLab instance obtains these keys automatically from the
       [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
 
@@ -911,7 +912,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Imports all users into Elasticsearch.                                                                                                                 |
 | [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects do not have repository data indexed. This task does not include non-repository data such as issues, merge requests, or milestones.                                                                                                                                    |
 | [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Schedules a zero-downtime cluster reindexing task. |
-| [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent re-index job as failed. |
+| [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent reindex job as failed. |
 | [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of shard sizes for each index based on approximate database counts. This estimate does not include repository data (code, commits, and wikis). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11. |
@@ -1058,7 +1059,7 @@ due to large volumes of data being indexed:
    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
    ```
 
-1. If this is a re-index of your GitLab instance, clear the index status:
+1. If this is a reindex of your GitLab instance, clear the index status:
 
    ```shell
    # For installations that use the Linux package
@@ -1079,7 +1080,7 @@ due to large volumes of data being indexed:
 
    {{< alert type="note" >}}
 
-This step is optional but may help significantly speed up large indexing operations.
+   This step is optional but may help significantly speed up large indexing operations.
 
    {{< /alert >}}
 
@@ -1132,7 +1133,7 @@ This step is optional but may help significantly speed up large indexing operati
 
    {{< alert type="note" >}}
 
-Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
+   Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
    can get interrupted. This may happen for many reasons, but it's always safe
    to run the indexing task again.
 

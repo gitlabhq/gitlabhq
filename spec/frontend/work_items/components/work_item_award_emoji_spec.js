@@ -10,10 +10,7 @@ import AwardList from '~/vue_shared/components/awards_list.vue';
 import WorkItemAwardEmoji from '~/work_items/components/work_item_award_emoji.vue';
 import updateAwardEmojiMutation from '~/work_items/graphql/update_award_emoji.mutation.graphql';
 import projectWorkItemAwardEmojiQuery from '~/work_items/graphql/award_emoji.query.graphql';
-import {
-  DEFAULT_PAGE_SIZE_EMOJIS,
-  I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR,
-} from '~/work_items/constants';
+import { DEFAULT_PAGE_SIZE_EMOJIS } from '~/work_items/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 import {
@@ -60,7 +57,9 @@ describe('WorkItemAwardEmoji component', () => {
   );
   const awardEmojiQueryFailureHandler = jest
     .fn()
-    .mockRejectedValue(new Error(I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR));
+    .mockRejectedValue(
+      new Error('Something went wrong while fetching work item award emojis. Please try again.'),
+    );
 
   const awardEmojiAddSuccessHandler = jest.fn().mockResolvedValue(getAwardEmojiResponse(true));
   const awardEmojiRemoveSuccessHandler = jest.fn().mockResolvedValue(getAwardEmojiResponse(false));
@@ -170,7 +169,9 @@ describe('WorkItemAwardEmoji component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR]]);
+    expect(wrapper.emitted('error')).toEqual([
+      ['Something went wrong while fetching work item award emojis. Please try again.'],
+    ]);
   });
 
   it('renders awards list given by multiple users', async () => {

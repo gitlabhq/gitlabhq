@@ -43,6 +43,13 @@ function parseDatasetToProps(data) {
     workloadIdentityFederationProjectNumber,
     workloadIdentityPoolId,
     wlifIssuer,
+    amazonQSubmitUrl,
+    amazonQDisconnectUrl,
+    amazonQRoleArn,
+    amazonQAvailability,
+    amazonQInstanceUid,
+    amazonQAwsProviderUrl,
+    amazonQAwsAudience,
     jwtClaims,
     redirectTo,
     upgradeSlackUrl,
@@ -64,6 +71,7 @@ function parseDatasetToProps(data) {
     enableJiraVulnerabilities,
     shouldUpgradeSlack,
     customizeJiraIssueEnabled,
+    amazonQReady,
   } = parseBooleanInData(booleanAttributes);
 
   return {
@@ -101,6 +109,16 @@ function parseDatasetToProps(data) {
       workloadIdentityFederationPath,
       workloadIdentityFederationProjectNumber,
       workloadIdentityPoolId,
+    },
+    amazonQProps: {
+      amazonQSubmitUrl,
+      amazonQDisconnectUrl,
+      amazonQReady,
+      amazonQRoleArn,
+      amazonQAvailability,
+      amazonQInstanceUid,
+      amazonQAwsProviderUrl,
+      amazonQAwsAudience,
     },
     learnMorePath,
     aboutPricingUrl,

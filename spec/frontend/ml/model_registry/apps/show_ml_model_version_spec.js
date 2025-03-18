@@ -135,7 +135,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   it('renders the title', () => {
     createWrapper();
 
-    expect(findTitleArea().props('title')).toBe('blah / 1.2.3');
+    expect(findTitleArea().props('title')).toBe('blah / version 1.2.3');
   });
 
   describe('Model version edit button', () => {
@@ -292,7 +292,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     await waitForPromises();
 
     expect(findLoadOrErrorOrShow().props('errorMessage')).toBe(
-      'Failed to load model versions with error: Failure!',
+      'Failed to load model version with error: Failure!',
     );
     expect(Sentry.captureException).toHaveBeenCalled();
   });

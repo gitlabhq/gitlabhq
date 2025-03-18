@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash';
+import { identity, isFunction } from 'lodash';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
@@ -194,10 +194,11 @@ export function preserveUnchanged(configOrRender) {
   };
 }
 
-export function preserveUnchangedMark({ open, close, ...restConfig }) {
+export function preserveUnchangedMark({ open, close, escape = true, ...restConfig }) {
   // use a buffer to replace the content of the serialized mark with the sourceMarkdown
   // when the mark is unchanged
   let bufferStartPos = -1;
+  let esc;
 
   function startBuffer(state) {
     bufferStartPos = state.out.length;
@@ -216,6 +217,11 @@ export function preserveUnchangedMark({ open, close, ...restConfig }) {
     ...restConfig,
     // eslint-disable-next-line max-params
     open: (state, mark, parent, index) => {
+      if (!escape) {
+        esc = state.esc;
+        state.esc = identity;
+      }
+
       const same = state.options.changeTracker.get(mark);
 
       if (same) {
@@ -227,6 +233,10 @@ export function preserveUnchangedMark({ open, close, ...restConfig }) {
     },
     // eslint-disable-next-line max-params
     close: (state, mark, parent, index) => {
+      if (!escape) {
+        state.esc = esc;
+      }
+
       const { sourceMarkdown } = mark.attrs;
 
       if (bufferStarted()) {

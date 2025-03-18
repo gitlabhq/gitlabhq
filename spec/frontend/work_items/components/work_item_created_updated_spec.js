@@ -8,6 +8,7 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { mockAssignees, workItemByIidResponseFactory } from '../mock_data';
 
@@ -24,6 +25,7 @@ describe('WorkItemCreatedUpdated component', () => {
   const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
 
   const createComponent = async ({
     workItemIid = '1',
@@ -32,12 +34,16 @@ describe('WorkItemCreatedUpdated component', () => {
     confidential = false,
     discussionLocked = false,
     updateInProgress = false,
+    movedToWorkItemUrl = null,
+    duplicatedToWorkItemUrl = null,
   } = {}) => {
     const workItemQueryResponse = workItemByIidResponseFactory({
       author,
       updatedAt,
       confidential,
       discussionLocked,
+      movedToWorkItemUrl,
+      duplicatedToWorkItemUrl,
     });
 
     successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
@@ -75,6 +81,29 @@ describe('WorkItemCreatedUpdated component', () => {
     await createComponent({ workItemIid: null });
 
     expect(successHandler).not.toHaveBeenCalled();
+  });
+
+  describe('WorkItemStateBadge props', () => {
+    it('passes URL props correctly when they exist', async () => {
+      // We'll never populate all of these attributes because
+      // a work item can only have one closed reason.
+      // For simplicity we're passing all of them to easily assert
+      // that the props are passed correctly.
+      //
+      // Leaves out promotedToEpicUrl because it's only available in
+      // the EE work items query which is not using in FOSS_ONLY mode
+      const workItemAttributes = {
+        movedToWorkItemUrl: 'http://example.com/moved',
+        duplicatedToWorkItemUrl: 'http://example.com/duplicated',
+      };
+
+      await createComponent(workItemAttributes);
+
+      const stateBadgeProps = findWorkItemStateBadge().props();
+      Object.entries(workItemAttributes).forEach(([prop, url]) => {
+        expect(stateBadgeProps[prop]).toBe(url);
+      });
+    });
   });
 
   it('shows work item type metadata with type and icon', async () => {

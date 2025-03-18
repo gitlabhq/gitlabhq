@@ -54,7 +54,7 @@ the following:
 main: # 'main' is the GitLab 'provider ID' of this LDAP server
   label: 'LDAP'
   host: 'ldap.example.com'
-  ...
+  # ...
   group_base: 'cn=my_group,ou=groups,dc=example,dc=com'
   admin_group: 'my_admin_group'
 ```
@@ -363,14 +363,14 @@ memberof: cn=admin_staff,ou=people,dc=example,dc=com
 uid: John
 ```
 
-If the user wasn't found in LDAP with either the DN or email, you may see the
+If the user wasn't found in LDAP with either the DN or email, you might see the
 following message instead:
 
 ```shell
 LDAP search error: No Such Object
 ```
 
-...in which case the user is blocked:
+In this case, the user is blocked:
 
 ```shell
   User Update (0.4ms)  UPDATE "users" SET "state" = $1, "updated_at" = $2 WHERE "users"."id" = $3  [["state", "ldap_blocked"], ["updated_at", "2019-10-18 15:46:22.902177"], ["id", 20]]

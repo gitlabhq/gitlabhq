@@ -7,18 +7,6 @@ class ApplicationSetting < ApplicationRecord
   include ChronicDurationAttribute
   include Sanitizable
 
-  ignore_columns %i[
-    cloud_connector_keys
-    encrypted_openai_api_key
-    encrypted_openai_api_key_iv
-    encrypted_anthropic_api_key
-    encrypted_anthropic_api_key_iv
-    encrypted_vertex_ai_credentials
-    encrypted_vertex_ai_credentials_iv
-    encrypted_vertex_ai_access_token
-    encrypted_vertex_ai_access_token_iv
-  ], remove_with: '17.10', remove_after: '2025-02-15'
-
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
   ignore_columns %i[
@@ -81,7 +69,7 @@ class ApplicationSetting < ApplicationRecord
   # disabled in 17.0
   # https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
   add_authentication_token_field :runners_registration_token, encrypted: :required
-  add_authentication_token_field :health_check_access_token # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
+  add_authentication_token_field :health_check_access_token, insecure: true # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
@@ -132,7 +120,6 @@ class ApplicationSetting < ApplicationRecord
   attribute :repository_storages_weighted, default: -> { {} }
   attribute :kroki_formats, default: -> { {} }
   attribute :default_branch_protection_defaults, default: -> { {} }
-  attribute :vscode_extension_marketplace, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
@@ -360,6 +347,14 @@ class ApplicationSetting < ApplicationRecord
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 
+  jsonb_accessor :token_prefixes,
+    instance_token_prefix: [:string, { default: 'gl' }]
+
+  validates :instance_token_prefix,
+    format: { with: %r{\A[a-zA-Z0-9-]+\z} },
+    length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
+
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
 
   validates :archive_builds_in_seconds,
@@ -577,6 +572,8 @@ class ApplicationSetting < ApplicationRecord
 
   with_options(numericality: { only_integer: true, greater_than: 0 }) do
     validates :ai_action_api_rate_limit,
+      :autocomplete_users_limit,
+      :autocomplete_users_unauthenticated_limit,
       :bulk_import_concurrent_pipeline_batch_limit,
       :code_suggestions_api_rate_limit,
       :concurrent_bitbucket_import_jobs_limit,
@@ -669,13 +666,22 @@ class ApplicationSetting < ApplicationRecord
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,
       :user_starred_projects_api_limit,
-      :users_get_by_id_limit
+      :users_get_by_id_limit,
+      :users_api_limit_followers,
+      :users_api_limit_following,
+      :users_api_limit_status,
+      :users_api_limit_ssh_keys,
+      :users_api_limit_ssh_key,
+      :users_api_limit_gpg_keys,
+      :users_api_limit_gpg_key
   end
 
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
   jsonb_accessor :rate_limits,
+    autocomplete_users_limit: [:integer, { default: 300 }],
+    autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
     concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
     concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
     concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
@@ -693,7 +699,14 @@ class ApplicationSetting < ApplicationRecord
     projects_api_limit: [:integer, { default: 2000 }],
     user_contributed_projects_api_limit: [:integer, { default: 100 }],
     user_projects_api_limit: [:integer, { default: 300 }],
-    user_starred_projects_api_limit: [:integer, { default: 100 }]
+    user_starred_projects_api_limit: [:integer, { default: 100 }],
+    users_api_limit_followers: [:integer, { default: 100 }],
+    users_api_limit_following: [:integer, { default: 100 }],
+    users_api_limit_status: [:integer, { default: 240 }],
+    users_api_limit_ssh_keys: [:integer, { default: 120 }],
+    users_api_limit_ssh_key: [:integer, { default: 120 }],
+    users_api_limit_gpg_keys: [:integer, { default: 120 }],
+    users_api_limit_gpg_key: [:integer, { default: 120 }]
 
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }]
@@ -731,7 +744,15 @@ class ApplicationSetting < ApplicationRecord
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
 
-  jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
+  DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
+
+  jsonb_accessor :package_registry,
+    nuget_skip_metadata_url_validation: [:boolean, { default: false }],
+    helm_max_packages_count: [:integer, { default: DEFAULT_HELM_MAX_PACKAGES_COUNT }]
+
+  validates :helm_max_packages_count,
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   jsonb_accessor :oauth_provider, ropc_without_client_credentials: [:boolean, { default: true }]
 
@@ -927,6 +948,9 @@ class ApplicationSetting < ApplicationRecord
 
   validates :vscode_extension_marketplace,
     json_schema: { filename: "application_setting_vscode_extension_marketplace", detail_errors: true }
+
+  jsonb_accessor :vscode_extension_marketplace,
+    vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }]
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?

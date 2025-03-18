@@ -20,4 +20,4 @@
     1. Pass the artifacts you want to scan to the analyzer.
   end_of_support_milestone: 18.0
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/sast/troubleshooting.html#project-couldnt-be-built
+  documentation_url: https://docs.gitlab.com/user/application_security/sast/troubleshooting/#project-couldnt-be-built

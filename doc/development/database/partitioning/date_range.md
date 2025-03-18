@@ -102,6 +102,52 @@ substantial. Partitioning should only be leveraged if the access patterns
 of the data support the partitioning strategy, otherwise performance
 suffers.
 
+## Time-range Partitioning Strategies
+
+GitLab supports two strategies for time-range partitioning:
+
+- Daily partitioning
+- Monthly partitioning
+
+### Using Time-range Partitioning
+
+To use time-range partitioning in your model, include the `PartitionedTable` module and configure the partition settings:
+
+```ruby
+class WebHookLog < ApplicationRecord
+  include PartitionedTable
+
+  partitioned_by :created_at, strategy: :monthly, retain_for: 1.month
+end
+```
+
+### Available Strategies
+
+#### Daily Strategy (`:daily`)
+
+The daily strategy creates one partition per day:
+
+```ruby
+partitioned_by :created_at, strategy: :daily, retain_for: 7.days
+```
+
+#### Monthly Strategy (`:monthly`)
+
+The monthly strategy creates one partition per month:
+
+```ruby
+partitioned_by :created_at, strategy: :monthly, retain_for: 3.months, analyze_interval: 3.days
+```
+
+### Configuration Options
+
+- `column`: The column to partition on (required, must be a timestamp or date column)
+- `strategy`: Either `:daily` or `:monthly` (required)
+- `retain_for`: Duration to retain partitions (optional)
+- `analyze_interval`: How often to run ANALYZE on new partitions (optional)
+
+Choose `:daily` for high-volume tables that need fine-grained partitioning, or `:monthly` for tables with moderate data volume where daily partitioning would be excessive.
+
 ## Example
 
 ### Step 1: Creating the partitioned copy (Release N)

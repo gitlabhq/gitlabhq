@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: File Locking
+title: File locking
 ---
 
 {{< details >}}
@@ -12,39 +12,23 @@ title: File Locking
 
 {{< /details >}}
 
-Preventing wasted work caused by unresolvable merge conflicts requires
-a different way of working. This means explicitly requesting write permissions,
-and verifying no one else is editing the same file before you start.
+File locking prevents multiple people from editing the same file simultaneously, which helps avoid
+merge conflicts. File locking is especially valuable for binary files that cannot be merged like
+design files, videos, and other non-text content.
 
-Although branching strategies typically work well enough for source code and
-plain text because different versions can be merged together, they do not work
-for binary files.
+GitLab supports two different types of file locking:
 
-When file locking is setup, lockable files are **read-only** by default.
-
-When a file is locked, only the user who locked the file may modify it. This
-user is said to "hold the lock" or have "taken the lock", because only one user
-can lock a file at a time. When a file or directory is unlocked, the user is
-said to have "released the lock".
-
-GitLab supports two different modes of file locking:
-
-- [Exclusive file locks](../../topics/git/file_management.md#file-locks) for binary files: done
-  **through the command line** with Git LFS and `.gitattributes`, it prevents locked
-  files from being modified on any branch.
-- [Default branch locks](#default-branch-file-and-directory-locks): done
-  **through the GitLab UI**, it prevents locked files and directories being
-  modified on the default branch.
+- [Exclusive file locks](../../topics/git/file_management.md#file-locks): Applied through the
+  command line with Git LFS and [`.gitattributes`](../../user/project/repository/files/git_attributes.md).
+  These locks prevent modifications to locked files on any branch.
+- [Default branch file and directory locks](#default-branch-file-and-directory-locks): Applied
+  through the GitLab UI. These locks prevent modifications to files and directories on the
+  default branch only.
 
 ## Permissions
 
-Locks can be created by any person who has at least
-Developer role for the repository.
-
-Only the user who locked the file or directory can edit locked files. Other
-users are prevented from modifying locked files by pushing, merging,
-or any other means, and are shown an error like:
-`'.gitignore' is locked by @Administrator`.
+You must have at least the Developer role for the project to create, view, or manage file locks.
+For more information, see [Roles and permissions](../../user/permissions.md).
 
 ## Default branch file and directory locks
 
@@ -55,40 +39,80 @@ or any other means, and are shown an error like:
 
 {{< /details >}}
 
-This process allows you to lock one file at a time through the GitLab UI and
-requires access to the [GitLab Premium or Ultimate tier](https://about.gitlab.com/pricing/).
+Default branch locks apply only to the [default branch](repository/branches/default.md) set in your
+project's settings. These locks help maintain stability in your default branch without blocking
+collaborator workflows in other branches.
 
-Default branch file and directory locks only apply to the
-[default branch](repository/branches/default.md) set in the project's settings.
+When a file or directory is locked by a user:
 
-Changes to locked files on the default branch are blocked, including merge
-requests that modify locked files. Unlock the file to allow changes.
+- Only the user who created the lock can modify the file or directory on the default branch.
+- For other users, the locked file or directory is **read-only** on the default branch.
+- Direct changes to locked files or directories on the default branch are blocked.
+- Merge requests that modify locked files or directories cannot be merged to the default branch.
 
-### Lock a file or a directory
+{{< alert type="note" >}}
 
-To lock a file:
+On non-default branches, all users can still modify locked files and directories.
+A **Lock** status is visible on these files and directories. This helps team members
+to be aware of in-flight work without restricting their workflow on other branches.
 
-1. Open the file or directory in GitLab.
-1. In the upper-right corner, above the file, select **Lock**.
+{{< /alert >}}
+
+## Lock a file or directory
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To lock a file or directory:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file or directory you want to lock.
+1. In the upper-right corner, select **Lock**.
 1. On the confirmation dialog, select **OK**.
 
-If you do not have permission to lock the file, the button is not enabled.
+If **Lock** is not enabled, you don't have the required permissions to lock the file.
 
-To view the user who locked a directory (if it was not you), hover over the button. Reinstatement of
-similar functionality for locked files is discussed in
-[issue 376222](https://gitlab.com/gitlab-org/gitlab/-/issues/376222).
+To see who locked a directory, if it wasn't you, hover over the **Lock**. For a similar function
+for locked files, see [issue 4623](https://gitlab.com/gitlab-org/gitlab/-/issues/4623).
 
-### View and remove existing locks
+## View and remove locks
 
-To view and remove file locks:
+To view locked files:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Locked files**.
 
-This list shows all the files locked either through LFS or GitLab UI.
+The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
 
-Locks can be removed by their author, or any user
-with at least the Maintainer role.
+Prerequisites:
+
+- You must be the user who created the lock.
+- You must have at least the Maintainer role for the project.
+
+To remove a lock:
+
+{{< tabs >}}
+
+{{< tab title="From a file" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to unlock.
+1. Select **Unlock**.
+1. On the confirmation dialog, select **Unlock**.
+
+{{< /tab >}}
+
+{{< tab title="From the Locked file page" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Locked files**.
+1. To the right of the file you want to unlock, select **Unlock**.
+1. On the confirmation dialog, select **OK**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Related topics
 

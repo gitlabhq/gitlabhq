@@ -9,7 +9,7 @@ module Packages
 
       # Charts must be smaller than 1M because of the storage limitations of Kubernetes objects.
       # based on https://helm.sh/docs/chart_template_guide/accessing_files/
-      MAX_FILE_SIZE = 1.megabytes.freeze
+      MAX_FILE_SIZE = 1.megabyte.freeze
 
       def initialize(package_file)
         @package_file = package_file

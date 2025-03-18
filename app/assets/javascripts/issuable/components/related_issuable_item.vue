@@ -148,6 +148,7 @@ export default {
         <gl-icon
           v-if="confidential"
           v-gl-tooltip
+          class="gl-min-w-4"
           name="eye-slash"
           :title="__('Confidential')"
           :aria-label="__('Confidential')"

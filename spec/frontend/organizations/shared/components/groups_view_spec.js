@@ -12,7 +12,7 @@ import { formatGroups } from '~/organizations/shared/utils';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+} from 'ee_else_ce/vue_shared/components/groups_list/utils';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
@@ -46,8 +46,8 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/vue_shared/components/resource_lists/utils', () => ({
-  ...jest.requireActual('ee_else_ce/vue_shared/components/resource_lists/utils'),
+jest.mock('ee_else_ce/vue_shared/components/groups_list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/vue_shared/components/groups_list/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));

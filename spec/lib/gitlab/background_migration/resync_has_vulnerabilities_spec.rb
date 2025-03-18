@@ -68,6 +68,13 @@ RSpec.describe Gitlab::BackgroundMigration::ResyncHasVulnerabilities, feature_ca
 
   subject(:perform_migration) { described_class.new(**args).perform }
 
+  before do
+    # This test shares the db connection to establish it's fixtures, resulting in
+    # incorrect connection usage, so we're skipping it.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   def create_project_setting(
     name,
     has_vulnerabilities_setting:,

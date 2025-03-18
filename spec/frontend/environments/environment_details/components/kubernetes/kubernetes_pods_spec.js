@@ -112,7 +112,6 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
           text: 'Delete pod',
           icon: 'remove',
           variant: 'danger',
-          class: '!gl-text-red-500',
         },
       ];
       const items = findWorkloadTable().props('items');
@@ -191,6 +190,22 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
           },
         ];
         expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
+      });
+
+      it('shows the correct pod counters in the workload stats', async () => {
+        const searchTerm = 'pod-4';
+
+        findSearchBox().vm.$emit('input', searchTerm);
+        await nextTick();
+
+        const expectedStats = [
+          { title: 'Running', value: 0 },
+          { title: 'Pending', value: 0 },
+          { title: 'Succeeded', value: 0 },
+          { title: 'Failed', value: 2 },
+        ];
+
+        expect(findWorkloadStats().props('stats')).toEqual(expectedStats);
       });
 
       describe('when a status is selected', () => {

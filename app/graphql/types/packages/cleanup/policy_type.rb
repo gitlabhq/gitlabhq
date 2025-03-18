@@ -16,7 +16,7 @@ module Types
         field :next_run_at,
           Types::TimeType,
           null: true,
-          description: 'Next time that this packages cleanup policy will be executed.'
+          description: 'Next time that the packages cleanup policy will be executed.'
       end
     end
   end

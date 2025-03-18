@@ -619,12 +619,12 @@ If the log doesn't appear in the `.npm/_logs/` directory, you can copy the
 log to your root directory and view it there:
 
 ```yaml
-script:
+  script:
     - npm install --loglevel verbose
     - cp -r /root/.npm/_logs/ .
   artifacts:
-      paths:
-        - './_logs
+    paths:
+      - './_logs'
 ```
 
 The npm log is copied to `/root/.npm/_logs/` as an artifact.
@@ -681,7 +681,7 @@ And the `.npmrc` file should look like:
 
 If you get this error, ensure that:
 
-- The package registry is enabled in your project settings. Although the package registry is enabled by default, it's possible to [disable it](../package_registry/_index.md#disable-the-package-registry).
+- The package registry is enabled in your project settings. Although the package registry is enabled by default, it's possible to [disable it](../package_registry/_index.md#turn-off-the-package-registry).
 - Your token is not expired and has appropriate permissions.
 - A package with the same name or version doesn't already exist within the given scope.
 - The scoped packages URL includes a trailing slash:

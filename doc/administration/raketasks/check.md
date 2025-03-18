@@ -48,17 +48,27 @@ This task loops through the project code repositories and runs the integrity che
 described previously. If a project uses a pool repository, that is also checked.
 Other types of Git repositories [are not checked](https://gitlab.com/gitlab-org/gitaly/-/issues/3643).
 
-- Linux package installations:
+To check project code repositories:
 
-  ```shell
-  sudo gitlab-rake gitlab:git:fsck
-  ```
+{{< tabs >}}
 
-- Self-compiled installations:
+{{< tab title="Linux package (Omnibus)" >}}
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
-  ```
+```shell
+sudo gitlab-rake gitlab:git:fsck
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Checksum of repository refs
 
@@ -79,17 +89,27 @@ checksums in the format `<PROJECT ID>,<CHECKSUM>`.
 - If a repository exists but is empty, the output checksum is `0000000000000000000000000000000000000000`.
 - Projects which don't exist are skipped.
 
-- Linux package installations:
+To check all GitLab repositories:
 
-  ```shell
-  sudo gitlab-rake gitlab:git:checksum_projects
-  ```
+{{< tabs >}}
 
-- Self-compiled installations:
+{{< tab title="Linux package (Omnibus)" >}}
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=production
-  ```
+```shell
+sudo gitlab-rake gitlab:git:checksum_projects
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For example, if:
 
@@ -130,23 +150,33 @@ Integrity checks are supported for the following types of file:
 - Project-level Secure Files (introduced in GitLab 16.1.0)
 - User uploads
 
-- Linux package installations:
+To check the integrity of uploaded files:
 
-  ```shell
-  sudo gitlab-rake gitlab:artifacts:check
-  sudo gitlab-rake gitlab:ci_secure_files:check
-  sudo gitlab-rake gitlab:lfs:check
-  sudo gitlab-rake gitlab:uploads:check
-  ```
+{{< tabs >}}
 
-- Self-compiled installations:
+{{< tab title="Linux package (Omnibus)" >}}
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
-  sudo -u git -H bundle exec rake gitlab:ci_secure_files:check RAILS_ENV=production
-  sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
-  sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
-  ```
+```shell
+sudo gitlab-rake gitlab:artifacts:check
+sudo gitlab-rake gitlab:ci_secure_files:check
+sudo gitlab-rake gitlab:lfs:check
+sudo gitlab-rake gitlab:uploads:check
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:ci_secure_files:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 These tasks also accept some environment variables which you can use to override
 certain values:
@@ -224,17 +254,27 @@ documentation on what to do [when the secrets file is lost](../backup_restore/tr
 This can take a very long time, depending on the size of your
 database, as it checks all rows in all tables.
 
-- Linux package installations:
+To verify database values can be decrypted using the current secrets:
 
-  ```shell
-  sudo gitlab-rake gitlab:doctor:secrets
-  ```
+{{< tabs >}}
 
-- Self-compiled installations:
+{{< tab title="Linux package (Omnibus)" >}}
 
-  ```shell
-  bundle exec rake gitlab:doctor:secrets RAILS_ENV=production
-  ```
+```shell
+sudo gitlab-rake gitlab:doctor:secrets
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+bundle exec rake gitlab:doctor:secrets RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 **Example output**
 
@@ -253,19 +293,29 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 ### Verbose mode
 
 To get more detailed information about which rows and columns can't be
-decrypted, you can pass a `VERBOSE` environment variable:
+decrypted, you can pass a `VERBOSE` environment variable.
 
-- Linux package installations:
+To verify database values can be decrypted using the current secrets with detailed information:
 
-  ```shell
-  sudo gitlab-rake gitlab:doctor:secrets VERBOSE=1
-  ```
+{{< tabs >}}
 
-- Self-compiled installations:
+{{< tab title="Linux package (Omnibus)" >}}
 
-  ```shell
-  bundle exec rake gitlab:doctor:secrets RAILS_ENV=production VERBOSE=1
-  ```
+```shell
+sudo gitlab-rake gitlab:doctor:secrets VERBOSE=1
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+bundle exec rake gitlab:doctor:secrets RAILS_ENV=production VERBOSE=1
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 **Example verbose output**
 
@@ -311,9 +361,25 @@ To reset broken tokens:
 1. Identify the broken tokens. For example `runners_token`.
 1. To reset broken tokens, run `gitlab:doctor:reset_encrypted_tokens` with `VERBOSE=true MODEL_NAMES=Model1,Model2 TOKEN_NAMES=broken_token1,broken_token2`. For example:
 
+   {{< tabs >}}
+
+   {{< tab title="Linux package (Omnibus)" >}}
+
    ```shell
-   VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token bundle exec rake gitlab:doctor:reset_encrypted_tokens
+   VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token gitlab-rake gitlab:doctor:reset_encrypted_tokens
    ```
+
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
+
+   ```shell
+   bundle exec rake gitlab:doctor:reset_encrypted_tokens RAILS_ENV=production VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
    You will see every action this task would try to perform:
 
@@ -338,9 +404,25 @@ To reset broken tokens:
 
 1. If you are confident that this operation resets the correct tokens, disable dry-run mode and run the operation again:
 
+   {{< tabs >}}
+
+   {{< tab title="Linux package (Omnibus)" >}}
+
    ```shell
-   DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token bundle exec rake gitlab:doctor:reset_encrypted_tokens
+   DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token gitlab-rake gitlab:doctor:reset_encrypted_tokens
    ```
+
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
+
+   ```shell
+   bundle exec rake gitlab:doctor:reset_encrypted_tokens RAILS_ENV=production DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 ## Troubleshooting
 

@@ -339,7 +339,7 @@ module IssuablesHelper
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       **incident_only_initial_data(issuable),
       **issue_header_data(issuable),
-      **work_items_data
+      **work_items_only_data
     }
   end
 
@@ -376,7 +376,7 @@ module IssuablesHelper
     end
   end
 
-  def work_items_data
+  def work_items_only_data
     {
       registerPath: new_user_registration_path(redirect_to_referer: 'yes'),
       signInPath: new_session_path(:user, redirect_to_referer: 'yes')

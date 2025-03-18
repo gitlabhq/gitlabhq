@@ -35,7 +35,6 @@ module Gitlab
 
         def export_query_info(query:, duration_s:, exception:)
           operation = ::Gitlab::Graphql::KnownOperations.default.from_query(query)
-
           error_type = error_type(query: query, exception: exception)
 
           ::Gitlab::ApplicationContext.with_context(caller_id: operation.to_caller_id) do

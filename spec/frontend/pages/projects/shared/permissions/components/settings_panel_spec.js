@@ -913,6 +913,7 @@ describe('Settings Panel', () => {
         helpPath: '/help/user/ai_features',
         helpText: 'Use AI-powered features in this project.',
         label: 'GitLab Duo',
+        labelFor: null,
         locked: false,
       });
     });
@@ -985,6 +986,7 @@ describe('Settings Panel', () => {
         helpPath: '/help/user/duo_amazon_q/_index.md',
         helpText: 'This project can use Amazon Q.',
         label: 'Amazon Q',
+        labelFor: null,
         locked: false,
       });
     });

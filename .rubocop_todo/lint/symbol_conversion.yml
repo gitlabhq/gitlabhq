@@ -53,7 +53,6 @@ Lint/SymbolConversion:
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'
     - 'ee/spec/models/plan_spec.rb'
-    - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/requests/api/dependency_proxy/packages/npm_spec.rb'
     - 'ee/spec/services/phone_verification/users/send_verification_code_service_spec.rb'
     - 'ee/spec/support/matchers/ee/epic_aggregate_matchers.rb'

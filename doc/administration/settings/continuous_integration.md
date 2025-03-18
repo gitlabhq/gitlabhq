@@ -142,7 +142,7 @@ To restrict runner registration by members in a specific group:
 1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
 1. Select **Save changes**.
 
-### Allow runner registrations tokens
+### Allow runner registration tokens
 
 {{< history >}}
 
@@ -172,35 +172,43 @@ you can allow runner registration tokens. This setting and support for runner re
 
 ### Maximum artifacts size
 
-An administrator can set the maximum size of the
-[job artifacts](../cicd/job_artifacts.md) for:
+You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.md) for:
 
-- The entire instance
-- Each project
-- Each group
+- An instance
+- Projects
+- Groups
 
-For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
+The default maximum size for each artifact file in a job is 100 MB.
+For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
 
-The value is in MB, and the default value is 100 MB per job. An administrator can change the default value for the:
+Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
+In this case, the smaller value is used.
 
-- Instance:
+{{< alert type="note" >}}
+
+This setting applies to individual artifacts in a job, not the final archive file.
+
+{{< /alert >}}
+
+To modify the maximum artifacts size:
+
+- For an instance:
 
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
+  1. Select **Settings > CI/CD**.
+  1. Expand **Continuous Integration and Deployment**.
   1. Change the value of **Maximum artifacts size (MB)**.
-  1. Select **Save changes** for the changes to take effect.
+  1. Select **Save changes**.
 
-- Group (this overrides the instance setting):
+- For a group or project:
 
-  1. Go to the group's **Settings > CI/CD > General Pipelines**.
+  Group settings override instance settings. Project settings override both instance and group settings.
+
+  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. Select **Settings > CI/CD**.
+  1. Expand **General pipelines**
   1. Change the value of **Maximum artifacts size** (in MB).
-  1. Select **Save changes** for the changes to take effect.
-
-- Project (this overrides the instance and group settings):
-
-  1. Go to the project's **Settings > CI/CD > General Pipelines**.
-  1. Change the value of **Maximum artifacts size** (in MB).
-  1. Select **Save changes** for the changes to take effect.
+  1. Select **Save changes**.
 
 ### Default artifacts expiration
 
@@ -418,7 +426,7 @@ To disable the banner:
 
 By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
 
-![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v_17_7.png)
+![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v17_7.png)
 
 To disable the banner:
 
@@ -427,7 +435,79 @@ To disable the banner:
 1. Clear the **Show the migrate from Jenkins banner** checkbox.
 1. Select **Save changes**.
 
-## Required pipeline configuration
+## Package registry configuration
+
+### Maven Forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
+
+To disable forwarding Maven requests:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**.
+1. Select **Save changes**.
+
+### npm Forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
+
+To disable it:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**.
+1. Select **Save changes**.
+
+### PyPI Forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
+
+To disable it:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**.
+1. Select **Save changes**.
+
+### Package file size limits
+
+GitLab administrators can adjust the maximum allowed file size for each package type.
+
+To set the maximum file size:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Find the package type you would like to adjust.
+1. Enter the maximum file size, in bytes.
+1. Select **Save size limits**.
+
+## Required pipeline configuration (deprecated)
 
 {{< details >}}
 
@@ -449,7 +529,7 @@ To disable the banner:
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
 and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
-Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead. This change is a breaking change.
+Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
 
 {{< /alert >}}
 
@@ -462,7 +542,7 @@ use a template from:
 
   {{< alert type="note" >}}
 
-When you use a configuration defined in an instance template repository,
+  When you use a configuration defined in an instance template repository,
   nested [`include:`](../../ci/yaml/_index.md#include) keywords
   (including `include:file`, `include:local`, `include:remote`, and `include:template`)
   [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
@@ -482,75 +562,3 @@ To select a CI/CD template for the required pipeline configuration:
 1. Expand the **Required pipeline configuration** section.
 1. Select a CI/CD template from the dropdown list.
 1. Select **Save changes**.
-
-## Package registry configuration
-
-### Maven Forwarding
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
-
-To disable forwarding Maven requests:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Clear the checkbox **Forward Maven package requests to the Maven Registry if the packages are not found in the GitLab Package Registry**.
-1. Select **Save changes**.
-
-### npm Forwarding
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
-
-To disable it:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Clear the checkbox **Forward npm package requests to the npm Registry if the packages are not found in the GitLab Package Registry**.
-1. Select **Save changes**.
-
-### PyPI Forwarding
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
-
-To disable it:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Clear the checkbox **Forward PyPI package requests to the PyPI Registry if the packages are not found in the GitLab Package Registry**.
-1. Select **Save changes**.
-
-### Package file size limits
-
-GitLab administrators can adjust the maximum allowed file size for each package type.
-
-To set the maximum file size:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Find the package type you would like to adjust.
-1. Enter the maximum file size, in bytes.
-1. Select **Save size limits**.

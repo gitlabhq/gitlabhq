@@ -3,6 +3,7 @@
 module Pajamas
   class SingleStatComponent < Pajamas::Component
     # @param [String] title
+    # @param [String] title_tag
     # @param [String] stat_value
     # @param [String] stat_value_testid
     # @param [String] unit
@@ -12,6 +13,7 @@ module Pajamas
     # @param [Symbol] variant
     def initialize(
       title: nil,
+      title_tag: 'span',
       stat_value: nil,
       stat_value_testid: 'non-animated-value',
       unit: nil,
@@ -22,6 +24,7 @@ module Pajamas
       variant: :muted
     )
       @title = title
+      @title_tag = title_tag
       @stat_value = stat_value
       @stat_value_testid = stat_value_testid
       @unit = unit

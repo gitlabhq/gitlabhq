@@ -370,7 +370,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
             end
 
             define_singleton_method(:params) do
-              Gitlab::Redis::Queues.params.tap { |h| h[:db] = h[:db].to_i + 1 } # set shard instance in another db
+              Gitlab::Redis::Queues.params.dup.tap { |h| h[:db] = h[:db].to_i + 1 } # set shard instance in another db
             end
           end
         end

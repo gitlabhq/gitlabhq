@@ -6,10 +6,15 @@ import { DiffFile } from '~/rapid_diffs/diff_file';
 import { DiffFileMounted } from '~/rapid_diffs/diff_file_mounted';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
-import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
+import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
+import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
+import { StreamingError } from '~/rapid_diffs/streaming_error';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
+jest.mock('~/mr_notes/stores');
 jest.mock('~/rapid_diffs/app/view_settings');
-jest.mock('~/rapid_diffs/app/file_browser');
+jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
+jest.mock('~/rapid_diffs/app/init_file_browser');
 
 describe('Rapid Diffs App', () => {
   let app;
@@ -22,20 +27,32 @@ describe('Rapid Diffs App', () => {
     createTestingPinia();
     setHTMLFixture(
       `
-        <div data-rapid-diffs data-reload-stream-url="/reload">
+        <div data-rapid-diffs data-reload-stream-url="/reload" data-metadata-endpoint="/metadata">
           <div id="js-stream-container" data-diffs-stream-url="/stream"></div>
         </div>
       `,
     );
   });
 
-  it('initializes the app', () => {
+  it('initializes the app', async () => {
+    let res;
+    const mock = useDiffsView().loadMetadata.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          res = resolve;
+        }),
+    );
     createApp();
     app.init();
+    expect(useDiffsView().metadataEndpoint).toBe('/metadata');
+    expect(mock).toHaveBeenCalled();
     expect(initViewSettings).toHaveBeenCalledWith({ pinia, streamUrl: '/reload' });
-    expect(initFileBrowser).toHaveBeenCalled();
     expect(window.customElements.get('diff-file')).toBe(DiffFile);
     expect(window.customElements.get('diff-file-mounted')).toBe(DiffFileMounted);
+    expect(window.customElements.get('streaming-error')).toBe(StreamingError);
+    await res();
+    expect(initHiddenFilesWarning).toHaveBeenCalled();
+    expect(initFileBrowser).toHaveBeenCalled();
   });
 
   it('streams remaining diffs', () => {

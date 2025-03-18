@@ -26,7 +26,6 @@ to automatically manage your container registry usage.
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com
 
 {{< /details >}}
 
@@ -36,12 +35,65 @@ to automatically manage your container registry usage.
 
 {{< /history >}}
 
-To view the storage usage for the container registry:
+View storage usage data for your container registry repositories.
+
+### For a project
+
+Prerequisites:
+
+- For self-managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
+- You must have at least the Maintainer role for the project or the Owner role for the namespace.
+
+To view storage usage for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Usage Quotas**.
+1. Do one of the following:
+   - To view total storage usage, select **Settings > Usage Quotas**.
+    Under **Namespace entities**, select **Container Registry** to view individual repositories.
+   - To view storage usage by repository directly, select **Deploy > Container Registry**.
 
-For self-managed instances, you must [upgrade your container registry to use a metadata database](../../../administration/packages/container_registry_metadata_database.md).
+You can also use:
+
+- The [Projects API](../../../api/projects.md#get-a-single-project) to get total container registry storage for a project.
+- The [Registry API](../../../api/container_registry.md#get-details-of-a-single-repository) to get size data for a specific repository.
+
+### For a group
+
+Prerequisites:
+
+- For self-managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
+- You must have the Owner role for the group.
+
+To view storage usage for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage quotas**.
+1. Select the **Storage** tab.
+
+You can also use the [Groups API](../../../api/groups.md#list-all-groups) to get total container registry storage for all projects in a group.
+
+### Storage data updates
+
+After the metadata database is enabled:
+
+- For new container images, size data is available immediately after you push.
+- For existing container images, size data is calculated in the background and can take up to 24 hours.
+
+Storage data updates occur:
+
+- Immediately when you push or delete container images.
+- In real-time when you:
+  - View the repository image tags in the UI.
+  - Use the Container registry API to [get details of a single repository](../../../api/container_registry.md#get-details-of-a-single-repository).
+- When you push or delete tags in a project's container repository.
+- Every 5 minutes for groups.
+
+{{< alert type="note" >}}
+
+For self-managed instances, storage data becomes available after an administrator enables the metadata database.
+On GitLab.com, the metadata database is enabled by default.
+
+{{< /alert >}}
 
 ## How container registry usage is calculated
 
@@ -216,7 +268,7 @@ To create a cleanup policy in the UI:
 
    {{< alert type="note" >}}
 
-Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
+   Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
 
    {{< /alert >}}
 
@@ -368,7 +420,19 @@ Here are some other options you can use to reduce the container registry storage
 - Use the API to [delete the entire container registry repository containing all the tags](../../../api/container_registry.md#delete-registry-repository).
 - Use the API to [delete registry repository tags in bulk](../../../api/container_registry.md#delete-registry-repository-tags-in-bulk).
 
-## Troubleshooting cleanup policies
+## Troubleshooting
+
+### Storage size is not available
+
+If you cannot see container registry storage size information:
+
+1. Ask an administrator to verify the [metadata database is properly configured](../../../administration/packages/container_registry_metadata_database.md).
+1. Verify the registry storage backend is correctly configured and accessible.
+1. Check registry logs for storage-related errors:
+
+   ```shell
+   sudo gitlab-ctl tail registry
+   ```
 
 ### `Something went wrong while updating the cleanup policy.`
 
@@ -456,7 +520,7 @@ the tags. To create the list and delete the tags:
    sed -i .bak '/_v3$/d' list_o_tags.out
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

@@ -3,10 +3,10 @@
 # rubocop: disable CodeReuse/ActiveRecord
 module ClickHouse
   module Models
-    class BaseModel
+    class BaseModel < ClickHouse::Client::QueryLike
       extend Forwardable
 
-      def_delegators :@query_builder, :to_sql
+      def_delegators :@query_builder, :to_sql, :to_redacted_sql
 
       def initialize(query_builder = ClickHouse::QueryBuilder.new(self.class.table_name))
         @query_builder = query_builder

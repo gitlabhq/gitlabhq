@@ -76,10 +76,19 @@ module SnippetsHelper
 
     tooltip = n_('%d file', '%d files', file_count) % file_count
 
-    tag.span(class: 'file_count', title: tooltip, data: { toggle: 'tooltip', container: 'body' }) do
-      concat(sprite_icon('documents', css_class: 'gl-align-middle'))
+    render Pajamas::ButtonComponent.new(
+      category: :tertiary,
+      size: :small,
+      icon: 'documents',
+      button_options: {
+        title: tooltip,
+        data: { toggle: 'tooltip', container: 'body' },
+        aria: { label: tooltip },
+        class: "file_count gl-min-h-0 gl-min-w-0 !gl-bg-transparent !gl-p-0"
+      }
+    ) do
       concat(' ')
-      concat(file_count)
+      concat(file_count.to_s)
     end
   end
 

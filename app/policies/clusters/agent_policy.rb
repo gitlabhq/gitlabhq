@@ -6,6 +6,10 @@ module Clusters
 
     delegate { cluster_agent.project }
 
+    condition(:admin_agent) do
+      Ability.allowed?(@user, :owner_access, @subject.project)
+    end
+
     # This condition is more expensive than the same permission check in ProjectPolicy,
     # so having a higher score.
     condition(:ci_access_authorized_agent, score: 10) do

@@ -2,7 +2,7 @@
 # the migration of Auto DevOps releases to Helm 3.
 #
 # To use, set the CI variable MIGRATE_HELM_2TO3 to "true".
-# For more details, go to https://docs.gitlab.com/ee/topics/autodevops/upgrading_auto_deploy_dependencies.html#helm-v3
+# For more details, go to https://docs.gitlab.com/topics/autodevops/upgrading_auto_deploy_dependencies/#helm-v3
 .helm-2to3-migrate:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12"
   # NOTE: We use the deploy stage because:

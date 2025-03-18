@@ -116,7 +116,7 @@ RSpec.describe CommitSignatures::GpgSignature do
     end
   end
 
-  describe '#reverified_status' do
+  describe '#verification_status' do
     let(:verification_status) { :verified }
     let(:signature) do
       create(:gpg_signature, commit_sha: commit_sha, gpg_key: gpg_key, project: project,
@@ -128,16 +128,16 @@ RSpec.describe CommitSignatures::GpgSignature do
     end
 
     # verified is used for user signed gpg commits.
-    context 'when verification_status is verified' do
-      it 'returns existing verification status' do
-        expect(signature.reverified_status).to eq('verified')
+    context 'when persisted verification_status is verified' do
+      it 'returns persisted verification status' do
+        expect(signature.verification_status).to eq('verified')
       end
 
       context 'when commit author does not match the gpg_key author' do
         let(:commit_author) { create(:user) }
 
         it 'returns unverified_author_email' do
-          expect(signature.reverified_status).to eq('unverified_author_email')
+          expect(signature.verification_status).to eq('unverified_author_email')
         end
 
         context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
@@ -146,33 +146,33 @@ RSpec.describe CommitSignatures::GpgSignature do
           end
 
           it 'verification status is unmodified' do
-            expect(signature.reverified_status).to eq('verified')
+            expect(signature.verification_status).to eq('verified')
           end
         end
       end
     end
 
-    context 'when verification_status not verified' do
+    context 'when persisted verification_status not verified' do
       let(:verification_status) { :unverified }
 
       it 'returns the signature verification status' do
-        expect(signature.reverified_status).to eq('unverified')
+        expect(signature.verification_status).to eq('unverified')
       end
     end
 
     # verified_system is used for ui signed commits.
-    context 'when verification_status is verified_system' do
+    context 'when persisted verification_status is verified_system' do
       let(:verification_status) { :verified_system }
 
       it 'returns existing verification status' do
-        expect(signature.reverified_status).to eq('verified_system')
+        expect(signature.verification_status).to eq('verified_system')
       end
 
       context 'when commit author does not match the gpg_key author' do
         let(:commit_author) { create(:user) }
 
-        it 'returns existing verification status' do
-          expect(signature.reverified_status).to eq('unverified_author_email')
+        it 'returns unverified_author_email' do
+          expect(signature.verification_status).to eq('unverified_author_email')
         end
       end
     end

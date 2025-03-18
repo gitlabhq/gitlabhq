@@ -3,6 +3,7 @@
 module Gitlab
   module Ci
     class JwtV2 < Jwt
+      # CI_JOB_JWT_V2 variable is deprecated
       include Gitlab::Utils::StrongMemoize
 
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
@@ -82,7 +83,9 @@ module Gitlab
       def runner_environment
         return unless runner
 
-        runner.gitlab_hosted? ? GITLAB_HOSTED_RUNNER : SELF_HOSTED_RUNNER
+        # We do not check if it's dedicated_gitlab_hosted? since this is used by a deprecated predefined variable
+        # at the time of adding dedicated hosted runners
+        runner.dot_com_gitlab_hosted? ? GITLAB_HOSTED_RUNNER : SELF_HOSTED_RUNNER
       end
     end
   end

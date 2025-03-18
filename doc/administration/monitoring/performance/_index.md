@@ -12,34 +12,25 @@ title: GitLab Performance Monitoring
 
 {{< /details >}}
 
-GitLab comes with its own application performance measuring system called GitLab Performance Monitoring.
-GitLab Performance Monitoring is available in both the Community and Enterprise editions.
+Detect performance bottlenecks before they affect your users with GitLab Performance
+Monitoring. When slow response times or memory issues occur, pinpoint their exact
+cause through detailed metrics on SQL queries, Ruby processing, and system resources.
 
-Apart from this introduction, you are advised to read through the following
-documents to understand and properly configure GitLab Performance Monitoring:
+Administrators who implement performance monitoring gain immediate alerts to
+potential problems before they cascade into instance-wide issues. Track transaction
+times, query execution performance, and memory usage to maintain optimal GitLab
+performance for your organization.
 
-- [Prometheus documentation](../prometheus/_index.md)
-- [Grafana configuration](grafana_configuration.md)
-- [Performance bar](performance_bar.md)
+For more information on how to configure GitLab Performance Monitoring, see the:
 
-## Introduction to GitLab Performance Monitoring
-
-GitLab Performance Monitoring makes it possible to measure a wide variety of statistics
-including (but not limited to):
-
-- The time it took to complete a transaction (a web request or Sidekiq job).
-- The time spent in running SQL queries and rendering HAML views.
-- The time spent executing (instrumented) Ruby methods.
-- Ruby object allocations, and retained objects in particular.
-- System statistics such as the process' memory usage and open file descriptors.
-- Ruby garbage collection statistics.
-
-## Metric Types
+- [Prometheus documentation](../prometheus/_index.md).
+- [Grafana configuration](grafana_configuration.md).
+- [Performance bar](performance_bar.md).
 
 Two types of metrics are collected:
 
 1. Transaction specific metrics.
-1. Sampled metrics, collected at a certain interval in a separate thread.
+1. Sampled metrics.
 
 ### Transaction Metrics
 
@@ -50,7 +41,7 @@ are collected for every Rack request and Sidekiq job processed.
 
 ### Sampled Metrics
 
-Sampled metrics are metrics that can't be associated with a single transaction.
+Sampled metrics are metrics that cannot be associated with a single transaction.
 Examples include garbage collection statistics and retained Ruby objects. These
 metrics are collected at a regular interval. This interval is made up out of two
 parts:

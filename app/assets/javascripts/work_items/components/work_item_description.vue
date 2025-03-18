@@ -2,6 +2,7 @@
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
@@ -99,12 +100,22 @@ export default {
       required: false,
       default: false,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    truncationEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
       workItem: {},
-      disableTruncation: false,
+      wasEdited: false,
       isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
@@ -173,17 +184,23 @@ export default {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
     isGroupWorkItem() {
-      return this.workItemNamespaceId.includes('Group');
+      return this.workItemNamespaceId.includes(TYPENAME_GROUP);
     },
     workItemNamespaceId() {
       return this.workItem?.namespace?.id || '';
     },
     markdownPreviewPath() {
+      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
       const {
         fullPath,
         workItem: { iid },
       } = this;
-      return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
+
+      return markdownPreviewPath({
+        fullPath,
+        iid,
+        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
+      });
     },
     autocompleteDataSources() {
       const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
@@ -205,9 +222,6 @@ export default {
     showEditedAt() {
       return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
-    canShowDescriptionTemplateSelector() {
-      return this.glFeatures.workItemDescriptionTemplates;
-    },
     descriptionTemplateContent() {
       return this.descriptionTemplate || '';
     },
@@ -218,6 +232,23 @@ export default {
     },
     isNewWorkItemRoute() {
       return this.$route?.name === ROUTES.new;
+    },
+    restrictedToolBarItems() {
+      if (this.hideFullscreenMarkdownButton) {
+        return ['full-screen'];
+      }
+      return [];
+    },
+    uploadsPath() {
+      return this.isGroupWorkItem
+        ? `/groups/${this.fullPath}/-/uploads`
+        : `/${this.fullPath}/uploads`;
+    },
+    enableTruncation() {
+      /* truncationEnabled uses the local storage based setting,
+         wasEdited is a localized override for when user actions on this work item
+         should result in a full description shown. */
+      return this.truncationEnabled && !this.wasEdited;
     },
   },
   watch: {
@@ -294,7 +325,10 @@ export default {
       result() {
         const isDirty = this.descriptionText !== this.workItemDescription?.description;
         const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
-        const hasContent = this.descriptionText !== '';
+        const hasContent = this.descriptionText.trim() !== '';
+        if (this.descriptionTemplate === this.descriptionText) {
+          return;
+        }
         if (!isUnchangedTemplate && (isDirty || hasContent)) {
           this.showTemplateApplyWarning = true;
         } else {
@@ -315,7 +349,7 @@ export default {
     },
     async startEditing() {
       this.isEditing = true;
-      this.disableTruncation = true;
+      this.wasEdited = true;
 
       this.descriptionText = this.createFlow
         ? this.workItemDescription?.description
@@ -373,7 +407,7 @@ export default {
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
-      this.disableTruncation = true;
+      this.wasEdited = true;
       this.descriptionText = newText;
       this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
@@ -435,10 +469,8 @@ export default {
         :class="formGroupClass"
         :label="__('Description')"
         label-for="work-item-description"
-        :label-sr-only="!canShowDescriptionTemplateSelector"
       >
         <work-item-description-template-listbox
-          v-if="canShowDescriptionTemplateSelector"
           :full-path="fullPath"
           :template="selectedTemplate"
           @selectTemplate="handleSelectTemplate"
@@ -479,10 +511,12 @@ export default {
           :form-field-props="formFieldProps"
           :quick-actions-docs-path="$options.quickActionsDocsPath"
           :autocomplete-data-sources="autocompleteDataSources"
+          :restricted-tool-bar-items="restrictedToolBarItems"
+          :uploads-path="uploadsPath"
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"
-          :class="{ 'gl-mt-3': canShowDescriptionTemplateSelector }"
+          class="gl-mt-3"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"
@@ -551,7 +585,7 @@ export default {
       :work-item-id="workItemId"
       :work-item-type="workItemType"
       :can-edit="canEdit"
-      :disable-truncation="disableTruncation"
+      :enable-truncation="enableTruncation"
       :is-group="isGroup"
       :is-updating="isSubmitting"
       :without-heading-anchors="withoutHeadingAnchors"

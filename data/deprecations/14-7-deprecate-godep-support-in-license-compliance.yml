@@ -6,5 +6,5 @@
     has been replaced with Go modules.
     To reduce our maintenance cost we are deprecating License Compliance for Godep projects as of 14.7
     and will remove it in GitLab 15.0
-  documentation_url: "https://docs.gitlab.com/ee/user/compliance/license_compliance/#supported-languages-and-package-managers"
+  documentation_url: "https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/#supported-languages-and-package-managers"
   issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/327057"

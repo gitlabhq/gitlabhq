@@ -93,6 +93,12 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :unprocessable_entity)
   end
 
+  rescue_from RateLimitedService::RateLimitedError do |e|
+    e.log_request(request, current_user)
+
+    render_error(e.message, status: :too_many_requests)
+  end
+
   rescue_from Gitlab::Auth::TooManyIps do |exception|
     log_exception(exception)
 
@@ -129,6 +135,7 @@ class GraphqlController < ApplicationController
   private
 
   def check_dpop!
+    return unless !!sessionless_user? # DPoP is only enforced on token-based authentication
     return unless current_user && Feature.enabled?(:dpop_authentication, current_user)
 
     token = extract_personal_access_token
@@ -317,10 +324,7 @@ class GraphqlController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
-
     payload[:metadata][:graphql] = logs
-
-    payload[:metadata][:referer] = request.headers['Referer'] if logs.any? { |log| log[:operation_name] == 'GLQL' }
 
     payload[:exception_object] = @exception_object if @exception_object
   end

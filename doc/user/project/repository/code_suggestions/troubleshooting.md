@@ -23,6 +23,12 @@ When working with GitLab Duo Code Suggestions, you might encounter the following
 
 You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your instance meets the requirements to run Code Suggestions.
 
+For more information on troubleshooting GitLab Duo, see:
+
+- [Troubleshooting GitLab Duo](../../../../user/gitlab_duo/troubleshooting.md).
+- [GitLab Duo Chat troubleshooting](../../../gitlab_duo_chat/troubleshooting.md).
+- [Troubleshooting GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/troubleshooting.md).
+
 ## Suggestions are not displayed
 
 If suggestions are not displayed, ensure that you:

@@ -13,6 +13,7 @@ export const initProjectSelects = () => {
   document.querySelectorAll(SELECTOR).forEach((el) => {
     const {
       label,
+      description,
       inputName,
       inputId,
       groupId,
@@ -34,6 +35,7 @@ export const initProjectSelects = () => {
           props: {
             label,
             hasHtmlLabel,
+            description,
             inputName,
             inputId,
             groupId,

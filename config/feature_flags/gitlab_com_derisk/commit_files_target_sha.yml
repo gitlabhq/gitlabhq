@@ -1,0 +1,9 @@
+---
+name: commit_files_target_sha
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517122
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181459
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520058
+milestone: '17.10'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

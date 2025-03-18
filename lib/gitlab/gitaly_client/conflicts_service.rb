@@ -55,7 +55,15 @@ module Gitlab
           end
         end
 
-        response = gitaly_client_call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage, timeout: GitalyClient.long_timeout)
+        response = gitaly_client_call(
+          @repository.storage,
+          :conflicts_service,
+          :resolve_conflicts,
+          req_enum,
+          remote_storage: target_repository.storage,
+          timeout: GitalyClient.long_timeout,
+          gitaly_context: { 'enable_secrets_check' => true }
+        )
 
         if response.resolution_error.present?
           raise Gitlab::Git::Conflict::Resolver::ResolutionError, response.resolution_error

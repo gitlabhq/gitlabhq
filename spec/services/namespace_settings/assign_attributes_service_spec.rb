@@ -247,6 +247,60 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
       end
     end
 
+    context 'when `jwt_ci_cd_job_token_enabled` is assigned' do
+      let(:jwt_enabled) { false }
+      let!(:namespace_settings) do
+        group.namespace_settings.update!(jwt_ci_cd_job_token_enabled: jwt_enabled)
+        group.namespace_settings
+      end
+
+      context 'when enabling' do
+        let(:settings) { { jwt_ci_cd_job_token_enabled: true } }
+
+        it 'enables jwt and does not change the opted_out setting' do
+          expect { service.execute }
+            .to change { namespace_settings.jwt_ci_cd_job_token_enabled }.from(false).to(true)
+            .and not_change { namespace_settings.jwt_ci_cd_job_token_opted_out }
+        end
+
+        context 'when previously opted out' do
+          before do
+            namespace_settings.update!(jwt_ci_cd_job_token_opted_out: true)
+          end
+
+          it 'enables jwt and disables the opted_out setting' do
+            expect { service.execute }
+              .to change { namespace_settings.jwt_ci_cd_job_token_enabled }.from(false).to(true)
+              .and change { namespace_settings.jwt_ci_cd_job_token_opted_out }.from(true).to(false)
+          end
+        end
+      end
+
+      context 'when disabling' do
+        let(:jwt_enabled) { true }
+        let(:settings) { { jwt_ci_cd_job_token_enabled: false } }
+
+        it 'disables jwt and enables the opted_out setting' do
+          expect { service.execute }
+            .to change { namespace_settings.jwt_ci_cd_job_token_enabled }.from(true).to(false)
+            .and change { namespace_settings.jwt_ci_cd_job_token_opted_out }.from(false).to(true)
+        end
+      end
+
+      context 'for a subgroup' do
+        let(:subgroup) { create(:group, parent: group) }
+        let(:settings) { { jwt_ci_cd_job_token_enabled: true } }
+
+        it 'does not change settings' do
+          service = described_class.new(user, subgroup, settings)
+
+          expect { service.execute }.not_to change { subgroup.namespace_settings.jwt_ci_cd_job_token_enabled }
+
+          expect(subgroup.namespace_settings.errors.messages[:jwt_ci_cd_job_token_enabled]).to include('only available on top-level groups.')
+        end
+      end
+    end
+
     describe 'validating settings param for root group' do
       using RSpec::Parameterized::TableSyntax
 

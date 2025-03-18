@@ -48,14 +48,14 @@ RSpec.describe Authn::TokenField::Generator::RoutableToken, feature_category: :s
 
   describe '#generate_token' do
     let(:random_bytes) { 'a' * described_class::RANDOM_BYTES_LENGTH }
-    let(:cell_setting) { {} }
+    let(:cell_setting) { { enabled: false, id: nil } }
 
     subject(:token) { generator.generate_token }
 
     before do
       allow(described_class)
         .to receive(:random_bytes).with(described_class::RANDOM_BYTES_LENGTH).and_return(random_bytes)
-      allow(Settings).to receive(:cell).and_return(cell_setting)
+      stub_config({ cell: cell_setting })
     end
 
     shared_examples 'a routable token' do
@@ -67,8 +67,8 @@ RSpec.describe Authn::TokenField::Generator::RoutableToken, feature_category: :s
         end
       end
 
-      context 'when Settings.cells.id is present' do
-        let(:cell_setting) { { id: 100 } }
+      context 'when Settings.cells.id is present and cell is enabled' do
+        let(:cell_setting) { { enabled: true, id: 100 } }
 
         it 'generates a routable token' do
           expect(token)

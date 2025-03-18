@@ -52,12 +52,11 @@ export default {
         <span class="gl-ml-2">-</span>
         <gl-button
           data-testid="assign-yourself"
-          category="tertiary"
+          class="gl-ml-2 !gl-text-inherit hover:!gl-text-link"
           variant="link"
-          class="gl-ml-2"
           @click="$emit('assign-self')"
         >
-          <span class="gl-text-subtle hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
+          {{ __('assign yourself') }}
         </gl-button>
       </template>
     </div>

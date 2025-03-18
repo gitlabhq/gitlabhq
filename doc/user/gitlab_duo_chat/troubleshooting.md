@@ -21,11 +21,13 @@ button to appear.
 
 If this does not work, you can also check the following troubleshooting documentation:
 
-- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/troubleshooting.md)
-- [VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md)
-- [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md)
-- [JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md)
-- [Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md)
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/troubleshooting.md).
+- [VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md).
+- [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
+- [JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
+- [Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md).
+- [Troubleshooting GitLab Duo](../gitlab_duo/troubleshooting.md).
+- [Troubleshooting GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/troubleshooting.md).
 
 ## `Error M2000`
 

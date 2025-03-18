@@ -21,7 +21,7 @@ export default {
       required: true,
     },
     diffsCount: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: null,
     },

@@ -64,5 +64,19 @@ describe('Test reports utils', () => {
         expect(result).toBe('1h 1m 2s');
       });
     });
+
+    describe('when time is greater than 8 hours', () => {
+      it('should return time in hours', () => {
+        const result = formattedTime(28801);
+        expect(result).toBe('8h 1s');
+      });
+    });
+
+    describe('when time is greater than 24 hours', () => {
+      it('should return time in days', () => {
+        const result = formattedTime(86600);
+        expect(result).toBe('1d 3m 20s');
+      });
+    });
   });
 });

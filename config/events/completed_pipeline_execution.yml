@@ -1,0 +1,20 @@
+---
+description: CI Pipeline execution completed
+internal_events: true
+action: completed_pipeline_execution
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Completion status (ie. success, failed, skipped, canceled)
+product_group: pipeline_execution
+product_categories:
+- pipeline_reports
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178392
+tiers:
+- free
+- premium
+- ultimate

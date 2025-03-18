@@ -106,6 +106,12 @@ you must enable and configure product analytics.
 
 ### Product analytics provider
 
+{{< history >}}
+
+- Self-managed provider [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117804) in GitLab 16.0.
+
+{{< /history >}}
+
 Your GitLab instance connects to a product analytics provider.
 A product analytics provider is the collection of services required to receive,
 process, store and query your analytics data.
@@ -113,12 +119,6 @@ process, store and query your analytics data.
 {{< tabs >}}
 
 {{< tab title="GitLab-managed provider" >}}
-
-{{< details >}}
-
-- Offering: GitLab.com
-
-{{< /details >}}
 
 On GitLab.com you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
 
@@ -128,8 +128,6 @@ You can request to delete your data at any time by [contacting support](https://
 {{< /tab >}}
 
 {{< tab title="Self-managed provider" >}}
-
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117804) in GitLab 16.0.
 
 A self-managed product analytics provider is a deployed instance of the
 [product analytics Helm charts](https://gitlab.com/gitlab-org/analytics-section/product-analytics/helm-charts).
@@ -145,7 +143,11 @@ If you need different providers for different projects, you can define additiona
 
 ### Instance-level settings
 
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 

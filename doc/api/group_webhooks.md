@@ -59,8 +59,6 @@ Example response:
     "url_variables": [],
     "push_events_branch_filter": null,
     "branch_filter_strategy": "all_branches",
-    "custom_webhook_template": "",
-    "custom_headers": [],
     "group_id": 99,
     "issues_events": false,
     "confidential_issues_events": false,
@@ -199,8 +197,7 @@ Example response:
     },
     "request_data": {
       "object_kind": "push",
-      "event_name": "push"
-    }
+      "event_name": "push",
       "after": "f15b32277d2c55c6c595845a87109b09c913c556",
       "ref": "refs/heads/master",
       "ref_protected": true,

@@ -6,6 +6,11 @@ export default {
       required: false,
       default: null,
     },
+    inlineActions: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
@@ -22,7 +27,8 @@ export default {
         </h1>
         <div
           v-if="$scopedSlots.actions"
-          class="page-heading-actions gl-flex gl-w-full gl-shrink-0 gl-flex-wrap gl-items-center gl-gap-3 sm:gl-w-auto md:gl-mt-1 lg:gl-mt-2"
+          class="page-heading-actions gl-flex gl-shrink-0 gl-flex-wrap gl-items-center gl-gap-3 md:gl-mt-1 lg:gl-mt-2"
+          :class="{ 'gl-w-full sm:gl-w-auto': !inlineActions, 'gl-w-auto': inlineActions }"
           data-testid="page-heading-actions"
         >
           <slot name="actions"></slot>

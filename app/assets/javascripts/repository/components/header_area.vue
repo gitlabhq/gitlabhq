@@ -88,6 +88,11 @@ export default {
     'downloadArtifacts',
     'isBinary',
   ],
+  provide() {
+    return {
+      currentRef: this.currentRef,
+    };
+  },
   props: {
     projectPath: {
       type: String,
@@ -323,8 +328,12 @@ export default {
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"
               :xcode-url="xcodeUrl"
+              :web-ide-url="webIDEUrl"
+              :gitpod-url="gitpodUrl"
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
+              :show-web-ide-button="showWebIdeButton"
+              :show-gitpod-button="showGitpodButton"
             />
             <repository-overflow-menu v-if="comparePath" />
           </div>
@@ -360,7 +369,12 @@ export default {
       </div>
 
       <!-- Blob controls -->
-      <blob-controls :project-path="projectPath" :ref-type="getRefType" :is-binary="isBinary" />
+      <blob-controls
+        :project-path="projectPath"
+        :project-id-as-number="projectIdAsNumber"
+        :ref-type="getRefType"
+        :is-binary="isBinary"
+      />
     </div>
   </section>
 </template>

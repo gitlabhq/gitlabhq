@@ -23,23 +23,24 @@ When introducing a new permission, always attempt to follow the naming conventio
 
 ### Naming Permissions
 
-Our goal is for all permissions to follow a consistent pattern: `verb-feature(-subfeature)`. The feature and subfeature should always be in the singular. Additionally, we aim to limit the verbs used to ensure clarity. The preferred verbs are:
+Our goal is for all permissions to follow a consistent pattern: `action_resource(_subresource)`. The resource and subresource should always be in the singular and match the object being acted upon. For example, if an action is being evaluated against a `Project` the permission name should be in the format `action_project`. Additionally, we aim to limit the actions used to ensure clarity. The preferred actions are:
 
 - `create` - for creating an object. For example, `create_issue`.
 - `read` - for reading an object. For example, `read_issue`.
 - `update` - for updating an object. For example, `update_issue`.
 - `delete` - for deleting an object. For example, `delete_issue`.
-- `push` and `download` - these are specific verbs for file-related permissions. Other industry terms can be permitted after a justification.
+- `push` and `download` - these are specific actions for file-related permissions. Other industry terms can be permitted after a justification.
 
-We recognize that this set of verbs is limited and not applicable to every feature. Here are some verbs that, while necessary, could potentially be rephrased to align with the above conventions:
+We recognize that this set of actions is limited and not applicable to every feature. Here are some actions that, while necessary, should be rephrased to align with the above conventions:
 
 - `approve` - For example, `approve_merge_request`. Though `approve` suggests a lower role than `manage`, it could be rephrased as `create_merge_request_approval`.
 
-#### Preferred Verbs
+#### Preferred Actions
 
 - `create` is preferred over `build` or `import`
 - `read` is preferred over `access`
 - `push` is preferred over `upload`
+- `delete` is preferred over `destroy`
 
 #### Exceptions
 

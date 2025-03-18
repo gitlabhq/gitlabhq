@@ -122,3 +122,4 @@ Disadvantages
 - [Database size limits](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/#solutions)
 - [Adding database indexes](adding_database_indexes.md)
 - [Database layout and access patterns](layout_and_access_patterns.md#data-model-trade-offs)
+- [Data retention guidelines for feature development](../data_retention_policies.md)

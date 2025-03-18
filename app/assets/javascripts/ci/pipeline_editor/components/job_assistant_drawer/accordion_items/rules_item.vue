@@ -74,8 +74,13 @@ export default {
       </gl-sprintf>
     </div>
     <div class="gl-flex">
-      <gl-form-group class="gl-mr-3 gl-grow gl-basis-1/2" :label="$options.i18n.WHEN">
+      <gl-form-group
+        class="gl-mr-3 gl-grow gl-basis-1/2"
+        :label="$options.i18n.WHEN"
+        label-for="rules-when-select"
+      >
         <gl-form-select
+          id="rules-when-select"
           class="gl-mr-3 gl-grow gl-basis-1/2"
           :options="$options.whenOptions"
           data-testid="rules-when-select"

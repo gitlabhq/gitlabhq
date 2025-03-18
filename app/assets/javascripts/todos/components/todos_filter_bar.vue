@@ -21,6 +21,7 @@ import {
   TODO_TARGET_TYPE_ALERT,
   TODO_TARGET_TYPE_EPIC,
   TODO_TARGET_TYPE_SSH_KEY,
+  TODO_TARGET_TYPE_WIKI_PAGE,
   TODO_ACTION_TYPE_ASSIGNED,
   TODO_ACTION_TYPE_MENTIONED,
   TODO_ACTION_TYPE_BUILD_FAILED,
@@ -97,6 +98,11 @@ export const TARGET_TYPES = [
     id: 'Key',
     value: TODO_TARGET_TYPE_SSH_KEY,
     title: s__('Todos|SSH key'),
+  },
+  {
+    id: 'WikiPage::Meta',
+    value: TODO_TARGET_TYPE_WIKI_PAGE,
+    title: s__('Todos|Wiki page'),
   },
 ];
 

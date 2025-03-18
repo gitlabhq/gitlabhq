@@ -19,6 +19,7 @@ scope format: false do
       get :diff_for_path
       get :signatures
       get :diffs_stream, to: 'compare_diffs_stream#diffs'
+      get :diff_files_metadata
     end
   end
 
@@ -112,6 +113,7 @@ resources :commit, only: [:show], constraints: { id: Gitlab::Git::Commit::SHA_PA
     get :diff_for_path
     get :diff_files
     get :merge_requests
+    get :diff_files_metadata
   end
 end
 

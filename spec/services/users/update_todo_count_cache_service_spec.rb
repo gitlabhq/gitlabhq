@@ -23,23 +23,17 @@ RSpec.describe Users::UpdateTodoCountCacheService, feature_category: :notificati
     end
 
     it 'updates the todos_counts for users', :use_clean_rails_memory_store_caching do
-      Rails.cache.write(['users', user1.id, 'todos_done_count'], 0)
       Rails.cache.write(['users', user1.id, 'todos_pending_count'], 0)
-      Rails.cache.write(['users', user2.id, 'todos_done_count'], 0)
       Rails.cache.write(['users', user2.id, 'todos_pending_count'], 0)
 
       expect { execute_all }
-        .to change(user1, :todos_done_count).from(0).to(2)
-        .and change(user1, :todos_pending_count).from(0).to(1)
-        .and change(user2, :todos_done_count).from(0).to(1)
+        .to change(user1, :todos_pending_count).from(0).to(1)
         .and change(user2, :todos_pending_count).from(0).to(2)
 
       Todo.delete_all
 
       expect { execute_all }
-        .to change(user1, :todos_done_count).from(2).to(0)
-        .and change(user1, :todos_pending_count).from(1).to(0)
-        .and change(user2, :todos_done_count).from(1).to(0)
+        .to change(user1, :todos_pending_count).from(1).to(0)
         .and change(user2, :todos_pending_count).from(2).to(0)
     end
 
@@ -59,7 +53,7 @@ RSpec.describe Users::UpdateTodoCountCacheService, feature_category: :notificati
     it 'sets the correct cache expire time' do
       expect(Rails.cache).to receive(:write)
         .with(['users', user1.id, anything], anything, expires_in: User::COUNT_CACHE_VALIDITY_PERIOD)
-        .twice
+        .once
 
       execute_single
     end

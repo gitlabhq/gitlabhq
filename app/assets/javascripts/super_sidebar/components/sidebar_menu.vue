@@ -1,5 +1,6 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import { uniqBy } from 'lodash';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -116,9 +117,12 @@ export default {
     },
 
     pinnedItems() {
-      return this.changedPinnedItemIds.ids
+      const baseItems = this.changedPinnedItemIds.ids
         .map((id) => this.flatPinnableItems.find((item) => item.id === id))
         .filter(Boolean);
+
+      // Deduplicate Work items pinned items during migration from Issues + Epics
+      return uniqBy(baseItems, (item) => item.title);
     },
     supportsPins() {
       return this.isLoggedIn && PANELS_WITH_PINS.includes(this.panelType);

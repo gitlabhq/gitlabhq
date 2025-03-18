@@ -27,7 +27,6 @@ module VirtualRegistries
           # Used in destroying stale cached responses in DestroyOrphanCachedEntriesWorker
           enum :status, default: 0, processing: 1, pending_destruction: 2, error: 3
 
-          ignore_column :downloaded_at, remove_with: '17.9', remove_after: '2025-01-23'
           ignore_column :file_final_path, remove_with: '17.11', remove_after: '2025-03-23'
 
           sha_attribute :file_sha1

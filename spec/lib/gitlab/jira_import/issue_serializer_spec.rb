@@ -84,7 +84,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
           author_id: current_user.id,
           assignee_ids: nil,
           label_ids: [project_label.id, group_label.id] + Label.reorder(id: :asc).last(2).pluck(:id),
-          correct_work_item_type_id: issue_type.correct_id
+          work_item_type_id: issue_type.id
         )
       end
 

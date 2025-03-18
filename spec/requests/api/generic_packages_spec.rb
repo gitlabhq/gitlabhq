@@ -691,7 +691,8 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
     let_it_be(:package) { create(:generic_package, project: project) }
     let_it_be(:package_file) { create(:package_file, :generic, package: package) }
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       before do
         source_project.add_developer(user)
       end

@@ -138,13 +138,13 @@ The process for configuring TLS support depends on your installation type.
            path: /some/local/path
    ```
 
-  {{< alert type="note" >}}
+   {{< alert type="note" >}}
 
-  `/some/local/path` should be set to a local folder that exists, however no data is stored
-  in this folder. This requirement is scheduled to be removed when
-  [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
+   `/some/local/path` should be set to a local folder that exists, however no data is stored
+   in this folder. This requirement is scheduled to be removed when
+   [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
-  {{< /alert >}}
+   {{< /alert >}}
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. On the Gitaly servers, create or edit `/etc/default/gitlab` and add:

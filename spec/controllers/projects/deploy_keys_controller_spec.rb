@@ -160,7 +160,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
 
         expect(assigns(:key).errors.count).to be > 1
         expect(flash[:alert]).to eq('Deploy key must be a <a target="_blank" rel="noopener noreferrer" ' \
-          'href="/help/user/ssh#supported-ssh-key-types">supported SSH public key.</a>')
+          'href="/help/user/ssh.md#supported-ssh-key-types">supported SSH public key.</a>')
       end
     end
 

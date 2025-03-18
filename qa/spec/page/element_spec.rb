@@ -53,7 +53,7 @@ RSpec.describe QA::Page::Element do
       subject { described_class.new(:something) }
 
       it 'has no attribute[pattern]' do
-        expect(subject.attributes[:pattern]).to be(nil)
+        expect(subject.attributes[:pattern]).to be_nil
       end
 
       it 'is not required by default' do

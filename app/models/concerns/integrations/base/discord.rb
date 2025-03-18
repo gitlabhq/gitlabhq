@@ -24,7 +24,7 @@ module Integrations
           build_help_page_url(
             'user/project/integrations/discord_notifications.md',
             s_("DiscordService|Send notifications about project events to a Discord channel."),
-            _('How do I set up this integration?')
+            link_text: _('How do I set up this integration?')
           )
         end
 

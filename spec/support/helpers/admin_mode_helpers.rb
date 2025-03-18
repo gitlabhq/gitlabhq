@@ -34,7 +34,7 @@ module AdminModeHelper
       allow(Gitlab::Auth::CurrentUserMode).to receive(:new).and_call_original
 
       allow(Gitlab::Auth::CurrentUserMode).to receive(:new).with(user).and_return(fake_user_mode)
-      allow(fake_user_mode).to receive(:admin_mode?).and_return(user&.admin?)
+      allow(fake_user_mode).to receive(:admin_mode?).and_return(user&.can_access_admin_area?)
     end
   end
 end

@@ -197,8 +197,12 @@ Write commands are defined in the [`Gitlab::Redis::MultiStore::WRITE_COMMANDS` c
 
 ##### `pipelined` commands
 
-**NOTE:** The Ruby block passed to these commands will be executed twice, once per each store.
+{{< alert type="note" >}}
+
+The Ruby block passed to these commands will be executed twice, once per each store.
 Thus, excluding the Redis operations performed, the block should be idempotent.
+
+{{< /alert >}}
 
 - `pipelined`
 - `multi`

@@ -1,0 +1,15 @@
+query searchUserProjectsToMove($search: String) {
+  projects(
+    search: $search
+    minAccessLevel: PLANNER
+    withIssuesEnabled: true
+    sort: "latest_activity_desc"
+  ) {
+    nodes {
+      id
+      name
+      nameWithNamespace
+      fullPath
+    }
+  }
+}

@@ -1,12 +1,10 @@
 <script>
 import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { convertTypeEnumToName, newWorkItemPath } from '~/work_items/utils';
 import {
-  I18N_NEW_WORK_ITEM_BUTTON_LABEL,
-  I18N_WORK_ITEM_CREATED,
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
@@ -139,14 +137,20 @@ export default {
     },
     newWorkItemButtonText() {
       return this.alwaysShowWorkItemTypeSelect && this.workItemTypeName
-        ? sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, '')
+        ? sprintfWorkItem(s__('WorkItem|New %{workItemType}'), '')
         : this.newWorkItemText;
     },
     newWorkItemText() {
-      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.selectedWorkItemTypeLowercase);
+      return sprintfWorkItem(
+        s__('WorkItem|New %{workItemType}'),
+        this.selectedWorkItemTypeLowercase,
+      );
     },
     workItemCreatedText() {
-      return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.selectedWorkItemTypeLowercase);
+      return sprintfWorkItem(
+        s__('WorkItem|%{workItemType} created'),
+        this.selectedWorkItemTypeLowercase,
+      );
     },
   },
   watch: {
@@ -222,7 +226,8 @@ export default {
             if (
               this.useVueRouter &&
               WORK_ITEM_TYPE_VALUE_MAP[workItem?.workItemType?.name] !==
-                WORK_ITEM_TYPE_ENUM_INCIDENT
+                WORK_ITEM_TYPE_ENUM_INCIDENT &&
+              this.$router.getRoutes().some((route) => route.name === 'workItem')
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {

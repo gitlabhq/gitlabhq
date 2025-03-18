@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe MigrationsHelpers, feature_category: :database do
+  include StubENV
+
   let(:helper_class) do
     Class.new.tap do |klass|
       klass.include described_class
@@ -134,6 +136,125 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
       end
 
       it { expect(helper.finalized_by_version).to eq(20240104155616) }
+    end
+  end
+
+  describe '#migration_out_of_test_window?' do
+    before do
+      allow(Gitlab::Database).to receive(:min_schema_gitlab_version).and_return(Gitlab::VersionInfo.new(17, 8))
+    end
+
+    it 'returns false when RUN_ALL_MIGRATION_TESTS is set' do
+      stub_env('RUN_ALL_MIGRATION_TESTS', 'true')
+
+      expect(helper.migration_out_of_test_window?(double)).to be(false)
+    end
+
+    context 'with database migration' do
+      it 'returns true when the migration milestone is missing' do
+        migration_class = Class.new(Gitlab::Database::Migration[2.2])
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
+      end
+
+      it 'returns true when migration milestone is before min milestone' do
+        migration_class = Class.new(Gitlab::Database::Migration[2.2]) do
+          milestone '17.7'
+        end
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
+      end
+
+      it 'returns false when migration milestone is equal or after min milestone' do
+        migration_class = Class.new(Gitlab::Database::Migration[2.2]) do
+          milestone '17.8'
+        end
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+      end
+    end
+
+    context 'with background migration' do
+      def migration_paths(timestamp)
+        [
+          Rails.root.join("db/migrate/#{timestamp}_*.rb").to_s,
+          Rails.root.join("db/post_migrate/#{timestamp}_*.rb").to_s
+        ]
+      end
+
+      let(:migration_class) { Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) }
+
+      it 'returns false if the migration is not finalized' do
+        allow(helper).to receive(:finalized_by_version).and_return('')
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+      end
+
+      it 'returns false if the finalizing migration file can not be found' do
+        finalized_by = '20240104155616'
+        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+
+        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by)).and_return([])
+        #   File.join(Rails.root, "db/migrate/#{finalized_by}_*.rb"),
+        #   File.join(Rails.root, "db/post_migrate/#{finalized_by}_*.rb")
+        # ).and_return([])
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+      end
+
+      it 'returns false if the finalizing migration class name can not be found' do
+        finalized_by = '20240104155616'
+        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+
+        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+          .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_no_such_file.rb"])
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+      end
+
+      it 'returns false if the finalizing migration class name can not be constantized' do
+        finalized_by = '20240104155616'
+        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+
+        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+          .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_no_such_class.rb"])
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+      end
+
+      it 'returns true if the finalizing migration milestone is missing' do
+        finalized_by = '20240104155616'
+        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+
+        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+          .and_return(["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_no_milestone.rb"])
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
+      end
+
+      it 'returns true if the finalizing migration milestone is before min milestone' do
+        finalized_by = '20240104155617'
+        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+
+        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+          .and_return(
+            ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_milestone_17_7.rb"]
+          )
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(true)
+      end
+
+      it 'returns false if the finalizing migration milestone is equal or after min milestone' do
+        finalized_by = '20240104155618'
+        allow(helper).to receive(:finalized_by_version).and_return(finalized_by)
+
+        expect(Dir).to receive(:[]).with(*migration_paths(finalized_by))
+          .and_return(
+            ["spec/fixtures/migrations/db/post_migrate/#{finalized_by}_test_migration_with_milestone_17_8.rb"]
+          )
+
+        expect(helper.migration_out_of_test_window?(migration_class)).to be(false)
+      end
     end
   end
 end

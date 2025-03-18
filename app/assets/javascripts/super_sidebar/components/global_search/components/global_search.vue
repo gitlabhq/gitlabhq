@@ -131,7 +131,7 @@ export default {
       return !this.searchText;
     },
     searchTermOverMin() {
-      return this.searchText?.length > SEARCH_SHORTCUTS_MIN_CHARACTERS;
+      return this.searchText?.length >= SEARCH_SHORTCUTS_MIN_CHARACTERS;
     },
     showScopedSearchItems() {
       return this.searchTermOverMin && this.scopedSearchOptions.length > 0;
@@ -468,7 +468,7 @@ export default {
           @input="getAutocompleteOptions"
           @keydown="onKeydown"
         />
-        <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">
+        <span :id="$options.SEARCH_INPUT_DESCRIPTION" class="gl-sr-only">
           {{ $options.i18n.SEARCH_DESCRIBED_BY_WITH_RESULTS }}
         </span>
 
@@ -480,7 +480,6 @@ export default {
         />
       </div>
       <span
-        role="region"
         :data-testid="$options.SEARCH_RESULTS_DESCRIPTION"
         class="gl-sr-only"
         aria-live="polite"

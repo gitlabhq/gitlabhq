@@ -24,6 +24,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
   before do
     stub_feature_flags(vscode_web_ide: false)
+    stub_feature_flags(blob_overflow_menu: false)
 
     sign_in(user)
   end
@@ -201,7 +202,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
     it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
       click_link('.gitignore')
-      edit_in_web_ide
+      click_button 'Edit'
+      click_link_or_button 'Web IDE'
 
       expect_fork_prompt
 

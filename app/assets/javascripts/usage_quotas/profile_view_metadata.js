@@ -1,6 +1,6 @@
-import { PROFILE_VIEW_TYPE } from '~/usage_quotas/constants';
-import { getStorageTabMetadata } from '~/usage_quotas/storage/tab_metadata';
+import { getNamespaceStorageTabMetadata } from './storage/namespace/tab_metadata';
+import { mountUsageQuotasApp } from './utils';
 
-export const usageQuotasTabsMetadata = [
-  getStorageTabMetadata({ viewType: PROFILE_VIEW_TYPE }),
-].filter(Boolean);
+const usageQuotasTabsMetadata = [getNamespaceStorageTabMetadata()].filter(Boolean);
+
+export default () => mountUsageQuotasApp(usageQuotasTabsMetadata);

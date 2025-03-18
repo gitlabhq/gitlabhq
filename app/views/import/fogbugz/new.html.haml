@@ -2,27 +2,33 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-%h1.page-title.gl-text-size-h-display.gl-flex.gl-items-center
-  .gl-flex.gl-items-center.gl-justify-center
-    = sprite_icon('bug', css_class: 'gl-mr-3', size: 48)
-  = _('Import projects from FogBugz')
-%hr
+- if Feature.enabled?(:new_project_creation_form, @user)
+  #js-vue-import-fogbugz-project-app{ data: {
+    back_button_path: new_project_path(anchor: 'import_project'),
+    form_path: callback_import_fogbugz_path(namespace_id: params[:namespace_id])
+  } }
+- else
+  %h1.page-title.gl-text-size-h-display.gl-flex.gl-items-center
+    .gl-flex.gl-items-center.gl-justify-center
+      = sprite_icon('bug', css_class: 'gl-mr-3', size: 48)
+    = _('Import projects from FogBugz')
+  %hr
 
-= form_tag callback_import_fogbugz_path(namespace_id: params[:namespace_id]) do
-  %p
-    = _("To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import.")
-  .form-group.row
-    = label_tag :uri, _('FogBugz URL'), class: 'col-form-label col-md-2'
-    .col-md-4
-      = text_field_tag :uri, nil, placeholder: 'https://mycompany.fogbugz.com', class: 'form-control gl-form-input'
-  .form-group.row
-    = label_tag :email, _('FogBugz Email'), class: 'col-form-label col-md-2'
-    .col-md-4
-      = text_field_tag :email, nil, class: 'form-control gl-form-input'
-  .form-group.row
-    = label_tag :password, _('FogBugz Password'), class: 'col-form-label col-md-2'
-    .col-md-4
-      = password_field_tag :password, nil, class: 'form-control gl-form-input'
-  .form-actions
-    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
-      = _('Continue to the next step')
+  = form_tag callback_import_fogbugz_path(namespace_id: params[:namespace_id]) do
+    %p
+      = _("To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import.")
+    .form-group.row
+      = label_tag :uri, _('FogBugz URL'), class: 'col-form-label col-md-2'
+      .col-md-4
+        = text_field_tag :uri, nil, placeholder: 'https://mycompany.fogbugz.com', class: 'form-control gl-form-input'
+    .form-group.row
+      = label_tag :email, _('FogBugz Email'), class: 'col-form-label col-md-2'
+      .col-md-4
+        = text_field_tag :email, nil, class: 'form-control gl-form-input'
+    .form-group.row
+      = label_tag :password, _('FogBugz Password'), class: 'col-form-label col-md-2'
+      .col-md-4
+        = password_field_tag :password, nil, class: 'form-control gl-form-input'
+    .form-actions
+      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
+        = _('Continue to the next step')

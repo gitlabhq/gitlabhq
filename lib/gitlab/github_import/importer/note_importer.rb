@@ -62,9 +62,7 @@ module Gitlab
         private
 
         def note_body(author_found)
-          text = MarkdownText.convert_ref_links(note.note, project)
-          text = wrap_mentions_in_backticks(text)
-          MarkdownText.format(text, note.author, author_found)
+          MarkdownText.format(note.note, note.author, author_found, project: project)
         end
       end
     end

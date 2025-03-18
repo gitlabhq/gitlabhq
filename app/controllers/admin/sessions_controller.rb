@@ -41,7 +41,7 @@ class Admin::SessionsController < ApplicationController
   private
 
   def user_is_admin!
-    render_404 unless current_user&.admin?
+    render_404 unless current_user&.can_access_admin_area?
   end
 
   def two_factor_enabled_for_user?

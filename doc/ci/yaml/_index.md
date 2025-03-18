@@ -480,7 +480,11 @@ In this example, if the `INCLUDE_BUILDS` variable is:
 
 #### `include:integrity`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593) in GitLab 17.9.
+
+{{< /history >}}
 
 Use `integrity` with `include:remote` to specifiy a SHA256 hash of the included remote file.
 If `integrity` does not match the actual content, the remote file is not processed
@@ -523,9 +527,7 @@ The order of the items in `stages` defines the execution order for jobs:
 - Jobs in the next stage run after the jobs from the previous stage complete successfully.
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
-There must be at least one other job in a different stage. `.pre` and `.post` stages
-can be used in [required pipeline configuration](../../administration/settings/continuous_integration.md#required-pipeline-configuration)
-to define compliance jobs that must run before or after project pipeline jobs.
+There must be at least one other job in a different stage.
 
 **Keyword type**: Global keyword.
 
@@ -552,7 +554,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 - If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 - If a stage is defined but no jobs use it, the stage is not visible in the pipeline,
-  which can help [compliance pipeline configurations](../../user/group/compliance_pipelines.md):
+  which can help [compliance pipeline configurations](../../user/compliance/compliance_pipelines.md):
   - Stages can be defined in the compliance configuration but remain hidden if not used.
   - The defined stages become visible when developers use them in job definitions.
 
@@ -1197,8 +1199,10 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   immediately becomes invalid if the job is canceled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
   for more details.
 
-If a job times out, the `after_script` commands do not execute.
-[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out jobs.
+For jobs that time out:
+
+- `after_script` commands do not execute by default.
+- You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
 
 **Related topics**:
 
@@ -1345,6 +1349,13 @@ link outside it.
   - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
     [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
   - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+- For [GitLab Pages job](#pages):
+  - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
+    the [`pages:pages.publish`](#pagespagespublish) path is automatically appended to `artifacts:paths`,
+    so you don't need to specify it again.
+  - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
+    when the [`pages:pages.publish`](#pagespagespublish) path is not specified,
+    the `public` directory is automatically appended to `artifacts:paths`.
 
 CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
@@ -3590,13 +3601,10 @@ You must:
 **Example of `pages`**:
 
 ```yaml
-pages:
+pages:  # specifies that this is a Pages job and publishes the default public directory
   stage: deploy
   script:
     - mv my-html-content public
-  artifacts:
-    paths:
-      - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: production
@@ -3612,6 +3620,7 @@ This directory is exported as an artifact and published with GitLab Pages.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
+- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages:pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
 
 {{< /history >}}
 
@@ -3621,6 +3630,9 @@ The top-level `publish` keyword is deprecated as of GitLab 17.9 and must now be 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
 **Supported values**: A path to a directory containing the Pages content.
+In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
+if not specified, the default `public` directory is used and if specified,
+this path is automatically appended to [`artifacts:paths`](#artifactspaths).
 
 **Example of `pages.publish`**:
 
@@ -3629,11 +3641,8 @@ pages:
   stage: deploy
   script:
     - npx @11ty/eleventy --input=path/to/eleventy/root --output=dist
-  artifacts:
-    paths:
-      - dist
   pages:
-    publish: dist
+    publish: dist  # this path is automatically appended to artifacts:paths
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: production
@@ -3651,11 +3660,8 @@ pages:
   script:
     - mkdir -p $CUSTOM_FOLDER/$CUSTOM_PATH
     - cp -r public $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
-  artifacts:
-    paths:
-      - $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
   pages:
-    publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
+    publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER  # this path is automatically appended to artifacts:paths
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
@@ -3703,11 +3709,8 @@ pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
-  pages:
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$CI_COMMIT_BRANCH"
-  artifacts:
-    paths:
-    - public
 ```
 
 In this example, a different pages deployment is created for each branch.
@@ -3757,11 +3760,8 @@ pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"
-  pages:
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     expire_in: 1 week
-  artifacts:
-    paths:
-      - public
 ```
 
 ### `parallel`
@@ -4647,7 +4647,7 @@ In this example:
   section. The project containing the `include` section can be different than the project
   running the pipeline when using:
   - [Nested includes](includes.md#use-nested-includes).
-  - [Compliance pipelines](../../user/group/compliance_pipelines.md).
+  - [Compliance pipelines](../../user/compliance/compliance_pipelines.md).
 - `rules:exists` cannot search for the presence of [artifacts](../jobs/job_artifacts.md),
   because `rules` evaluation happens before jobs run and artifacts are fetched.
 
@@ -5518,7 +5518,7 @@ be assigned every tag listed in the job.
 
 **Supported values**:
 
-- An array of tag names, which are case sensitive.
+- An array of tag names, which are case-sensitive.
 - CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `tags`**:
@@ -5650,7 +5650,11 @@ trigger-multi-project-pipeline:
 Use `trigger:include` to declare that a job is a "trigger job" which starts a
 [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines).
 
-Use `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+Additionally, use:
+
+- `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+- `trigger:include:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+  uses [`spec:inputs`](#specinputs).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -5743,6 +5747,26 @@ successfully complete before starting.
   jobs in later stages do not start until the trigger job completes.
 - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
   the downstream pipeline is considered successful and the trigger job shows **success**.
+
+#### `trigger:inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+
+{{</history >}}
+
+Use `trigger:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+uses [`spec:inputs`](#specinputs).
+
+**Example of `trigger:inputs`**:
+
+```yaml
+trigger:
+  - project: 'my-group/my-project'
+    inputs:
+      website: "My website"
+```
 
 #### `trigger:forward`
 

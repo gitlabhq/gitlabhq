@@ -15,6 +15,7 @@ export default {
       variables() {
         return {
           ...this.variables,
+          includeMergeabilityChecks: this.showMergeChecksSuccess,
           perPage: PER_PAGE,
         };
       },
@@ -43,6 +44,7 @@ export default {
       },
     },
   },
+  inject: { showMergeChecksSuccess: { default: false } },
   props: {
     query: {
       type: String,

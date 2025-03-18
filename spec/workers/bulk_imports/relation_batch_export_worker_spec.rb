@@ -4,12 +4,24 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:batch) { create(:bulk_import_export_batch) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:export) { create(:bulk_import_export, :batched, project: project) }
+  let_it_be_with_reload(:batch) { create(:bulk_import_export_batch, export: export) }
+  let_it_be(:cache_key) { BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id) }
 
   let(:job_args) { [user.id, batch.id] }
 
   describe '#perform' do
     subject(:perform) { described_class.new.perform(user.id, batch.id) }
+
+    before_all do
+      Gitlab::Cache::Import::Caching.set_add(cache_key, label.id)
+    end
+
+    after(:all) do
+      Gitlab::Cache::Import::Caching.expire(cache_key, 0)
+    end
 
     include_examples 'an idempotent worker' do
       it 'executes RelationBatchExportService' do

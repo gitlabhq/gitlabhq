@@ -14,7 +14,7 @@ title: Interactive web terminals
 
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline. You can think of it like a method for
-debugging with SSH, but done directly from the job page. Since this is giving the user
+debugging with SSH, but done directly from the job page. Because this is giving the user
 shell access to the environment where [GitLab Runner](https://docs.gitlab.com/runner/)
 is deployed, some [security precautions](../../administration/integration/terminal.md#security) were
 taken to protect the users.
@@ -69,9 +69,9 @@ disconnects and does not wait for the user to finish. Follow
 improving this behavior.
 {{< /alert >}}
 
-Sometimes, when a job is running, things don't go as you would expect, and it
-would be helpful if one can have a shell to aid debugging. When a job is
-running, on the right panel, you can see a `debug` button ({{< icon name="external-link" >}}) that opens the terminal
+Sometimes, when a job is running, things don't go as you expect. It
+would be helpful if one can have a shell to aid debugging. When a job runs,
+the right panel displays a `debug` button ({{< icon name="external-link" >}}) that opens the terminal
 for the current job. Only the person who started a job can debug it.
 
 ![Example of job running with terminal available](img/interactive_web_terminal_running_job_v17_3.png)
@@ -81,9 +81,9 @@ the terminal and type commands like in a standard shell.
 
 ![terminal of the job](img/interactive_web_terminal_page_v11_1.png)
 
-If you have the terminal open and the job has finished with its tasks, the
-terminal blocks the job from finishing for the duration configured in
-[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section) until you
-close the terminal window.
+If your terminal is open after the job completes,
+the job doesn't finish until after the configured
+[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+duration. To avoid this, you can close the terminal after the job finishes.
 
-![finished job with terminal open](img/finished_job_with_terminal_open_v11_2.png)
+![Job complete with active terminal session](img/finished_job_with_terminal_open_v11_2.png)

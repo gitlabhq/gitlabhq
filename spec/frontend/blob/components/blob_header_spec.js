@@ -73,64 +73,108 @@ describe('Blob Header Default Actions', () => {
   }
 
   describe('rendering', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     describe('WebIdeLink component', () => {
-      it('renders the WebIdeLink component with the correct props', async () => {
-        const { ideEditPath, editBlobPath, gitpodBlobUrl, pipelineEditorPath } = Blob;
-        const showForkSuggestion = false;
-        const showWebIdeForkSuggestion = false;
-        await createComponent({ propsData: { showForkSuggestion, showWebIdeForkSuggestion } });
+      it('does not render WebIdeLink component', () => {
+        expect(findWebIdeLink().exists()).toBe(false);
+      });
 
-        expect(findWebIdeLink().props()).toMatchObject({
-          showEditButton: true,
-          buttonVariant: 'confirm',
-          editUrl: editBlobPath,
-          webIdeUrl: ideEditPath,
-          needsToFork: showForkSuggestion,
-          needsToForkWithWebIde: showWebIdeForkSuggestion,
-          showPipelineEditorButton: Boolean(pipelineEditorPath),
-          pipelineEditorUrl: pipelineEditorPath,
-          gitpodUrl: gitpodBlobUrl,
-          showGitpodButton: applicationInfoMock.gitpodEnabled,
-          gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
+      describe('when blob_overflow_menu feature flag is false', () => {
+        it('renders the WebIdeLink component with the correct props', async () => {
+          const { ideEditPath, editBlobPath, gitpodBlobUrl, pipelineEditorPath } = Blob;
+          const showForkSuggestion = false;
+          const showWebIdeForkSuggestion = false;
+          await createComponent({
+            options: {
+              provide: {
+                glFeatures: { blobOverflowMenu: false },
+              },
+            },
+            propsData: { showForkSuggestion, showWebIdeForkSuggestion },
+          });
+
+          expect(findWebIdeLink().props()).toMatchObject({
+            showEditButton: true,
+            buttonVariant: 'confirm',
+            editUrl: editBlobPath,
+            webIdeUrl: ideEditPath,
+            needsToFork: showForkSuggestion,
+            needsToForkWithWebIde: showWebIdeForkSuggestion,
+            showPipelineEditorButton: Boolean(pipelineEditorPath),
+            pipelineEditorUrl: pipelineEditorPath,
+            gitpodUrl: gitpodBlobUrl,
+            showGitpodButton: applicationInfoMock.gitpodEnabled,
+            gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
+          });
         });
+
+        it('passes the edit button variant down to the WebIdeLink', () => {
+          const editButtonVariant = 'danger';
+
+          createComponent({
+            options: {
+              provide: {
+                glFeatures: { blobOverflowMenu: false },
+              },
+            },
+            propsData: { editButtonVariant },
+          });
+
+          expect(findWebIdeLink().props('buttonVariant')).toBe(editButtonVariant);
+        });
+
+        it.each([[{ archived: true }], [{ editBlobPath: null }]])(
+          'does not render the WebIdeLink component when blob is archived or does not have an edit path',
+          (blobProps) => {
+            createComponent({
+              blobProps,
+              options: {
+                provide: {
+                  glFeatures: { blobOverflowMenu: false },
+                },
+              },
+            });
+
+            expect(findWebIdeLink().exists()).toBe(false);
+          },
+        );
       });
-
-      it('passes the edit button variant down to the WebIdeLink', () => {
-        const editButtonVariant = 'danger';
-
-        createComponent({ propsData: { editButtonVariant } });
-
-        expect(findWebIdeLink().props('buttonVariant')).toBe(editButtonVariant);
-      });
-
-      it.each([[{ archived: true }], [{ editBlobPath: null }]])(
-        'does not render the WebIdeLink component when blob is archived or does not have an edit path',
-        (blobProps) => {
-          createComponent({ blobProps });
-
-          expect(findWebIdeLink().exists()).toBe(false);
-        },
-      );
     });
 
     describe('default render', () => {
       it.each`
-        findComponent         | componentName
-        ${findTableContents}  | ${'TableContents'}
-        ${findViewSwitcher}   | ${'ViewSwitcher'}
-        ${findDefaultActions} | ${'DefaultActions'}
-        ${findBlobFilePath}   | ${'BlobFilePath'}
+        findComponent        | componentName
+        ${findTableContents} | ${'TableContents'}
+        ${findViewSwitcher}  | ${'ViewSwitcher'}
+        ${findBlobFilePath}  | ${'BlobFilePath'}
       `('renders $componentName component by default', ({ findComponent }) => {
-        createComponent();
-
         expect(findComponent().exists()).toBe(true);
       });
     });
 
-    it('does not render DefaultActions when on blob page', () => {
-      createComponent({ propsData: { isBlobPage: true } });
+    describe('DefaultActions component', () => {
+      it('renders DefaultActions', () => {
+        expect(findDefaultActions().exists()).toBe(true);
+      });
 
-      expect(findDefaultActions().exists()).toBe(false);
+      it('passes information about render error down to default actions', () => {
+        createComponent({
+          propsData: {
+            hasRenderError: true,
+          },
+        });
+
+        expect(findDefaultActions().props('hasRenderError')).toBe(true);
+      });
+
+      it('passes the correct isBinary value to default actions when viewing a binary file', () => {
+        createComponent({ propsData: { isBinary: true } });
+
+        expect(findDefaultActions().props('isBinary')).toBe(true);
+      });
     });
 
     it.each([[{ showBlameToggle: true }], [{ showBlameToggle: false }]])(
@@ -174,21 +218,6 @@ describe('Blob Header Default Actions', () => {
         mountFn: mount,
       });
       expect(wrapper.text()).toContain(slotContent);
-    });
-
-    it('passes information about render error down to default actions', () => {
-      createComponent({
-        propsData: {
-          hasRenderError: true,
-        },
-      });
-      expect(findDefaultActions().props('hasRenderError')).toBe(true);
-    });
-
-    it('passes the correct isBinary value to default actions when viewing a binary file', () => {
-      createComponent({ propsData: { isBinary: true } });
-
-      expect(findDefaultActions().props('isBinary')).toBe(true);
     });
 
     it('passes the `showBlobSize` prop to `blobFilepath`', () => {

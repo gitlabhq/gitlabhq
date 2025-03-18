@@ -63,6 +63,12 @@ suggests that [ED25519](https://ed25519.cr.yp.to/) keys are more secure and perf
 OpenSSH 6.5 introduced ED25519 SSH keys in 2014, and they should be available on most
 operating systems.
 
+{{< alert type="note" >}}
+
+ED25519 keys might not be fully supported by all FIPS systems. For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
+
+{{< /alert >}}
+
 ### ED25519_SK SSH keys
 
 To use ED25519_SK SSH keys on GitLab, your local client and GitLab server
@@ -350,7 +356,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date.
    - Administrators can view expiration dates and use them for
-     guidance when [deleting keys](../administration/credentials_inventory.md#delete-a-users-ssh-key).
+     guidance when [deleting keys](../administration/credentials_inventory.md#delete-ssh-keys).
    - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now.
    - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date.
 1. Select **Add key**.

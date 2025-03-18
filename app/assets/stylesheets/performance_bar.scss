@@ -9,58 +9,16 @@
   z-index: #{$zindex-modal-backdrop - 1};
 
   height: $performance-bar-height;
-  background: $black;
   font-size: $gl-font-size-small;
   line-height: $performance-bar-height;
   color: $gray-50;
-
-  select {
-    width: 200px;
-  }
-
-  input {
-    width: $input-short-width - 60px;
-  }
-
-  select,
-  input {
-    color: inherit;
-    background-color: rgba($white, 0.2);
-
-    &::placeholder {
-      color: rgba($white, 0.7);
-    }
-  }
 
   option {
     color: initial;
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-link,
-  .gl-button {
-    color: $white;
-  }
-
   &.disabled {
     display: none;
-  }
-
-  &.production {
-    background-color: $perf-bar-production;
-  }
-
-  &.staging {
-    background-color: $perf-bar-staging;
-  }
-
-  &.development {
-    background-color: $perf-bar-development;
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      background-color: $red-950;
-    }
   }
 
   // UI Elements
@@ -87,22 +45,6 @@
     color: $perf-bar-canary-text;
   }
 
-  strong {
-    color: $white;
-  }
-
-  table {
-    color: $black;
-
-    td {
-      vertical-align: top;
-    }
-
-    .backtrace-row {
-      display: none;
-    }
-  }
-
   .view {
     flex-shrink: 0;
 
@@ -126,19 +68,4 @@
       }
     }
   }
-
-  .performance-bar-modal {
-    .modal-body {
-      padding: 0;
-    }
-
-    .modal-footer {
-      display: none;
-    }
-  }
 }
-
-#modal-peek-pg-queries-content {
-  color: $black;
-}
-

@@ -5,7 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo Chat best practices
 ---
 
-When prompting GitLab Duo Chat with questions, keep the following best practices in mind.
+When prompting GitLab Duo Chat with questions, apply the following best practices
+to receive concrete examples and specific guidance.
 
 ## Have a conversation
 

@@ -2,7 +2,7 @@
 stage: Growth
 group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Read-only namespaces
+title: Read-only projects
 ---
 
 {{< details >}}
@@ -12,25 +12,29 @@ title: Read-only namespaces
 
 {{< /details >}}
 
-On GitLab.com, a top-level namespace is placed in a read-only state when it either:
+A project is placed in a read-only state when it exceeds the allocated storage limit on the:
 
-- Exceeds the [free user limit](free_user_limit.md) when the namespace visibility is private.
-- Exceeds the [storage usage quota](storage_usage_quotas.md), regardless of namespace visibility.
+- Free tier, when any project in the namespace is over the [free limit](storage_usage_quotas.md#free-limit).
+- Premium and Ultimate tiers, when any project in the namespace is over the [fixed project limit](storage_usage_quotas.md#fixed-project-limit).
 
-While a namespace is in a read-only state, a banner appears at the
-top of the page.
+When a project is read-only due to storage limits, you can't push or add large files (LFS) to the project's repository.
+A banner at the top of the project or namespace page indicates the read-only status.
 
-Your ability to write new data to read-only namespaces is restricted. For more
-information, see [Restricted actions](#restricted-actions).
+## Read-only namespaces
 
-## Remove the read-only state
+{{< details >}}
 
-To restore a namespace to its standard state, you can:
+- Tier: Free
 
-- For exceeded free user limits:
-  - [Reduce the number of members](free_user_limit.md#manage-members-in-your-group-namespace) in your namespace.
-  - [Start a free trial](https://gitlab.com/-/trial_registrations/new), which includes an unlimited number of members.
-  - [Purchase a paid tier](https://about.gitlab.com/pricing/).
+{{< /details >}}
+
+On the Free tier, a namespace is placed in a read-only state when it exceeds the [free user limit](free_user_limit.md), when the namespace visibility is private.
+
+To remove the read-only state of a namespace and its projects, you can:
+
+- [Reduce the number of members](free_user_limit.md#manage-members-in-your-group-namespace) in your namespace.
+- [Start a free trial](https://gitlab.com/-/trial_registrations/new), which includes an unlimited number of members.
+- [Purchase a paid tier](https://about.gitlab.com/pricing/).
 
 ## Restricted actions
 

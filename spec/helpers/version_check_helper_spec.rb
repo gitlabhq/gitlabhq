@@ -51,14 +51,32 @@ RSpec.describe VersionCheckHelper do
     context 'when show_version_check? is true' do
       let(:show_version_check) { true }
 
-      before do
-        allow_next_instance_of(VersionCheck) do |instance|
-          allow(instance).to receive(:response).and_return({ "severity" => "success" })
+      context 'when it has no cached version_check response' do
+        before do
+          allow(Rails.cache).to receive(:fetch).with('version_check').and_return(nil)
+        end
+
+        it 'schedules a version check worker' do
+          expect(Gitlab::Version::VersionCheckCronWorker).to receive(:perform_async)
+
+          helper.gitlab_version_check
+        end
+
+        it 'returns nil' do
+          expect(helper.gitlab_version_check).to be nil
         end
       end
 
-      it 'returns an instance of the VersionCheck class if the user has access' do
-        expect(helper.gitlab_version_check).to eq({ "severity" => "success" })
+      context 'when it has a cached version_check response' do
+        let(:version_check) { { "severity" => "success" } }
+
+        before do
+          allow(Rails.cache).to receive(:fetch).with('version_check').and_return(version_check)
+        end
+
+        it 'returns the cached version check response' do
+          expect(helper.gitlab_version_check).to eq(version_check)
+        end
       end
     end
   end

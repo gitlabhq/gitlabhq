@@ -77,6 +77,7 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
       expect(todo_yml('A/Offense')).to eq(<<~YAML)
         ---
         A/Offense:
+          Details: grace period
           Exclude:
             - 'a.rb'
       YAML
@@ -85,6 +86,7 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
         ---
         # Cop supports --autocorrect.
         B/AutoCorrect:
+          Details: grace period
           Exclude:
             - 'd.rb'
       YAML
@@ -92,6 +94,7 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
       expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
         ---
         B/TooManyOffenses:
+          Details: grace period
           Exclude:
             - 'a.rb'
             - 'c.rb'
@@ -164,6 +167,7 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
         expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
           ---
           B/TooManyOffenses:
+            Details: grace period
             Exclude:
               - 'a.rb'
               - 'c.rb'
@@ -252,6 +256,7 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
           expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
             ---
             B/TooManyOffenses:
+              Details: grace period
               Exclude:
                 - 'a.rb'
                 - 'c.rb'

@@ -110,7 +110,7 @@ module Gitlab
       end
 
       def expand_directions
-        return [:both] if (1...MAX_EXPANDABLE_LINES).cover?(line_count_between)
+        return [:both] if (1..MAX_EXPANDABLE_LINES).cover?(line_count_between)
 
         directions = []
         directions << :down if @previous_line_pos&.positive?
@@ -123,7 +123,8 @@ module Gitlab
       def line_count_between
         return 0 if invalid_pos?(@previous_line_pos) || invalid_pos?(@next_line_pos)
 
-        @next_line_pos - @previous_line_pos
+        # 1..3 -> lines in between: 1
+        @next_line_pos - @previous_line_pos - 1
       end
 
       def invalid_pos?(pos)

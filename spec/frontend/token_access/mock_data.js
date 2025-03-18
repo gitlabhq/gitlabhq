@@ -164,7 +164,7 @@ export const inboundJobTokenScopeDisabledResponse = {
   },
 };
 
-export const inboundGroupsAndProjectsWithScopeResponse = {
+export const inboundGroupsAndProjectsWithScopeResponse = (hasAutopopulatedEntries = true) => ({
   data: {
     project: {
       __typename: 'Project',
@@ -197,12 +197,14 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
             },
           ],
         },
-        groupAllowlistAutopopulatedIds: ['gid://gitlab/Group/45'],
-        inboundAllowlistAutopopulatedIds: ['gid://gitlab/Project/23'],
+        groupAllowlistAutopopulatedIds: hasAutopopulatedEntries ? ['gid://gitlab/Group/45'] : [],
+        inboundAllowlistAutopopulatedIds: hasAutopopulatedEntries
+          ? ['gid://gitlab/Project/23']
+          : [],
       },
     },
   },
-};
+});
 
 export const getSaveNamespaceHandler = (error) =>
   jest.fn().mockResolvedValue({
@@ -256,6 +258,19 @@ export const mockPermissionsMutationResponse = ({
   },
 });
 
+export const mockAuthLogsCountResponse = (count) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/26',
+      __typename: 'Project',
+      ciJobTokenAuthLogs: {
+        __typename: 'CiJobTokenAuthLogConnection',
+        count,
+      },
+    },
+  },
+});
+
 export const mockAuthLogsResponse = (hasNextPage = false) => ({
   data: {
     project: {
@@ -288,25 +303,22 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
   },
 });
 
-export const mockAutopopulateAllowlistResponse = {
+export const mockAutopopulateAllowlistResponse = ({ errorMessage } = {}) => ({
   data: {
     ciJobTokenScopeAutopopulateAllowlist: {
       status: 'complete',
-      errors: [],
+      errors: errorMessage ? [{ message: errorMessage }] : [],
       __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
     },
   },
-};
+});
 
-export const mockAutopopulateAllowlistError = {
+export const mockRemoveAutopopulatedEntriesResponse = ({ errorMessage } = {}) => ({
   data: {
-    ciJobTokenScopeAutopopulateAllowlist: {
-      errors: [
-        {
-          message: 'An error occurred',
-        },
-      ],
-      __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
+    ciJobTokenScopeClearAllowlistAutopopulations: {
+      status: 'complete',
+      errors: errorMessage ? [{ message: errorMessage }] : [],
+      __typename: 'CiJobTokenScopeClearAllowlistAutopopulationsPayload',
     },
   },
-};
+});

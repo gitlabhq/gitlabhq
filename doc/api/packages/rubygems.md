@@ -99,7 +99,7 @@ GET projects/:id/packages/rubygems/api/v1/dependencies
 curl --header "Authorization:<personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/dependencies?gems=my_gem,foo"
 ```
 
-This endpoint returns a marshalled array of hashes for all versions of the requested gems. Since the
+This endpoint returns a marshalled array of hashes for all versions of the requested gems. Because the
 response is marshalled, you can store it in a file. If Ruby is installed, you can use the following
 Ruby command to read the response. For this to work, you must
 [set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/_index.md#authenticate-to-the-package-registry):

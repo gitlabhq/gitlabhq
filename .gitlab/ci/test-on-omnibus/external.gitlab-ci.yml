@@ -1,0 +1,38 @@
+# This file is loaded when omnibus tests are triggered from a different repository
+# It overrides base job definition using pipeline-common definition which does not require gitlab repo code to be fetched
+
+include:
+  - project: gitlab-org/quality/pipeline-common
+    ref: 9.13.0
+    file:
+      - /ci/base.gitlab-ci.yml
+
+variables:
+  RUN_WITH_BUNDLE: "false"
+
+# Populate runner cache with preinstalled version of gitlab-qa gem
+cache-gitlab-qa:
+  extends:
+    - .gitlab-qa-install
+  stage: .pre
+  tags:
+    - e2e
+  variables:
+    GIT_STRATEGY: none
+  script: echo "Successfully installed gitlab-qa gem"
+  cache:
+    policy: pull-push
+  rules:
+    - when: always
+      allow_failure: true
+
+.omnibus-e2e:
+  extends:
+    - .qa-base
+    - .e2e-test-variables
+  stage: test
+  tags:
+    - e2e
+  variables:
+    GIT_STRATEGY: none
+  allow_failure: true

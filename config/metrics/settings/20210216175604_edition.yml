@@ -2,7 +2,7 @@
 data_category: standard
 key_path: edition
 description: Edition of GitLab such as EE or CE
-product_group: distribution_deploy
+product_group: self_managed
 product_categories:
 - build
 value_type: string

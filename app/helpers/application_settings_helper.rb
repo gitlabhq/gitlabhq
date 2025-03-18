@@ -258,6 +258,8 @@ module ApplicationSettingsHelper
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
+      :autocomplete_users_limit,
+      :autocomplete_users_unauthenticated_limit,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
@@ -371,6 +373,7 @@ module ApplicationSettingsHelper
       :performance_bar_allowed_group_path,
       :performance_bar_enabled,
       :personal_access_token_prefix,
+      :instance_token_prefix,
       :kroki_enabled,
       :kroki_url,
       :kroki_formats,
@@ -555,6 +558,13 @@ module ApplicationSettingsHelper
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,
       :user_starred_projects_api_limit,
+      :users_api_limit_followers,
+      :users_api_limit_following,
+      :users_api_limit_status,
+      :users_api_limit_ssh_keys,
+      :users_api_limit_ssh_key,
+      :users_api_limit_gpg_keys,
+      :users_api_limit_gpg_key,
       :gitlab_dedicated_instance,
       :gitlab_environment_toolkit_instance,
       :ci_max_includes,
@@ -577,13 +587,15 @@ module ApplicationSettingsHelper
       :global_search_users_enabled,
       :global_search_issues_enabled,
       :global_search_merge_requests_enabled,
-      :vscode_extension_marketplace
+      :vscode_extension_marketplace,
+      :vscode_extension_marketplace_enabled
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits
         settings << :deactivate_dormant_users
         settings << :deactivate_dormant_users_period
         settings << :nuget_skip_metadata_url_validation
+        settings << :helm_max_packages_count
       end
     end
   end
@@ -672,6 +684,29 @@ module ApplicationSettingsHelper
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
       pending_user_count: pending_user_count
     }
+  end
+
+  def vscode_extension_marketplace_settings_view
+    # NOTE: This is intentionally not scoped to a specific actor since it affects instance-level settings.
+    return unless Feature.enabled?(:vscode_extension_marketplace_settings, nil)
+
+    presets = ::WebIde::ExtensionMarketplacePreset.all.map do |preset|
+      preset.to_h.deep_transform_keys { |key| key.to_s.camelize(:lower) }
+    end
+
+    {
+      title: _('VS Code Extension Marketplace'),
+      description: vscode_extension_marketplace_settings_description,
+      view_model: {
+        presets: presets,
+        initialSettings: @application_setting.vscode_extension_marketplace || {}
+      }
+    }
+  end
+
+  def vscode_extension_marketplace_settings_description
+    # NOTE: description is overridden in EE
+    _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.')
   end
 end
 

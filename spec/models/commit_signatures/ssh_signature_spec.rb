@@ -76,21 +76,21 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
     end
   end
 
-  describe '#reverified_status' do
+  describe '#verification_status' do
     before do
       allow(signature.project).to receive(:commit).with(commit_sha).and_return(commit)
     end
 
-    context 'when verification_status is verified' do
+    context 'when persisted verification_status is verified' do
       it 'returns verified' do
-        expect(signature.reverified_status).to eq('verified')
+        expect(signature.verification_status).to eq('verified')
       end
 
       context 'and the author email does not belong to the signed by user' do
         let(:user) { create(:user) }
 
         it 'returns unverified_author_email' do
-          expect(signature.reverified_status).to eq('unverified_author_email')
+          expect(signature.verification_status).to eq('unverified_author_email')
         end
 
         context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
@@ -99,17 +99,17 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
           end
 
           it 'verification status is unmodified' do
-            expect(signature.reverified_status).to eq('verified')
+            expect(signature.verification_status).to eq('verified')
           end
         end
       end
     end
 
-    context 'when verification_status not verified' do
+    context 'when persisted verification_status not verified' do
       let(:signature) { create(:ssh_signature, verification_status: 'unverified') }
 
       it 'returns the signature verification status' do
-        expect(signature.reverified_status).to eq('unverified')
+        expect(signature.verification_status).to eq('unverified')
       end
     end
 
@@ -117,14 +117,14 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
       let(:verification_status) { :verified_system }
 
       it 'returns the signature verification status' do
-        expect(signature.reverified_status).to eq('verified_system')
+        expect(signature.verification_status).to eq('verified_system')
       end
 
       context 'and the author email does not belong to the signed by user' do
         let(:user) { create(:user) }
 
         it 'returns unverified_author_email' do
-          expect(signature.reverified_status).to eq('unverified_author_email')
+          expect(signature.verification_status).to eq('unverified_author_email')
         end
 
         context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
@@ -133,7 +133,7 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
           end
 
           it 'verification status is unmodified' do
-            expect(signature.reverified_status).to eq('verified_system')
+            expect(signature.verification_status).to eq('verified_system')
           end
         end
       end

@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
+import WorkItemDueDates from '~/work_items/components/work_item_due_dates.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
@@ -54,7 +54,7 @@ describe('WorkItemAttributesWrapper component', () => {
     .mockResolvedValue(allowedParentTypesEmptyResponse);
 
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
+  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDates);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);

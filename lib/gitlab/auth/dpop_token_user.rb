@@ -49,6 +49,8 @@ module Gitlab
         jwk = header['jwk']
 
         begin
+          raise Gitlab::Auth::DpopValidationError, 'JWK contains private key' if JWT::JWK::RSA.import(jwk).private?
+
           unless openssh_public_key.to_s == OpenSSL::PKey.read(JWT::JWK::RSA.import(jwk).public_key.to_pem).to_s
             raise 'Failed to parse JWK: invalid JWK'
           end
@@ -69,13 +71,17 @@ module Gitlab
           openssh_public_key,
           true,
           {
-            required_claims: %w[exp ath iat],
+            required_claims: %w[exp ath iat jti],
             algorithm: algorithm,
             verify_iat: true
           }
         )
-      rescue JWT::DecodeError => e
-        raise Gitlab::Auth::DpopValidationError, "Malformed JWT, unable to decode. #{e.message}"
+      rescue JWT::ExpiredSignature
+        raise Gitlab::Auth::DpopValidationError, "Signature expired"
+      rescue JWT::MissingRequiredClaim => e
+        raise Gitlab::Auth::DpopValidationError, e.message
+      rescue JWT::InvalidIatError
+        raise Gitlab::Auth::DpopValidationError, "Invalid IAT value"
       end
 
       def signing_key_for_user!

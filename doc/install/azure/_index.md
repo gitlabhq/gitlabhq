@@ -191,7 +191,7 @@ To set up the GitLab external URL:
 
    {{< alert type="note" >}}
 
-If you need to reset your credentials, read
+   If you need to reset your credentials, read
    [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
 
    {{< /alert >}}
@@ -283,7 +283,7 @@ To update GitLab to the latest version:
 
    {{< alert type="note" >}}
 
-If you get an error like
+   If you get an error like
    `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
    see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
 

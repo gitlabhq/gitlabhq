@@ -34,7 +34,7 @@ You can use:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Owner role for the group.
 
 To manage the group default settings for a project integration:
 
@@ -77,7 +77,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Owner role for the group.
 
 To remove a group default setting:
 
@@ -108,7 +108,8 @@ To use instance or group default settings for a project integration:
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project or group.
+- You must have at least the Maintainer role for the project integration.
+- You must have the Owner role for the group integration.
 
 To use custom settings for a project or group integration:
 

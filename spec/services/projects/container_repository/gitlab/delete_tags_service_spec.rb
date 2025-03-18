@@ -5,19 +5,21 @@ require 'spec_helper'
 RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature_category: :container_registry do
   include_context 'container repository delete tags service shared context'
 
-  let(:service) { described_class.new(repository, tags) }
+  let(:service) do
+    described_class.new(current_user: user, container_repository: repository, tag_names: tag_names)
+  end
 
   describe '#execute' do
-    let(:tags) { %w[A Ba] }
+    let(:tag_names) { %w[A Ba] }
 
     subject { service.execute }
 
     RSpec.shared_examples 'deleting tags' do
       it 'deletes the tags by name' do
-        stub_delete_reference_requests(tags)
-        expect_delete_tags(tags)
+        stub_delete_reference_requests(tag_names)
+        expect_delete_tags(tag_names)
 
-        is_expected.to eq(status: :success, deleted: tags)
+        is_expected.to eq(status: :success, deleted: tag_names)
       end
     end
 
@@ -33,7 +35,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
       it 'succeeds when tag delete returns 404' do
         stub_delete_reference_requests('A' => 200, 'Ba' => 404)
 
-        is_expected.to eq(status: :success, deleted: tags)
+        is_expected.to eq(status: :success, deleted: tag_names)
       end
 
       it 'succeeds when a tag delete returns 500' do
@@ -42,28 +44,122 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
         is_expected.to eq(status: :success, deleted: ['A'])
       end
 
+      context 'with tag protection rules' do
+        let_it_be(:rule1) do
+          create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'A')
+        end
+
+        let(:tag_names) { %w[A Ba Bb C D] }
+
+        before do
+          allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
+          stub_delete_reference_requests(tag_names)
+        end
+
+        context 'when container_registry_protected_tags is disabled' do
+          before do
+            stub_feature_flags(container_registry_protected_tags: false)
+            expect_delete_tags(tag_names)
+          end
+
+          it { is_expected.to include(status: :success) }
+        end
+
+        context 'when not all tags are protected' do
+          before do
+            expect_delete_tags(%w[Ba Bb C D])
+          end
+
+          it { is_expected.to include(status: :success) }
+        end
+
+        context 'when all tags are protected' do
+          before do
+            create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'B')
+            create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'C')
+            create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'D')
+          end
+
+          it { is_expected.to include(status: :error, message: 'cannot delete protected tag(s)') }
+        end
+
+        context 'when the user has admin permissions' do
+          before do
+            allow(user).to receive(:can_admin_all_resources?).and_return(true)
+          end
+
+          it 'deletes tags including protected ones' do
+            expect_delete_tags(tag_names)
+
+            is_expected.to include(status: :success)
+          end
+        end
+
+        context 'when the user has no admin permissions' do
+          before do
+            create(:container_registry_protection_tag_rule,
+              project: project,
+              tag_name_pattern: 'B',
+              minimum_access_level_for_delete: :maintainer)
+            create(:container_registry_protection_tag_rule,
+              project: project,
+              tag_name_pattern: 'C',
+              minimum_access_level_for_delete: :owner)
+
+            project.add_maintainer(user)
+          end
+
+          it 'applies tag protection rules based on the user access level' do
+            expect_delete_tags(%w[A Ba Bb D])
+
+            is_expected.to include(status: :success)
+          end
+        end
+
+        context 'when there is no user, run by a cleanup policy' do
+          let(:user) { nil }
+
+          before do
+            create(:container_registry_protection_tag_rule,
+              project: project,
+              tag_name_pattern: 'B',
+              minimum_access_level_for_delete: :maintainer)
+            create(:container_registry_protection_tag_rule,
+              project: project,
+              tag_name_pattern: 'C',
+              minimum_access_level_for_delete: :owner)
+
+            expect_delete_tags(%w[D])
+          end
+
+          it 'uses all the tag protection rules' do
+            is_expected.to include(status: :success)
+          end
+        end
+      end
+
       context 'with failures' do
         context 'when the delete request fails' do
           before do
             stub_delete_reference_requests('A' => 500, 'Ba' => 500)
           end
 
-          it { is_expected.to eq(status: :error, message: "could not delete tags: #{tags.join(', ')}") }
+          it { is_expected.to eq(status: :error, message: "could not delete tags: #{tag_names.join(', ')}") }
 
           context 'when a large list of tag delete fails' do
-            let(:tags) { Array.new(135) { |i| "tag#{i}" } }
+            let(:tag_names) { Array.new(135) { |i| "tag#{i}" } }
             let(:container_repository) { instance_double(ContainerRepository) }
 
             before do
               allow(ContainerRepository).to receive(:find).with(repository).and_return(container_repository)
-              tags.each do |tag|
+              tag_names.each do |tag|
                 stub_delete_reference_requests(tag => 500)
               end
               allow(container_repository).to receive(:delete_tag).and_return(false)
             end
 
             it 'truncates the log message' do
-              expect(subject).to eq(status: :error, message: "could not delete tags: #{tags.join(', ')}".truncate(1000))
+              expect(subject).to eq(status: :error, message: "could not delete tags: #{tag_names.join(', ')}".truncate(1000))
             end
           end
         end
@@ -80,7 +176,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
 
           it 'tracks the exception' do
             expect(::Gitlab::ErrorTracking)
-              .to receive(:track_exception).with(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError, tags_count: tags.size, container_repository_id: repository.id)
+              .to receive(:track_exception).with(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError, tags_count: tag_names.size, container_repository_id: repository.id)
 
             subject
           end
@@ -108,7 +204,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
 
         it 'tracks the exception' do
           expect(::Gitlab::ErrorTracking)
-            .to receive(:track_exception).with(::Faraday::TimeoutError, tags_count: tags.size, container_repository_id: repository.id)
+            .to receive(:track_exception).with(::Faraday::TimeoutError, tags_count: tag_names.size, container_repository_id: repository.id)
 
           subject
         end
@@ -116,7 +212,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
     end
 
     context 'with empty tags' do
-      let_it_be(:tags) { [] }
+      let_it_be(:tag_names) { [] }
 
       it 'does not remove anything' do
         expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)

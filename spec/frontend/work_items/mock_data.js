@@ -116,6 +116,7 @@ export const mockMilestone = {
   startDate: '2022-10-17',
   dueDate: '2022-10-24',
   webPath: '123',
+  projectMilestone: true,
 };
 
 export const mockAwardEmojiThumbsUp = {
@@ -183,6 +184,9 @@ export const workItemQueryResponse = {
       iid: '1',
       archived: false,
       title: 'Test',
+      movedToWorkItemUrl: null,
+      duplicatedToWorkItemUrl: null,
+      promotedToEpicUrl: null,
       state: 'OPEN',
       description: 'description',
       confidential: false,
@@ -216,14 +220,16 @@ export const workItemQueryResponse = {
         iconName: 'issue-type-task',
       },
       userPermissions: {
-        deleteWorkItem: false,
-        updateWorkItem: false,
-        setWorkItemMetadata: false,
         adminParentLink: false,
-        createNote: false,
         adminWorkItemLink: true,
+        deleteWorkItem: false,
+        createNote: false,
         markNoteAsInternal: true,
+        moveWorkItem: false,
         reportSpam: false,
+        setWorkItemMetadata: false,
+        summarizeComments: false,
+        updateWorkItem: false,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -311,6 +317,9 @@ export const updateWorkItemMutationResponse = {
         iid: '1',
         archived: false,
         title: 'Updated title',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         state: 'OPEN',
         description: 'description',
         confidential: false,
@@ -339,14 +348,16 @@ export const updateWorkItemMutationResponse = {
           iconName: 'issue-type-task',
         },
         userPermissions: {
-          deleteWorkItem: false,
-          updateWorkItem: false,
-          setWorkItemMetadata: false,
           adminParentLink: false,
-          createNote: false,
           adminWorkItemLink: true,
+          createNote: false,
+          deleteWorkItem: false,
           markNoteAsInternal: true,
+          moveWorkItem: false,
           reportSpam: false,
+          setWorkItemMetadata: false,
+          summarizeComments: false,
+          updateWorkItem: false,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -419,6 +430,12 @@ export const mockworkItemReferenceQueryResponse = {
           iid: '111',
           title: 'Objective linked items 104',
           confidential: false,
+          workItemType: {
+            iconName: 'issue-type-objective',
+            id: 'gid://gitlab/WorkItems::Type/6',
+            name: 'Objective',
+            __typename: 'WorkItemType',
+          },
           __typename: 'WorkItem',
         },
       ],
@@ -448,6 +465,9 @@ export const convertWorkItemMutationResponse = {
         iid: '1',
         archived: false,
         title: 'Updated title',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         state: 'OPEN',
         description: 'description',
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
@@ -476,14 +496,16 @@ export const convertWorkItemMutationResponse = {
           iconName: 'issue-type-objective',
         },
         userPermissions: {
-          deleteWorkItem: false,
-          updateWorkItem: false,
-          setWorkItemMetadata: false,
           adminParentLink: false,
-          createNote: false,
           adminWorkItemLink: true,
+          createNote: false,
+          deleteWorkItem: false,
           markNoteAsInternal: true,
+          moveWorkItem: false,
           reportSpam: false,
+          setWorkItemMetadata: false,
+          summarizeComments: false,
+          updateWorkItem: false,
           __typename: 'WorkItemPermissions',
         },
         reference: 'gitlab-org/gitlab-test#1',
@@ -1242,7 +1264,7 @@ export const workItemDevelopmentFragmentResponse = ({
 export const workItemDevelopmentResponse = ({
   iid = '1',
   id = 'gid://gitlab/WorkItem/1',
-  developmentItems,
+  widgets,
 } = {}) => ({
   data: {
     workItem: {
@@ -1253,35 +1275,7 @@ export const workItemDevelopmentResponse = ({
         __typename: 'Project',
         id: '1',
       },
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetIteration',
-        },
-        {
-          __typename: 'WorkItemWidgetWeight',
-        },
-        {
-          __typename: 'WorkItemWidgetAssignees',
-        },
-        {
-          __typename: 'WorkItemWidgetLabels',
-        },
-        {
-          __typename: 'WorkItemWidgetDescription',
-        },
-        {
-          __typename: 'WorkItemWidgetHierarchy',
-        },
-        {
-          __typename: 'WorkItemWidgetStartAndDueDate',
-        },
-        {
-          __typename: 'WorkItemWidgetMilestone',
-        },
-        {
-          ...developmentItems,
-        },
-      ],
+      widgets,
     },
   },
 });
@@ -1334,16 +1328,111 @@ export const mockRolledUpCountsByType = [
   },
 ];
 
+export const customFieldsWidgetResponseFactory = (customFieldValues = null) => {
+  return {
+    __typename: 'WorkItemWidgetCustomFields',
+    type: WIDGET_TYPE_CUSTOM_FIELDS,
+    customFieldValues: customFieldValues ?? [
+      {
+        id: 'gid://gitlab/CustomFieldValue/1',
+        customField: {
+          id: '1-number',
+          fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
+          name: 'Number custom field label',
+          selectOptions: null,
+        },
+        value: 5,
+        __typename: 'WorkItemNumberFieldValue',
+      },
+      {
+        id: 'gid://gitlab/CustomFieldValue/2',
+        customField: {
+          id: '1-text',
+          fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+          name: 'Text custom field label',
+          selectOptions: null,
+        },
+        value: 'Sample text',
+        __typename: 'WorkItemTextFieldValue',
+      },
+      {
+        id: 'gid://gitlab/CustomFieldValue/3',
+        customField: {
+          id: '1-select',
+          fieldType: CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+          name: 'Single select custom field label',
+          selectOptions: [
+            {
+              id: 'select-1',
+              value: 'Option 1',
+            },
+            {
+              id: 'select-2',
+              value: 'Option 2',
+            },
+            {
+              id: 'select-3',
+              value: 'Option 3',
+            },
+          ],
+        },
+        selectedOptions: [
+          {
+            id: 'select-1',
+            value: 'Option 1 ',
+          },
+        ],
+        __typename: 'WorkItemSelectFieldValue',
+      },
+      {
+        id: 'gid://gitlab/CustomFieldValue/4',
+        customField: {
+          id: '1-multi-select',
+          fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+          name: 'Multi select custom field label',
+          selectOptions: [
+            {
+              id: 'select-1',
+              value: 'Option 1',
+            },
+            {
+              id: 'select-2',
+              value: 'Option 2',
+            },
+            {
+              id: 'select-3',
+              value: 'Option 3',
+            },
+          ],
+        },
+        selectedOptions: [
+          {
+            id: 'select-1',
+            value: 'Option 1',
+          },
+          {
+            id: 'select-2',
+            value: 'Option 2',
+          },
+        ],
+        __typename: 'WorkItemSelectFieldValue',
+      },
+    ],
+  };
+};
+
 export const workItemResponseFactory = ({
   iid = '1',
   id = 'gid://gitlab/WorkItem/1',
   canUpdate = false,
   canDelete = false,
   canCreateNote = false,
+  canMove = false,
   adminParentLink = false,
   reportSpam = false,
   canAdminWorkItemLink = true,
   canMarkNoteAsInternal = true,
+  canSummarizeComments = false,
   notificationsWidgetPresent = true,
   currentUserTodosWidgetPresent = true,
   awardEmojiWidgetPresent = true,
@@ -1365,6 +1454,7 @@ export const workItemResponseFactory = ({
   discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
+  errorTrackingWidgetPresent = true,
   hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
   crmContactsWidgetPresent = true,
@@ -1398,6 +1488,9 @@ export const workItemResponseFactory = ({
   developmentWidgetPresent = false,
   customFieldsWidgetPresent = true,
   customFieldValues = null,
+  movedToWorkItemUrl = null,
+  duplicatedToWorkItemUrl = null,
+  promotedToEpicUrl = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -1414,6 +1507,9 @@ export const workItemResponseFactory = ({
       updatedAt,
       closedAt: null,
       author,
+      movedToWorkItemUrl,
+      duplicatedToWorkItemUrl,
+      promotedToEpicUrl,
       project: {
         id: 'gid://gitlab/Project/7',
         __typename: 'Project',
@@ -1427,14 +1523,16 @@ export const workItemResponseFactory = ({
       },
       workItemType,
       userPermissions: {
-        deleteWorkItem: canDelete,
-        updateWorkItem: canUpdate,
-        setWorkItemMetadata: canUpdate,
         adminParentLink,
         adminWorkItemLink: canAdminWorkItemLink,
         createNote: canCreateNote,
+        deleteWorkItem: canDelete,
         markNoteAsInternal: canMarkNoteAsInternal,
+        moveWorkItem: canMove,
         reportSpam,
+        setWorkItemMetadata: canUpdate,
+        summarizeComments: canSummarizeComments,
+        updateWorkItem: canUpdate,
         __typename: 'WorkItemPermissions',
       },
       reference: 'test-project-path#1',
@@ -1607,6 +1705,13 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
+        errorTrackingWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetErrorTracking',
+              type: 'ERROR_TRACKING',
+              identifier: '1',
+            }
+          : { type: 'MOCK TYPE' },
         hierarchyWidgetPresent
           ? {
               __typename: 'WorkItemWidgetHierarchy',
@@ -1725,96 +1830,7 @@ export const workItemResponseFactory = ({
             }
           : { type: 'MOCK TYPE' },
         customFieldsWidgetPresent
-          ? {
-              __typename: 'WorkItemWidgetCustomFields',
-              type: WIDGET_TYPE_CUSTOM_FIELDS,
-              customFieldValues: customFieldValues ?? [
-                {
-                  id: 'gid://gitlab/CustomFieldValue/1',
-                  customField: {
-                    id: '1-number',
-                    fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
-                    name: 'Number custom field label',
-                    selectOptions: null,
-                  },
-                  value: 5,
-                  __typename: 'WorkItemNumberFieldValue',
-                },
-                {
-                  id: 'gid://gitlab/CustomFieldValue/2',
-                  customField: {
-                    id: '1-text',
-                    fieldType: CUSTOM_FIELDS_TYPE_TEXT,
-                    name: 'Text custom field label',
-                    selectOptions: null,
-                  },
-                  value: 'Sample text',
-                  __typename: 'WorkItemTextFieldValue',
-                },
-                {
-                  id: 'gid://gitlab/CustomFieldValue/3',
-                  customField: {
-                    id: '1-select',
-                    fieldType: CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
-                    name: 'Single select custom field label',
-                    selectOptions: [
-                      {
-                        id: 'select-1',
-                        value: 'Option 1',
-                      },
-                      {
-                        id: 'select-2',
-                        value: 'Option 2',
-                      },
-                      {
-                        id: 'select-3',
-                        value: 'Option 3',
-                      },
-                    ],
-                  },
-                  selectedOptions: [
-                    {
-                      id: 'select-1',
-                      value: 'Option 1 ',
-                    },
-                  ],
-                  __typename: 'WorkItemSelectFieldValue',
-                },
-                {
-                  id: 'gid://gitlab/CustomFieldValue/4',
-                  customField: {
-                    id: '1-multi-select',
-                    fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
-                    name: 'Multi select custom field label',
-                    selectOptions: [
-                      {
-                        id: 'select-1',
-                        value: 'Option 1',
-                      },
-                      {
-                        id: 'select-2',
-                        value: 'Option 2',
-                      },
-                      {
-                        id: 'select-3',
-                        value: 'Option 3',
-                      },
-                    ],
-                  },
-                  selectedOptions: [
-                    {
-                      id: 'select-1',
-                      value: 'Option 1',
-                    },
-                    {
-                      id: 'select-2',
-                      value: 'Option 2',
-                    },
-                  ],
-                  __typename: 'WorkItemSelectFieldValue',
-                },
-              ],
-            }
+          ? customFieldsWidgetResponseFactory(customFieldValues)
           : { type: 'MOCK TYPE' },
       ],
     },
@@ -1845,6 +1861,7 @@ export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
       },
       milestone: {
         id: 'gid://gitlab/Milestone/28',
+        projectMilestone: false,
         __typename: 'Milestone',
       },
       __typename: 'Issue',
@@ -1864,6 +1881,9 @@ export const createWorkItemMutationResponse = {
         archived: false,
         title: 'Updated title',
         state: 'OPEN',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
@@ -1890,14 +1910,16 @@ export const createWorkItemMutationResponse = {
           iconName: 'issue-type-task',
         },
         userPermissions: {
-          deleteWorkItem: false,
-          updateWorkItem: false,
-          setWorkItemMetadata: false,
           adminParentLink: false,
-          createNote: false,
           adminWorkItemLink: true,
+          createNote: false,
+          deleteWorkItem: false,
           markNoteAsInternal: true,
+          moveWorkItem: false,
           reportSpam: false,
+          setWorkItemMetadata: false,
+          summarizeComments: false,
+          updateWorkItem: false,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -1951,6 +1973,9 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       iid: '1',
       archived: false,
       state: 'OPEN',
+      movedToWorkItemUrl: null,
+      duplicatedToWorkItemUrl: null,
+      promotedToEpicUrl: null,
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         name: 'Issue',
@@ -1964,14 +1989,16 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       closedAt: null,
       author: mockAssignees[0],
       userPermissions: {
-        deleteWorkItem: false,
-        updateWorkItem: false,
-        setWorkItemMetadata: false,
         adminParentLink: false,
-        createNote: false,
         adminWorkItemLink: true,
+        createNote: false,
+        deleteWorkItem: false,
         markNoteAsInternal: true,
+        moveWorkItem: false,
         reportSpam: false,
+        setWorkItemMetadata: false,
+        summarizeComments: false,
+        updateWorkItem: false,
         __typename: 'WorkItemPermissions',
       },
       namespace: {
@@ -2395,14 +2422,16 @@ export const workItemHierarchyResponse = {
         title: 'New title',
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         userPermissions: {
-          deleteWorkItem: true,
-          updateWorkItem: true,
-          setWorkItemMetadata: true,
           adminParentLink: true,
-          createNote: true,
           adminWorkItemLink: true,
+          createNote: true,
+          deleteWorkItem: true,
           markNoteAsInternal: true,
+          moveWorkItem: true,
           reportSpam: false,
+          setWorkItemMetadata: true,
+          summarizeComments: true,
+          updateWorkItem: true,
           __typename: 'WorkItemPermissions',
         },
         author: {
@@ -2462,14 +2491,16 @@ export const workItemObjectiveWithChild = {
     fullName: 'Group name',
   },
   userPermissions: {
-    deleteWorkItem: true,
-    updateWorkItem: true,
-    setWorkItemMetadata: true,
     adminParentLink: true,
-    createNote: true,
     adminWorkItemLink: true,
+    createNote: true,
+    deleteWorkItem: true,
     markNoteAsInternal: true,
+    moveWorkItem: true,
     reportSpam: false,
+    setWorkItemMetadata: true,
+    summarizeComments: true,
+    updateWorkItem: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2553,14 +2584,16 @@ export const workItemObjectiveWithoutChild = {
     fullName: 'Group name',
   },
   userPermissions: {
-    deleteWorkItem: true,
-    updateWorkItem: true,
-    setWorkItemMetadata: true,
     adminParentLink: true,
-    createNote: true,
     adminWorkItemLink: true,
+    createNote: true,
+    deleteWorkItem: true,
     markNoteAsInternal: true,
+    moveWorkItem: true,
     reportSpam: false,
+    setWorkItemMetadata: true,
+    summarizeComments: true,
+    updateWorkItem: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2607,14 +2640,16 @@ export const workItemHierarchyTreeEmptyResponse = {
       },
       title: 'New title',
       userPermissions: {
-        deleteWorkItem: true,
-        updateWorkItem: true,
-        setWorkItemMetadata: true,
         adminParentLink: true,
-        createNote: true,
         adminWorkItemLink: true,
+        createNote: true,
+        deleteWorkItem: true,
         markNoteAsInternal: true,
+        moveWorkItem: true,
         reportSpam: false,
+        setWorkItemMetadata: true,
+        summarizeComments: true,
+        updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2873,14 +2908,16 @@ export const workItemHierarchyTreeResponse = {
       },
       title: 'New title',
       userPermissions: {
-        deleteWorkItem: true,
-        updateWorkItem: true,
-        setWorkItemMetadata: true,
         adminParentLink: true,
-        createNote: true,
         adminWorkItemLink: true,
+        createNote: true,
+        deleteWorkItem: true,
         markNoteAsInternal: true,
+        moveWorkItem: true,
         reportSpam: false,
+        setWorkItemMetadata: true,
+        summarizeComments: true,
+        updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2918,14 +2955,16 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
       },
       title: 'New title',
       userPermissions: {
-        deleteWorkItem: true,
-        updateWorkItem: true,
-        setWorkItemMetadata: true,
         adminParentLink: true,
-        createNote: true,
         adminWorkItemLink: true,
+        createNote: true,
+        deleteWorkItem: true,
         markNoteAsInternal: true,
+        moveWorkItem: true,
         reportSpam: false,
+        setWorkItemMetadata: true,
+        summarizeComments: true,
+        updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -3057,14 +3096,16 @@ export const workItemObjectiveWithClosedChild = {
     name: 'Project name',
   },
   userPermissions: {
-    deleteWorkItem: true,
-    updateWorkItem: true,
-    setWorkItemMetadata: true,
     adminParentLink: true,
-    createNote: true,
     adminWorkItemLink: true,
+    createNote: true,
+    deleteWorkItem: true,
     markNoteAsInternal: true,
+    moveWorkItem: true,
     reportSpam: false,
+    setWorkItemMetadata: true,
+    summarizeComments: true,
+    updateWorkItem: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -3124,14 +3165,16 @@ export const changeWorkItemParentMutationResponse = {
           iconName: 'issue-type-issue',
         },
         userPermissions: {
-          deleteWorkItem: true,
-          updateWorkItem: true,
-          setWorkItemMetadata: true,
           adminParentLink: true,
-          createNote: true,
           adminWorkItemLink: true,
+          createNote: true,
+          deleteWorkItem: true,
           markNoteAsInternal: true,
+          moveWorkItem: true,
           reportSpam: false,
+          setWorkItemMetadata: true,
+          summarizeComments: true,
+          updateWorkItem: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -3140,6 +3183,9 @@ export const changeWorkItemParentMutationResponse = {
         iid: '2',
         archived: false,
         state: 'OPEN',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         title: 'Foo',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
@@ -3194,6 +3240,12 @@ export const availableWorkItemsResponse = {
             iid: '2',
             title: 'Task 1',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-task',
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3201,6 +3253,12 @@ export const availableWorkItemsResponse = {
             iid: '3',
             title: 'Task 2',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-task',
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3208,6 +3266,12 @@ export const availableWorkItemsResponse = {
             iid: '4',
             title: 'Task 3',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-task',
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
         ],
@@ -3228,6 +3292,12 @@ export const availableObjectivesResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3235,6 +3305,12 @@ export const availableObjectivesResponse = {
             iid: '118',
             title: 'Objective 103',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3242,6 +3318,12 @@ export const availableObjectivesResponse = {
             iid: '117',
             title: 'Objective 102',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
         ],
@@ -3262,6 +3344,12 @@ export const searchedObjectiveResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
         ],
@@ -3639,6 +3727,7 @@ export const projectMilestonesResponse = {
             expired: false,
             __typename: 'Milestone',
             state: 'active',
+            projectMilestone: false,
           },
           {
             id: 'gid://gitlab/Milestone/4',
@@ -3648,6 +3737,7 @@ export const projectMilestonesResponse = {
             expired: false,
             __typename: 'Milestone',
             state: 'active',
+            projectMilestone: false,
           },
         ],
         __typename: 'MilestoneConnection',
@@ -5271,6 +5361,7 @@ export const groupWorkItemStateCountsQueryResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
       workItemStateCounts: {
         all: 3,
         closed: 1,
@@ -5284,6 +5375,7 @@ export const groupWorkItemsQueryResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
       name: 'Test',
       workItems: {
         pageInfo: {
@@ -5317,6 +5409,7 @@ export const groupWorkItemsQueryResponse = {
             title: 'a group level work item',
             updatedAt: '',
             webUrl: 'web/url',
+            userDiscussionsCount: 0,
             widgets: [
               {
                 __typename: 'WorkItemWidgetAssignees',
@@ -5592,6 +5685,9 @@ export const createWorkItemQueryResponse = {
         iid: NEW_WORK_ITEM_IID,
         archived: false,
         title: '',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         state: 'OPEN',
         description: '',
         confidential: false,
@@ -5626,14 +5722,16 @@ export const createWorkItemQueryResponse = {
           __typename: 'WorkItemType',
         },
         userPermissions: {
-          deleteWorkItem: true,
-          updateWorkItem: true,
           adminParentLink: true,
-          setWorkItemMetadata: true,
-          createNote: true,
           adminWorkItemLink: true,
+          createNote: true,
+          deleteWorkItem: true,
           markNoteAsInternal: true,
+          moveWorkItem: true,
           reportSpam: false,
+          setWorkItemMetadata: true,
+          summarizeComments: true,
+          updateWorkItem: true,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -5916,14 +6014,16 @@ export const mockToggleResolveDiscussionResponse = {
 };
 
 const mockUserPermissions = {
-  deleteWorkItem: true,
-  updateWorkItem: true,
   adminParentLin: true,
-  setWorkItemMetadata: true,
-  createNote: true,
   adminWorkItemLink: true,
+  createNote: true,
+  deleteWorkItem: true,
   markNoteAsInternal: true,
+  moveWorkItem: true,
   reportSpam: false,
+  setWorkItemMetadata: true,
+  summarizeComments: true,
+  updateWorkItem: true,
   __typename: 'WorkItemPermissions',
 };
 
@@ -6078,14 +6178,16 @@ export const workItemHierarchyNoChildrenTreeResponse = {
       },
       title: 'New title without children',
       userPermissions: {
-        deleteWorkItem: true,
-        updateWorkItem: true,
-        setWorkItemMetadata: true,
         adminParentLink: true,
-        createNote: true,
         adminWorkItemLink: true,
+        createNote: true,
+        deleteWorkItem: true,
         markNoteAsInternal: true,
+        moveWorkItem: true,
         reportSpam: false,
+        setWorkItemMetadata: true,
+        summarizeComments: true,
+        updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,

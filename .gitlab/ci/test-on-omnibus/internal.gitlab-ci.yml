@@ -1,0 +1,31 @@
+# E2E test job base used in pipelines triggered within gitlab projects which have access to `gitlab` repo code
+
+.omnibus-e2e:
+  image: ${CI_REGISTRY}/gitlab-org/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-rust-${RUST_VERSION}:docker-${DOCKER_VERSION}
+  extends:
+    - .qa-install
+    - .docker-in-docker
+    - .e2e-test-variables
+  stage: test
+  tags:
+    - e2e
+  retry:
+    max: 2
+    when: runner_system_failure
+  script:
+    - echo "SUITE_RAN=true" > "${QA_SUITE_STATUS_ENV_FILE}"
+    - export QA_COMMAND="bundle exec gitlab-qa ${QA_SCENARIO:=Test::Instance::Image} $RELEASE $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - echo "Running - '$QA_COMMAND'"
+    - eval "$QA_COMMAND"
+  after_script:
+    - !reference [.merge-junit, after_script]
+    - !reference [.gitlab-qa-report, after_script]
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: 30d
+    paths:
+      - gitlab-qa-run-*
+    reports:
+      junit: gitlab-qa-run-*/**/rspec-*.xml
+      dotenv: $QA_SUITE_STATUS_ENV_FILE

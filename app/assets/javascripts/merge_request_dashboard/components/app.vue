@@ -157,7 +157,7 @@ export default {
                         <tr v-else>
                           <td colspan="5" :class="{ 'gl-py-6 gl-text-center': !error }">
                             <template v-if="loading">
-                              {{ __('Loading...') }}
+                              {{ __('Loading…') }}
                             </template>
                             <template v-else-if="error">
                               <gl-alert variant="danger" :dismissible="false">

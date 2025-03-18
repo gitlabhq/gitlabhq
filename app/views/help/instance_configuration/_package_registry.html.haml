@@ -1,15 +1,15 @@
 - package_file_size_limits = @instance_configuration.settings[:package_file_size_limits]
 - content_for :table_content do
   - if package_file_size_limits.present?
-    %li= link_to _('Package Registry'), '#package-registry'
+    %li= link_to _('Package registry'), '#package-registry'
 
 - content_for :settings_content do
   - if package_file_size_limits.present?
     %h2#package-registry
-      = _('Package Registry')
+      = _('Package registry')
 
     %p
-      = _('There are several file size limits in place for the Package Registry.')
+      = _('There are several file size limits in place for the package registry.')
     .table-responsive
       %table
         %thead

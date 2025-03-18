@@ -65,6 +65,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    listItemClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
     contentTestid: {
       type: String,
       required: false,
@@ -92,59 +97,63 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-b gl-flex gl-items-start gl-py-4">
-    <div class="gl-grow gl-items-start md:gl-flex">
-      <div class="gl-flex gl-grow" :data-testid="contentTestid">
-        <div v-if="showIcon" class="gl-mr-3 gl-flex gl-h-7 gl-shrink-0 gl-items-center">
-          <gl-icon variant="subtle" :name="iconName" />
-        </div>
-        <gl-avatar-labeled
-          class="gl-break-anywhere"
-          :entity-id="resource.id"
-          :entity-name="resource.avatarLabel"
-          :label="resource.avatarLabel"
-          :label-link="resource.webUrl"
-          :src="resource.avatarUrl"
-          shape="rect"
-          :size="32"
-        >
-          <template #meta>
-            <div class="gl-px-1">
-              <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
-                <slot name="avatar-meta"></slot>
+  <li>
+    <div class="gl-border-b gl-flex gl-items-start gl-py-4" :class="listItemClass">
+      <slot name="children-toggle"></slot>
+      <div class="gl-grow gl-items-start md:gl-flex">
+        <div class="gl-flex gl-grow" :data-testid="contentTestid">
+          <div v-if="showIcon" class="gl-mr-3 gl-flex gl-h-7 gl-shrink-0 gl-items-center">
+            <gl-icon variant="subtle" :name="iconName" />
+          </div>
+          <gl-avatar-labeled
+            class="gl-break-anywhere"
+            :entity-id="resource.id"
+            :entity-name="resource.avatarLabel"
+            :label="resource.avatarLabel"
+            :label-link="resource.webUrl"
+            :src="resource.avatarUrl"
+            shape="rect"
+            :size="32"
+          >
+            <template #meta>
+              <div class="gl-px-1">
+                <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
+                  <slot name="avatar-meta"></slot>
+                </div>
               </div>
-            </div>
-          </template>
-          <slot name="avatar-default">
-            <list-item-description
-              v-if="resource.descriptionHtml"
-              :description-html="resource.descriptionHtml"
-            />
-          </slot>
-        </gl-avatar-labeled>
-      </div>
-      <div
-        class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-3"
-        :class="statsPadding"
-      >
-        <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">
-          <slot name="stats"></slot>
+            </template>
+            <slot name="avatar-default">
+              <list-item-description
+                v-if="resource.descriptionHtml"
+                :description-html="resource.descriptionHtml"
+              />
+            </slot>
+          </gl-avatar-labeled>
         </div>
         <div
-          v-if="timestamp"
-          class="gl-mt-2 gl-whitespace-nowrap gl-text-sm gl-leading-1 gl-text-subtle"
+          class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-3"
+          :class="statsPadding"
         >
-          <span>{{ timestampText }}</span>
-          <time-ago-tooltip :time="timestamp" />
+          <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">
+            <slot name="stats"></slot>
+          </div>
+          <div
+            v-if="timestamp"
+            class="gl-mt-2 gl-whitespace-nowrap gl-text-sm gl-leading-1 gl-text-subtle"
+          >
+            <span>{{ timestampText }}</span>
+            <time-ago-tooltip :time="timestamp" />
+          </div>
         </div>
       </div>
-    </div>
-    <div v-if="hasActions" class="-gl-mt-3 gl-ml-3 gl-flex gl-items-center">
-      <slot name="actions">
-        <list-actions :actions="actions" :available-actions="resource.availableActions" />
-      </slot>
+      <div v-if="hasActions" class="-gl-mt-3 gl-ml-3 gl-flex gl-items-center">
+        <slot name="actions">
+          <list-actions :actions="actions" :available-actions="resource.availableActions" />
+        </slot>
+      </div>
     </div>
 
     <slot name="footer"></slot>
+    <slot name="children"></slot>
   </li>
 </template>

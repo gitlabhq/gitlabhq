@@ -80,14 +80,36 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
   context 'when importing groups and projects by direct transfer is disabled' do
     before do
       stub_application_setting(bulk_import_enabled: false)
-
-      open_import_group
     end
 
-    it "doesn't render fields and button" do
-      expect(page).not_to have_field('GitLab source instance base URL')
-      expect(page).not_to have_field('Personal access token')
-      expect(page).not_to have_button('Connect instance')
+    context 'when the override_bulk_import_disabled feature flag is disabled' do
+      before do
+        stub_feature_flags(override_bulk_import_disabled: false)
+
+        open_import_group
+      end
+
+      it 'does not render direct transfer section' do
+        expect(page).not_to have_content('Import groups by direct transfer')
+        expect(page).not_to have_field('GitLab source instance base URL')
+        expect(page).not_to have_field('Personal access token')
+        expect(page).not_to have_button('Connect instance')
+      end
+    end
+
+    context 'when the override_bulk_import_disabled feature flag is enabled' do
+      before do
+        stub_feature_flags(override_bulk_import_disabled: true)
+
+        open_import_group
+      end
+
+      it 'renders direct transfer section with fields and button enabled' do
+        expect(page).to have_content('Import groups by direct transfer')
+        expect(page).to have_field('GitLab source instance base URL', disabled: false)
+        expect(page).to have_field('Personal access token', disabled: false)
+        expect(page).to have_button('Connect instance', disabled: false)
+      end
     end
   end
 

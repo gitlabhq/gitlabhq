@@ -29,4 +29,4 @@
     This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ci/runners/runners_scope/) to add configurations, and use the runner authentication token in the `gitlab-runner register` command instead.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/api/runners.html#create-a-runner  # (optional) This is a link to the current documentation page
+  documentation_url: https://docs.gitlab.com/api/runners/#create-a-runner  # (optional) This is a link to the current documentation page

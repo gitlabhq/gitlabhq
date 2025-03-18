@@ -53,7 +53,7 @@ class Discussion
     notes = model_class.where(discussion_id: discussion_ids).fresh
     notes = notes.inc_note_diff_file if preload_note_diff_file
 
-    grouped_notes = notes.group_by { |n| n.discussion_id }
+    grouped_notes = notes.group_by(&:discussion_id)
     grouped_notes.transform_values { |notes| Discussion.build(notes, context_noteable) }
   end
 

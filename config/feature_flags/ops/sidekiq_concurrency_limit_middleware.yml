@@ -6,5 +6,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139851
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435391
 milestone: '16.9'
 type: ops
-group: group::global search
+group: group::durability
 default_enabled: true

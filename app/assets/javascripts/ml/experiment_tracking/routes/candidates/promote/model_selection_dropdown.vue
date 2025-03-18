@@ -77,8 +77,8 @@ export default {
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   },
   i18n: {
-    noResultsMessage: s__('MlModelRegistry|No results'),
-    emptyFieldPlaceholder: s__('MlModelRegistry|Select a model'),
+    noResultsMessage: s__('MlExperimentTracking|No results'),
+    emptyFieldPlaceholder: s__('MlExperimentTracking|Select a model'),
   },
 };
 </script>

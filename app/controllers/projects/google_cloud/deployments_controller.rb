@@ -41,7 +41,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
     end
   rescue Google::Apis::Error => e
     track_event(:error_google_api)
-    flash[:warning] = _('Google Cloud Error - %{error}') % { error: e }
+    flash[:warning] = safe_format(_('Google Cloud Error - %{error}'), error: e)
     redirect_to project_google_cloud_deployments_path(project)
   end
 

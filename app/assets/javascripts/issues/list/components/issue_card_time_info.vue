@@ -19,11 +19,6 @@ export default {
       type: Object,
       required: true,
     },
-    isWorkItemList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     milestone() {

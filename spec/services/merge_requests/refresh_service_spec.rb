@@ -120,8 +120,8 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
 
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do
-        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@merge_request)
-        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@another_merge_request)
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).twice.with(@merge_request)
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).twice.with(@another_merge_request)
         expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(@fork_merge_request)
 
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
@@ -890,10 +890,10 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           target_project: @project
         )
 
-        commits = draft_merge_request.commits
+        commits = draft_merge_request.commits(load_from_gitaly: true)
         oldrev = commits.last.id
         newrev = commits.first.id
-        draft_commit = draft_merge_request.commits.find(&:draft?)
+        draft_commit = commits.find(&:draft?)
 
         refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
 

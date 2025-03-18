@@ -210,6 +210,12 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'requested_changes'))
     end
 
+    def reviewed
+      body = "left review comments"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewed'))
+    end
+
     private
 
     def format_reason(reason)

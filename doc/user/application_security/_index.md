@@ -12,24 +12,27 @@ title: Application security
 
 {{< /details >}}
 
-GitLab can check your application for security vulnerabilities including:
+Build security into your development process with GitLab security scanning capabilities. Identify
+and address vulnerabilities early in your development lifecycle, before they reach production
+environments.
 
-- Unauthorized access.
-- Data leaks.
-- Denial of Service (DoS) attacks.
+GitLab detects security vulnerabilities throughout your code, dependencies, containers, and deployed
+applications, including:
+
+- Unauthorized access points
+- Potential data leaks
+- Denial of Service (DoS) vulnerabilities
+- Supply chain weaknesses
+
+Security findings appear directly in merge requests, providing actionable information before code is
+merged. This proactive approach reduces the cost and effort of fixing issues later in development.
+
+For security teams, GitLab security dashboard centralizes vulnerability findings, making
+prioritization and remediation tracking more straightforward. For developers, the merge request
+integration means fewer context switches and more efficient workflows.
 
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
-
-For details of how vulnerabilities are detected throughout your application's development lifecycle
-see [Detect](detect/_index.md).
-
-Statistics and details on vulnerabilities are included in the merge request. Providing
-actionable information _before_ changes are merged enables you to be proactive.
-
-To help with the task of managing and addressing vulnerabilities, GitLab provides a security
-dashboard you can access from your project or group. For more details, see
-[Security Dashboard](security_dashboard/_index.md).
 
 ## Data privacy
 
@@ -46,7 +49,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | [Container Scanning](container_scanning/_index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/_index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/_index.md)          | Relies on the [GitLab Advisory Database](gitlab_advisory_database/_index.md) which is updated on a daily basis using data from the National Vulnerability Database (NVD) and the GitHub Advisory Database. |
 | [Dynamic Application Security Testing (DAST)](dast/_index.md) | [DAST](dast/browser/_index.md) analyzer is updated on a periodic basis. |
-| [Secret Detection](secret_detection/pipeline/_index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/_index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/_index.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
+| [Secret Detection](secret_detection/pipeline/_index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/_index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/configure.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/_index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/_index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
 In versions of GitLab that use the same major version of the analyzer, you do not have to update
@@ -193,7 +196,7 @@ Security and compliance teams must ensure that security scans:
 
 GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
 
-- [Compliance framework pipelines](../group/compliance_pipelines.md)
+- [Compliance framework pipelines](../compliance/compliance_pipelines.md)
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
@@ -229,7 +232,7 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 ## Custom security role
 
-You can create a [custom role](../custom_roles.md) for security team members who need access to application security features, such as vulnerability management, security policies, or dependencies. This approach allows organizations to follow the Principle of Least Privilege by providing security team members with the privileges they need without promoting them to Developer or Maintainer on a group or project.
+You can create a [custom role](../custom_roles/_index.md) for security team members who need access to application security features, such as vulnerability management, security policies, or dependencies. This approach allows organizations to follow the Principle of Least Privilege by providing security team members with the privileges they need without promoting them to Developer or Maintainer on a group or project.
 
 For example, the custom security role may have the following [permissions](../custom_roles/abilities.md):
 

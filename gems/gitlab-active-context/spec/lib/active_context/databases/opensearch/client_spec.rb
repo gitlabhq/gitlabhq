@@ -8,6 +8,7 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
   describe '#search' do
     let(:opensearch_client) { instance_double(OpenSearch::Client) }
     let(:search_response) { { 'hits' => { 'total' => 5, 'hits' => [] } } }
+    let(:query) { ActiveContext::Query.filter(project_id: 1) }
 
     before do
       allow(client).to receive(:client).and_return(opensearch_client)
@@ -16,11 +17,11 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
 
     it 'calls search on the Opensearch client' do
       expect(opensearch_client).to receive(:search)
-      client.search('query')
+      client.search(collection: 'test', query: query)
     end
 
     it 'returns a QueryResult object' do
-      result = client.search('query')
+      result = client.search(collection: 'test', query: query)
       expect(result).to be_a(ActiveContext::Databases::Opensearch::QueryResult)
     end
   end
@@ -29,6 +30,21 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
     it 'returns an instance of OpenSearch::Client' do
       expect(OpenSearch::Client).to receive(:new).with(client.send(:opensearch_config))
       client.client
+    end
+  end
+
+  describe '#opensearch_config' do
+    it 'returns correct configuration hash' do
+      config = client.send(:opensearch_config)
+
+      expect(config).to include(
+        urls: options[:url],
+        randomize_hosts: true
+      )
+      expect(config[:transport_options][:request]).to include(
+        timeout: options[:client_request_timeout],
+        open_timeout: described_class::OPEN_TIMEOUT
+      )
     end
   end
 

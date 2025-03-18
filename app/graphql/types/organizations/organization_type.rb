@@ -63,3 +63,5 @@ module Types
     end
   end
 end
+
+Types::Organizations::OrganizationType.prepend_mod

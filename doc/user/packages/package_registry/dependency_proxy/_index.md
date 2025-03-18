@@ -42,7 +42,7 @@ and that users who pull from the cache have the necessary authentication:
 1. In the global configuration, if the following features are disabled, enable them:
    - The [`package` feature](../../../../administration/packages/_index.md#enable-or-disable-the-package-registry). Enabled by default.
    - The [`dependency_proxy` feature](../../../../administration/packages/dependency_proxy.md#turn-on-the-dependency-proxy). Enabled by default.
-1. In the project settings, if the [`package` feature](../_index.md#disable-the-package-registry)
+1. In the project settings, if the [`package` feature](../_index.md#turn-off-the-package-registry)
    is disabled, enable it. It is enabled by default.
 1. [Add an authentication method](#configure-a-client). The dependency proxy supports the same [authentication methods](../_index.md#authenticate-with-the-registry) as the package registry:
    - [Personal access token](../../../profile/personal_access_tokens.md)
@@ -67,26 +67,15 @@ Advanced caching support depends on how the upstream package registry
 responds to dependency proxy requests, and on
 which package format you use.
 
-{{< tabs >}}
+For Maven packages:
 
-{{< tab title="Maven" >}}
-
-| Package registry                                                                                                                         | Advanced caching supported? |
-|------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-
-| [GitLab](../../maven_repository/_index.md)                                                                                                | {{< icon name="check-circle" >}} Yes      |
-
-| [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | {{< icon name="check-circle" >}} Yes      |
-
-| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | {{< icon name="check-circle" >}} Yes      |
-
-| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | {{< icon name="check-circle" >}} Yes      |
-
-| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)    | {{< icon name="dotted-circle" >}} No      |
-
-{{< /tab >}}
-
-{{< /tabs >}}
+| Package registry                                                                                                                      | Advanced caching supported? |
+|---------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
+| [GitLab](../../maven_repository/_index.md)                                                                                            | {{< icon name="check-circle" >}} Yes |
+| [Maven Central](https://mvnrepository.com/repos/central)                                                                              | {{< icon name="check-circle" >}} Yes |
+| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                        | {{< icon name="check-circle" >}} Yes |
+| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                | {{< icon name="check-circle" >}} Yes |
+| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) | {{< icon name="dotted-circle" >}} No |
 
 ### Permissions
 

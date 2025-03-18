@@ -12,6 +12,11 @@ import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
+  getPageParams,
+  getNextPageParams,
+  getPreviousPageParams,
+} from '~/packages_and_registries/shared/utils';
+import {
   ALERT_SUCCESS_TAG,
   ALERT_DANGER_TAG,
   ALERT_SUCCESS_TAGS,
@@ -31,7 +36,6 @@ import {
 import getContainerRepositoryTagsQuery from '../../graphql/queries/get_container_repository_tags.query.graphql';
 import deleteContainerRepositoryTagsMutation from '../../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import DeleteModal from '../delete_modal.vue';
-import { getPageParams, getNextPageParams, getPreviousPageParams } from '../../utils';
 import TagsListRow from './tags_list_row.vue';
 
 export default {

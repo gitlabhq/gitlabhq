@@ -143,6 +143,7 @@ export default {
       <gl-form-group
         :label="$options.i18n.minSizeMbLabel"
         :label-description="$options.i18n.minSizeMbDescription"
+        label-for="min-size-input"
         :state="isMinSizeMbValid"
         data-testid="min-size-group"
       >
@@ -151,6 +152,7 @@ export default {
         </template>
         <gl-form-input-group>
           <gl-form-input
+            id="min-size-input"
             ref="minSizeMbInput"
             v-model="minSizeMb"
             :state="isMinSizeMbValid"
@@ -179,6 +181,7 @@ export default {
       <div class="gl-border-l gl-pl-6">
         <gl-form-group
           :label="$options.i18n.deleteAfterMonthsLabel"
+          label-for="inactive_projects_delete_after_months"
           :state="isDeleteAfterMonthsValid"
           data-testid="delete-after-months-group"
         >
@@ -187,6 +190,7 @@ export default {
           </template>
           <gl-form-input-group>
             <gl-form-input
+              id="inactive_projects_delete_after_months"
               ref="deleteAfterMonthsInput"
               v-model="deleteAfterMonths"
               :state="isDeleteAfterMonthsValid"
@@ -208,6 +212,7 @@ export default {
         <gl-form-group
           :label="$options.i18n.sendWarningEmailAfterMonthsLabel"
           :label-description="$options.i18n.sendWarningEmailAfterMonthsDescription"
+          label-for="inactive_projects_send_warning_email_after_months"
           :state="isSendWarningEmailAfterMonthsValid"
           class="gl-max-w-26"
           data-testid="send-warning-email-after-months-group"
@@ -219,6 +224,7 @@ export default {
           </template>
           <gl-form-input-group>
             <gl-form-input
+              id="inactive_projects_send_warning_email_after_months"
               ref="sendWarningEmailAfterMonthsInput"
               v-model="sendWarningEmailAfterMonths"
               :state="isSendWarningEmailAfterMonthsValid"

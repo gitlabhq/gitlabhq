@@ -2,3 +2,15 @@ include:
   - local: gems/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-housekeeper"
+
+gitlab-housekeeper-integration-test:
+  script:
+    - mkdir -p keeps
+    - cp spec/fixtures/pretty_useless_keep.rb keeps/
+    - git init --initial-branch=master
+    - 'git config --global user.email "test@example.com"'
+    - 'git config --global user.name "Test User"'
+    - 'git commit --allow-empty -m "Initial commit"'
+    - bundle exec bin/gitlab-housekeeper -k Keeps::PrettyUselessKeep -d
+    - bundle exec bin/gitlab-housekeeper -k Keeps::PrettyUselessKeep -d -m 3
+    - bundle exec bin/gitlab-housekeeper -k Keeps::PrettyUselessKeep -d -m 3 --filter-identifiers=2

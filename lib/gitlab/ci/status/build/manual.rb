@@ -32,7 +32,7 @@ module Gitlab
             if subject.retryable?
               _("You can modify this job's CI/CD variables before running it again.")
             else
-              _('This job does not start automatically and must be started manually. You can add CI/CD variables below for last-minute configuration changes before starting the job.')
+              _('This job does not start automatically and must be started manually.')
             end
           end
 

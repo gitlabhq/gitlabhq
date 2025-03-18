@@ -194,9 +194,7 @@ in pipelines triggered with a pipeline trigger token.
 ## See which pipeline trigger token was used
 
 You can see which pipeline trigger token caused a job to run by visiting the single job page.
-A part of the trigger token displays on the right of the page, under the job details:
-
-![Marked as triggered on a single job page](img/trigger_single_job_v8.png)
+A part of the trigger token displays on the right sidebar, under **Job details**.
 
 In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
 **Build > Jobs**.

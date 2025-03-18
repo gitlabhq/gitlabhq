@@ -134,19 +134,19 @@ Setting the username for the newly provisioned users when assigning them the SCI
 
 ### Basic SAML app configuration
 
-![OneLogin application details](img/OneLogin-app_details_v12.png)
+![OneLogin application details](img/OneLogin-app_details_v12_8.png)
 
 ### Parameters
 
-![OneLogin application details](img/OneLogin-parameters_v12.png)
+![OneLogin application details](img/OneLogin-parameters_v12_8.png)
 
 ### Adding a user
 
-![OneLogin user add](img/OneLogin-userAdd_v12.png)
+![OneLogin user add](img/OneLogin-userAdd_v12_8.png)
 
 ### SSO settings
 
-![OneLogin SSO settings](img/OneLogin-SSOsettings_v12.png)
+![OneLogin SSO settings](img/OneLogin-SSOsettings_v12_8.png)
 
 ## SAML response example
 

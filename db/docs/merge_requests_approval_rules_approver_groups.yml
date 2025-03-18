@@ -1,0 +1,13 @@
+---
+table_name: merge_requests_approval_rules_approver_groups
+classes:
+- MergeRequests::ApprovalRulesApproverGroup
+feature_categories:
+- code_review_workflow
+description: Stores approval groups for approval rules v2
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179877
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

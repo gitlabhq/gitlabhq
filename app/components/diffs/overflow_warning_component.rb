@@ -15,12 +15,12 @@ module Diffs
     end
 
     def message
-      html_escape(message_text) % {
+      safe_format(
+        message_text,
         display_size: @diff_files.size,
         real_size: @diffs.real_size,
-        strong_open: '<strong>'.html_safe,
-        strong_close: '</strong>'.html_safe
-      }
+        **tag_pair(tag.strong, :strong_open, :strong_close)
+      )
     end
 
     def diff_link

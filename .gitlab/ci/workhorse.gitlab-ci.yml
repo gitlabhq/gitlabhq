@@ -5,7 +5,7 @@ workhorse:verify:
   needs: []
   parallel:
     matrix:
-      - GO_VERSION: ["1.22", "1.23"]
+      - GO_VERSION: ["1.23"]
   script:
     - go version
     - make -C workhorse  # test build

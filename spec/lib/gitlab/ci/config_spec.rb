@@ -970,6 +970,66 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     end
   end
 
+  context 'when config accepts inputs' do
+    let_it_be(:complex_inputs_example_path) { 'spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml' }
+    let_it_be(:complex_inputs_example_yaml) { File.read(Rails.root.join(complex_inputs_example_path)) }
+
+    let(:inputs) { nil }
+
+    subject(:config) do
+      described_class.new(complex_inputs_example_yaml, inputs: inputs)
+    end
+
+    context 'when not passing required inputs' do
+      it 'raises Config::ConfigError' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          /required value has not been provided/
+        )
+      end
+    end
+
+    context 'when passing required inputs' do
+      let(:inputs) do
+        {
+          deploy_strategy: 'blue-green',
+          job_stage: 'deploy',
+          test_script: ['echo "test"'],
+          test_rules: [
+            { if: '$CI_PIPELINE_SOURCE == "push"' }
+          ],
+          test_framework: '$TEST_FRAMEWORK'
+        }
+      end
+
+      let(:result) do
+        {
+          "my-job-build": a_hash_including(stage: 'deploy'),
+          "my-job-test": a_hash_including(
+            stage: 'deploy',
+            script: [
+              'echo "Testing with $TEST_FRAMEWORK"',
+              'if [ false == true ]; then echo "Coverage is enabled"; fi'
+            ]
+          ),
+          "my-job-test-2": a_hash_including(
+            stage: 'deploy',
+            script: ['echo "test"']
+          ),
+          "my-job-deploy": a_hash_including(
+            stage: 'deploy',
+            script: ['echo "Deploying to staging using blue-green strategy"']
+          )
+        }
+      end
+
+      it 'returns valid result' do
+        expect(config.valid?).to be_truthy
+        expect(config.to_hash).to match(a_hash_including(result))
+      end
+    end
+  end
+
   describe '#workflow_rules' do
     subject(:workflow_rules) { config.workflow_rules }
 

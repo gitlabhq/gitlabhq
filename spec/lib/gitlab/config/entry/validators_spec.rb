@@ -165,4 +165,86 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
       end
     end
   end
+
+  describe described_class::VariablesValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    context 'with array_values: false (default)' do
+      before do
+        klass.instance_eval do
+          validates :config, variables: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      where(:config, :valid_result) do
+        { foo: 'bar' }             | true
+        { foo: '' }                | true
+        { foo: nil }               | false
+        { 'foo' => 'bar' }         | true
+        { 'foo' => '' }            | true
+        { foo: 'bar', baz: 'qux' } | true
+        { foo: '', baz: '' }       | true
+        { 123 => 'bar' }           | true
+        { foo: 123 }               | true
+        { nil => 'bar' }           | false
+        []                         | false
+        'string'                   | false
+      end
+
+      with_them do
+        it 'validates the instance' do
+          expect(instance.valid?).to be(valid_result)
+
+          unless valid_result
+            expect(instance.errors.messages_for(:config)).to include(/should be a hash of key value pairs/)
+          end
+        end
+      end
+    end
+
+    context 'with array_values: true' do
+      before do
+        klass.instance_eval do
+          validates :config, variables: { array_values: true }
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      where(:config, :valid_result) do
+        { foo: 'bar' }                | true
+        { foo: ['bar'] }              | true
+        { foo: '' }                   | true
+        { foo: [''] }                 | true
+        { foo: nil }                  | false
+        { 'foo' => 'bar' }            | true
+        { 'foo' => ['bar'] }          | true
+        { 'foo' => '' }               | true
+        { 'foo' => [''] }             | true
+        { foo: 'bar', baz: 'qux' }    | true
+        { foo: ['bar'], baz: ['qux'] } | true
+        { foo: '', baz: '' }          | true
+        { foo: [''], baz: [''] }      | true
+        { 123 => 'bar' }              | true
+        { foo: 123 }                  | true
+        { foo: [123] }                | true
+        { nil => 'bar' }              | false
+        []                            | false
+        'string'                      | false
+      end
+
+      with_them do
+        it 'validates the instance' do
+          expect(instance.valid?).to be(valid_result)
+
+          unless valid_result
+            expect(instance.errors.messages_for(:config))
+              .to include(/should be a hash of key value pairs, value can be an array/)
+          end
+        end
+      end
+    end
+  end
 end

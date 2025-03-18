@@ -8,7 +8,7 @@ module Projects
       OidError = Class.new(StandardError)
       ResponseError = Class.new(StandardError)
 
-      LARGE_FILE_SIZE = 1.megabytes
+      LARGE_FILE_SIZE = 1.megabyte
 
       attr_reader :lfs_download_object
 

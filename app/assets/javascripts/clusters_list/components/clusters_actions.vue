@@ -27,13 +27,15 @@ export default {
     'canAddCluster',
     'displayClusterAgents',
     'certificateBasedClustersEnabled',
+    'isGroup',
   ],
   computed: {
     shouldTriggerModal() {
-      return this.canAddCluster && this.displayClusterAgents;
+      return this.canAddCluster && this.displayClusterAgents && !this.isGroup;
     },
     defaultActionText() {
-      const { connectCluster, connectWithAgent, connectClusterDeprecated } = this.$options.i18n;
+      const { connectCluster, connectWithAgent, connectClusterDeprecated, createCluster } =
+        this.$options.i18n;
 
       if (!this.displayClusterAgents) {
         return connectClusterDeprecated;
@@ -41,9 +43,15 @@ export default {
       if (!this.certificateBasedClustersEnabled) {
         return connectCluster;
       }
+      if (this.isGroup) {
+        return createCluster;
+      }
       return connectWithAgent;
     },
     defaultActionUrl() {
+      if (this.isGroup) {
+        return this.newClusterDocsPath;
+      }
       if (this.displayClusterAgents) {
         return null;
       }
@@ -66,7 +74,7 @@ export default {
       };
       const actions = [];
 
-      if (this.displayClusterAgents) {
+      if (this.displayClusterAgents && !this.isGroup) {
         actions.push(createCluster);
       }
       if (this.displayClusterAgents && this.certificateBasedClustersEnabled) {

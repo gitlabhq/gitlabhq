@@ -13,14 +13,20 @@ title: Create users
 
 {{< /details >}}
 
+User accounts form the foundation of GitLab collaboration. Every person who needs access to your GitLab
+projects requires an account. User accounts control access permissions, track contributions, and maintain
+security across your instance.
+
 You can create user accounts in GitLab in different ways:
 
-- Direct users to create their own account.
-- Create accounts for other users manually.
-- Configure authentication integrations.
-- Create users through the Rails console.
+- Self-registration for teams who value autonomy
+- Admin-driven creation for controlled onboarding
+- Authentication integration for enterprise environments
+- Console access for automation and bulk operations
 
-If you want to automate user creation, you should use the [users API endpoint](../../../api/users.md#create-a-user).
+You can also use the [users API endpoint](../../../api/users.md#create-a-user) to automatically create users.
+
+Choose the right method based on your organization's size, security requirements, and workflows.
 
 ## Create users on sign-in page
 

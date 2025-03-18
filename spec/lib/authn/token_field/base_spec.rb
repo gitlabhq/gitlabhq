@@ -52,17 +52,25 @@ RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
       end
     end
 
-    context 'when no strategy is specified' do
+    context 'when insecure strategy is specified' do
       it 'fabricates insecure strategy object' do
-        strategy = described_class.fabricate(test_class, field, something: :required)
+        strategy = described_class.fabricate(test_class, field, insecure: true)
 
         expect(strategy).to be_a Authn::TokenField::Insecure
       end
     end
 
+    context 'when no strategy is specified' do
+      it 'fabricates digest strategy object' do
+        strategy = described_class.fabricate(test_class, field, something: :required)
+
+        expect(strategy).to be_a Authn::TokenField::Digest
+      end
+    end
+
     context 'when incompatible options are provided' do
       it 'raises an error' do
-        expect { described_class.fabricate(test_class, field, digest: true, encrypted: :required) }
+        expect { described_class.fabricate(test_class, field, digest: true, encrypted: :required, insecure: true) }
           .to raise_error ArgumentError
       end
     end
@@ -172,7 +180,7 @@ RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
       let(:routable_token_payload) { { payload: { o: ->(_) { 'foo' } } } }
 
       shared_examples 'a routable token' do
-        it 'delegates to RoutableTokenGenerator#generate_token' do
+        it 'delegates to Generator::RoutableToken#generate_token' do
           generator = instance_double(Authn::TokenField::Generator::RoutableToken)
           expect(Authn::TokenField::Generator::RoutableToken)
             .to receive(:new).with(

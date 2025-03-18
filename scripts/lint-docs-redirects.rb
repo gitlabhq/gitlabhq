@@ -3,7 +3,7 @@
 # frozen_string_literal: true
 
 #
-# https://docs.gitlab.com/ee/development/documentation/redirects.html
+# https://docs.gitlab.com/development/documentation/redirects/
 #
 require 'net/http'
 require 'uri'
@@ -32,12 +32,11 @@ class LintDocsRedirect
 
   private
 
-  # Project slug based on project path
-  # Taken from https://gitlab.com/gitlab-org/gitlab/-/blob/daaa5b6f79049e5bb28cdafaa11d3a0a84d64ab3/scripts/trigger-build.rb#L298-313
+  # Website root path based on project path
   def project_slug
     case ENV['CI_PROJECT_PATH']
     when 'gitlab-org/gitlab'
-      'ee'
+      ''
     when 'gitlab-org/gitlab-runner'
       'runner'
     when 'gitlab-org/omnibus-gitlab'
@@ -49,12 +48,29 @@ class LintDocsRedirect
     end
   end
 
+  # Location of docs files in the project
+  def docs_path
+    ENV['CI_PROJECT_PATH'] == 'gitlab-org/gitlab-runner' ? 'docs/' : 'doc/'
+  end
+
   def navigation_file
     @navigation_file ||= begin
-      url = URI('https://gitlab.com/gitlab-org/gitlab-docs/-/raw/main/content/_data/navigation.yaml')
+      # Temporary handling for multiple navigation locations.
+      # The navigation YAML file will move when this merges:
+      # https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/merge_requests/307.
+      #
+      # We are not able to control these changes merging at exactly the same time,
+      # so this temporarily supports both the new and old file location.
+      url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/en-us/navigation.yaml')
       response = Net::HTTP.get_response(url)
 
-      raise "Could not download navigation.yaml. Response code: #{response.code}" if response.code != '200'
+      # If new URL fails, try the old URL
+      if response.code != '200'
+        url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/navigation.yaml')
+        response = Net::HTTP.get_response(url)
+
+        raise "Could not download navigation.yaml. Response code: #{response.code}" if response.code != '200'
+      end
 
       # response.body should be memoized in a method, so that it doesn't
       # need to be downloaded multiple times in one CI job.
@@ -64,18 +80,24 @@ class LintDocsRedirect
 
   ##
   ## Check if the deleted/renamed file exists in
-  ## https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml.
+  ## https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml.
   ##
-  ## We need to first convert the Markdown file to HTML. There are two cases:
+  ## We need to first convert the Markdown file path to HTML. There are two cases:
   ##
-  ## - A source doc entry with index.md looks like: doc/administration/index.md
-  ##   The navigation.yaml equivalent is:           ee/administration/
-  ## - A source doc entry without index.md looks like: doc/administration/appearance.md
-  ##   The navigation.yaml equivalent is:              ee/administration/appearance.html
+  ## - A source doc entry with _index.md looks like: doc/administration/_index.md
+  ##   The navigation.yaml equivalent is:           administration/
+  ## - A source doc entry without _index.md looks like: doc/administration/appearance.md
+  ##   The navigation.yaml equivalent is:              administration/appearance/
   ##
   def check_for_missing_nav_entry(file)
-    file_sub = file["old_path"].gsub('doc', project_slug).gsub(/_?index\.md/, '').gsub('.md',
-      '.html')
+    # Translate the file path to its website path:
+    # 1. gsub(docs_path, project_slug) - Replaces the local docs directory with the appropriate project URL prefix
+    # 2. gsub(/_?index\.md/, '') - Removes both index.md and _index.md
+    # 3. gsub('.md', '/') - Converts .md to a trailing slash
+    file_sub = file["old_path"]
+      .gsub(docs_path, project_slug)
+      .gsub(/_?index\.md/, '')
+      .gsub('.md', '/')
 
     result = navigation_file.include?("'#{file_sub}'")
     return unless result
@@ -89,6 +111,16 @@ class LintDocsRedirect
       # Allow renames between index.md and _index.md
       return if %w[index.md _index.md].include?(old_basename) &&
         %w[index.md _index.md].include?(new_basename)
+
+      # Handle the case where page.md is moved to page/_index.md
+      if !old_basename.start_with?('_') &&
+          new_basename == '_index.md' &&
+          File.dirname(file['old_path']) == File.dirname(File.dirname(file['new_path']))
+        # The path structure looks like:
+        # old: doc/path/page.md
+        # new: doc/path/page/_index.md
+        return
+      end
     end
 
     warning(file)
@@ -110,15 +142,15 @@ class LintDocsRedirect
       #{rake_command(file)}
 
       For more information, see:
-      - Create a redirect   : https://docs.gitlab.com/ee/development/documentation/redirects.html
-      - Edit the global nav : https://docs.gitlab.com/ee/development/documentation/site_architecture/global_nav.html#add-a-navigation-entry
+      - Create a redirect   : https://docs.gitlab.com/development/documentation/redirects/
+      - Edit the global nav : https://docs.gitlab.com/development/documentation/site_architecture/global_nav/#add-a-navigation-entry
     WARNING
   end
 
   # Rake task to use depending on the file being deleted or renamed
   def rake_command(file)
     # The Rake task is only available for gitlab-org/gitlab
-    return unless project_slug == 'ee'
+    return unless ENV['CI_PROJECT_PATH'] == 'gitlab-org/gitlab'
 
     if renamed_doc_file?(file)
       rake = "bundle exec rake \"gitlab:docs:redirect[#{file['old_path']}, #{file['new_path']}]\""

@@ -15,6 +15,10 @@
 #     ids: int[]
 #     with_issues_enabled: boolean
 #     with_merge_requests_enabled: boolean
+#     not_aimed_for_deletion: boolean
+#     include_sibling_projects: boolean
+#     with_namespace_domain_pages: boolean
+#     archived_only: boolean
 #
 module Namespaces
   class ProjectsFinder
@@ -64,6 +68,8 @@ module Namespaces
     end
 
     def by_archived(items)
+      return items.archived if Gitlab::Utils.to_boolean(params[:archived_only], default: false)
+
       return items if Gitlab::Utils.to_boolean(params[:include_archived], default: true)
 
       items.non_archived

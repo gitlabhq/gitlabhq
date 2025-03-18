@@ -21,7 +21,7 @@ For a description of the advantages of GitOps, see [the OpenGitOps initiative](h
 - For scaling, Flux supports [vertical](https://fluxcd.io/flux/installation/configuration/vertical-scaling/) and [horizontal sharding](https://fluxcd.io/flux/installation/configuration/sharding/).
 - For Flux-specific guidance, see the [Flux guides](https://fluxcd.io/flux/guides/) in the Flux documentation.
 - To simplify maintenance, you should run a single GitLab agent for Kubernetes installation per cluster. You can share the agent connection with impersonation features across the GitLab domain.
-- Consider using the Flux `OCIRepository` for storing and retrieving manifests. 
+- Consider using the Flux `OCIRepository` for storing and retrieving manifests.
   You can use GitLab pipelines to build and push the OCI images to the container registry.
 - To shorten the feedback loop, trigger an immediate GitOps reconciliation from the related GitLab pipeline.
 - You should sign generated OCI images, and deploy only images signed and verified by Flux.
@@ -29,7 +29,7 @@ For a description of the advantages of GitOps, see [the OpenGitOps initiative](h
 
 ### OCI containers
 
-When you use OCI containers instead of Git repositories, the source of truth for the manifests is still the Git repository. 
+When you use OCI containers instead of Git repositories, the source of truth for the manifests is still the Git repository.
 You can think of the OCI container as a caching layer between the Git repository and the cluster.
 
 There are several benefits to using OCI containers:
@@ -37,7 +37,7 @@ There are several benefits to using OCI containers:
 - OCI was designed for scalability. Although the GitLab Git repositories scale well, they were not designed for this use case.
 - A single Git repository can be the source of several OCI containers, each packaging a small set of manifests.
   This way, if you need to retrieve a set of manifests, you don't need to download the whole Git repository.
-- OCI repositories can follow a well-known versioning scheme, and Flux can be configured to auto-update following that scheme. 
+- OCI repositories can follow a well-known versioning scheme, and Flux can be configured to auto-update following that scheme.
   For example, if you use semantic versioning, Flux can deploy all the minor and patch changes automatically, while major versions require a manual update.
 - OCI images can be signed, and the signature can be verified by Flux.
 - OCI repositories can be scanned by the container registry, even after the image is built.

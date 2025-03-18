@@ -36,8 +36,13 @@ module Ci
 
       def policies_allowed?(accessed_project, policies)
         return true if self_referential?(accessed_project)
-        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
-        return false unless inbound_accessible?(accessed_project)
+
+        # We capture policies even if the FF is disabled, allowlists are disabled or the project is not allowlisted
+        Ci::JobToken::Authorization.capture_job_token_policies(policies) if policies.present?
+
+        return true unless Feature.enabled?(:add_policies_to_ci_job_token, accessed_project) # the FF is disabled
+        return true unless accessed_project.ci_inbound_job_token_scope_enabled? # allowlists are disabled
+        return false unless inbound_accessible?(accessed_project) # the current project is not allowlisted
 
         policies_allowed_for_accessed_project?(accessed_project, policies)
       end
@@ -104,8 +109,7 @@ module Ci
         return true if scope.default_permissions?
         return false if policies.empty?
 
-        allowed_policies = scope.job_token_policies.map(&:to_sym)
-        (policies - allowed_policies).empty?
+        (policies - scope.expanded_job_token_policies).empty?
       end
 
       def nearest_scope(accessed_project)

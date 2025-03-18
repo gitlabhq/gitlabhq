@@ -25,7 +25,7 @@ module Gitlab
       ALLOWED_ROUTER_RULE_ACTIONS = %w[classify proxy].freeze
       # We do not expect a type for `proxy` rules
       ROUTER_RULE_ACTIONS_WITHOUT_TYPE = %w[proxy].freeze
-      ALLOWED_ROUTER_RULE_TYPES = %w[FIRST_CELL SESSION_PREFIX].freeze
+      ALLOWED_ROUTER_RULE_TYPES = %w[FIRST_CELL SESSION_PREFIX CELL_ID].freeze
 
       private
 

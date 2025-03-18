@@ -114,6 +114,37 @@ export const DORA_METRICS = {
   CHANGE_FAILURE_RATE: 'change_failure_rate',
 };
 
+export const LEAD_TIME_NO_DATA_MESSAGE = s__(
+  'DORA4Metrics|No merge requests were deployed during this period',
+);
+
+export const DORA_METRICS_NULL_SERIES_TITLE = {
+  [DORA_METRICS.CHANGE_FAILURE_RATE]: s__('DORA4Metrics|No incidents during this period'),
+  [DORA_METRICS.TIME_TO_RESTORE_SERVICE]: s__('DORA4Metrics|No incidents during this period'),
+  [DORA_METRICS.LEAD_TIME_FOR_CHANGES]: LEAD_TIME_NO_DATA_MESSAGE,
+  [DORA_METRICS.DEPLOYMENT_FREQUENCY]: s__('DORA4Metrics|No deployments during this period'),
+};
+
+export const LEAD_TIME_FOR_CHANGES_SECONDARY_SERIES_NAME = s__(
+  'DORA4Metrics|Median (last %{days}d)',
+);
+export const DEPLOYMENT_FREQUENCY_SECONDARY_SERIES_NAME = s__(
+  'DORA4Metrics|Average (last %{days}d)',
+);
+export const CHANGE_FAILURE_RATE_SECONDARY_SERIES_NAME = s__(
+  'DORA4Metrics|Median time (last %{days}d)',
+);
+export const TIME_TO_RESTORE_SERVICE_SECONDARY_SERIES_NAME = s__(
+  'DORA4Metrics|Median time (last %{days}d)',
+);
+
+export const DORA_METRICS_SECONDARY_SERIES_NAME = {
+  [DORA_METRICS.CHANGE_FAILURE_RATE]: CHANGE_FAILURE_RATE_SECONDARY_SERIES_NAME,
+  [DORA_METRICS.DEPLOYMENT_FREQUENCY]: DEPLOYMENT_FREQUENCY_SECONDARY_SERIES_NAME,
+  [DORA_METRICS.TIME_TO_RESTORE_SERVICE]: TIME_TO_RESTORE_SERVICE_SECONDARY_SERIES_NAME,
+  [DORA_METRICS.LEAD_TIME_FOR_CHANGES]: LEAD_TIME_FOR_CHANGES_SECONDARY_SERIES_NAME,
+};
+
 export const VSA_METRICS_GROUPS = [
   {
     key: 'lifecycle_metrics',
@@ -372,3 +403,9 @@ export const USAGE_OVERVIEW_QUERY_INCLUDE_KEYS = {
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: 'includeMergeRequests',
   [USAGE_OVERVIEW_IDENTIFIER_PIPELINES]: 'includePipelines',
 };
+
+export const USAGE_OVERVIEW_GROUP_ONLY_IDENTIFIERS = [
+  USAGE_OVERVIEW_IDENTIFIER_GROUPS,
+  USAGE_OVERVIEW_IDENTIFIER_USERS,
+  USAGE_OVERVIEW_IDENTIFIER_PROJECTS,
+];

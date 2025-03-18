@@ -176,7 +176,7 @@
 }
 
 .job-log-line-number {
-  @apply gl-text-subtle;
+  @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
@@ -187,14 +187,14 @@
   &:active,
   &:visited {
     text-decoration: underline;
-    @apply gl-text-subtle;
+    @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   }
 }
 
 .job-log-time {
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
-  @apply gl-text-subtle;
+  @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   user-select: none;
   flex-shrink: 0;
 
@@ -249,6 +249,34 @@
 
   .arrow {
     left: $highlight-extra-x-padding;
+  }
+}
+
+.rca-bar-component {
+  --rca-bar-height: calc(2rem + 16px);
+  bottom: $calc-application-footer-height;
+  z-index: $zindex-dropdown-menu;
+  height: var(--rca-bar-height);
+  background: var(--gl-background-color-default);
+  border-top: 1px solid var(--gl-border-color-default);
+  @apply gl-transition-padding;
+
+  @media (max-width: map-get($grid-breakpoints, xl)) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.rca-bar-content {
+  max-width: $limited-layout-width;
+  padding: 0 $container-margin;
+  margin-left: $super-sidebar-width + 0.5rem;
+  margin-right: auto;
+
+  @media (max-width: map-get($grid-breakpoints, xl)) {
+    margin: 0 auto;
+    margin-left: 0;
+    margin-right: auto;
   }
 }
 

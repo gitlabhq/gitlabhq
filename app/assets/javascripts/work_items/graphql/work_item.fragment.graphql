@@ -14,6 +14,8 @@ fragment WorkItem on WorkItem {
   webUrl
   reference(full: true)
   createNoteEmail
+  movedToWorkItemUrl
+  duplicatedToWorkItemUrl
   project {
     id
   }
@@ -32,14 +34,16 @@ fragment WorkItem on WorkItem {
     iconName
   }
   userPermissions {
-    deleteWorkItem
-    updateWorkItem
     adminParentLink
-    setWorkItemMetadata
-    createNote
     adminWorkItemLink
+    createNote
+    deleteWorkItem
     markNoteAsInternal
+    moveWorkItem
     reportSpam
+    setWorkItemMetadata
+    summarizeComments
+    updateWorkItem
   }
   widgets {
     ...WorkItemWidgets

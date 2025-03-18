@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a valid Direct Transfer GraphQL query' do
+RSpec.shared_examples 'a valid Direct Transfer GraphQL query' do |variables|
   let(:graphql_log) do
     GitlabSchema.execute(
       query.to_s,
-      variables: query.variables
+      variables: variables || query.variables
     )
 
     RequestStore.store[:graphql_logs].first
@@ -14,7 +14,7 @@ RSpec.shared_examples 'a valid Direct Transfer GraphQL query' do
     parsed_query = GraphQL::Query.new(
       GitlabSchema,
       query.to_s,
-      variables: query.variables
+      variables: variables || query.variables
     )
 
     result = GitlabSchema.static_validator.validate(parsed_query)

@@ -1470,7 +1470,11 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       let(:gl_repository) { container.repository.gl_repository }
       let(:messages) { [] }
 
-      it 'executes PostReceiveService' do
+      it 'executes PostReceiveService passing in the gitaly_context' do
+        expect(PostReceiveService).to receive(:new)
+          .with(user, container.repository, anything, hash_including({ gitaly_context: anything }))
+          .and_call_original
+
         subject
 
         expect(response).to have_gitlab_http_status(:ok)

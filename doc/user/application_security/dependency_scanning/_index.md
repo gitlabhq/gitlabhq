@@ -58,18 +58,17 @@ For more information, see [issue 501038](https://gitlab.com/gitlab-org/gitlab/-/
 
 {{< /alert >}}
 
-Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
-dependencies are scanned, including transitive dependencies, also known as nested dependencies.
+Dependency Scanning identifies security vulnerabilities in your application's dependencies before
+they reach production. This identification protects your application from potential exploits and data breaches that
+could damage user trust and your business reputation. When vulnerabilities are found during pipeline
+runs, they appear directly in your merge request, giving you immediate visibility of security issues
+before code is committed.
 
-Dependency Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
-aspects of inspecting the items your code uses. These items typically include application and system
-dependencies that are almost always imported from external sources, rather than sourced from items
-you wrote yourself.
+All dependencies in your code, including transitive (nested) dependencies, are automatically
+analyzed during pipelines. This analysis catches security issues that manual review processes might miss.
+Dependency Scanning integrates into your existing CI/CD workflow with minimal configuration changes,
+making it straightforward to implement secure development practices from day one.
 
-Dependency Scanning can run in the development phase of your application's lifecycle. Every time a
-pipeline runs, vulnerabilities are identified and compared between the source and target branches.
-Vulnerabilities and their severity are listed in the merge request, enabling you to proactively
-address the risk to your application, before the code change is committed.
 Vulnerabilities can also be identified outside a pipeline by
 [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md).
 
@@ -262,6 +261,13 @@ The following languages and dependency managers are supported by Dependency Scan
       <td><code>Podfile.lock</code></td>
       <td>N</td>
     </tr>
+    <tr>
+      <td>Dart<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-10">10</a></b></sup></td>
+      <td>All versions</td>
+      <td><a href="https://pub.dev/">Pub</a></td>
+      <td><code>pubspec.lock</code></td>
+      <td>N</td>
+    </tr>
   </tbody>
 </table>
 
@@ -321,6 +327,12 @@ The following languages and dependency managers are supported by Dependency Scan
     <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
     <p>
       Only SBOM, without advisories. See <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/468764">spike on CocoaPods advisories research</a>.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-10"></a>
+    <p>
+      No license detection yet. See <a href="https://gitlab.com/groups/gitlab-org/-/epics/17037">epic on Dart license detection</a>.
     </p>
   </li>
 </ol>
@@ -1043,7 +1055,11 @@ For more details of the dependency scanning report, see:
 
 ### CycloneDX Software Bill of Materials
 
-> - Generally available in GitLab 15.7.
+{{< history >}}
+
+- Generally available in GitLab 15.7.
+
+{{< /history >}}
 
 Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
 for each supported lock or build file it detects.

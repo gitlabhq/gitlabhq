@@ -23,6 +23,7 @@ const createComponent = ({
     },
     slots: {
       'nav-actions': `<button class="js-new-issuable">New issuable</button>`,
+      title: '<h1 class="title">Tab title slot</h1>',
     },
   });
 
@@ -84,6 +85,14 @@ describe('IssuableTabs', () => {
       const button = wrapper.find('button.js-new-issuable');
 
       expect(button.text()).toBe('New issuable');
+    });
+
+    it('renders contents for slot "title"', () => {
+      wrapper = createComponent();
+
+      const title = wrapper.find('h1.title');
+
+      expect(title.text()).toBe('Tab title slot');
     });
   });
 

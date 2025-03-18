@@ -39,8 +39,10 @@ describe('AgentTable', () => {
   const findAgentId = (at) => wrapper.findAllByTestId('cluster-agent-id').at(at);
   const findConfiguration = (at) =>
     wrapper.findAllByTestId('cluster-agent-configuration-link').at(at);
+  const findProject = (at) => wrapper.findAllByTestId('cluster-agent-project-link').at(at);
   const findDeleteAgentButtons = () => wrapper.findAllComponents(DeleteAgentButton);
   const findTableRow = (at) => wrapper.findComponent(GlTable).find('tbody').findAll('tr').at(at);
+  const findTableHeaders = () => wrapper.findAll('thead th').wrappers.map((x) => x.text());
   const findSharedBadgeByRow = (at) => findTableRow(at).findComponent(GlBadge);
   const findDeleteAgentButtonByRow = (at) => findTableRow(at).findComponent(DeleteAgentButton);
   const findPagination = () => wrapper.findComponent(GlPagination);
@@ -49,9 +51,10 @@ describe('AgentTable', () => {
     wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
   const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
 
-  const createWrapper = ({ propsData = defaultProps } = {}) => {
+  const createWrapper = ({ propsData = defaultProps, isGroup = false } = {}) => {
     wrapper = mountExtended(AgentTable, {
       propsData,
+      provide: { isGroup },
       stubs: { DeleteAgentButton: DeleteAgentButtonStub },
       directives: { GlModalDirective: createMockDirective('gl-modal-directive') },
     });
@@ -61,6 +64,18 @@ describe('AgentTable', () => {
     describe('default', () => {
       beforeEach(() => {
         createWrapper();
+      });
+
+      it('displays correct columns on the project level', () => {
+        expect(findTableHeaders()).toEqual([
+          'Name',
+          'Connection status',
+          'Last contact',
+          'Version',
+          'Agent ID',
+          'Configuration',
+          '',
+        ]);
       });
 
       it.each`
@@ -160,6 +175,29 @@ describe('AgentTable', () => {
           expect(findDeleteAgentButtons()).toHaveLength(clusterAgents.length - 1);
           expect(findDeleteAgentButtonByRow(9).exists()).toBe(false);
         });
+      });
+    });
+
+    describe('group level', () => {
+      beforeEach(() => {
+        createWrapper({ isGroup: true });
+      });
+
+      it('displays correct columns', () => {
+        expect(findTableHeaders()).toEqual([
+          'Name',
+          'Connection status',
+          'Last contact',
+          'Version',
+          'Agent ID',
+          'Project',
+          '',
+        ]);
+      });
+
+      it('displays agent project link', () => {
+        expect(findProject(0).text()).toBe('path/to/project');
+        expect(findProject(0).attributes('href')).toBe('https://gdk.test/path/to/project');
       });
     });
 

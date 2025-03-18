@@ -651,6 +651,15 @@ export const mockBlockingIssue4 = {
   __typename: 'Issue',
 };
 
+export const mockBlockingIssue5 = {
+  id: 'gid://gitlab/Issue/521',
+  iid: '7',
+  title: 'blocking issue title 7',
+  reference: 'gitlab-org/test-subgroup/my-project-1#7',
+  webUrl: 'http://gdk.test:3000/gitlab-org/test-subgroup/my-project-1/-/issues/7',
+  __typename: 'Issue',
+};
+
 export const mockBlockingIssuablesResponse1 = {
   data: {
     issuable: {
@@ -702,6 +711,19 @@ export const mockBlockingIssuablesResponse3 = {
       blockingIssuables: {
         __typename: 'IssueConnection',
         nodes: [mockBlockingIssue1, mockBlockingIssue2, mockBlockingIssue3, mockBlockingIssue4],
+      },
+    },
+  },
+};
+
+export const mockBlockingIssuablesResponse4 = {
+  data: {
+    issuable: {
+      __typename: 'Issue',
+      id: 'gid://gitlab/Issue/527',
+      blockingIssuables: {
+        __typename: 'IssueConnection',
+        nodes: [mockBlockingIssue5],
       },
     },
   },

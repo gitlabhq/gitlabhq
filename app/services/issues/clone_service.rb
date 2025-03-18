@@ -30,7 +30,7 @@ module Issues
       end
 
       unless issue.can_clone?(current_user, target_project)
-        raise CloneError, s_('CloneIssue|Cannot clone issue due to insufficient permissions!')
+        raise CloneError, s_('CloneIssue|Cannot clone issue due to insufficient permissions.')
       end
 
       if target_project.pending_delete?

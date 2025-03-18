@@ -17,6 +17,11 @@ export default {
     event: 'change',
   },
   props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
+    },
     value: {
       type: Number,
       required: false,
@@ -127,7 +132,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-form-input ref="text" v-bind="$attrs" v-model="humanReadableValue" />
+    <gl-form-input :id="id" ref="text" v-bind="$attrs" v-model="humanReadableValue" />
     <input ref="hidden" type="hidden" :name="name" :value="numberValue" />
   </div>
 </template>

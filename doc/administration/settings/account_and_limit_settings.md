@@ -107,6 +107,43 @@ To change the default global prefix:
 You can also configure the prefix by using the
 [settings API](../../api/settings.md).
 
+## Instance token prefix
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can set a custom prefix for all tokens generated on your instance.
+By default, GitLab uses `gl` as the instance prefix.
+
+{{< alert type="note" >}}
+
+Custom token prefixes apply only to feed tokens.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To set a custom token prefix:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. In the **Instance token prefix** field, enter your custom prefix.
+1. Select **Save changes**.
+
 ## Repository size limit
 
 {{< details >}}
@@ -316,7 +353,7 @@ administrators can allow top-level group Owners to create service accounts.
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -330,6 +367,7 @@ administrators can allow top-level group Owners to create service accounts.
 
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 For more information, see the history.
+The feature flag is not available on GitLab Dedicated.
 
 {{< /alert >}}
 
@@ -359,6 +397,7 @@ After a lifetime for SSH keys is set, GitLab:
 - Requires users to set an expiration date that is no later than the allowed lifetime on new SSH keys. The maximum allowed lifetime is:
   - 365 days by default.
   - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+    This extended limit is not available on GitLab Dedicated.
 - Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
   greater than the maximum immediately become invalid.
 
@@ -373,7 +412,7 @@ When a user's SSH key becomes invalid they can delete and re-add the same key ag
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -387,6 +426,7 @@ When a user's SSH key becomes invalid they can delete and re-add the same key ag
 
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 For more information, see the history.
+The feature flag is not available on GitLab Dedicated.
 
 {{< /alert >}}
 
@@ -397,11 +437,13 @@ This lifetime is not a requirement, and can be set to any value greater than 0 a
 
 - 365 days by default.
 - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+  This extended limit is not available on GitLab Dedicated.
 
 If this setting is left blank, the default allowable lifetime of access tokens is:
 
 - 365 days by default.
 - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+  This extended limit is not available on GitLab Dedicated.
 
 Access tokens are the only tokens needed for programmatic access to GitLab.
 However, organizations with security requirements may want to enforce more protection by
@@ -577,8 +619,7 @@ GitLab administrators can prevent this behavior:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -588,14 +629,6 @@ GitLab administrators can prevent this behavior:
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 By default, users can make their profiles private.
 GitLab administrators can disable this setting to require all user profiles to be public.
@@ -686,7 +719,7 @@ To increase the max attachment size to 200 MB in a
 If you receive intermittent push errors in your [Rails exceptions log](../logs/_index.md#exceptions_jsonlog), like this:
 
 ```plaintext
-Your push has been rejected, because this repository has exceeded its size limit.
+Your push to this repository cannot be completed because this repository has exceeded the allocated storage for your project.
 ```
 
 [Housekeeping](../housekeeping.md) tasks may be causing your repository size to grow.

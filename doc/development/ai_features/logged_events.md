@@ -295,7 +295,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
 ### Picked tool
 
   - Description: information about tool picked by chat
-  - Class: `Gitlab::Llm::Chain::Agents::ZeroShot::Executor`
+  - Class: `Gitlab::Llm::Chain::Tools::Tool`
   - Ai_event_name: picked_tool
   - Level: info
   - Arguments:

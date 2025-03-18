@@ -19,6 +19,8 @@ import {
   TODO_ACTION_TYPE_UNMERGEABLE,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
+  TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
 } from '../constants';
 
 export default {
@@ -58,7 +60,15 @@ export default {
         this.todo.action !== TODO_ACTION_TYPE_MERGE_TRAIN_REMOVED &&
         this.todo.action !== TODO_ACTION_TYPE_UNMERGEABLE &&
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRED &&
-        this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON
+        this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON &&
+        this.todo.action !== TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED &&
+        this.todo.action !== TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED
+      );
+    },
+    showAvatarOnNote() {
+      return (
+        this.todo.action !== TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED &&
+        this.todo.action !== TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED
       );
     },
     author() {
@@ -152,6 +162,18 @@ export default {
         name = s__('Todos|Your SSH key is expiring soon');
       }
 
+      if (this.todo.action === TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED) {
+        name = s__(
+          'Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions and GitLab Duo Chat',
+        );
+      }
+
+      if (this.todo.action === TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED) {
+        name = s__(
+          'Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions, GitLab Duo Chat, Vulnerability Explanation, and more',
+        );
+      }
+
       if (!name) {
         Sentry.captureException(
           new Error(`Encountered unknown TODO_ACTION_TYPE ${this.todo.action}`),
@@ -170,7 +192,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-items-start gl-px-2" data-testid="todo-item-container">
-    <div class="gl-mr-3 gl-hidden sm:gl-inline-block">
+    <div v-if="showAvatarOnNote" class="gl-mr-3 gl-hidden sm:gl-inline-block">
       <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1">
         <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>

@@ -46,7 +46,7 @@ func postRPCHandler(
 	name string,
 	handler func(*HTTPResponseWriter, *http.Request, *api.Response) (*gitalypb.PackfileNegotiationStatistics, error),
 	postFunc func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics),
-	errWriter func(io.Writer) error,
+	errWriter func(io.Writer, string) error,
 ) http.Handler {
 	return repoPreAuthorizeHandler(a, func(rw http.ResponseWriter, r *http.Request, ar *api.Response) {
 		cr := &countReadCloser{ReadCloser: r.Body}
@@ -60,7 +60,7 @@ func postRPCHandler(
 
 		stats, err := handler(w, r, ar)
 		if err != nil {
-			handleLimitErr(err, w, errWriter)
+			handleLimitErr(err, w, r.Context(), errWriter)
 			// If the handler, or handleLimitErr already wrote a response this WriteHeader call is a
 			// no-op. It never reaches net/http because GitHttpResponseWriter calls
 			// WriteHeader on its underlying ResponseWriter at most once.

@@ -6,6 +6,8 @@
 # It uses the following environment variables
 # $CLIENT_ID - OAuth Client ID used in GitLab Workspaces Proxy.
 # $CLIENT_SECRET - OAuth Client Secret used in GitLab Workspaces Proxy.
+# $GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION - GitLab Workspaces Proxy Helm Chart version.
+# $INGRESS_NGINX_HELM_CHART_VERSION - Ingress Nginx Helm Chart version.
 #
 # If this is the first time this script in being run in the Kubernetes cluster, you need to export the environment
 # variables listed above. Use the following command:
@@ -32,15 +34,25 @@ fi
 
 if [ -z "${CLIENT_SECRET}" ]; then
   echo "CLIENT_SECRET is not explicitly set. Trying to fetch the value from existing helm release"
-    CLIENT_SECRET=$(
-      kubectl get secret gitlab-workspaces-proxy-config --namespace="gitlab-workspaces" \
-        --output go-template='{{ index .data "auth.client_secret" | base64decode }}'
-    )
-    if [ -z "${CLIENT_SECRET}" ]; then
-      echo "Unable to fetch the value from existing helm release"
-      echo "CLIENT_SECRET is required to be set."
-      exit 1
-    fi
+  CLIENT_SECRET=$(
+    kubectl get secret gitlab-workspaces-proxy-config --namespace="gitlab-workspaces" \
+      --output go-template='{{ index .data "auth.client_secret" | base64decode }}'
+  )
+  if [ -z "${CLIENT_SECRET}" ]; then
+    echo "Unable to fetch the value from existing helm release"
+    echo "CLIENT_SECRET is required to be set."
+    exit 1
+  fi
+fi
+
+if [ -z "${GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION}" ]; then
+  echo "GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION is not explicitly set. Using '0.1.17'."
+  GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION="0.1.17"
+fi
+
+if [ -z "${INGRESS_NGINX_HELM_CHART_VERSION}" ]; then
+  echo "INGRESS_NGINX_HELM_CHART_VERSION is not explicitly set. Using '4.12.0'."
+  INGRESS_NGINX_HELM_CHART_VERSION="4.12.0"
 fi
 
 ROOT_DIR="${HOME}/.gitlab-workspaces-proxy"
@@ -53,9 +65,9 @@ helm --namespace ingress-nginx uninstall ingress-nginx --ignore-not-found --time
 
 helm upgrade --install \
   ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
+  --namespace="ingress-nginx" \
   --create-namespace \
-  --version 4.11.1 \
+  --version="${INGRESS_NGINX_HELM_CHART_VERSION}" \
   --timeout=600s --wait --wait-for-jobs
 
 kubectl wait pod \
@@ -133,7 +145,7 @@ helm --namespace gitlab-workspaces uninstall gitlab-workspaces-proxy --ignore-no
 
 helm upgrade --install gitlab-workspaces-proxy \
   gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-  --version=0.1.16 \
+  --version="${GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION}" \
   --namespace="gitlab-workspaces" \
   --set="ingress.enabled=true" \
   --set="ingress.hosts[0].host=${GITLAB_WORKSPACES_PROXY_DOMAIN}" \

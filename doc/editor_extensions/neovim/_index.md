@@ -48,7 +48,7 @@ require('gitlab').setup({
 ## Report issues with the extension
 
 Report any issues, bugs, or feature requests in the
-[`gitlab.vim` issue queue](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues).
+[`gitlab.vim` issue tracker](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues).
 
 Submit your feedback in [issue 22](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues/22)
 in the `gitlab.vim` repository.

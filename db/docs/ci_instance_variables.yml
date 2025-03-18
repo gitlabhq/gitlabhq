@@ -7,7 +7,6 @@ feature_categories:
 description: CI/CD variables available to all projects and groups in an instance.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30156
 milestone: '13.0'
-gitlab_schema: gitlab_ci
-exempt_from_sharding: true
+gitlab_schema: gitlab_ci_cell_local
 notes: Exempted because table not used in .com nor Cells.
 table_size: small

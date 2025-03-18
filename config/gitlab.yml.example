@@ -139,6 +139,11 @@ production: &base
     ##   10 - Light Red
     ##   11 - Dark Mode (alpha)
     # default_theme: 1 # default: 1
+    ## Default color mode ID
+    ##   1 - Light
+    ##   2 - Dark
+    ##   3 - Automatic
+    # default_color_mode: 1 # default: 1
 
     ## Custom html header tags
     # In some cases some custom header tags are needed
@@ -1279,22 +1284,13 @@ production: &base
     # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
 
-  # This section to be removed when we merge https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/4382
-  topology_service:
-    # enabled: false
-    # address: topology-service.gitlab.example.com:443
-    # ca_file: /home/git/gitlab/config/topology-service-ca.pem
-    # certificate_file: /home/git/gitlab/config/topology-service-cert.pem
-    # private_key_file: /home/git/gitlab/config/topology-service-key.pem
-
   cell:
+    # enabled: false
     # id: null
     # name: null
-    # skip_sequence_alteration: false # To be removed with https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/4382
     # database:
     #   skip_sequence_alteration: false
-    # topology_service:
-    #   enabled: false
+    # topology_service_client:
     #   address: topology-service.gitlab.example.com:443
     #   ca_file: /home/git/gitlab/config/topology-service-ca.pem
     #   certificate_file: /home/git/gitlab/config/topology-service-cert.pem

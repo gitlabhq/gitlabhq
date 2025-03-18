@@ -63,7 +63,6 @@ RSpec/ExampleWording:
     - 'spec/support/shared_examples/quick_actions/issuable/max_issuable_examples.rb'
     - 'spec/support/shared_examples/services/migrate_to_ghost_user_service_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/upload_type_shared_examples.rb'
-    - 'spec/tasks/gitlab/db/cells/bump_cell_sequences_rake_spec.rb'
     - 'spec/tasks/gitlab/db/decomposition/rollback/bump_ci_sequences_rake_spec.rb'
     - 'spec/tooling/lib/tooling/api/job_spec.rb'
     - 'spec/uploaders/dependency_proxy/file_uploader_spec.rb'

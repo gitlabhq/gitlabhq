@@ -25,6 +25,12 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
           refForDisplay
           active
           cronTimezone
+          inputs {
+            nodes {
+              name
+              value
+            }
+          }
           variables {
             nodes {
               key
@@ -49,6 +55,12 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
       active: true,
       variables: [
         { key: 'AAA', value: "AAA123", variableType: 'ENV_VAR' }
+      ],
+      inputs: [
+        { name: 'array_input', value: [1, 2] },
+        { name: 'boolean_input', value: true },
+        { name: 'number_input', value: 666 },
+        { name: 'string_input', value: 'testing inputs' }
       ]
     }
   end
@@ -66,7 +78,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
     end
 
     context 'when success' do
-      it do
+      it 'creates and returns a pipeline schedule' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(response).to have_gitlab_http_status(:success)
@@ -85,6 +97,26 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
         expect(mutation_response['pipelineSchedule']['owner']['id']).to eq(current_user.to_global_id.to_s)
 
         expect(mutation_response['errors']).to eq([])
+
+        inputs = mutation_response['pipelineSchedule']['inputs']['nodes']
+        inputs_names = inputs.pluck('name')
+        inputs_values = inputs.pluck('value')
+
+        expect(inputs_names).to contain_exactly('array_input', 'boolean_input', 'number_input', 'string_input')
+        expect(inputs_values).to contain_exactly([1, 2], true, 666, 'testing inputs')
+      end
+
+      context 'when ci_inputs_for_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_inputs_for_pipelines: false)
+        end
+
+        it 'does not persist inputs' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          inputs = mutation_response['pipelineSchedule']['inputs']['nodes']
+          expect(inputs).to be_empty
+        end
       end
     end
 

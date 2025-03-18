@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'User', :requires_admin, product_group: :tenant_scale do
+    describe 'User', :requires_admin, product_group: :organizations do
       let!(:parent_group) do
         create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}")
       end

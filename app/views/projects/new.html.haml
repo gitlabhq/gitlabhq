@@ -8,9 +8,8 @@
 - if Feature.enabled?(:new_project_creation_form, @user)
   #js-vue-new-project-app{ data: {
     namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id_from(params))&.full_path || @current_user_group&.full_path,
-    namespace_id: namespace_id_from(params) || @current_user_group&.id,
-    user_namespace_id: current_user.namespace_id,
-    has_errors: @project.errors.any?.to_s,
+    namespace_id: namespace_id_from(params).to_s || @current_user_group&.id.to_s,
+    user_namespace_id: current_user.namespace_id.to_s,
     new_project_guidelines: brand_new_project_guidelines,
     push_to_create_project_command: push_to_create_project_command,
     root_path: root_path,
@@ -24,7 +23,25 @@
     track_label: local_assigns.fetch(:track_label, 'blank_project'),
     can_select_namespace: current_user.can_select_namespace?.to_s,
     can_create_project: current_user.can_create_project?.to_s,
-    user_project_limit: current_user.projects_limit } }
+    user_project_limit: current_user.projects_limit,
+    import_history_path: import_history_index_path,
+    import_gitlab_enabled: gitlab_project_import_enabled?.to_s,
+    import_gitlab_import_path: new_import_gitlab_project_path,
+    import_github_enabled: github_import_enabled?.to_s,
+    import_github_import_path: new_import_github_path(namespace_id: @namespace&.id),
+    import_bitbucket_enabled: bitbucket_import_enabled?.to_s,
+    import_bitbucket_import_path: status_import_bitbucket_path(namespace_id: @namespace&.id),
+    import_bitbucket_import_configured: bitbucket_import_configured?.to_s,
+    import_bitbucket_disabled_message: import_from_bitbucket_message,
+    import_bitbucket_server_enabled: bitbucket_server_import_enabled?.to_s,
+    import_bitbucket_server_import_path: status_import_bitbucket_server_path(namespace_id: @namespace&.id),
+    import_fogbugz_enabled: fogbugz_import_enabled?.to_s,
+    import_fogbugz_import_path: new_import_fogbugz_path(namespace_id: @namespace&.id),
+    import_gitea_enabled: gitea_import_enabled?.to_s,
+    import_gitea_import_path: new_import_gitea_path(namespace_id: @namespace&.id),
+    import_git_enabled: git_import_enabled?.to_s,
+    import_manifest_enabled: manifest_import_enabled?.to_s,
+    import_manifest_import_path: new_import_manifest_path(namespace_id: @namespace&.id) } }
 - else
   .project-edit-container
     .project-edit-errors

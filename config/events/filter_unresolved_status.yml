@@ -1,5 +1,6 @@
 ---
 description: Tracks filtering of items by unresolved status.
+internal_events: true
 action: filter_unresolved_status
 product_group: platform_insights
 milestone: '16.1'

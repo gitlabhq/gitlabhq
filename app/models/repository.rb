@@ -238,16 +238,20 @@ class Repository
   def has_ambiguous_refs?
     return false unless branch_names.present? && tag_names.present?
 
-    with_slash, no_slash = (branch_names + tag_names).partition { |ref| ref.include?('/') }
+    with_slash = []
+    no_slash = []
+    (branch_names + tag_names).each do |ref|
+      slash_index = ref.index('/')
+      if slash_index.present?
+        with_slash << ref.first(slash_index)
+      else
+        no_slash << ref
+      end
+    end
 
     return false if with_slash.empty?
 
-    prefixes = no_slash.map { |ref| Regexp.escape(ref) }.join('|')
-    prefix_regex = %r{^(#{prefixes})/}
-
-    with_slash.any? do |ref|
-      prefix_regex.match?(ref)
-    end
+    with_slash.intersect?(no_slash)
   end
   cache_method :has_ambiguous_refs?
 
@@ -259,8 +263,8 @@ class Repository
     end
   end
 
-  def add_branch(user, branch_name, ref, expire_cache: true)
-    branch = raw_repository.add_branch(branch_name, user: user, target: ref)
+  def add_branch(user, branch_name, ref, expire_cache: true, skip_ci: false)
+    branch = raw_repository.add_branch(branch_name, user: user, target: ref, skip_ci: skip_ci)
 
     after_create_branch(expire_cache: expire_cache)
 
@@ -791,6 +795,18 @@ class Repository
     Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
+  def health(generate)
+    cache.fetch(:health) do
+      if generate
+        info = raw_repository.repository_info
+
+        info_h = info.to_h
+        info_h[:updated_at] = Time.current
+        info_h
+      end
+    end
+  end
+
   def branch_names_contains(sha, limit: 0, exclude_refs: [])
     refs = raw_repository.branch_names_contains_sha(sha, limit: adjust_containing_limit(limit: limit, exclude_refs: exclude_refs))
 
@@ -889,9 +905,13 @@ class Repository
       options[:start_repository] = start_project.repository.raw_repository
     end
 
-    skip_target_sha = options.delete(:skip_target_sha)
-    unless skip_target_sha
-      options[:target_sha] = self.commit(options[:branch_name])&.sha
+    if Feature.enabled?(:commit_files_target_sha, project)
+      options[:target_sha] = self.commit(options[:branch_name])&.sha || blank_ref
+    else
+      skip_target_sha = options.delete(:skip_target_sha)
+      unless skip_target_sha
+        options[:target_sha] = self.commit(options[:branch_name])&.sha
+      end
     end
 
     with_cache_hooks { raw.commit_files(user, **options) }
@@ -1260,7 +1280,7 @@ class Repository
 
   def get_patch_id(old_revision, new_revision)
     raw_repository.get_patch_id(old_revision, new_revision)
-  rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository => e
+  rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository, Gitlab::Git::CommandTimedOut => e
     # This is expected when there are no differences between the old_revision and the new_revision.
     # It's not ideal, but is simpler to handle this here than making breaking changes to gitaly.
     return if e.message.match?(/no difference between old and new revision./)
@@ -1326,6 +1346,21 @@ class Repository
     when FORMAT_SHA256
       Gitlab::Git::SHA256_BLANK_SHA
     end
+  end
+
+  def ignore_revs_file_blob
+    return unless Feature.enabled?(:blame_ignore_revs, project)
+    return unless project&.default_branch
+
+    blob_at(project.default_branch, Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
+  end
+
+  def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30)
+    Gitlab::Git::BlobPairsDiffs
+      .new(self)
+      .diffs_by_changed_paths(diff_refs, offset, batch_size) do |diff_files|
+        yield diff_files
+      end
   end
 
   private

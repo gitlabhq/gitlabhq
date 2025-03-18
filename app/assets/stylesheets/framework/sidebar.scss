@@ -340,7 +340,7 @@
     color: inherit;
 
     &:hover {
-      color: $blue-800;
+      @apply gl-text-link;
     }
   }
 

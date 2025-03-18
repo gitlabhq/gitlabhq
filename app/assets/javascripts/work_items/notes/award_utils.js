@@ -36,6 +36,7 @@ export function optimisticAwardUpdate({ note, name, fullPath, workItemIid }) {
   const { mutation } = getMutation({ note, name });
 
   const currentUserId = window.gon.current_user_id;
+  const currentUserFullName = window.gon.current_user_fullname;
 
   return (store) => {
     store.updateQuery(
@@ -52,7 +53,7 @@ export function optimisticAwardUpdate({ note, name, fullPath, workItemIid }) {
             user: {
               __typename: 'UserCore',
               id: convertToGraphQLId(TYPENAME_USER, currentUserId),
-              name: null,
+              name: currentUserFullName,
             },
           },
         };

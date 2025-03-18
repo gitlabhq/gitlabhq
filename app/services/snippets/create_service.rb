@@ -126,6 +126,8 @@ module Snippets
     end
 
     def commit_attrs(snippet, msg)
+      return super if Feature.enabled?(:commit_files_target_sha, snippet.project)
+
       super.merge(skip_target_sha: true)
     end
   end

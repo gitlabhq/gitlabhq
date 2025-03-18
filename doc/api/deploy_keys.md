@@ -26,7 +26,11 @@ The deploy keys API can return in responses fingerprints of the public key in th
 
 {{< /details >}}
 
-> `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
+{{< history >}}
+
+- `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
+
+{{< /history >}}
 
 Get a list of all deploy keys across all projects of the GitLab instance. This
 endpoint requires administrator access and is not available on GitLab.com.

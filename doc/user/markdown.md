@@ -12,10 +12,18 @@ title: GitLab Flavored Markdown (GLFM)
 
 {{< /details >}}
 
-When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
-The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
+GitLab Flavored Markdown (GLFM) is a powerful markup language that formats text in the GitLab user interface.
+GLFM:
 
-You can use GitLab Flavored Markdown in the following areas:
+- Creates rich content with support for code, diagrams, math equations, and multimedia.
+- Links issues, merge requests, and other GitLab content with cross-references.
+- Organizes information with task lists, tables, and collapsible sections.
+- Supports syntax highlighting for over 100 programming languages.
+- Ensures accessibility with semantic heading structures and image descriptions.
+
+When you enter text in the GitLab UI, GitLab assumes the text is in GitLab Flavored Markdown.
+
+You can use GitLab Flavored Markdown in:
 
 - Comments
 - Issues
@@ -25,6 +33,7 @@ You can use GitLab Flavored Markdown in the following areas:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
+- Releases
 
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
@@ -59,6 +68,7 @@ functionality is extended with additional features, without affecting the standa
 
 The following features are not found in standard Markdown:
 
+- [Alerts](#alerts)
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Description lists](#description-lists)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
@@ -1159,7 +1169,7 @@ Do not change it back to a markdown codeblocks.
 -->
 
 <!--
-DO NOT change the name of markdown_logo.png. This file is used for a test in
+DO NOT change the name of markdown_logo_v17_11.png. This file is used for a test in
 spec/controllers/help_controller_spec.rb.
 -->
 
@@ -1172,18 +1182,18 @@ Inline-style:
 
 <!-- markdownlint-disable proper-names -->
 
-<pre class="highlight"><code>![alt text](img/markdown_logo.png "Title Text")
+<pre class="highlight"><code>![alt text](img/markdown_logo_v17_11.png "Title Text")
 </code></pre>
 
-![alt text](img/markdown_logo.png "Title Text")
+![alt text](img/markdown_logo_v17_11.png "Title Text")
 
 Reference-style:
 
 <pre class="highlight"><code>![alt text1][logo]
-&#91;logo]: img/markdown_logo.png "Title Text"
+&#91;logo]: img/markdown_logo_v17_11.png "Title Text"
 </code></pre>
 
-![alt text](img/markdown_logo.png "Title Text")
+![alt text](img/markdown_logo_v17_11.png "Title Text")
 
 <!-- markdownlint-enable proper-names -->
 
@@ -1220,12 +1230,12 @@ The value must an integer with a unit of either `px` (default) or `%`.
 For example
 
 ```markdown
-![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
+![alt text](img/markdown_logo_v17_11.png "Title Text"){width=100 height=100px}
 
-![alt text](img/markdown_logo.png "Title Text"){width=75%}
+![alt text](img/markdown_logo_v17_11.png "Title Text"){width=75%}
 ```
 
-![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
+![alt text](img/markdown_logo_v17_11.png "Title Text"){width=100 height=100px}
 
 You can also use the `img` HTML tag instead of Markdown and set its `height` and
 `width` parameters.
@@ -1601,11 +1611,13 @@ or
 - Merge requests.
 - Epics.
 
-NOTE:
+{{< alert type="note" >}}
+
 A table of contents renders also when you use the TOC code in single square brackets, regardless of
-being on its own line or not.
-This behavior is unintended.
+being on its own line or not. This behavior is unintended.
 For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
+
+{{< /alert >}}
 
 ```markdown
 This sentence introduces my wiki page.
@@ -1622,6 +1634,82 @@ Second section content.
 ```
 
 ![Preview of an auto-generated table of contents in a Wiki](img/markdown_toc_preview_v12_9.png)
+
+## Alerts
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24482) in GitLab 17.10.
+
+{{< /history >}}
+
+Alerts can be used to highlight or call attention to something. The alert syntax
+uses the Markdown blockquote syntax followed by the type of alert.
+You can use alerts in any text box that supports Markdown.
+
+You can use the following types of alerts:
+
+- Note: information that users should take into account, even when skimming:
+
+  ```markdown
+  > [!note]
+  > The following information is useful.
+  ```
+
+- Tip: Optional information to help a user be more successful:
+
+  ```markdown
+  > [!tip]
+  > Tip of the day.
+  ```
+
+- Important: Crucial information necessary for users to succeed:
+
+  ```markdown
+  > [!important]
+  > This is something important you should know.
+  ```
+
+- Caution: Negative potential consequences of an action:
+
+  ```markdown
+  > [!caution]
+  > You need to be very careful about the following.
+  ```
+
+- Warning: Critical potential risks:
+
+  ```markdown
+  > [!warning]
+  > The following would be dangerous.
+  ```
+
+The title text shown for an alert defaults to the name of the alert. For example,
+`> [!warning]` alert has the title `Warning`.
+
+To override an alert block's title, enter any text on the same line.
+For example, to use the warning color but have `Data deletion` as the title:
+
+```markdown
+> [!warning] Data deletion
+> The following instructions will make your data unrecoverable.
+```
+
+[Multiline blockquotes](#multiline-blockquote) also support the alert syntax. This
+allows you to wrap large and more complex text in an alert.
+
+```markdown
+>>> [!note] Things to consider
+You should consider the following ramifications:
+
+1. consideration 1
+1. consideration 2
+>>>
+```
+
+The alerts render as:
+
+![How Markdown alerts are rendered in GitLab](img/markdown_alerts_v17_10.png)
 
 ## Colors
 
@@ -1790,7 +1878,11 @@ $example = array(
 
 ## Includes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7.
+
+{{< /history >}}
 
 Use includes, or include directives, to add the content of a document inside another document.
 

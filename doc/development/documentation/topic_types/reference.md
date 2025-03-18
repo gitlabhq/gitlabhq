@@ -34,3 +34,18 @@ Avoid these topic titles:
   for a task, or information about a concept.
 - `Limitations`. Instead, move the content near other similar information.
   If you must, you can use the title `Known issues`.
+
+## Example
+
+### Before
+
+This topic was a compilation of a variety of information and was difficult to scan.
+
+![An example of a reference topic](img/reference_example1_v17_10.png)
+
+### After
+
+The information in the **Overview** topic is now organized in a table
+that's easy to scan. It also has a more searchable title.
+
+![An example of a corrected reference topic](img/reference_example2_v17_10.png)

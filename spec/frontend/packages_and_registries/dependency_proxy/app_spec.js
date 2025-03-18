@@ -230,7 +230,6 @@ describe('DependencyProxyApp', () => {
 
                 expect(resolver).toHaveBeenCalledWith({
                   before: pagination().startCursor,
-                  first: null,
                   fullPath: provideDefaults.groupPath,
                   last: GRAPHQL_PAGE_SIZE,
                 });
@@ -345,7 +344,6 @@ describe('DependencyProxyApp', () => {
           await waitForPromises();
 
           expect(resolver).toHaveBeenCalledWith({
-            first: null,
             last: GRAPHQL_PAGE_SIZE,
             before: '1234',
             fullPath: provideDefaults.groupPath,

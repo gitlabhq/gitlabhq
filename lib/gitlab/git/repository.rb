@@ -48,6 +48,7 @@ module Gitlab
       attr_reader :storage, :gl_repository, :gl_project_path, :container
 
       delegate :list_oversized_blobs, :list_all_blobs, :list_blobs, to: :gitaly_blob_client
+      delegate :repository_info, to: :gitaly_repository_client
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -260,7 +261,8 @@ module Gitlab
           'ArchivePrefix' => prefix,
           'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
           'CommitId' => commit.id,
-          'GitalyRepository' => gitaly_repository.to_h
+          'GitalyRepository' => gitaly_repository.to_h,
+          'StoragePath' => storage_path
         }
       end
 
@@ -638,9 +640,9 @@ module Gitlab
         # TODO: implement this method
       end
 
-      def add_branch(branch_name, user:, target:)
+      def add_branch(branch_name, user:, target:, skip_ci: false)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_create_branch(branch_name, user, target)
+          gitaly_operation_client.user_create_branch(branch_name, user, target, skip_ci: skip_ci)
         end
       end
 
@@ -900,12 +902,11 @@ module Gitlab
       # forced - should we use --force flag?
       # no_tags - should we use --no-tags flag?
       # prune - should we use --prune flag?
-      # check_tags_changed - should we ask gitaly to calculate whether any tags changed?
       # resolved_address - resolved IP address for provided URL
-      def fetch_remote( # rubocop:disable Metrics/ParameterLists
+      def fetch_remote(
         url,
         refmap: nil, ssh_auth: nil, forced: false, no_tags: false, prune: true,
-        check_tags_changed: false, http_authorization_header: "", resolved_address: "")
+        http_authorization_header: "", resolved_address: "")
         wrapped_gitaly_errors do
           gitaly_repository_client.fetch_remote(
             url,
@@ -914,7 +915,6 @@ module Gitlab
             forced: forced,
             no_tags: no_tags,
             prune: prune,
-            check_tags_changed: check_tags_changed,
             timeout: GITLAB_PROJECTS_TIMEOUT,
             http_authorization_header: http_authorization_header,
             resolved_address: resolved_address
@@ -1259,70 +1259,7 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def diffs_by_changed_paths(diff_refs, offset, batch_size = 30)
-        changed_paths = find_changed_paths(
-          [Gitlab::Git::DiffTree.new(diff_refs.base_sha, diff_refs.head_sha)],
-          find_renames: true
-        )
-
-        changed_paths.drop(offset).each_slice(batch_size) do |batched_changed_paths|
-          blob_pairs = batched_changed_paths.reject(&:submodule_change?).map do |changed_path|
-            Gitaly::DiffBlobsRequest::BlobPair.new(
-              left_blob: changed_path.old_blob_id,
-              right_blob: changed_path.new_blob_id
-            )
-          end
-
-          yield diff_files_by_blob_pairs(blob_pairs, batched_changed_paths, diff_refs)
-        end
-      end
-
       private
-
-      def diff_files_by_blob_pairs(blob_pairs, changed_paths, diff_refs)
-        non_submodule_paths = changed_paths.reject(&:submodule_change?)
-        diff_blobs = diff_blobs(blob_pairs, patch_bytes_limit: Gitlab::Git::Diff.patch_hard_limit_bytes)
-
-        changed_diff_blobs = diff_blobs.zip(non_submodule_paths)
-        diff_blob_lookup = changed_diff_blobs.to_h { |diff_blob, path| [path.path, diff_blob] }
-
-        changed_paths.map do |changed_path|
-          if changed_path.submodule_change?
-            create_diff(changed_path, diff_refs, diff: generate_submodule_diff(changed_path))
-          else
-            diff_blob = diff_blob_lookup[changed_path.path]
-            create_diff(changed_path, diff_refs, diff: diff_blob.patch, too_large: diff_blob.over_patch_bytes_limit)
-          end
-        end
-      end
-
-      def create_diff(changed_path, diff_refs, options = {})
-        diff_options = {
-          new_path: changed_path.path,
-          old_path: changed_path.old_path,
-          a_mode: changed_path.old_mode,
-          b_mode: changed_path.new_mode,
-          new_file: changed_path.new_file?,
-          renamed_file: changed_path.renamed_file?,
-          deleted_file: changed_path.deleted_file?
-        }.merge(options)
-
-        diff = Gitlab::Git::Diff.new(diff_options)
-
-        Gitlab::Diff::File.new(
-          diff,
-          repository: container.repository,
-          diff_refs: diff_refs
-        )
-      end
-
-      def generate_submodule_diff(changed_path)
-        diff_lines = []
-        diff_lines << "- Subproject commit #{changed_path.old_blob_id}" if changed_path.deleted_file? || changed_path.modified_file?
-        diff_lines << "+ Subproject commit #{changed_path.new_blob_id}" if changed_path.new_file? || changed_path.modified_file?
-
-        diff_lines.join("\n")
-      end
 
       def check_blobs_generated(base, head, changed_paths)
         wrapped_gitaly_errors do
@@ -1331,7 +1268,7 @@ module Gitlab
       end
 
       def repository_info_size_megabytes
-        bytes = gitaly_repository_client.repository_info.size
+        bytes = repository_info.size
 
         Gitlab::Utils.bytes_to_megabytes(bytes).round(2)
       end

@@ -180,9 +180,7 @@ module Gitlab
         def find_work_item_type
           base_type = @attributes['base_type']
 
-          # Using a tmp key to invalidate cache. Should be removed in next release
-          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/497857
-          find_with_cache([::WorkItems::Type, base_type, :tmp_correct_id]) do
+          find_with_cache([::WorkItems::Type, base_type]) do
             if ::WorkItems::Type.base_types.key?(base_type)
               ::WorkItems::Type.default_by_type(base_type)
             else

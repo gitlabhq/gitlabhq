@@ -35,17 +35,11 @@ module Ci
     end
 
     def external_url(job)
-      pages_url_builder(job.project).artifact_url(entry, job)
+      job.project.pages_url_builder.artifact_url(entry, job)
     end
 
     def external_link?(job)
-      pages_url_builder(job.project).artifact_url_available?(entry, job)
-    end
-
-    private
-
-    def pages_url_builder(project)
-      @pages_url_builder ||= Gitlab::Pages::UrlBuilder.new(project)
+      job.project.pages_url_builder.artifact_url_available?(entry, job)
     end
   end
 end

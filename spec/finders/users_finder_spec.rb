@@ -149,6 +149,77 @@ RSpec.describe UsersFinder do
         users = described_class.new(user, admins: true).execute
         expect(users).to contain_exactly(user, normal_user, external_user, admin_user, unconfirmed_user, omniauth_user, internal_user, project_bot, service_account_user)
       end
+
+      context 'when filtering by_membership' do
+        let_it_be(:group_user) { create(:user) }
+        let_it_be(:project_user) { create(:user) }
+        let_it_be(:group) { create(:group, developers: [user]) }
+        let_it_be(:project) { create(:project, developers: [user]) }
+
+        subject(:users) { described_class.new(user, by_membership: true).execute }
+
+        it 'includes the user and project owner' do
+          expect(users).to contain_exactly(user, project.owner)
+        end
+
+        it 'includes users who are members of the user groups' do
+          group.add_developer(group_user)
+
+          expect(users).to contain_exactly(user, project.owner, group_user)
+        end
+
+        it 'includes users who are members of the user projects' do
+          project.add_developer(project_user)
+
+          expect(users).to contain_exactly(user, project.owner, project_user)
+        end
+      end
+
+      context 'when filtering by_member_source_ids' do
+        let_it_be(:group_user) { create(:user) }
+        let_it_be(:project_user) { create(:user) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project) }
+
+        it 'filters by group membership' do
+          group.add_developer(group_user)
+
+          users = described_class.new(user, group_member_source_ids: [group.id]).execute
+
+          expect(users).to contain_exactly(group_user)
+        end
+
+        it 'filters by project membership' do
+          project.add_developer(project_user)
+
+          users = described_class.new(user, project_member_source_ids: [project.id]).execute
+
+          expect(users).to contain_exactly(project_user, project.owner)
+        end
+
+        it 'filters by group and project membership' do
+          group.add_developer(group_user)
+          project.add_developer(project_user)
+
+          users = described_class
+                    .new(user, group_member_source_ids: [group.id], project_member_source_ids: [project.id])
+                    .execute
+
+          expect(users).to contain_exactly(group_user, project_user, project.owner)
+        end
+
+        it 'does not include members not part of the filtered group' do
+          users = described_class.new(user, group_member_source_ids: [group.id]).execute
+
+          expect(users).not_to include(group_user)
+        end
+
+        it 'does not include members not part of the filtered project' do
+          users = described_class.new(user, project_member_source_ids: [project.id]).execute
+
+          expect(users).not_to include(project_user)
+        end
+      end
     end
 
     shared_examples 'executes users finder as admin' do

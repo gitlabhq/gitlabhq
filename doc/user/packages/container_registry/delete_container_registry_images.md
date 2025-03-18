@@ -81,7 +81,7 @@ information, see the following endpoints:
 
 GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
 third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
-For assistance with this third-party tool, see [the issue queue for regclient](https://github.com/regclient/regclient/issues).
+For assistance with this third-party tool, see [the issue tracker for regclient](https://github.com/regclient/regclient/issues).
 
 {{< /alert >}}
 

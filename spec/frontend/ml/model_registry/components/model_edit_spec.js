@@ -21,6 +21,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('ModelEdit', () => {
   let wrapper;
   let apolloProvider;
+  const successfulEditModelResolver = jest.fn().mockResolvedValue(editModelResponses.success);
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -30,10 +31,7 @@ describe('ModelEdit', () => {
     apolloProvider = null;
   });
 
-  const createWrapper = (
-    modelProp = model,
-    editModelResolver = jest.fn().mockResolvedValue(editModelResponses.success),
-  ) => {
+  const createWrapper = (modelProp = model, editModelResolver = successfulEditModelResolver) => {
     const requestHandlers = [[editModelMutation, editModelResolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
@@ -118,23 +116,17 @@ describe('ModelEdit', () => {
       createWrapper();
       findMarkdownEditor().vm.$emit('input', 'My model description');
       await Vue.nextTick();
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
     });
 
     it('makes a create model mutation upon confirm', () => {
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: editModelMutation,
-          variables: {
-            description: 'My model description',
-            modelId: 1,
-            name: model.name,
-            projectPath: 'some/project',
-          },
-        }),
-      );
+      expect(successfulEditModelResolver).toHaveBeenCalledWith({
+        description: 'My model description',
+        modelId: 1,
+        name: model.name,
+        projectPath: 'some/project',
+      });
     });
   });
 
@@ -143,8 +135,6 @@ describe('ModelEdit', () => {
       createWrapper(model, jest.fn().mockResolvedValue(editModelResponses.validationFailure));
       findMarkdownEditor().vm.$emit('input', 'My model description');
       await Vue.nextTick();
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
-
       await submitForm();
     });
 

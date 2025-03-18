@@ -98,7 +98,8 @@ module API
         optional :updated_after, type: DateTime, desc: 'Return releases updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases
+      route_setting :authorization, job_token_policies: :read_releases,
+        allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases' do
         releases = ::ReleasesFinder.new(user_project, current_user, declared_params.slice(:order_by, :sort, :updated_before, :updated_after)).execute
 
@@ -134,7 +135,8 @@ module API
           desc: 'If `true`, a response includes HTML rendered markdown of the release description'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases
+      route_setting :authorization, job_token_policies: :read_releases,
+        allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 
@@ -162,7 +164,8 @@ module API
           as: :filepath
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases
+      route_setting :authorization, job_token_policies: :read_releases,
+        allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/:tag_name/downloads/*direct_asset_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 
@@ -191,7 +194,8 @@ module API
           desc: 'The path to be suffixed to the latest release'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases
+      route_setting :authorization, job_token_policies: :read_releases,
+        allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/permalink/latest(/)(*suffix_path)', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 

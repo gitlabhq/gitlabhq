@@ -17,6 +17,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
   end
 
   before do
+    stub_feature_flags(new_project_creation_form: false)
     sign_in(user)
     stub_application_setting(import_sources: ['bitbucket_server'])
   end

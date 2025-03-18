@@ -7,6 +7,8 @@ module BulkImports
 
       attr_reader :tracker
 
+      delegate :source_xid, :entity_type, to: :entity
+
       def initialize(tracker, extra = {})
         @tracker = tracker
         @extra = extra

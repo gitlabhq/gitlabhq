@@ -13,9 +13,12 @@ module StreamDiffs
     offset = { offset_index: params.permit(:offset)[:offset].to_i }
 
     stream_diff_files(streaming_diff_options.merge(offset))
+  rescue ActionController::Live::ClientDisconnected
+    # Ignored
   rescue StandardError => e
     Gitlab::AppLogger.error("Error streaming diffs: #{e.message}")
-    response.stream.write e.message
+    error_component = ::RapidDiffs::StreamingErrorComponent.new(message: e.message)
+    response.stream.write error_component.render_in(view_context)
   ensure
     response.stream.close
   end

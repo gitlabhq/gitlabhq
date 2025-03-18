@@ -42,7 +42,7 @@ RSpec.describe Resolvers::Users::GroupCountResolver do
         it do
           result = batch_sync { resolve_group_count(user1, user2) }
 
-          expect(result).to be nil
+          expect(result).to be_nil
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe Resolvers::Users::GroupCountResolver do
         it do
           result = batch_sync { resolve_group_count(user1, nil) }
 
-          expect(result).to be nil
+          expect(result).to be_nil
         end
       end
     end

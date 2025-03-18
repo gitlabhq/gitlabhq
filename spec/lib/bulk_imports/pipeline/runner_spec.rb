@@ -217,49 +217,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
             .with(
               log_params(
                 context,
-                pipeline_class: 'BulkImports::MyPipeline',
-                pipeline_step: :extractor,
-                step_class: 'BulkImports::Extractor'
-              )
-            )
-          expect(logger).to receive(:info)
-            .with(
-              log_params(
-                context,
-                pipeline_class: 'BulkImports::MyPipeline',
-                pipeline_step: :transformer,
-                step_class: 'BulkImports::Transformer'
-              )
-            )
-          expect(logger).to receive(:info)
-            .with(
-              log_params(
-                context,
-                pipeline_class: 'BulkImports::MyPipeline',
-                pipeline_step: :loader,
-                step_class: 'BulkImports::Loader'
-              )
-            )
-          expect(logger).to receive(:info)
-            .with(
-              log_params(
-                context,
-                pipeline_class: 'BulkImports::MyPipeline',
-                pipeline_step: :on_finish
-              )
-            )
-          expect(logger).to receive(:info)
-            .with(
-              log_params(
-                context,
-                pipeline_class: 'BulkImports::MyPipeline',
-                pipeline_step: :after_run
-              )
-            )
-          expect(logger).to receive(:info)
-            .with(
-              log_params(
-                context,
                 message: 'Pipeline finished',
                 pipeline_class: 'BulkImports::MyPipeline'
               )

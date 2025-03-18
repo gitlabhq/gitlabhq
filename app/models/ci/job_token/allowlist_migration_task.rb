@@ -4,6 +4,7 @@ module Ci
   module JobToken
     class AllowlistMigrationTask
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::InternalEventsTracking
 
       attr_reader :only_ids, :exclude_ids
 
@@ -77,6 +78,14 @@ module Ci
       end
 
       def perform_migration!(project)
+        track_internal_event(
+          'ci_job_token_autopopulate_allowlist',
+          user: @user,
+          project: project,
+          additional_properties: {
+            label: 'rake'
+          }
+        )
         ::Ci::JobToken::AutopopulateAllowlistService # rubocop:disable CodeReuse/ServiceClass -- This class is not an ActiveRecord model
           .new(project, @user)
           .unsafe_execute!

@@ -1,14 +1,21 @@
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlFormGroup } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import projectSettingRow from '~/pages/projects/shared/permissions/components/project_setting_row.vue';
 
 describe('Project Setting Row', () => {
   let wrapper;
 
+  const findLabel = () => wrapper.findByTestId('project-settings-row-label');
+  const findHelpText = () => wrapper.findByTestId('project-settings-row-help-text');
+
   const createComponent = (customProps = {}) => {
-    const propsData = { ...customProps };
-    return shallowMount(projectSettingRow, { propsData });
+    return shallowMountExtended(projectSettingRow, {
+      propsData: {
+        ...customProps,
+      },
+      stubs: { GlFormGroup },
+    });
   };
 
   beforeEach(() => {
@@ -19,25 +26,26 @@ describe('Project Setting Row', () => {
     wrapper = createComponent({ label: 'Test label' });
 
     await nextTick();
-    expect(wrapper.find('label').text()).toEqual('Test label');
+    expect(findLabel().text()).toEqual('Test label');
   });
 
   it('should hide the label if it is not set', () => {
-    expect(wrapper.find('label').exists()).toBe(false);
+    expect(findLabel().exists()).toBe(false);
   });
 
   it('should apply gl-text-disabled class to label when locked', async () => {
     wrapper = createComponent({ label: 'Test label', locked: true });
 
     await nextTick();
-    expect(wrapper.find('label').classes()).toContain('gl-text-disabled');
+    expect(findLabel().classes()).toContain('gl-text-disabled');
   });
 
   it('should render default slot content', () => {
-    wrapper = shallowMount(projectSettingRow, {
+    wrapper = shallowMountExtended(projectSettingRow, {
       slots: {
         'label-icon': GlIcon,
       },
+      stubs: { GlFormGroup },
     });
     expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
@@ -63,10 +71,10 @@ describe('Project Setting Row', () => {
     wrapper = createComponent({ helpText: 'Test text' });
 
     await nextTick();
-    expect(wrapper.find('span').text()).toEqual('Test text');
+    expect(findHelpText().text()).toEqual('Test text');
   });
 
   it('should hide the help text if it is set', () => {
-    expect(wrapper.find('span').exists()).toBe(false);
+    expect(findHelpText().exists()).toBe(false);
   });
 });

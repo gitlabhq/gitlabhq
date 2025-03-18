@@ -70,7 +70,7 @@ module Types
 
     field :releases, ::Types::ReleaseType.connection_type,
       null: true,
-      description: 'Releases associated with this milestone.'
+      description: 'Releases associated with the milestone.'
 
     def stats
       milestone

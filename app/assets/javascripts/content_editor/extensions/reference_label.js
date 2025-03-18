@@ -14,8 +14,8 @@ export default Reference.extend({
         parseHTML: (element) => {
           const text = element.querySelector('.gl-label-text').textContent;
           const scopedText = element.querySelector('.gl-label-text-scoped')?.textContent;
-          if (!scopedText) return text;
-          return `${text}${SCOPED_LABEL_DELIMITER}${scopedText}`;
+          if (!scopedText) return text.trim();
+          return `${text.trim()}${SCOPED_LABEL_DELIMITER}${scopedText.trim()}`;
         },
       },
       color: {

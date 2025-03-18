@@ -9,7 +9,7 @@ RSpec.describe Mutations::DependencyProxy::GroupSettings::Update, feature_catego
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:group_settings) { create(:dependency_proxy_group_setting, group: group) }
   let_it_be(:current_user) { create(:user) }
-  let(:params) { { group_path: group.full_path, enabled: false } }
+  let(:params) { { group_path: group.full_path, enabled: false, identity: 'i', secret: 's' } }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_dependency_proxy) }
 
@@ -18,8 +18,8 @@ RSpec.describe Mutations::DependencyProxy::GroupSettings::Update, feature_catego
 
     shared_examples 'updating the dependency proxy group settings' do
       it_behaves_like 'updating the dependency proxy group settings attributes',
-        from: { enabled: true },
-        to: { enabled: false }
+        from: { enabled: true, identity: 'username', secret: 'secret' },
+        to: { enabled: false, identity: 'i', secret: 's' }
 
       it 'returns the dependency proxy settings no errors' do
         expect(subject).to eq(

@@ -1,5 +1,6 @@
 import { set, isEmpty } from 'lodash';
 import { produce } from 'immer';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { findWidget } from '~/issues/list/utils';
 import { newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { updateDraft } from '~/lib/utils/autosave';
@@ -68,93 +69,104 @@ export const updateNewWorkItemCache = (input, cache) => {
     parent,
   } = input;
 
-  const query = workItemByIidQuery;
-  const variables = {
-    fullPath: newWorkItemFullPath(fullPath, workItemType),
-    iid: NEW_WORK_ITEM_IID,
-  };
+  try {
+    const query = workItemByIidQuery;
+    const variables = {
+      fullPath: newWorkItemFullPath(fullPath, workItemType),
+      iid: NEW_WORK_ITEM_IID,
+    };
 
-  cache.updateQuery({ query, variables }, (sourceData) =>
-    produce(sourceData, (draftData) => {
-      const widgetUpdates = [
-        {
-          widgetType: WIDGET_TYPE_ASSIGNEES,
-          newData: assignees,
-          nodePath: 'assignees.nodes',
-        },
-        {
-          widgetType: WIDGET_TYPE_LABELS,
-          newData: labels,
-          nodePath: 'labels.nodes',
-        },
-        {
-          widgetType: WIDGET_TYPE_COLOR,
-          newData: color,
-          nodePath: 'color',
-        },
-        {
-          widgetType: WIDGET_TYPE_CRM_CONTACTS,
-          newData: crmContacts,
-          nodePath: 'contacts.nodes',
-        },
-        {
-          widgetType: WIDGET_TYPE_DESCRIPTION,
-          newData: description,
-          nodePath: 'description',
-        },
-        {
-          widgetType: WIDGET_TYPE_HEALTH_STATUS,
-          newData: healthStatus,
-          nodePath: 'healthStatus',
-        },
-        {
-          widgetType: WIDGET_TYPE_ITERATION,
-          newData: iteration,
-          nodePath: 'iteration',
-        },
-        {
-          widgetType: WIDGET_TYPE_WEIGHT,
-          newData: weight,
-          nodePath: 'weight',
-        },
-        {
-          widgetType: WIDGET_TYPE_MILESTONE,
-          newData: milestone,
-          nodePath: 'milestone',
-        },
-        {
-          widgetType: WIDGET_TYPE_HIERARCHY,
-          newData: parent,
-          nodePath: 'parent',
-        },
-      ];
+    cache.updateQuery({ query, variables }, (sourceData) =>
+      produce(sourceData, (draftData) => {
+        const widgetUpdates = [
+          {
+            widgetType: WIDGET_TYPE_ASSIGNEES,
+            newData: assignees,
+            nodePath: 'assignees.nodes',
+          },
+          {
+            widgetType: WIDGET_TYPE_LABELS,
+            newData: labels,
+            nodePath: 'labels.nodes',
+          },
+          {
+            widgetType: WIDGET_TYPE_COLOR,
+            newData: color,
+            nodePath: 'color',
+          },
+          {
+            widgetType: WIDGET_TYPE_CRM_CONTACTS,
+            newData: crmContacts,
+            nodePath: 'contacts.nodes',
+          },
+          {
+            widgetType: WIDGET_TYPE_DESCRIPTION,
+            newData: description,
+            nodePath: 'description',
+          },
+          {
+            widgetType: WIDGET_TYPE_HEALTH_STATUS,
+            newData: healthStatus,
+            nodePath: 'healthStatus',
+          },
+          {
+            widgetType: WIDGET_TYPE_ITERATION,
+            newData: iteration,
+            nodePath: 'iteration',
+          },
+          {
+            widgetType: WIDGET_TYPE_WEIGHT,
+            newData: weight,
+            nodePath: 'weight',
+          },
+          {
+            widgetType: WIDGET_TYPE_MILESTONE,
+            newData: milestone,
+            nodePath: 'milestone',
+          },
+          {
+            widgetType: WIDGET_TYPE_HIERARCHY,
+            newData: parent,
+            nodePath: 'parent',
+          },
+        ];
 
-      widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
-        updateWidget(draftData, widgetType, newData, nodePath);
-      });
+        widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
+          updateWidget(draftData, widgetType, newData, nodePath);
+        });
 
-      updateDatesWidget(draftData, rolledUpDates);
+        updateDatesWidget(draftData, rolledUpDates);
 
-      // We want to allow users to delete a title for an in-progress work item draft
-      // as we check for the title being valid when submitting the form
-      if (title !== undefined) draftData.workspace.workItem.title = title;
+        // We want to allow users to delete a title for an in-progress work item draft
+        // as we check for the title being valid when submitting the form
+        if (title !== undefined) draftData.workspace.workItem.title = title;
 
-      if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
-    }),
-  );
+        if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
+      }),
+    );
 
-  const newData = cache.readQuery({ query, variables });
+    const newData = cache.readQuery({ query, variables });
 
-  const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
+    const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
 
-  const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
+    const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
 
-  const isWorkItemToResolveDiscussion = getParameterByName(
-    'merge_request_to_resolve_discussions_of',
-  );
+    const isWorkItemToResolveDiscussion = getParameterByName(
+      'merge_request_to_resolve_discussions_of',
+    );
 
-  if (isQueryDataValid && autosaveKey && !isWorkItemToResolveDiscussion) {
-    updateDraft(autosaveKey, JSON.stringify(newData));
+    const isNewIssueForVulnerability = getParameterByName('vulnerability_id');
+
+    if (
+      isQueryDataValid &&
+      autosaveKey &&
+      !isWorkItemToResolveDiscussion &&
+      !isNewIssueForVulnerability
+    ) {
+      updateDraft(autosaveKey, JSON.stringify(newData));
+    }
+  } catch (e) {
+    Sentry.captureException(e);
   }
 };
 

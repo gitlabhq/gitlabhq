@@ -32,7 +32,7 @@ RSpec.describe WorkItems::DataSync::Widgets::LinkedItems, feature_category: :tea
     )
   end
 
-  describe '#after_save_commit' do
+  describe '#after_create' do
     context 'when cloning work item' do
       let(:params) { { operation: :clone } }
 
@@ -40,7 +40,7 @@ RSpec.describe WorkItems::DataSync::Widgets::LinkedItems, feature_category: :tea
         expect(callback).not_to receive(:recreate_related_items)
         expect(::IssueLink).not_to receive(:insert_all)
 
-        callback.after_save_commit
+        callback.after_create
 
         expect(target_work_item.reload.linked_work_items(authorize: false)).to be_empty
       end
@@ -56,7 +56,7 @@ RSpec.describe WorkItems::DataSync::Widgets::LinkedItems, feature_category: :tea
           expect(callback).not_to receive(:recreate_related_items)
           expect(::IssueLink).not_to receive(:insert_all)
 
-          callback.after_save_commit
+          callback.after_create
 
           expect(target_work_item.reload.linked_work_items(authorize: false)).to be_empty
         end
@@ -69,7 +69,7 @@ RSpec.describe WorkItems::DataSync::Widgets::LinkedItems, feature_category: :tea
 
           expected_linked_work_items = work_item.reload.linked_work_items(authorize: false)
 
-          callback.after_save_commit
+          callback.after_create
 
           target_work_item_linked_work_items = target_work_item.reload.linked_work_items(authorize: false)
           expect(target_work_item_linked_work_items).to match_array(expected_linked_work_items)

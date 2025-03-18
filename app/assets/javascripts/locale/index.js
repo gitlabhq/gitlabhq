@@ -45,6 +45,21 @@ const ngettext = (text, pluralText, count) => {
 };
 
 /**
+ * Get the plural form index for a number.
+ *
+ * @param {number} number - The number to get the plural form for
+ * @returns {number} The plural form index for the number
+ */
+
+const getPluralFormIndex = (number) => {
+  const pluralFormFunc = Jed.PF.compile(
+    locale.options.locale_data[locale.options.domain][''].plural_forms,
+  );
+
+  return pluralFormFunc(number);
+};
+
+/**
  * Translate context based text.
  * @example
  * s__('Context|Text to translate');
@@ -130,6 +145,7 @@ function formatNumber(value, options = {}, langCode = languageCode()) {
 export { languageCode };
 export { gettext as __ };
 export { ngettext as n__ };
+export { getPluralFormIndex };
 export { pgettext as s__ };
 export { sprintf };
 export { createDateTimeFormat };

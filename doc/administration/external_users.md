@@ -8,7 +8,7 @@ title: External users
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -78,6 +78,9 @@ and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 - Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses
   not including `.ext@domain.com` as internal.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be aware that this regex could lead to a
 [regular expression denial of service (ReDoS) attack](https://en.wikipedia.org/wiki/ReDoS).
+
+{{< /alert >}}

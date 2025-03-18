@@ -33,7 +33,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
   RSpec.shared_examples 'creates work item' do
     it 'creates the work item' do
-      expect(work_item_type_gid.model_id.to_i).to eq(work_item_create_type.correct_id)
+      expect(work_item_type_gid.model_id.to_i).to eq(work_item_create_type.id)
 
       expect { post_graphql_mutation(mutation, current_user: current_user) }
         .to change { WorkItem.count }.by(1)
@@ -56,7 +56,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       end
 
       it 'converts the work item' do
-        expect(work_item_create_type.old_id).not_to eq(work_item_create_type.correct_id)
+        expect(work_item_create_type.old_id).not_to eq(work_item_create_type.id)
 
         expect do
           post_graphql_mutation(mutation, current_user: current_user)

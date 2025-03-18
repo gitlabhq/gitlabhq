@@ -76,10 +76,6 @@ module Gitlab
         def remote_config_path?
           URI::DEFAULT_PARSER.make_regexp(%w[http https]).match?(ci_config_path)
         end
-
-        def ci_yaml_include(config)
-          YAML.dump('include' => [config])
-        end
       end
     end
   end

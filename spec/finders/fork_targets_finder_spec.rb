@@ -16,7 +16,7 @@ RSpec.describe ForkTargetsFinder, feature_category: :source_code_management do
   end
 
   let_it_be(:developer_group) do
-    create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+    create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
       g.add_developer(user)
     end
   end

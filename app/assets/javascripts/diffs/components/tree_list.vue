@@ -36,6 +36,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    loadedFiles: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -82,13 +87,17 @@ export default {
     flatFilteredTreeList() {
       const result = [];
       const createFlatten = (level, hidden) => (item) => {
+        const isTree = item.type === 'tree';
+        const loading =
+          !isTree && !item.isHeader && this.loadedFiles && !this.loadedFiles[item.fileHash];
         result.push({
           ...item,
           hidden,
           level: item.isHeader ? 0 : level,
           key: item.key || item.path,
+          loading,
         });
-        const isHidden = hidden || (item.type === 'tree' && !item.opened);
+        const isHidden = hidden || (isTree && !item.opened);
         item.tree.forEach(createFlatten(level + 1, isHidden));
       };
 
@@ -229,11 +238,11 @@ export default {
                 :current-diff-file-id="currentDiffFileId"
                 :style="{ '--level': item.level }"
                 :class="{ 'tree-list-parent': item.level > 0 }"
-                :tabindex="0"
+                :tabindex="item.loading ? -1 : 0"
                 class="gl-relative !gl-m-1"
                 :data-file-row="item.fileHash"
                 @toggleTreeOpen="toggleTreeOpen"
-                @clickFile="$emit('clickFile', $event)"
+                @clickFile="!item.loading && $emit('clickFile', $event)"
               />
             </template>
             <template #after>

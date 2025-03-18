@@ -8,7 +8,7 @@ title: Troubleshooting GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -39,6 +39,12 @@ Before you begin troubleshooting, you should:
   ```
 
   Now, requests and responses from GitLab to the AI gateway are logged to [`llm.log`](../logs/_index.md#llmlog)
+
+For more information on troubleshooting GitLab Duo, see:
+
+- [Troubleshooting GitLab Duo](../../user/gitlab_duo/troubleshooting.md).
+- [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md).
+- [GitLab Duo Chat troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md).
 
 ## Use debugging scripts
 
@@ -88,11 +94,11 @@ We provide two debugging scripts to help administrators verify their self-hosted
      ```shell
      poetry run troubleshoot \
        --model-family=claude_3 \
-       --model-identifier=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
+       --model-identifier=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
      ```
 
      For a `mixtral` model running on vLLM:
-   
+
      ```shell
      poetry run troubleshoot \
        --model-family=mixtral \
@@ -114,6 +120,14 @@ Verify the output of the commands, and fix accordingly.
 If both commands are successful, but GitLab Duo Code Suggestions is still not working,
 raise an issue on the issue tracker.
 
+## GitLab Duo health check is not working
+
+When you [run a health check for GitLab Duo](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI gateway`.
+
+To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to Duo Chat.
+
+If this does not work, the error might be because of a known issue with GitLab Duo health check. For more information, see [issue 517097](https://gitlab.com/gitlab-org/gitlab/-/issues/517097).
+
 ## Check if GitLab can make a request to the model
 
 From the GitLab Rails console, verify that GitLab can make a request to the model
@@ -124,7 +138,7 @@ model_name = "<your_model_name>"
 model_endpoint = "<your_model_endpoint>"
 model_api_key = "<your_model_api_key>"
 body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
-ai_gateway_url = Gitlab::AiGateway.url # Verify that it's not nil
+ai_gateway_url = Ai::Setting.instance.ai_gateway_url # Verify that the AI gateway URL is set in the database
 client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), service_name: :self_hosted_models)
 client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
 ```
@@ -143,7 +157,7 @@ If that is not the case, this might means one of the following:
 
 - The user might not have access to Code Suggestions. To resolve,
   [check if a user can request Code Suggestions](#check-if-a-user-can-request-code-suggestions).
-- The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environmental variables are set up correctly](#check-that-gitlab-environmental-variables-are-set-up-correctly).
+- The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environment variables are set up correctly](#check-that-the-ai-gateway-environment-variables-are-set-up-correctly).
 - The GitLab instance is not configured to use self-hosted models. To resolve, [check if the GitLab instance is configured to use self-hosted models](#check-if-gitlab-instance-is-configured-to-use-self-hosted-models).
 - The AI gateway is not reachable. To resolve, [check if GitLab can make an HTTP request to the AI gateway](#check-if-gitlab-can-make-an-http-request-to-the-ai-gateway).
 - When the LLM server is installed on the same instance as the AI gateway container, local requests may not work. To resolve, [allow local requests from the Docker container](#llm-server-is-not-available-inside-the-ai-gateway-container).
@@ -173,17 +187,15 @@ To check if GitLab Duo was configured correctly:
 1. Expand **AI-powered features**.
 1. Under **Features**, check that **Code Suggestions** and **Code generation** are set to **Self-hosted model**.
 
-## Check that GitLab environmental variables are set up correctly
+## Check that the AI gateway URL is set up correctly
 
-To check if the GitLab environmental variables are set up correctly, run the
-following on the GitLab Rails console:
+To check that the AI gateway URL is correct, run the following on the GitLab Rails console:
 
 ```ruby
-ENV["AI_GATEWAY_URL"] == "<your-ai-gateway-endpoint>"
+Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
 ```
 
-If the environmental variables are not set up correctly, set them by following the
-[Linux package custom environment variables setting documentation](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+If the AI gateway is not set up, [configure your GitLab instance to access the AI gateway](configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
 
 ## Check if GitLab can make an HTTP request to the AI gateway
 
@@ -217,7 +229,8 @@ curl --request POST "http://localhost:5052/v1/chat/agent" \
 
 If the request fails, the:
 
-- AI gateway might not be configured properly to use self-hosted models. To resolve this, [check that the AI gateway environmental variables are set up correctly](#check-that-the-ai-gateway-environmental-variables-are-set-up-correctly).
+- AI gateway might not be configured properly to use self-hosted models. To resolve this,
+  [check that the AI gateway URL is set up correctly](#check-that-the-ai-gateway-url-is-set-up-correctly).
 - AI gateway might not be able to access the model. To resolve,
   [check if the model is reachable from the AI gateway](#check-if-the-model-is-reachable-from-ai-gateway).
 - Model name or endpoint might be incorrect. Check the values, and correct them
@@ -232,9 +245,9 @@ curl '<your-aigateway-endpoint>/monitoring/healthz'
 
 If the response is not `200`, this means that AI gateway is not installed correctly. To resolve, follow the [documentation on how to install the AI gateway](../../install/install_ai_gateway.md).
 
-## Check that the AI gateway environmental variables are set up correctly
+## Check that the AI gateway environment variables are set up correctly
 
-To check that the AI gateway environmental variables are set up correctly, run the
+To check that the AI gateway environment variables are set up correctly, run the
 following in a console on the AI gateway container:
 
 ```shell
@@ -242,7 +255,7 @@ docker exec -it <ai-gateway-container> sh
 echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 ```
 
-If the environmental variables are not set up correctly, set them by
+If the environment variables are not set up correctly, set them by
 [creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-release).
 
 ## Check if the model is reachable from AI gateway
@@ -255,6 +268,29 @@ If you find that the AI gateway cannot make that request, this might be caused b
    requests to where the model is hosted.
 
 To resolve this, contact your network administrator.
+
+## Check if AI Gateway can make requests to your GitLab instance
+
+The GitLab instance defined in `AIGW_GITLAB_URL` must be accessible from the AI Gateway container for request authentication.
+If the instance is not reachable (for example, because of proxy configuration errors), requests can fail with errors, such as the following:
+
+- ```shell
+  jose.exceptions.JWTError: Signature verification failed
+  ```
+
+- ```shell
+  gitlab_cloud_connector.providers.CompositeProvider.CriticalAuthError: No keys founds in JWKS; are OIDC providers up?
+  ```
+
+In this scenario, verify if  `AIGW_GITLAB_URL` and `$AIGW_GITLAB_API_URL` are properly set to the container and accessible.
+The following commands should be successful when run from the container:
+
+```shell
+poetry run troubleshoot
+curl "$AIGW_GITLAB_API_URL/projects"
+```
+
+If not successful, verify your network configurations.
 
 ## The image's platform does not match the host
 

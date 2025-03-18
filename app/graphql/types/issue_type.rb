@@ -126,7 +126,7 @@ module Types
       description: 'Task completion status of the issue.'
 
     field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
-      description: 'Collection of design images associated with this issue.'
+      description: 'Collection of design images associated with the issue.'
 
     field :type, Types::IssueTypeEnum, null: true,
       method: :issue_type,
@@ -135,7 +135,7 @@ module Types
     field :alert_management_alert,
       Types::AlertManagement::AlertType,
       null: true,
-      description: 'Alert associated to this issue.',
+      description: 'Alert associated to the issue.',
       deprecated: { reason: 'Use `alert_management_alerts`', milestone: '15.6' }
 
     field :alert_management_alerts,
@@ -155,7 +155,7 @@ module Types
       description: 'Updated Issue after it got moved to another project.'
 
     field :closed_as_duplicate_of, Types::IssueType, null: true,
-      description: 'Issue this issue was closed as a duplicate of.'
+      description: 'Issue the issue was closed as a duplicate of.'
 
     field :create_note_email, GraphQL::Types::String, null: true,
       description: 'User specific email address for the issue.'

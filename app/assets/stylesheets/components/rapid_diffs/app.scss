@@ -8,7 +8,9 @@
   min-height: 3rem;
   // do not let dropdowns cover sticky header
   position: relative;
-  z-index: 1;
+  // this should always be higher than z-index inside diff files or file browser
+  // otherwise dropdowns will not cover diff file or file tree content
+  z-index: 10;
 }
 
 .rd-app-settings {

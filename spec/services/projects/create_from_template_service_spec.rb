@@ -41,11 +41,11 @@ RSpec.describe Projects::CreateFromTemplateService, feature_category: :groups_an
     end
 
     it 'does not set import set import type' do
-      expect(project.import_type).to be nil
+      expect(project.import_type).to be_nil
     end
 
     it 'does not set import set import source' do
-      expect(project.import_source).to be nil
+      expect(project.import_source).to be_nil
     end
 
     it 'is not scheduled' do

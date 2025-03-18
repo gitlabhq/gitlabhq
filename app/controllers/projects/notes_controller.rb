@@ -107,6 +107,6 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/211538', new_threshold: 300)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/211538', new_threshold: 310)
   end
 end

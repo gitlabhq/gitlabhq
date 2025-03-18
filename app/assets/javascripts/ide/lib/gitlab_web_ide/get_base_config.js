@@ -8,8 +8,28 @@ const getGitLabUrl = (gitlabPath = '') => {
 };
 
 export const getBaseConfig = () => ({
-  // baseUrl - The URL which hosts the Web IDE static web assets
-  baseUrl: getGitLabUrl(process.env.GITLAB_WEB_IDE_PUBLIC_PATH),
-  // gitlabUrl - The URL for the GitLab instance
+  /**
+   * URL pointing to the origin and base path where the
+   * Web IDE's workbench assets are hosted.
+   */
+  workbenchBaseUrl: getGitLabUrl(process.env.GITLAB_WEB_IDE_PUBLIC_PATH),
+
+  /**
+   * URL pointing to the system embedding the Web IDE. Most of the
+   * time, but not necessarily, is a GitLab instance.
+   */
+  embedderOriginUrl: getGitLabUrl(''),
+
+  /**
+   * URL pointing to the origin and the base path where
+   * the Web IDE's extensions host assets are hosted.
+   */
+  extensionsHostBaseUrl:
+    'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
+
+  /**
+   * URL pointing to the origin of the GitLab instance.
+   * It is used for API access.
+   */
   gitlabUrl: getGitLabUrl(''),
 });

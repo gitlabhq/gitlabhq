@@ -97,7 +97,7 @@ GET /users?username=jack_smith
 
 {{< alert type="note" >}}
 
-Username search is case insensitive.
+Username search is case-insensitive.
 
 {{< /alert >}}
 
@@ -1450,3 +1450,137 @@ Supported attributes:
 |:-----------|:--------|:---------|:------------|
 | `id`       | integer | yes      | ID of a user |
 | `provider` | string  | yes      | External provider name |
+
+## Create a Support PIN
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040)
+in GitLab 17.8.
+
+{{< /history >}}
+
+Creates a Support PIN for your user account. The PIN expires seven days after creation.
+GitLab Support may ask for this PIN to validate your identity.
+
+Prerequisites:
+
+- You must be authenticated.
+
+```plaintext
+POST /user/support_pin
+```
+
+Example request:
+
+```shell
+curl --request POST |
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user/support_pin"
+```
+
+Example response:
+
+```json
+{
+  "pin":"123456",
+  "expires_at":"2025-02-27T22:06:57Z"
+}
+```
+
+## Get details on a Support PIN
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040)
+in GitLab 17.8.
+
+{{< /history >}}
+
+Gets details on the Support PIN for your account.
+GitLab Support may ask for this PIN to validate your identity.
+
+Prerequisites:
+
+- You must be authenticated.
+
+```plaintext
+GET /user/support_pin
+```
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/support_pin"
+```
+
+Example response:
+
+```json
+{
+  "pin":"123456",
+  "expires_at":"2025-02-27T22:06:57Z"
+}
+```
+
+## Get a Support PIN for a user
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040)
+in GitLab 17.8.
+
+{{< /history >}}
+
+Gets details on a Support PIN for the specified user.
+GitLab Support may ask for this PIN to validate your identity.
+
+Prerequisites:
+
+- You must be an administrator.
+
+```plaintext
+GET /users/:id/support_pin
+```
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/1234/support_pin"
+```
+
+Example response:
+
+```json
+{
+  "pin":"123456",
+  "expires_at":"2025-02-27T22:06:57Z"
+}
+```
+
+Supported attributes:
+
+| Attribute              | Type     | Required | Description |
+|:-----------------------|:---------|:---------|:------------|
+| `id`             | integer   | yes       | ID of user account |

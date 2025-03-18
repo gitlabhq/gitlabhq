@@ -26,6 +26,17 @@ class Profiles::AccountsController < Profiles::ApplicationController
     redirect_to profile_account_path
   end
 
+  def generate_support_pin
+    result = Users::SupportPin::UpdateService.new(current_user).execute
+    if result[:status] == :success
+      flash[:notice] = s_("Profiles|New Support PIN generated successfully.")
+    else
+      flash[:alert] = s_("Profiles|Failed to generate new Support PIN.")
+    end
+
+    redirect_to profile_account_path
+  end
+
   private
 
   def show_view_variables

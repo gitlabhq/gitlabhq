@@ -25,15 +25,16 @@ For a full list of reference architectures, see
 >   can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
 > - **Unsure which Reference Architecture to use?** For more information, see [deciding which architecture to start with](_index.md#deciding-which-architecture-to-start-with).
 
-| Users        | Configuration        | GCP            | AWS          | Azure    |
+| Users        | Configuration        | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |--------------|----------------------|----------------|--------------|----------|
-| Up to 1,000 or 20 RPS | 8 vCPU, 16 GB memory | `n1-standard-8`<sup>1</sup> | `c5.2xlarge` | `F8s v2` |
+| Up to 1,000 or 20 RPS | 8 vCPU, 16 GB memory | `n1-standard-8`<sup>2</sup> | `c5.2xlarge` | `F8s v2` |
 
 **Footnotes:**
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
+2. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
 <!-- markdownlint-enable MD029 -->
 
 The following diagram shows that while GitLab can be installed on a single server, it is internally composed of multiple services. When an instance scales, these services are separated and independently scaled according to their specific demands.
@@ -76,32 +77,42 @@ monitor .[#7FFFD4,norank]--> redis
 
 ## Requirements
 
-Before starting, see the [requirements](_index.md#requirements) for reference architectures.
+Before proceeding, review the [requirements](_index.md#requirements) for the reference architectures.
 
 {{< alert type="warning" >}}
 
 **The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
-**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), it might *significantly* impact the performance of the environment.**
-If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), they might *significantly* impact the performance of the environment.**
+If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and contact us if required for further guidance.
 
 {{< /alert >}}
 
 ## Testing methodology
 
-The 1k architecture is designed to cover a large majority of workflows. It is regularly
-[smoke and performance tested](_index.md#validation-and-test-results) by the Test Platform team
-against the following endpoint throughput targets:
+The 20 RPS / 1k user reference architecture is designed to accommodate most common workflows. The [Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
 
-- API: 20 RPS
-- Web: 2 RPS
-- Git (Pull): 2 RPS
-- Git (Push): 1 RPS
+| Endpoint type | Target throughput |
+| ------------- | ----------------- |
+| API           | 20 RPS            |
+| Web           | 2 RPS             |
+| Git (Pull)    | 2 RPS             |
+| Git (Push)    | 1 RPS             |
 
-These targets are selected based on the real customer data of total environmental loads corresponding to the user count,
-including CI and other workloads.
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
 
-Testing is done regularly by using our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
-The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy, see [validation and test results](_index.md#validation-and-test-results).
+### Performance considerations
+
+You may need additional adjustments if your environment has:
+
+- Consistently higher throughput than the listed targets
+- [Large monorepos](_index.md#large-monorepos)
+- Significant [additional workloads](_index.md#additional-workloads)
+
+In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
+
+### Testing tools and results
+
+We use the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) for testing, which includes a publicly available dataset. You can view detailed test results on the [GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
 ## Setup instructions
 

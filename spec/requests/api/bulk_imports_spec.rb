@@ -52,10 +52,28 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   shared_examples 'disabled feature' do
     before do
       stub_application_setting(bulk_import_enabled: false)
+      stub_feature_flags(override_bulk_import_disabled: false)
     end
 
     it_behaves_like '404 response' do
       let(:message) { '404 Not Found' }
+    end
+
+    it 'enables the feature when override flag is enabled for the user' do
+      stub_feature_flags(override_bulk_import_disabled: user)
+
+      request
+
+      expect(response).not_to have_gitlab_http_status(:not_found)
+    end
+
+    it 'does not enable the feature when override flag is enabled for another user' do
+      other_user = create(:user)
+      stub_feature_flags(override_bulk_import_disabled: other_user)
+
+      request
+
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -142,9 +160,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
 
       allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
-        allow(client).to receive(:parse)
         allow(client).to receive(:execute).and_return(
-          instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => { 'id' => "gid://gitlab/Group/#{source_entity_identifier}" } } })
+          { 'data' => { 'group' => { 'id' => "gid://gitlab/Group/#{source_entity_identifier}" } } }
         )
       end
 
@@ -416,10 +433,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
       before do
         allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          allow(client).to receive(:parse)
-          allow(client).to receive(:execute).and_return(
-            instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => nil } })
-          )
+          allow(client).to receive(:execute).and_return({ 'data' => { 'group' => nil } })
         end
       end
 

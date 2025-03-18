@@ -130,7 +130,7 @@ More details are available in release announcements and in the CHANGELOG links p
 
 Key changes to the GitLab-managed ruleset for Semgrep-based scanning include:
 
-- Beginning in GitLab 16.3, the GitLab Static Analysis and Vulnerability Research teams are working to remove rules that tend to produce too many false positive results or not enough actionable true positive results. Existing findings from these removed rules are [automatically resolved](_index.md#automatic-vulnerability-resolution); they no longer appear in the [Security Dashboard](../security_dashboard/_index.md#project-security-dashboard) or in the default view of the [Vulnerability Report](../vulnerability_report/_index.md). This work is tracked in [epic 10907](https://gitlab.com/groups/gitlab-org/-/epics/10907).
+- Beginning in GitLab 16.3, the GitLab Static Analysis and Vulnerability Research teams are working to remove rules that tend to produce too many false positive results or not enough actionable true positive results. Existing findings from these removed rules are [automatically resolved](_index.md#automatic-vulnerability-resolution); they no longer appear in the [Security Dashboard](../security_dashboard/_index.md#project-security-dashboard) or in the default view of the [vulnerability report](../vulnerability_report/_index.md). This work is tracked in [epic 10907](https://gitlab.com/groups/gitlab-org/-/epics/10907).
 - In GitLab 16.0 through 16.2, the GitLab Vulnerability Research team updated the guidance that's included in each result.
 - In GitLab 15.10, the `detect-object-injection` rule was [removed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/373920) and its findings were [automatically resolved](_index.md#automatic-vulnerability-resolution).
 

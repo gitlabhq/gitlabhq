@@ -93,7 +93,7 @@ module BulkImports
             if sub_relation.is_a?(Array)
               sub_relation
                 .map { |entry| deep_transform_relation!(entry, sub_relation_key, sub_relation_definition, &block) }
-                .tap { |entry| entry.compact! }
+                .tap(&:compact!)
                 .presence
             else
               deep_transform_relation!(sub_relation, sub_relation_key, sub_relation_definition, &block)

@@ -144,7 +144,7 @@ Run the following Rake task to extend or remove expiration dates from tokens in 
    sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:tokens:edit
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

@@ -120,7 +120,7 @@ RSpec.describe Gitlab::JiraImport do
 
   describe '.get_issues_next_start_at', :clean_gitlab_redis_cache do
     it 'returns zero when not defined' do
-      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues")).to be nil
+      expect(Gitlab::Cache::Import::Caching.read("jira-import/paginator/#{project_id}/issues")).to be_nil
       expect(described_class.get_issues_next_start_at(project_id)).to eq(0)
     end
 

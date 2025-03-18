@@ -13,25 +13,23 @@ title: Test cases
 
 {{< /details >}}
 
-Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
+Test cases integrate test planning directly into your GitLab workflows.
+Teams can:
 
-Now your Implementation and Testing teams can collaborate better, as they no longer have to
-use external test planning tools, which require additional overhead, context switching, and expense.
+- Document test scenarios in the same platform where they manage code.
+- Track test requirements alongside development tasks.
+- Share test plans across implementation and testing teams.
+- Manage test case visibility with confidential settings.
+- Archive and reopen test cases as needed.
+
+Teams use test cases to streamline collaboration between development and testing teams,
+which eliminates the need for external test planning tools.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn how to use issues and epics to manage your requirements and testing needs
 while integrating with your development workflows, see
 [Streamline Software Development: Integrating Requirements, Testing, and Development Workflows](https://www.youtube.com/watch?v=wbfWM4y2VmM).
 <!-- Video published on 2024-02-21 -->
-
-{{< alert type="note" >}}
-
-[Requirements](../../user/project/requirements/_index.md) and test cases are being
-[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
-[Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
-For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
-
-{{< /alert >}}
 
 ## Create a test case
 

@@ -12,9 +12,9 @@ title: Groups API
 
 {{< /details >}}
 
-Interact with [groups](../user/group/_index.md) by using the REST API.
+Use the Groups API to list and manage GitLab groups through REST API calls. For more information, see [groups](../user/group/_index.md).
 
-The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
+Endpoint responses might vary based on the [permissions](../user/permissions.md) of the authenticated user in the group.
 
 ## Get a single group
 
@@ -299,7 +299,7 @@ Parameters:
 | Attribute                | Type              | Required | Description |
 |--------------------------|-------------------|----------|-------------|
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
@@ -368,6 +368,14 @@ When adding the parameter `statistics=true` and the authenticated user is an adm
 ```plaintext
 GET /groups?statistics=true
 ```
+
+When the parameter `statistics=true` is used and the authenticated user is an administrator, the response includes information about container registry storage size:
+
+- `container_registry_size`: Total storage size in bytes used by all container repositories in the group and its subgroups. Calculated as the sum of all repository sizes within the group's projects and subgroups. Available only when the container registry metadata database is enabled.
+
+- `container_registry_size_is_estimated`: Indicates whether the size is an exact calculation based on actual data from all repositories (`false`) or estimated due to performance constraints (`true`).
+
+For self-managed instances, the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) must be enabled to include the container registry size attributes.
 
 ```json
 [
@@ -920,6 +928,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
+| `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -989,7 +998,7 @@ Parameters:
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths) |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
@@ -1749,7 +1758,7 @@ POST /groups/:id/share
 | `group_id`     | integer        | yes      | The ID of the group to share with |
 | `group_access` | integer        | yes      | The [role (`access_level`)](members.md#roles) to grant the group |
 | `expires_at`   | string         | no       | Share expiration date in ISO 8601 format: 2016-09-26 |
-| `member_role_id`   | integer         | no       | The ID of a [Custom Role](../user/custom_roles.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group |
+| `member_role_id`   | integer         | no       | The ID of a [Custom Role](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group |
 
 #### Delete the link that shares a group with another group
 

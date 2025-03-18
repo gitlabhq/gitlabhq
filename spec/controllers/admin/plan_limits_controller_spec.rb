@@ -50,7 +50,7 @@ RSpec.describe Admin::PlanLimitsController do
     end
 
     context 'without admin access' do
-      let(:file_size) { 1.megabytes }
+      let(:file_size) { 1.megabyte }
 
       it 'returns `not_found`' do
         sign_in(create(:user))

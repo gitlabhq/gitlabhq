@@ -24,6 +24,9 @@ RSpec.shared_examples 'rich text editor - selection' do
 
       # select all text
       type_in_content_editor [modifier_key, 'a']
+
+      # click the More options button to trigger a blur event
+      click_on "More options"
     end
 
     it 'renders selected text in a .content-editor-selection class' do

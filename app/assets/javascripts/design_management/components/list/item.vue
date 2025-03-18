@@ -140,15 +140,11 @@ export default {
   >
     <gl-card
       class="js-design-list-item design-list-item gl-mb-0"
-      header-class="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+      header-class="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
       body-class="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
     >
       <template #header>
-        <div
-          v-if="icon.name"
-          data-testid="design-event"
-          class="gl-absolute gl-right-3 gl-top-3 gl-mr-1"
-        >
+        <div v-if="icon.name" data-testid="design-event" class="gl-absolute gl-right-4 gl-top-3">
           <span :title="icon.tooltip" :aria-label="icon.tooltip">
             <gl-icon
               :name="icon.name"
@@ -181,15 +177,15 @@ export default {
       </template>
 
       <template #default>
-        <div class="str-truncated-100 gl-flex gl-flex-col" data-testid="design-file-name">
+        <div class="gl-flex gl-flex-col gl-truncate" data-testid="design-file-name">
           <span
             v-gl-tooltip
-            class="str-truncated-100 gl-font-semibold"
+            class="gl-truncate gl-text-sm"
             :data-testid="`design-img-filename-${id}`"
             :title="filename"
             >{{ filename }}</span
           >
-          <span v-if="updatedAt" class="str-truncated-100">
+          <span v-if="updatedAt" class="gl-truncate">
             {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
           </span>
         </div>

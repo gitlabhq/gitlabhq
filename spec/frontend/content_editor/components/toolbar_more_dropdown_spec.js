@@ -39,6 +39,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
 
   describe.each`
     name                        | contentType          | command                    | params
+    ${'Alert'}                  | ${'alert'}           | ${'insertAlert'}           | ${[]}
     ${'Code block'}             | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}
     ${'Details block'}          | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
     ${'Bullet list'}            | ${'bulletList'}      | ${'toggleList'}            | ${['bulletList', 'listItem']}

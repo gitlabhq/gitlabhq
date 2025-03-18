@@ -21,16 +21,16 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   newWorkItemFullPath,
 } from '~/work_items/utils';
-import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
-  I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
-  I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
   sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -53,6 +53,7 @@ import {
   WORK_ITEM_TYPE_NAME_MAP,
   WORK_ITEM_TYPE_VALUE_MAP,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -67,6 +68,7 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
+import WorkItemDueDates from './work_item_due_dates.vue';
 
 export default {
   components: {
@@ -89,12 +91,11 @@ export default {
     WorkItemProjectsListbox,
     TitleSuggestions,
     WorkItemParent,
+    WorkItemDueDates,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
-    WorkItemRolledupDates: () =>
-      import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
   inject: ['fullPath', 'groupPath'],
@@ -179,7 +180,7 @@ export default {
       isRelatedToItem: true,
       error: null,
       workItemTypes: [],
-      selectedProjectFullPath: this.fullPath || null,
+      selectedProjectFullPath: this.initialSelectedProject(),
       selectedWorkItemTypeId: null,
       loading: false,
       initialLoadingWorkItem: true,
@@ -187,6 +188,7 @@ export default {
       showWorkItemTypeSelect: false,
       discussionToResolve: getParameterByName('discussion_to_resolve'),
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
+      vulnerabilityId: getParameterByName('vulnerability_id'),
       numberOfDiscussionsResolved: '',
     };
   },
@@ -241,14 +243,18 @@ export default {
 
         let workItemDescription = '';
         let workItemTitle = '';
-        if (this.mergeRequestToResolveDiscussionsOf) {
-          workItemTitle = document.querySelector(
-            '.follow_up_work_item .follow-up-title',
-          )?.textContent;
-          workItemDescription = document.querySelector(
-            '.follow_up_work_item .follow-up-description',
-          )?.textContent;
-        }
+
+        // The follow up title and description can come from the backend for the following three use cases
+        // 1. when resolving a discussion in the MR and we have the merge request id in the query param
+        // 2. when the issue and title are added in the query param . read https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
+        // 3. when following up a work item with a vulnerability, where we have the vulnerability id in the query param
+
+        workItemTitle = document.querySelector(
+          '.follow_up_work_item .follow-up-title',
+        )?.textContent;
+        workItemDescription = document.querySelector(
+          '.follow_up_work_item .follow-up-description',
+        )?.textContent;
 
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache(
@@ -273,7 +279,9 @@ export default {
         }
       },
       error() {
-        this.error = I18N_WORK_ITEM_ERROR_FETCHING_TYPES;
+        this.error = s__(
+          'WorkItem|Something went wrong when fetching work item types. Please try again',
+        );
       },
     },
   },
@@ -374,7 +382,7 @@ export default {
       return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, this.selectedWorkItemTypeName);
     },
     createWorkItemText() {
-      return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.selectedWorkItemTypeName);
+      return sprintfWorkItem(s__('WorkItem|Create %{workItemType}'), this.selectedWorkItemTypeName);
     },
     makeConfidentialText() {
       return sprintfWorkItem(
@@ -489,6 +497,9 @@ export default {
         Boolean(this.workItemIterationId)
       );
     },
+    shouldDatesRollup() {
+      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_EPIC;
+    },
   },
   watch: {
     shouldDiscardDraft: {
@@ -517,11 +528,18 @@ export default {
     document.addEventListener('keydown', this.handleKeydown);
 
     this.setNumberOfDiscussionsResolved();
+    addShortcutsExtension(ShortcutsWorkItems);
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
   },
   methods: {
+    initialSelectedProject() {
+      if (this.relatedItem) {
+        return this.relatedItem.reference.substring(0, this.relatedItem.reference.lastIndexOf('#'));
+      }
+      return this.fullPath || null;
+    },
     handleKeydown(e) {
       if (isMetaEnterKeyPair(e)) {
         this.createWorkItem();
@@ -596,6 +614,13 @@ export default {
             this.mergeRequestToResolveDiscussionsOf,
           ),
         };
+      }
+
+      if (this.vulnerabilityId) {
+        workItemCreateInput.vulnerabilityId = convertToGraphQLId(
+          TYPENAME_VULNERABILITY,
+          this.vulnerabilityId,
+        );
       }
 
       // TODO , we can move this to util, currently objectives with other widgets not being supported is causing issues
@@ -900,7 +925,7 @@ export default {
             />
             <work-item-milestone
               v-if="workItemMilestone"
-              class="work-item-attributes-item"
+              class="js-milestone work-item-attributes-item"
               :is-group="isGroup"
               :full-path="fullPath"
               :work-item-id="workItemId"
@@ -921,7 +946,7 @@ export default {
               :work-item-type="selectedWorkItemTypeName"
               @error="$emit('error', $event)"
             />
-            <work-item-rolledup-dates
+            <work-item-due-dates
               v-if="workItemStartAndDueDate"
               class="work-item-attributes-item"
               :can-update="canUpdate"
@@ -929,7 +954,7 @@ export default {
               :start-date="workItemStartAndDueDate.startDate"
               :due-date="workItemStartAndDueDate.dueDate"
               :is-fixed="workItemStartAndDueDate.isFixed"
-              :should-roll-up="workItemStartAndDueDate.rollUp"
+              :should-roll-up="shouldDatesRollup"
               :work-item-type="selectedWorkItemTypeName"
               :work-item="workItem"
               @error="$emit('error', $event)"

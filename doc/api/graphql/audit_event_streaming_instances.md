@@ -304,7 +304,7 @@ Event type filters are removed if:
 
 Manage Google Cloud Logging destinations for an entire instance.
 
-Before setting up Google Cloud Logging streaming audit events, you must satisfy [the prerequisites](../../administration/audit_event_streaming/_index.md#prerequisites).
+Before setting up Google Cloud Logging streaming audit events, you must satisfy [the prerequisites](../../administration/compliance/audit_event_streaming.md#prerequisites).
 
 ### Add a new Google Cloud Logging destination
 

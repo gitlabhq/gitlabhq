@@ -90,14 +90,14 @@ Gitlab::Metrics::Sli::Apdex[:received_email].increment(
 
 Calling `#increment` on this SLI will increment the total Prometheus counter
 
-```prometheus
+```promql
 gitlab_sli:received_email_apdex:total{ feature_category='service_desk', email_type='service_desk' }
 ```
 
 If the `success:` argument passed is truthy, then the success counter will also
 be incremented:
 
-```prometheus
+```promql
 gitlab_sli:received_email_apdex:success_total{ feature_category='service_desk', email_type='service_desk' }
 ```
 
@@ -148,7 +148,7 @@ When these changes are merged, and the aggregations in
 [Mimir](https://dashboards.gitlab.net/explore?schemaVersion=1&panes=%7B%22m95%22%3A%7B%22datasource%22%3A%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22%22%2C%22range%22%3Atrue%2C%22instant%22%3Atrue%2C%22datasource%22%3A%7B%22type%22%3A%22prometheus%22%2C%22uid%22%3A%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22%7D%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-6h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1) recorded, query Mimir to see
 the success ratio of the new aggregated metrics. For example:
 
-```prometheus
+```promql
 sum by (environment, stage, type)(application_sli_aggregation:rails_request:apdex:success:rate_1h)
 /
 sum by (environment, stage, type)(application_sli_aggregation:rails_request:apdex:weight:score_1h)

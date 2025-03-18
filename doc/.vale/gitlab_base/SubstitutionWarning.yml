@@ -7,7 +7,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
 message: "Use '%s' instead of '%s' when possible."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/
 vocab: false
 level: warning
 action:
@@ -22,6 +22,8 @@ swap:
   (?<!right-)click(?!-through): "select"
   cancelled: "canceled"
   cancelling: "canceling"
+  case sensitive: "case-sensitive"
+  case insensitive: "case-insensitive"
   cherry pick: "cherry-pick"
   code base: "codebase"
   config: "configuration"
@@ -67,6 +69,7 @@ swap:
   pop-up window: "dialog"
   pop-up: "dialog"
   popup: "dialog"
+  re-index: "reindex"
   repo: "repository"
   root group: "top-level group"
   signed in user: "authenticated user"

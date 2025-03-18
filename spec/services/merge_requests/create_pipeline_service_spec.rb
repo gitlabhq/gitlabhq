@@ -47,6 +47,32 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       expect(response.payload).to be_detached_merge_request_pipeline
     end
 
+    context 'when ref is ambiguous' do
+      let(:merge_request) do
+        create(:merge_request,
+          source_branch: 'ambiguous',
+          source_project: source_project,
+          target_branch: 'master',
+          target_project: project)
+      end
+
+      before do
+        repository = source_project.repository
+        repository.add_branch(user, 'ambiguous', 'feature')
+        repository.add_tag(user, 'ambiguous', 'master')
+      end
+
+      it 'creates a detached merge request pipeline for the branch, not the tag', :aggregate_failures do
+        expect { response }.to change { Ci::Pipeline.count }.by(1)
+
+        expect(response).to be_success
+        expect(response.payload).to be_persisted
+        expect(response.payload).to be_detached_merge_request_pipeline
+        expect(response.payload.sha).to eq merge_request.source_branch_sha
+        expect(response.payload.sha).not_to eq(source_project.commit('refs/tags/ambiguous').sha)
+      end
+    end
+
     it 'defaults to merge_request_event' do
       expect(response.payload.source).to eq('merge_request_event')
     end
@@ -301,7 +327,9 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
 
   describe '#execute_async' do
     it 'queues a merge request pipeline creation' do
-      expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async)
+      expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
+        project.id, user.id, merge_request.id, { 'pipeline_creation_request' => anything }
+      )
       expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
 
       service.execute_async(merge_request)

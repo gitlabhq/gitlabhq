@@ -50,7 +50,7 @@ Prerequisites:
 
    {{< alert type="note" >}}
 
-In GitLab Premium and Ultimate, you can also add groups or individual users
+   In GitLab Premium and Ultimate, you can also add groups or individual users
    to **Allowed to create**.
 
    {{< /alert >}}
@@ -142,9 +142,7 @@ In that case, if _any_ of these protected tags have a setting like
 **Allowed to create**, then `production-stable` also inherit this setting.
 
 If you select a protected tag's name, GitLab displays a list of
-all matching tags:
-
-![Protected tag matches](img/protected_tag_matches_v9_1.png)
+all matching tags.
 
 ## Prevent tag creation with the same name as branches
 

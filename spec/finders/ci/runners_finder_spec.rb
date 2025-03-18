@@ -55,6 +55,36 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
       end
 
       context 'filtering' do
+        context 'by ids' do
+          let_it_be(:runner1) { create(:ci_runner) }
+          let_it_be(:runner2) { create(:ci_runner) }
+          let_it_be(:runner3) { create(:ci_runner) }
+
+          context 'when id_in param is provided' do
+            let(:params) { { id_in: [runner1.id, runner2.id] } }
+
+            it 'returns runners with matching ids' do
+              expect(execute).to contain_exactly(runner1, runner2)
+            end
+          end
+
+          context 'when id_in param is empty' do
+            let(:params) { { id_in: [] } }
+
+            it 'returns no runners' do
+              expect(execute).to be_empty
+            end
+          end
+
+          context 'when id_in param contains non-existing ids' do
+            let(:params) { { id_in: [non_existing_record_id] } }
+
+            it 'returns no runners' do
+              expect(execute).to be_empty
+            end
+          end
+        end
+
         context 'by search term' do
           let(:params) { { search: 'term' } }
 
@@ -523,6 +553,14 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
           end
 
           context 'filtering' do
+            context 'by ids' do
+              let(:extra_params) { { id_in: [runner_group.id, runner_sub_group_1.id] } }
+
+              it 'returns correct runners' do
+                expect(subject).to contain_exactly(runner_group, runner_sub_group_1)
+              end
+            end
+
             context 'by search term' do
               let(:extra_params) { { search: 'runner_project_search' } }
 
@@ -724,6 +762,14 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
         let_it_be(:runner_project_paused) { create(:ci_runner, :project, :paused, :online, projects: [project]) }
         let_it_be(:runner_other_project_paused) { create(:ci_runner, :project, :paused, :online, projects: [other_project]) }
         let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner_instance_paused, version: '15.10.0') }
+
+        context 'by ids' do
+          let(:extra_params) { { id_in: [runner_project_active.id, runner_project_paused.id] } }
+
+          it 'returns correct runners' do
+            expect(subject).to contain_exactly(runner_project_active, runner_project_paused)
+          end
+        end
 
         context 'by search term' do
           let_it_be(:runner_project_1) { create(:ci_runner, :project, :online, description: 'runner_project_search', projects: [project]) }

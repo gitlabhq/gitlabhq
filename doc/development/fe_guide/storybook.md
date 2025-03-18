@@ -47,15 +47,15 @@ To add a story:
 
 For instructions on how to write stories, refer to the [official Storybook instructions](https://storybook.js.org/docs/writing-stories/)
 
-   {{< alert type="note" >}}
+{{< alert type="note" >}}
 
 Specify the `title` field of the story as the component's file path from the `javascripts/` directory, without the `/components` part.
-   For example, if the component is located at `app/assets/javascripts/vue_shared/components/sidebar/todo_toggle/todo_button.vue`,
-   specify the story `title` as `vue_shared/sidebar/todo_toggle/todo_button`.
-   If the component is located in the `ee/` directory, make sure to prefix the story's title with `ee/` as well.
-   This will ensure the Storybook navigation maps closely to our internal directory structure.
+For example, if the component is located at `app/assets/javascripts/vue_shared/components/sidebar/todo_toggle/todo_button.vue`,
+specify the story `title` as `vue_shared/sidebar/todo_toggle/todo_button`.
+If the component is located in the `ee/` directory, make sure to prefix the story's title with `ee/` as well.
+This will ensure the Storybook navigation maps closely to our internal directory structure.
 
-   {{< /alert >}}
+{{< /alert >}}
 
 ## Using GitLab REST and GraphQL APIs
 
@@ -70,7 +70,7 @@ To add a story with API access:
 
    {{< alert type="note" >}}
 
-If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
+   If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
 
    {{< /alert >}}
 

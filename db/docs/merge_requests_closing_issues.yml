@@ -8,14 +8,6 @@ description: Store the events of merge request closing any issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_id
-        table: merge_requests
-        sharding_key: target_project_id
-        belongs_to: merge_request
-desired_sharding_key_migration_job_name: BackfillMergeRequestsClosingIssuesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

@@ -8,8 +8,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   include Gitlab::Utils::StrongMemoize
 
   before_action :ensure_group
-  before_action :ensure_token_granted!, only: [:blob, :manifest]
   before_action :ensure_feature_enabled!
+  before_action :ensure_token_granted!, only: [:blob, :manifest]
 
   before_action :verify_workhorse_api!,
     only: [:authorize_upload_blob, :upload_blob, :authorize_upload_manifest, :upload_manifest]
@@ -154,8 +154,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     event_name
   end
 
-  def dependency_proxy
-    @dependency_proxy ||= group.dependency_proxy_setting
+  def dependency_proxy_setting
+    @dependency_proxy_setting ||= group.dependency_proxy_setting
   end
 
   def ensure_group
@@ -163,11 +163,11 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def ensure_feature_enabled!
-    render_404 unless dependency_proxy.enabled
+    render_404 unless dependency_proxy_setting.enabled
   end
 
   def ensure_token_granted!
-    result = DependencyProxy::RequestTokenService.new(image).execute
+    result = DependencyProxy::RequestTokenService.new(image:, dependency_proxy_setting:).execute
 
     if result[:status] == :success
       @token = result[:token]

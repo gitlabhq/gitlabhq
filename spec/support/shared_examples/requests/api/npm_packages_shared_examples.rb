@@ -131,8 +131,14 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
     end
   end
 
-  it_behaves_like 'enforcing job token policies', :read_packages do
-    let(:headers) { build_token_auth_header(target_job.token) }
+  context 'with a project namespace' do
+    # The `if: scope == :project` modifier doesn't work as expected, so do this instead.
+    if scope == :project
+      it_behaves_like 'enforcing job token policies', :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry do
+        let(:headers) { build_token_auth_header(target_job.token) }
+      end
+    end
   end
 
   context 'with a group namespace' do
@@ -162,7 +168,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
     end
 
     context 'with a job token for a completed job' do
-      let(:headers) { build_token_auth_header(job.token) }
+      let(:headers) { job_token_auth_header(job) }
 
       before do
         job.update!(status: :success)
@@ -346,7 +352,8 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
             it_behaves_like 'accept audit request', status: :ok
           end
 
-          it_behaves_like 'enforcing job token policies', :read_packages do
+          it_behaves_like 'enforcing job token policies', :read_packages,
+            allow_public_access_for_enabled_project_features: scope == :project ? :package_registry : nil do
             before_all do
               project.add_reporter(user)
             end
@@ -491,7 +498,8 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
     end
   end
 
-  it_behaves_like 'enforcing job token policies', :read_packages do
+  it_behaves_like 'enforcing job token policies', :read_packages,
+    allow_public_access_for_enabled_project_features: :package_registry do
     let(:headers) { build_token_auth_header(target_job.token) }
   end
 

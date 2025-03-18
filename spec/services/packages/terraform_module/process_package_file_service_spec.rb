@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_category: :package_registry do
-  let_it_be(:package_file) { create(:package_file, :terraform_module) }
+  let_it_be(:package) { create(:terraform_module_package, :with_metadatum, without_package_files: true) }
+  let_it_be(:package_file) { create(:package_file, :terraform_module, package:) }
 
   subject(:service) { described_class.new(package_file) }
 
@@ -21,7 +22,7 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
           expect(service).to receive(:execute).and_call_original
         end
         expect_next_instance_of(
-          ::Packages::TerraformModule::Metadata::CreateService,
+          ::Packages::TerraformModule::Metadata::UpdateService,
           package_file.package,
           instance_of(Hash)
         ) do |service|
@@ -50,7 +51,7 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
       end
 
       context 'with a zip archive' do
-        let_it_be(:package_file) { create(:package_file, :terraform_module, zip: true) }
+        let_it_be(:package_file) { create(:package_file, :terraform_module, zip: true, package: package) }
 
         it_behaves_like 'extracting metadata', Zip::File
 

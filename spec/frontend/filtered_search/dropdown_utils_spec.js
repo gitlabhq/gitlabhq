@@ -1,4 +1,4 @@
-import htmlMergeRequestList from 'test_fixtures/merge_requests/merge_request_list.html';
+import htmlMergeRequestList from 'test_fixtures_static/merge_request_list.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import DropdownUtils from '~/filtered_search/dropdown_utils';

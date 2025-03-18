@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import { isInViewport } from '~/lib/utils/common_utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import DropdownButton from '~/sidebar/components/labels/labels_select_vue/dropdown_button.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_vue/dropdown_contents.vue';
 import DropdownTitle from '~/sidebar/components/labels/labels_select_vue/dropdown_title.vue';
@@ -185,7 +186,7 @@ describe('LabelsSelectRoot', () => {
             isInViewport.mockImplementation(() => false);
             wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
 
-            await nextTick();
+            await waitForPromises();
             expect(wrapper.findComponent(DropdownContents).props('renderOnTop')).toBe(true);
           });
 
@@ -193,7 +194,7 @@ describe('LabelsSelectRoot', () => {
             isInViewport.mockImplementation(() => true);
             wrapper.vm.setContentIsOnViewport(wrapper.vm.$store.state);
 
-            await nextTick();
+            await waitForPromises();
             expect(wrapper.findComponent(DropdownContents).props('renderOnTop')).toBe(false);
           });
         },

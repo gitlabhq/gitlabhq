@@ -295,7 +295,7 @@ export default {
           'line_content new code': isCodeSuggestion,
           [themeClass]: isCodeSuggestion,
         }"
-        spellcheck="false"
+        :spellcheck="false"
         data-testid="suggestion-field"
       />
     </node-view-wrapper>

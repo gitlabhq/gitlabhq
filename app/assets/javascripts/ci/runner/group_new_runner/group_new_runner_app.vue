@@ -6,7 +6,7 @@ import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import { DEFAULT_PLATFORM, GROUP_TYPE } from '../constants';
+import { GROUP_TYPE } from '../constants';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
@@ -21,11 +21,6 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      platform: DEFAULT_PLATFORM,
-    };
   },
   methods: {
     onSaved(runner) {

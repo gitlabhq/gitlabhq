@@ -32,6 +32,27 @@
         = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_two_factor_auth_path, button_options: { data: { testid: 'enable-2fa-button' }}) do
           = _('Enable two-factor authentication')
 
+= render ::Layouts::SettingsSectionComponent.new(s_('Profiles|Support PIN')) do |c|
+  - c.with_description do
+    = s_("Profiles|For some actions you request, the Support team may ask you to authenticate your request by generating a Support PIN.")
+  - c.with_body do
+    %div
+      - if current_user.support_pin.present?
+        %p
+          %span.gl-font-bold
+            #{s_("Profiles|Support PIN")}:
+          = current_user.support_pin
+        %p
+          %span.gl-font-bold
+            #{_('Expires at')}:
+          = current_user.support_pin_expires_at.to_fs(:medium)
+      - else
+        %p
+          = _('No active Support PIN.')
+      = form_tag generate_support_pin_profile_account_path, method: :post do
+        = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit) do
+          = s_("Profiles|Generate New PIN")
+
 - if display_providers_on_profile?
   = render ::Layouts::SettingsSectionComponent.new(s_('Profiles|Service sign-in')) do |c|
     - c.with_description do

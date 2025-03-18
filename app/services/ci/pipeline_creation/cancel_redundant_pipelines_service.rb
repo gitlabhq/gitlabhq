@@ -66,21 +66,9 @@ module Ci
       end
 
       def should_skip?(cancelable)
-        case cancelable.source.to_sym
-        when *Enums::Ci::Pipeline.ci_sources.keys
-          # Newer pipelines are not cancelable. This doesn't normally occur
-          # but needs to be handled in asynchronous execution.
-          return true if cancelable.created_at >= pipeline.created_at
-        when :parent_pipeline
-          # Child pipelines are cancelable based on the root parent age
-          return true if cancelable.root_ancestor.created_at >= pipeline.created_at
-        else
-          # Skip other pipeline sources
-          return true
-        end
-
         return true if cancelable.sha == pipeline.sha
         return true if cancelable.sha == ref_head_sha
+        return true unless cancelable_source?(cancelable)
 
         if cancelable.created_at < pipelines_created_after
           @skipped_for_old_age += 1
@@ -89,6 +77,23 @@ module Ci
         end
 
         false
+      end
+
+      def cancelable_source?(cancelable)
+        case cancelable.source.to_sym
+        when *Enums::Ci::Pipeline.ci_sources.keys
+          # Newer pipelines are not cancelable. This doesn't normally occur
+          # but needs to be handled in asynchronous execution.
+          return false if cancelable.created_at >= pipeline.created_at
+        when :parent_pipeline
+          # Child pipelines are cancelable based on the root parent age
+          return false if cancelable.root_ancestor.created_at >= pipeline.created_at
+        else
+          # Skip other pipeline sources
+          return false
+        end
+
+        true
       end
 
       def configured_cancellation_for(cancelable)

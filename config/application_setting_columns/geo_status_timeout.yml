@@ -6,7 +6,7 @@ column: geo_status_timeout
 db_type: integer
 default: '10'
 description: The amount of seconds after which a request to get a secondary node status
-  times out. Self-managed, Premium and Ultimate only.
+  times out. GitLab Self-Managed, Premium and Ultimate only.
 encrypted: false
 gitlab_com_different_than_default: true
 jihu: false

@@ -5,10 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
-import {
-  TRACKING_CATEGORY_SHOW,
-  I18N_WORK_ITEM_ERROR_FETCHING_LABELS,
-} from '~/work_items/constants';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
@@ -16,6 +13,7 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
+import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import {
   projectLabelsResponse,
   groupLabelsResponse,
@@ -148,6 +146,7 @@ describe('WorkItemLabels component', () => {
       multiSelect: true,
       showFooter: true,
       itemValue: [],
+      shortcut: ISSUABLE_CHANGE_LABEL,
     });
     expect(findAllLabels()).toHaveLength(0);
   });
@@ -236,7 +235,9 @@ describe('WorkItemLabels component', () => {
     showDropdown();
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_ERROR_FETCHING_LABELS]]);
+    expect(wrapper.emitted('error')).toEqual([
+      ['Something went wrong when fetching labels. Please try again.'],
+    ]);
   });
 
   it('passes the correct props to clear search text on item select', () => {

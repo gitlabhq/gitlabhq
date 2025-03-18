@@ -20,6 +20,7 @@ import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import { uuids } from '~/lib/utils/uuids';
 import notesEventHub from '../event_hub';
 
 import promoteTimelineEvent from '../graphql/promote_timeline_event.mutation.graphql';
@@ -341,16 +342,12 @@ export const promoteCommentToTimelineEvent = (
     });
 };
 
-export const replyToDiscussion = (
-  { commit, state, getters, dispatch },
-  { endpoint, data: reply },
-) =>
+export const replyToDiscussion = ({ commit, dispatch }, { endpoint, data: reply }) =>
   axios.post(endpoint, reply).then(({ data }) => {
     if (data.discussion) {
       commit(types.UPDATE_DISCUSSION, data.discussion);
 
-      updateOrCreateNotes({ commit, state, getters, dispatch }, data.discussion.notes);
-
+      dispatch('updateOrCreateNotes', data.discussion.notes);
       dispatch('updateMergeRequestWidget');
       dispatch('startTaskList');
       dispatch('updateResolvableDiscussionsCounts');
@@ -477,6 +474,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
   if (placeholderText.length) {
     commit(types.SHOW_PLACEHOLDER_NOTE, {
+      id: uuids()[0],
       noteBody: placeholderText,
       replyId,
     });
@@ -484,6 +482,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
   if (hasQuickActions) {
     commit(types.SHOW_PLACEHOLDER_NOTE, {
+      id: uuids()[0],
       isSystemNote: true,
       noteBody: utils.getQuickActionText(note),
       replyId,

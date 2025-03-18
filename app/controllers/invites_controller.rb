@@ -2,6 +2,7 @@
 
 class InvitesController < ApplicationController
   include Gitlab::Utils::StrongMemoize
+  include SafeFormatHelper
 
   prepend_before_action :authenticate_user!, :track_invite_join_click, only: :show
   before_action :member
@@ -38,8 +39,10 @@ class InvitesController < ApplicationController
           new_user_session_path
         end
 
-      redirect_to path, notice: _("You have declined the invitation to join %{title} %{name}.") %
-        { title: invite_details[:title], name: invite_details[:name] }
+      redirect_to path,
+        notice: safe_format(_("You have declined the invitation to join %{title} %{name}."),
+          title: invite_details[:title],
+          name: invite_details[:name])
     else
       redirect_back_or_default(options: { alert: _("The invitation could not be declined.") })
     end

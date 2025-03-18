@@ -13,13 +13,13 @@ RSpec.describe Groups::AcceptingProjectImportsFinder, feature_category: :importe
 
   let_it_be(:group_where_direct_developer_but_developers_cannot_create_projects) { create(:group) }
   let_it_be(:group_where_direct_developer) do
-    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
   end
 
   let_it_be(:shared_with_group_where_direct_owner_as_owner) { create(:group) }
 
   let_it_be(:shared_with_group_where_direct_owner_as_developer) do
-    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
   end
 
   let_it_be(:shared_with_group_where_direct_owner_as_developer_but_developers_cannot_create_projects) do
@@ -27,13 +27,13 @@ RSpec.describe Groups::AcceptingProjectImportsFinder, feature_category: :importe
   end
 
   let_it_be(:shared_with_group_where_direct_developer_as_maintainer) do
-    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
   end
 
   let_it_be(:shared_with_group_where_direct_owner_as_guest) { create(:group) }
   let_it_be(:shared_with_group_where_direct_owner_as_maintainer) { create(:group) }
   let_it_be(:shared_with_group_where_direct_developer_as_owner) do
-    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+    create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
   end
 
   let_it_be(:subgroup_of_shared_with_group_where_direct_owner_as_maintainer) do

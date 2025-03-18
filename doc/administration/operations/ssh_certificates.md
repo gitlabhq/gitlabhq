@@ -31,9 +31,8 @@ able to accept a fingerprint. Check the version of OpenSSH on your server.
 
 ## Why use OpenSSH certificates?
 
-By using OpenSSH certificates all the information about what user on
-GitLab owns the key is encoded in the key itself, and OpenSSH itself
-guarantees that users can't fake this, since they'd need to have
+When you use OpenSSH certificates, information about which GitLab user owns the key is
+encoded in the key itself. OpenSSH guarantees that users can't fake this because they need
 access to the private CA signing key.
 
 When correctly set up, this does away with the requirement of
@@ -55,7 +54,7 @@ TrustedUserCAKeys /etc/security/mycompany_user_ca.pub
 ```
 
 Usually `TrustedUserCAKeys` would not be scoped under a `Match User git`
-in such a setup, since it would also be used for system logins to
+in such a setup because it would also be used for system logins to
 the GitLab server itself, but your setup may vary. If the CA is only
 used for GitLab consider putting this in the `Match User git` section
 (described below).
@@ -87,9 +86,9 @@ own `AuthorizedPrincipalsCommand` to do that mapping instead of using
 our provided default.
 
 The important part is that the `AuthorizedPrincipalsCommand` must be
-able to map from the "key ID" to a GitLab username in some way, the
-default command we ship assumes there's a 1=1 mapping between the two,
-since the whole point of this is to allow us to extract a GitLab
+able to map from the "key ID" to a GitLab username because the
+default command we ship assumes there's a 1=1 mapping between the two.
+The whole point of this is to allow us to extract a GitLab
 username from the key itself, instead of relying on something like the
 default public key to username mapping.
 
@@ -174,7 +173,7 @@ By default GitLab shows a "You won't be able to pull or push
 project code via SSH" warning to users who have not uploaded an SSH
 key to their profile.
 
-This is counterproductive when using SSH certificates, since users
+This is counterproductive when using SSH certificates because users
 aren't expected to upload their own keys.
 
 To disable this warning globally, go to "Application settings ->

@@ -130,13 +130,5 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
     end
 
     it { expect { combined_calls }.not_to raise_error }
-
-    context 'when shared_namespace_locks is false' do
-      before do
-        stub_feature_flags(shared_namespace_locks: false)
-      end
-
-      it { expect { combined_calls }.not_to raise_error }
-    end
   end
 end

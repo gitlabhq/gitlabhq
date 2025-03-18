@@ -2,6 +2,7 @@
 
 class Import::BulkImportsController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
+  include SafeFormatHelper
 
   before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
@@ -157,7 +158,8 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def ensure_bulk_import_enabled
-    render_404 unless Gitlab::CurrentSettings.bulk_import_enabled?
+    render_404 unless Gitlab::CurrentSettings.bulk_import_enabled? ||
+      Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
   end
 
   def access_token_key
@@ -181,7 +183,7 @@ class Import::BulkImportsController < ApplicationController
     clear_session_data
 
     redirect_to new_group_path(anchor: 'import-group-pane'),
-      alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
+      alert: safe_format(_('Specified URL cannot be used: "%{reason}"'), reason: e.message)
   end
 
   def allow_local_requests?
@@ -191,7 +193,7 @@ class Import::BulkImportsController < ApplicationController
   def bulk_import_connection_error(error)
     clear_session_data
 
-    error_message = _("Unable to connect to server: %{error}") % { error: error }
+    error_message = safe_format(_("Unable to connect to server: %{error}"), error: error)
     flash[:alert] = error_message
 
     respond_to do |format|

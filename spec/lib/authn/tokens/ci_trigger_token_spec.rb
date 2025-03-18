@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Authn::Tokens::CiTriggerToken, feature_category: :system_access do
+RSpec.describe Authn::Tokens::CiTriggerToken, :aggregate_failures, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: [user]) }
 
-  let(:ci_trigger) { create(:ci_trigger) }
+  let_it_be(:ci_trigger) { create(:ci_trigger, project: project) }
 
   subject(:token) { described_class.new(plaintext, :api_admin_token) }
 
@@ -16,10 +17,21 @@ RSpec.describe Authn::Tokens::CiTriggerToken, feature_category: :system_access d
     it_behaves_like 'finding the valid revocable'
 
     describe '#revoke!' do
-      it 'does not support revocation yet' do
-        expect do
-          token.revoke!(user)
-        end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type')
+      it 'expires the token' do
+        expect { token.revoke!(user) }.to change { ci_trigger.reload.expired? }
+        expect(token.revoke!(user).success?).to be_truthy
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(token_api_expire_pipeline_triggers: false)
+        end
+
+        it 'does not support revocation yet' do
+          expect do
+            token.revoke!(user)
+          end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type')
+        end
       end
     end
   end

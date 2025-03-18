@@ -68,7 +68,7 @@ export default {
       },
       error(error) {
         this.errorMessage = sprintf(
-          s__('MlModelRegistry|Failed to load experiments with error: %{error}'),
+          s__('MlExperimentTracking|Failed to load experiments with error: %{error}'),
           { error: error.message },
         );
         Sentry.captureException(error);

@@ -9,12 +9,12 @@ exports[`NewCluster renders the cluster component correctly 1`] = `
   </h4>
   <p>
     Enter details about your cluster.
-    <b-link-stub
+    <a
       class="gl-link"
       href="/help/user/project/clusters/add_existing_cluster"
     >
       How do I use a certificate to connect to my cluster?
-    </b-link-stub>
+    </a>
   </p>
 </div>
 `;

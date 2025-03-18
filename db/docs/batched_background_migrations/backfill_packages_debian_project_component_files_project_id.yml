@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillPackagesDebianProjectComponentFilesProjectId
+description: Backfills sharding key `packages_debian_project_component_files.project_id` from `packages_debian_project_components`.
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183806
+milestone: '17.10'
+queued_migration_version: 20250307100241
+finalized_by: # version of the migration that finalized this BBM

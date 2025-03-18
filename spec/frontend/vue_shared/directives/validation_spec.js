@@ -280,6 +280,7 @@ describe('validation directive', () => {
       const feedbackMap = {
         valueMissing: {
           isInvalid: (el) => el.validity?.valueMissing,
+          feedback: 'Please fill out the name field.',
         },
       };
 

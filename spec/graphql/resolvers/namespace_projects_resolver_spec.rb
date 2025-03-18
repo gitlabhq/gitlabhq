@@ -139,6 +139,29 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
 
         it { is_expected.to contain_exactly(*expected_projects) }
       end
+
+      context 'archived_only argument' do
+        context 'when archived_only is true' do
+          let(:args) { default_args.merge(archived_only: true) }
+          let(:expected_projects) { group_namespaced_projects.second }
+
+          it { is_expected.to contain_exactly(*expected_projects) }
+        end
+
+        context 'when archived_only is false' do
+          let(:args) { default_args.merge(archived_only: false) }
+          let(:expected_projects) { group_namespaced_projects }
+
+          it { is_expected.to contain_exactly(*expected_projects) }
+        end
+
+        context 'when archived_only is not specified' do
+          let(:args) { default_args.merge(archived_only: nil) }
+          let(:expected_projects) { group_namespaced_projects }
+
+          it { is_expected.to contain_exactly(*expected_projects) }
+        end
+      end
     end
 
     context 'with an user namespace' do

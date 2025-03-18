@@ -462,6 +462,7 @@ To download all files in a package, list the package contents using the GitLab A
 ```shell
 TOKEN="<access_token>"
 PROJECT_ID="24"
+PACKAGE_ID="1234"
 PACKAGE_NAME="my_package"
 PACKAGE_VERSION="1.0.0"
 OUTPUT_DIR="./downloaded_package"
@@ -471,7 +472,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Get list of files in the package
 files=$(curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
-     "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/files" \
+     "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/$PACKAGE_ID/package_files" \
      | jq -r '.[].file_name')
 
 # Download each file

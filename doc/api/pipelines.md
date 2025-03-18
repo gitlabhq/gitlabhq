@@ -386,6 +386,7 @@ Sample response:
 {{< history >}}
 
 - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
 
 {{< /history >}}
 
@@ -398,9 +399,22 @@ POST /projects/:id/pipeline
 | `id`        | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `ref`       | string         | Yes      | The branch or tag to run the pipeline on. For merge request pipelines use the [merge requests endpoint](merge_requests.md#create-merge-request-pipeline). |
 | `variables` | array          | No       | An [array of hashes](rest/_index.md#array-of-hashes) containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
+| `inputs`    | hash           | No       | A [hash](rest/_index.md#hash) containing the inputs, as key-value pairs, to use when creating the pipeline. |
+
+Basic example:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
+```
+
+Example request with [inputs](../ci/yaml/inputs.md):
+
+```shell
+curl --request POST \
+  --header "Content-Type: application/json" \
+  --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
 Example of response

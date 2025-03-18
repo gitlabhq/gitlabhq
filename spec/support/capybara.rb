@@ -175,6 +175,13 @@ RSpec.configure do |config|
     Sidekiq::Worker.skipping_transaction_check { example.run }
   end
 
+  # When transactional tests are enabled, we may run into issues with
+  # Gitlab::ExclusiveLease which is not expected to be run within transactions.
+  # These leases may be required when polling the merge request end point causing
+  # the MR to recheck the mergeability status
+  config.around(:each, :js) do |example|
+    Gitlab::ExclusiveLease.skipping_transaction_check { example.run }
+  end
   # The :capybara_ignore_server_errors metadata means unhandled exceptions raised
   # by the application under test will not necessarily fail the server. This is
   # useful when testing conditions that are expected to raise a 500 error in

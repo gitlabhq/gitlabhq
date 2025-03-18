@@ -14,6 +14,7 @@ import {
   NUMBER_FORMATING_OPTIONS,
   REGEX_PARAM,
   LS_REGEX_HANDLE,
+  SEARCH_WINDOW_TITLE,
 } from './constants';
 
 function extractKeys(object, keyList) {
@@ -114,7 +115,6 @@ export const mergeById = (inflatedData, storedData) => {
 
 export const isSidebarDirty = (currentQuery, urlQuery) => {
   return SIDEBAR_PARAMS.some((param) => {
-    // userAddParam ensures we don't get a false dirty from null !== undefined
     const userAddedParam = !urlQuery[param] && currentQuery[param];
     const userChangedExistingParam = urlQuery[param] && urlQuery[param] !== currentQuery[param];
 
@@ -219,3 +219,22 @@ export const skipBlobESCount = (state, itemScope) =>
     state.zoektAvailable &&
     itemScope === SCOPE_BLOB
   );
+
+export const buildDocumentTitle = (title) => {
+  const prevTitle = document.title;
+
+  if (prevTitle.includes(SEARCH_WINDOW_TITLE)) {
+    if (prevTitle.startsWith(SEARCH_WINDOW_TITLE)) {
+      return `${title} · ${SEARCH_WINDOW_TITLE}`;
+    }
+
+    if (prevTitle.trim().startsWith(` · ${SEARCH_WINDOW_TITLE}`.trim())) {
+      return `${title} · ${SEARCH_WINDOW_TITLE}`;
+    }
+
+    const pattern = new RegExp(`^.*?(?= · ${SEARCH_WINDOW_TITLE})`);
+    return prevTitle.replace(pattern, title);
+  }
+  // If pattern not found, return the original
+  return title;
+};

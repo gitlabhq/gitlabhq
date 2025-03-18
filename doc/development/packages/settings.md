@@ -17,7 +17,7 @@ This page includes an exhaustive list of settings related to and maintained by t
 | `npm_package_requests_forwarding` | `application_settings` | Enables or disables npm package forwarding for the instance. |
 | `pypi_package_requests_forwarding` | `application_settings` | Enables or disables PyPI package forwarding for the instance. |
 | `packages_cleanup_package_file_worker_capacity` | `application_settings` | Number of concurrent workers allowed for package file cleanup. |
-| `package_registry_allow_anyone_to_pull_option`  | `application_settings` | Enables or disables the `Allow anyone to pull from Package Registry` toggle. |
+| `package_registry_allow_anyone_to_pull_option`  | `application_settings` | Enables or disables the `Allow anyone to pull from package registry` toggle. |
 | `throttle_unauthenticated_packages_api_requests_per_period` | `application_settings` | Request limit for unauthenticated package API requests in the period defined by `throttle_unauthenticated_packages_api_period_in_seconds`. |
 | `throttle_unauthenticated_packages_api_period_in_seconds`  | `application_settings` | Period in seconds to measure unauthenticated package API requests. |
 | `throttle_authenticated_packages_api_requests_per_period` | `application_settings` | Request limit for authenticated package API requests in the period defined by `throttle_authenticated_packages_api_period_in_seconds`. |
@@ -35,6 +35,7 @@ This page includes an exhaustive list of settings related to and maintained by t
 | `rubygems_max_file_size` | `plan_limits` | Maximum file size for a RubyGems package file. |
 | `terraform_module_max_file_size` | `plan_limits` | Maximum file size for a Terraform package file. |
 | `helm_max_file_size` | `plan_limits` | Maximum file size for a Helm package file. |
+| `helm_max_packages_count` | `application_settings` | Maximum number of Helm packages that can be listed per channel. Must be at least 1. Default is 1000. |
 
 ### Container registry
 

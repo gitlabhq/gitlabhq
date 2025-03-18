@@ -1,12 +1,15 @@
 import { GlAnimatedSidebarIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import store from '~/mr_notes/stores';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
@@ -18,6 +21,8 @@ beforeEach(() => {
   setWindowLocation(TEST_HOST);
 });
 
+Vue.use(PiniaVuePlugin);
+
 describe('CompareVersions', () => {
   let wrapper;
   const targetBranchName = 'tmp-wine-dev';
@@ -28,6 +33,9 @@ describe('CompareVersions', () => {
       store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
     }
 
+    const pinia = createTestingPinia();
+    // force Vue 2 mode by eager store creation
+    useFileBrowser();
     wrapper = mount(CompareVersionsComponent, {
       propsData: {
         toggleFileTreeVisible: true,
@@ -36,6 +44,7 @@ describe('CompareVersions', () => {
       mocks: {
         $store: store,
       },
+      pinia,
     });
   };
   const findCompareSourceDropdown = () => wrapper.find('.mr-version-dropdown');

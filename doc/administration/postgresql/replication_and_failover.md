@@ -84,13 +84,6 @@ You also need to take into consideration the underlying network topology, making
 sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
-{{< alert type="note" >}}
-
-PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
-Patroni, and thus Patroni becomes mandatory for replication and failover. See the [Patroni](#patroni) section for further details.
-
-{{< /alert >}}
-
 ### Database node
 
 Each database node runs four services:
@@ -1006,7 +999,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 
    {{< alert type="note" >}}
 
-On a Geo secondary site, the Patroni leader node is called `standby leader`.
+   On a Geo secondary site, the Patroni leader node is called `standby leader`.
 
    {{< /alert >}}
 
@@ -1031,7 +1024,7 @@ On a Geo secondary site, the Patroni leader node is called `standby leader`.
 
    {{< alert type="note" >}}
 
-`gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
+   `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
    does not work or you believe it did not detect the role correctly, you can use the `--leader` or
    `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
 

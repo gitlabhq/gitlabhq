@@ -5,15 +5,8 @@ RSpec.shared_examples 'updating the namespace package setting attributes' do |to
 
   it 'updates the namespace package setting' do
     expect { subject }
-      .to change { namespace.package_settings.reload.maven_duplicates_allowed }.from(from[:maven_duplicates_allowed]).to(to[:maven_duplicates_allowed])
-      .and change { namespace.package_settings.reload.maven_duplicate_exception_regex }.from(from[:maven_duplicate_exception_regex]).to(to[:maven_duplicate_exception_regex])
-      .and change { namespace.package_settings.reload.generic_duplicates_allowed }.from(from[:generic_duplicates_allowed]).to(to[:generic_duplicates_allowed])
-      .and change { namespace.package_settings.reload.generic_duplicate_exception_regex }.from(from[:generic_duplicate_exception_regex]).to(to[:generic_duplicate_exception_regex])
-      .and change { namespace.package_settings.reload.nuget_duplicates_allowed }.from(from[:nuget_duplicates_allowed]).to(to[:nuget_duplicates_allowed])
-      .and change { namespace.package_settings.reload.nuget_duplicate_exception_regex }.from(from[:nuget_duplicate_exception_regex]).to(to[:nuget_duplicate_exception_regex])
-      .and change { namespace.package_settings.reload.nuget_symbol_server_enabled }.from(from[:nuget_symbol_server_enabled]).to(to[:nuget_symbol_server_enabled])
-      .and change { namespace.package_settings.reload.terraform_module_duplicates_allowed }.from(from[:terraform_module_duplicates_allowed]).to(to[:terraform_module_duplicates_allowed])
-      .and change { namespace.package_settings.reload.terraform_module_duplicate_exception_regex }.from(from[:terraform_module_duplicate_exception_regex]).to(to[:terraform_module_duplicate_exception_regex])
+      .to change { namespace.package_settings.reset.attributes.symbolize_keys.slice(*from.keys) }
+      .from(from).to(to)
   end
 end
 
@@ -31,15 +24,18 @@ RSpec.shared_examples 'creating the namespace package setting' do
   it 'saves the settings', :aggregate_failures do
     subject
 
-    expect(namespace.package_setting_relation.maven_duplicates_allowed).to eq(package_settings[:maven_duplicates_allowed])
-    expect(namespace.package_setting_relation.maven_duplicate_exception_regex).to eq(package_settings[:maven_duplicate_exception_regex])
-    expect(namespace.package_setting_relation.generic_duplicates_allowed).to eq(package_settings[:generic_duplicates_allowed])
-    expect(namespace.package_setting_relation.generic_duplicate_exception_regex).to eq(package_settings[:generic_duplicate_exception_regex])
-    expect(namespace.package_setting_relation.nuget_duplicates_allowed).to eq(package_settings[:nuget_duplicates_allowed])
-    expect(namespace.package_setting_relation.nuget_duplicate_exception_regex).to eq(package_settings[:nuget_duplicate_exception_regex])
-    expect(namespace.package_setting_relation.nuget_symbol_server_enabled).to eq(package_settings[:nuget_symbol_server_enabled])
-    expect(namespace.package_setting_relation.terraform_module_duplicates_allowed).to eq(package_settings[:terraform_module_duplicates_allowed])
-    expect(namespace.package_setting_relation.terraform_module_duplicate_exception_regex).to eq(package_settings[:terraform_module_duplicate_exception_regex])
+    expect(namespace.package_setting_relation).to have_attributes(
+      maven_duplicates_allowed: package_settings[:maven_duplicates_allowed],
+      maven_duplicate_exception_regex: package_settings[:maven_duplicate_exception_regex],
+      generic_duplicates_allowed: package_settings[:generic_duplicates_allowed],
+      generic_duplicate_exception_regex: package_settings[:generic_duplicate_exception_regex],
+      nuget_duplicates_allowed: package_settings[:nuget_duplicates_allowed],
+      nuget_duplicate_exception_regex: package_settings[:nuget_duplicate_exception_regex],
+      nuget_symbol_server_enabled: package_settings[:nuget_symbol_server_enabled],
+      terraform_module_duplicates_allowed: package_settings[:terraform_module_duplicates_allowed],
+      terraform_module_duplicate_exception_regex: package_settings[:terraform_module_duplicate_exception_regex],
+      audit_events_enabled: package_settings[:audit_events_enabled]
+    )
   end
 
   it_behaves_like 'returning a success'

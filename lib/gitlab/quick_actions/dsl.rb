@@ -150,6 +150,11 @@ module Gitlab
           @parse_params_block = block
         end
 
+        def conditional_aliases_autocompletion(*aliases, &block)
+          @conditional_aliases = *aliases
+          @conditional_aliases_block = block
+        end
+
         # Registers a new command which is recognizable from body of email or
         # comment.
         # It accepts aliases and takes a block.
@@ -203,7 +208,9 @@ module Gitlab
             condition_block: @condition_block,
             parse_params_block: @parse_params_block,
             action_block: block,
-            types: @types
+            types: @types,
+            conditional_aliases: @conditional_aliases,
+            conditional_aliases_block: @conditional_aliases_block
           )
 
           self.command_definitions << definition
@@ -221,6 +228,8 @@ module Gitlab
           @icon = nil
           @parse_params_block = nil
           @types = nil
+          @conditional_aliases = nil
+          @conditional_aliases_block = nil
         end
       end
     end

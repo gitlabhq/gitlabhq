@@ -10,7 +10,7 @@ If you encounter any issues with the GitLab Workflow extension for VS Code, or h
 1. Check the [extension documentation](_index.md)
    for known issues and solutions.
 1. Report bugs or request features in the
-   [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
+   [`gitlab-vscode-extension` issue tracker](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
 
 For troubleshooting VS Code for GitLab Duo Code Suggestions,
 see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).

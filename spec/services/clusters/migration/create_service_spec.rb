@@ -8,12 +8,14 @@ RSpec.describe Clusters::Migration::CreateService, feature_category: :deployment
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:configuration_project) { project }
   let_it_be(:cluster_name) { '-Legacy cluster with invalid name #123-' }
+  let_it_be(:agent_name) { 'new-agent' }
 
   let(:service) do
     described_class.new(
       cluster,
       current_user: user,
-      configuration_project_id: configuration_project.id
+      configuration_project_id: configuration_project.id,
+      agent_name: agent_name
     )
   end
 
@@ -78,7 +80,7 @@ RSpec.describe Clusters::Migration::CreateService, feature_category: :deployment
 
     context 'when migration creation fails' do
       before do
-        create(:cluster_agent_migration, cluster: cluster)
+        create(:cluster_agent_migration, cluster: cluster, agent_name: 'existing-agent')
       end
 
       it 'returns an error' do
@@ -100,13 +102,13 @@ RSpec.describe Clusters::Migration::CreateService, feature_category: :deployment
       expect(migration.project).to eq(project)
 
       agent = migration.agent
-      expect(agent.name).to eq('legacy-cluster-with-invalid-name-123')
+      expect(agent.name).to eq(agent_name)
       expect(agent.project).to eq(project)
       expect(agent.created_by_user).to eq(user)
       expect(agent.agent_tokens.count).to eq(1)
 
       token = agent.agent_tokens.first
-      expect(token.name).to eq('legacy-cluster-with-invalid-name-123')
+      expect(token.name).to eq(agent_name)
       expect(token.created_by_user).to eq(user)
     end
   end

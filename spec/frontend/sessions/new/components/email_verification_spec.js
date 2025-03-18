@@ -1,8 +1,8 @@
 import { GlForm, GlFormInput } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import EmailVerification from '~/sessions/new/components/email_verification.vue';
@@ -324,7 +324,7 @@ describe('EmailVerification', () => {
 
         findSecondaryEmailForm().vm.$emit('submit-email', secondaryEmail);
 
-        await nextTick();
+        await waitForPromises();
 
         expect(findSecondaryEmailForm().exists()).toBe(false);
         expect(wrapper.text()).toContain(secondaryEmail);
@@ -340,7 +340,7 @@ describe('EmailVerification', () => {
 
         findSecondaryEmailForm().vm.$emit('cancel');
 
-        await nextTick();
+        await waitForPromises();
 
         expect(findSecondaryEmailForm().exists()).toBe(false);
         expect(findCodeInput().element.value).toBe('');

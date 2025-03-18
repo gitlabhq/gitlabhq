@@ -18,19 +18,19 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
   describe '.reply_address' do
     subject(:reply_address) { described_class.reply_address(nil, nil) }
 
-    it { is_expected.to be nil }
+    it { is_expected.to be_nil }
 
     context 'with reply key' do
       subject(:reply_address) { described_class.reply_address(nil, reply_key) }
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
 
       context 'with issue' do
         let_it_be(:issue) { create(:issue, project: project) }
 
         subject(:reply_address) { described_class.reply_address(issue, reply_key) }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
 
         context 'with service_desk_setting and custom email' do
           let!(:service_desk_setting) { create(:service_desk_setting, custom_email: custom_email, project: project) }
@@ -46,14 +46,14 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
 
     subject(:reply_address) { described_class.key_from_reply_address(email) }
 
-    it { is_expected.to be nil }
+    it { is_expected.to be_nil }
 
     context 'with service_desk_setting' do
       let_it_be_with_refind(:setting) do
         create(:service_desk_setting, project: project, add_external_participants_from_cc: true)
       end
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
 
       context 'with custom email' do
         let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
     context 'without reply key' do
       let(:email) { custom_email }
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -80,18 +80,18 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
 
     let(:email) { nil }
 
-    it { is_expected.to be nil }
+    it { is_expected.to be_nil }
 
     context 'with service desk incoming email' do
       let(:email) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with another unknown email' do
       let(:email) { 'unknown@example.com' }
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with custom email' do

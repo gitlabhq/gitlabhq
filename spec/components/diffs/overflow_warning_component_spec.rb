@@ -114,6 +114,10 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
   describe "#message" do
     subject { component.message }
 
+    before do
+      render_inline component
+    end
+
     it { is_expected.to be_a(String) }
 
     it "is HTML-safe" do

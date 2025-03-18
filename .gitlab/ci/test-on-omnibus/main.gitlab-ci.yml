@@ -1,10 +1,21 @@
-# E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
-# For adding new tests, refer to: doc/development/testing_guide/end_to_end/test_pipelines.md
 include:
-  - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/omnibus.gitlab-ci.yml
+  # Variable $GITLAB_PROJECT_PIPELINE is set to a literal value by dynamically generated pipeline due to an issue
+  # where include is not supporting variables in dynamically generated pipelines: https://gitlab.com/gitlab-org/gitlab/-/issues/378717
+  - local: .gitlab/ci/test-on-omnibus/internal.gitlab-ci.yml
+    rules:
+      - if: '$GITLAB_PROJECT_PIPELINE'
+  # External e2e test job definitions are required for project including omnibus tests directly without access to gitlab repo code
+  - local: .gitlab/ci/test-on-omnibus/external.gitlab-ci.yml
+    rules:
+      - if: '$GITLAB_PROJECT_PIPELINE'
+        when: never
+      - when: always
+
+variables:
+  QA_PARALLEL_PROCESSES: 6
 
 # ==========================================
 # Prepare stage
@@ -27,8 +38,7 @@ check-release-set:
 #   and optionally QA_TESTS to run specific quarantined tests
 _quarantine:
   extends:
-    - .qa
-    - .rules:test:manual-except-default-branch
+    - .omnibus-e2e
   stage: test
   variables:
     QA_RSPEC_TAGS: --tag quarantine
@@ -39,21 +49,35 @@ _quarantine:
     expire_in: 1 day
     paths:
       - gitlab-qa-run-*/**/test-metrics-*.json
+  rules:
+    - !reference [.rules:test:dependency-update-never, rules]
+    - !reference [.rules:test:manual-except-default-branch, rules]
 
 # ------------------------------------------
 # Test jobs
 # ------------------------------------------
 
+# Execute smallest test suite to validate omnibus package in dependency update merge request pipelines
+health-check:
+  extends:
+    - .omnibus-e2e
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RUN_IN_PARALLEL: true
+    QA_RSPEC_TAGS: --tag health_check
+  rules:
+    - !reference [.rules:test:dependency-update, rules]
+
 # ========== instance ===========
 instance:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RUN_IN_PARALLEL: true
-    QA_PARALLEL_PROCESSES: 6
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
@@ -61,13 +85,14 @@ instance:
 praefect:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "false"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
@@ -76,7 +101,7 @@ praefect:
 gitaly-transactions:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -84,8 +109,8 @@ gitaly-transactions:
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
     QA_RUN_IN_PARALLEL: true
-    QA_PARALLEL_PROCESSES: 6
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== gitaly reftables backend ===========
@@ -95,7 +120,7 @@ gitaly-transactions:
 gitaly-reftables-backend:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -103,6 +128,7 @@ gitaly-reftables-backend:
     QA_CAN_TEST_PRAEFECT: "true"
     QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== git sha256 enabled ===========
@@ -110,24 +136,26 @@ git-sha256-repositories:
   when: manual
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
     GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
 gitaly-cluster:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::GitalyCluster
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
 
 group-saml:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::GroupSAML
   rules:
@@ -135,7 +163,7 @@ group-saml:
 
 oauth:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_GITLAB_HOSTNAME: "gitlab"
@@ -143,192 +171,215 @@ oauth:
     QA_RSPEC_TAGS: --tag oauth
     GITLAB_QA_OPTS: --omnibus-config github_oauth
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::OAuth/
 
 instance-saml:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::InstanceSAML
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
 
 jira:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/
 
 integrations:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Integrations
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Integrations/
 
 ldap-no-server:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
 
 ldap-tls:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
 
 ldap-no-tls:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
 
 mtls:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::MTLS
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mtls/
 
 mattermost:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
 
 registry:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Registry/
 
 repository-storage:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
 
 service-ping-disabled:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
 
 smtp:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::SMTP/
 
 cloud-activation:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
 
 metrics:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Metrics
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Metrics/
 
 elasticsearch:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
     ELASTIC_URL: "http://elastic68:9200"
   before_script:
-    - !reference [.qa, before_script]
+    - !reference [.omnibus-e2e, before_script]
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ee-only, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
 
 importers:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Import/
 
 import-with-smtp:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ImportWithSMTP
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::ImportWithSMTP/
 
 # ========== ai-gateway ===========
 ai-gateway:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
 
 ai-gateway-no-seat-assigned:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
 
 ai-gateway-no-add-on:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoAddOn
   before_script:
     - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
-    - !reference [.qa, before_script]
+    - !reference [.omnibus-e2e, before_script]
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
 
 ai-gateway-no-license:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoLicense
   before_script:
     - unset QA_EE_LICENSE
-    - !reference [.qa, before_script]
+    - !reference [.omnibus-e2e, before_script]
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
 
 # ========== continuous-vulnerability-scanning ===========
 
 continuous-vulnerabiity-scanning:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::ContinuousVulnerabilityScanning
     QA_MOCK_GITHUB: "true"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ee-only, rules]
     - if: $QA_SUITES =~ /Test::Integration::ContinuousVulnerabilityScanning/
 
@@ -337,33 +388,58 @@ continuous-vulnerabiity-scanning:
 # ------------------------------------------
 update-minor:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: minor
     QA_RSPEC_TAGS: --tag health_check
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:update, rules]
 
 update-major:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: major
     QA_RSPEC_TAGS: --tag health_check
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:update, rules]
+
+update-patch:
+  extends:
+    - .omnibus-e2e
+    - .update-script
+  variables:
+    UPDATE_TYPE: patch
+    QA_RSPEC_TAGS: --tag health_check
+  rules:
+    - !reference [.rules:test:dependency-update-never, rules]
+    - !reference [.rules:test:update-patch, rules]
+
+update-from-patch-to-stable:
+  extends:
+    - .omnibus-e2e
+    - .update-script
+  variables:
+    QA_RSPEC_TAGS: --tag health_check
+    QA_SCENARIO: Test::Omnibus::UpdateToNext
+  rules:
+    - !reference [.rules:test:dependency-update-never, rules]
+    - !reference [.rules:test:update-patch, rules]
 
 update-ee-to-ce:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: minor
     UPDATE_FROM_EDITION: ee
     QA_RSPEC_TAGS: --tag health_check
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ce-only, rules]
     - !reference [.rules:test:update, rules]
 
@@ -386,8 +462,12 @@ export-test-metrics:
   extends:
     - .export-test-metrics
     - .rules:report:process-results
+  variables:
+    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/test-metrics-*.json
 
 notify-slack:
   extends:
     - .notify-slack
     - .rules:report:process-results
+  variables:
+    QA_RSPEC_XML_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"

@@ -17,7 +17,6 @@ $command-palette-spacing: px-to-rem(14px);
 
 .super-sidebar-skip-to {
   top: $calc-application-bars-height;
-  width: calc(#{$super-sidebar-width} - #{$gl-spacing-scale-5});
   z-index: $super-sidebar-skip-to-z-index;
 }
 

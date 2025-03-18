@@ -1,7 +1,6 @@
-import { GlDisclosureDropdown, GlModal, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,19 +16,9 @@ import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vu
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
+import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue';
 import {
   STATE_OPEN,
-  TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-  TEST_ID_COPY_REFERENCE_ACTION,
-  TEST_ID_DELETE_ACTION,
-  TEST_ID_LOCK_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  TEST_ID_PROMOTE_ACTION,
-  TEST_ID_CHANGE_TYPE_ACTION,
-  TEST_ID_TOGGLE_ACTION,
-  TEST_ID_REPORT_ABUSE,
-  TEST_ID_NEW_RELATED_WORK_ITEM,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
@@ -50,6 +39,7 @@ import {
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/vue_shared/plugins/global_toast');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
@@ -61,36 +51,46 @@ describe('WorkItemActions component', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
-    wrapper.findByTestId(TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION);
-  const findLockDiscussionButton = () => wrapper.findByTestId(TEST_ID_LOCK_ACTION);
-  const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
-  const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
-  const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
+    wrapper.findByTestId('confidentiality-toggle-action');
+  const findLockDiscussionButton = () => wrapper.findByTestId('lock-action');
+  const findDeleteButton = () => wrapper.findByTestId('delete-action');
+  const findPromoteButton = () => wrapper.findByTestId('promote-action');
+  const findCopyReferenceButton = () => wrapper.findByTestId('copy-reference-action');
   const findWorkItemToggleOption = () => wrapper.findComponent(WorkItemStateToggle);
-  const findCopyCreateNoteEmailButton = () =>
-    wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
-  const findReportAbuseButton = () => wrapper.findByTestId(TEST_ID_REPORT_ABUSE);
+  const findCopyCreateNoteEmailButton = () => wrapper.findByTestId('copy-create-note-email-action');
+  const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-action');
   const findSubmitAsSpamItem = () => wrapper.findByTestId('submit-as-spam-item');
-  const findNewRelatedItemButton = () => wrapper.findByTestId(TEST_ID_NEW_RELATED_WORK_ITEM);
-  const findChangeTypeButton = () => wrapper.findByTestId(TEST_ID_CHANGE_TYPE_ACTION);
+  const findNewRelatedItemButton = () => wrapper.findByTestId('new-related-work-item');
+  const findChangeTypeButton = () => wrapper.findByTestId('change-type-action');
+  const findTruncationToggle = () => wrapper.findByTestId('truncation-toggle-action');
+  const findSidebarToggle = () => wrapper.findByTestId('sidebar-toggle-action');
   const findReportAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findWorkItemChangeTypeModal = () => wrapper.findComponent(WorkItemChangeTypeModal);
   const findMoreDropdown = () => wrapper.findByTestId('work-item-actions-dropdown');
   const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
-  const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
+  const findDropdownItems = () =>
+    wrapper.findAll(
+      '[data-testid="work-item-actions-dropdown"] > *, [data-testid="work-item-actions-dropdown"] .gl-new-dropdown-item',
+    );
+
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
       if (x.element.tagName === 'GL-DROPDOWN-DIVIDER-STUB') {
         return { divider: true };
       }
 
+      if (x.element.tagName === 'GL-DISCLOSURE-DROPDOWN-GROUP-STUB') {
+        return { group: true };
+      }
       return {
         testId: x.attributes('data-testid'),
         text: x.text(),
       };
     });
-  const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
+  const findNotificationsToggle = () => wrapper.findByTestId('notifications-toggle');
+  const findMoveButton = () => wrapper.findByTestId('move-action');
+  const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
 
   const modalShowSpy = jest.fn();
   const $toast = {
@@ -123,6 +123,7 @@ describe('WorkItemActions component', () => {
     canUpdateMetadata = true,
     canDelete = true,
     canReportSpam = true,
+    canMove = true,
     hasOkrsFeature = true,
     isConfidential = false,
     isDiscussionLocked = false,
@@ -141,6 +142,7 @@ describe('WorkItemActions component', () => {
     canCreateRelatedItem = true,
     workItemsBeta = true,
     parentId = null,
+    projectId = 'gid://gitlab/Project/1',
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -164,6 +166,7 @@ describe('WorkItemActions component', () => {
         canUpdateMetadata,
         canDelete,
         canReportSpam,
+        canMove,
         isConfidential,
         isDiscussionLocked,
         subscribed,
@@ -175,6 +178,9 @@ describe('WorkItemActions component', () => {
         hasChildren,
         canCreateRelatedItem,
         parentId,
+        projectId,
+        showSidebar: true,
+        truncationEnabled: true,
       },
       mocks: {
         $toast,
@@ -217,50 +223,57 @@ describe('WorkItemActions component', () => {
     expect(findModal().props('visible')).toBe(false);
   });
 
-  it('renders dropdown actions', () => {
-    createComponent();
+  it('renders dropdown actions', async () => {
+    createComponent({ workItemType: 'Issue' });
+
+    await waitForPromises();
 
     expect(findDropdownItemsActual()).toEqual([
       {
-        testId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
+        testId: 'notifications-toggle-form',
         text: '',
       },
       {
         divider: true,
       },
       {
-        testId: TEST_ID_TOGGLE_ACTION,
+        testId: 'state-toggle-action',
         text: '',
       },
       {
-        testId: TEST_ID_NEW_RELATED_WORK_ITEM,
+        testId: 'new-related-work-item',
         text: 'New related item',
       },
+
       {
-        testId: TEST_ID_CHANGE_TYPE_ACTION,
+        testId: 'change-type-action',
         text: 'Change type',
       },
       {
-        testId: TEST_ID_LOCK_ACTION,
+        testId: 'move-action',
+        text: 'Move',
+      },
+      {
+        testId: 'lock-action',
         text: 'Lock discussion',
       },
       {
-        testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
+        testId: 'confidentiality-toggle-action',
         text: 'Turn on confidentiality',
       },
       {
-        testId: TEST_ID_COPY_REFERENCE_ACTION,
+        testId: 'copy-reference-action',
         text: 'Copy reference',
       },
       {
-        testId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-        text: 'Copy task email address',
+        testId: 'copy-create-note-email-action',
+        text: 'Copy issue email address',
       },
       {
         divider: true,
       },
       {
-        testId: TEST_ID_REPORT_ABUSE,
+        testId: 'report-abuse-action',
         text: 'Report abuse',
       },
       {
@@ -268,8 +281,19 @@ describe('WorkItemActions component', () => {
         text: 'Submit as spam',
       },
       {
-        testId: TEST_ID_DELETE_ACTION,
-        text: 'Delete task',
+        testId: 'delete-action',
+        text: 'Delete issue',
+      },
+      {
+        group: true,
+      },
+      {
+        testId: 'truncation-toggle-action',
+        text: '',
+      },
+      {
+        testId: 'sidebar-toggle-action',
+        text: 'Hide sidebar',
       },
     ]);
   });
@@ -280,7 +304,7 @@ describe('WorkItemActions component', () => {
     expect(findDropdownItemsActual()).toEqual(
       expect.arrayContaining([
         {
-          testId: TEST_ID_NEW_RELATED_WORK_ITEM,
+          testId: 'new-related-work-item',
           text: 'New related epic',
         },
       ]),
@@ -710,5 +734,127 @@ describe('WorkItemActions component', () => {
     createComponent({ parentId: 'example-id' });
 
     expect(findWorkItemToggleOption().props('parentId')).toBe('example-id');
+  });
+
+  describe('move issue button', () => {
+    it('shows move button when workItemType is issue and `canMove` is true', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(true);
+    });
+
+    it('renders with text "Move"', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveButton().text()).toBe('Move');
+    });
+
+    it('hides move button when `canMove` is false', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        canMove: false,
+      });
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(false);
+    });
+
+    it('hides move button when workItemType is not issue', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_TASK,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(false);
+    });
+  });
+
+  describe('move modal', () => {
+    it('does not render move modal when there is no projectId', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        projectId: null,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveModal().exists()).toBe(false);
+    });
+
+    it('renders move modal when move button is clicked', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      findMoveButton().vm.$emit('action');
+      await nextTick();
+
+      expect(findMoveModal().exists()).toBe(true);
+      expect(findMoveModal().props('visible')).toBe(true);
+    });
+
+    it('passes correct props to move modal', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      findMoveButton().vm.$emit('action');
+      await nextTick();
+
+      expect(findMoveModal().props()).toMatchObject({
+        visible: true,
+        workItemIid: '1',
+        fullPath: 'gitlab-org/gitlab-test',
+        projectId: 'gid://gitlab/Project/1',
+      });
+    });
+
+    it('closes modal when hideModal event is emitted', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      findMoveButton().vm.$emit('action');
+      await nextTick();
+
+      findMoveModal().vm.$emit('hideModal');
+      await nextTick();
+
+      expect(findMoveModal().props('visible')).toBe(false);
+    });
+  });
+  describe('view options', () => {
+    it('toggles truncation enabled', () => {
+      createComponent({ workItemType: 'Task' });
+
+      expect(findTruncationToggle().exists()).toBe(true);
+
+      findTruncationToggle().vm.$emit('action');
+
+      expect(wrapper.emitted('toggleTruncationEnabled')).toEqual([[]]);
+    });
+
+    it('toggles sidebar visibility', () => {
+      createComponent({ workItemType: 'Task' });
+
+      expect(findSidebarToggle().exists()).toBe(true);
+
+      findSidebarToggle().vm.$emit('action');
+      expect(wrapper.emitted('toggleSidebar')).toEqual([[]]);
+    });
   });
 });

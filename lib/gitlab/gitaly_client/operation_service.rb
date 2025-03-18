@@ -66,15 +66,22 @@ module Gitlab
         end
       end
 
-      def user_create_branch(branch_name, user, start_point)
+      def user_create_branch(branch_name, user, start_point, skip_ci: false)
         request = Gitaly::UserCreateBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: encode_binary(branch_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           start_point: encode_binary(start_point)
         )
+
+        params = { timeout: GitalyClient.long_timeout }
+
+        if skip_ci
+          params[:gitaly_context] = { 'skip-ci' => true }
+        end
+
         response = gitaly_client_call(@repository.storage, :operation_service,
-          :user_create_branch, request, timeout: GitalyClient.long_timeout)
+          :user_create_branch, request, **params)
 
         branch = response.branch
         return unless branch
@@ -284,7 +291,8 @@ module Gitlab
           :user_cherry_pick,
           request,
           remote_storage: start_repository.storage,
-          timeout: GitalyClient.long_timeout
+          timeout: GitalyClient.long_timeout,
+          gitaly_context: { 'enable_secrets_check' => true }
         )
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
@@ -368,7 +376,8 @@ module Gitlab
           :user_rebase_confirmable,
           request_enum.each,
           timeout: GitalyClient.long_timeout,
-          remote_storage: remote_repository.storage
+          remote_storage: remote_repository.storage,
+          gitaly_context: { 'enable_secrets_check' => true }
         )
 
         # First request
@@ -535,8 +544,14 @@ module Gitlab
         end
 
         response = gitaly_client_call(
-          @repository.storage, :operation_service, :user_commit_files, req_enum,
-          timeout: GitalyClient.long_timeout, remote_storage: start_repository&.storage)
+          @repository.storage,
+          :operation_service,
+          :user_commit_files,
+          req_enum,
+          timeout: GitalyClient.long_timeout,
+          remote_storage: start_repository&.storage,
+          gitaly_context: { 'enable_secrets_check' => true }
+        )
 
         if (pre_receive_error = response.pre_receive_error.presence)
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -588,8 +603,14 @@ module Gitlab
           end
         end
 
-        response = gitaly_client_call(@repository.storage, :operation_service,
-          :user_apply_patch, chunks, timeout: GitalyClient.long_timeout)
+        response = gitaly_client_call(
+          @repository.storage,
+          :operation_service,
+          :user_apply_patch,
+          chunks,
+          timeout: GitalyClient.long_timeout,
+          gitaly_context: { 'enable_secrets_check' => true }
+        )
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end

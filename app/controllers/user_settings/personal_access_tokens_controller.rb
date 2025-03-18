@@ -8,9 +8,6 @@ module UserSettings
     feature_category :system_access
 
     before_action :check_personal_access_tokens_enabled
-    before_action do
-      push_frontend_feature_flag(:pat_ip, current_user)
-    end
     prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
     def index
@@ -94,6 +91,23 @@ module UserSettings
       end
     end
 
+    def toggle_dpop
+      unless Feature.enabled?(:dpop_authentication, current_user)
+        redirect_to user_settings_personal_access_tokens_path
+        return
+      end
+
+      result = UserPreferences::UpdateService.new(current_user, dpop_params).execute
+
+      if result.success?
+        flash[:notice] = _('DPoP preference updated.')
+      else
+        flash[:warning] = _('Unable to update DPoP preference.')
+      end
+
+      redirect_to user_settings_personal_access_tokens_path
+    end
+
     private
 
     def finder(options = {})
@@ -104,8 +118,15 @@ module UserSettings
       params.require(:personal_access_token).permit(:name, :expires_at, :description, scopes: [])
     end
 
+    def dpop_params
+      params.require(:user).permit(:dpop_enabled)
+    end
+
     def set_index_vars
       @scopes = Gitlab::Auth.available_scopes_for(current_user)
+
+      @scopes = ::VirtualRegistries.filter_token_scopes(@scopes, current_user)
+
       @active_access_tokens, @active_access_tokens_size = active_access_tokens
     end
 

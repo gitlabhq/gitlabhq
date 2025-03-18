@@ -1,0 +1,11 @@
+---
+migration_job_name: ResyncApprovalPolicies
+description:
+  Triggers PersistSecurityPoliciesWorker for each policy configurations with incorrect indexes.
+  This migration triggers a worker for each row, so we cannot determine when the migration is finished.
+  So before finalizing this BBM, we need to make sure that the indexes are correct.
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181303
+milestone: '17.10'
+queued_migration_version: 20250212162708
+finalized_by: # version of the migration that finalized this BBM

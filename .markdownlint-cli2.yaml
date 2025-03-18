@@ -162,8 +162,3 @@ config:
     ]
 ignores:
   - "doc/architecture"
-customRules:
-  - "./doc/.markdownlint/rules/tabs_blank_lines.js"
-  - "./doc/.markdownlint/rules/tabs_title_markup.js"
-  - "./doc/.markdownlint/rules/tabs_title_text.js"
-  - "./doc/.markdownlint/rules/tabs_wrapper_tags.js"

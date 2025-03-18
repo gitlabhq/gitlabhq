@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Data Stores', :requires_admin, product_group: :tenant_scale do
+  RSpec.describe 'Data Stores', :requires_admin, product_group: :organizations do
     describe 'Group member access request' do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
 

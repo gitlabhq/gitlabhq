@@ -203,12 +203,6 @@ tests = [
   },
 
   {
-    explanation: 'The documentation index page is used in this haml_lint spec',
-    changed_file: 'doc/_index.md',
-    expected: ['spec/haml_lint/linter/documentation_links_spec.rb']
-  },
-
-  {
     explanation: 'Spec for FOSS model',
     changed_file: 'app/models/uploads/base.rb',
     expected: [
@@ -474,15 +468,6 @@ tests = [
   ## BEGIN Remote development GraphQL resolvers (in alphabetical order by resolver source file path)
   {
     explanation:
-      'Map Remote Development GraphQL cluster_agent/remote_development_agent_config_resolver.rb to request specs',
-    changed_file:
-      'ee/app/graphql/resolvers/remote_development/cluster_agent/remote_development_agent_config_resolver.rb',
-    expected: %w[
-      ee/spec/requests/api/graphql/remote_development/cluster_agent/remote_development_agent_config/with_no_args_spec.rb
-    ]
-  },
-  {
-    explanation:
       'Map Remote Development GraphQL cluster_agent/workspaces_resolver.rb to request specs',
     changed_file: 'ee/app/graphql/resolvers/remote_development/cluster_agent/workspaces_resolver.rb',
     expected: %w[
@@ -512,6 +497,17 @@ tests = [
       ee/spec/requests/api/graphql/remote_development/namespace/workspaces_cluster_agents/with_available_filter_arg_spec.rb
       ee/spec/requests/api/graphql/remote_development/namespace/workspaces_cluster_agents/with_directly_mapped_filter_arg_spec.rb
       ee/spec/requests/api/graphql/remote_development/namespace/workspaces_cluster_agents/with_unmapped_filter_arg_spec.rb
+    ]
+    # rubocop:enable Layout/LineLength
+  },
+  {
+    explanation: 'Map Remote Development GraphQL organization/cluster_agents_resolver.rb to request specs',
+    changed_file: 'ee/app/graphql/resolvers/remote_development/organization/cluster_agents_resolver.rb',
+    # rubocop:disable Layout/LineLength -- fix CI failures - not sure why other lines in this file don't get errors
+    expected: %w[
+      ee/spec/requests/api/graphql/remote_development/organization/workspaces_cluster_agents/with_available_filter_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/organization/workspaces_cluster_agents/with_directly_mapped_filter_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/organization/workspaces_cluster_agents/with_unmapped_filter_arg_spec.rb
     ]
     # rubocop:enable Layout/LineLength
   },

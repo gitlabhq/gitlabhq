@@ -5,7 +5,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import api from '~/api';
+import { createTestingPinia } from '@pinia/testing';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -26,7 +26,7 @@ import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import eventHub from '~/diffs/event_hub';
 import notesEventHub from '~/notes/event_hub';
-import { EVT_DISCUSSIONS_ASSIGNED } from '~/diffs/constants';
+import { EVT_DISCUSSIONS_ASSIGNED, FILE_BROWSER_VISIBLE } from '~/diffs/constants';
 
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -38,7 +38,9 @@ import { stubPerformanceWebAPI } from 'helpers/performance';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import waitForPromises from 'helpers/wait_for_promises';
 import { diffMetadata } from 'jest/diffs/mock_data/diff_metadata';
-import { pinia } from '~/pinia/instance';
+import { removeCookie, setCookie } from '~/lib/utils/common_utils';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -47,8 +49,6 @@ const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 const ENDPOINT_BATCH_URL = `${TEST_HOST}/diff/endpointBatch`;
 const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
-
-jest.mock('~/api.js');
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -73,6 +73,7 @@ describe('diffs/components/app', () => {
     baseConfig = {},
     actions = {},
   } = {}) => {
+    const pinia = createTestingPinia({ stubActions: false });
     fakeApollo = createMockApollo([
       [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
     ]);
@@ -715,28 +716,26 @@ describe('diffs/components/app', () => {
     });
   });
 
-  describe('setTreeDisplay', () => {
-    afterEach(() => {
-      localStorage.removeItem('mr_tree_show');
+  describe('file browser visibility', () => {
+    beforeEach(() => {
+      removeCookie(FILE_BROWSER_VISIBLE);
     });
 
-    it('calls setShowTreeList when only 1 file', () => {
+    it('hides files browser with only 1 file', async () => {
       createComponent({
+        props: { shouldShow: true },
         extendStore: ({ state }) => {
           state.diffs.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
         },
       });
-      jest.spyOn(store, 'dispatch');
-      wrapper.vm.setTreeDisplay();
+      await waitForPromises();
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowTreeList', {
-        showTreeList: false,
-        saving: false,
-      });
+      expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(false);
     });
 
-    it('calls setShowTreeList with true when more than 1 file is in tree entries map', () => {
+    it('shows file browser with more than 1 file', async () => {
       createComponent({
+        props: { shouldShow: true },
         extendStore: ({ state }) => {
           state.diffs.treeEntries = {
             111: { type: 'blob', fileHash: '111', path: '111.js' },
@@ -744,37 +743,31 @@ describe('diffs/components/app', () => {
           };
         },
       });
-      jest.spyOn(store, 'dispatch');
+      await waitForPromises();
 
-      wrapper.vm.setTreeDisplay();
-
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowTreeList', {
-        showTreeList: true,
-        saving: false,
-      });
+      expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(true);
     });
 
     it.each`
-      showTreeList
+      fileBrowserVisible
       ${true}
       ${false}
-    `('calls setShowTreeList with localstorage $showTreeList', ({ showTreeList }) => {
-      localStorage.setItem('mr_tree_show', showTreeList);
+    `(
+      'sets browser visibility from cookie value: $fileBrowserVisible',
+      async ({ fileBrowserVisible }) => {
+        setCookie(FILE_BROWSER_VISIBLE, fileBrowserVisible);
 
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries['123'] = { sha: '123' };
-        },
-      });
-      jest.spyOn(store, 'dispatch');
+        createComponent({
+          props: { shouldShow: true },
+          extendStore: ({ state }) => {
+            state.diffs.treeEntries['123'] = { sha: '123' };
+          },
+        });
+        await waitForPromises();
 
-      wrapper.vm.setTreeDisplay();
-
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowTreeList', {
-        showTreeList,
-        saving: false,
-      });
-    });
+        expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(fileBrowserVisible);
+      },
+    );
   });
 
   describe('file-by-file', () => {
@@ -1158,8 +1151,10 @@ describe('diffs/components/app', () => {
     });
   });
 
-  describe('track "trackRedisHllUserEvent" and "trackRedisCounterEvent" metrics', () => {
+  describe('event tracking', () => {
     let mockGetTime;
+
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -1178,16 +1173,19 @@ describe('diffs/components/app', () => {
     };
 
     it('should not track metrics if keydownTime is not set', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       await nextTick();
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
-      expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
 
     it('should track metrics if delta is between 0 and 1000ms', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       // delta 500 ms
@@ -1196,11 +1194,12 @@ describe('diffs/components/app', () => {
 
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('i_code_review_user_searches_diff');
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith('diff_searches');
+      expect(trackEventSpy).toHaveBeenCalledWith('i_code_review_user_searches_diff', {}, undefined);
     });
 
     it('should not track metrics if delta is greater than or equal to 1000ms', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       // delta 1050 ms
@@ -1209,11 +1208,12 @@ describe('diffs/components/app', () => {
 
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
-      expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
 
     it('should not track metrics if delta is negative', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       // delta -500 ms
@@ -1222,8 +1222,7 @@ describe('diffs/components/app', () => {
 
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
-      expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
     });
   });
 });

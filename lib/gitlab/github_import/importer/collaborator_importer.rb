@@ -25,7 +25,7 @@ module Gitlab
 
           if user_finder.source_user_accepted?(collaborator)
             membership = existing_user_membership(user_id)
-            return if membership && membership[:access_level] >= map_access_level
+            return if membership && membership[:access_level] > map_access_level
 
             create_membership!(user_id, access_level)
           else
@@ -40,7 +40,11 @@ module Gitlab
         private
 
         def existing_user_membership(user_id)
-          members_finder.execute.find_by_user_id(user_id)
+          members_finder.execute(include_relations: member_finder_relations).find_by_user_id(user_id)
+        end
+
+        def member_finder_relations
+          ::Import::ReassignPlaceholderUserRecordsService::PROJECT_FINDER_MEMBER_RELATIONS
         end
 
         def map_access_level

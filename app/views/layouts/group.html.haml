@@ -1,6 +1,6 @@
 - page_title       @group.name
 - page_description @group.description_html unless page_description
-- header_title     group_title(@group)     unless header_title
+- push_group_breadcrumbs(@group)
 - nav "group"
 - display_subscription_banner!
 - base_layout = local_assigns[:base_layout]

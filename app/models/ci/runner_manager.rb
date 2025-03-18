@@ -10,6 +10,7 @@ module Ci
 
     # For legacy reasons, the table name is ci_runner_machines in the database
     self.table_name = 'ci_runner_machines'
+    self.primary_key = :id
 
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
     AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES
@@ -61,6 +62,7 @@ module Ci
     validates :architecture, length: { maximum: 255 }
     validates :ip_address, length: { maximum: 1024 }
     validates :config, json_schema: { filename: 'ci_runner_config' }
+    validates :runtime_features, json_schema: { filename: 'ci_runner_runtime_features' }
 
     validate :no_sharding_key_id, if: :instance_type?
 
@@ -144,7 +146,8 @@ module Ci
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
-        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
+        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config,
+          :executor, :runtime_features) || {}
 
         values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at
 

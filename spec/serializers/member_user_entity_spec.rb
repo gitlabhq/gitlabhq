@@ -34,7 +34,7 @@ RSpec.describe MemberUserEntity do
   end
 
   it 'does not expose `two_factor_enabled` by default' do
-    expect(entity_hash[:two_factor_enabled]).to be(nil)
+    expect(entity_hash[:two_factor_enabled]).to be_nil
   end
 
   it 'correctly exposes `status.emoji`' do
@@ -61,7 +61,7 @@ RSpec.describe MemberUserEntity do
         end
 
         it 'does not expose user two_factor_enabled' do
-          expect(entity_hash[:two_factor_enabled]).to be(nil)
+          expect(entity_hash[:two_factor_enabled]).to be_nil
         end
 
         it 'matches json schema' do

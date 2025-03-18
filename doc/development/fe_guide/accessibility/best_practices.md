@@ -35,7 +35,7 @@ You can read more about enabling browser-specific keyboard navigation on [a11ypr
   [select](https://design.gitlab.com/components/select#accessibility),
   [checkbox](https://design.gitlab.com/components/checkbox#accessibility),
   [radio](https://design.gitlab.com/components/radio-button#accessibility),
-  [file](#file-inputs-with-accessible-names),
+  [file](#form-inputs-with-accessible-names),
   and [toggle](https://design.gitlab.com/components/toggle#accessibility) inputs have accessible names.
 - [Buttons](#buttons-and-links-with-descriptive-accessible-names),
   [links](#buttons-and-links-with-descriptive-accessible-names),
@@ -66,15 +66,19 @@ To provide markup with accessible names, ensure every:
 - input has an [associated `label`](#examples-of-providing-accessible-names).
 - button and link have [visible text](#buttons-and-links-with-descriptive-accessible-names), or `aria-label` when there is no visible text, such as for an icon button with no content.
 - image has an [`alt` attribute](#images-with-accessible-names).
+- [chart has a long and short description](https://www.w3.org/WAI/tutorials/images/complex/).
 - `fieldset` has `legend` as its first child.
 - `figure` has `figcaption` as its first child.
 - `table` has `caption` as its first child.
 
-Groups of checkboxes and radio inputs should be grouped together in a `fieldset` with a `legend`.
-`legend` gives the group of checkboxes and radio inputs a label.
+Remember that an [`alt` attribute](#images-with-accessible-names) should not be longer than approximately 150 characters. While there's no official guidelines on the length, some screen readers will not read longer strings inside the `alt` attribute.
 
-If the `label`, child text, or child element is not visually desired,
-use `.gl-sr-only` to hide the element from everything but screen readers.
+An accessible name can be provided in multiple ways and is decided with [accessible name calculation](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/#name_calculation). Here is the simplified order of different techniques taking precedence:
+
+1. `aria-labelledby`
+1. `aria-label`
+1. `alt`, `legend`, `figcaption` or `caption`
+1. `title`.
 
 ### Examples of providing accessible names
 
@@ -85,7 +89,13 @@ Note that [when using `GlFormGroup`](https://bootstrap-vue.org/docs/components/f
 - Passing only a `label` prop renders a `fieldset` with a `legend` containing the `label` value.
 - Passing both a `label` and a `label-for` prop renders a `label` that points to the form input with the same `label-for` ID.
 
-#### File inputs with accessible names
+#### Form inputs with accessible names
+
+Groups of checkboxes and radio inputs should be grouped together in a `fieldset` with a `legend`.
+`legend` gives the group of checkboxes and radio inputs a label.
+
+If the `label`, child text, or child element is not visually desired,
+use the class name `gl-sr-only` to hide the element from everything but screen readers.
 
 File input examples:
 

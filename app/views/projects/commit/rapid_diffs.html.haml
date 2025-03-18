@@ -11,7 +11,5 @@
 .container-fluid{ class: [container_class] }
   = render "commit_box"
   = render "ci_menu"
-  .code{ class: user_color_scheme }
-    = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice.diff_files, parallel_view: diff_view == :parallel)
-    - if @stream_url
-      #js-stream-container{ data: { diffs_stream_url: @stream_url } }
+  - args = { diffs_slice: @diffs_slice, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: @diff_view, update_user_endpoint: @update_current_user_path, metadata_endpoint: @endpoint_metadata_url }
+  = render ::RapidDiffs::AppComponent.new(**args)

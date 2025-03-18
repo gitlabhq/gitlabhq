@@ -28,11 +28,11 @@ module Gitlab
       end
 
       def topology_service_address
-        Gitlab.config.cell.topology_service.address
+        Gitlab.config.cell.topology_service_client.address
       end
 
       def enabled?
-        Gitlab.config.topology_service_enabled?
+        Gitlab.config.cell.enabled
       end
     end
   end

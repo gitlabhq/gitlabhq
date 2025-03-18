@@ -6,6 +6,7 @@ module Gitlab
       module Utils
         autoload :Compression, 'gitlab/backup/cli/utils/compression'
         autoload :PgDump, 'gitlab/backup/cli/utils/pg_dump'
+        autoload :Rake, 'gitlab/backup/cli/utils/rake'
         autoload :Tar, 'gitlab/backup/cli/utils/tar'
       end
     end

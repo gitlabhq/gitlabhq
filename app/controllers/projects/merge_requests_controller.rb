@@ -13,7 +13,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include Gitlab::Cache::Helpers
   include MergeRequestsHelper
   include ParseCommitDate
-  include DiffsStreamResource
+  include RapidDiffsResource
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -390,7 +390,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   private
 
   def set_issuables_index
-    return if ::Feature.enabled?(:vue_merge_request_list, current_user) && request.format.html?
+    return if request.format.html?
 
     super
   end
@@ -401,15 +401,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     # We need to handle the exception that the auto merge was missed
     # For example, the approval group was changed and now the approvals are passing
-    if Feature.enabled?(:process_auto_merge_on_load, @merge_request.project) &&
-        @merge_request.auto_merge_enabled? &&
-        @merge_request.mergeability_checks_pass?
+    if @merge_request.auto_merge_enabled? && @merge_request.mergeability_checks_pass?
       Gitlab::EventStore.publish(
         MergeRequests::MergeableEvent.new(
           data: { merge_request_id: @merge_request.id }
         )
       )
     end
+
+    display_max_limit_warning
 
     respond_to do |format|
       format.html do
@@ -684,6 +684,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       offset: offset,
       view: diff_view
     )
+  end
+
+  def display_max_limit_warning
+    return unless @merge_request.reached_versions_limit?
+
+    flash[:alert] = format(
+      _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
+        "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+  end
+
+  def diffs_resource
+    @merge_request.latest_diffs
   end
 end
 

@@ -1973,7 +1973,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when credit_card_validation does not exist' do
       it 'returns nil' do
-        expect(user.credit_card_validated_at).to be nil
+        expect(user.credit_card_validated_at).to be_nil
       end
     end
 
@@ -2454,6 +2454,32 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.feed_token).to start_with('glft-')
     end
 
+    context 'with instance prefix configured' do
+      let(:instance_prefix) { 'instance-prefix-' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns feed token with instance prefix' do
+        user = create(:user)
+
+        expect(user.feed_token).to start_with("#{instance_prefix}ft-")
+      end
+    end
+
+    context 'with feature flag custom_prefix_for_all_token_types disabled' do
+      before do
+        stub_feature_flags(custom_prefix_for_all_token_types: false)
+      end
+
+      it 'returns feed token with gl as instance prefix' do
+        user = create(:user)
+
+        expect(user.feed_token).to start_with('glft-')
+      end
+    end
+
     it 'ensures no feed token when disabled' do
       allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
 
@@ -2598,7 +2624,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#forget_me!' do
+  describe '#invalidate_all_remember_tokens!' do
     let(:user) { create(:user) }
 
     context 'when remember me application setting is disabled' do
@@ -2612,7 +2638,7 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.remember_created_at).not_to be_nil
 
         stub_application_setting(remember_me_enabled: false)
-        user.forget_me!
+        user.invalidate_all_remember_tokens!
 
         expect(user.remember_created_at).to be_nil
       end
@@ -2854,7 +2880,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       describe '#forkable_namespaces' do
         it 'includes all the namespaces the user can fork into' do
-          developer_group = create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+          developer_group = create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
           developer_group.add_developer(user)
 
           expect(user.forkable_namespaces).to contain_exactly(user.namespace, group, subgroup, developer_group)
@@ -2876,9 +2902,20 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       describe '#manageable_groups' do
+        let(:developer_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
+
+        before do
+          developer_group.add_developer(user)
+        end
+
         shared_examples 'manageable groups examples' do
           it 'includes all the namespaces the user can manage' do
             expect(user.manageable_groups).to contain_exactly(group, subgroup)
+          end
+
+          it 'includes all the namespaces the user can manage, including developer project access' do
+            expect(user.manageable_groups(include_groups_with_developer_access: true))
+              .to contain_exactly(group, subgroup, developer_group)
           end
 
           it 'does not include duplicates if a membership was added for the subgroup' do
@@ -3036,6 +3073,14 @@ RSpec.describe User, feature_category: :user_profile do
       it 'decrements star count of project' do
         expect { user.block }.to change { project.reload.star_count }.by(-1)
       end
+
+      context 'when star count of project is 0' do
+        it 'does not decrement star count of project' do
+          project.update!(star_count: 0)
+
+          expect { user.block }.not_to change { project.reload.star_count }
+        end
+      end
     end
 
     context 'when activating a user' do
@@ -3084,11 +3129,9 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect { user.ban }
             .to change { todo_users.map(&:todos_pending_count).uniq }.from([1]).to([0])
-                .and not_change { todo_users.map(&:todos_done_count) }
 
           expect { user.unban }
           .to change { todo_users.map(&:todos_pending_count).uniq }.from([0]).to([1])
-              .and not_change { todo_users.map(&:todos_done_count) }
         end
       end
 
@@ -4172,6 +4215,22 @@ RSpec.describe User, feature_category: :user_profile do
         original_email
       )
     end
+
+    it 'does not perform a database query for confirmed emails if the emails are loaded' do
+      user.emails.reload
+
+      expect(user.emails).to be_loaded
+
+      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        expect(user.verified_emails).to contain_exactly(
+          user.email,
+          user.private_commit_email,
+          confirmed_email.email
+        )
+      end
+
+      expect(recorder.count).to be_zero
+    end
   end
 
   describe '#verified_detumbled_emails' do
@@ -4688,7 +4747,7 @@ RSpec.describe User, feature_category: :user_profile do
       subject { create(:user, email: email, notification_email: nil) }
 
       it 'defaults to the primary email' do
-        expect(subject.notification_email).to be nil
+        expect(subject.notification_email).to be_nil
         expect(subject.notification_email_or_default).to eq(email)
       end
     end
@@ -6007,6 +6066,20 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.can_admin_all_resources?).to be_truthy
         end
       end
+    end
+  end
+
+  describe '#can_access_admin_area?' do
+    it 'returns false for regular user' do
+      user = build_stubbed(:user)
+
+      expect(user.can_access_admin_area?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build_stubbed(:user, :admin)
+
+      expect(user.can_access_admin_area?).to be_truthy
     end
   end
 
@@ -8614,12 +8687,12 @@ RSpec.describe User, feature_category: :user_profile do
       it 'un-sets the secondary email' do
         expect(subject).to receive(:save)
         subject.unset_secondary_emails_matching_deleted_email!(deleted_email)
-        expect(subject.commit_email).to be nil
+        expect(subject.commit_email).to be_nil
       end
     end
   end
 
-  describe '#groups_with_developer_maintainer_project_access' do
+  describe '#groups_with_developer_project_access' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group1) { create(:group) }
 
@@ -8630,24 +8703,24 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     let_it_be(:developer_group2) do
-      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
         g.add_developer(user)
       end
     end
 
     let_it_be(:guest_group1) do
-      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
         g.add_guest(user)
       end
     end
 
     let_it_be(:developer_group1) do
-      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
         g.add_maintainer(user)
       end
     end
 
-    subject { user.send(:groups_with_developer_maintainer_project_access) }
+    subject { user.send(:groups_with_developer_project_access) }
 
     it { is_expected.to contain_exactly(developer_group2) }
   end
@@ -8733,7 +8806,7 @@ RSpec.describe User, feature_category: :user_profile do
       user = create(:user)
       create(:project, :repository, :private, path: user.username, namespace: user.namespace)
 
-      expect(user.user_readme).to be(nil)
+      expect(user.user_readme).to be_nil
     end
   end
 
@@ -8805,7 +8878,7 @@ RSpec.describe User, feature_category: :user_profile do
       let(:project) {}
 
       it 'returns nil' do
-        expect(emails).to be(nil)
+        expect(emails).to be_nil
       end
     end
 
@@ -8817,7 +8890,7 @@ RSpec.describe User, feature_category: :user_profile do
       context 'without a defined root group namespace_commit_email' do
         context 'without a defined project namespace_commit_email' do
           it 'returns nil' do
-            expect(emails).to be(nil)
+            expect(emails).to be_nil
           end
         end
 
@@ -8864,7 +8937,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'without a defined project namespace_commit_email' do
         it 'returns nil' do
-          expect(emails).to be(nil)
+          expect(emails).to be_nil
         end
       end
 
@@ -9036,6 +9109,10 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject(:validate) { new_user.validate }
 
+    before do
+      stub_application_setting(enforce_email_subaddress_restrictions: true)
+    end
+
     shared_examples 'adds a validation error' do |reason|
       specify do
         expect(::Gitlab::AppLogger).to receive(:info).with(
@@ -9090,9 +9167,9 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      context 'when the feature flag is disabled' do
+      context 'when the enforce_email_subaddress_restrictions application setting is disabled' do
         before do
-          stub_feature_flags(limit_normalized_email_reuse: false)
+          stub_application_setting(enforce_email_subaddress_restrictions: false)
         end
 
         it 'does not perform the check' do
@@ -9158,16 +9235,14 @@ RSpec.describe User, feature_category: :user_profile do
           end
         end
 
-        context 'when feature flag is disabled' do
+        context 'when enforce_email_subaddress_restrictions application setting is disabled' do
           before do
-            stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+            stub_application_setting(enforce_email_subaddress_restrictions: false)
           end
 
           it 'does not perform the check' do
             expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
           end
-
-          it_behaves_like 'checking normalized email reuse limit'
         end
       end
 

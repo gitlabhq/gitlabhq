@@ -540,4 +540,45 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
       end
     end
   end
+
+  context 'when requesting user permissions' do
+    let(:user_fields) do
+      <<~QUERY
+        contributedProjects {
+          nodes {
+            id
+            userPermissions {
+              readProject
+              removeProject
+            }
+          }
+        }
+      QUERY
+    end
+
+    it_behaves_like 'a working graphql query that returns data' do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'returns data', :aggregate_failures do
+        expect(graphql_errors).to be_nil
+
+        expect(graphql_data_at(:user, :contributed_projects, :nodes, 0, :user_permissions)).to eq({
+          'readProject' => true,
+          'removeProject' => false
+        })
+      end
+    end
+
+    it 'batches data', :request_store do
+      queries = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      access_check_queries = queries.occurrences_starting_with(/.*FROM "project_authorizations".*/)
+
+      expect(access_check_queries.values.sum).to eq(1)
+    end
+  end
 end

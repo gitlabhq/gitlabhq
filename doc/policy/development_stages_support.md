@@ -61,6 +61,7 @@ Both types are production-ready, but have different scopes.
 Limited availability features:
 
 - Are ready for production use at a reduced scale.
+- Can be initially available on one or more GitLab platforms (GitLab.com, GitLab Self-Managed, GitLab Dedicated).
 - Might initially be free, then become paid when generally available.
 - Might be offered at a discount before becoming generally available.
 - Might have commercial terms that change for new contracts when generally available.
@@ -74,6 +75,7 @@ Generally available features:
 - Are ready for production use at any scale.
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
 - Have a complete user experience aligned with GitLab design standards.
+- Must be available on all GitLab platforms (GitLab.com, GitLab Self-Managed, GitLab Dedicated).
 
 ## Development guidelines
 

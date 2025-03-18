@@ -12,19 +12,28 @@ title: Storage
 
 {{< /details >}}
 
-All projects on GitLab.com have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
+## Free limit
+
+{{< details >}}
+
+- Tier: Free
+
+{{< /details >}}
+
+All Free projects on GitLab.com have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
 When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
-You cannot push changes to a read-only project. To increase storage of the project's repository and LFS to more than 10 GiB,
+You cannot push changes to a read-only project.
+To increase storage of the project's repository and LFS to more than 10 GiB,
 you must [purchase more storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
 
-Only the project's repository and LFS are included in the storage limit. The container registry, package registry, and build artifacts are not included in the limit.
+Only the project's repository and LFS are included in the storage limit.
+The container registry, package registry, and build artifacts are not included in the limit.
 
 ## View storage
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -54,13 +63,6 @@ Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
 or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
 1 MiB is 2^20 bytes (1024 kibibytes), and 1 GiB is 2^30 bytes (1024 mebibytes).
 
-{{< alert type="note" >}}
-
-Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
-you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
-
-{{< /alert >}}
-
 ## View project fork storage usage
 
 A cost factor is applied to the storage consumed by project forks so that forks consume less namespace storage than their actual size. The cost factors for forks storage reduction applies only to namespace storage. It does not apply to project repository storage limits.
@@ -76,6 +78,12 @@ The cost factor applies to the project repository, LFS objects, job artifacts, p
 The cost factor does not apply to private forks in namespaces on the Free plan.
 
 ## Excess storage usage
+
+{{< details >}}
+
+- Tier: Free
+
+{{< /details >}}
 
 Excess storage usage is the amount that exceeds the 10 GiB free storage of a project's repository and LFS. If no purchased storage is available,
 the project is set to a read-only state. You cannot push changes to a read-only project.
@@ -131,12 +139,11 @@ In this example:
 
 ## Manage storage usage
 
-To manage your storage, if you are a namespace Owner, you can [purchase more storage for the namespace](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
+To manage your storage, if you are a namespace Owner of a Free GitLab.com namespace,
+you can [purchase more storage for the namespace](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
 
-Depending on your role, you can also use the following methods to manage or reduce your storage:
-
-- [Reduce repository size](project/repository/repository_size.md#methods-to-reduce-repository-size).
-
+In the Premium and Ultimate tier, depending on your role, you can also
+[reduce repository size](project/repository/repository_size.md#methods-to-reduce-repository-size).
 To automate storage usage analysis and management, see [storage management automation](storage_management_automation.md).
 
 In addition to managing your storage usage you can consider these options for increased consumables:
@@ -145,8 +152,27 @@ In addition to managing your storage usage you can consider these options for in
   - GitLab for Education
   - GitLab for Open Source
   - GitLab for Startups
-- Consider a [self-managed subscription](../subscriptions/self_managed/_index.md), which does not have storage limits.
+- Consider a [GitLab Self-Managed subscription](../subscriptions/self_managed/_index.md), which does not have storage limits.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+
+## Fixed project limit
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+When a project's repository and LFS exceeds 500 GiB, the project is placed in a read-only state.
+In this case, the owners of the group and top-level namespace receive in-app and email notifications warning them to manage their storage usage.
+You can work with your account and support teams to manage your usage.
+The 500 GiB fixed project limit is in place to ensure overall platform stability.
+
+## Expired storage
+
+Expired storage can exist on a subscription when storage is mistakenly not de-provisioned at the end of your subscription period.
+If you experience an unexpected drop in purchased storage, expired storage could have been removed from your account.
+For more information and solutions, contact support.
 
 ## Related topics
 

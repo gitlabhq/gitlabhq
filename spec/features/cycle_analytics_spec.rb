@@ -157,8 +157,9 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'shows predefined date ranges dropdown with `Custom` option selected' do
+        find(predefined_date_ranges_dropdown_selector).click
         page.within(predefined_date_ranges_dropdown_selector) do
-          expect(page).to have_button('Custom')
+          expect(page).to have_content('Custom')
         end
       end
 

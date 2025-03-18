@@ -109,9 +109,6 @@ mapping:
   - source: 'data/whats_new/\w*\.yml'
     test: 'spec/lib/release_highlights/validator_spec.rb'
 
-  # The documentation index page is used in this haml_lint spec
-  - source: 'doc/_index\.md'
-    test: 'spec/haml_lint/linter/documentation_links_spec.rb'
 
   - source: '(?<prefix>ee/)?app/models/.+\.rb'
     test: 'spec/models/every_model_spec.rb'
@@ -129,10 +126,6 @@ mapping:
       - 'ee/spec/requests/api/graphql/remote_development/workspace/*_spec.rb'
       - 'ee/spec/requests/api/graphql/remote_development/workspaces/*_spec.rb'
       - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/*_spec.rb'
-
-  - source: 'ee/app/graphql/resolvers/remote_development/cluster_agent/remote_development_agent_config_resolver\.rb'
-    test:
-      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/remote_development_agent_config/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/cluster_agent/workspaces_agent_config_resolver\.rb'
     test:
@@ -152,6 +145,10 @@ mapping:
     test:
       - 'ee/spec/requests/api/graphql/remote_development/namespace/remote_development_cluster_agents/*_spec.rb'
       - 'ee/spec/requests/api/graphql/remote_development/namespace/workspaces_cluster_agents/*_spec.rb'
+
+  - source: 'ee/app/graphql/resolvers/remote_development/organization/cluster_agents_resolver\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/organization/workspaces_cluster_agents/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_resolver\.rb'
     test:

@@ -47,7 +47,7 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter, :clean_gitlab_redis_shared_st
         end
 
         it 'caches import label' do
-          expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.import_label_cache_key(project.id))).to be nil
+          expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.import_label_cache_key(project.id))).to be_nil
 
           subject
 

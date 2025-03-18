@@ -6,6 +6,7 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   data_consistency :always
   include ExceptionBacktrace
   include ProjectStartImport
+  include Sidekiq::InterruptionsExhausted
 
   feature_category :importers
   worker_has_external_dependencies!
@@ -13,6 +14,10 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: false, dead: false
   sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
   worker_resource_boundary :memory
+
+  sidekiq_interruptions_exhausted do |job|
+    new.perform_failure(job['args'].first)
+  end
 
   def perform(project_id)
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464677')
@@ -35,6 +40,15 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
     else
       project.after_import
     end
+  end
+
+  def perform_failure(project_id)
+    @project = Project.find_by_id(project_id)
+    import_export_upload = @project.import_export_uploads.find_by_user_id(project.creator.id)
+
+    fail_import('Import process reached the maximum number of interruptions')
+
+    ::Gitlab::Import::RemoveImportFileWorker.perform_async(import_export_upload.id)
   end
 
   private

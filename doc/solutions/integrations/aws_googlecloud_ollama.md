@@ -93,9 +93,9 @@ The rest of this guide assumes you already have a instance of GitLab up and runn
 
 Operating GitLab Duo Self-Hosted requires both a GitLab Ultimate license and a GitLab Duo Enterprise license. The GitLab Ultimate license works with either online or offline licensing options. This documentation assumes that both licenses have been previously obtained and are available for implementation.
 
-![License screenshot](img/self_hosted_model/license_ultimate_onlinelicense.png)
+![License screenshot](img/self_hosted_model/license_ultimate_onlinelicense_v17_10.png)
 
-![License screenshot](img/self_hosted_model/license_duo_enterprise.png)
+![License screenshot](img/self_hosted_model/license_duo_enterprise_v17_10.png)
 
 #### SSL/TLS
 
@@ -136,7 +136,7 @@ For example:
 
 When you host an AI model yourself, you'll also need to choose a serving platform. A popular option for self-hosted models is Ollama.
 
-In this analogy, the brain part for ChatGPT is the GPT-4 model, while in the Anthropic ecosystem, it's the Claude 3.5 Sonnet model. The serving platform acts as the vital framework that connects the brain to the world, enabling it to "think" and interact effectively.
+In this analogy, the brain part for ChatGPT is the GPT-4 model, while in the Anthropic ecosystem, it's the Claude 3.7 Sonnet model. The serving platform acts as the vital framework that connects the brain to the world, enabling it to "think" and interact effectively.
 
 For further information about supported serving platforms and models, please refer to the documentation for [LLM Serving Platforms](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md) and [Models](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
 
@@ -162,7 +162,7 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 ### AI Gateway
 
-While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. Note that, as of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7. 
+While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. Note that, as of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
 1. Please ensure that ...
 
@@ -213,7 +213,7 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
 
    {{< alert type="note" >}}
 
-Replace the IP address with your actual server's internal IP address.
+   Replace the IP address with your actual server's internal IP address.
 
    {{< /alert >}}
 
@@ -247,7 +247,7 @@ Replace the IP address with your actual server's internal IP address.
    ```
 
    The command should show the installed model in the list.
-   ![Installed Model List in Ollama](img/self_hosted_model/ollama_installed_model.png)
+   ![Installed Model List in Ollama](img/self_hosted_model/ollama_installed_model_v17_10.png)
 
 ## Integration
 
@@ -271,7 +271,7 @@ Replace the IP address with your actual server's internal IP address.
    - Toggle the switch in the "GitLab Duo Enterprise" column to enable Duo for the root user
    - The toggle button should turn blue when enabled
 
-![Enable Duo for root user](img/self_hosted_model/duo_enable_root.png)
+![Enable Duo for root user](img/self_hosted_model/duo_enable_root_v17_10.png)
 
 {{< alert type="note" >}}
 
@@ -286,7 +286,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
    - Navigate to Admin Area > GitLab Duo > "Self-hosted models"
    - Click "Add self-hosted model" button
 
-   ![Configure Self-Hosted Model](img/self_hosted_model/self-hosted-model-initial.png)
+   ![Configure Self-Hosted Model](img/self_hosted_model/self-hosted-model-initial_v17_10.png)
 
 1. Configure Model Settings
 
@@ -303,7 +303,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
    - **Model identifier**: Enter `custom_openai/mistral:instruct`
    - **API Key**: Enter any placeholder text (for example, `test`) as this field cannot be left blank
 
-![Configure Mistral Model](img/self_hosted_model/self-hosted-model-initial_mistral.png)
+![Configure Mistral Model](img/self_hosted_model/self-hosted-model-initial_mistral_v17_10.png)
 
 1. Enable AI Features
 
@@ -314,7 +314,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
      - GitLab Duo Chat > General Chat
    - Select your deployed model from the dropdown list for each feature
 
-![Mapping model and duo feature](img/self_hosted_model/self-hosted-model-mapping.png)
+![Mapping model and duo feature](img/self_hosted_model/self-hosted-model-mapping_v17_10.png)
 
 These settings establish the connection between your GitLab instance and the self-hosted Ollama model through the AI Gateway, enabling AI-powered features within GitLab.
 
@@ -324,4 +324,4 @@ These settings establish the connection between your GitLab instance and the sel
 1. The GitLab Duo Chat icon should appear in the top right corner
 1. This indicates successful integration between GitLab and the AI Gateway
 
-![Talk in Duo Chat](img/self_hosted_model/self-hosted-model-talk-in-duochat.png)
+![Talk in Duo Chat](img/self_hosted_model/self-hosted-model-talk-in-duochat_v17_10.png)

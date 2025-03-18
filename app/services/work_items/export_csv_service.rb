@@ -17,7 +17,7 @@ module WorkItems
     private
 
     def associations_to_preload
-      [:project, [::Gitlab::Issues::TypeAssociationGetter.call => :enabled_widget_definitions], :author]
+      [:project, { work_item_type: :enabled_widget_definitions }, :author]
     end
 
     def header_to_value_hash

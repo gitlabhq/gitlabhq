@@ -1,0 +1,9 @@
+---
+name: disable_message_attribute_on_mr_diff_commits
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520302
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182039
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520384
+milestone: '17.10'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

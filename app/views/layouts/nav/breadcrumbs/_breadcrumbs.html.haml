@@ -2,7 +2,7 @@
 - if !hide_top_links && @header_title && @header_title_url
   - push_to_schema_breadcrumb(@header_title, @header_title_url)
 - unless @skip_current_level_breadcrumb
-  - push_to_schema_breadcrumb(@breadcrumb_title, breadcrumb_title_link)
+  - push_to_schema_breadcrumb(@breadcrumb_title, breadcrumb_title_link, @breadcrumb_title_avatar)
 
 -# See https://schema.org/BreadcrumbList
 -# haml-lint:disable InlineJavaScript

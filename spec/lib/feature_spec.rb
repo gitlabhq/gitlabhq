@@ -468,7 +468,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         stub_feature_flag_definition(key)
         Flipper.unregister_groups
         Flipper.register(:guinea_pigs) do |actor|
-          guinea_pigs.include?(actor.thing)
+          guinea_pigs.include?(actor.actor)
         end
         described_class.enable(key, described_class.group(:guinea_pigs))
       end
@@ -859,7 +859,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         described_class.reset
         Flipper.unregister_groups
         Flipper.register(:guinea_pigs) do |actor|
-          guinea_pigs.include?(actor.thing)
+          guinea_pigs.include?(actor.actor)
         end
       end
 
@@ -913,7 +913,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         described_class.reset
         Flipper.unregister_groups
         Flipper.register(:guinea_pigs) do |actor|
-          guinea_pigs.include?(actor.thing)
+          guinea_pigs.include?(actor.actor)
         end
       end
 

@@ -34,8 +34,8 @@ module Packages
         return false if current_user.can_admin_all_resources?
 
         user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
-        project.package_protection_rules
-        .for_push_exists?(
+        project.package_protection_rules.for_action_exists?(
+          action: :push,
           access_level: user_project_authorization_access_level,
           package_name: params[:package_name],
           package_type: params[:package_type]

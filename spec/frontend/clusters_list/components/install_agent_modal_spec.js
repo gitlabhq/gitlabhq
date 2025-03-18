@@ -39,7 +39,7 @@ import ModalStub from '../stubs';
 
 Vue.use(VueApollo);
 
-const projectPath = 'path/to/project';
+const fullPath = 'path/to/project';
 const kasAddress = 'kas.example.com';
 const emptyStateImage = 'path/to/image';
 const defaultBranchName = 'default';
@@ -53,7 +53,7 @@ describe('InstallAgentModal', () => {
   const glabCommand = 'glab cluster agent bootstrap <agent-name>';
 
   const provide = {
-    projectPath,
+    fullPath,
     kasAddress,
     emptyStateImage,
   };
@@ -103,7 +103,7 @@ describe('InstallAgentModal', () => {
     apolloProvider.clients.defaultClient.cache.writeQuery({
       query: getAgentsQuery,
       variables: {
-        projectPath,
+        fullPath,
       },
       data: clusterAgentsResponse.data,
     });
@@ -253,7 +253,7 @@ describe('InstallAgentModal', () => {
 
       it('creates an agent and token', () => {
         expect(createAgentHandler).toHaveBeenCalledWith({
-          input: { name: 'agent-name', projectPath },
+          input: { name: 'agent-name', projectPath: fullPath },
         });
 
         expect(createAgentTokenHandler).toHaveBeenCalledWith({

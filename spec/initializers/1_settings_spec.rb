@@ -54,4 +54,27 @@ RSpec.describe '1_settings', feature_category: :shared do
       it { expect(Settings.gitlab.log_decompressed_response_bytesize).to eq(10) }
     end
   end
+
+  describe 'cell configuration' do
+    let(:config) do
+      {
+        address: 'test-topology-service-host:8080',
+        ca_file: '/test/topology-service-ca.pem',
+        certificate_file: '/test/topology-service-cert.pem',
+        private_key_file: '/test/topology-service-key.pem'
+      }
+    end
+
+    context 'when legacy topology service config is provided' do
+      before do
+        stub_config({ cell: { enabled: true, id: 1 }, topology_service: config })
+        load_settings
+      end
+
+      it { expect(Settings.cell.topology_service_client.address).to eq(config[:address]) }
+      it { expect(Settings.cell.topology_service_client.ca_file).to eq(config[:ca_file]) }
+      it { expect(Settings.cell.topology_service_client.certificate_file).to eq(config[:certificate_file]) }
+      it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
+    end
+  end
 end

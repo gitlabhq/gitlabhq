@@ -13,7 +13,15 @@ title: REST API
 
 {{< /details >}}
 
-Use the GitLab REST API to retrieve data by using any compatible REST API client.
+Automate your workflows and build integrations with the GitLab REST API:
+
+- Create custom tools to manage your GitLab resources at scale without manual intervention.
+- Improve collaboration by integrating GitLab data directly into your applications.
+- Manage CI/CD processes across multiple projects with precision.
+- Control user access programmatically to maintain consistent permissions across your organization.
+
+The REST API uses standard HTTP methods and JSON data formats
+for compatibility with your existing tools and systems.
 
 ## Make a REST API request
 
@@ -30,10 +38,10 @@ A REST API request must start with the root endpoint and the path.
 - The path must start with `/api/v4` (`v4` represents the API version).
 
 In the following example, the API request retrieves the list of all projects on GitLab host
-`example.com`:
+`gitlab.example.com`:
 
 ```shell
-curl "https://example.com/api/v4/projects"
+curl "https://gitlab.example.com/api/v4/projects"
 ```
 
 Access to some endpoints require authentication. For more information, see
@@ -69,14 +77,14 @@ send the payload body:
 - Query string:
 
   ```shell
-  curl --request POST "https://gitlab/api/v4/projects?name=<example-name>&description=<example-description>"
+  curl --request POST "https://gitlab.example.com/api/v4/projects?name=<example-name>&description=<example-description>"
   ```
 
 - Request payload (JSON):
 
   ```shell
   curl --request POST --header "Content-Type: application/json" \
-       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab/api/v4/projects"
+       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab.example.com/api/v4/projects"
   ```
 
 URL encoded query strings have a length limitation. Requests that are too large
@@ -447,7 +455,7 @@ options:
 | [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only                     | Authenticated users only. |
 | [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only                     | Authenticated users only. |
 | [Projects](../projects.md)                                                     | `order_by=id` only                                  | Authenticated and unauthenticated users. |
-| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username` | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
+| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`, `order_by=created_at`, or `order_by=updated_at`. | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
 | [Registry Repository Tags](../container_registry.md)                           | `order_by=name`, `sort=asc`, or `sort=desc` only.   | Authenticated users only. |
 | [List repository tree](../repositories.md#list-repository-tree)                | N/A                                                 | Authenticated and unauthenticated users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154897) in GitLab 17.1. |
 

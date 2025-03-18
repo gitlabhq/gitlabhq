@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.count_distinct_project_id_from_create_ci_runner
-description: Count of unique projects where a project runner was created
+description: Count of unique projects where a runner was created
 product_group: runner
 product_categories:
 - fleet_visibility

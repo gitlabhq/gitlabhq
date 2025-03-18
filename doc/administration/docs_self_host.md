@@ -302,3 +302,10 @@ For example:
 ```plaintext
 registry.gitlab.com/gitlab-org/gitlab-docs:17.2
 ```
+
+### Docker-hosted documentation site fails to redirect
+
+When previewing the GitLab documentation in Docker on macOS, you may encounter an issue preventing
+redirection to the documentation, yielding the message `If you are not redirected automatically, click here.`
+
+To escape the redirect, you need to append the version number to the URL, such as `http://127.0.0.0.1:4000/16.8/`.

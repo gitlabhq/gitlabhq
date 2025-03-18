@@ -10,7 +10,7 @@ title: Code Suggestions
 
 - Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: For code completion, Fireworks AI-hosted [`Qwen2.5 7B`](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b) and Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko). For code generation, Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
+- LLMs: For code completion, Fireworks AI-hosted [`Qwen2.5 7B`](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b) and Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
 
 {{< /details >}}
 
@@ -26,19 +26,26 @@ title: Code Suggestions
 
 {{< /history >}}
 
+Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
+
+Before you start using Code Suggestions, decide which of the following methods
+you want to use to manage Code Suggestions requests:
+
+- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
+  cloud-based AI gateway that is hosted by GitLab.
+- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../../../administration/gitlab_duo_self_hosted/_index.md).
+  Self-hosted models maximize security and privacy by making sure nothing is
+  sent to an external model.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
+<!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
+
 {{< alert type="note" >}}
 
 GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
 
 {{< /alert >}}
-
-Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
-
-Before you start using Code Suggestions, decide if you want to use the default GitLab-hosted LLM to manage Code Suggestions requests, or [deploy a self-hosted model](../../../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize security and privacy by making sure nothing is sent to an external model.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
-<!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 
 ## Use Code Suggestions
 
@@ -184,6 +191,12 @@ For more information, see the history.
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+GitLab recently refactored the Open Tabs internal logic for Duo Code Suggestions. Users who want to use Open Tabs must update their Editor Extensions version to 7.17.1 or later to restore functionality.
+
+{{< /alert >}}
+
 As well as using files from your repository, Code Suggestions can use the files
 open in tabs in your IDE as context.
 
@@ -245,6 +258,23 @@ that explain what you want to build:
 - Code generation treats your code comments like chat.
 - Your code comments update the `user_instruction`, and then improve the next results you receive.
 
+### Using imported files as context
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_include_context_imports`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
+
 ## Truncation of file content
 
 Because of LLM limits and performance reasons, the content of the currently
@@ -304,8 +334,9 @@ This API connection securely transmits a context window from your IDE/editor to 
 
 ### Streaming
 
-Streaming of Code Generation responses is supported in VS Code, leading to faster average response times.
-Other supported IDEs offer slower response times and will return the generated code in a single block.
+Streaming of Code Generation responses is supported in JetBrains and Visual Studio, leading to
+perceived faster response times.
+Other supported IDEs will return the generated code in a single block.
 
 ### Direct and indirect connections
 

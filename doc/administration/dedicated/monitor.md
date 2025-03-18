@@ -6,6 +6,13 @@ description: Access application logs and S3 bucket data to monitor your GitLab D
 title: Monitor your GitLab Dedicated instance
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
+
 GitLab delivers [application logs](../logs/_index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.
 
 Logs stored in the S3 bucket are retained indefinitely, until the one year retention policy is fully enforced. GitLab team members can view more information in confidential issue [483](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483).
@@ -19,7 +26,7 @@ To gain read only access to the S3 bucket with your application logs:
 
    {{< alert type="note" >}}
 
-Specify the full ARN path without wildcards (`*`). Wildcard characters are not supported. GitLab team members can read more about the proposed feature to add wildcard support in this confidential issue: [7010](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010).
+   Specify the full ARN path without wildcards (`*`). Wildcard characters are not supported. GitLab team members can read more about the proposed feature to add wildcard support in this confidential issue: [7010](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010).
 
    {{< /alert >}}
 

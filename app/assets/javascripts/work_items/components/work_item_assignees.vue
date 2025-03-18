@@ -10,6 +10,7 @@ import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
+import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
@@ -79,6 +80,7 @@ export default {
       currentUser: null,
       updateInProgress: false,
       localUsers: [],
+      shortcut: ISSUE_MR_CHANGE_ASSIGNEE,
     };
   },
   apollo: {
@@ -117,7 +119,9 @@ export default {
         if (!data) {
           return;
         }
-        this.localUsers = unionBy(this.localUsers, [data.currentUser], 'id');
+
+        const currentUsers = data.currentUser ? [data.currentUser] : [];
+        this.localUsers = unionBy(this.localUsers, currentUsers, 'id');
       },
     },
   },
@@ -335,6 +339,7 @@ export default {
     :header-text="headerText"
     :update-in-progress="updateInProgress"
     :reset-button-label="__('Clear')"
+    :shortcut="shortcut"
     clear-search-on-item-select
     data-testid="work-item-assignees"
     @dropdownShown="onDropdownShown"
@@ -362,11 +367,14 @@ export default {
         <span>{{ __('None') }}</span>
         <template v-if="currentUser && canUpdate">
           <span>-</span>
-          <gl-button variant="link" data-testid="assign-self" @click.stop="assignToCurrentUser"
-            ><span class="gl-text-subtle hover:gl-text-blue-800">{{
-              __('assign yourself')
-            }}</span></gl-button
+          <gl-button
+            class="!gl-text-inherit hover:!gl-text-link"
+            variant="link"
+            data-testid="assign-self"
+            @click.stop="assignToCurrentUser"
           >
+            {{ __('assign yourself') }}
+          </gl-button>
         </template>
       </div>
     </template>

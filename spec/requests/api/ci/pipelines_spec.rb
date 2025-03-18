@@ -835,6 +835,70 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
       end
 
+      context 'with gitlab-ci.yml including inputs' do
+        let(:inputs) do
+          {
+            deploy_strategy: 'blue-green',
+            job_stage: 'deploy',
+            test_script: ['echo "test"'],
+            parallel_jobs: 3,
+            allow_failure: true,
+            test_rules: [
+              { if: '$CI_PIPELINE_SOURCE == "web"' }
+            ]
+          }
+        end
+
+        before do
+          stub_ci_pipeline_yaml_file(
+            File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+          )
+        end
+
+        shared_examples 'creating a succesful pipeline' do
+          it 'creates a pipeline using inputs' do
+            expect { post_request }.to change { Ci::Pipeline.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:created)
+
+            pipeline = Ci::Pipeline.find(json_response['id'])
+
+            expect(pipeline.builds.map { |b| "#{b.name} #{b.allow_failure}" }).to contain_exactly(
+              'my-job-build 1/3 false', 'my-job-build 2/3 false', 'my-job-build 3/3 false',
+              'my-job-test true', 'my-job-deploy false'
+            )
+          end
+        end
+
+        context 'when passing parameters as JSON' do
+          let(:headers) do
+            { 'Content-Type' => 'application/json' }
+          end
+
+          subject(:post_request) do
+            post api("/projects/#{project.id}/pipeline", user),
+              headers: headers,
+              params: { ref: project.default_branch, inputs: inputs }.to_json
+          end
+
+          it_behaves_like 'creating a succesful pipeline'
+        end
+
+        context 'when passing parameters as form data' do
+          let(:headers) do
+            { 'Content-Type' => 'application/x-www-form-urlencoded' }
+          end
+
+          subject(:post_request) do
+            post api("/projects/#{project.id}/pipeline", user),
+              headers: headers,
+              params: { ref: project.default_branch, inputs: inputs.transform_values(&:to_json) }
+          end
+
+          it_behaves_like 'creating a succesful pipeline'
+        end
+      end
+
       context 'without gitlab-ci.yml' do
         context 'without auto devops enabled' do
           before do
@@ -904,7 +968,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Not found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
 
       context 'with coverage' do
@@ -926,7 +990,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
 
@@ -1001,7 +1065,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
   end
@@ -1258,7 +1322,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
 
@@ -1275,7 +1339,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response['message']).to eq 'hello world'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
   end

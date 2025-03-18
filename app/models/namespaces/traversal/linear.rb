@@ -45,15 +45,7 @@ module Namespaces
         before_update :lock_both_roots, if: -> { parent_id_changed? }
         after_update :sync_traversal_ids, if: -> { saved_change_to_parent_id? }
 
-        # Update the traversal_ids for this namespace in a process safe way.
-        #
-        # This uses rails internal before_commit API to sync traversal_ids on namespace create, right before transaction is committed.
-        # This helps reduce the time during which the root namespace record is locked to ensure updated traversal_ids are valid
-        before_commit :sync_traversal_ids, if: -> { Feature.disabled?(:shared_namespace_locks, root_ancestor) }, on: [:create]
-        # We are taking less aggressive shared locks here so we do not have to use the unofficial before_commit API.
-        # The before_commit behaves in unexpected ways for something like:
-        # build(:issue, spam: true).project.update_attributes(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-        after_create :sync_traversal_ids_on_create, -> { Feature.enabled?(:shared_namespace_locks, root_ancestor) }
+        after_create :sync_traversal_ids_on_create
 
         after_commit :set_traversal_ids,
           if: -> { traversal_ids.empty? || saved_change_to_parent_id? },
@@ -228,15 +220,7 @@ module Namespaces
           # Clear any previously memoized root_ancestor as our ancestors have changed.
           clear_memoization(:root_ancestor)
 
-          # When the FF is enabled we sync the traversal ids from the node itself. In this case the ancestors are locked
-          # FOR SHARE while the node is locked with FOR NO KEY UPDATE.
-          # When the FF is diabled we sync the traversal ids from the node's root ancestor which is locked with FOR NO
-          # KEY UPDATE.
-          if Feature.enabled?(:shared_namespace_locks, root_ancestor)
-            Namespace::TraversalHierarchy.sync_traversal_ids!(self)
-          else
-            Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
-          end
+          Namespace::TraversalHierarchy.sync_traversal_ids!(self)
         end
       end
 

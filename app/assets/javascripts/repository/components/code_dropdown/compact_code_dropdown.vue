@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import { GO_TO_PROJECT_WEBIDE, keysFor } from '~/behaviors/shortcuts/keybindings';
 import CodeDropdownCloneItem from './code_dropdown_clone_item.vue';
 import CodeDropdownDownloadItems from './code_dropdown_download_items.vue';
 import CodeDropdownIdeItem from './code_dropdown_ide_item.vue';
@@ -36,6 +37,16 @@ export default {
       required: false,
       default: '',
     },
+    webIdeUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    gitpodUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     currentPath: {
       type: String,
       required: false,
@@ -45,6 +56,16 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    showWebIdeButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    showGitpodButton: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -58,22 +79,52 @@ export default {
     httpUrlEncoded() {
       return encodeURIComponent(this.httpUrl);
     },
+    webIdeActionShortcutKey() {
+      return keysFor(GO_TO_PROJECT_WEBIDE)[0];
+    },
+    webIdeAction() {
+      return {
+        text: __('Web IDE'),
+        shortcut: this.webIdeActionShortcutKey,
+        tracking: {
+          action: 'click_consolidated_edit',
+          label: 'web_ide',
+        },
+        href: this.webIdeUrl,
+        extraAttrs: {
+          target: '_blank',
+        },
+      };
+    },
+    gitPodAction() {
+      return {
+        text: __('GitPod'),
+        tracking: {
+          action: 'click_consolidated_edit',
+          label: 'gitpod',
+        },
+        href: this.gitpodUrl,
+        extraAttrs: {
+          target: '_blank',
+        },
+      };
+    },
     ideGroup() {
-      const groups = [
-        /* eslint-disable-next-line @gitlab/require-i18n-strings */
-        this.createIdeGroup('Visual Studio Code', VSCODE_BASE_URL),
-        this.createIdeGroup('IntelliJ IDEA', JETBRAINS_BASE_URL),
-      ];
+      const actions = [];
 
-      if (this.xcodeUrl) {
-        groups.push({
-          /* eslint-disable-next-line @gitlab/require-i18n-strings */
-          text: 'Xcode',
-          href: this.xcodeUrl,
-        });
+      if (this.showWebIdeButton) actions.push(this.webIdeAction);
+      if (this.showGitpodButton) actions.push(this.gitPodAction);
+
+      if (this.httpUrl || this.sshUrl) {
+        actions.push(this.createIdeGroup(__('Visual Studio Code'), VSCODE_BASE_URL));
+        actions.push(this.createIdeGroup(__('IntelliJ IDEA'), JETBRAINS_BASE_URL));
       }
 
-      return groups.filter((group) => group.items?.length || group.href);
+      if (this.xcodeUrl) {
+        actions.push({ text: __('Xcode'), href: this.xcodeUrl });
+      }
+
+      return actions;
     },
     sourceCodeGroup() {
       return this.directoryDownloadLinks.map((link) => ({
@@ -107,7 +158,7 @@ export default {
           ...(this.sshUrl
             ? [
                 {
-                  text: 'SSH',
+                  text: __('SSH'),
                   href: `${baseUrl}${this.sshUrlEncoded}`,
                 },
               ]
@@ -115,7 +166,7 @@ export default {
           ...(this.httpUrl
             ? [
                 {
-                  text: 'HTTPS',
+                  text: __('HTTPS'),
                   href: `${baseUrl}${this.httpUrlEncoded}`,
                 },
               ]

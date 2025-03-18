@@ -7,7 +7,9 @@ module Packages
 
       has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
 
-      validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
+      accepts_nested_attributes_for :terraform_module_metadatum
+
+      validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }
       validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message }
     end
   end

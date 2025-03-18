@@ -96,7 +96,7 @@ module Projects
           skip_on_duplicate_iid: true
         )
 
-        tree_restorer.restore_single_relation(tracker.relation)
+        tree_restorer.restore_single_relation(tracker.relation, extra_track_scope: { tracker_id: tracker.id })
       end
 
       def relation_reader

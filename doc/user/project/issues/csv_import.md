@@ -12,7 +12,11 @@ title: Importing issues from CSV
 
 {{< /details >}}
 
-> - Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
+{{< history >}}
+
+- Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
+
+{{< /history >}}
 
 You can import issues to a project by uploading a CSV file with the following columns:
 

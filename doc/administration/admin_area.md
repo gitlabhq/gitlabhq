@@ -125,7 +125,7 @@ You can use the user search box to search and filter users by:
 - User **state**.
 
 You can also type text into the search box. For example, the name of a specific user.
-This text search is case insensitive, and applies partial matching to name, username and email.
+This text search is case-insensitive, and applies partial matching to name, username and email.
 
 For each user, the following are listed:
 
@@ -160,7 +160,7 @@ You can impersonate a user in the following ways:
   1. On the top right, select **Impersonate**.
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
-All impersonation activities are [captured with audit events](audit_event_reports.md#user-impersonation).
+All impersonation activities are [captured with audit events](compliance/audit_event_reports.md#user-impersonation).
 By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../api/rest/authentication.md#disable-impersonation).
 
 ### User identities
@@ -520,7 +520,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-**Log** view has been removed from the **Admin** area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+**Log** view has been removed from the **Admin** area dashboard because the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 

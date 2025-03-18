@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Do not use double slashes '//' or '../doc' in the link path"
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/#links
+link: https://docs.gitlab.com/development/documentation/styleguide/#links
 vocab: false
 level: error
 scope: raw

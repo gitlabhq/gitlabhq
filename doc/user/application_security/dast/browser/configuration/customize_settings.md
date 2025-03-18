@@ -77,13 +77,11 @@ dast:
 
 ## Vulnerability detection
 
-Vulnerability detection is gradually being migrated from the default Zed Attack Proxy (ZAP) solution
-to the browser-based analyzer. For details of the vulnerability detection already migrated, see
-[browser-based vulnerability checks](../checks/_index.md).
+DAST detects vulnerabilities through our comprehensive [browser-based vulnerability checks](../checks/_index.md). These checks identify security issues in your web applications during scanning.
 
-The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This
-ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP. When
-running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This
+The crawler runs the target website in a browser with DAST configured as the proxy server. This
+ensures that all requests and responses made by the browser are passively scanned by DAST. When
+running a full scan, active vulnerability checks executed by DAST do not use a browser. This
 difference in how vulnerabilities are checked can cause issues that require certain features of the
 target website to be disabled to ensure the scan works as intended.
 
@@ -147,3 +145,78 @@ dast:
 Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
 
 {{< /alert >}}
+
+### Page readiness timeouts
+
+Page readiness refers to the state when a page has loaded completely, its DOM has stabilized, and interactive elements are available. Proper page readiness detection is crucial for:
+
+- **Scanning accuracy**: Analyzing pages before they're fully loaded can miss content or produce false negatives.
+- **Crawl efficiency**: Waiting too long wastes scanning time, while not waiting enough misses dynamic content.
+- **Modern web application support**: Single-page applications, AJAX-heavy sites, and progressive loading patterns require sophisticated readiness detection.
+
+Using a sequence of optional configurable timeouts, the DAST scanner can detect when different parts of a page have loaded completely.
+
+#### Timeout variables
+
+Use the following CI/CD variables to customize DAST page readiness timeouts.
+For a comprehensive list, see [Available CI/CD variables](variables.md).
+
+| Timeout Variable | Default | Description |
+|:-----------------|:--------|:------------|
+| `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` | `15s` | The maximum amount of time to wait for a browser to navigate from one page to another. Used during the Document Load phase for full page loads. |
+| `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` | `7s` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis. Used as an alternative to `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` for in-page actions that don't trigger a full page load. |
+| `DAST_PAGE_DOM_STABLE_WAIT` | `500ms` | Define how long to wait for updates to the DOM before checking a page is stable. Used at the beginning of the client-side render phase. |
+| `DAST_PAGE_DOM_READY_TIMEOUT` | `6s` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. Controls waiting for background data fetching and DOM rendering. |
+| `DAST_PAGE_IS_LOADING_ELEMENT` | None | Selector that when no longer visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Marks the end of the client-side render process. |
+
+#### Page loading workflow
+
+Modern web applications load in multiple stages. The DAST scanner has specific timeouts for
+each step in the process:
+
+1. **Document loading**: The browser fetches and processes the basic page structure.
+
+   1. Fetch HTML content from the server.
+   1. Load referenced CSS and JavaScript files.
+   1. Parse content and renders the initial page.
+   1. Trigger the standard "document ready" event.
+
+   This phase uses either `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` (for full page loads) or `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` (for in-page actions), which sets the maximum wait time for document loading.
+
+1. **Client-Side rendering**: After initial loading, many single-page applications:
+
+   - Perform initial JavaScript execution (`DAST_PAGE_DOM_STABLE_WAIT`).
+   - Fetch background data with AJAX or other API calls.
+   - Render a DOM and performs updates based on fetched data (`DAST_PAGE_DOM_READY_TIMEOUT`).
+   - Display page loading indicators (`DAST_PAGE_IS_LOADING_ELEMENT`).
+
+   The scanner monitors these activities to determine when the page is ready for interaction.
+
+The following chart illustrates the sequence timeouts used when crawling a page:
+
+```mermaid
+%%{init: {
+  "gantt": {
+    "leftPadding": 250,
+    "sectionFontSize": 15,
+    "topPadding": 40,
+    "fontFamily": "GitLab Sans"
+  }
+}}%%
+gantt
+    dateFormat YYYY-MM-DD
+    axisFormat  
+    section       Document load
+    DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT  :done, nav1, 2024-01-01, 6d
+    Fetch HTML  :active, nav1, 2024-01-01, 3d
+    Fetch CSS&JS  :active, nav1, 2024-01-04, 3d
+    DocumentReady  :milestone, nav1, 2024-01-07, 0d
+
+    section       Load Data / Client-side render              
+    DAST_PAGE_DOM_STABLE_WAIT  :done, dom1, 2024-01-07, 3d
+    Initial JS Execution :active, dom1, 2024-01-07, 3d
+    DAST_PAGE_DOM_READY_TIMEOUT  :done, ready1, 2024-01-10, 4d
+    Fetch Data :active, dom1, 2024-01-10, 2d
+    Render DOM :active, dom1, 2024-01-10, 2d
+    DAST_PAGE_IS_LOADING_ELEMENT  :milestone, load1, 2024-01-14, 0d
+```

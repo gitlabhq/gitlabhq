@@ -31,4 +31,4 @@
     the maintenance burden as they start to drift in functionality.
 
     You shouldn't experience any impact as a result of this change, as these are endpoints that were used internally.
-  documentation_url: https://docs.gitlab.com/ee/development/internal_api/gitlab_subscriptions.html
+  documentation_url: https://docs.gitlab.com/development/internal_api/gitlab_subscriptions/

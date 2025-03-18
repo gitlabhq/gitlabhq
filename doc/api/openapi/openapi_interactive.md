@@ -5,23 +5,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Interactive API documentation
 ---
 
-Introduces the interactive documentation tool for the GitLab API.
-
-## About the OpenAPI specification
-
 The [OpenAPI specification](https://swagger.io/specification/) (formerly called Swagger) defines a
 standard, language-agnostic interface to RESTful APIs. OpenAPI definition files are written in the
 YAML format, which is automatically rendered by the GitLab browser into a more human-readable interface.
 
-For general information about the GitLab APIs, see [API Docs](../_index.md).
-
-## Overview
+For general information about the GitLab APIs, see [Extend with GitLab](../_index.md).
 
 <!--
 The following link is absolute rather than relative because it needs to be viewed through the GitLab
 Open API file viewer: https://docs.gitlab.com/ee/user/project/repository/#openapi-viewer.
 -->
-The [interactive API documentation tool](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml)
+The [interactive API documentation tool](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi_v2.yaml)
 allows API testing directly on the GitLab.com website. Only a few of the available endpoints are
 documented with the OpenAPI spec, but the current list demonstrates the functionality of the tool.
 

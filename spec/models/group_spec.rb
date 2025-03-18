@@ -11,7 +11,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   let_it_be(:organization) { create(:organization) }
   let!(:group) { create(:group) }
 
-  let(:developer_access) { Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+  let(:developer_access) { Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
   let(:maintainer_access) { Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
   let(:owner_access) { Gitlab::Access::OWNER_PROJECT_ACCESS }
   let(:admin_access) { Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS }
@@ -627,16 +627,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         parent => 'FOR SHARE',
         group => 'FOR NO KEY UPDATE'
       )
-    end
-
-    context 'when shared_namespace_locks is disabled' do
-      before do
-        stub_feature_flags(shared_namespace_locks: false)
-      end
-
-      it 'locks root ancestor', :lock_recorder do
-        expect { subject }.to lock_rows(root => 'FOR NO KEY UPDATE')
-      end
     end
   end
 
@@ -1308,7 +1298,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '.with_project_creation_levels' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
-      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
       let_it_be(:group_5) { create(:group, project_creation_level: nil) }
@@ -1364,7 +1354,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '.project_creation_allowed' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
-      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
       let_it_be(:group_5) { create(:group, project_creation_level: Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS) }
@@ -1375,17 +1365,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         false | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
         false | false | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_6] }
         false | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_6] }
-        false | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_6] }
+        false | false | Gitlab::Access::DEVELOPER_PROJECT_ACCESS            | lazy { [group_2, group_3, group_4, group_6] }
         false | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4] }
         true  | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
         true  | false | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_6] }
         true  | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_6] }
-        true  | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_6] }
+        true  | false | Gitlab::Access::DEVELOPER_PROJECT_ACCESS            | lazy { [group_2, group_3, group_4, group_6] }
         true  | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4] }
         true  | true  | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4, group_5] }
         true  | true  | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_5, group_6] }
         true  | true  | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_5, group_6] }
-        true  | true  | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_5, group_6] }
+        true  | true  | Gitlab::Access::DEVELOPER_PROJECT_ACCESS            | lazy { [group_2, group_3, group_4, group_5, group_6] }
         true  | true  | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4, group_5, group_6] }
       end
 
@@ -3572,7 +3562,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let(:import_export_upload) { create(:import_export_upload, group: group) }
 
       it 'returns nil' do
-        expect(group.import_export_upload_by_user(user)).to be nil
+        expect(group.import_export_upload_by_user(user)).to be_nil
       end
     end
   end
@@ -4063,6 +4053,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_item_status_feature_available?' do
+    subject { group.work_item_status_feature_available? }
+
+    it { is_expected.to be false }
+  end
+
   describe '#continue_indented_text_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :continue_indented_text }
@@ -4074,6 +4070,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_integration }
       let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
+    end
+  end
+
+  describe '#glql_load_on_click_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :glql_load_on_click }
+      let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
     end
   end
 
@@ -4205,7 +4208,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'returns nil if no readme project is present' do
       create(:project, :repository, namespace: group)
 
-      expect(group.group_readme).to be(nil)
+      expect(group.group_readme).to be_nil
     end
   end
 

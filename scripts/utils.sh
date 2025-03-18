@@ -80,7 +80,7 @@ function section_end () {
 
 function rspec_section() {
   section_start "rspec" "RSpec" "false"
-  "$@"
+  run_with_custom_exit_code "$@"
   section_end "rspec"
 }
 
@@ -515,9 +515,6 @@ function log_disk_usage() {
   section_start "log_disk_usage" "Disk usage detail" "true"
   echo -e "df -h"
   df -h
-
-  echo -e "du -h -d 1"
-  du -h -d 1
   section_end "log_disk_usage"
 
   if [[ "$exit_on_low_space" = "true" ]]; then
@@ -546,11 +543,13 @@ function log_disk_usage() {
 
 # all functions below are for customizing CI job exit code
 function run_with_custom_exit_code() {
-  set +e # temprorarily disable exit on error to prevent premature exit
+  set +e # temporarily disable exit on error to prevent premature exit
 
   # runs command passed in as argument, save standard error and standard output
-  output=$("$@" 2>&1)
+  output=$(set -e; "$@" 2>&1)
   initial_exit_code=$?
+
+  echo "initial_exit_code: $initial_exit_code"
 
   local trace_file="stdout_stderr_log.out"
 
@@ -581,8 +580,8 @@ function find_custom_exit_code() {
   if grep -i -q \
     -e "Failed to connect to 127.0.0.1" \
     -e "Failed to open TCP connection to" \
-    -e "connection reset by peer" "$trace_file"; then
-
+    -e "connection reset by peer" \
+    -e "OpenSSL::SSL::SSLError" "$trace_file"; then
     echoerr "Detected network connection error. Changing exit code to 110."
     exit_code=110
     alert_job_in_slack "$exit_code" "Network connection error"
@@ -603,6 +602,9 @@ function find_custom_exit_code() {
     -e "500 Internal Server Error" \
     -e "Internal Server Error 500" \
     -e "502 Bad Gateway" \
+    -e "502 Server Error" \
+    -e "502 \"Bad Gateway\"" \
+    -e "status code: 502" \
     -e "503 Service Unavailable" "$trace_file"; then
     echoerr "Detected 5XX error. Changing exit code to 161."
     exit_code=161
@@ -643,6 +645,18 @@ function find_custom_exit_code() {
     exit_code=167
     alert_job_in_slack "$exit_code" "gitlab.com overload"
 
+  elif grep -i -q -e "GRPC::ResourceExhausted" "$trace_file"; then
+    echoerr "Detected GRPC::ResourceExhausted. Changing exit code to 168."
+    exit_code=168
+
+  elif grep -i -q -e "Gitlab::QueryLimiting::Transaction::ThresholdExceededError" "$trace_file"; then
+    echoerr "Detected Gitlab::QueryLimiting::Transaction::ThresholdExceededError. Changing exit code to 169."
+    exit_code=169
+
+  elif grep -i -q -e \
+    "is write protected within this Gitlab database" "$trace_file"; then
+    echoerr "Detected SQL table is write-protected error in job trace. Changing exit code to 170."
+    exit_code=170
   else
     echoinfo "not changing exit code"
   fi

@@ -48,7 +48,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Notes, feature_category: :team_plan
     )
   end
 
-  describe '#after_save_commit' do
+  describe '#after_create' do
     context 'when cloning work item without notes option' do
       let(:params) { { operation: :clone } }
 
@@ -56,7 +56,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Notes, feature_category: :team_plan
         expect(::Gitlab::Issuable::Clone::CopyResourceEventsService).not_to receive(:new)
         expect(::WorkItems::DataSync::Handlers::Notes::CopyService).not_to receive(:new)
 
-        expect { callback.after_save_commit }.to not_change { ::Note.count }.and(
+        expect { callback.after_create }.to not_change { ::Note.count }.and(
           not_change { ::ResourceLabelEvent.count }.and(
             not_change { ::ResourceMilestoneEvent.count }).and(
               not_change { ::ResourceStateEvent.count })
@@ -74,11 +74,11 @@ RSpec.describe WorkItems::DataSync::Widgets::Notes, feature_category: :team_plan
           expect(::Gitlab::Issuable::Clone::CopyResourceEventsService).to receive(:new).and_call_original
           expect(::WorkItems::DataSync::Handlers::Notes::CopyService).not_to receive(:new)
 
-          expect { callback.after_save_commit }.to not_change { ::Note.count }
+          expect { callback.after_create }.to not_change { ::Note.count }
         end
 
         it 'copies resource events' do
-          expect { callback.after_save_commit }.to change { ::ResourceLabelEvent.count }.by(1).and(
+          expect { callback.after_create }.to change { ::ResourceLabelEvent.count }.by(1).and(
             change { ::ResourceMilestoneEvent.count }.by(1)).and(
               change { ::ResourceStateEvent.count }.by(1))
         end
@@ -106,7 +106,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Notes, feature_category: :team_plan
           # 4 notes are copied to the target work item: 2 system notes and 2 user notes
           # 2 system notes had also description version metadata
           # 2 user notes notes had also description version metadata
-          expect { callback.after_save_commit }.to change { ::Note.count }.by(5).and(
+          expect { callback.after_create }.to change { ::Note.count }.by(5).and(
             change { ::SystemNoteMetadata.count }.by(2)).and(
               change { ::DescriptionVersion.count }.by(1)).and(
                 change { ::AwardEmoji.count }.by(4)).and(

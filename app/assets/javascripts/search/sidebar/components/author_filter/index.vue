@@ -8,13 +8,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 
-import {
-  SEARCH_ICON,
-  USER_ICON,
-  AUTHOR_ENDPOINT_PATH,
-  AUTHOR_PARAM,
-  NOT_AUTHOR_PARAM,
-} from '../../constants';
+import { AUTHOR_ENDPOINT_PATH, AUTHOR_PARAM, NOT_AUTHOR_PARAM } from '../../constants';
 
 export default {
   name: 'AuthorFilter',
@@ -46,9 +40,6 @@ export default {
     ...mapState(['groupInitialJson', 'projectInitialJson', 'query']),
     showDropdownPlaceholderText() {
       return this.selectedAuthorName ? this.selectedAuthorName : this.$options.i18n.search;
-    },
-    showDropdownPlaceholderIcon() {
-      return this.selectedAuthorName ? USER_ICON : SEARCH_ICON;
     },
   },
   watch: {
@@ -156,7 +147,6 @@ export default {
       :header-text="$options.i18n.author"
       :search-text="showDropdownPlaceholderText"
       :selected-item="selectedAuthorValue"
-      :icon="showDropdownPlaceholderIcon"
       :is-loading="isLoading"
       :has-api-search="true"
       @search="handleSearch"

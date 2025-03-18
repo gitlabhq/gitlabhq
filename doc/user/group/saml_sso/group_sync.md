@@ -59,7 +59,7 @@ item in group **Settings > SAML Group Links**.
 To link the SAML groups:
 
 1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.
-1. Choose a [default role](../../permissions.md) or [custom role](../../custom_roles.md) in **Access Level**.
+1. Choose a [default role](../../permissions.md) or [custom role](../../custom_roles/_index.md) in **Access Level**.
 1. Select **Save**.
 1. Repeat to add additional group links if required.
 
@@ -168,7 +168,7 @@ enabling Group Sync in GitLab.
 To configure SAML Group Sync for GitLab Self-Managed:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
+1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. This attribute is case-sensitive. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -248,7 +248,7 @@ To integrate Microsoft Azure AD, you:
 ### GitLab settings to Azure AD fields
 
 | GitLab setting | Azure field                                |
-| ============== | ========================================== |
+| -------------- | ------------------------------------------ |
 | Tenant ID      | Directory (tenant) ID                      |
 | Client ID      | Application (client) ID                    |
 | Client Secret  | Value (on **Certificates & secrets** page) |

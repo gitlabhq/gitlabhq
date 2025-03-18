@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import { TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -20,6 +21,11 @@ export default {
     newIssue: __('New issue'),
     retryJobLabel: s__('Job|Retry'),
     runAgainJobButtonLabel: s__('Job|Run again'),
+    forceCancelJobButtonLabel: s__('Job|Force cancel'),
+    forceCancelJobButtonTooltip: s__('Job|Force cancel a job stuck in `canceling` state'),
+    forceCancelJobConfirmText: s__(
+      'Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the runner is unresponsive.',
+    ),
   },
   forwardDeploymentFailureModalId,
   directives: {
@@ -29,6 +35,7 @@ export default {
     GlButton,
     JobSidebarRetryButton,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   apollo: {
     job: {
@@ -91,7 +98,8 @@ export default {
           this.restJob.new_issue_path ||
           this.restJob.terminal_path ||
           this.restJob.retry_path ||
-          this.restJob.cancel_path,
+          this.restJob.cancel_path ||
+          this.restJob.force_cancel_path,
       );
     },
   },
@@ -142,8 +150,7 @@ export default {
           <job-sidebar-retry-button
             v-if="canShowJobRetryButton"
             v-gl-tooltip.bottom
-            :title="buttonTitle"
-            :aria-label="buttonTitle"
+            :retry-button-title="buttonTitle"
             :is-manual-job="isManualJob"
             :category="retryButtonCategory"
             :href="restJob.retry_path"
@@ -166,6 +173,21 @@ export default {
             data-testid="cancel-button"
             rel="nofollow"
           />
+          <gl-button
+            v-if="restJob.force_cancel_path && glFeatures.forceCancelBuild"
+            v-gl-tooltip.bottom
+            :title="$options.i18n.forceCancelJobButtonTooltip"
+            :aria-label="$options.i18n.forceCancelJobButtonTooltip"
+            :href="restJob.force_cancel_path"
+            :data-confirm="$options.i18n.forceCancelJobConfirmText"
+            data-confirm-btn-variant="danger"
+            variant="danger"
+            data-method="post"
+            data-testid="force-cancel-button"
+            rel="nofollow"
+          >
+            {{ $options.i18n.forceCancelJobButtonLabel }}
+          </gl-button>
         </template>
       </div>
       <gl-button

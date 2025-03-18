@@ -138,6 +138,18 @@ export default {
         this.store.findRequest(this.currentRequestId).fullUrl,
       );
     },
+    backgroundClass() {
+      if (this.env === 'production') {
+        return 'gl-bg-neutral-950';
+      }
+      if (this.env === 'staging') {
+        return 'gl-bg-purple-950 dark:gl-bg-purple-50';
+      }
+      if (this.env === 'development') {
+        return 'gl-bg-red-900 dark:gl-bg-red-50';
+      }
+      return 'gl-bg-neutral-1000';
+    },
   },
   created() {
     if (!this.showZoekt) {
@@ -167,7 +179,7 @@ export default {
 };
 </script>
 <template>
-  <div id="js-peek" :class="env">
+  <div id="js-peek" :class="[env, backgroundClass]">
     <div
       v-if="currentRequest"
       class="container-fluid gl-flex gl-overflow-x-auto"
@@ -189,14 +201,16 @@ export default {
           id="peek-view-trace"
           class="view"
         >
-          <gl-link class="gl-underline" :href="currentRequest.details.tracing.tracing_url">{{
-            s__('PerformanceBar|Trace')
-          }}</gl-link>
+          <gl-link
+            class="!gl-text-neutral-0 gl-underline"
+            :href="currentRequest.details.tracing.tracing_url"
+            >{{ s__('PerformanceBar|Trace') }}</gl-link
+          >
         </div>
         <div v-if="showFlamegraphButtons" id="peek-flamegraph" class="view">
           <gl-link
             v-gl-tooltip.viewport
-            class="gl-text-sm"
+            class="gl-text-sm !gl-text-neutral-0"
             :href="flamegraphPath('wall', currentRequestId)"
             :title="s__('PerformanceBar|Wall flamegraph')"
             >{{ s__('PerformanceBar|Wall') }}</gl-link
@@ -204,7 +218,7 @@ export default {
           /
           <gl-link
             v-gl-tooltip.viewport
-            class="gl-text-sm"
+            class="gl-text-sm !gl-text-neutral-0"
             :href="flamegraphPath('cpu', currentRequestId)"
             :title="s__('PerformanceBar|CPU flamegraph')"
             >{{ s__('PerformanceBar|CPU') }}</gl-link
@@ -212,7 +226,7 @@ export default {
           /
           <gl-link
             v-gl-tooltip.viewport
-            class="gl-text-sm"
+            class="gl-text-sm !gl-text-neutral-0"
             :href="flamegraphPath('object', currentRequestId)"
             :title="s__('PerformanceBar|Object flamegraph')"
             >{{ s__('PerformanceBar|Object') }}</gl-link
@@ -226,7 +240,7 @@ export default {
             v-if="currentRequest.details"
             id="peek-download"
             v-gl-tooltip.viewport
-            class="view gl-text-sm"
+            class="view gl-text-sm !gl-text-neutral-0"
             is-unsafe-link
             :download="downloadName"
             :href="downloadPath"
@@ -237,7 +251,7 @@ export default {
             v-if="showMemoryReportButton"
             id="peek-memory-report"
             v-gl-tooltip.viewport
-            class="view gl-text-sm"
+            class="view gl-text-sm !gl-text-neutral-0"
             :href="memoryReportPath"
             :title="s__('PerformanceBar|Download memory report')"
             >{{ s__('PerformanceBar|Memory report') }}</gl-link
@@ -245,7 +259,7 @@ export default {
           <gl-link
             v-if="statsUrl"
             v-gl-tooltip.viewport
-            class="view gl-text-sm"
+            class="view gl-text-sm !gl-text-neutral-0"
             :href="statsUrl"
             :title="s__('PerformanceBar|Show stats')"
             >{{ s__('PerformanceBar|Stats') }}</gl-link

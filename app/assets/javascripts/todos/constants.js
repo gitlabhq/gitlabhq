@@ -11,6 +11,7 @@ export const TODO_TARGET_TYPE_ALERT = 'ALERT';
 export const TODO_TARGET_TYPE_EPIC = 'EPIC';
 export const TODO_TARGET_TYPE_SSH_KEY = 'KEY';
 export const TODO_TARGET_TYPE_PIPELINE = 'PIPELINE';
+export const TODO_TARGET_TYPE_WIKI_PAGE = 'WIKIPAGEMETA';
 
 export const TODO_ACTION_TYPE_ASSIGNED = 'assigned';
 export const TODO_ACTION_TYPE_MENTIONED = 'mentioned';
@@ -27,6 +28,8 @@ export const TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED = 'okr_checkin_requested';
 export const TODO_ACTION_TYPE_ADDED_APPROVER = 'added_approver';
 export const TODO_ACTION_TYPE_SSH_KEY_EXPIRED = 'ssh_key_expired';
 export const TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON = 'ssh_key_expiring_soon';
+export const TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED = 'duo_pro_access_granted';
+export const TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED = 'duo_enterprise_access_granted';
 
 export const TODO_EMPTY_TITLE_POOL = [
   s__("Todos|Good job! Looks like you don't have anything left on your To-Do List"),
@@ -48,6 +51,7 @@ export const TABS_INDICES = {
  * Instrumentation
  */
 export const INSTRUMENT_TODO_ITEM_CLICK = 'click_todo_item_action';
+export const INSTRUMENT_TODO_BULK_CLICK = 'click_todo_bulk_action';
 export const INSTRUMENT_TODO_ITEM_FOLLOW = 'follow_todo_link';
 export const INSTRUMENT_TODO_SORT_CHANGE = 'sort_todo_list';
 export const INSTRUMENT_TODO_FILTER_CHANGE = 'filter_todo_list';

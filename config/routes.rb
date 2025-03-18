@@ -182,7 +182,7 @@ InitializerConnections.raise_if_new_database_connection do
         draw :phone_verification
         draw :arkose
 
-        scope '/push_from_secondary/:geo_node_id' do
+        scope '/from_secondary/:geo_node_id' do
           draw :git_http
         end
       end
@@ -242,6 +242,8 @@ InitializerConnections.raise_if_new_database_connection do
       post '/track_namespace_visits' => 'users/namespace_visits#create'
 
       get '/external_redirect' => 'external_redirect/external_redirect#index'
+
+      post '/collect_events', to: 'event_forward/event_forward#forward', as: :event_forwarding
     end
     # End of the /-/ scope.
 

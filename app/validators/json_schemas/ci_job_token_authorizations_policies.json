@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Policies for CI job token authorization logs, captured with their last authorized time",
+  "type": "object",
+  "propertyNames": {
+    "$ref": "./ci_job_token_policies.json#/items"
+  },
+  "additionalProperties": {
+    "type": "string",
+    "format": "date-time"
+  }
+}

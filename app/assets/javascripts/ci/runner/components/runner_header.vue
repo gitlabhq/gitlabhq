@@ -35,7 +35,7 @@ export default {
 };
 </script>
 <template>
-  <page-heading :heading="name">
+  <page-heading :heading="name" inline-actions>
     <template #description>
       <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3">
         <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />

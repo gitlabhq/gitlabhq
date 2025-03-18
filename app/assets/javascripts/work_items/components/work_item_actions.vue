@@ -1,8 +1,10 @@
 <script>
 import {
   GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
   GlDropdownDivider,
+  GlIcon,
   GlLoadingIcon,
   GlModal,
   GlModalDirective,
@@ -22,30 +24,12 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import {
   sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
-  I18N_WORK_ITEM_DELETE,
-  I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
-  I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY,
-  TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  TEST_ID_DELETE_ACTION,
-  TEST_ID_PROMOTE_ACTION,
-  TEST_ID_CHANGE_TYPE_ACTION,
-  TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-  TEST_ID_COPY_REFERENCE_ACTION,
-  TEST_ID_TOGGLE_ACTION,
-  I18N_WORK_ITEM_ERROR_CONVERTING,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
-  I18N_WORK_ITEM_ERROR_COPY_REFERENCE,
-  I18N_WORK_ITEM_ERROR_COPY_EMAIL,
-  I18N_WORK_ITEM_NEW_RELATED_ITEM,
-  TEST_ID_LOCK_ACTION,
-  TEST_ID_REPORT_ABUSE,
-  TEST_ID_NEW_RELATED_WORK_ITEM,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
@@ -53,6 +37,7 @@ import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graph
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
+import MoveWorkItemModal from './move_work_item_modal.vue';
 
 export default {
   i18n: {
@@ -78,12 +63,15 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDropdownDivider,
+    GlDisclosureDropdownGroup,
+    GlIcon,
     GlLoadingIcon,
     GlModal,
     GlToggle,
     WorkItemStateToggle,
     CreateWorkItemModal,
     WorkItemChangeTypeModal,
+    MoveWorkItemModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -91,17 +79,6 @@ export default {
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
-  notificationsToggleFormTestId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  confidentialityTestId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  copyReferenceTestId: TEST_ID_COPY_REFERENCE_ACTION,
-  copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-  deleteActionTestId: TEST_ID_DELETE_ACTION,
-  promoteActionTestId: TEST_ID_PROMOTE_ACTION,
-  changeTypeTestId: TEST_ID_CHANGE_TYPE_ACTION,
-  lockDiscussionTestId: TEST_ID_LOCK_ACTION,
-  stateToggleTestId: TEST_ID_TOGGLE_ACTION,
-  reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
-  newRelatedItemTestId: TEST_ID_NEW_RELATED_WORK_ITEM,
   inject: ['hasOkrsFeature'],
   props: {
     fullPath: {
@@ -128,7 +105,7 @@ export default {
       required: false,
       default: null,
     },
-    workItemTypeId: {
+    projectId: {
       type: String,
       required: false,
       default: null,
@@ -144,6 +121,11 @@ export default {
       default: false,
     },
     canDelete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canMove: {
       type: Boolean,
       required: false,
       default: false,
@@ -242,12 +224,21 @@ export default {
       required: false,
       default: '',
     },
+    showSidebar: {
+      type: Boolean,
+      required: true,
+    },
+    truncationEnabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       isLockDiscussionUpdating: false,
       isDropdownVisible: false,
       isCreateWorkItemModalVisible: false,
+      isMoveWorkItemModalVisible: false,
       workItemTypes: [],
     };
   },
@@ -270,28 +261,45 @@ export default {
   computed: {
     i18n() {
       return {
-        deleteWorkItem: sprintfWorkItem(I18N_WORK_ITEM_DELETE, this.workItemType),
-        convertError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CONVERTING, this.workItemType),
-        copyCreateNoteEmail: sprintfWorkItem(
-          I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
+        deleteWorkItem: sprintfWorkItem(s__('WorkItem|Delete %{workItemType}'), this.workItemType),
+        convertError: sprintfWorkItem(
+          s__(
+            'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
+          ),
           this.workItemType,
         ),
-        copyReferenceError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_COPY_REFERENCE, this.workItemType),
+        copyCreateNoteEmail: sprintfWorkItem(
+          s__('WorkItem|Copy %{workItemType} email address'),
+          this.workItemType,
+        ),
+        copyReferenceError: sprintfWorkItem(
+          s__(
+            'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
+          ),
+          this.workItemType,
+        ),
         copyCreateNoteEmailError: sprintfWorkItem(
-          I18N_WORK_ITEM_ERROR_COPY_EMAIL,
+          s__(
+            'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
+          ),
           this.workItemType,
         ),
       };
     },
     newRelatedItemLabel() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
-        ? sprintfWorkItem(I18N_WORK_ITEM_NEW_RELATED_ITEM, this.workItemType)
+        ? sprintfWorkItem(s__('WorkItem|New related %{workItemType}'), this.workItemType)
         : s__('WorkItem|New related item');
     },
     areYouSureDeleteMessage() {
-      return this.hasChildren
-        ? sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY, this.workItemType)
-        : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
+      const message = this.hasChildren
+        ? s__(
+            'WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed.',
+          )
+        : s__(
+            'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
+          );
+      return sprintfWorkItem(message, this.workItemType);
     },
     canPromoteToObjective() {
       return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
@@ -360,6 +368,12 @@ export default {
     },
     workItemTypeNameEnum() {
       return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
+    },
+    showMoveButton() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE && this.canMove;
+    },
+    toggleSidebarLabel() {
+      return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
     },
   },
   methods: {
@@ -520,13 +534,14 @@ export default {
       <template v-if="$options.isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
-          :data-testid="$options.notificationsToggleFormTestId"
+          data-testid="notifications-toggle-form"
         >
           <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
               label-position="left"
+              data-testid="notifications-toggle"
               class="work-item-dropdown-toggle gl-justify-between"
               @change="toggleNotifications($event)"
             />
@@ -537,7 +552,7 @@ export default {
 
       <work-item-state-toggle
         v-if="canUpdate"
-        :data-testid="$options.stateToggleTestId"
+        data-testid="state-toggle-action"
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-state="workItemState"
@@ -551,7 +566,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="canCreateRelatedItem && canUpdate"
-        :data-testid="$options.newRelatedItemTestId"
+        data-testid="new-related-work-item"
         @action="isCreateWorkItemModalVisible = true"
       >
         <template #list-item>{{ newRelatedItemLabel }}</template>
@@ -559,7 +574,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="canPromoteToObjective"
-        :data-testid="$options.promoteActionTestId"
+        data-testid="promote-action"
         @action="promoteToObjective"
       >
         <template #list-item>{{ __('Promote to objective') }}</template>
@@ -567,15 +582,23 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="showChangeType"
-        :data-testid="$options.changeTypeTestId"
+        data-testid="change-type-action"
         @action="showChangeTypeModal"
       >
         <template #list-item>{{ $options.i18n.changeWorkItemType }}</template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
+        v-if="showMoveButton"
+        data-testid="move-action"
+        @action="isMoveWorkItemModalVisible = true"
+      >
+        <template #list-item>{{ __('Move') }}</template>
+      </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
         v-if="canUpdateMetadata"
-        :data-testid="$options.lockDiscussionTestId"
+        data-testid="lock-action"
         @action="toggleDiscussionLock"
       >
         <template #list-item>
@@ -588,12 +611,12 @@ export default {
         v-if="canUpdateMetadata"
         v-gl-tooltip.left.viewport.d0="confidentialTooltip"
         :item="confidentialItem"
-        :data-testid="$options.confidentialityTestId"
+        data-testid="confidentiality-toggle-action"
         @action="handleToggleWorkItemConfidentiality"
       />
 
       <gl-disclosure-dropdown-item
-        :data-testid="$options.copyReferenceTestId"
+        data-testid="copy-reference-action"
         :data-clipboard-text="workItemReference"
         class="shortcut-copy-reference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
@@ -603,7 +626,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="$options.isLoggedIn && workItemCreateNoteEmail"
-        :data-testid="$options.copyCreateNoteEmailTestId"
+        data-testid="copy-create-note-email-action"
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
       >
@@ -614,7 +637,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="!isAuthor"
-        :data-testid="$options.reportAbuseActionTestId"
+        data-testid="report-abuse-action"
         @action="handleToggleReportAbuseModal"
       >
         <template #list-item>{{ $options.i18n.reportAbuse }}</template>
@@ -628,7 +651,7 @@ export default {
 
       <template v-if="canDelete">
         <gl-disclosure-dropdown-item
-          :data-testid="$options.deleteActionTestId"
+          data-testid="delete-action"
           variant="danger"
           @action="handleDelete"
         >
@@ -637,6 +660,40 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
       </template>
+
+      <gl-disclosure-dropdown-group bordered>
+        <template #group-label>
+          {{ __('View options') }}
+          <gl-icon
+            v-gl-tooltip
+            name="information-o"
+            class="gl-ml-2"
+            variant="link"
+            :title="s__('WorkItem|Change appearance for all issues, epics, and tasks')"
+          />
+        </template>
+        <gl-disclosure-dropdown-item
+          class="gl-flex gl-w-full gl-justify-end"
+          data-testid="truncation-toggle-action"
+          @action="$emit('toggleTruncationEnabled')"
+        >
+          <template #list-item>
+            <gl-toggle
+              :value="truncationEnabled"
+              :label="s__('WorkItem|Truncate descriptions')"
+              label-position="left"
+              class="work-item-dropdown-toggle gl-justify-between"
+            />
+          </template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          data-testid="sidebar-toggle-action"
+          class="work-item-container-xs-hidden gl-hidden md:gl-block"
+          @action="$emit('toggleSidebar')"
+        >
+          <template #list-item>{{ toggleSidebarLabel }}</template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
 
     <gl-modal
@@ -677,6 +734,15 @@ export default {
       :namespace-full-name="namespaceFullName"
       @workItemTypeChanged="$emit('workItemTypeChanged')"
       @error="$emit('error', $event)"
+    />
+    <move-work-item-modal
+      v-if="projectId"
+      :visible="isMoveWorkItemModalVisible"
+      :work-item-id="workItemId"
+      :work-item-iid="workItemIid"
+      :full-path="fullPath"
+      :project-id="projectId"
+      @hideModal="isMoveWorkItemModalVisible = false"
     />
   </div>
 </template>

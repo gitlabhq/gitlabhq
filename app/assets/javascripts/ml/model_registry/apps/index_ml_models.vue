@@ -9,12 +9,11 @@ import {
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__ } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
+import ModelsTable from '~/ml/model_registry/components/models_table.vue';
 import EmptyState from '../components/model_list_empty_state.vue';
-import * as i18n from '../translations';
 import { BASE_SORT_FIELDS, MLFLOW_USAGE_MODAL_ID } from '../constants';
 import getModelsQuery from '../graphql/queries/get_models.query.graphql';
-import { makeLoadModelErrorMessage } from '../translations';
 import SearchableTable from '../components/searchable_table.vue';
 import MlflowUsageModal from '../components/mlflow_usage_modal.vue';
 
@@ -96,6 +95,9 @@ export default {
     };
   },
   computed: {
+    modelsTableComponent() {
+      return ModelsTable;
+    },
     pageInfo() {
       return this.models?.pageInfo ?? {};
     },
@@ -110,13 +112,13 @@ export default {
     },
     createModelItem() {
       return {
-        text: this.$options.i18n.create_new_model,
+        text: s__('MlModelRegistry|Create new model'),
         href: this.createModelPath,
       };
     },
     mlflowUsageModalItem() {
       return {
-        text: this.$options.i18n.import_mlflow,
+        text: s__('MlModelRegistry|Import model using MLflow'),
       };
     },
   },
@@ -136,15 +138,18 @@ export default {
       this.$apollo.queries.models.fetchMore({});
     },
     handleError(error) {
-      this.errorMessage = makeLoadModelErrorMessage(error.message);
+      this.errorMessage = sprintf(
+        s__('MlModelRegistry|Failed to load models with error: %{message}'),
+        { message: error.message },
+      );
       Sentry.captureException(error);
     },
   },
   i18n: {
-    create_import_title: s__('MlModelRegistry|Create/Import'),
-    create_new_model: s__('MlModelRegistry|Create new model'),
-    import_mlflow: s__('MlModelRegistry|Import model using MLflow'),
-    ...i18n,
+    createImportTitle: s__('MlModelRegistry|Create/Import model'),
+    titleLabel: s__('MlModelRegistry|Model registry'),
+    modelsCountLabel: (modelCount) =>
+      n__('MlModelRegistry|%d model', 'MlModelRegistry|%d models', modelCount),
   },
   sortableFields: BASE_SORT_FIELDS,
   docHref: helpPagePath('user/project/ml/model_registry/_index.md'),
@@ -164,7 +169,7 @@ export default {
     <title-area>
       <template #title>
         <div class="gl-flex gl-grow gl-items-center">
-          <span>{{ $options.i18n.TITLE_LABEL }}</span>
+          <span>{{ $options.i18n.titleLabel }}</span>
         </div>
       </template>
       <template #metadata-models-count>
@@ -176,7 +181,7 @@ export default {
       <template #right-actions>
         <gl-disclosure-dropdown
           v-if="canWriteModelRegistry"
-          :toggle-text="$options.i18n.create_import_title"
+          :toggle-text="$options.i18n.createImportTitle"
           toggle-class="gl-w-full"
           data-testid="create-model-button"
           variant="confirm"
@@ -197,7 +202,8 @@ export default {
     <searchable-table
       show-search
       :page-info="pageInfo"
-      :models="items"
+      :items="items"
+      :table="modelsTableComponent"
       :error-message="errorMessage"
       :is-loading="isLoading"
       :sortable-fields="$options.sortableFields"

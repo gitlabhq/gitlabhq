@@ -2,7 +2,7 @@
 
 require 'yaml'
 
-class Database
+module Database
   class QueryAnalyzers
     attr_reader :analyzers
 

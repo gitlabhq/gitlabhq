@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Key, :mailer do
+RSpec.describe Key, :mailer, feature_category: :system_access do
   it_behaves_like 'having unique enum values'
 
   describe "Associations" do

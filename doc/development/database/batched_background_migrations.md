@@ -586,7 +586,7 @@ as the batching strategy.
 
    {{< alert type="note" >}}
 
-For EE migrations that define `scope_to`, ensure the module extends `ActiveSupport::Concern`.
+   For EE migrations that define `scope_to`, ensure the module extends `ActiveSupport::Concern`.
    Otherwise, records are processed without taking the scope into consideration.
 
    {{< /alert >}}
@@ -1240,7 +1240,7 @@ background migration.
 
    {{< alert type="note" >}}
 
-Job classes inherit from `BatchedMigrationJob` to ensure they are
+   Job classes inherit from `BatchedMigrationJob` to ensure they are
    correctly handled by the batched migration framework. Any subclass of
    `BatchedMigrationJob` is initialized with the necessary arguments to
    execute the batch, and a connection to the tracking database.
@@ -1320,7 +1320,7 @@ Job classes inherit from `BatchedMigrationJob` to ensure they are
 
    {{< alert type="note" >}}
 
-When queuing a batched background migration, you need to restrict
+   When queuing a batched background migration, you need to restrict
    the schema to the database where you make the actual changes.
    In this case, we are updating `routes` records, so we set
    `restrict_gitlab_migration gitlab_schema: :gitlab_main`. If, however,
@@ -1373,7 +1373,7 @@ When queuing a batched background migration, you need to restrict
 
    {{< alert type="note" >}}
 
-If the batched background migration is not finished, the system will
+   If the batched background migration is not finished, the system will
    execute the batched background migration inline. If you don't want
    to see this behavior, you need to pass `finalize: false`.
 

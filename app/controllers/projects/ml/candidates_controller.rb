@@ -15,11 +15,14 @@ module Projects
 
       def destroy
         @experiment = @candidate.experiment
-        @candidate.destroy!
 
-        redirect_to project_ml_experiment_path(@project, @experiment.iid),
-          status: :found,
-          notice: s_("MlExperimentTracking|Run removed")
+        if @candidate.destroy
+          flash[:notice] = s_("MlExperimentTracking|Run removed")
+        else
+          flash[:alert] = s_("MlExperimentTracking|Failed to remove run")
+        end
+
+        redirect_to project_ml_experiment_path(@project, @candidate.experiment.iid), status: :found
       end
 
       private

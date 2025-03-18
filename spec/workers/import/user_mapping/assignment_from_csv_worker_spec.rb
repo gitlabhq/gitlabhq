@@ -30,7 +30,7 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
       allow(Upload).to receive(:find_by_id).and_return(fake_upload)
 
       allow_next_instance_of(Import::SourceUsers::BulkReassignFromCsvService) do |service|
-        allow(service).to receive(:find_source_user).and_return(source_user)
+        allow(service).to receive(:find_source_user).and_return(source_user.reload)
       end
     end
 
@@ -43,6 +43,21 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
     end
   end
 
+  before do
+    allow_next_instance_of(Import::SourceUsers::BulkReassignFromCsvService) do |service|
+      allow(service).to receive(:execute).and_return(ServiceResponse.success(
+        payload: {
+          stats: {
+            matched: 2,
+            failed: 1,
+            skipped: 10
+          },
+          failures_csv_data: "A,B\n1,2\n"
+        }
+      ))
+    end
+  end
+
   it 'calls the reassignment service' do
     expect(Import::SourceUsers::BulkReassignFromCsvService).to receive(:new)
       .with(current_user, group, upload)
@@ -51,7 +66,18 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
     perform
   end
 
-  it 'sends an email summary' # https://gitlab.com/gitlab-org/gitlab/-/issues/458841
+  it 'sends an email summary' do
+    expect(Notify).to receive(:bulk_import_csv_user_mapping).with(
+      current_user.id,
+      group.id,
+      success_count: 2,
+      failed_count: 1,
+      skipped_count: 10,
+      failures_csv_data: "A,B\n1,2\n"
+    ).and_call_original
+
+    perform
+  end
 
   it 'clears the upload' do
     expect { perform }
@@ -80,18 +106,27 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
         .with(message: 'something went wrong')
     end
 
-    it 'sends an email summary' # https://gitlab.com/gitlab-org/gitlab/-/issues/458841
+    it 'sends an email to notify the user of the failure' do
+      expect(Notify).to receive(:csv_placeholder_reassignment_failed).with(current_user.id, group.id).and_call_original
+
+      perform
+    end
   end
 
   context 'when retries are exhausted' do
     it 'clears the upload' do
-      job = { 'args' => [nil, nil, upload.id], 'jid' => '123' }
+      job = { 'args' => job_args, 'jid' => '123' }
 
       expect { described_class.sidekiq_retries_exhausted_block.call(job) }
         .to change { Upload.exists?(upload.id) }.from(true).to(false)
     end
 
-    it 'sends an email summary' # https://gitlab.com/gitlab-org/gitlab/-/issues/458841
+    it 'sends an email to notify the user of the failure' do
+      expect(Notify).to receive(:csv_placeholder_reassignment_failed).with(current_user.id, group.id).and_call_original
+
+      job = { 'args' => job_args, 'jid' => '123' }
+      described_class.sidekiq_retries_exhausted_block.call(job)
+    end
   end
 
   context 'when the upload is missing' do
@@ -108,6 +143,10 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
         .with(message: "No reassignment CSV upload found for <Group id=#{group.id}>")
     end
 
-    it 'sends an email summary' # https://gitlab.com/gitlab-org/gitlab/-/issues/458841
+    it 'sends an email to notify the user of the failure' do
+      expect(Notify).to receive(:csv_placeholder_reassignment_failed).with(current_user.id, group.id).and_call_original
+
+      perform
+    end
   end
 end

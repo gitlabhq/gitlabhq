@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSettingsHelper do
+RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   include Devise::Test::ControllerHelpers
 
   let_it_be(:current_user) { build_stubbed(:admin) }
@@ -77,6 +77,8 @@ RSpec.describe ApplicationSettingsHelper do
           members_delete_limit downstream_pipeline_trigger_limit_per_project_user_sha
           group_api_limit group_projects_api_limit groups_api_limit project_api_limit projects_api_limit
           user_contributed_projects_api_limit user_projects_api_limit user_starred_projects_api_limit
+          users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys
+          users_api_limit_ssh_key users_api_limit_gpg_keys users_api_limit_gpg_key
           group_shared_groups_api_limit
           group_invited_groups_api_limit
           project_invited_groups_api_limit
@@ -442,6 +444,42 @@ RSpec.describe ApplicationSettingsHelper do
               'and snippets. Also, profiles are only visible to authenticated users.'
           )
         )
+      end
+    end
+  end
+
+  describe '#vscode_extension_marketplace_settings_view' do
+    let(:feature_flag) { true }
+    let(:application_setting) { build(:application_setting) }
+    let(:vscode_extension_marketplace) { { "enabled" => false } }
+
+    before do
+      stub_feature_flags(vscode_extension_marketplace_settings: feature_flag)
+
+      application_setting.vscode_extension_marketplace = vscode_extension_marketplace
+      helper.instance_variable_set(:@application_setting, application_setting)
+    end
+
+    context 'with flag on' do
+      it 'returns hash of view properties' do
+        expect(helper.vscode_extension_marketplace_settings_view).to match({
+          title: _('VS Code Extension Marketplace'),
+          description: _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.'),
+          view_model: {
+            initialSettings: vscode_extension_marketplace,
+            presets: [
+              hash_including("key" => "open_vsx")
+            ]
+          }
+        })
+      end
+    end
+
+    context 'with flag off' do
+      let(:feature_flag) { false }
+
+      it 'returns nil' do
+        expect(helper.vscode_extension_marketplace_settings_view).to be_nil
       end
     end
   end

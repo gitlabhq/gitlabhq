@@ -28,8 +28,22 @@ class WorkItem < Issue
     foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> {
-    includes(:author, ::Gitlab::Issues::TypeAssociationGetter.call, project: :project_feature)
+    includes(:author, :work_item_type, project: :project_feature)
   }
+
+  scope :within_timeframe, ->(start_date, due_date) do
+    date_filtered_issue_ids = ::WorkItems::DatesSource
+                                .select('issue_id')
+                                .where('start_date IS NOT NULL OR due_date IS NOT NULL')
+                                # Require the namespace_ids CTE from by_parent to be present when filtering by timeframe
+                                # for performance reasons.
+                                # see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181904
+                                .where('namespace_id IN (SELECT id FROM namespace_ids)')
+                                .where('start_date IS NULL OR start_date <= ?', due_date)
+                                .where('due_date IS NULL OR due_date >= ?', start_date)
+
+    joins("INNER JOIN (#{date_filtered_issue_ids.to_sql}) AS filtered_dates ON issues.id = filtered_dates.issue_id")
+  end
 
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
@@ -146,10 +160,17 @@ class WorkItem < Issue
     %w[Issue WorkItem]
   end
 
-  def widgets
-    strong_memoize(:widgets) do
-      work_item_type.widgets(resource_parent).map do |widget_definition|
-        widget_definition.widget_class.new(self, widget_definition: widget_definition)
+  def widgets(except_types: [], only_types: nil)
+    raise ArgumentError, 'Only one filter is allowed' if only_types.present? && except_types.present?
+
+    strong_memoize_with(:widgets, only_types, except_types) do
+      except_types = Array.wrap(except_types)
+
+      widget_definitions.keys.filter_map do |type|
+        next if except_types.include?(type)
+        next if only_types&.exclude?(type)
+
+        get_widget(type)
       end
     end
   end
@@ -157,12 +178,20 @@ class WorkItem < Issue
   # Returns widget object if available
   # type parameter can be a symbol, for example, `:description`.
   def get_widget(type)
-    widgets.find do |widget|
-      widget.instance_of?(WorkItems::Widgets.const_get(type.to_s.camelize, false))
+    strong_memoize_with(type) do
+      break unless widget_definitions.key?(type.to_sym)
+
+      widget_definitions[type].build_widget(self)
     end
-  rescue NameError
-    nil
   end
+
+  def widget_definitions
+    work_item_type
+      .widgets(resource_parent)
+      .index_by(&:widget_type)
+      .symbolize_keys
+  end
+  strong_memoize_attr :widget_definitions
 
   def ancestors
     hierarchy.ancestors(hierarchy_order: :asc)
@@ -232,6 +261,12 @@ class WorkItem < Issue
     work_item_type.supports_time_tracking?(resource_parent)
   end
 
+  def supports_parent?
+    return false if work_item_type.issue?
+
+    hierarchy_supports_parent?
+  end
+
   def due_date
     dates_source&.due_date || read_attribute(:due_date)
   end
@@ -274,17 +309,16 @@ class WorkItem < Issue
   end
 
   def hierarchy(options = {})
-    type_column_name = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
     base = self.class.where(id: id)
-    base = base.where(type_column_name => attributes[type_column_name.to_s]) if options[:same_type]
-    base = base.where(type_column_name => options[:different_type_id]) if options[:different_type_id]
+    base = base.where(work_item_type_id: work_item_type_id) if options[:same_type]
+    base = base.where(work_item_type_id: options[:different_type_id]) if options[:different_type_id]
 
     ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end
 
   override :allowed_work_item_type_change
   def allowed_work_item_type_change
-    return unless correct_work_item_type_id_changed?
+    return unless work_item_type_id_changed?
 
     child_links = WorkItems::ParentLink.for_parents(id)
     parent_link = ::WorkItems::ParentLink.find_by(work_item: self)
@@ -314,9 +348,7 @@ class WorkItem < Issue
   def validate_child_restrictions(child_links)
     return if child_links.empty?
 
-    type_id_column = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
-
-    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[type_id_column]).distinct
+    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[:work_item_type_id]).distinct
     restrictions = ::WorkItems::HierarchyRestriction.where(
       parent_type_id: work_item_type_id,
       child_type_id: child_type_ids
@@ -339,7 +371,7 @@ class WorkItem < Issue
     return unless restriction&.maximum_depth
 
     children_with_new_type = self.class.where(id: child_links.select(:work_item_id))
-      .where(correct_work_item_type_id: correct_work_item_type_id)
+      .where(work_item_type_id: work_item_type_id)
     max_child_depth = ::Gitlab::WorkItems::WorkItemHierarchy.new(children_with_new_type).max_descendants_depth.to_i
 
     ancestor_depth =
@@ -367,6 +399,10 @@ class WorkItem < Issue
          (issue_links.source_id = issues.id AND issue_links.target_id = #{id}#{type_condition})
          OR
          (issue_links.target_id = issues.id AND issue_links.source_id = #{id}#{type_condition})")
+  end
+
+  def hierarchy_supports_parent?
+    ::WorkItems::HierarchyRestriction.find_by_child_type_id(work_item_type_id).present?
   end
 end
 

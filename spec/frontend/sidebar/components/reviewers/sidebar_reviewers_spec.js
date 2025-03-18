@@ -1,9 +1,9 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarReviewers from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
@@ -21,8 +21,10 @@ describe('sidebar reviewers', () => {
   let mediator;
   let axiosMock;
 
+  const findAssignButton = () => wrapper.findByTestId('sidebar-reviewers-assign-button');
+
   const createComponent = (props) => {
-    wrapper = shallowMount(SidebarReviewers, {
+    wrapper = shallowMountExtended(SidebarReviewers, {
       apolloProvider: apolloMock,
       propsData: {
         issuableIid: '1',
@@ -67,7 +69,7 @@ describe('sidebar reviewers', () => {
     ${'shows'}         | ${true}   | ${true}
     ${'does not show'} | ${false}  | ${false}
   `('$copy Assign button when canUpdate is $canUpdate', ({ canUpdate, expected }) => {
-    wrapper = shallowMount(SidebarReviewers, {
+    wrapper = shallowMountExtended(SidebarReviewers, {
       apolloProvider: apolloMock,
       propsData: {
         issuableIid: '1',
@@ -93,7 +95,7 @@ describe('sidebar reviewers', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="sidebar-reviewers-assign-buton"]').exists()).toBe(expected);
+    expect(findAssignButton().exists()).toBe(expected);
   });
 
   it('calls the mediator when it saves the reviewers', () => {

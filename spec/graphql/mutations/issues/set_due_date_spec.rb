@@ -36,7 +36,7 @@ RSpec.describe Mutations::Issues::SetDueDate, feature_category: :api do
         let(:due_date) { nil }
 
         it 'updates due date to be nil' do
-          expect(mutated_issue.due_date).to be nil
+          expect(mutated_issue.due_date).to be_nil
         end
       end
 
@@ -44,7 +44,7 @@ RSpec.describe Mutations::Issues::SetDueDate, feature_category: :api do
         let(:due_date) { 'test' }
 
         it 'updates due date to be nil' do
-          expect(mutated_issue.due_date).to be nil
+          expect(mutated_issue.due_date).to be_nil
         end
       end
     end

@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { LAYER_VIEW, STAGE_VIEW } from '~/ci/pipeline_details/graph/constants';
 import PipelineGraph from '~/ci/pipeline_details/graph/components/graph_component.vue';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
@@ -14,7 +14,6 @@ import { generateResponse, pipelineWithUpstreamDownstream } from '../mock_data';
 describe('graph component', () => {
   let wrapper;
 
-  const findDownstreamColumn = () => wrapper.findByTestId('downstream-pipelines');
   const findLinkedColumns = () => wrapper.findAllComponents(LinkedPipelinesColumn);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findStageColumns = () => wrapper.findAllComponents(StageColumnComponent);
@@ -43,7 +42,7 @@ describe('graph component', () => {
 
   const createComponent = ({
     data = {},
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
     props = {},
     stubOverride = {},
   } = {}) => {
@@ -123,8 +122,10 @@ describe('graph component', () => {
   });
 
   describe('when linked pipelines are not present', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({ mountFn: mountExtended });
+
+      await nextTick();
     });
 
     it('should not render a linked pipelines column', () => {
@@ -133,11 +134,13 @@ describe('graph component', () => {
   });
 
   describe('when linked pipelines are present', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({
         mountFn: mountExtended,
         props: { pipeline: pipelineWithUpstreamDownstream(mockPipelineResponse) },
       });
+
+      await nextTick();
     });
 
     it('should render linked pipelines columns', () => {
@@ -175,11 +178,13 @@ describe('graph component', () => {
       });
     });
 
-    it('filters pipelines spawned from the same trigger job', () => {
-      // The mock data has one downstream with `retried: true and one
-      // with retried false. We filter the `retried: true` out so we
-      // should only pass one downstream
-      expect(findDownstreamColumn().props().linkedPipelines).toHaveLength(1);
+    it('filters pipelines spawned from the same trigger job', async () => {
+      const DownstreamColumn = (
+        await import('~/ci/pipeline_details/graph/components/linked_pipelines_column.vue')
+      ).default;
+
+      expect(wrapper.findComponent(DownstreamColumn).exists()).toBe(true);
+      expect(wrapper.findComponent(DownstreamColumn).props('linkedPipelines')).toHaveLength(1);
     });
   });
 

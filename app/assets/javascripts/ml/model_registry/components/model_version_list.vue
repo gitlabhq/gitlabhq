@@ -1,7 +1,7 @@
 <script>
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
 import getModelVersionsQuery from '../graphql/queries/get_model_versions.query.graphql';
 import {
   GRAPHQL_PAGE_SIZE,
@@ -51,6 +51,9 @@ export default {
     },
   },
   computed: {
+    modelVersionsTableComponent() {
+      return ModelVersionsTable;
+    },
     isLoading() {
       return this.$apollo.queries.modelVersions.loading;
     },
@@ -81,18 +84,24 @@ export default {
       this.$apollo.queries.modelVersions.fetchMore({});
     },
     handleError(error) {
-      this.errorMessage = makeLoadVersionsErrorMessage(error.message);
+      this.errorMessage = sprintf(
+        s__('MlModelRegistry|Failed to load model versions with error: %{message}'),
+        {
+          message: error.message,
+        },
+      );
+
       Sentry.captureException(error);
     },
   },
   sortableFields: [
     {
       orderBy: LIST_KEY_VERSION,
-      label: s__('MlExperimentTracking|Version'),
+      label: s__('MlModelRegistry|Version'),
     },
     {
       orderBy: LIST_KEY_CREATED_AT,
-      label: s__('MlExperimentTracking|Created'),
+      label: s__('MlModelRegistry|Created'),
     },
   ],
   emptyState: {
@@ -106,7 +115,8 @@ export default {
   <searchable-table
     :show-search="showSearch"
     :page-info="pageInfo"
-    :model-versions="versions"
+    :items="versions"
+    :table="modelVersionsTableComponent"
     :error-message="errorMessage"
     :is-loading="isLoading"
     :sortable-fields="$options.sortableFields"

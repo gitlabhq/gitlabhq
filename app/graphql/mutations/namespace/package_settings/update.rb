@@ -134,3 +134,5 @@ module Mutations
     end
   end
 end
+
+Mutations::Namespace::PackageSettings::Update.prepend_mod

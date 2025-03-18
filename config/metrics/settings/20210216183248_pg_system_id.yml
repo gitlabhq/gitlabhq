@@ -2,7 +2,7 @@
 data_category: optional
 key_path: database.pg_system_id
 description: TBD
-product_group: distribution_deploy
+product_group: self_managed
 value_type: number
 status: active
 time_frame: all

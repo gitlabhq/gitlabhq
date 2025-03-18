@@ -7,6 +7,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
   describe 'associations' do
+    it { is_expected.to have_one(:trigger).through(:pipeline) }
     it { is_expected.to belong_to(:trigger_request) }
   end
 
@@ -16,7 +17,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
     it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
     it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
-    it { is_expected.to delegate_method(:trigger_short_token).to(:trigger_request) }
   end
 
   describe '#clone' do
@@ -89,7 +89,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let(:ignore_accessors) do
         %i[type namespace lock_version target_url base_tags trace_sections
            commit_id deployment erased_by_id project_id project_mirror
-           runner_id taggings tags trigger_request_id
+           runner_id taggings tags trigger_request_id trigger trigger_id
            user_id auto_canceled_by_id retried failure_reason
            sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store
            metadata runner_manager_build runner_manager runner_session trace_chunks
@@ -195,7 +195,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           Ci::Build.attribute_names.map(&:to_sym) +
           Ci::Build.attribute_aliases.keys.map(&:to_sym) +
           Ci::Build.reflect_on_all_associations.map(&:name) +
-          [:tag_list, :needs_attributes, :job_variables_attributes, :id_tokens, :interruptible]
+          [:tag_list, :needs_attributes, :job_variables_attributes, :id_tokens, :interruptible, :trigger]
 
         current_accessors.uniq!
 
@@ -675,6 +675,28 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
         let(:accessibility) { 'private' }
 
         it { expect(subject).to eq([]) }
+      end
+    end
+  end
+
+  describe '#trigger_short_token' do
+    let_it_be(:pipeline) { create(:ci_pipeline, :triggered, project: project) }
+    let_it_be(:stage) { create(:ci_stage, project: project, pipeline: pipeline, name: 'test') }
+    let_it_be(:processable) { create(:ci_build, :triggered, stage_id: stage.id, pipeline: pipeline) }
+
+    it 'delegates to trigger' do
+      expect(processable.trigger).to receive(:short_token)
+      processable.trigger_short_token
+    end
+
+    context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+      before do
+        stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+      end
+
+      it 'delegates to trigger_request' do
+        expect(processable.trigger_request).to receive(:trigger_short_token)
+        processable.trigger_short_token
       end
     end
   end

@@ -565,6 +565,7 @@ class ProjectPolicy < BasePolicy
     enable :create_container_image
     enable :update_container_image
     enable :destroy_container_image
+    enable :destroy_container_image_tag
     enable :create_environment
     enable :update_environment
     enable :destroy_environment
@@ -784,6 +785,7 @@ class ProjectPolicy < BasePolicy
 
   rule { container_registry_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:container_image))
+    prevent :destroy_container_image_tag
   end
 
   rule { anonymous & ~public_project }.prevent_all

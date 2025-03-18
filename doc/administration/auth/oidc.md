@@ -112,7 +112,7 @@ The OpenID Connect provider provides you with a client's details and secret for 
 
    {{< alert type="note" >}}
 
-For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
+   For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
 
    {{< /alert >}}
 
@@ -143,7 +143,7 @@ For more information on using multiple identity providers with OIDC, see [issue 
 
    {{< alert type="note" >}}
 
-For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+   For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
 
    {{< /alert >}}
 
@@ -155,6 +155,15 @@ For more information on each configuration option, refer to the [OmniAuth OpenID
      Icons for the major social login platforms are built into GitLab,
      but you can override these icons by specifying this parameter. GitLab accepts both
      local paths and absolute URLs.
+     GitLab includes icons for most major social login platforms,
+     but you can override these icons by specifying an external URL or
+     an absolute or relative path to your own icon file.
+     - For local absolute paths, configure the provider settings as `icon: <path>/<to>/<your-icon>`.
+       - Store the icon file in `/opt/gitlab/embedded/service/gitlab-rails/public/<path>/<to>/<your-icon>`.
+       - Access the icon file at `https://gitlab.example/<path>/<to>/<your-icon>`.
+     - For local relative paths, configure the provider settings as `icon: <your-icon>`.
+       - Store the icon file in `/opt/gitlab/embedded/service/gitlab-rails/public/images/<your-icon>`.
+       - Access the icon file at `https://gitlab.example.com/images/<your-icon>`.
    - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect
      provider (for example, `https://example.com/auth/realms/your-realm`).
      If this value is not provided, the URL is constructed from `client_options`
@@ -824,7 +833,7 @@ Example configuration for self-compiled installations (file path: `config/gitlab
       label: 'Casdoor', # optional label for login button, defaults to "Openid Connect"
       args: {
         name: 'openid_connect',
-        scope: ['openid','profile','email'],
+        scope: ['openid', 'profile', 'email'],
         response_type: 'code',
         issuer: 'https://<CASDOOR_HOSTNAME>',
         discovery: true,
@@ -910,7 +919,7 @@ For self-compiled installations:
       args: {
         name: 'openid_connect',
         strategy_class: "OmniAuth::Strategies::OpenIDConnect",
-        scope: ['openid','profile','email'],
+        scope: ['openid', 'profile', 'email'],
         response_type: 'code',
         issuer: '<your_oidc_url>',
         discovery: true,
@@ -931,7 +940,7 @@ For self-compiled installations:
       args: {
         name: 'openid_connect_2fa',
         strategy_class: "OmniAuth::Strategies::OpenIDConnect",
-        scope: ['openid','profile','email'],
+        scope: ['openid', 'profile', 'email'],
         response_type: 'code',
         issuer: '<your_oidc_url>',
         discovery: true,

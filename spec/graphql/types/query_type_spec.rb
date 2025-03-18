@@ -132,7 +132,20 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
     subject { described_class.fields['timelogs'] }
 
     it 'returns timelogs' do
-      is_expected.to have_graphql_arguments(:startDate, :endDate, :startTime, :endTime, :username, :projectId, :groupId, :after, :before, :first, :last, :sort)
+      is_expected.to have_graphql_arguments(
+        :startDate,
+        :endDate,
+        :startTime,
+        :endTime,
+        :username,
+        :projectId,
+        :groupId,
+        :after,
+        :before,
+        :first,
+        :last,
+        :sort
+      )
       is_expected.to have_graphql_type(Types::TimelogType.connection_type)
       is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
     end
@@ -175,6 +188,69 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_type(GraphQL::Types::Boolean.to_non_null_type)
       is_expected.to have_graphql_arguments(:name)
       is_expected.to have_graphql_resolver(Resolvers::FeatureFlagResolver)
+    end
+  end
+
+  describe 'issues field' do
+    subject { described_class.fields['issues'] }
+
+    it "finds issues" do
+      expected_fields = %i[
+        after
+        assigneeId
+        assigneeUsername
+        assigneeUsernames
+        assigneeWildcardId
+        authorUsername
+        before
+        closedAfter
+        closedBefore
+        confidential
+        createdAfter
+        createdBefore
+        crmContactId
+        crmOrganizationId
+        dueAfter
+        dueBefore
+        first
+        iid
+        iids
+        in
+        includeArchived
+        labelName
+        last
+        milestoneTitle
+        milestoneWildcardId
+        myReactionEmoji
+        not
+        or
+        search
+        sort
+        state
+        subscribed
+        types
+        updatedAfter
+        updatedBefore
+      ]
+
+      if Gitlab.ee?
+        expected_fields += %i[
+          epicId
+          epicWildcardId
+          healthStatusFilter
+          includeSubepics
+          iterationCadenceId
+          iterationId
+          iterationTitle
+          iterationWildcardId
+          weight
+          weightWildcardId
+          customField
+        ]
+      end
+
+      is_expected.to have_graphql_arguments(*expected_fields)
+      is_expected.to have_graphql_type(Types::IssueType.connection_type)
     end
   end
 end

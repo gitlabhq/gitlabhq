@@ -1,0 +1,9 @@
+---
+name: optimized_commit_storage
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517497
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181958
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520259
+milestone: '17.10'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

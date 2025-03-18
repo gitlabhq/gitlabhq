@@ -77,4 +77,28 @@ RSpec.describe BlameHelper, feature_category: :source_code_management do
 
     it { is_expected.to eq "/#{project.full_path}/-/blame/#{id}/streaming" }
   end
+
+  describe '#blame_preferences' do
+    subject { helper.blame_preferences(project) }
+
+    let_it_be(:project) { build_stubbed(:project) }
+
+    let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: blob) }
+
+    before do
+      allow(project).to receive(:repository).and_return(repo_double)
+    end
+
+    context 'when there is no ignore revs file' do
+      let(:blob) { nil }
+
+      it { is_expected.to eq(has_revs_file: 'false') }
+    end
+
+    context 'when there is a revs file' do
+      let(:blob) { 'not_nil' }
+
+      it { is_expected.to eq(has_revs_file: 'true') }
+    end
+  end
 end

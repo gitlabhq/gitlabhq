@@ -1,11 +1,27 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
+import waitForPromises from 'helpers/wait_for_promises';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import CommitsList from '~/commits';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { sanitize } from '~/lib/dompurify';
 import Pager from '~/pager';
+
+jest.mock('~/lib/dompurify', () => ({
+  sanitize: jest.fn().mockImplementation((html) => html),
+}));
+
+jest.mock('~/lib/graphql', () => {
+  return () => ({
+    query: jest.fn().mockResolvedValue({
+      data: {
+        project: { repository: { commit: { descriptionHtml: '&#x000A;<p>Description HTML</p>' } } },
+      },
+    }),
+  });
+});
 
 describe('Commits List', () => {
   let commitsList;
@@ -15,8 +31,11 @@ describe('Commits List', () => {
       <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
         <input id="commits-search">
       </form>
-      <ol id="commits-list"></ol>
-      `);
+      <ol id="commits-list">
+        <button class="js-toggle-button" data-commit-id="123">Toggle</button>
+        <div class="js-toggle-content" data-commit-id="123"></div>
+      </ol>
+    `);
     jest.spyOn(Pager, 'init').mockImplementation(() => {});
     commitsList = new CommitsList(25);
   });
@@ -87,6 +106,71 @@ describe('Commits List', () => {
       await commitsList.filterResults();
       expect(ajaxSpy).not.toHaveBeenCalled();
       expect(commitsList.lastSearch).toEqual('');
+    });
+  });
+
+  describe('commit details', () => {
+    const findContentToggleButton = () => document.querySelector('.js-toggle-button');
+    const findLoadingSpinner = () => document.querySelector('.gl-spinner');
+    const findContentElement = () => document.querySelector('.js-toggle-content');
+    let jqueryOnSpy;
+
+    beforeEach(() => {
+      gon.features = { loadCommitDetailsAsync: true };
+      jqueryOnSpy = jest.spyOn($.fn, 'on');
+      commitsList = new CommitsList();
+    });
+
+    it('initializes click handler when feature flag is enabled', () => {
+      commitsList = new CommitsList();
+
+      expect(jqueryOnSpy).toHaveBeenCalledWith('click', '.js-toggle-button', expect.any(Function));
+    });
+
+    it('does not initialize click handler when feature flag is disabled', () => {
+      jqueryOnSpy.mockClear();
+      gon.features = { loadCommitDetailsAsync: false };
+      commitsList = new CommitsList();
+
+      expect(jqueryOnSpy).not.toHaveBeenCalledWith(
+        'click',
+        '.js-toggle-button',
+        expect.any(Function),
+      );
+    });
+
+    describe('when clicking toggle button', () => {
+      let contentElement;
+
+      beforeEach(() => {
+        contentElement = findContentElement();
+      });
+
+      it('fetches and renders commit details', async () => {
+        findContentToggleButton().click();
+
+        expect(findLoadingSpinner()).not.toBe(null);
+
+        await waitForPromises();
+        expect(contentElement.innerHTML).toBe('<p>Description HTML</p>');
+        expect(findLoadingSpinner()).toBe(null);
+      });
+
+      it('sanitizes the content', async () => {
+        findContentToggleButton().click();
+
+        await waitForPromises();
+        expect(sanitize).toHaveBeenCalledWith('<p>Description HTML</p>');
+      });
+
+      it('sets content loaded attribute when details are fetched', async () => {
+        expect(contentElement.dataset.contentLoaded).toBeUndefined();
+        findContentToggleButton().click();
+
+        await waitForPromises();
+        expect(contentElement.dataset.contentLoaded).toBe('true');
+        expect(findLoadingSpinner()).toBe(null);
+      });
     });
   });
 });

@@ -181,6 +181,84 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'when using inputs' do
+      let(:inputs) do
+        {
+          deploy_strategy: 'blue-green',
+          job_stage: 'deploy',
+          test_script: ['echo "test"'],
+          parallel_jobs: 3,
+          allow_failure: true,
+          test_rules: [
+            { if: '$CI_PIPELINE_SOURCE == "web"' }
+          ]
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(
+          File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+        )
+      end
+
+      shared_examples 'sending request using inputs' do
+        shared_examples 'creating a succesful pipeline' do
+          it 'creates a pipeline using inputs' do
+            expect { post_request }.to change { Ci::Pipeline.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:created)
+
+            pipeline = Ci::Pipeline.find(json_response['id'])
+
+            expect(pipeline.builds.map { |b| "#{b.name} #{b.allow_failure}" }).to contain_exactly(
+              'my-job-build 1/3 false', 'my-job-build 2/3 false', 'my-job-build 3/3 false',
+              'my-job-test true', 'my-job-deploy false'
+            )
+          end
+        end
+
+        context 'when passing parameters as JSON' do
+          let(:headers) do
+            { 'Content-Type' => 'application/json' }
+          end
+
+          subject(:post_request) do
+            post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{token}"),
+              headers: headers,
+              params: { ref: 'refs/heads/other-branch', inputs: inputs }.to_json
+          end
+
+          it_behaves_like 'creating a succesful pipeline'
+        end
+
+        context 'when passing parameters as form data' do
+          let(:headers) do
+            { 'Content-Type' => 'application/x-www-form-urlencoded' }
+          end
+
+          subject(:post_request) do
+            post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{token}"),
+              headers: headers,
+              params: { ref: 'refs/heads/other-branch', inputs: inputs.transform_values(&:to_json) }
+          end
+
+          it_behaves_like 'creating a succesful pipeline'
+        end
+      end
+
+      context 'when triggering a pipeline from a trigger token' do
+        let!(:token) { trigger_token }
+
+        it_behaves_like 'sending request using inputs'
+      end
+
+      context 'when triggered from another running job' do
+        let!(:token) { create(:ci_build, :running, project: project, user: user).token }
+
+        it_behaves_like 'sending request using inputs'
+      end
+    end
   end
 
   describe 'GET /projects/:id/triggers' do
@@ -195,6 +273,40 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
         expect(json_response.size).to eq 2
         expect(json_response.dig(0, 'token')).to eq trigger_token
         expect(json_response.dig(1, 'token')).to eq trigger_token_2[0..3]
+      end
+
+      context 'for multiple pipelines and trigger requests' do
+        it 'does not generate N+1 queries' do
+          control = ActiveRecord::QueryRecorder.new { get api("/projects/#{project.id}/triggers", user) }
+
+          trigger3 = create(:ci_trigger, project: project, token: 'trigger_token_3', owner: user2)
+          create(:ci_trigger_request, trigger: trigger3)
+          create(:ci_trigger_request, trigger: trigger3)
+          create(:ci_empty_pipeline, trigger: trigger2, project: project)
+          create(:ci_empty_pipeline, trigger: trigger3, project: project)
+          create(:ci_empty_pipeline, trigger: trigger3, project: project)
+
+          expect { get api("/projects/#{project.id}/triggers", user) }.not_to exceed_query_limit(control)
+        end
+
+        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+          before do
+            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+          end
+
+          it 'does not generate N+1 queries' do
+            control = ActiveRecord::QueryRecorder.new { get api("/projects/#{project.id}/triggers", user) }
+
+            trigger3 = create(:ci_trigger, project: project, token: 'trigger_token_3', owner: user2)
+            create(:ci_trigger_request, trigger: trigger3)
+            create(:ci_trigger_request, trigger: trigger3)
+            create(:ci_empty_pipeline, trigger: trigger2, project: project)
+            create(:ci_empty_pipeline, trigger: trigger3, project: project)
+            create(:ci_empty_pipeline, trigger: trigger3, project: project)
+
+            expect { get api("/projects/#{project.id}/triggers", user) }.not_to exceed_query_limit(control)
+          end
+        end
       end
     end
 

@@ -14,7 +14,7 @@ module Sidebars
       @is_super_sidebar = false
 
       args.each do |key, value|
-        singleton_class.public_send(:attr_reader, key) # rubocop:disable GitlabSecurity/PublicSend
+        singleton_class.attr_reader(key)
         instance_variable_set("@#{key}", value)
       end
 

@@ -17,7 +17,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'cloud-gear'
+          'import'
         end
 
         override :render?

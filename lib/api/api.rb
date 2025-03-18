@@ -220,6 +220,7 @@ module API
         mount ::API::Appearance
         mount ::API::Applications
         mount ::API::Avatar
+        mount ::API::AwardEmoji
         mount ::API::Badges
         mount ::API::Branches
         mount ::API::BulkImports
@@ -272,6 +273,7 @@ module API
         mount ::API::GroupExport
         mount ::API::GroupImport
         mount ::API::GroupPackages
+        mount ::API::GroupPlaceholderReassignments
         mount ::API::GroupVariables
         mount ::API::HelmPackages
         mount ::API::ImportBitbucket
@@ -359,10 +361,6 @@ module API
         mount ::API::Users
         mount ::API::UserCounts
         mount ::API::UserRunners
-        mount ::API::VirtualRegistries::Packages::Maven::Registries
-        mount ::API::VirtualRegistries::Packages::Maven::Upstreams
-        mount ::API::VirtualRegistries::Packages::Maven::Cache::Entries
-        mount ::API::VirtualRegistries::Packages::Maven::Endpoints
         mount ::API::WebCommits
         mount ::API::Wikis
 
@@ -371,7 +369,6 @@ module API
 
       # Keep in alphabetical order
       mount ::API::Admin::Sidekiq
-      mount ::API::AwardEmoji
       mount ::API::Boards
       mount ::API::Ci::Pipelines
       mount ::API::Ci::PipelineSchedules

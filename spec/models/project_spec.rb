@@ -413,11 +413,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    context 'updating cd_cd_settings' do
+    context 'updating ci_cd_settings' do
       it 'does not raise an error' do
         project = create(:project)
 
         expect { project.update!(ci_cd_settings: nil) }.not_to raise_exception
+      end
+    end
+
+    describe '.project_namespace_for' do
+      it 'returns the project namespace for the given id' do
+        project = create(:project)
+        expect(described_class.project_namespace_for(id: project.id)).to eq(project.project_namespace)
+      end
+
+      context 'when project is not found' do
+        it 'returns nil' do
+          expect(described_class.project_namespace_for(id: non_existing_record_id)).to be_nil
+        end
       end
     end
 
@@ -5754,9 +5767,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#predefined_project_variables' do
-    let_it_be(:project) { create(:project, :repository) }
+    let(:project_with_pre_defined_var) { create(:project, :repository) }
 
-    subject { project.predefined_project_variables.to_runner_variables }
+    subject { project_with_pre_defined_var.predefined_project_variables.to_runner_variables }
 
     specify do
       expect(subject).to include(
@@ -5766,7 +5779,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when ci config path is overridden' do
       before do
-        project.update!(ci_config_path: 'random.yml')
+        project_with_pre_defined_var.update!(ci_config_path: 'random.yml')
       end
 
       it do
@@ -6436,16 +6449,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when interval is seven days' do
         let(:data) { { interval: :seven_days } }
-
-        it_behaves_like 'webhook is added to execution list'
-      end
-
-      context 'when feature flag is disabled' do
-        let(:data) { { interval: :thirty_days } }
-
-        before do
-          stub_feature_flags(extended_expiry_webhook_execution_setting: false)
-        end
 
         it_behaves_like 'webhook is added to execution list'
       end
@@ -8191,7 +8194,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:import_export_upload) { create(:import_export_upload, project: project) }
 
       it 'returns nil' do
-        expect(project.import_export_upload_by_user(user)).to be nil
+        expect(project.import_export_upload_by_user(user)).to be_nil
       end
     end
   end
@@ -8225,7 +8228,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when no jira imports' do
       it 'returns nil' do
-        expect(project.latest_jira_import).to be nil
+        expect(project.latest_jira_import).to be_nil
       end
     end
 
@@ -9111,6 +9114,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#glql_load_on_click_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
+      let(:feature_flag) { :glql_load_on_click }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe '#continue_indented_text_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -9138,6 +9151,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
       let(:feature_flag) { :work_items_alpha }
       let(:subject_project) { group_project }
+    end
+  end
+
+  describe '#work_item_status_feature_available?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it "return false" do
+      expect(group_project.work_item_status_feature_available?).to be false
     end
   end
 
@@ -9467,6 +9488,86 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       context 'when project creator is not an owner' do
         it 'includes the project' do
           expect(results).to match_array([other_project, project_of_banned_user])
+        end
+      end
+    end
+  end
+
+  describe '.with_created_and_owned_by_banned_user' do
+    let_it_be(:other_project) { create(:project) }
+
+    subject(:results) { described_class.with_created_and_owned_by_banned_user }
+
+    context 'when project creator is not banned' do
+      let_it_be(:project_of_active_user) { create(:project, creator: create(:user)) }
+
+      it 'does not include the project' do
+        expect(results).to be_empty
+      end
+    end
+
+    context 'when project creator is banned' do
+      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:project_of_banned_user) { create(:project, creator: banned_user) }
+
+      context 'when project creator is also an owner' do
+        let_it_be(:project_auth) do
+          project = project_of_banned_user
+          create(:project_authorization, :owner, user: project.creator, project: project)
+        end
+
+        it 'includes the banned user project' do
+          expect(results).to match_array([project_of_banned_user])
+        end
+      end
+
+      context 'when project creator is not an owner' do
+        it 'does not include the project' do
+          expect(results).not_to be_present
+        end
+      end
+    end
+  end
+
+  describe '.with_active_owners' do
+    subject(:results) { described_class.with_active_owners }
+
+    context 'when the project owner is active' do
+      let_it_be(:project) { create(:project) }
+
+      it 'includes the project' do
+        expect(results).to match_array([project])
+      end
+    end
+
+    context 'when the project owner is banned' do
+      let_it_be(:project) { create(:project) }
+
+      before_all do
+        project.owners.first.ban!
+      end
+
+      it 'does not include the project' do
+        expect(results).not_to be_present
+      end
+
+      context 'when the project has another active owner' do
+        before do
+          project.add_owner(create(:user))
+        end
+
+        it 'includes the project' do
+          expect(results).to match_array([project])
+        end
+      end
+
+      context 'when the project has an active owner that is not human' do
+        before do
+          project.add_owner(create(:user, :project_bot))
+        end
+
+        it 'does not include the project' do
+          expect(results).not_to be_present
         end
       end
     end

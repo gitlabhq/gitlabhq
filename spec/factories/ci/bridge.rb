@@ -25,13 +25,13 @@ FactoryBot.define do
       bridge.project ||= bridge.pipeline.project
 
       if evaluator.downstream.present?
-        bridge.options = bridge.options.to_h.merge(
+        bridge.options = bridge.options.to_h.deep_merge(
           trigger: { project: evaluator.downstream.full_path }
         )
       end
 
       if evaluator.upstream.present?
-        bridge.options = bridge.options.to_h.merge(
+        bridge.options = bridge.options.to_h.deep_merge(
           bridge_needs: { pipeline: evaluator.upstream.full_path }
         )
       end

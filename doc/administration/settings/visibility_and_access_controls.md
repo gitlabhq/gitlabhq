@@ -39,12 +39,12 @@ Prerequisites:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
-1. For **Default project creation protection**, select the desired roles:
+1. For **Default minimum role required to create projects**, select the desired role:
    - No one.
    - Administrators.
    - Owners.
    - Maintainers.
-   - Developers and Maintainers.
+   - Developers.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}

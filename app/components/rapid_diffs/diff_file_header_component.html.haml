@@ -11,10 +11,14 @@
 -#  * toggle file comments
 -#  * submodule compare
 
+- view_title = _('View file @ %{commitSha}') % { commitSha: Commit.truncate_sha(@diff_file.content_sha) }
+- view_href = project_blob_path(@diff_file.repository.project, helpers.tree_join(@diff_file.content_sha, @diff_file.new_path))
+- options_menu_items = [ { "text": "#{view_title}", "href": "#{view_href}" } ].to_json
+
 .rd-diff-file-header{ data: { testid: 'rd-diff-file-header' } }
-  .rd-diff-file-toggle.gl-mr-2<
-    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents') } })
-    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents') } })
+  .rd-diff-file-toggle<
+    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: 'rd-diff-file-toggle-button', data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents') } })
+    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: 'rd-diff-file-toggle-button', data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents') } })
   .rd-diff-file-title
     - if @diff_file.submodule?
       %span{ data: { testid: 'rd-diff-file-header-submodule' } }
@@ -41,10 +45,17 @@
         %small #{@diff_file.a_mode} → #{@diff_file.b_mode}
       - if @diff_file.stored_externally? && @diff_file.external_storage == :lfs
         = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
-  .rd-diff-file-stats
-    %span.rd-lines-added
-      %span>= "+"
-      %span{ "data-testid" => "js-file-addition-line" }= @diff_file.added_lines
-    %span.rd-lines-removed
-      %span>= "&#x2212;".html_safe
-      %span{ "data-testid" => "js-file-deletion-line" }= @diff_file.removed_lines
+  .rd-diff-file-info
+    .rd-diff-file-stats
+      %span.rd-lines-added
+        %span>= "+"
+        %span{ "data-testid" => "js-file-addition-line" }= @diff_file.added_lines
+      %span.rd-lines-removed
+        %span>= "&#x2212;".html_safe
+        %span{ "data-testid" => "js-file-deletion-line" }= @diff_file.removed_lines
+    .rd-diff-file-options-menu
+      .js-options-menu
+        -# <script> here is likely the most effective way to minimize bytes: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
+        %script{ type: "application/json" }
+          = options_menu_items.html_safe
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'ellipsis_v', button_options: { class: 'js-options-button', data: { click: 'toggleOptionsMenu' }, aria: { label: _('Options') } })

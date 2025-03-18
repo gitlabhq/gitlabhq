@@ -705,7 +705,7 @@ Example response:
             "__typename": "WorkItemWidgetHealthStatus"
           },
           {
-            "__typename": "WorkItemWidgetStatus"
+            "__typename": "WorkItemWidgetVerificationStatus"
           },
           {
             "__typename": "WorkItemWidgetNotifications"

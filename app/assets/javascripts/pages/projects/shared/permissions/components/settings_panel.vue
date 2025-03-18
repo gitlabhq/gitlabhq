@@ -73,7 +73,7 @@ export default {
     ),
     packageRegistryLabel: s__('ProjectSettings|Package registry'),
     packageRegistryForEveryoneLabel: s__(
-      'ProjectSettings|Allow anyone to pull from Package Registry',
+      'ProjectSettings|Allow anyone to pull from package registry',
     ),
     modelExperimentsLabel: s__('ProjectSettings|Model experiments'),
     modelExperimentsHelpText: s__(
@@ -573,12 +573,14 @@ export default {
         ref="project-visibility-settings"
         :help-path="visibilityHelpPath"
         :label="s__('ProjectSettings|Project visibility')"
+        label-for="project_visibility_level"
         :help-text="
           s__('ProjectSettings|Manage who can see the project in the public access directory.')
         "
       >
         <div class="project-feature-controls gl-mx-0 gl-my-3 gl-flex gl-items-center">
           <gl-form-select
+            id="project_visibility_level"
             v-model="visibilityLevel"
             :disabled="!canChangeVisibilityLevel"
             name="project[visibility_level]"
@@ -654,6 +656,7 @@ export default {
         ref="issues-settings"
         :help-path="issuesHelpPath"
         :label="$options.i18n.issuesLabel"
+        label-for="issues_access_level"
         :help-text="
           s__(
             'ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project.',
@@ -661,6 +664,7 @@ export default {
         "
       >
         <project-feature-setting
+          id="issues_access_level"
           v-model="issuesAccessLevel"
           :label="$options.i18n.issuesLabel"
           :options="featureAccessLevelOptions"
@@ -687,9 +691,11 @@ export default {
       <project-setting-row
         ref="repository-settings"
         :label="$options.i18n.repositoryLabel"
+        label-for="repository_access_level"
         :help-text="repositoryHelpText"
       >
         <project-feature-setting
+          id="repository_access_level"
           v-model="repositoryAccessLevel"
           :label="$options.i18n.repositoryLabel"
           :options="featureAccessLevelOptions"
@@ -701,9 +707,11 @@ export default {
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"
+          label-for="merge_requests_access_level"
           :help-text="s__('ProjectSettings|Submit changes to be merged upstream.')"
         >
           <project-feature-setting
+            id="merge_requests_access_level"
             v-model="mergeRequestsAccessLevel"
             :label="$options.i18n.mergeRequestsLabel"
             :options="repoFeatureAccessLevelOptions"
@@ -715,9 +723,11 @@ export default {
         <project-setting-row
           ref="fork-settings"
           :label="$options.i18n.forksLabel"
+          label-for="forking_access_level"
           :help-text="s__('ProjectSettings|Users can copy the repository to a new project.')"
         >
           <project-feature-setting
+            id="forking_access_level"
             v-model="forkingAccessLevel"
             :label="$options.i18n.forksLabel"
             :options="featureAccessLevelOptions"
@@ -764,6 +774,7 @@ export default {
         <project-setting-row
           ref="pipeline-settings"
           :label="$options.i18n.ciCdLabel"
+          label-for="builds_access_level"
           :help-text="
             s__(
               'ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations.',
@@ -771,6 +782,7 @@ export default {
           "
         >
           <project-feature-setting
+            id="builds_access_level"
             v-model="buildsAccessLevel"
             :label="$options.i18n.ciCdLabel"
             :options="repoFeatureAccessLevelOptions"
@@ -785,6 +797,7 @@ export default {
         ref="container-registry-settings"
         :help-path="registryHelpPath"
         :label="$options.i18n.containerRegistryLabel"
+        label-for="container_registry_access_level"
         :help-text="
           s__('ProjectSettings|Every project can have its own space to store its Docker images')
         "
@@ -803,6 +816,7 @@ export default {
           </gl-sprintf>
         </div>
         <project-feature-setting
+          id="container_registry_access_level"
           v-model="containerRegistryAccessLevel"
           :options="featureAccessLevelOptions"
           :disabled-select-input="isProjectPrivate"
@@ -813,9 +827,11 @@ export default {
       <project-setting-row
         ref="analytics-settings"
         :label="$options.i18n.analyticsLabel"
+        label-for="analytics_access_level"
         :help-text="s__('ProjectSettings|View project analytics.')"
       >
         <project-feature-setting
+          id="analytics_access_level"
           v-model="analyticsAccessLevel"
           :label="$options.i18n.analyticsLabel"
           :options="featureAccessLevelOptions"
@@ -827,9 +843,11 @@ export default {
         v-if="requirementsAvailable"
         ref="requirements-settings"
         :label="$options.i18n.requirementsLabel"
+        label-for="requirements_access_level"
         :help-text="s__('ProjectSettings|Requirements management system.')"
       >
         <project-feature-setting
+          id="requirements_access_level"
           v-model="requirementsAccessLevel"
           :label="$options.i18n.requirementsLabel"
           :options="featureAccessLevelOptions"
@@ -839,9 +857,11 @@ export default {
       </project-setting-row>
       <project-setting-row
         :label="$options.i18n.securityAndComplianceLabel"
+        label-for="security_and_compliance_access_level"
         :help-text="s__('ProjectSettings|Security and compliance for this project.')"
       >
         <project-feature-setting
+          id="security_and_compliance_access_level"
           v-model="securityAndComplianceAccessLevel"
           :label="$options.i18n.securityAndComplianceLabel"
           :options="featureAccessLevelOptions"
@@ -852,9 +872,11 @@ export default {
       <project-setting-row
         ref="wiki-settings"
         :label="$options.i18n.wikiLabel"
+        label-for="wiki_access_level"
         :help-text="s__('ProjectSettings|Pages for project documentation.')"
       >
         <project-feature-setting
+          id="wiki_access_level"
           v-model="wikiAccessLevel"
           :label="$options.i18n.wikiLabel"
           :options="featureAccessLevelOptions"
@@ -865,9 +887,11 @@ export default {
       <project-setting-row
         ref="snippet-settings"
         :label="$options.i18n.snippetsLabel"
+        label-for="snippets_access_level"
         :help-text="s__('ProjectSettings|Share code with others outside the project.')"
       >
         <project-feature-setting
+          id="snippets_access_level"
           v-model="snippetsAccessLevel"
           :label="$options.i18n.snippetsLabel"
           :options="featureAccessLevelOptions"
@@ -918,10 +942,12 @@ export default {
       <project-setting-row
         ref="model-experiments-settings"
         :label="$options.i18n.modelExperimentsLabel"
+        label-for="model_experiments_access_level"
         :help-text="$options.i18n.modelExperimentsHelpText"
         :help-path="$options.modelExperimentsHelpPath"
       >
         <project-feature-setting
+          id="model_experiments_access_level"
           v-model="modelExperimentsAccessLevel"
           :label="$options.i18n.modelExperimentsLabel"
           :options="featureAccessLevelOptions"
@@ -932,10 +958,12 @@ export default {
       <project-setting-row
         ref="model-registry-settings"
         :label="$options.i18n.modelRegistryLabel"
+        label-for="model_registry_access_level"
         :help-text="$options.i18n.modelRegistryHelpText"
         :help-path="$options.modelRegistryHelpPath"
       >
         <project-feature-setting
+          id="model_registry_access_level"
           v-model="modelRegistryAccessLevel"
           :label="$options.i18n.modelRegistryLabel"
           :options="featureAccessLevelOptions"
@@ -948,6 +976,7 @@ export default {
         ref="pages-settings"
         :help-path="pagesHelpPath"
         :label="$options.i18n.pagesLabel"
+        label-for="pages_access_level"
         :help-text="
           s__(
             'ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute.',
@@ -955,6 +984,7 @@ export default {
         "
       >
         <project-feature-setting
+          id="pages_access_level"
           v-model="pagesAccessLevel"
           :label="$options.i18n.pagesLabel"
           :access-control-forced="pagesAccessControlForced"
@@ -965,11 +995,13 @@ export default {
       <project-setting-row
         ref="monitor-settings"
         :label="$options.i18n.monitorLabel"
+        label-for="monitor_access_level"
         :help-text="
           s__('ProjectSettings|Monitor the health of your project and respond to incidents.')
         "
       >
         <project-feature-setting
+          id="monitor_access_level"
           v-model="monitorAccessLevel"
           :label="$options.i18n.monitorLabel"
           :options="featureAccessLevelOptions"
@@ -980,10 +1012,12 @@ export default {
       <project-setting-row
         ref="environments-settings"
         :label="$options.i18n.environmentsLabel"
+        label-for="environments_access_level"
         :help-text="$options.i18n.environmentsHelpText"
         :help-path="environmentsHelpPath"
       >
         <project-feature-setting
+          id="environments_access_level"
           v-model="environmentsAccessLevel"
           :label="$options.i18n.environmentsLabel"
           :options="featureAccessLevelOptions"
@@ -994,10 +1028,12 @@ export default {
       <project-setting-row
         ref="feature-flags-settings"
         :label="$options.i18n.featureFlagsLabel"
+        label-for="feature_flags_access_level"
         :help-text="$options.i18n.featureFlagsHelpText"
         :help-path="featureFlagsHelpPath"
       >
         <project-feature-setting
+          id="feature_flags_access_level"
           v-model="featureFlagsAccessLevel"
           :label="$options.i18n.featureFlagsLabel"
           :options="featureAccessLevelOptions"
@@ -1008,10 +1044,12 @@ export default {
       <project-setting-row
         ref="infrastructure-settings"
         :label="$options.i18n.infrastructureLabel"
+        label-for="infrastructure_access_level"
         :help-text="$options.i18n.infrastructureHelpText"
         :help-path="infrastructureHelpPath"
       >
         <project-feature-setting
+          id="infrastructure_access_level"
           v-model="infrastructureAccessLevel"
           :label="$options.i18n.infrastructureLabel"
           :options="featureAccessLevelOptions"
@@ -1022,10 +1060,12 @@ export default {
       <project-setting-row
         ref="releases-settings"
         :label="$options.i18n.releasesLabel"
+        label-for="releases_access_level"
         :help-text="$options.i18n.releasesHelpText"
         :help-path="releasesHelpPath"
       >
         <project-feature-setting
+          id="releases_access_level"
           v-model="releasesAccessLevel"
           :label="$options.i18n.releasesLabel"
           :options="featureAccessLevelOptions"

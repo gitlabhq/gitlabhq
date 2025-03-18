@@ -122,7 +122,7 @@ Make sure to follow all steps below:
 
    {{< alert type="note" >}}
 
-If you are using a custom init script, make sure to edit the above
+   If you are using a custom init script, make sure to edit the above
    GitLab Workhorse setting as needed.
 
    {{< /alert >}}

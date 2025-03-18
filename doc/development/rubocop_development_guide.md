@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: RuboCop rule development guidelines
 ---
 
@@ -106,6 +106,12 @@ On the default branch, offenses from cops in the [grace period](rake_tasks.md#ru
 
 A grace period can safely be lifted as soon as there are no warnings for 1 week in the `#f_rubocop` channel on Slack.
 
+When [generating TODOs](rake_tasks.md#generate-initial-rubocop-todo-list), RuboCop cop rules are placed in a grace period under the following conditions:
+
+- The rule was previously in a grace period
+- The rule is newly added
+- The number of violations for the rule has increased since the last generation
+
 ## Proposing a new cop or cop change
 
 If you want to make a proposal to enforce a new cop or change existing cop configuration use the
@@ -120,7 +126,6 @@ a structured way of communicating the consequences of the new rule.
 
 1. Enable the new cop in `.rubocop.yml` (if not already done via [`gitlab-styles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles)).
 1. [Generate TODOs for the new cop](rake_tasks.md#generate-initial-rubocop-todo-list).
-1. [Set the new cop to `grace period`](#cop-grace-period).
 1. Create an issue to fix TODOs and encourage community contributions (via ~"quick win" and/or ~"Seeking community contributions"). [See some examples](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=static%20code%20analysis&first_page_size=20).
 1. Create an issue to remove `grace period` after 1 week of silence in the `#f_rubocop` Slack channel. [See an example](https://gitlab.com/gitlab-org/gitlab/-/issues/374903).
 

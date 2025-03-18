@@ -16,11 +16,6 @@ module API
           track_runner_authentication
           forbidden! unless current_runner
 
-          # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/504963 (when ci_runners is swapped)
-          # This is because the new table will have check constraints for these scenarios, and therefore
-          # any orphaned runners will be missing
-          forbidden!('Runner is orphaned') if current_runner.sharding_key_id.nil? && !current_runner.instance_type?
-
           current_runner.heartbeat if update_contacted_at
           return unless ensure_runner_manager
 
@@ -35,6 +30,7 @@ module API
             .merge(get_system_id_from_request)
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)
+            .merge(get_runner_features_from_request)
         end
 
         def get_system_id_from_request
@@ -238,6 +234,10 @@ module API
 
         def get_runner_config_from_request
           { config: attributes_for_keys(%w[gpus], params.dig('info', 'config')) }
+        end
+
+        def get_runner_features_from_request
+          { runtime_features: attributes_for_keys(%w[features], params['info'])['features'] }.compact
         end
 
         def metrics

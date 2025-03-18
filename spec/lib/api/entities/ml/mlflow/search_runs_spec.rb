@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ml::Mlflow::SearchRuns, feature_category: :mlops do
-  let_it_be(:candidates) { [build_stubbed(:ml_candidates, :with_metrics_and_params), build_stubbed(:ml_candidates)] }
-
+  let_it_be(:candidates) { [create(:ml_candidates, :with_metrics_and_params), create(:ml_candidates)] }
+  let_it_be(:metrics) { candidates[0].latest_metrics }
   let(:next_page_token) { 'abcdef' }
 
   subject { described_class.new({ candidates: candidates, next_page_token: next_page_token }).as_json }
@@ -16,11 +16,11 @@ RSpec.describe API::Entities::Ml::Mlflow::SearchRuns, feature_category: :mlops d
   end
 
   it 'presents metrics', :aggregate_failures do
-    expect(subject.dig(:runs, 0, :data, :metrics).size).to eq(candidates[0].metrics.size)
+    expect(subject.dig(:runs, 0, :data, :metrics).size).to eq(metrics.size)
     expect(subject.dig(:runs, 1, :data, :metrics).size).to eq(0)
 
     presented_metric = subject.dig(:runs, 0, :data, :metrics, 0, :key)
-    metric = candidates[0].metrics[0].name
+    metric = metrics[0].name
 
     expect(presented_metric).to eq(metric)
   end

@@ -35,12 +35,20 @@ module Gitlab
         explanation do |parent_param|
           format(_("Change item's parent to %{parent_ref}."), parent_ref: parent_param)
         end
-        types WorkItem
+        types WorkItem, Issue
         params 'Parent #iid, reference or URL'
-        condition { supports_parent? && can_admin_link? }
-        command :set_parent do |parent_param|
-          @updates[:set_parent] = extract_work_items(parent_param).first
-          @execution_message[:set_parent] = success_msg[:set_parent]
+        condition do
+          quick_action_target.supports_parent? && can_admin_set_relation?
+        end
+        conditional_aliases_autocompletion :epic do
+          show_epic_alias?
+        end
+        command :set_parent, :epic do |parent_param|
+          if quick_action_target.instance_of?(WorkItem)
+            handle_set_parent(parent_param)
+          elsif quick_action_target.instance_of?(Issue)
+            handle_set_epic(parent_param)
+          end
         end
 
         desc { _('Remove parent') }
@@ -51,7 +59,7 @@ module Gitlab
           )
         end
         types WorkItem
-        condition { work_item_parent.present? && can_admin_link? }
+        condition { work_item_parent.present? && can_admin_set_relation? }
         command :remove_parent do
           @updates[:remove_parent] = true
           @execution_message[:remove_parent] = success_msg[:remove_parent]
@@ -166,10 +174,6 @@ module Gitlab
         quick_action_target.work_item_parent
       end
 
-      def supports_parent?
-        ::WorkItems::HierarchyRestriction.find_by_child_type_id(quick_action_target.work_item_type_id).present?
-      end
-
       def supports_children?
         ::WorkItems::HierarchyRestriction.find_by_parent_type_id(quick_action_target.work_item_type_id).present?
       end
@@ -182,6 +186,10 @@ module Gitlab
         current_user.can?(:admin_issue_link, quick_action_target)
       end
 
+      def can_admin_set_relation?
+        current_user.can?(:admin_issue_relation, quick_action_target)
+      end
+
       # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
       # Gitlab::QuickActions::Dsl implementation
       def apply_type_commands(new_type, command)
@@ -191,6 +199,41 @@ module Gitlab
         success_msg[command]
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+      # overridden in EE
+      def handle_set_epic(parent_param); end
+
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
+      # Gitlab::QuickActions::Dsl implementation
+      def handle_set_parent(parent_param)
+        parent = extract_work_items(parent_param).first
+        child = quick_action_target
+
+        message =
+          if parent && current_user.can?(:read_work_item, parent)
+            if child&.work_item_parent == parent
+              format(_('Work item %{work_item_reference} has already been added to parent %{parent_reference}.'),
+                work_item_reference: child&.to_reference, parent_reference: parent.to_reference)
+            elsif parent.confidential? && !child&.confidential?
+              _("Cannot assign a confidential parent to a non-confidential work item. Make the work item " \
+                "confidential and try again")
+            elsif ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(parent.work_item_type_id,
+              child&.work_item_type_id).nil?
+              _("Cannot assign this work item type to parent type")
+            else
+              @updates[:set_parent] = parent
+              success_msg[:set_parent]
+            end
+          else
+            _("This parent does not exist or you don't have sufficient permission.")
+          end
+
+        @execution_message[:set_parent] = message
+      end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+      # overridden in EE
+      def show_epic_alias?; end
     end
   end
 end

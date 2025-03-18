@@ -1,5 +1,6 @@
 ---
 description: Tracks clicks on the End Tutorial button in the Learn GitLab process.
+internal_events: true
 action: click_end_tutorial_button
 product_group: activation
 milestone: '17.4'

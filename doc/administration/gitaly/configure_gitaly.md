@@ -579,7 +579,8 @@ reconfigure the GitLab application servers to remove the `default` storage becau
 
 To work around the limitation:
 
-1. Define an additional storage location on the new Gitaly service and configure the additional storage to be `default`.
+1. Define an additional storage location on the new Gitaly service and configure the additional storage to be `default`. The storage location must have a
+   Gitaly service running and available to avoid issues with database migrations that expect working storages.
 1. In the [**Admin** area](../repository_storage_paths.md#configure-where-new-repositories-are-stored), set `default` to a weight of zero
    to prevent repositories being stored there.
 
@@ -623,141 +624,41 @@ Disable Gitaly on a GitLab server in one of two ways:
 
 {{< /tabs >}}
 
-## Control groups
+## Change the Gitaly listening interface
 
-{{< alert type="warning" >}}
+You can change the interface that Gitaly listens on. You might change the listening interface when you have an external service that must communicate with Gitaly. For example,
+[exact code search](../../integration/exact_code_search/zoekt.md) that uses Zoekt when exact code search is enabled but the actual service is running on another server.
 
-Enabling limits on your environment should be done with caution and only
-in select circumstances, such as to protect against unexpected traffic.
-When reached, limits _do_ result in disconnects that negatively impact users.
-For consistent and stable performance, you should first explore other options such as
-adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
+The `gitaly_token` must be a secret string because `gitaly_token` is used for authentication with the Gitaly service.
+This secret can be generated with `openssl rand -base64 24` to generate a random 32 character string.
 
-{{< /alert >}}
-
-When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes as
-processes may switch to using that instead of being terminated. This situation could lead to notably compromised
-performance.
-
-You can use control groups (cgroups) in Linux to impose limits on how much memory and CPU can be consumed by Gitaly processes.
-See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can help protect the system against unexpected resource exhaustion because of over consumption of memory and CPU.
-
-Some Git operations can consume notable resources up to the point of exhaustion in situations such as:
-
-- Unexpectedly high traffic.
-- Operations running against large repositories that don't follow best practices.
-
-As a hard protection, it's possible to use cgroups that configure the kernel to terminate these operations before they hog up all system resources
-and cause instability.
-
-Gitaly has built-in cgroups control. When configured, Gitaly assigns Git processes to a cgroup based on the repository
-the Git command is operating in. These cgroups are called repository cgroups. Each repository cgroup:
-
-- Has a memory and CPU limit.
-- Contains the Git processes for a single repository.
-- Uses a consistent hash to ensure a Git process for a given repository always ends up in the same cgroup.
-
-When a repository cgroup reaches its:
-
-- Memory limit, the kernel looks through the processes for a candidate to kill.
-- CPU limit, processes are not killed, but the processes are prevented from consuming more CPU than allowed.
-
-{{< alert type="note" >}}
-
-When these limits are reached, performance may be reduced and users may be disconnected.
-
-{{< /alert >}}
-
-### Configure repository cgroups
-
-{{< history >}}
-
-- This method of configuring repository cgroups was introduced in GitLab 15.1.
-- `cpu_quota_us`[introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5422) in GitLab 15.10.
-- `max_cgroups_per_repo` [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5689) in GitLab 16.7.
-- Documentation for the legacy method was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176694) in GitLab 17.8.
-
-{{< /history >}}
-
-To configure repository cgroups in Gitaly, use the following settings for `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
-
-- `mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
-- `hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
-  is expected to be owned by the user and group Gitaly runs as. A Linux package installation
-  creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
-  when Gitaly starts.
-- `memory_bytes` is the total memory limit that is imposed collectively on all
-  Git processes that Gitaly spawns. 0 implies no limit.
-- `cpu_shares` is the CPU limit that is imposed collectively on all Git
-  processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
-  which represents 100% of CPU.
-- `cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
-  to throttle the cgroups' processes if they exceed this quota value. We set
-  `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
-- `repositories.count` is the number of cgroups in the cgroups pool. Each time a new Git
-  command is spawned, Gitaly assigns it to one of these cgroups based
-  on the repository the command is for. A circular hashing algorithm assigns
-  Git commands to these cgroups, so a Git command for a repository is
-  always assigned to the same cgroup.
-- `repositories.memory_bytes` is the total memory limit imposed on all Git processes contained in a repository cgroup.
-  0 implies no limit. This value cannot exceed that of the top level `memory_bytes`.
-- `repositories.cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
-  0 implies no limit. The maximum is 1024 shares, which represents 100% of CPU.
-  This value cannot exceed that of the top level`cpu_shares`.
-- `repositories.cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
-  that is imposed on all Git processes contained in a repository cgroup. A Git
-  process can't use more then the given quota. We set
-  `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
-- `repositories.max_cgroups_per_repo` is the number of repository cgroups that Git processes
-  targeting a specific repository can be distributed across. This enables more conservative
-  CPU and memory limits to be configured for repository cgroups while still allowing for
-  bursty workloads. For instance, with a `max_cgroups_per_repo` of `2` and a `memory_bytes`
-  limit of 10 GB, independent Git operations against a specific repository can consume up
-  to 20 GB of memory.
-
-For example (not necessarily recommended settings):
+For example, to change the Gitaly listening interface to `0.0.0.0:8075`:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
+gitlab_rails['gitaly_token'] = 'enter-secret-token-here'
+
+gitlab_rails['repositories_storages'] = {
+  'default'  => { 'gitaly_address' => 'tcp://gitlab.example.com:8075' },
+}
+
 gitaly['configuration'] = {
-  # ...
-  cgroups: {
-    mountpoint: '/sys/fs/cgroup',
-    hierarchy_root: 'gitaly',
-    memory_bytes: 64424509440, # 60 GB
-    cpu_shares: 1024,
-    cpu_quota_us: 400000 # 4 cores
-    repositories: {
-      count: 1000,
-      memory_bytes: 32212254720, # 20 GB
-      cpu_shares: 512,
-      cpu_quota_us: 200000, # 2 cores
-      max_cgroups_per_repo: 2
-    },
+  listen_addr: '0.0.0.0:8075',
+  auth: {
+    token: 'enter-secret-token-here',
   },
+  storage: [
+    {
+      name: 'default',
+      path: '/var/opt/gitlab/git-data/repositories',
+    },
+  ]
 }
 ```
 
-### Configuring oversubscription
+## Control groups
 
-In the previous example:
-
-- The top level memory limit is capped at 60 GB.
-- Each of the 1000 cgroups in the repositories pool is capped at 20 GB.
-
-This configuration leads to oversubscription. Each cgroup in the pool has a much larger capacity than 1/1000th
-of the top-level memory limit.
-
-This strategy has two main benefits:
-
-- It gives the host protection from overall memory starvation (OOM), because the memory limit of the top-level cgroup
-  can be set to a threshold smaller than the host's capacity. Processes outside of that cgroup are not at risk of OOM.
-- It allows each individual cgroup in the pool to burst up to a generous upper
-  bound (in this example 20 GB) that is smaller than the limit of the parent cgroup,
-  but substantially larger than 1/N of the parent's limit. In this example, up
-  to 3 child cgroups can concurrently burst up to their max. In general, all
-  1000 cgroups would use much less than the 20 GB.
+For information on control groups, see [Cgroups](cgroups.md).
 
 ## Background repository optimization
 
@@ -855,7 +756,7 @@ gitaly['configuration'] = {
 After you have made this change, your [Prometheus query](#verify-authentication-monitoring)
 should return something like:
 
-```prometheus
+```promql
 {enforced="false",status="would be ok"}  4424.985419441742
 ```
 
@@ -925,7 +826,7 @@ Without completing this step, you have **no Gitaly authentication**.
 Refresh your [Prometheus query](#verify-authentication-monitoring). You should now see a similar
 result as you did at the start. For example:
 
-```prometheus
+```promql
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
@@ -1216,10 +1117,7 @@ When you enable commit signing in Gitaly:
 
 - GitLab signs all commits made through the UI.
 - The signature verifies the committer's identity, not the author's identity.
-- GitLab uses these default values for the committer:
-
-  - Email: `noreply@gitlab.com`
-  - Name: `GitLab`
+- You can configure Gitaly to reflect that a commit has been committed by your instance by setting `committer_email` and `committer_name`. For example, on GitLab.com these configuration options are set to `noreply@gitlab.com` and `GitLab`.
 
 `rotated_signing_keys` is a list of keys to use for verification only. Gitaly tries to verify a web commit using the configured `signing_key`, and then uses
 the rotated keys one by one until it succeeds. Set the `rotated_signing_keys` option when either:

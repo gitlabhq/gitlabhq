@@ -43,6 +43,32 @@ export const extractPageInfo = (queryObject) => {
   };
 };
 
+export const getNextPageParams = (cursor, first) => ({
+  after: cursor,
+  before: undefined,
+  first,
+  last: undefined,
+});
+
+export const getPreviousPageParams = (cursor, last) => ({
+  after: undefined,
+  before: cursor,
+  first: undefined,
+  last,
+});
+
+export const getPageParams = (pageInfo = {}, pageSize) => {
+  if (pageInfo.before) {
+    return getPreviousPageParams(pageInfo.before, pageSize);
+  }
+
+  if (pageInfo.after) {
+    return getNextPageParams(pageInfo.after, pageSize);
+  }
+
+  return {};
+};
+
 export const beautifyPath = (path) => (path ? path.split('/').join(' / ') : '');
 
 export const getCommitLink = ({ project_path: projectPath, pipeline = {} }, isGroup = false) => {

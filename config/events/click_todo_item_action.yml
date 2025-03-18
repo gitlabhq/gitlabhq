@@ -7,6 +7,8 @@ identifiers:
 additional_properties:
   label:
     description: Action triggered (pending, done, all_done, undo all done)
+  property:
+    description: Action type of the todo
 product_group: personal_productivity
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590

@@ -75,19 +75,19 @@ RSpec.describe ActivityPub::ReleasesSubscription, type: :model, feature_category
     it 'returns nil if project and url do not match' do
       result = described_class.find_by_project_and_subscriber(0, 'I really should not exist')
 
-      expect(result).to be(nil)
+      expect(result).to be_nil
     end
 
     it 'returns nil if project does not match' do
       result = described_class.find_by_project_and_subscriber(0, subscription.subscriber_url)
 
-      expect(result).to be(nil)
+      expect(result).to be_nil
     end
 
     it 'returns nil if url does not match' do
       result = described_class.find_by_project_and_subscriber(subscription.project_id, 'I really should not exist')
 
-      expect(result).to be(nil)
+      expect(result).to be_nil
     end
   end
 end

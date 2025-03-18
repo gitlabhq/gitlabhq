@@ -1,0 +1,14 @@
+---
+# Warning: gitlab_base.SelfReferential
+# Checks for wordy, self-referential phrases.
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "Rewrite '%s'. Talk directly about the feature or purpose instead."
+ignorecase: true
+nonword: true
+vocab: false
+level: warning
+link: https://docs.gitlab.com/development/documentation/styleguide/#self-referential-writing
+tokens:
+  - This (page|guide) (builds|contains|covers|describes|documents|explains|guides|lists|offers|provides|shows)

@@ -8,10 +8,19 @@ import createState from './state';
 
 Vue.use(Vuex);
 
+export const createMilestoneComboboxModule = () => ({
+  actions,
+  getters,
+  mutations,
+  state: createState(),
+});
+
 export default () =>
   new Vuex.Store({
-    actions,
-    getters,
-    mutations,
-    state: createState(),
+    modules: {
+      milestoneCombobox: {
+        namespaced: true,
+        ...createMilestoneComboboxModule(),
+      },
+    },
   });

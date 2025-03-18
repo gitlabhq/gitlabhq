@@ -18,10 +18,14 @@ module Authn
         ::API::Entities::Trigger
       end
 
-      def revoke!(_current_user)
+      def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type'
+        unless Feature.enabled?(:token_api_expire_pipeline_triggers, revocable.project)
+          raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type'
+        end
+
+        ::Ci::PipelineTriggers::ExpireService.new(user: current_user, trigger: revocable).execute
       end
     end
   end

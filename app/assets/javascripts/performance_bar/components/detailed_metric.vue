@@ -59,17 +59,24 @@ export default {
       return this.currentRequest.details[this.metric];
     },
     metricDetailsSummary() {
-      const summary = {};
+      const summary = [];
 
-      if (!this.metricDetails.summaryOptions?.hideTotal) {
-        summary[__('Total')] = this.metricDetails.calls;
+      if (this.metricDetails.calls && !this.metricDetails.summaryOptions?.hideTotal) {
+        summary.push([__('Total'), this.metricDetails.calls]);
       }
 
-      if (!this.metricDetails.summaryOptions?.hideDuration) {
-        summary[s__('PerformanceBar|Total duration')] = this.metricDetails.duration;
+      if (this.metricDetails.duration && !this.metricDetails.summaryOptions?.hideDuration) {
+        summary.push([s__('PerformanceBar|Total duration'), this.metricDetails.duration]);
       }
 
-      return { ...summary, ...(this.metricDetails.summary || {}) };
+      for (const entry of Object.entries(this.metricDetails.summary ?? {})) {
+        // Filter out entries which have no value
+        if (entry[1]) {
+          summary.push(entry);
+        }
+      }
+
+      return summary;
     },
     metricDetailsLabel() {
       if (this.metricDetails.duration && this.metricDetails.calls) {
@@ -146,7 +153,7 @@ export default {
     <gl-button
       v-gl-tooltip.viewport
       v-gl-modal="modalId"
-      class="gl-mr-2"
+      class="gl-mr-2 !gl-text-neutral-0"
       :title="header"
       variant="link"
     >
@@ -154,11 +161,20 @@ export default {
         {{ metricDetailsLabel }}
       </span>
     </gl-button>
-    <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="!gl-hidden" scrollable>
+    <gl-modal
+      :modal-id="modalId"
+      :title="header"
+      size="lg"
+      scrollable
+      :static="true"
+      hide-backdrop
+      hide-footer
+      no-focus-on-show
+    >
       <div class="gl-flex gl-items-center gl-justify-between">
-        <div class="gl-flex gl-items-center" data-testid="performance-bar-summary">
-          <div v-for="(value, name) in metricDetailsSummary" :key="name" class="gl-pr-8">
-            <div v-if="value" data-testid="performance-bar-summary-item">
+        <div class="gl-flex gl-items-center gl-gap-8" data-testid="performance-bar-summary">
+          <div v-for="[name, value] in metricDetailsSummary" :key="name">
+            <div data-testid="performance-bar-summary-item">
               <div>{{ name }}</div>
               <div class="gl-text-size-h1 gl-font-semibold">{{ value }}</div>
             </div>

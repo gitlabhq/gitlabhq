@@ -74,6 +74,32 @@ The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/execu
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Azure storage driver for the container registry
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.10</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523096).
+
+</div>
+
+The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0. If you use Azure object storage for your container registry, you'll need to update your configuration to use the new `azure_v2` driver.
+
+The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver. These improvements help prevent performance issues as your registry usage scales.
+
+To migrate to the `azure_v2` driver:
+
+1. Update your registry configuration file to use the `azure_v2` driver instead of the legacy `azure` driver.
+1. Adjust your configuration settings as needed for the new driver.
+1. Test the new configuration in a non-production environment before deploying to production.
+
+For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Behavior change for protected variables and multi-project pipelines
 
 <div class="deprecation-notes">
@@ -121,6 +147,28 @@ Customers should migrate from compliance pipelines to the new
 [pipeline execution policy type](https://docs.gitlab.com/user/application_security/policies/pipeline_execution_policies/)
 as soon as possible.
 For details, see the [migration guide](https://docs.gitlab.com/user/group/compliance_pipelines/#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/2024/10/01/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### Coverage-guided fuzz testing is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.0</span>
+- End of Support in GitLab <span class="milestone">18.0</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517841).
+
+</div>
+
+Coverage-guided fuzz testing is deprecated and will not be supported
+from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
+
+Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
+If you are impacted, you can integrate your open-source fuzzers as standalone applications,
+or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
 
 </div>
 
@@ -513,6 +561,12 @@ To prepare for this change, project maintainers using job tokens for cross-proje
 should populate their project's **Authorized groups and projects** allowlists. They should then change
 the setting to **Only this project and any groups and projects in the allowlist**.
 
+To help identify projects that need access to your project by authenticating with a CI/CD job token, in GitLab 17.6 we also introduced a method to [track job token authentications](https://about.gitlab.com/releases/2024/11/21/gitlab-17-6-released/#track-cicd-job-token-authentications) to your projects. You can use that data to populate your CI/CI job token allowlist.
+
+In GitLab 17.10, we introduced [migration tooling](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/ee/update/deprecations.html#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur as previously announced.
+
+This migration tool will be removed in GitLab 18.3.
+
 </div>
 
 <div class="deprecation breaking-change" data-milestone="18.0">
@@ -624,6 +678,37 @@ Removing these two variables will simplify DAST configuration, and provide a bet
 
 The `DAST_DEVTOOLS_API_TIMEOUT` environment variable determines how long a DAST scan waits for a response from the browser. Before GitLab 18.0, the variable has a static value of 45 seconds. After GitLab 18.0, `DAST_DEVTOOLS_API_TIMEOUT` environment variable has a dynamic value, which is calculated based on other timeout configurations.
 In most cases, the 45-second value was higher than the timeout value of many scanner functions. The dynamically calculated value makes the `DAST_DEVTOOLS_API_TIMEOUT` variable more useful by increasing the number of cases it applies to.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Default GitLab Runner's `FF_GIT_URLS_WITHOUT_TOKENS` feature flag to `true`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/518709).
+
+</div>
+
+In GitLab Runner 18.0, to limit the potential for token leakage, the
+default value for the `FF_GIT_URLS_WITHOUT_TOKENS` feature flag changes
+to `true`.
+
+This change affects users who:
+
+- Use executors that share Git credential state across jobs (for example, shell executor).
+- Have a caching Git credential helper installed (for example,
+  [gitforwindows](https://gitforwindows.org/) installs
+  [Git credential manager (GCM)](https://github.com/git-ecosystem/git-credential-manager)
+  system-wide by default).
+- Run builds in parallel.
+
+To prevent issues, ensure that you don't use any caching Git credential
+helper with GitLab Runner, use an executor which runs jobs in isolated
+environments, or run job serially only.
 
 </div>
 
@@ -948,6 +1033,7 @@ An automated process migrates results from previous scanners after the first sca
 
 Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
 If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
+You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 18.0.
 
 </div>
 
@@ -1129,26 +1215,6 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
 In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
 Along with this change we are also deprecating and removing the 2017 GraphQL API enums which the feature uses. Additional details are included in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/488433).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Guest users can pull packages from private projects on GitLab.com
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.6</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336622).
-
-</div>
-
-Starting in 18.0, Guest users on GitLab.com will be able to pull packages from private projects. This is the same ability that Guest users already have on GitLab Self-Managed.
-
-This change streamlines package sharing capabilities within organizations and simplifies access management for package consumers by providing consistent behavior across all GitLab deployments.
-
-Project Owners and Maintainers should review their private projects' lists of members. Users with the Guest role who should not have package pulling capabilities should be removed. If more restrictive package access is required, consider using project access tokens instead of guest role.
 
 </div>
 
@@ -1365,6 +1431,31 @@ The Pipelines API cancel endpoint [`POST /projects/:id/pipelines/:pipeline_id/ca
 returns a `200` success response regardless of whether a pipeline can be canceled.
 Starting in GitLab 18.0, the endpoint will return a `422 Unprocessable Entity` error when a pipeline cannot be canceled.
 Update your API integration to handle the `422` status code when making pipeline cancellation requests.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### PostgreSQL 14 and 15 no longer supported
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/521663).
+
+</div>
+
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+
+Support for PostgreSQL 14 and 15 is scheduled for removal in GitLab 18.0.
+In GitLab 18.0, PostgreSQL 16 becomes the minimum required PostgreSQL version.
+
+PostgreSQL 14 and 15 will be supported for the full GitLab 17 release cycle.
+PostgreSQL 16 will also be supported for instances that want to upgrade prior to GitLab 18.0.
+
+If you are running a single PostgreSQL instance you installed by using an Omnibus Linux package, an automatic upgrade may be attempted with 17.11.
+Make sure you have enough disk space to accommodate the upgrade. For more information, see the [Omnibus database documentation](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
 </div>
 
@@ -1788,6 +1879,32 @@ In GitLab 18.0, only the runner registration methods implemented in the new GitL
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### S3 storage driver (AWS SDK v1) for the container registry
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.10</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
+
+</div>
+
+The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 18.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
+
+The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS. It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
+
+To migrate to the `s3_v2` driver:
+
+1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
+1. Move from Signature Version 2 to Signature Version 4 for authentication if you haven't already, as AWS SDK v2 only supports Signature Version 4.
+1. Test the configuration in a non-production environment before deploying to production.
+
+For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### SAST jobs no longer use global cache settings
 
 <div class="deprecation-notes">
@@ -1964,11 +2081,18 @@ We will be transitioning to a new IID as a result of moving requirements to a [w
 
 </div>
 
-We are moving the `agentk` container registry from [its project-specific registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205) to [the Cloud Native GitLab registry](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772).
-From GitLab 18.0, the project-specific registry will not receive `agentk` updates.
-If you mirror the `agentk` container to a local registry, you should change your mirror source to the CNG registry.
+We are moving the `agentk` container registry from
+[its project-specific registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205)
+to [the Cloud Native GitLab (CNG) registry](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772).
+From GitLab 18.0 onward, `agentk` images built in CNG will mirror into the project-specific registry.
+The new image is equivalent to the old image, except the new image only supports `amd64` and `arm64` architectures.
+It does not support the 32-bit `arm` architecture.
+From GitLab 19.0 onward, the project-specific registry will not receive `agentk` updates.
+If you mirror the `agentk` container to a local registry, you should change your mirror source to the
+[CNG registry](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772).
 
-If you use the official Helm charts, they will start deploying from the new location seamlessly.
+If you use the official [GitLab Agent Helm chart](https://gitlab.com/gitlab-org/charts/gitlab-agent/),
+the new `agentk` image will start deploying from the new location seamlessly in GitLab 18.0.
 
 </div>
 
@@ -2058,12 +2182,12 @@ Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. U
 
 Starting in GitLab 18.0, the internal process that releases CI/CD components to the Catalog will be changed.
 If you use the [recommended CI/CD component release process](https://docs.gitlab.com/ci/components/#publish-a-new-release), which makes use of the `release` keyword and the `registry.gitlab.com/gitlab-org/release-cli:latest` container image, you do not need to make any changes.
-The `latest` version of this container image (`v0.20.0`) contains [GLab](https://gitlab.com/gitlab-org/cli/) `v1.50.0`, which will be used for all releases to the CI/CD Catalog in GitLab 18.0 and later.
+The `latest` version of this container image (`v0.22.0`) contains [GLab](https://gitlab.com/gitlab-org/cli/) `v1.53.0`, which will be used for all releases to the CI/CD Catalog in GitLab 18.0 and later.
 In other cases:
 
-- If you need to pin the container image to a specific version, use `v0.20.0` or later (`registry.gitlab.com/gitlab-org/release-cli:v0.20.0`),
+- If you need to pin the container image to a specific version, use `v0.22.0` or later (`registry.gitlab.com/gitlab-org/release-cli:v0.22.0`),
   to ensure GLab is available for the release process.
-- If you've manually installed the Release CLI tool on your runners, you must install GLab `v1.50.0` or later on those runners.
+- If you've manually installed the Release CLI tool on your runners, you must install GLab `v1.53.0` or later on those runners.
 
 </div>
 
@@ -2079,7 +2203,7 @@ In other cases:
 
 </div>
 
-In GitLab 18.0, CI/CD job tokens are moving to the JWT standard by default. All new projects will use this standard, but existing projects will continue to use the legacy format. Existing projects can switch to the JWT standard before the GitLab 18.0 release.
+In GitLab 18.0, CI/CD job tokens are moving to the JWT standard by default. All new projects will use this standard, but existing projects will continue to use the legacy format. Existing projects can switch to the JWT standard before the GitLab 18.0 release. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 18.3 release.
 
 In GitLab 18.3, all CI/CD job tokens must use the JWT standard. Before this release, you can temporarily revert your tokens back to the legacy job token format.
 
@@ -2466,6 +2590,26 @@ another RHEL-compatible operating system.
 <div class="milestone-wrapper" data-milestone="17.7">
 
 ## GitLab 17.7
+
+<div class="deprecation breaking-change" data-milestone="17.7">
+
+### Error handling for `/repository/tree` REST API endpoint returns `404`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">17.7</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420865).
+
+</div>
+
+In GitLab 17.7, the error handling behavior for the list repository tree API endpoint, `/projects/:id/repository/tree`, is updated when a requested path is not found. The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
+
+This change was enabled on GitLab.com in GitLab 16.5, and will be available for self-managed instances in GitLab 17.7.
+
+If your implementation relies on receiving a `200` status code with an empty array for missing paths, you must update your error handling to handle the new `404` responses.
+
+</div>
 
 <div class="deprecation " data-milestone="17.7">
 
@@ -7328,7 +7472,7 @@ For more information, check the [summary section of the deprecation issue](https
 
 </div>
 
-The [required pipeline configuration](https://docs.gitlab.com/administration/settings/continuous_integration/#required-pipeline-configuration) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
+The [required pipeline configuration](https://docs.gitlab.com/administration/settings/continuous_integration/#required-pipeline-configuration-deprecated) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
 
 This change to move the feature to GitLab Ultimate tier is intended to help our features better align with our [pricing philosophy](https://handbook.gitlab.com/handbook/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
 

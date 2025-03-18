@@ -1,3 +1,9 @@
+trigger-project-inputs:
+  trigger:
+    project: 'group/project'
+    inputs:
+      example: 'a'
+
 trigger-include-string:
   trigger:
     include: '/path/to/child-pipeline.yml'

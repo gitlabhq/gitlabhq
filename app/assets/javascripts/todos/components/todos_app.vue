@@ -150,8 +150,11 @@ export default {
     isOnAllTab() {
       return this.currentTab === TABS_INDICES.all;
     },
+    isOnFirstPage() {
+      return !this.pageInfo.hasPreviousPage;
+    },
     showEmptyState() {
-      return !this.isLoading && this.todos.length === 0;
+      return this.isOnFirstPage && !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
       if (this.glFeatures.todosBulkActions) return false;
@@ -175,6 +178,11 @@ export default {
     selectedIds(ids) {
       if (!ids.length) this.selectAllChecked = false;
       else if (ids.length === this.todos.length) this.selectAllChecked = true;
+    },
+    todos(todos) {
+      if (!this.isOnFirstPage && todos.length === 0) {
+        this.cursor.after = null; // go to first page
+      }
     },
   },
   created() {
@@ -372,7 +380,7 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
-        <div v-if="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
+        <div v-show="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
           <gl-form-checkbox
             v-model="selectAllChecked"
             data-testid="todos-select-all"

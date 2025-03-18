@@ -12,4 +12,4 @@
     This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
     This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
     Before upgrading to GitLab 19.0, please ensure you have [migrated](https://docs.gitlab.com/administration/postgresql/multiple_databases/) to two databases.
-  documentation_url: https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html
+  documentation_url: https://docs.gitlab.com/administration/postgresql/multiple_databases/

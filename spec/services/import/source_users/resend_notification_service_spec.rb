@@ -11,7 +11,7 @@ RSpec.describe Import::SourceUsers::ResendNotificationService, feature_category:
   describe '#execute' do
     context 'when notification is successfully sent' do
       it 'returns success' do
-        expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+        expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
 
         result = service.execute
 

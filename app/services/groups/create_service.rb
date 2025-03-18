@@ -54,6 +54,7 @@ module Groups
       @group = Group.new(params.except(*except_keys))
 
       set_organization
+      set_jwt_ci_cd_job_token_enabled
 
       @group.import_export_uploads << params[:import_export_upload] if params[:import_export_upload]
       @group.build_namespace_settings
@@ -170,6 +171,12 @@ module Groups
       return if visibility_level.present?
 
       params[:visibility_level] = Gitlab::CurrentSettings.current_application_settings.default_group_visibility
+    end
+
+    def set_jwt_ci_cd_job_token_enabled
+      return unless @group.root?
+
+      params[:jwt_ci_cd_job_token_enabled] = true
     end
 
     def inherit_group_shared_runners_settings

@@ -12,4 +12,4 @@
   stage: Enablement
   tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6972
-  documentation_url: https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html
+  documentation_url: https://docs.gitlab.com/administration/monitoring/performance/grafana_configuration/

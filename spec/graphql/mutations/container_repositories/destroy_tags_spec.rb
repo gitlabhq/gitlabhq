@@ -11,7 +11,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: 
   let(:id) { repository.to_global_id }
   let(:current_user) { create(:user) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
+  specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image_tag) }
 
   describe '#resolve' do
     let(:tags) { %w[A C D E] }

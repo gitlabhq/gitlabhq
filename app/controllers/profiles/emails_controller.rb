@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Profiles::EmailsController < Profiles::ApplicationController
+  include SafeFormatHelper
+
   before_action :find_email, only: [:destroy, :resend_confirmation_instructions]
   before_action -> { check_rate_limit!(:profile_add_new_email, scope: current_user, redirect_back: true) },
     only: [:create]
@@ -33,7 +35,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def resend_confirmation_instructions
     if Emails::ConfirmService.new(current_user, user: current_user).execute(@email)
-      flash[:notice] = _("Confirmation email sent to %{email}") % { email: @email.email }
+      flash[:notice] = safe_format(_("Confirmation email sent to %{email}"), email: @email.email)
     else
       flash[:alert] = _("There was a problem sending the confirmation email")
     end

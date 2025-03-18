@@ -1,4 +1,5 @@
 import initArtifactsSettings from '~/artifacts_settings';
+import initVariablesMinimumOverrideRole from '~/ci/pipeline_variables_minimum_override_role';
 import initSettingsPipelinesTriggers from '~/ci_settings_pipeline_triggers';
 import initVariableList from '~/ci/ci_variable_list';
 import initInheritedGroupCiVariables from '~/ci/inherited_ci_variables';
@@ -34,6 +35,7 @@ initDeployTokens();
 initDeployFreeze();
 initSettingsPipelinesTriggers();
 initArtifactsSettings();
+initVariablesMinimumOverrideRole();
 
 initProjectRunnersRegistrationDropdown();
 initSharedRunnersToggle();

@@ -46,6 +46,7 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
 - If a change to an event is a part of the review:
   - Check that the event(s) being fired have corresponding definition files.
   - Check that the [event definition file](internal_event_instrumentation/event_definition_guide.md) is correct.
+  - Check that the tracking parameters don't contain any [sensitive information](https://handbook.gitlab.com/handbook/security/data-classification-standard/).
 - If a change to a metric is a part of the review:
   - Add the `~database` label and ask for a [database review](../database_review.md) for
     metrics that are based on Database.

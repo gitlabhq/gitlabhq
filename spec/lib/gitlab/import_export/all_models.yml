@@ -10,7 +10,6 @@ issues:
 - milestone
 - iteration
 - work_item_type
-- correct_work_item_type
 - notes
 - resource_label_events
 - resource_weight_events
@@ -327,8 +326,8 @@ ci_pipelines: &pipeline_definition
 - bridges
 - processables
 - generic_commit_statuses
-- trigger_requests
 - trigger
+- trigger_requests
 - variables
 - auto_canceled_by
 - auto_canceled_pipelines
@@ -420,6 +419,7 @@ builds:
 - resource_group
 - metadata
 - runner
+- trigger
 - trigger_request
 - erased_by
 - deployment
@@ -495,6 +495,7 @@ bridges:
 - deployment
 - resource_group
 - metadata
+- trigger
 - trigger_request
 - downstream_pipeline
 - upstream_pipeline
@@ -516,6 +517,7 @@ pipeline_schedules:
 - pipelines
 - last_pipeline
 - variables
+- inputs
 pipeline_schedule:
 - pipelines
 pipeline_schedule_variables:
@@ -549,6 +551,7 @@ protected_branches:
 - external_status_checks
 - required_code_owners_sections
 - squash_option
+- merge_request_approval_setting
 protected_tags:
 - project
 - create_access_levels
@@ -566,6 +569,8 @@ create_access_levels:
 - protected_tag
 - group
 - deploy_key
+squash_option:
+- protected_branch
 container_repositories:
 - project
 - name
@@ -923,6 +928,7 @@ project:
 - vulnerability_management_policies
 - project_control_compliance_statuses
 - approval_policies
+- project_requirement_compliance_statuses
 award_emoji:
 - awardable
 - user
@@ -1128,6 +1134,7 @@ resource_milestone_events:
   - work_item
   - merge_request
   - milestone
+  - namespace
 resource_state_events:
   - user
   - issue
@@ -1203,10 +1210,13 @@ vulnerabilities:
   - external_issue_links
   - issue_links
   - related_issues
+  - latest_severity_override
   - severity_overrides
   - state_transitions
   - notes
   - user_mentions
+  - sbom_occurrences_vulnerabilities
+  - sbom_occurrences
 vulnerability_finding:
   - scanner
   - primary_identifier

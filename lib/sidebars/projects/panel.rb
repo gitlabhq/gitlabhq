@@ -20,7 +20,13 @@ module Sidebars
       def add_menus
         add_menu(Sidebars::Projects::Menus::ProjectInformationMenu.new(context))
         add_menu(Sidebars::Projects::Menus::RepositoryMenu.new(context))
-        add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))
+
+        if ::Feature.enabled?(:work_item_planning_view, context.project.group)
+          add_menu(Sidebars::Projects::Menus::WorkItemsMenu.new(context))
+        else
+          add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))
+        end
+
         add_menu(Sidebars::Projects::Menus::ExternalIssueTrackerMenu.new(context))
         add_menu(Sidebars::Projects::Menus::ZentaoMenu.new(context))
         add_menu(Sidebars::Projects::Menus::MergeRequestsMenu.new(context))

@@ -1,5 +1,6 @@
 ---
 description: Tracks clicks on the "Create Issue" button from an error message.
+internal_events: true
 action: click_create_issue_from_error
 product_group: platform_insights
 milestone: '16.1'

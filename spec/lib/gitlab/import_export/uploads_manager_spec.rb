@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::UploadsManager do
+RSpec.describe Gitlab::ImportExport::UploadsManager, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:shared) { project.import_export_shared }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:project) { create(:project) }
@@ -118,6 +118,29 @@ RSpec.describe Gitlab::ImportExport::UploadsManager do
       manager.restore
 
       expect(project.uploads.map { |u| u.retrieve_uploader.filename }).to include('dummy.txt')
+    end
+
+    describe 'progress tracking' do
+      it 'tracks processed uploads' do
+        manager.restore
+
+        expect(
+          manager.processed_entry?(
+            scope: { project_id: project.id },
+            data: '72a497a02fe3ee09edae2ed06d390038/dummy.txt'
+          )
+        ).to be(true)
+      end
+
+      context 'when upload is already processed' do
+        it 'does not process upload again' do
+          manager.restore
+
+          expect(manager).not_to receive(:save_processed_entry)
+
+          manager.restore
+        end
+      end
     end
   end
 end

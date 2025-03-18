@@ -10,7 +10,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_sharding_key) do
     [
       'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
-      'p_ci_pipeline_variables', # has a desired sharding key instead
       'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end
@@ -58,11 +57,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_job_artifacts.project_id',
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
+      'p_ci_pipeline_variables.project_id',
       'ci_pipeline_messages.project_id',
+      # LFK already present on ci_pipeline_schedules and cascade delete all ci resources.
+      'ci_pipeline_schedule_variables.project_id',
+      'ci_build_trace_chunks.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'ci_builds_runner_session.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
+      'ci_unit_test_failures.project_id', # LFK already present on ci_unit_tests and cascade delete all ci resources
       'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
       'dast_scanner_profiles_builds.project_id', # LFK already present on dast_scanner_profiles and will cascade delete
+      'vulnerability_finding_links.project_id', # LFK already present on vulnerability_occurrence with cascade delete
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
@@ -87,6 +93,22 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id'
     ]
+  end
+
+  let(:allowed_lfk_to_tables_exempted_from_sharding) do
+    {
+      # instance runners are exempted from sharding, but Ci::Build is prepared to handle missing runners
+      "p_ci_builds" => %w[ci_runners],
+      # instance runners are exempted from sharding, but Ci::RunnerManagerBuild is prepared to handle missing
+      # runner managers
+      "p_ci_runner_machine_builds" => %w[ci_runner_machines],
+      # instance runners are exempted from sharding, but Ci::Minutes::InstanceRunnerMonthlyUsage is prepared to handle
+      # missing runners
+      "ci_instance_runner_monthly_usages" => %w[ci_runners],
+      # we only care about the LFK for group and project-type runners. Instance type runners might be missing in a cell
+      # but Ci::RunningBuild is a short-lived model that will eventually be deleted
+      "ci_running_builds" => %w[ci_runners]
+    }
   end
 
   let(:starting_from_milestone) { 16.6 }
@@ -185,12 +207,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       WHERE c.column_name = 'organization_id'
         AND (fk.referenced_table_name = 'organizations' OR fk.referenced_table_name IS NULL)
         AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL OR NOT fk.is_valid)
+        AND (c.table_schema = 'public')
       ORDER BY c.table_name;
     SQL
 
     # To add a table to this list, create an issue under https://gitlab.com/groups/gitlab-org/-/epics/11670.
     # Use https://gitlab.com/gitlab-org/gitlab/-/issues/476206 as an example.
     work_in_progress = {
+      "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "bulk_import_failures" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517824",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
@@ -201,7 +225,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823"
+      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823",
+      "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
+      "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
@@ -286,26 +312,23 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         next
       end
 
-      # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(fks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
           "For more information, see " \
-          "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+          "https://docs.gitlab.com/development/cells/#exempting-certain-tables-from-having-sharding-keys.\n" \
           "The tables with foreign key references are:\n\n" \
           "#{fks.map(&:constrained_table_name).join("\n")}"
-      # rubocop:enable Layout/LineLength
 
       lfks = referenced_loose_foreign_keys(entry.table_name)
       lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
+      lfks.reject! { |lfk| allowed_lfk_to_tables_exempted_from_sharding[lfk.from_table]&.include?(lfk.to_table) }
 
-      # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(lfks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \
           "For more information, see " \
-          "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+          "https://docs.gitlab.com/development/cells/#exempting-certain-tables-from-having-sharding-keys.\n" \
           "The tables with loose foreign key references are:\n\n" \
           "#{lfks.map(&:from_table).join("\n")}"
-      # rubocop:enable Layout/LineLength
     end
   end
 

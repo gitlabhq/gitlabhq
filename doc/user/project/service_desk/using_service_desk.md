@@ -28,16 +28,15 @@ The email address is available at the top of the issue list.
 
 To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
-receive an email back confirming receipt:
+receive an email back from GitLab Support Bot, confirming receipt:
 
-![Service Desk enabled](img/service_desk_confirmation_email_v9_1.png)
+> Thank you for your support request! We are tracking your request as ticket `#%{issue_iid}`,
+> and will respond as soon as we can.
 
-This also gives the end user an option to unsubscribe.
+This email also gives the end user an option to unsubscribe.
 
 If they don't choose to unsubscribe, then any new comments added to the issue
-are sent as emails:
-
-![Service Desk reply email](img/service_desk_reply_v9_1.png)
+are sent as emails.
 
 Any responses they send by email are displayed in the issue itself.
 
@@ -76,8 +75,6 @@ issues created through customer support requests, and filter or interact with th
 Messages from the end user are shown as coming from the special
 [Support Bot user](../../../subscriptions/self_managed/_index.md#billable-users).
 You can read and write comments as you usually do in GitLab:
-
-![Service Desk issue thread](img/service_desk_thread_v9_1.png)
 
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.

@@ -39,6 +39,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
   CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH = 2700
   MERGE_LEASE_TIMEOUT = 15.minutes.to_i
+  DIFF_VERSION_LIMIT = 1_000
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -333,6 +334,13 @@ class MergeRequest < ApplicationRecord
     includes(:target_project)
   end
   scope :by_commit_sha, ->(sha) do
+    if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
+      Gitlab::AppLogger.info(
+        event: 'merge_request_by_commit_sha_call',
+        message: "MergeRequest.by_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
+      )
+    end
+
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
   scope :by_merge_commit_sha, ->(sha) do
@@ -348,6 +356,13 @@ class MergeRequest < ApplicationRecord
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
   scope :by_related_commit_sha, ->(sha) do
+    if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
+      Gitlab::AppLogger.info(
+        event: 'merge_request_by_related_commit_sha_call',
+        message: "MergeRequest.by_related_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
+      )
+    end
+
     from_union(
       [
         by_commit_sha(sha),
@@ -886,6 +901,12 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def latest_diffs
+    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
+
+    diff.diffs(diff_options)
+  end
+
   def diffs(diff_options = {})
     if compare
       # When saving MR diffs, `expanded` is implicitly added (because we need
@@ -1020,8 +1041,8 @@ class MergeRequest < ApplicationRecord
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
-  def source_branch_ref
-    return @source_branch_sha if @source_branch_sha
+  def source_branch_ref(or_sha: true)
+    return @source_branch_sha if @source_branch_sha && or_sha
     return unless source_branch
 
     Gitlab::Git::BRANCH_REF_PREFIX + source_branch
@@ -1571,7 +1592,7 @@ class MergeRequest < ApplicationRecord
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       messages = [title, description]
-      messages.concat(commits.map(&:safe_message)) if merge_request_diff.persisted?
+      messages.concat(commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, target_project)).map(&:safe_message)) if merge_request_diff.persisted?
 
       Gitlab::ClosingIssueExtractor.new(project, current_user)
         .closed_by_message(messages.join("\n"))
@@ -1678,7 +1699,7 @@ class MergeRequest < ApplicationRecord
   # Returns the oldest multi-line commit
   def first_multiline_commit
     strong_memoize(:first_multiline_commit) do
-      recent_commits.without_merge_commits.reverse_each.find(&:description?)
+      recent_commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, target_project)).without_merge_commits.reverse_each.find(&:description?)
     end
   end
 
@@ -1727,7 +1748,7 @@ class MergeRequest < ApplicationRecord
 
   # We use a heuristic of if there are pipeline created, being created, or a ci integration is setup
   def has_ci_enabled?
-    has_ci? || (Feature.enabled?(:change_ci_enabled_hurestic, self.project) ? pipeline_creating? : project.has_ci?)
+    has_ci? || pipeline_creating?
   end
 
   def pipeline_creating?
@@ -1739,7 +1760,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def fetch_ref!
-    target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
+    target_project.repository.fetch_source_branch!(source_project.repository, source_branch_ref(or_sha: false), ref_path)
     expire_ancestor_cache
   end
 
@@ -1871,6 +1892,7 @@ class MergeRequest < ApplicationRecord
     diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
+  # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_MERGE_REQUEST_ID', value: id.to_s)
@@ -1882,6 +1904,7 @@ class MergeRequest < ApplicationRecord
       variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME', value: target_branch.to_s)
       variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED', value: ProtectedBranch.protected?(target_project, target_branch).to_s)
       variables.append(key: 'CI_MERGE_REQUEST_TITLE', value: title)
+      variables.append(key: 'CI_MERGE_REQUEST_DRAFT', value: work_in_progress?.to_s)
 
       mr_description, mr_description_truncated = truncate_mr_description
       variables.append(key: 'CI_MERGE_REQUEST_DESCRIPTION', value: mr_description)
@@ -1893,6 +1916,7 @@ class MergeRequest < ApplicationRecord
       variables.concat(source_project_variables)
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def compare_test_reports
     unless has_test_reports?
@@ -2453,6 +2477,12 @@ class MergeRequest < ApplicationRecord
   end
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :squash_option
+
+  def reached_versions_limit?
+    return false if Feature.disabled?(:merge_requests_diffs_limit, target_project)
+
+    merge_request_diffs.count >= DIFF_VERSION_LIMIT
+  end
 
   private
 

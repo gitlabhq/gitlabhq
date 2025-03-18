@@ -1,0 +1,5 @@
+<%= @title %>
+
+<%= safe_format(s_('BulkImport|Unable to process the CSV file for %{strong_open}%{group}%{strong_close} to reassign placeholders. Try to upload the file again.'), strong_open: '', strong_close: '', group: @group.name) %>
+
+<%= s_('BulkImport|View placeholders') %>: <%= group_group_members_url(@group, tab: 'placeholders') %>

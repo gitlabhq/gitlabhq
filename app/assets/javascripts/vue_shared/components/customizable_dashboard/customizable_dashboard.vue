@@ -359,7 +359,7 @@ export default {
           <section
             v-if="showFilters"
             data-testid="dashboard-filters"
-            class="gl-flex gl-flex-col gl-gap-5 gl-px-3 gl-pb-3 gl-pt-4 md:gl-flex-row"
+            class="gl-flex gl-flex-row gl-flex-wrap gl-gap-5 gl-px-3 gl-pb-3 gl-pt-4"
           >
             <slot name="filters"></slot>
           </section>

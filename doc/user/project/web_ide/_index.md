@@ -191,6 +191,15 @@ In the keyboard shortcuts editor, you can search for:
 Keybindings are based on your keyboard layout.
 If you change your keyboard layout, existing keybindings are updated automatically.
 
+### Use Vim keybindings
+
+Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
+With the [Extensions Marketplace](#extension-marketplace), you can add Vim keybindings to
+the Web IDE.
+
+To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
+extension. For more information, see [install an extension](#install-an-extension).
+
 ## Change the color theme
 
 You can choose between different color themes for the Web IDE.
@@ -242,9 +251,8 @@ To view any notification you might have missed:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
-- Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- Feature flags `web_ide_oauth` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated, and `web_ide_extensions_marketplace` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) on GitLab.com in GitLab 17.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5. Feature flag `web_ide_oauth` removed.
 
 {{< /history >}}
 
@@ -286,6 +294,28 @@ To uninstall an extension in the Web IDE:
    or press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>.
 1. From the list of installed extensions, select the extension you want to uninstall.
 1. Select **Uninstall**.
+
+### Extension setup
+
+Web IDE extensions may require additional configuration to work with your projects.
+
+#### YAML language support extension
+
+To validate YAML files that match specified patterns, use
+the Red Hat [YAML](https://open-vsx.org/extension/redhat/vscode-yaml) extension.
+
+1. [Install the YAML extension](#install-an-extension).
+1. Configure your schema:
+
+   1. On the top menu bar, select **File > Preferences > Settings**, or press
+   <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> and enter `Preferences: Open Settings (JSON)`.
+   1. In the `settings.json` file, add your schema configuration. For local schema paths, add the following prefix: `gitlab-web-ide://~/`. For example:
+
+      ```json
+      "yaml.schemas": {
+         "gitlab-web-ide://~/<path-to-local-schema>.json": ["*.yaml", "*.yml"]
+      }
+      ```
 
 ## Related topics
 
@@ -336,6 +366,25 @@ To update the OAuth callback URL:
 1. For **GitLab Web IDE**, select **Edit**.
 1. Enter the OAuth callback URL.
    You can enter multiple URLs separated by newlines.
+
+### Access token lifetime cannot be less than 5 minutes
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+You might encounter an error message stating that the access token lifetime cannot be less
+than 5 minutes.
+
+This error occurs when your GitLab instance is configured with an access token expiry time of
+less than 5 minutes. The Web IDE requires access tokens with a minimum lifetime of
+5 minutes to function properly.
+
+To resolve this issue, increase the access token lifetime to at least 5 minutes in your
+instance configuration. For more information about configuring access token expiration,
+see [access token expiration](../../../integration/oauth_provider.md#access-token-expiration).
 
 ### Workhorse dependency
 

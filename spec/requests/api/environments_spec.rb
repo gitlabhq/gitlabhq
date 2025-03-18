@@ -124,7 +124,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       end
     end
 
-    it_behaves_like 'enforcing job token policies', :read_environments do
+    it_behaves_like 'enforcing job token policies', :read_environments,
+      allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
         get api("/projects/#{source_project.id}/environments"), params: { job_token: target_job.token }
       end
@@ -149,8 +150,17 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['description']).to eq('description')
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['tier']).to eq('staging')
-        expect(json_response['external']).to be nil
-        expect(json_response['auto_stop_setting']).to eq('always')
+        expect(json_response['external']).to be_nil
+        expect(json_response['auto_stop_setting']).to eq('with_action')
+      end
+
+      context 'when the tier is development' do
+        it 'creates an environment with auto_stop_setting set to always' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'development' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['auto_stop_setting']).to eq('always')
+        end
       end
 
       context 'when associating a cluster agent' do
@@ -188,28 +198,28 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", kubernetes_namespace: 'flux-system' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+          expect(json_response['message']).to eq(['Kubernetes namespace cannot be set without a cluster agent'])
         end
 
         it 'fails to create environment with flux resource path but no cluster agent and kubernetes namespace' do
           post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", flux_resource_path: 'HelmRelease/flux-system' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
+          expect(json_response['message']).to eq(['Flux resource path cannot be set without a kubernetes namespace'])
         end
 
         it 'fails to create environment with flux resource path but no cluster agent' do
           post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", kubernetes_namespace: 'flux-system', flux_resource_path: 'HelmRelease/flux-system' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+          expect(json_response['message']).to eq(['Kubernetes namespace cannot be set without a cluster agent'])
         end
 
         it 'fails to create environment with cluster agent and flux resource path but no kubernetes namespace' do
           post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent: cluster_agent.id, flux_resource_path: 'HelmRelease/flux-system' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
+          expect(json_response['message']).to eq(['Flux resource path cannot be set without a kubernetes namespace'])
         end
 
         it 'fails to create environment with a non existing cluster agent' do
@@ -605,6 +615,21 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        context 'when the environment cannot be stopped' do
+          before do
+            allow_next_instance_of(Environments::StopService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'error message'))
+            end
+          end
+
+          it 'returns 400 status' do
+            post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('400 Bad request - error message')
+          end
+        end
       end
 
       it 'returns a 404 for non existing id' do
@@ -646,7 +671,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     let_it_be(:bridge_job) { create(:ci_bridge, :running, project: project, user: user) }
     let_it_be(:build_job) { create(:ci_build, :running, project: project, user: user) }
 
-    it_behaves_like 'enforcing job token policies', :read_environments do
+    it_behaves_like 'enforcing job token policies', :read_environments,
+      allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
         get api("/projects/#{source_project.id}/environments/#{environment.id}"),
           params: { job_token: target_job.token }

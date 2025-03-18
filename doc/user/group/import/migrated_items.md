@@ -176,6 +176,7 @@ Issue-related project items that are migrated to the destination GitLab instance
 | Issue resource iteration events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983)        |
 | Merge request URL references    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947)        |
 | Time tracking                   | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
+| Comments                        | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
 
@@ -194,6 +195,7 @@ Merge request-related project items that are migrated to the destination GitLab 
 | Merge request resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
 | Issue URL references                    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) |
 | Time tracking                           | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
+| Comments                                | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
 

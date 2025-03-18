@@ -4,8 +4,8 @@ fragment ReadyToMerge on Project {
   id
   onlyAllowMergeIfPipelineSucceeds
   mergeRequestsFfOnlyEnabled
-  squashReadOnly
   mergeRequest(iid: $iid) {
     ...ReadyToMergeMergeRequest
+    squashReadOnly
   }
 }

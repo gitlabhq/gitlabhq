@@ -120,8 +120,8 @@
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
-.if-merge-request-labels-sec-decomposition: &if-merge-request-labels-sec-decomposition
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /sec-decomposition/'
+.if-merge-request-labels-pipeline-single-db-sec-connection: &if-merge-request-labels-pipeline-single-db-sec-connection
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:single-db-sec-connection/'
 
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
@@ -270,6 +270,14 @@
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
 
+# versions of all these components can affect cloud native deployment
+.cng-dependency-patterns: &cng-dependency-patterns
+  - GITLAB_WORKHORSE_VERSION
+  - GITLAB_SHELL_VERSION
+  - GITLAB_KAS_VERSION
+  - GITLAB_PAGES_VERSION
+  - GITALY_SERVER_VERSION
+
 .workhorse-patterns: &workhorse-patterns
   - ".gitlab/ci/version.yml"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
@@ -303,6 +311,9 @@
   - "doc/**/*"
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"
+  - "rubocop/cop/gitlab/documentation_links/**/*"
+  - "scripts/frontend/lint_docs_links.mjs"
+  - "tooling/eslint-config/eslint-local-rules/**/*"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/breaking_windows.md"
@@ -520,6 +531,7 @@
 .code-backstage-patterns: &code-backstage-patterns
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "eslint.config.mjs"
+  - ".eslint_todo/*.mjs"
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
@@ -686,6 +698,8 @@
 
 .rubocop-patterns: &rubocop-patterns
   - ".{rubocop,rubocop_todo}.yml"
+  - "{,spec/}rubocop/cop/.rubocop.yml"
+  - ".rubocop/*.yml"
   - ".rubocop_todo/**/*.yml"
   - "{,ee/,jh/}rubocop/**/*"  # We might be changing custom cops
   - "{,ee/,jh/}Gemfile.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
@@ -748,8 +762,8 @@
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
 
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
-  - "qa/gems/gitlab-cng/**/*.rb"
-  - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
+  - "qa/gems/gitlab-orchestrator/**/*.rb"
+  - "qa/gems/gitlab-orchestrator/{Gemfile,Gemfile.lock}"
 
 .observability-code-patterns: &observability-code-patterns
   # backend
@@ -1323,6 +1337,8 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
       changes: *qa-patterns
+    - <<: *if-merge-request
+      changes: *cng-dependency-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-default-refs
@@ -1655,6 +1671,11 @@
     - <<: *if-merge-request
       changes: *code-patterns
 
+.qa:rules:code-merge-request-targeting-stable-branch:
+  rules:
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *code-patterns
+
 .qa:rules:code-merge-request-allowed-to-fail:
   rules:
     - <<: *if-merge-request
@@ -1805,6 +1826,8 @@
     # this rule needs to be synced with .notify:rules:notify-test-on-omnibus-failure to produce failure notification in stable branch merge requests
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
+      variables:
+        MR_STABLE_BRANCH_CODE_PATTERNS: "true"
     # add option to trigger test-on-omnibus manually on qa changes ahead of tier-2
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1815,11 +1838,14 @@
     - <<: *if-merge-request
       changes: *dependency-patterns
       variables:
-        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
+        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: "true"
+        DEPENDENCY_UPDATE: "true"
     - <<: *if-merge-request
       changes: *code-qa-patterns
       when: manual
       allow_failure: true
+      variables:
+        MR_CODE_PATTERNS: "true"
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
 # Note: If any changes are made to this rule, the following should also be updated - .qa:rules:test-on-omnibus-ce:follow-up
@@ -1892,14 +1918,14 @@
       when: never
     - <<: *if-security-schedule
       when: never
+    - <<: *if-merge-request
+      changes: *cng-dependency-patterns
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        QA_RUN_IN_PARALLEL: "true"
+      variables: *qa-e2e-test-schedule-variables
 
 .qa:rules:test-on-omnibus-nightly:
   rules:
@@ -2014,7 +2040,7 @@
   rules:
     - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request-labels-run-single-db
-    - <<: *if-merge-request-labels-sec-decomposition
+    - <<: *if-merge-request-labels-pipeline-single-db-sec-connection
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB_SEC_CONNECTION == "true"'
@@ -2030,7 +2056,7 @@
 .rails:rules:db:check-migrations-single-db-sec-connection:
   rules:
     - <<: *if-merge-request-labels-run-single-db
-    - <<: *if-merge-request-labels-sec-decomposition
+    - <<: *if-merge-request-labels-pipeline-single-db-sec-connection
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
 
@@ -2352,7 +2378,7 @@
     - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
-      when: manual
+      when: never
       allow_failure: true
 
 .rails:rules:ee-gitlab-duo-chat-always:
@@ -2366,7 +2392,7 @@
     - !reference [".rails:rules:ee-gitlab-duo-chat-optional", rules]
     - <<: *if-default-branch-refs
       changes: *setup-test-env-patterns
-      when: manual
+      when: never
       allow_failure: true
 
 .rails:rules:db:check-schema:
@@ -3384,9 +3410,10 @@
 ##############################
 .ai-gateway:rules:tagging:
   rules:
-    - if: '$AIGW_PIPELINE_TRIGGER_TOKEN == null'
+    - if: '$AIGW_TAGGING_ACCESS_TOKEN == null'
       when: never
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+-ee$/'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(-ee)?$/'
+      # Only run when a version tag is created (release is cut)
 
 ###################
 # Benchmark rules #

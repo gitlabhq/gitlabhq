@@ -5,8 +5,6 @@ module Packages
     class RecipeRevision < ApplicationRecord
       include ShaAttribute
 
-      REVISION_LENGTH_MAX = 40
-
       sha_attribute :revision
 
       belongs_to :package, class_name: 'Packages::Conan::Package', inverse_of: :conan_recipe_revisions
@@ -17,8 +15,8 @@ module Packages
       has_many :file_metadata, inverse_of: :recipe_revision, class_name: 'Packages::Conan::FileMetadatum'
 
       validates :package, :project, presence: true
-      validates :revision, presence: true, bytesize: { maximum: -> { REVISION_LENGTH_MAX } },
-        uniqueness: { scope: :package_id }
+      validates :revision, presence: true, format: { with: ::Gitlab::Regex.conan_revision_regex_v2 }
+      validates :revision, uniqueness: { scope: :package_id }, on: %i[create update]
     end
   end
 end

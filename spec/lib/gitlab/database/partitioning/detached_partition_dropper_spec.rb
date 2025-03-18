@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
+RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature_category: :database do
   include Database::TableSchemaHelpers
 
   subject(:dropper) { described_class.new }
@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
   end
 
   before do
+    stub_const("#{described_class}::PROCESSING_DELAY", 0.1)
     connection.execute(<<~SQL)
       CREATE TABLE _test_referenced_table (
         id bigserial primary key not null
@@ -237,6 +238,35 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
           expect_partition_present(errored_partition_name)
           expect_partition_removed(dropped_partition_name)
         end
+      end
+    end
+
+    context 'processes partitions with a delay' do
+      before do
+        create_partition(
+          name: :_test_partition_1,
+          from: 3.months.ago,
+          to: 2.months.ago,
+          attached: false,
+          drop_after: 1.second.ago
+        )
+
+        create_partition(
+          name: :_test_partition_2,
+          from: 2.months.ago,
+          to: 1.month.ago,
+          attached: false,
+          drop_after: 1.second.ago
+        )
+      end
+
+      it 'waits between processing each partition' do
+        expect(dropper).to receive(:sleep).with(described_class::PROCESSING_DELAY).twice
+
+        dropper.perform
+
+        expect_partition_removed(:_test_partition_1)
+        expect_partition_removed(:_test_partition_2)
       end
     end
   end

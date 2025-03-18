@@ -10,14 +10,17 @@ exports[`Design item component when item appears in view after image is loaded r
 
 exports[`Design item component with notes renders item with multiple comments 1`] = `
 <a
-  class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
+  class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
-  <div
-    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
+  <gl-card-stub
+    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+    class="design-list-item gl-mb-0 js-design-list-item"
+    footerclass=""
+    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-flex gl-grow gl-justify-center"
+      class="gl-flex gl-grow gl-items-center gl-justify-center"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -28,22 +31,18 @@ exports[`Design item component with notes renders item with multiple comments 1`
         src="null"
       />
     </gl-intersection-observer-stub>
-  </div>
-  <div
-    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
-  >
     <div
-      class="gl-flex gl-flex-col str-truncated-100"
+      class="gl-flex gl-flex-col gl-truncate"
     >
       <span
-        class="gl-text-sm str-truncated-100"
+        class="gl-text-sm gl-truncate"
         data-testid="design-img-filename-1"
         title="test"
       >
         test
       </span>
       <span
-        class="str-truncated-100"
+        class="gl-truncate"
       >
         Updated
         <timeago-stub
@@ -70,20 +69,23 @@ exports[`Design item component with notes renders item with multiple comments 1`
         2
       </span>
     </div>
-  </div>
+  </gl-card-stub>
 </a>
 `;
 
 exports[`Design item component with notes renders item with single comment 1`] = `
 <a
-  class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
+  class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
-  <div
-    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
+  <gl-card-stub
+    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+    class="design-list-item gl-mb-0 js-design-list-item"
+    footerclass=""
+    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-flex gl-grow gl-justify-center"
+      class="gl-flex gl-grow gl-items-center gl-justify-center"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -94,22 +96,18 @@ exports[`Design item component with notes renders item with single comment 1`] =
         src="null"
       />
     </gl-intersection-observer-stub>
-  </div>
-  <div
-    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
-  >
     <div
-      class="gl-flex gl-flex-col str-truncated-100"
+      class="gl-flex gl-flex-col gl-truncate"
     >
       <span
-        class="gl-text-sm str-truncated-100"
+        class="gl-text-sm gl-truncate"
         data-testid="design-img-filename-1"
         title="test"
       >
         test
       </span>
       <span
-        class="str-truncated-100"
+        class="gl-truncate"
       >
         Updated
         <timeago-stub
@@ -136,6 +134,6 @@ exports[`Design item component with notes renders item with single comment 1`] =
         1
       </span>
     </div>
-  </div>
+  </gl-card-stub>
 </a>
 `;

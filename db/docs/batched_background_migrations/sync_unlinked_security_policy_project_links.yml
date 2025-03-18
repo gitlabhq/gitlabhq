@@ -1,0 +1,9 @@
+---
+migration_job_name: SyncUnlinkedSecurityPolicyProjectLinks
+description: Creates the missing SecurityPolicyProjectLink records for existing security policies without project links.
+  This migration is requeued as it was failed with ArgumentError.
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181164
+milestone: '17.10'
+queued_migration_version: 20250228143727
+finalized_by: # version of the migration that finalized this BBM

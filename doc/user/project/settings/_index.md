@@ -170,7 +170,9 @@ To set this default:
 
 {{< history >}}
 
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `extended_expiry_webhook_execution_setting`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/513684) in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513684) in GitLab 17.10. Feature flag `extended_expiry_webhook_execution_setting` removed.
 
 {{< /history >}}
 

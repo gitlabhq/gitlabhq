@@ -74,12 +74,12 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       end
       # rubocop: enable RSpec/AnyInstanceOf
 
-      expect(path).not_to be(nil)
+      expect(path).not_to be_nil
       expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
 
       post api(path, user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
 
-      expect(tempfile.path).to be(nil)
+      expect(tempfile.path).to be_nil
       expect(File.exist?(path)).to be(false)
     end
   end

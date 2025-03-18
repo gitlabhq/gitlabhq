@@ -2,7 +2,7 @@
 <script>
 import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import VirtualList from 'vue-virtual-scroll-list';
+import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { Mousetrap, addStopCallback } from '~/lib/mousetrap';
 import { keysFor, MR_GO_TO_FILE } from '~/behaviors/shortcuts/keybindings';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
@@ -16,7 +16,7 @@ export default {
     GlIcon,
     GlLoadingIcon,
     Item,
-    VirtualList,
+    RecycleScroller,
   },
   props: {
     files: {
@@ -66,9 +66,6 @@ export default {
     filteredBlobsLength() {
       return this.filteredBlobs.length;
     },
-    listShowCount() {
-      return this.filteredBlobsLength ? Math.min(this.filteredBlobsLength, 5) : 1;
-    },
     listHeight() {
       return FILE_FINDER_ROW_HEIGHT;
     },
@@ -99,29 +96,10 @@ export default {
         this.focusedIndex = 0;
       });
     },
-    focusedIndex() {
+    focusedIndex(val) {
       if (!this.mouseOver) {
         this.$nextTick(() => {
-          if (!this.$refs.virtualScrollList?.$el) {
-            return;
-          }
-          const el = this.$refs.virtualScrollList.$el;
-          const scrollTop = this.focusedIndex * FILE_FINDER_ROW_HEIGHT;
-          const bottom = this.listShowCount * FILE_FINDER_ROW_HEIGHT;
-
-          if (this.focusedIndex === 0) {
-            // if index is the first index, scroll straight to start
-            el.scrollTop = 0;
-          } else if (this.focusedIndex === this.filteredBlobsLength - 1) {
-            // if index is the last index, scroll to the end
-            el.scrollTop = this.filteredBlobsLength * FILE_FINDER_ROW_HEIGHT;
-          } else if (scrollTop >= bottom + el.scrollTop) {
-            // if element is off the bottom of the scroll list, scroll down one item
-            el.scrollTop = scrollTop - bottom + FILE_FINDER_ROW_HEIGHT;
-          } else if (scrollTop < el.scrollTop) {
-            // if element is off the top of the scroll list, scroll up one item
-            el.scrollTop = scrollTop;
-          }
+          this.$refs.virtualScrollList?.scrollToItem(val);
         });
       }
     },
@@ -255,11 +233,29 @@ export default {
         />
       </div>
       <div>
-        <virtual-list ref="virtualScrollList" :size="listHeight" :remain="listShowCount" wtag="ul">
-          <template v-if="filteredBlobsLength">
-            <li v-for="(file, index) in filteredBlobs" :key="file.key">
+        <recycle-scroller
+          ref="virtualScrollList"
+          :items="filteredBlobs"
+          :item-size="listHeight"
+          key-field="key"
+          style="max-height: 275px"
+        >
+          <template #before>
+            <li v-if="!filteredBlobs.length || loading" class="dropdown-menu-empty-item">
+              <div class="gl-my-3 gl-ml-3 gl-mr-3">
+                <template v-if="loading">
+                  <gl-loading-icon />
+                </template>
+                <template v-else>
+                  {{ __('No files found.') }}
+                </template>
+              </div>
+            </li>
+          </template>
+          <template #default="{ item, index }">
+            <li>
               <item
-                :file="file"
+                :file="item"
                 :search-text="searchText"
                 :focused="index === focusedIndex"
                 :index="index"
@@ -271,17 +267,7 @@ export default {
               />
             </li>
           </template>
-          <li v-else class="dropdown-menu-empty-item">
-            <div class="gl-mb-3 gl-ml-3 gl-mr-3 gl-mt-5">
-              <template v-if="loading">
-                <gl-loading-icon />
-              </template>
-              <template v-else>
-                {{ __('No files found.') }}
-              </template>
-            </div>
-          </li>
-        </virtual-list>
+        </recycle-scroller>
       </div>
     </div>
   </div>

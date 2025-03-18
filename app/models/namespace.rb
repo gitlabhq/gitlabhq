@@ -187,7 +187,7 @@ class Namespace < ApplicationRecord
   delegate :math_rendering_limits_enabled?,
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
-  delegate :add_creator, :pending_delete, :pending_delete=, :deleted_at, :deleted_at=,
+  delegate :add_creator, :deleted_at, :deleted_at=,
     to: :namespace_details
   delegate :resource_access_token_notify_inherited,
     :resource_access_token_notify_inherited=,
@@ -198,6 +198,7 @@ class Namespace < ApplicationRecord
     :resource_access_token_notify_inherited_locked_by_ancestor?,
     :resource_access_token_notify_inherited_locked_by_application_setting?,
     to: :namespace_settings
+  delegate :jwt_ci_cd_job_token_enabled?, to: :namespace_settings
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
@@ -230,6 +231,7 @@ class Namespace < ApplicationRecord
   scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
   scope :ordered_by_name, -> { order(:name) }
   scope :top_level, -> { by_parent(nil) }
+  scope :with_project_statistics, -> { includes(projects: :statistics) }
 
   scope :with_statistics, -> do
     namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }

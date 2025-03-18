@@ -137,8 +137,9 @@ module IconsHelper
       end
 
     css_class = options.delete(:class)
+    variant = options.delete(:variant)
 
-    sprite_icon(name, size: DEFAULT_ICON_SIZE, css_class: css_class)
+    sprite_icon(name, size: DEFAULT_ICON_SIZE, css_class: css_class, variant: variant)
   end
 
   def file_type_icon_class(type, mode, name)

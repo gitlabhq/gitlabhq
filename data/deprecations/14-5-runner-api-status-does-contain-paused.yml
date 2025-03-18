@@ -19,4 +19,4 @@
   stage: Verify
   tiers: [Core, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344648
-  documentation_url: https://docs.gitlab.com/ee/api/runners.html
+  documentation_url: https://docs.gitlab.com/api/runners/

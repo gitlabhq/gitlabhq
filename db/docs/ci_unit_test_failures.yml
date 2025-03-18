@@ -8,14 +8,6 @@ description: Stores unit test failure data produced from builds.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56137
 milestone: '13.11'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: unit_test_id
-        table: ci_unit_tests
-        sharding_key: project_id
-        belongs_to: unit_test
-desired_sharding_key_migration_job_name: BackfillCiUnitTestFailuresProjectId
 table_size: small
+sharding_key:
+  project_id: projects

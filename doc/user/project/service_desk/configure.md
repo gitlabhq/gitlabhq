@@ -1206,7 +1206,7 @@ or completely separately.
    gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.com"
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

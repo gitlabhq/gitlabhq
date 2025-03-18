@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
 
 import { isString } from 'lodash';
 import { isValidDate, localeDateFormat } from '~/lib/utils/datetime_utility';
@@ -15,6 +15,7 @@ export default {
   components: {
     GlCollapsibleListbox,
     GlIcon,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -120,13 +121,36 @@ export default {
   },
   i18n: {
     daysSelected: NUMBER_OF_DAYS_SELECTED,
+    label: __('Date range'),
   },
 };
 </script>
 
 <template>
   <div class="gl-flex gl-items-center gl-gap-3">
-    <gl-collapsible-listbox v-model="selectedValue" :items="items" @select="onSelect" />
+    <gl-collapsible-listbox
+      v-model="selectedValue"
+      :items="items"
+      :header-text="$options.i18n.label"
+      @select="onSelect"
+    >
+      <template #toggle>
+        <gl-button
+          v-gl-tooltip="$options.i18n.label"
+          data-testid="selected-date-range"
+          :aria-label="`${$options.i18n.label} ${selectedValue}`"
+          :title="$options.i18n.label"
+          button-text-classes="gl-mr-[-4px]"
+          >{{ $options.i18n.label }}
+          <gl-icon
+            aria-hidden="true"
+            name="chevron-down"
+            :size="16"
+            variant="current"
+            data-testid="dropdown-icon"
+        /></gl-button>
+      </template>
+    </gl-collapsible-listbox>
     <div v-if="showDateRangeString || showTooltip" class="gl-text-subtle">
       <span v-if="showDateRangeString" data-testid="predefined-date-range-string">{{
         dateRangeString

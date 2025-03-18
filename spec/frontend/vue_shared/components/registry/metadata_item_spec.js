@@ -25,8 +25,15 @@ describe('Metadata Item', () => {
   const findTooltipOnTruncate = (w = wrapper) => w.findComponent(TooltipOnTruncate);
   const findTextTooltip = () => wrapper.find('[data-testid="text-tooltip-container"]');
 
+  const SIZE_TO_TAILWIND_UTILITY_MAPPING = {
+    s: 'gl-max-w-20',
+    m: 'gl-max-w-30',
+    l: 'gl-max-w-48',
+    xl: 'gl-max-w-75',
+  };
+
   describe.each(['s', 'm', 'l', 'xl'])('size class', (size) => {
-    const className = `mw-${size}`;
+    const className = SIZE_TO_TAILWIND_UTILITY_MAPPING[size];
 
     it(`${size} is assigned correctly to text`, () => {
       mountComponent({ ...defaultProps, size });

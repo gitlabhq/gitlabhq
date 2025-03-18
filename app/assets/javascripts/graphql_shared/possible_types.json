@@ -68,6 +68,17 @@
     "Submodule",
     "TreeEntry"
   ],
+  "EventTargetType": [
+    "Design",
+    "Issue",
+    "MergeRequest",
+    "Milestone",
+    "Note",
+    "Project",
+    "Snippet",
+    "UserCore",
+    "WikiPage"
+  ],
   "Eventable": [
     "BoardEpic",
     "Epic"
@@ -276,7 +287,6 @@
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetCustomFields",
-    "WorkItemWidgetCustomStatus",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",
@@ -298,14 +308,17 @@
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",
     "WorkItemWidgetTimeTracking",
+    "WorkItemWidgetVerificationStatus",
+    "WorkItemWidgetVulnerabilities",
     "WorkItemWidgetWeight"
   ],
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
-    "WorkItemWidgetDefinitionCustomStatus",
+    "WorkItemWidgetDefinitionCustomFields",
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
+    "WorkItemWidgetDefinitionStatus",
     "WorkItemWidgetDefinitionWeight"
   ]
 }

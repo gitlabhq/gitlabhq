@@ -19,4 +19,4 @@
     To use the full state name, including the period, [migrate to the full state file](https://docs.gitlab.com/user/infrastructure/iac/terraform_state/#migrate-to-a-gitlab-managed-terraform-state).
   end_of_support_milestone:
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/iac/troubleshooting.html#troubleshooting-terraform-state'
+  documentation_url: 'https://docs.gitlab.com/user/infrastructure/iac/troubleshooting/#troubleshooting-terraform-state'

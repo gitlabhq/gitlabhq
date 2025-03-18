@@ -1,0 +1,7 @@
+migration_job_name: UpdateClosedMergedMrs
+description: Corrective action for GitLab MRs that may have gotten into a "closed" state despite already being merged.
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181021
+milestone: '17.10'
+queued_migration_version: 20250220185148
+finalized_by: # version of the migration that finalized this BBM

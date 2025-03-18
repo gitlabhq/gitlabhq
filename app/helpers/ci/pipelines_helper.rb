@@ -81,8 +81,8 @@ module Ci
         project_id: project.id,
         pipelines_path: project_pipelines_path(project),
         default_branch: project.default_branch,
-        pipelines_editor_path: project_ci_pipeline_editor_path(project),
-        can_view_pipeline_editor: can_view_pipeline_editor?(project),
+        pipeline_editor_path: project_ci_pipeline_editor_path(project),
+        can_view_pipeline_editor: can_view_pipeline_editor?(project).to_s,
         ref_param: params[:ref] || project.default_branch,
         var_param: params[:var].to_json,
         file_param: params[:file_var].to_json,
@@ -90,7 +90,7 @@ module Ci
         project_refs_endpoint: refs_project_path(project, sort: 'updated_desc'),
         settings_link: project_settings_ci_cd_path(project),
         max_warnings: ::Gitlab::Ci::Warnings::MAX_LIMIT,
-        is_maintainer: can?(current_user, :maintainer_access, project)
+        user_role: project.team.human_max_access(current_user&.id)
       }
     end
 

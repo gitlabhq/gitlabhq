@@ -8,7 +8,6 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   FORM_TYPES,
-  WORK_ITEMS_TREE_TEXT,
   WORK_ITEM_TYPE_VALUE_MAP,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
@@ -42,7 +41,6 @@ import WorkItemRolledUpCount from './work_item_rolled_up_count.vue';
 
 export default {
   FORM_TYPES,
-  WORK_ITEMS_TREE_TEXT,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
@@ -175,7 +173,6 @@ export default {
         if (this.hasNextPage && this.children.length === 0) {
           this.fetchNextPage();
         }
-        this.checkDrawerParams();
       },
     },
     workItemTypes: {
@@ -304,6 +301,16 @@ export default {
       };
     },
   },
+  watch: {
+    'workItem.id': {
+      // we only want to open the drawer on initial widget load and not from drawer widget
+      handler(newValue, oldValue) {
+        if (!oldValue && newValue && !this.isDrawer) {
+          this.checkDrawerParams();
+        }
+      },
+    },
+  },
   mounted() {
     this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
     this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
@@ -390,7 +397,7 @@ export default {
 <template>
   <crud-component
     ref="workItemTree"
-    :title="$options.WORK_ITEMS_TREE_TEXT.title"
+    :title="s__('WorkItem|Child items')"
     :anchor-id="widgetName"
     :is-loading="isLoadingChildren && !fetchNextPageInProgress"
     is-collapsible
@@ -463,7 +470,11 @@ export default {
     </template>
 
     <template v-if="showEmptyMessage" #empty>
-      {{ $options.WORK_ITEMS_TREE_TEXT.empty }}
+      {{
+        s__(
+          'WorkItem|No child items are currently assigned. Use child items to break down work into smaller parts.',
+        )
+      }}
     </template>
 
     <template #default>

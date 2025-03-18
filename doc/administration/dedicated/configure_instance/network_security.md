@@ -132,7 +132,7 @@ Prerequisites:
 
   {{< alert type="note" >}}
 
-If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
+  If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
 
   {{< /alert >}}
 
@@ -256,8 +256,16 @@ IP addresses that have been added to your IP allowlist can be viewed on the Conf
 1. At the top of the page, select **Configuration**.
 1. Expand **Allowed Source List Config / IP allowlist**.
 1. Turn on the **Enable** toggle.
-1. Select **Add Item**.
-1. Enter the IPv4 **Address** and **Description**. To add another IPv4 address, repeat steps 5 and 6. IPv6 addresses are not supported.
+1. To add an IP address:
+
+   1. Select **Add Item**.
+   1. In the **Address** text box, enter either:
+      - A single IPv4 address (for example, `192.168.1.1`).
+      - An IPv4 address range in CIDR notation (for example, `192.168.1.0/24`).
+   1. In the **Description** text box, enter a description.
+
+   To add another address or range, repeat this step. IPv6 addresses are not supported.
+
 1. Select **Save**.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
 

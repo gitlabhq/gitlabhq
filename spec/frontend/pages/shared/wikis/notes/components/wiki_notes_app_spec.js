@@ -15,7 +15,7 @@ import eventHub, {
   EVENT_EDIT_WIKI_START,
 } from '~/pages/shared/wikis/event_hub';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { note, noteableId, queryVariables } from '../mock_data';
+import { noteableId, queryVariables } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -37,6 +37,7 @@ const mockDiscussion = (...children) => {
         bodyHtml: c,
         createdAt: '2023-05-18T14:24:07.000+00:00',
         lastEditedAt: null,
+        lastEditedBy: null,
         url: 'https://path/to/2/',
         awardEmoji: null,
         userPermissions: {
@@ -51,6 +52,11 @@ const mockDiscussion = (...children) => {
       })),
     },
   };
+};
+
+const apolloCache = {
+  writeQuery: jest.fn(),
+  readQuery: jest.fn(),
 };
 
 describe('WikiNotesApp', () => {
@@ -79,6 +85,14 @@ describe('WikiNotesApp', () => {
       ],
     ]);
 
+    fakeApollo.clients.defaultClient.cache = apolloCache;
+    fakeApollo.queries = {
+      wikiPage: {
+        loading: false,
+        refetch: jest.fn().mockResolvedValue({}),
+      },
+    };
+
     wrapper = shallowMountExtended(WikiNotesApp, {
       apolloProvider: fakeApollo,
       provide: {
@@ -91,8 +105,24 @@ describe('WikiNotesApp', () => {
     await nextTick();
   };
 
+  let wikiPage = {};
   beforeEach(async () => {
     await createWrapper();
+
+    wikiPage = {
+      id: noteableId,
+      discussions: {
+        nodes: [],
+      },
+    };
+
+    // stub apollo's cache read, and add some default data with the wikiPage result method
+    apolloCache.readQuery.mockReturnValue({
+      noteableId,
+      wikiPage,
+    });
+
+    wrapper.vm.$options.apollo.wikiPage.result.call(wrapper.vm, { data: {} });
   });
 
   describe('when editing a wiki page', () => {
@@ -304,26 +334,31 @@ describe('WikiNotesApp', () => {
       expect(wrapper.vm.placeholderNote).toMatchObject({});
     });
 
-    it('shouldupdateDiscussions when "creating-note:success" is called', async () => {
+    it('should call writeQuery with the correct data when "creating-note:success" is called', async () => {
       const newDiscussion = {
         id: '2',
-        notes: {
-          nodes: [
-            {
-              ...note,
-              id: 2,
-              body: 'New Comment',
-            },
-          ],
-        },
       };
       const commentForm = wrapper.findComponent(WikiCommentForm);
       commentForm.vm.$emit('creating-note:success', newDiscussion);
       await nextTick();
 
-      const discussions = wrapper.findAllComponents(WikiDiscussion);
-      expect(discussions.length).toBe(2);
-      expect(discussions.at(1).props('discussion')).toMatchObject(newDiscussion.notes.nodes);
+      wikiPage.discussions.nodes.push({
+        ...newDiscussion,
+        replyId: null,
+        resolvable: false,
+        resolved: false,
+        resolvedAt: null,
+        resolvedBy: null,
+      });
+
+      expect(apolloCache.writeQuery).toHaveBeenCalledWith({
+        query: wikiPageQuery,
+        variables: queryVariables,
+        data: {
+          noteableId: '7',
+          wikiPage,
+        },
+      });
     });
   });
 });

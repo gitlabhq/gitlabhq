@@ -8,6 +8,7 @@ FactoryBot.define do
 
     before(:create) do |migration|
       migration.project = migration.agent.project
+      migration.agent_name = migration.agent.name
     end
 
     agent_install_status { :pending }

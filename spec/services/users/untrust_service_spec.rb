@@ -28,7 +28,7 @@ RSpec.describe Users::UntrustService, feature_category: :user_management do
       operation
       user.reload
 
-      expect(user.trusted_with_spam_attribute).to be nil
+      expect(user.trusted_with_spam_attribute).to be_nil
     end
   end
 end

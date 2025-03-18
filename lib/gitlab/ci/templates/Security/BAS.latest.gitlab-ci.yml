@@ -1,5 +1,5 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/BAS.latest.gitlab-ci.yml
 
@@ -16,7 +16,7 @@
 #   - deploy
 #   - dast
 #
-# This feature has been deprecated. Read more here: https://docs.gitlab.com/ee/update/deprecations.html#proxy-based-dast-deprecated
+# This feature has been deprecated. Read more here: https://docs.gitlab.com/update/deprecations/#proxy-based-dast-deprecated
 
 include:
   - template: Security/DAST.latest.gitlab-ci.yml

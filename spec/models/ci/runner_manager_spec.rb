@@ -116,6 +116,22 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         end
       end
     end
+
+    context 'when runner has runtime features' do
+      it 'is valid' do
+        runner_manager = build(:ci_runner_machine, runtime_features: { cancelable: true })
+
+        expect(runner_manager).to be_valid
+      end
+    end
+
+    context 'when runner has an runtime features' do
+      it 'is invalid' do
+        runner_manager = build(:ci_runner_machine, runtime_features: { cancelable: 1 })
+
+        expect(runner_manager).not_to be_valid
+      end
+    end
   end
 
   describe 'status scopes', :freeze_time do
@@ -489,6 +505,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         ip_address: '8.8.8.8',
         architecture: '18-bit',
         config: { gpus: "all" },
+        runtime_features: { cancelable: true },
         executor: executor,
         version: version
       }
@@ -652,6 +669,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
                           .and change { runner_manager.reload.read_attribute(:architecture) }
                           .and change { runner_manager.reload.read_attribute(:config) }
                           .and change { runner_manager.reload.read_attribute(:executor_type) }
+                          .and change { runner_manager.reload.read_attribute(:runtime_features) }
     end
   end
 

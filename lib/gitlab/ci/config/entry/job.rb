@@ -16,6 +16,8 @@ module Gitlab
                             coverage retry parallel timeout
                             release id_tokens publish pages manual_confirmation run].freeze
 
+          PUBLIC_DIR = 'public'
+
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
             validates :config, mutually_exclusive_keys: %i[script run]
@@ -169,7 +171,7 @@ module Gitlab
               retry: retry_defined? ? retry_value : nil,
               parallel: has_parallel? ? parallel_value : nil,
               timeout: parsed_timeout,
-              artifacts: artifacts_value,
+              artifacts: artifacts_with_pages_publish_path,
               release: release_value,
               after_script: after_script_value,
               hooks: hooks_value,
@@ -201,6 +203,17 @@ module Gitlab
             name == :pages && config[:pages] != false # legacy behavior, overridable with `pages: false`
           end
 
+          def artifacts_with_pages_publish_path
+            return artifacts_value unless pages_job?
+
+            artifacts = artifacts_value || {}
+            artifacts = artifacts.reverse_merge(paths: [])
+
+            return artifacts if artifacts[:paths].include?(pages_publish_path)
+
+            artifacts.merge(paths: artifacts[:paths] + [pages_publish_path])
+          end
+
           def self.allowed_keys
             ALLOWED_KEYS
           end
@@ -217,6 +230,14 @@ module Gitlab
             return false if allow_failure_value.is_a?(Hash)
 
             allow_failure_value
+          end
+
+          def pages_publish_path
+            path = config[:publish] || PUBLIC_DIR
+
+            return path unless config[:pages].is_a?(Hash)
+
+            config.dig(:pages, :publish) || path
           end
         end
       end

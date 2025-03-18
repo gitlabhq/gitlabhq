@@ -9,5 +9,5 @@
   stage: Foundations  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/343210'  # (optional) This is a link to the deprecation issue in GitLab
-  documentation_url: "https://docs.gitlab.com/ee/user/analytics/value_stream_analytics.html#filter-value-stream-analytics-data"  # (optional) This is a link to the current documentation page
+  documentation_url: "https://docs.gitlab.com/user/analytics/value_stream_analytics/#filter-value-stream-analytics-data"  # (optional) This is a link to the current documentation page
   image_url: "img/vsa_warning.png"  # (optional) This is a link to a thumbnail image depicting the feature

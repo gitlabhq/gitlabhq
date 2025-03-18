@@ -83,6 +83,60 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
     it_behaves_like 'GET access tokens are paginated and ordered'
   end
 
+  describe '#toggle_dpop' do
+    context "when feature flag is enabled" do
+      before do
+        stub_feature_flags(dpop_authentication: true)
+      end
+
+      context "when toggling dpop" do
+        it "enables dpop" do
+          put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+          expect(access_token_user.dpop_enabled).to be(true)
+        end
+
+        it "disables dpop" do
+          put :toggle_dpop, params: { user: { dpop_enabled: "0" } }
+          expect(access_token_user.dpop_enabled).to be(false)
+        end
+      end
+
+      context 'when user preference update succeeds' do
+        it 'shows a success flash message' do
+          put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+          expect(flash[:notice]).to eq(_('DPoP preference updated.'))
+        end
+      end
+
+      context 'when user preference update fails' do
+        before do
+          allow_next_instance_of(UserPreferences::UpdateService) do |instance|
+            allow(instance).to receive(:execute)
+                                 .and_return(ServiceResponse.error(message: 'Could not update preference'))
+          end
+        end
+
+        it 'shows a failure flash message' do
+          put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+          expect(flash[:warning]).to eq(_('Unable to update DPoP preference.'))
+        end
+      end
+    end
+
+    context "when feature flag is disabled" do
+      before do
+        stub_feature_flags(dpop_authentication: false)
+      end
+
+      it "redirects to controller" do
+        put :toggle_dpop, params: { user: { dpop_enabled: "1" } }
+
+        expect(response).to redirect_to(user_settings_personal_access_tokens_path)
+        expect(access_token_user.dpop_enabled).to be(false)
+      end
+    end
+  end
+
   describe '#index' do
     let!(:active_personal_access_token) { create(:personal_access_token, user: access_token_user) }
 
@@ -140,6 +194,33 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
 
     it 'sets available scopes' do
       expect(assigns(:scopes)).to eq(Gitlab::Auth.available_scopes_for(access_token_user))
+    end
+
+    context 'with feature flags virtual_registry_maven and dependency_proxy_read_write_scopes disabled' do
+      before do
+        stub_feature_flags(virtual_registry_maven: false, dependency_proxy_read_write_scopes: false)
+        stub_config(dependency_proxy: { enabled: true })
+
+        get :index
+      end
+
+      it 'does not include the virtual registry scopes' do
+        expect(assigns(:scopes)).not_to include(Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE)
+        expect(assigns(:scopes)).not_to include(Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE)
+      end
+
+      %i[virtual_registry_maven dependency_proxy_read_write_scopes].each do |feature_flag|
+        context "with feature flag #{feature_flag} enabled" do
+          before do
+            stub_feature_flags(feature_flag => true)
+          end
+
+          it 'includes the virtual registry scopes' do
+            expect(assigns(:scopes)).not_to include(::Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE)
+            expect(assigns(:scopes)).not_to include(::Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE)
+          end
+        end
+      end
     end
   end
 end

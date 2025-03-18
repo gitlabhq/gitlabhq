@@ -953,28 +953,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect(project.emails_disabled?).to eq(!result)
           expect(project.extended_prat_expiry_webhooks_execute?).to eq(result)
         end
-
-        context 'when extended_expiry_webhook_execution_setting feature flag is false' do
-          before do
-            stub_feature_flags(extended_expiry_webhook_execution_setting: false)
-          end
-
-          it "does not update extended_expiry_webhook_execution_setting" do
-            put :update, params: {
-              namespace_id: project.namespace,
-              id: project.path,
-              project: {
-                project_setting_attributes: {
-                  extended_prat_expiry_webhooks_execute: boolean_value
-                }
-              }
-            }
-
-            project.reload
-
-            expect(project.extended_prat_expiry_webhooks_execute?).to be false
-          end
-        end
       end
     end
 
@@ -1116,7 +1094,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
       expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:toast]).to eq(format(_("Project '%{project_name}' is being deleted."), project_name: project.full_name))
+      expect(flash[:toast]).to eq(format(_("Project &#39;%{project_name}&#39; is being deleted."), project_name: project.full_name))
       expect(response).to redirect_to(dashboard_projects_path)
     end
 
@@ -1702,7 +1680,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           end
 
           it 'prevents requesting project export' do
-            post action, params: { namespace_id: project.namespace, id: project }
+            get action, params: { namespace_id: project.namespace, id: project }
 
             expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
             expect(response).to have_gitlab_http_status(:too_many_requests)
@@ -1710,39 +1688,12 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         end
 
         context 'applies correct scope when throttling', :clean_gitlab_redis_rate_limiting do
-          before do
-            stub_application_setting(project_download_export_limit: 1)
-
-            travel_to Date.current.beginning_of_day
-          end
-
-          after do
-            travel_back
-          end
-
-          it 'applies throttle per namespace' do
+          it 'applies throttle per project' do
             expect(Gitlab::ApplicationRateLimiter)
               .to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project.namespace])
-
-            post action, params: { namespace_id: project.namespace, id: project }
-          end
-
-          it 'throttles downloads within same namespaces' do
-            # simulate prior request to the same namespace, which increments the rate limit counter for that scope
-            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export, scope: [user, project.namespace])
+              .with(:project_download_export, scope: [user, project])
 
             get action, params: { namespace_id: project.namespace, id: project }
-            expect(response).to have_gitlab_http_status(:too_many_requests)
-          end
-
-          it 'allows downloads from different namespaces' do
-            # simulate prior request to a different namespace, which increments the rate limit counter for that scope
-            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export,
-              scope: [user, create(:project, :with_export).namespace])
-
-            get action, params: { namespace_id: project.namespace, id: project }
-            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

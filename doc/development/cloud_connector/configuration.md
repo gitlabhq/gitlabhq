@@ -176,6 +176,7 @@ unit_primitives:
   - include_local_git_context
   - include_merge_request_context
   - include_snippet_context
+  - include_terminal_context
   - refactor_code
   - write_tests
 ```

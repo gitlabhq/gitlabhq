@@ -40,16 +40,19 @@ GET /personal_access_tokens?user_id=1
 
 Supported attributes:
 
-| Attribute           | Type           | Required | Description         |
-|---------------------|----------------|----------|---------------------|
-| `created_after`     | datetime (ISO 8601) | No | If defined, returns tokens created after the specified time. |
-| `created_before`    | datetime (ISO 8601) | No | If defined, returns tokens created before the specified time. |
-| `last_used_after`   | datetime (ISO 8601) | No | If defined, returns tokens last used after the specified time. |
-| `last_used_before`  | datetime (ISO 8601) | No | If defined, returns tokens last used before the specified time. |
-| `revoked`           | boolean             | No | If `true`, only returns revoked tokens. |
-| `search`            | string              | No | If defined, returns tokens that include the specified value in the name. |
-| `state`             | string              | No | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
-| `user_id`           | integer or string   | No | If defined, returns tokens owned by the specified user. Non-administrators can only filter their own tokens. |
+| Attribute          | Type                | Required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | No       | If defined, returns tokens that expire before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `user_id`          | integer or string   | No       | If defined, returns tokens owned by the specified user. Non-administrators can only filter their own tokens. |
 
 Example request:
 
@@ -242,10 +245,10 @@ curl --request POST \
 
 When you rotate or revoke a token, GitLab automatically tracks the relationship between the old and
 new tokens. Each time a new token is generated, a connection is made to the previous token. These
-connected tokens form a token family. Only the newest token can authenticate requests.
+connected tokens form a token family.
 
-If an old token is ever used to authenticate a request, the request fails and GitLab immediately
-revokes the newest token in the family.
+If you attempt to use the API to rotate an access token that was already revoked, any active tokens from the same
+token family are revoked.
 
 This feature helps secure GitLab if an old token is ever leaked or stolen. By tracking token
 relationships and automatically revoking access when old tokens are used, attackers cannot exploit

@@ -12,4 +12,4 @@ gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
   group_id: namespaces
-table_size: large
+table_size: small

@@ -8,7 +8,7 @@ title: Housekeeping
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -129,7 +129,7 @@ To trigger housekeeping tasks manually:
 This starts an asynchronous background worker for the project's repository. The
 background worker asks Gitaly to perform a number of optimizations.
 
-Housekeeping also [removes unreferenced LFS files](../raketasks/cleanup.md#remove-unreferenced-lfs-files)
+Housekeeping also [removes unreferenced LFS files](raketasks/cleanup.md#remove-unreferenced-lfs-files)
 from your project every `200` push, freeing up storage space for your project.
 
 ### Prune unreachable objects
@@ -163,6 +163,12 @@ To trigger a manual prune of unreachable objects:
 1. Return to the page where you selected **Run housekeeping**, and select **Prune unreachable objects**.
 
 ### Scheduled housekeeping
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 While GitLab automatically performs housekeeping tasks based on the number of
 pushes, it does not maintain repositories that don't receive any pushes at all.
@@ -262,6 +268,12 @@ took to execute. In the example above, the scheduled housekeeping completed
 in just over 5 minutes.
 
 ## Object pool repositories
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Object pool repositories are used by GitLab to deduplicate objects across forks
 of a repository. When creating the first fork, we:

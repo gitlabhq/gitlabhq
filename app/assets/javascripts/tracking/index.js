@@ -63,7 +63,10 @@ export function initDefaultTrackers() {
   }
 
   if (window.snowplowOptions.linkClickTracking) {
-    window.snowplow('enableLinkClickTracking');
+    window.snowplow('enableLinkClickTracking', {
+      pseudoClicks: true,
+      context: [standardContext, ...experimentContexts],
+    });
   }
 
   Tracking.flushPendingEvents();

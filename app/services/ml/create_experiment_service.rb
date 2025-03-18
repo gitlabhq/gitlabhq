@@ -2,7 +2,7 @@
 
 module Ml
   class CreateExperimentService
-    def initialize(project, experiment_name, user = nil)
+    def initialize(project, experiment_name, user)
       @project = project
       @name = experiment_name
       @user = user
@@ -15,6 +15,9 @@ module Ml
       return error(experiment.errors.full_messages) unless experiment.persisted?
 
       success(experiment)
+
+    rescue ActiveRecord::RecordNotUnique => e
+      error([e.message])
     end
 
     private

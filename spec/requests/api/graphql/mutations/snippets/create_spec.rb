@@ -37,6 +37,10 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
     graphql_mutation_response(:create_snippet)
   end
 
+  before do
+    create(:organization, :default)
+  end
+
   subject { post_graphql_mutation(mutation, current_user: current_user) }
 
   context 'when the user does not have permission' do

@@ -41,7 +41,7 @@ RSpec.describe Mattermost::Session, type: :request do
       it 'returns nill on calling a non exisitng method on request' do
         return_value = subject.request.method_missing("non_existing_method", "something") do
         end
-        expect(return_value).to be(nil)
+        expect(return_value).to be_nil
       end
     end
 

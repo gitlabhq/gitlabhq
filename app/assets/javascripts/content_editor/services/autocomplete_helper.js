@@ -135,7 +135,7 @@ export default class AutocompleteHelper {
     });
   }
 
-  #getDataSource = (referenceType, { command } = {}) => {
+  #getDataSource = (referenceType, { command, ...options } = {}) => {
     const sources = {
       user: this.dataSourceUrls.members,
       issue: this.dataSourceUrls.issues,
@@ -214,6 +214,8 @@ export default class AutocompleteHelper {
       sorter: sorters[referenceType] || sorters.default,
       filter: filters[referenceType],
       command,
+
+      ...options,
     });
   };
 }

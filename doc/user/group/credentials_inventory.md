@@ -18,61 +18,48 @@ title: Credentials inventory for GitLab.com
 
 {{< /history >}}
 
-As a GitLab.com top-level group owner, you are responsible for the overall security of your groups and projects.
-To assist, GitLab provides an inventory of all the credentials that can be used to access your groups and projects.
+{{< alert type="note" >}}
 
-This page describes how to manage the credentials inventory for GitLab.com. To manage credentials on GitLab Self-Managed, see [Credentials inventory for GitLab Self-Managed](../../administration/credentials_inventory.md).
+For GitLab Self-Managed, see [Credentials inventory for GitLab Self-Managed](../../administration/credentials_inventory.md).
 
-In the credentials inventory, you can view:
+{{< /alert >}}
 
-- For [enterprise users](../enterprise_user/_index.md):
-  - Personal access tokens (PATs).
-  - SSH keys.
+Use the credentials inventory to monitor and control access to your groups and projects for GitLab.com.
 
-You can also:
+As the Owner for a top-level group, you can:
 
-- [Revoke a personal access token](#revoke-a-users-personal-access-token).
-- [Delete a user's SSH key](#delete-a-users-ssh-key).
-- View the following information about access tokens:
-  - Who they belong to.
-  - Their access scope.
-  - Their usage pattern.
-  - When they:
-    - Expire.
-    - Were revoked.
+- Revoke personal access tokens.
+- Delete SSH keys.
+- Review credential details for your [enterprise users](../enterprise_user/_index.md) including:
+  - Ownership.
+  - Access scopes.
+  - Usage patterns.
+  - Expiration dates.
+  - Revocation dates.
 
-## Revoke a user's personal access token
+## Revoke personal access tokens
 
-You can revoke an enterprise user's personal access token.
+To revoke personal access tokens for enterprise users in your group:
 
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
-1. By the personal access token, select **Revoke**.
+1. Next to the personal access token, select **Revoke**.
+   If the token was previously expired or revoked, you'll see the date this happened instead.
 
-If a **Revoke** option is not available, the token might already be revoked or have expired, or have an expiration date set.
+The access token is revoked and the user is notified by email.
 
-| Token state | **Revoke** option displayed? | Comments                                                                   |
-|-------------|------------------------------|----------------------------------------------------------------------------|
-| Active      | Yes                          | Allows administrators to revoke the PAT, such as for a compromised account |
-| Expired     | No                           | Not applicable; token is already expired                                   |
-| Revoked     | No                           | Not applicable; token is already revoked                                   |
+## Delete SSH keys
 
-When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
-
-![The credentials inventory page listing personal access tokens.](img/group_credentials_inventory_personal_access_tokens_v17_5.png)
-
-## Delete a user's SSH key
+To delete SSH keys for enterprise users in your group:
 
 1. On the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
-1. By the SSH key, select **Delete**.
+1. Next to the SSH key, select **Delete**.
 
-The instance notifies the user.
+The SSH key is deleted and the user is notified.
 
-![The credentials inventory page listing SSH keys.](img/group_credentials_inventory_ssh_keys_v17_5.png)
+## Revoke project or group access tokens
 
-## Revoke a project or group access token
-
-Credentials inventory on GitLab.com does not support viewing or revoking project or group access tokens.
+You cannot view or revoke project or group access tokens using the credentials inventory on GitLab.com.
 [Issue 498333](https://gitlab.com/gitlab-org/gitlab/-/issues/498333) proposes to add this feature.

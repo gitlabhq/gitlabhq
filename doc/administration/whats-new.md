@@ -21,12 +21,12 @@ All users can see the feature list, but the entries might differ depending on th
 - Features only available on GitLab.com are not shown on GitLab Self-Managed instances.
 - Features only available to GitLab Self-Managed instances are not shown on GitLab.com.
 
-  {{< alert type="note" >}}
+{{< alert type="note" >}}
 
 For GitLab Self-Managed, the updated **What's new** is included
-  in the first patch release after a new version, such as `13.10.1`.
+in the first patch release after a new version, such as `13.10.1`.
 
-  {{< /alert >}}
+{{< /alert >}}
 
 ## Access What's new
 

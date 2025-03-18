@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
             message: 'Rack_Attack',
             env: match_type,
             remote_ip: '1.2.3.4',
-            request_method: 'GET',
+            method: 'GET',
             path: '/api/v4/internal/authorized_keys',
             matched: 'throttle_unauthenticated'
           )
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
               message: 'Rack_Attack',
               env: match_type,
               remote_ip: '1.2.3.4',
-              request_method: 'GET',
+              method: 'GET',
               path: '/api/v4/internal/authorized_keys?non_sensitive_query_param=' \
                 'non_sensitive_info&password=%5BFILTERED%5D',
               matched: 'throttle_unauthenticated'
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
                 message: 'Rack_Attack',
                 env: match_type,
                 remote_ip: '1.2.3.4',
-                request_method: 'GET',
+                method: 'GET',
                 path: '/api/v4/internal/authorized_keys',
                 matched: 'throttle_authenticated_api',
                 user_id: non_existing_record_id
@@ -186,7 +186,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
                 message: 'Rack_Attack',
                 env: match_type,
                 remote_ip: '1.2.3.4',
-                request_method: 'GET',
+                method: 'GET',
                 path: '/api/v4/internal/authorized_keys',
                 matched: 'throttle_authenticated_api',
                 user_id: user.id,
@@ -232,7 +232,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
                 message: 'Rack_Attack',
                 env: match_type,
                 remote_ip: '1.2.3.4',
-                request_method: 'GET',
+                method: 'GET',
                 path: '/api/v4/internal/authorized_keys',
                 matched: 'throttle_authenticated_api',
                 deploy_token_id: deploy_token.id

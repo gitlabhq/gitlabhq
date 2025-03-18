@@ -183,7 +183,7 @@ Settings['issues_tracker'] ||= {}
 # GitLab
 #
 Settings['gitlab'] ||= {}
-Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
 Settings.gitlab['default_project_deletion_protection'] ||= false
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
@@ -191,6 +191,7 @@ Settings.gitlab['default_branch_protection_defaults'] ||= ::Gitlab::Access::Bran
 # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
+Settings.gitlab['default_color_mode'] = Gitlab::ColorModes::APPLICATION_DEFAULT if Settings.gitlab['default_color_mode'].nil?
 Settings.gitlab['dns_rebinding_protection_enabled'] ||= !Gitlab.http_proxy_env?
 Settings.gitlab['custom_html_header_tags'] ||= Settings.gitlab['custom_html_header_tags'] || ''
 Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'
@@ -536,6 +537,9 @@ Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'Repository
 Settings.cron_jobs['import_export_project_cleanup_worker'] ||= {}
 Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
+Settings.cron_jobs['gitlab_import_import_file_cleanup_worker'] ||= {}
+Settings.cron_jobs['gitlab_import_import_file_cleanup_worker']['cron'] ||= '30 * * * *'
+Settings.cron_jobs['gitlab_import_import_file_cleanup_worker']['job_class'] = 'Gitlab::Import::ImportFileCleanupWorker'
 Settings.cron_jobs['ci_archive_traces_cron_worker'] ||= {}
 Settings.cron_jobs['ci_archive_traces_cron_worker']['cron'] ||= '17 * * * *'
 Settings.cron_jobs['ci_archive_traces_cron_worker']['job_class'] = 'Ci::ArchiveTracesCronWorker'
@@ -555,7 +559,7 @@ Settings.cron_jobs['prune_old_events_worker'] ||= {}
 Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '0 */6 * * *'
 Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
 Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker'] ||= {}
-Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker']['cron'] ||= '30 3 * * *'
+Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker']['cron'] ||= '30 * * * *'
 Settings.cron_jobs['gitlab_export_prune_project_export_jobs_worker']['job_class'] = 'Gitlab::Export::PruneProjectExportJobsWorker'
 Settings.cron_jobs['trending_projects_worker'] ||= {}
 Settings.cron_jobs['trending_projects_worker']['cron'] = '0 1 * * *'
@@ -741,6 +745,9 @@ Settings.cron_jobs['merge_requests_process_scheduled_merge']['job_class'] = 'Mer
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['cron'] ||= '*/11 * * * *'
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['job_class'] = 'Ci::ScheduleOldPipelinesRemovalCronWorker'
+Settings.cron_jobs['version_version_check_cron'] ||= {}
+Settings.cron_jobs['version_version_check_cron']['cron'] ||= "#{rand(60)} #{rand(24)} * * *"
+Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Version::VersionCheckCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -818,6 +825,9 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
+  Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker'] ||= {}
+  Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker']['cron'] ||= '*/20 * * * *'
+  Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker']['job_class'] = 'ComplianceManagement::QueueRefreshOfBrokenAdherenceGroupsWorker'
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
@@ -839,6 +849,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_zoekt_scheduling_worker'] ||= {}
   Settings.cron_jobs['search_zoekt_scheduling_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_zoekt_scheduling_worker']['job_class'] ||= 'Search::Zoekt::SchedulingWorker'
+  Settings.cron_jobs['search_zoekt_rollout_worker'] ||= {}
+  Settings.cron_jobs['search_zoekt_rollout_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['search_zoekt_rollout_worker']['job_class'] ||= 'Search::Zoekt::RolloutWorker'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['job_class'] ||= 'Search::Elastic::MetricsUpdateCronWorker'
@@ -1060,16 +1073,17 @@ Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret'
 # Cells
 #
 Settings['cell'] ||= {}
+Settings.cell['enabled'] ||= false # All Cells Features are disabled by default
 Settings.cell['id'] ||= nil
 Settings.cell['database'] ||= {}
 Settings.cell.database['skip_sequence_alteration'] ||= false
-# This ternary operation expression to be removed when we merge https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/4382
-Settings.cell['topology_service'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
-Settings.cell.topology_service['enabled'] ||= false
-Settings.cell.topology_service['address'] ||= 'topology-service.gitlab.example.com:443'
-Settings.cell.topology_service['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
-Settings.cell.topology_service['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
-Settings.cell.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
+
+# Topology Service Client Settings
+Settings.cell['topology_service_client'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
+Settings.cell.topology_service_client['address'] ||= 'topology-service.gitlab.example.com:443'
+Settings.cell.topology_service_client['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
+Settings.cell.topology_service_client['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
+Settings.cell.topology_service_client['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
 
 #
 # GitLab KAS
@@ -1107,13 +1121,14 @@ Gitlab.ee do
   # The os/arch for which duo-workflow-executor binary is build: https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/-/packages/35054593
   executor_binary_urls = %w[
     linux/arm linux/amd64 linux/arm64 linux/386 linux/ppc64le darwin/arm64 darwin/amd64
-    freebsd/arm freebsd/386 freebsd/amd64 windows/amd64 windows/386
+    freebsd/arm freebsd/386 freebsd/amd64 windows/amd64 windows/386 windows/arm64
   ].index_with do |os_info|
     "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/#{os_info.sub('/', '-')}-duo-workflow-executor.tar.gz"
   end
 
   Settings.duo_workflow.reverse_merge!(
     secure: true,
+    debug: false,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
     executor_binary_urls: executor_binary_urls,
     executor_version: executor_version

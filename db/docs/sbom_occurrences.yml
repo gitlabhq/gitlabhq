@@ -1,6 +1,7 @@
 ---
 table_name: sbom_occurrences
 classes:
+- Sbom::DependencyPath
 - Sbom::Occurrence
 feature_categories:
 - dependency_management
@@ -12,4 +13,4 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:
   project_id: projects
-table_size: large
+table_size: small

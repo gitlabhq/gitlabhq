@@ -53,7 +53,7 @@ class MergeRequestDiffFile < ApplicationRecord
   private
 
   # This method is meant to be used during Project Export.
-  # It is identical to the behaviour in #diff with the only
+  # It is identical to the behavior in #diff with the only
   # difference of caching externally stored diffs on local disk in
   # temp storage location in order to improve diff export performance.
   def diff_export

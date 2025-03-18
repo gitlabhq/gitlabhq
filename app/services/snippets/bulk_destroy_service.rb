@@ -4,6 +4,19 @@ module Snippets
   class BulkDestroyService
     include Gitlab::Allowable
 
+    NO_ACCESS_ERROR = {
+      reason: :no_access_error,
+      message: "You don't have access to delete these snippets."
+    }.freeze
+
+    SNIPPET_REPOSITORIES_DELETE_ERROR =
+      { reason: :snippet_repositories_delete_error,
+        message: 'Failed to delete snippet repositories.' }.freeze
+    SNIPPETS_DELETE_ERROR = {
+      reason: :snippet_delete_error,
+      message: 'Failed to remove snippets.'
+    }.freeze
+
     attr_reader :current_user, :snippets
 
     DeleteRepositoryError = Class.new(StandardError)
@@ -23,12 +36,21 @@ module Snippets
 
       ServiceResponse.success(message: 'Snippets were deleted.')
     rescue SnippetAccessError
-      service_response_error("You don't have access to delete these snippets.", 403)
+      ServiceResponse.error(
+        reason: NO_ACCESS_ERROR[:reason],
+        message: NO_ACCESS_ERROR[:message]
+      )
     rescue DeleteRepositoryError
-      service_response_error('Failed to delete snippet repositories.', 400)
+      ServiceResponse.error(
+        reason: SNIPPET_REPOSITORIES_DELETE_ERROR[:reason],
+        message: SNIPPET_REPOSITORIES_DELETE_ERROR[:message]
+      )
     rescue StandardError
       # In case the delete operation fails
-      service_response_error('Failed to remove snippets.', 400)
+      ServiceResponse.error(
+        reason: SNIPPETS_DELETE_ERROR[:reason],
+        message: SNIPPETS_DELETE_ERROR[:message]
+      )
     end
 
     private
@@ -51,10 +73,6 @@ module Snippets
 
         raise DeleteRepositoryError if result[:status] == :error
       end
-    end
-
-    def service_response_error(message, http_status)
-      ServiceResponse.error(message: message, http_status: http_status)
     end
   end
 end

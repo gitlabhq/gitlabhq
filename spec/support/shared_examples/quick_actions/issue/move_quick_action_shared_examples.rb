@@ -21,7 +21,7 @@ RSpec.shared_examples 'move quick action' do
 
         visit project_issue_path(target_project, issue)
 
-        expect(page).to have_content 'Issues 1'
+        expect(page).to have_content issue.title
       end
     end
 
@@ -117,7 +117,7 @@ RSpec.shared_examples 'move quick action' do
         visit project_issue_path(target_project, issue)
         wait_for_all_requests
 
-        expect(page).to have_content 'Issues 1'
+        expect(page).to have_content issue.title
       end
 
       it 'deletes the note if it was updated to just contain a command' do
@@ -135,7 +135,7 @@ RSpec.shared_examples 'move quick action' do
         visit project_issue_path(target_project, issue)
         wait_for_all_requests
 
-        expect(page).to have_content 'Issues 1'
+        expect(page).to have_content issue.title
       end
     end
   end

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Guidelines for implementing Enterprise Edition features
 ---
 
@@ -430,7 +430,7 @@ end
 
 To override a method present in the CE codebase, use `prepend`. It
 lets you override a method in a class with a method from a module, while
-still having access the class's implementation with `super`.
+still having access to the class's implementation with `super`.
 
 There are a few gotchas with it:
 
@@ -717,7 +717,7 @@ The disadvantage of this:
 The `render_if_exists` view path argument must be relative to `app/views/` and `ee/app/views`.
 Resolving an EE template path that is relative to the CE view path doesn't work.
 
-```haml
+```ruby
 - # app/views/projects/index.html.haml
 
 = render_if_exists 'button' # Will not render `ee/app/views/projects/_button` and will quietly fail
@@ -745,7 +745,7 @@ In this case, we could as well just use `render_ce` which would ignore any EE
 partials. One example would be
 `ee/app/views/projects/settings/_archive.html.haml`:
 
-```haml
+```ruby
 - return if @project.marked_for_deletion?
 = render_ce 'projects/settings/archive'
 ```
@@ -1202,10 +1202,13 @@ end
 ### Code in `spec/`
 
 When you're testing EE-only features, avoid adding examples to the
-existing CE specs. Also do not change existing CE examples, since they
-should remain working as-is when EE is running without a license.
+existing CE specs. Instead, place EE specs in the `ee/spec` folder.
 
-Instead place EE specs in the `ee/spec` folder.
+By default, CE specs run with EE code loaded as they should remain
+working as-is when EE is running without a license.
+
+These specs also need to pass when EE code is removed. You can run
+the tests without EE code by [simulating a CE instance](#simulate-a-ce-instance-with-a-licensed-gdk).
 
 ### Code in `spec/factories`
 

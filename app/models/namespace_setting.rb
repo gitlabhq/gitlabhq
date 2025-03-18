@@ -54,6 +54,7 @@ class NamespaceSetting < ApplicationRecord
     default_branch_protection_defaults
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
+    jwt_ci_cd_job_token_enabled
   ].freeze
 
   # matches the size set in the database constraint
@@ -113,6 +114,12 @@ class NamespaceSetting < ApplicationRecord
     settings = Gitlab::CurrentSettings.current_application_settings
 
     settings.allow_runner_registration_token && namespace.root_ancestor.allow_runner_registration_token
+  end
+
+  def jwt_ci_cd_job_token_enabled?
+    return true if Feature.enabled?(:ci_job_token_jwt, namespace) && !jwt_ci_cd_job_token_opted_out?
+
+    super
   end
 
   private

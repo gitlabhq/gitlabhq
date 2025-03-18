@@ -123,6 +123,7 @@ namespace :gitlab do
 
     if tmp_organization
       puts "Destroying temporary organization #{tmp_organization_path}"
+      tmp_organization.users.delete_all
       tmp_organization.destroy
     end
 
@@ -143,7 +144,7 @@ namespace :gitlab do
   end
 
   def clone_repository(url, directory)
-    FileUtils.rm_rf(directory) if Dir.exist?(directory)
+    FileUtils.rm_rf(directory)
 
     system("git clone #{url} --depth=1 --branch=master #{directory}")
   end

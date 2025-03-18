@@ -275,7 +275,7 @@ export default {
 <template>
   <li class="tree-item !gl-px-0 !gl-py-2">
     <div class="gl-flex gl-items-start">
-      <div v-if="hasIndirectChildren" class="gl-mr-2 gl-h-7 gl-w-5">
+      <div v-if="hasIndirectChildren" class="gl-mr-4 gl-h-7 gl-w-5">
         <gl-button
           v-if="shouldExpandChildren"
           v-gl-tooltip.hover
@@ -285,7 +285,7 @@ export default {
           category="tertiary"
           size="small"
           :loading="isLoadingChildren && !fetchNextPageInProgress"
-          class="!gl-px-0 !gl-py-3"
+          class="!gl-py-3"
           data-testid="expand-child"
           @click.stop="toggleItem"
         />

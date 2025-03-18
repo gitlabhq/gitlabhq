@@ -64,11 +64,26 @@ RSpec.describe ::Packages::Helm::PackagesFinder do
       let_it_be(:helm_package3) { create(:helm_package, project: project1) }
       let_it_be(:helm_package4) { create(:helm_package, project: project1) }
 
-      before do
-        stub_const("#{described_class}::MAX_PACKAGES_COUNT", 2)
-      end
+      context 'with max_packages_count set to 2' do
+        before do
+          allow(::Gitlab::CurrentSettings)
+            .to receive_message_chain(:package_registry, :fetch)
+            .with('helm_max_packages_count', anything)
+            .and_return(2)
+        end
 
-      it { is_expected.to eq([helm_package4, helm_package3]) }
+        subject(:limited_packages_finder) { finder.execute }
+
+        it 'returns only 2 packages' do
+          packages = limited_packages_finder
+
+          aggregate_failures do
+            expect(packages.size).to eq(2)
+            expect(packages).to all(be_a(Packages::Helm::Package))
+            expect(packages).to all(have_attributes(project_id: project.id))
+          end
+        end
+      end
     end
   end
 end

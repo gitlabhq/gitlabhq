@@ -317,6 +317,41 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       end
     end
 
+    context 'instance wide token prefix' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      context 'with valid prefix' do
+        let(:prefix) { 'instance-prefix-' }
+
+        it 'updates instance_token_prefix setting' do
+          put :update, params: { application_setting: { instance_token_prefix: prefix } }
+
+          expect(response).to redirect_to(general_admin_application_settings_path)
+          expect(application_settings.reload.instance_token_prefix).to eq(prefix)
+        end
+      end
+
+      context 'with invalid prefix' do
+        where(:prefix) do
+          %w[
+            è
+            this-prefix-is-longer-than-20-characters
+            @
+            :
+          ]
+        end
+
+        with_them do
+          it 'rejects prefix', :aggregate_failures do
+            put :update, params: { application_setting: { instance_token_prefix: prefix } }
+
+            expect(response).not_to redirect_to(general_admin_application_settings_path)
+            expect(application_settings.reload.personal_access_token_prefix).not_to eq(prefix)
+          end
+        end
+      end
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

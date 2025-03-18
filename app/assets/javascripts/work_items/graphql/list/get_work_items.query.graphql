@@ -2,6 +2,9 @@
 #import "ee_else_ce/work_items/graphql/list/work_item_widgets.fragment.graphql"
 
 query getWorkItems(
+  $excludeProjects: Boolean = false
+  $includeDescendants: Boolean = true
+  $isGroup: Boolean = true
   $fullPath: ID!
   $search: String
   $sort: WorkItemSort
@@ -22,15 +25,17 @@ query getWorkItems(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
-  $isGroup: Boolean = true
-  $excludeProjects: Boolean
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
     name
     workItems(
       excludeProjects: $excludeProjects
-      includeDescendants: true
+      includeDescendants: $includeDescendants
       search: $search
       sort: $sort
       state: $state
@@ -50,6 +55,10 @@ query getWorkItems(
       before: $beforeCursor
       first: $firstPageSize
       last: $lastPageSize
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       pageInfo {
         ...PageInfo
@@ -65,6 +74,7 @@ query getWorkItems(
           webPath
         }
         closedAt
+        userDiscussionsCount
         confidential
         createdAt
         iid
@@ -111,6 +121,10 @@ query getWorkItems(
       before: $beforeCursor
       first: $firstPageSize
       last: $lastPageSize
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       pageInfo {
         ...PageInfo
@@ -126,6 +140,7 @@ query getWorkItems(
           webPath
         }
         closedAt
+        userDiscussionsCount
         confidential
         createdAt
         iid

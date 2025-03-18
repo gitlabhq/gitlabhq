@@ -41,7 +41,7 @@ RSpec.describe 'Resend notification to the reassigned user of an import source u
 
   context 'when user is authorized' do
     it 'resends notification and does not change status', :aggregate_failures do
-      expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+      expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
 
       post_graphql_mutation(mutation, current_user: current_user)
 

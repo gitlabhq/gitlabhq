@@ -1,8 +1,0 @@
----
-name: recaptcha_on_top_level_group_creation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56707
-rollout_issue_url:
-milestone: '13.11'
-type: ops
-group: group::anti-abuse
-default_enabled: false

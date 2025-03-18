@@ -5,10 +5,10 @@ clusterwide: false
 column: max_ssh_key_lifetime
 db_type: integer
 default:
-description: Maximum allowable lifetime for SSH keys in days. Self-managed, Ultimate
-  only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended to 400
-  days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a [feature
-  flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.
+description: Maximum allowable lifetime for SSH keys in days. GitLab Self-Managed,
+  Ultimate only. In GitLab 17.6 or later, the maximum lifetime limit can be [extended
+  to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) by enabling a
+  [feature flag](../administration/feature_flags.md) named `buffered_token_expiration_limit`.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

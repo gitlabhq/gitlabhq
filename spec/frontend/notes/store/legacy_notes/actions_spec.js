@@ -750,6 +750,7 @@ describe('Actions Notes Store', () => {
         { discussions: [discussion] },
         [{ type: store[types.UPDATE_DISCUSSION], payload: discussion }],
         [
+          { type: store.updateOrCreateNotes, payload: [] },
           { type: store.updateMergeRequestWidget },
           { type: store.startTaskList },
           { type: store.updateResolvableDiscussionsCounts },

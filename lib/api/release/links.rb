@@ -38,7 +38,8 @@ module API
               use :pagination
             end
             route_setting :authentication, job_token_allowed: true
-            route_setting :authorization, job_token_policies: :read_releases
+            route_setting :authorization, job_token_policies: :read_releases,
+              allow_public_access_for_enabled_project_features: :releases
             get 'links' do
               authorize! :read_release, release
 
@@ -95,7 +96,8 @@ module API
                 tags release_links_tags
               end
               route_setting :authentication, job_token_allowed: true
-              route_setting :authorization, job_token_policies: :read_releases
+              route_setting :authorization, job_token_policies: :read_releases,
+                allow_public_access_for_enabled_project_features: :releases
               get do
                 authorize! :read_release, release
 

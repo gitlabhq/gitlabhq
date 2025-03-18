@@ -4,7 +4,7 @@ class CreateSecurityPolicyRequirements < Gitlab::Database::Migration[2.2]
   milestone '17.4'
 
   def change
-    create_table :security_policy_requirements do |t| # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
+    create_table :security_policy_requirements do |t|
       t.bigint :compliance_framework_security_policy_id, null: false
       t.bigint :compliance_requirement_id, null: false
       t.bigint :namespace_id, null: false

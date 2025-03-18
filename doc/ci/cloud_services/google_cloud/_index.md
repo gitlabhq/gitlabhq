@@ -89,6 +89,13 @@ inside the Workload Identity Pool created in the previous step, using the follow
 
   You must map every attribute that you want to use for permission granting. For example, if you want to map permissions in the next step based on the user's email address, you must map `attribute.user_email` to `assertion.user_email`.
 
+{{< alert type="warning" >}}
+
+For projects hosted on GitLab.com, GCP requires you to
+[limit access to only tokens issued by your GitLab group](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#gitlab-saas_2).
+
+{{< /alert >}}
+
 ## Grant permissions for Service Account impersonation
 
 Creating the Workload Identity Pool and Workload Identity Provider defines the _authentication_

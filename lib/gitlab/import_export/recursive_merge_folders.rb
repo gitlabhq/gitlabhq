@@ -60,7 +60,7 @@ module Gitlab
           next if Gitlab::Utils::FileInfo.linked?(source_child)
 
           if File.directory?(source_child)
-            FileUtils.mkdir_p(target_child, mode: DEFAULT_DIR_MODE) unless File.exist?(target_child)
+            FileUtils.mkdir_p(target_child, mode: DEFAULT_DIR_MODE)
             recursive_merge(source_child, target_child)
           else
             FileUtils.mv(source_child, target_child)

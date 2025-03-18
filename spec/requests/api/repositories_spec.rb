@@ -10,6 +10,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
+  let(:developer) { create(:user).tap { |u| create(:project_member, :developer, user: u, project: project) } }
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
 
@@ -781,6 +782,101 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
   end
 
+  describe 'GET :id/repository/health' do
+    before do
+      stub_feature_flags(project_repositories_health: true)
+    end
+
+    let(:params) { nil }
+
+    subject(:request) do
+      get(api("/projects/#{project.id}/repository/health", current_user), params: params)
+    end
+
+    shared_examples 'health' do
+      it 'returns 404 on first invocation' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns 404 on subsequent invocations if a report has not been generated' do
+        2.times do
+          request
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      describe 'when a new report is generated' do
+        let(:params) { { generate: true } }
+
+        it 'returns the health report' do
+          t_start = Time.current
+          request
+          t_end = Time.current
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['size']).to be_present
+          expect(json_response['objects']).to be_present
+          expect(json_response['references']).to be_present
+          expect(Time.parse(json_response['updated_at'])).to be_between(t_start, t_end)
+        end
+
+        context 'when rate limited' do
+          it 'returns api error' do
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(true)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+        end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like '403 response' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:current_user) { nil }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a maintainer' do
+      it_behaves_like 'health' do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      it_behaves_like '403 response' do
+        let(:current_user) { developer }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:current_user) { guest }
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(project_repositories_health: false)
+      end
+
+      it_behaves_like '404 response' do
+        let(:current_user) { user }
+      end
+    end
+  end
+
   describe 'GET :id/repository/merge_base' do
     let(:refs) do
       %w[304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209 570e7b2abdd848b95f2f578043fc23bd6f6fd24d]
@@ -855,7 +951,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET /projects/:id/repository/changelog' do
-    it_behaves_like 'enforcing job token policies', :read_releases do
+    it_behaves_like 'enforcing job token policies', :read_releases,
+      allow_public_access_for_enabled_project_features: :repository do
       before do
         allow(Repositories::ChangelogService).to receive(:new)
           .and_return(instance_spy(Repositories::ChangelogService))

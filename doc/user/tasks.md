@@ -499,6 +499,45 @@ You can estimate and track the time you spend on a task.
 
 For more information, see [Time tracking](project/time_tracking.md).
 
+## Prevent truncating descriptions with "Read more"
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+If a task description is long, GitLab displays only part of it.
+To see the whole description, you must select **Read more**.
+This truncation makes it easier to find other elements on the page without scrolling through lengthy text.
+
+To change whether descriptions are truncated:
+
+1. On a task, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Toggle **Truncate descriptions** according to your preference.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+## Hide the right sidebar
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+Task attributes are shown in a sidebar to the right of the description when space allows.
+To hide the sidebar and increase space for the description:
+
+1. On a task, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Hide sidebar**.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+To show the sidebar again:
+
+- Repeat the previous steps and select **Show sidebar**.
+
 ## View task system notes
 
 {{< history >}}

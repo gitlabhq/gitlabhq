@@ -1,5 +1,6 @@
 <script>
-import { GlIcon, GlAlert, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
+import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { s__, __ } from '~/locale';
 import { findWidget } from '~/issues/list/utils';
@@ -20,24 +21,6 @@ import WorkItemDevelopmentRelationshipList from './work_item_development_relatio
 import WorkItemCreateBranchMergeRequestModal from './work_item_create_branch_merge_request_modal.vue';
 
 export default {
-  i18n: {
-    development: s__('WorkItem|Development'),
-    fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
-    createMergeRequest: __('Create merge request'),
-    createBranch: __('Create branch'),
-    branchLabel: __('Branch'),
-    mergeRequestLabel: __('Merge request'),
-    addTooltipLabel: __('Add development item'),
-    openStateWithOneMergeRequestText: s__(
-      'WorkItem|This %{workItemType} will be closed when the following is merged.',
-    ),
-    openStateText: s__(
-      'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
-    ),
-    closedStateText: s__(
-      'WorkItem|The %{workItemType} was closed automatically when a branch was merged.',
-    ),
-  },
   components: {
     GlIcon,
     GlAlert,
@@ -48,14 +31,9 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModalDirective,
   },
   props: {
     workItemFullPath: {
-      type: String,
-      required: true,
-    },
-    workItemType: {
       type: String,
       required: true,
     },
@@ -82,7 +60,6 @@ export default {
       showCreateBranchAndMrModal: false,
       showBranchFlow: true,
       showMergeRequestFlow: false,
-      isLoadingPermissionsQuery: false,
       showCreateOptions: true,
     };
   },
@@ -117,11 +94,10 @@ export default {
       return this.workItemDevelopment?.relatedBranches?.nodes || [];
     },
     shouldShowDevWidget() {
-      return this.workItemDevelopment && !this.isRelatedDevelopmentListEmpty;
+      return this.error || !this.isRelatedDevelopmentListEmpty;
     },
     isRelatedDevelopmentListEmpty() {
       return (
-        !this.error &&
         this.relatedMergeRequests.length === 0 &&
         this.closingMergeRequests.length === 0 &&
         this.featureFlags.length === 0 &&
@@ -135,14 +111,22 @@ export default {
     },
     openStateText() {
       return this.closingMergeRequests.length > 1
-        ? sprintfWorkItem(this.$options.i18n.openStateText, this.workItemTypeName)
+        ? sprintfWorkItem(
+            s__(
+              'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
+            ),
+            this.workItemTypeName,
+          )
         : sprintfWorkItem(
-            this.$options.i18n.openStateWithOneMergeRequestText,
+            s__('WorkItem|This %{workItemType} will be closed when the following is merged.'),
             this.workItemTypeName,
           );
     },
     closedStateText() {
-      return sprintfWorkItem(this.$options.i18n.closedStateText, this.workItemTypeName);
+      return sprintfWorkItem(
+        s__('WorkItem|The %{workItemType} was closed automatically when a branch was merged.'),
+        this.workItemTypeName,
+      );
     },
     tooltipText() {
       return this.workItemState === STATE_OPEN ? this.openStateText : this.closedStateText;
@@ -159,10 +143,10 @@ export default {
     addItemsActions() {
       return [
         {
-          name: this.$options.i18n.mergeRequestLabel,
+          name: __('Merge request'),
           items: [
             {
-              text: this.$options.i18n.createMergeRequest,
+              text: __('Create merge request'),
               action: this.openModal.bind(this, false, true),
               extraAttrs: {
                 'data-testid': 'create-mr-dropdown-button',
@@ -171,10 +155,10 @@ export default {
           ],
         },
         {
-          name: this.$options.i18n.branchLabel,
+          name: __('Branch'),
           items: [
             {
-              text: this.$options.i18n.createBranch,
+              text: __('Create branch'),
               action: this.openModal.bind(this, true, false),
               extraAttrs: {
                 'data-testid': 'create-branch-dropdown-button',
@@ -200,9 +184,11 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      error(e) {
-        this.$emit('error', this.$options.i18n.fetchError);
-        this.error = e.message || this.$options.i18n.fetchError;
+      error(error) {
+        this.error = s__(
+          'WorkItem|Something went wrong when fetching items. Please refresh this page.',
+        );
+        Sentry.captureException(error);
       },
     },
     workItemDevelopment: {
@@ -218,9 +204,11 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      error(e) {
-        this.$emit('error', this.$options.i18n.fetchError);
-        this.error = e.message || this.$options.i18n.fetchError;
+      error(error) {
+        this.error = s__(
+          "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired.",
+        );
+        Sentry.captureException(error);
       },
       subscribeToMore: {
         document: workItemDevelopmentUpdatedSubscription,
@@ -257,9 +245,9 @@ export default {
     <crud-component
       v-if="shouldShowDevWidget"
       ref="workItemDevelopment"
-      :title="$options.i18n.development"
+      :title="s__('WorkItem|Development')"
       :anchor-id="$options.DEVELOPMENT_ITEMS_ANCHOR"
-      :is-loading="isLoading || isLoadingPermissionsQuery"
+      :is-loading="isLoading"
       is-collapsible
       persist-collapsed-state
       data-testid="work-item-development"
@@ -283,16 +271,16 @@ export default {
           v-if="showAddButton"
           data-testid="create-options-dropdown"
           :actions="addItemsActions"
-          :tooltip-text="$options.i18n.addTooltipLabel"
+          :tooltip-text="__('Add development item')"
         />
       </template>
 
-      <template v-if="isRelatedDevelopmentListEmpty" #empty>
+      <template v-if="isRelatedDevelopmentListEmpty && !error" #empty>
         {{ __('None') }}
       </template>
 
       <template #default>
-        <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+        <gl-alert v-if="error" :dismissible="false" variant="danger">
           {{ error }}
         </gl-alert>
         <work-item-development-relationship-list

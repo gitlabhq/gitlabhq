@@ -296,6 +296,7 @@ module QA
           reload!.prepared_at
         end
 
+        Runtime::Logger.debug("Merge Request was not prepared, last response was: #{inspect}")
         raise Support::Repeater::WaitExceededError, "Timed out waiting for MR with id '#{iid}' to be prepared."
       end
     end

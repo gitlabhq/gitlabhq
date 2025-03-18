@@ -17,6 +17,8 @@ describe('Compact Code Dropdown coomponent', () => {
   const httpUrl = 'http://foo.bar';
   const httpsUrl = 'https://foo.bar';
   const xcodeUrl = 'xcode://foo.bar';
+  const webIdeUrl = 'webIdeUrl://foo.bar';
+  const gitpodUrl = 'gitpodUrl://foo.bar';
   const currentPath = null;
   const directoryDownloadLinks = [
     { text: 'zip', path: `${httpUrl}/archive.zip` },
@@ -28,6 +30,10 @@ describe('Compact Code Dropdown coomponent', () => {
     sshUrl,
     httpUrl,
     xcodeUrl,
+    webIdeUrl,
+    gitpodUrl,
+    showWebIdeButton: true,
+    showGitpodButton: true,
     currentPath,
     directoryDownloadLinks,
   };
@@ -116,13 +122,19 @@ describe('Compact Code Dropdown coomponent', () => {
 
   describe('ideGroup', () => {
     it('should not render if ideGroup is empty', () => {
-      createComponent({ xcodeUrl: undefined, sshUrl: undefined, httpUrl: undefined });
+      createComponent({
+        xcodeUrl: undefined,
+        sshUrl: undefined,
+        httpUrl: undefined,
+        showWebIdeButton: false,
+        showGitpodButton: false,
+      });
       expect(findCodeDropdownIdeItems().exists()).toBe(false);
     });
 
     it('renders with correct props', () => {
       createComponent();
-      expect(findCodeDropdownIdeItems()).toHaveLength(3);
+      expect(findCodeDropdownIdeItems()).toHaveLength(5);
 
       mockIdeItems.forEach((item, index) => {
         const ideItem = findCodeDropdownIdeItemAtIndex(index);

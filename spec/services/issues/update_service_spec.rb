@@ -105,6 +105,15 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         expect(issue.issue_customer_relations_contacts.last.contact).to eq contact
       end
 
+      it 'publishes created event' do
+        expect { update_issue(opts) }
+          .to publish_event(::WorkItems::WorkItemUpdatedEvent).with(
+            id: issue.id,
+            namespace_id: issue.namespace_id,
+            updated_attributes: %w[title updated_at description milestone_id updated_by_id due_date lock_version title_html description_html last_edited_at last_edited_by_id discussion_locked]
+          )
+      end
+
       context 'with lock_version' do
         let(:opts) do
           {
@@ -1420,66 +1429,106 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
     end
 
     context 'move issue to another project' do
-      let(:target_project) { create(:project) }
+      shared_examples 'move issue to another project' do
+        let_it_be(:target_project) { create(:project) }
 
-      context 'valid project' do
-        before do
-          target_project.add_maintainer(user)
+        context 'valid project' do
+          before do
+            target_project.add_maintainer(user)
+          end
+
+          it 'calls the move service with the proper issue and project' do
+            expect_next_instance_of(move_service_class) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            new_issue = update_issue(target_project: target_project)
+
+            expect(new_issue.project).to eq(target_project)
+            expect(new_issue.title).to eq(issue.title)
+          end
         end
+      end
 
-        it 'calls the move service with the proper issue and project' do
-          move_stub = instance_double(Issues::MoveService)
-          allow(Issues::MoveService).to receive(:new).and_return(move_stub)
-          allow(move_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+      context 'with work_item_move_and_clone disabled' do
+        it_behaves_like 'move issue to another project' do
+          let(:move_service_class) { Issues::MoveService }
 
-          expect(move_stub).to receive(:execute).with(issue, target_project)
+          before do
+            stub_feature_flags(work_item_move_and_clone: false)
+          end
+        end
+      end
 
-          update_issue(target_project: target_project)
+      context 'with work_item_move_and_clone enabled' do
+        it_behaves_like 'move issue to another project' do
+          let(:move_service_class) { ::WorkItems::DataSync::MoveService }
+
+          before do
+            stub_feature_flags(work_item_move_and_clone: true)
+          end
         end
       end
     end
 
     context 'clone an issue' do
-      context 'valid project' do
-        let(:target_project) { create(:project) }
+      shared_examples 'clone an issue' do
+        context 'clone' do
+          let_it_be(:target_project) { create(:project) }
 
+          before do
+            target_project.add_maintainer(user)
+          end
+
+          it 'calls the move service with the proper issue and project' do
+            expect_next_instance_of(clone_service_class) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            new_issue = update_issue(target_clone_project: target_project)
+
+            expect(new_issue.project).to eq(target_project)
+            expect(new_issue.title).to eq(issue.title)
+          end
+
+          context 'clone an issue with notes' do
+            it 'calls the move service with the proper issue and project' do
+              expect_next_instance_of(clone_service_class) do |service|
+                expect(service).to receive(:execute).and_call_original
+              end
+
+              new_issue = update_issue(target_clone_project: target_project, clone_with_notes: true)
+
+              expect(new_issue.project).to eq(target_project)
+              expect(new_issue.title).to eq(issue.title)
+              expect(new_issue.notes.count).to eq(issue.notes.count)
+            end
+          end
+        end
+      end
+
+      context 'with work_item_move_and_clone disabled' do
         before do
-          target_project.add_maintainer(user)
+          stub_feature_flags(work_item_move_and_clone: false)
         end
 
-        it 'calls the move service with the proper issue and project' do
-          clone_stub = instance_double(Issues::CloneService)
-          allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
-          allow(clone_stub).to receive(:execute).with(issue, target_project, with_notes: nil).and_return(issue)
+        it_behaves_like 'clone an issue' do
+          let(:clone_service_class) { Issues::CloneService }
+        end
+      end
 
-          expect(clone_stub).to receive(:execute).with(issue, target_project, with_notes: nil)
+      context 'with work_item_move_and_clone enabled' do
+        before do
+          stub_feature_flags(work_item_move_and_clone: true)
+        end
 
-          update_issue(target_clone_project: target_project)
+        it_behaves_like 'clone an issue' do
+          let(:clone_service_class) { ::WorkItems::DataSync::CloneService }
         end
       end
     end
 
-    context 'clone an issue with notes' do
-      context 'valid project' do
-        let(:target_project) { create(:project) }
-
-        before do
-          target_project.add_maintainer(user)
-        end
-
-        it 'calls the move service with the proper issue and project' do
-          clone_stub = instance_double(Issues::CloneService)
-          allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
-          allow(clone_stub).to receive(:execute).with(issue, target_project, with_notes: true).and_return(issue)
-
-          expect(clone_stub).to receive(:execute).with(issue, target_project, with_notes: true)
-
-          update_issue(target_clone_project: target_project, clone_with_notes: true)
-        end
-      end
-    end
-
-    context 'when moving an issue ' do
+    context 'when changing relative position of an issue ' do
       it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
 

@@ -44,7 +44,7 @@ On GitLab.com, it takes seven days from when you delete your own account to when
 
   {{< alert type="note" >}}
 
-After the seven day time period is finished, any user can create a user account with that previously used username. Therefore, you should not assume that you will be able to create a new account with that username after the seven days, because it might be taken.
+  After the seven day time period is finished, any user can create a user account with that previously used username. Therefore, you should not assume that you will be able to create a new account with that username after the seven days, because it might be taken.
 
   {{< /alert >}}
 

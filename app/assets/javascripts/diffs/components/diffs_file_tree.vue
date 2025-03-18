@@ -21,6 +21,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    loadedFiles: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const treeWidth =
@@ -65,6 +70,10 @@ export default {
       side="right"
       @resize-end="cacheTreeListWidth"
     />
-    <tree-list :hide-file-stats="hideFileStats" @clickFile="$emit('clickFile', $event)" />
+    <tree-list
+      :hide-file-stats="hideFileStats"
+      :loaded-files="loadedFiles"
+      @clickFile="$emit('clickFile', $event)"
+    />
   </div>
 </template>

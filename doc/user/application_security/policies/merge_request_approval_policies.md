@@ -257,6 +257,7 @@ the defined policy.
 - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13550) support to specify custom roles as `role_approvers` in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `security_policy_custom_roles`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
 
 {{< /history >}}
 
@@ -364,11 +365,28 @@ On GitLab Self-Managed, by default the `fallback_behavior` field is available. T
 
 ## `policy_tuning`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498624) support for use in pipeline execution policies in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `unblock_rules_using_pipeline_execution_policies`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of support for pipeline execution policies is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules become optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This option only works with an existing scan execution policy that has matching scanners. |
+| `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
-### Example `policy.yml` in a security policy project that uses `policy_tuning`
+### Examples
+
+#### Example of `policy_tuning` with a scan execution policy
+
+You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
+[security policy project](_index.md#security-policy-project):
 
 ```yaml
 scan_execution_policy:
@@ -410,6 +428,63 @@ approval_policy:
   policy_tuning:
     unblock_rules_using_execution_policies: true
 ```
+
+#### Example of `policy_tuning` with a pipeline execution policy
+
+{{< alert type="warning" >}}
+
+This feature does not work with pipeline execution policies created before GitLab 17.10.
+To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
+For more information, see [Recreate pipeline execution policies created before GitLab 17.10](#recreate-pipeline-execution-policies-created-before-gitlab-1710).
+
+{{< /alert >}}
+
+You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
+[security policy project](_index.md#security-policy-project):
+
+```yaml
+---
+pipeline_execution_policy:
+- name: Enforce dependency scanning
+  description: ''
+  enabled: true
+  pipeline_config_strategy: inject_policy
+  content:
+    include:
+    - project: my-group/pipeline-execution-ci-project
+      file: policy-ci.yml
+      ref: main # optional
+```
+
+The linked pipeline execution policy CI/CD configuration in `policy-ci.yml`:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+```
+
+##### Recreate pipeline execution policies created before GitLab 17.10
+
+Pipeline execution policies created before GitLab 17.10 do not contain the data required
+to use the `policy_tuning` feature. To use this feature with older pipeline execution policies,
+copy and delete the old policies, then recreate them.
+
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For a video walkthrough, see [Security policies: Recreate a pipeline execution policy for use with `policy_tuning`](https://youtu.be/XN0jCQWlk1A).
+<!-- Video published on 2025-03-07 -->
+
+To recreate a pipeline execution policy:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Policies**.
+1. Select the pipeline execution policy you want to recreate.
+1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
+1. Next to the policies table, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and select **Delete**.
+1. Merge the generated merge request.
+1. Go back to **Secure > Policies** and select **New policy**.
+1. In the **Pipeline execution policy** section, select **Select policy**.
+1. In the **.YAML mode**, paste the contents of the old policy.
+1. Select **Update via merge request** and merge the generated merge request.
 
 ## Policy scope schema
 

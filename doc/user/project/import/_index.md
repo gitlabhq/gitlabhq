@@ -12,11 +12,13 @@ title: Import and migrate groups and projects
 
 {{< /details >}}
 
-To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
+Bring your existing work into GitLab and preserve your contribution history.
+Consolidate projects from multiple platforms or transfer data between GitLab instances.
+
+GitLab offers different methods to:
 
 - Migrate GitLab groups and projects by using direct transfer.
-- Import from supported import sources.
-- Import from other import sources.
+- Import projects from a variety of supported sources.
 
 ## Migrate from GitLab to GitLab by using direct transfer
 
@@ -199,6 +201,8 @@ To maintain a connection with a user on a source instance, placeholder users hav
 - A source user's name (`source_name`) to help with reassignment of contributions.
 - A source user's username (`source_username`) to facilitate group owners during the reassignment of the contribution.
 - An import type (`import_type`) to distinguish which importer created the placeholder.
+- A timestamp of when the source user was created (`created_at`) in local time for migration tracking
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507297) in GitLab 17.10).
 
 To preserve historical context, the placeholder user name and username are derived from the source user name and username:
 
@@ -228,8 +232,7 @@ Placeholder users are created per [import source](#supported-import-sources) and
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
 
-If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits
-differ depending on your plan and seat count. Placeholder users do not count towards license limits.
+If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 
 | GitLab.com plan          | Number of seats | Placeholder user limit on top-level group |
 |:-------------------------|:----------------|:------------------------------------------|
@@ -245,10 +248,29 @@ differ depending on your plan and seat count. Placeholder users do not count tow
 
 Customers on legacy Bronze, Silver, or Gold plans have the corresponding Free, Premium, or Ultimate limits.
 For Premium customers trying out Ultimate (Ultimate trial paid customer plan), Premium limits apply.
-
 If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
 
-The above limits are for GitLab.com. GitLab Self-Managed has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
+For GitLab Self-Managed and GitLab Dedicated, no placeholder limits apply by default.
+A GitLab administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) on their instance.
+
+For imports to GitLab.com, some contributions might not be created
+because these contributions are mapped to the same user.
+For example, if multiple merge request approvers are mapped to the same user,
+only the first approval is added and the others are ignored.
+These contributions include:
+
+- Memberships
+- Merge request approvals, assignees, and reviewers
+- Issue assignees
+- Emoji
+- Push, merge request, and deploy access levels
+- Approval rules
+
+You cannot determine the number of placeholder users you need in advance.
+When the placeholder user limit is reached, the import does not fail.
+Instead, all contributions are assigned to a bot user called `Import User`.
+
+Every change creates a system note, which is not affected by the placeholder user limit.
 
 ### Reassign contributions and memberships
 
@@ -256,10 +278,13 @@ Users with the Owner role for a top-level group can reassign contributions and m
 from placeholder users to existing active (non-bot) users.
 On the destination instance, users with the Owner role for a top-level group can:
 
-- Request users to accept reassignment of contributions and membership [in the UI](#request-reassignment-in-ui).
-  The reassignment process starts only after the selected user [accepts the reassignment request](#accept-contribution-reassignment),
-  which is sent to them by email.
-- Choose not to reassign contributions and memberships, and [keep them with placeholder users](#keep-as-placeholder).
+- Request users to review reassignment of contributions and memberships [in the UI](#request-reassignment-in-ui)
+  or [through a CSV file](#request-reassignment-by-using-a-csv-file).
+  For a large number of placeholder users, you should use a CSV file.
+  In both cases, users receive a request by email to accept or reject the reassignment.
+  The reassignment starts only after the selected user
+  [accepts the reassignment request](#accept-contribution-reassignment).
+- Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
 
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
 user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
@@ -334,6 +359,71 @@ To request reassignment of contributions and memberships:
 Contributions of only one placeholder user can be reassigned to an active non-bot user on destination instance.
 
 Before a user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
+
+#### Request reassignment by using a CSV file
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/478022).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+For a large number of placeholder users, you might want to
+reassign contributions and memberships by using a CSV file.
+You can download a prefilled CSV template with the following information.
+For example:
+
+| Source host          | Import type | Source user identifier | Source user name | Source username |
+|----------------------|-------------|------------------------|------------------|-----------------|
+| `gitlab.example.com` | `gitlab`    | `alice`                | `Alice Coder`    | `a.coer`        |
+
+Do not update **Source host**, **Import type**, or **Source user identifier**.
+This information locates the corresponding database record
+after you've uploaded the completed CSV file.
+**Source user name** and **Source username** identify the source user
+and are not used after you've uploaded the CSV file.
+
+You do not have to update every row of the CSV file.
+Only rows with **GitLab username** or **GitLab public email** are processed.
+All other rows are skipped.
+
+To request reassignment of contributions and memberships by using a CSV file:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Manage > Members**.
+1. Select the **Placeholders** tab.
+1. Select **Reassign with CSV**.
+1. Download the prefilled CSV template.
+1. In **GitLab username** or **GitLab public email**, enter the username or public email address
+   of the GitLab user on the destination instance.
+   Instance administrators can reassign users with any confirmed email address.
+1. Upload the completed CSV file.
+1. Select **Reassign**.
+
+You can assign only contributions from a single placeholder user
+to each active non-bot user on the destination instance.
+Users receive an email to review and [accept any contributions](#accept-contribution-reassignment) you've reassigned to them.
+You can [cancel the reassignment request](#cancel-reassignment-request) before the user reviews it.
+
+After you reassign contributions, GitLab sends you an email with the number of:
+
+- Successfully processed rows
+- Unsuccessfully processed rows
+- Skipped rows
+
+If any rows have not been successfully processed, the email has a CSV file with more detailed results.
 
 #### Keep as placeholder
 

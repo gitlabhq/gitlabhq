@@ -13,10 +13,16 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import { sanitize } from '~/lib/dompurify';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
+import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -34,6 +40,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
+  WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
@@ -71,6 +78,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
+import WorkItemErrorTracking from './work_item_error_tracking.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -95,6 +103,8 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
+  SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
+  ENABLE_TRUNCATION_STORAGE_KEY: 'work_item_truncate_descriptions',
   components: {
     DesignDropzone,
     DesignWidget,
@@ -103,6 +113,7 @@ export default {
     GlButton,
     GlEmptyState,
     GlIntersectionObserver,
+    LocalStorageSync,
     WorkItemActions,
     TodosToggle,
     WorkItemNotificationsWidget,
@@ -113,6 +124,7 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemRelationships,
+    WorkItemErrorTracking,
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -193,6 +205,8 @@ export default {
       isDragDataValid: false,
       isAddingNotes: false,
       info: getParameterByName('resolves_discussion'),
+      showSidebar: true,
+      truncationEnabled: true,
     };
   },
   apollo: {
@@ -298,9 +312,6 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
-    workItemTypeId() {
-      return this.workItem.workItemType?.id;
-    },
     workItemAuthorId() {
       return getIdFromGraphQLId(this.workItem.author?.id);
     },
@@ -313,6 +324,9 @@ export default {
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
+    canMove() {
+      return this.workItem.userPermissions?.moveWorkItem;
+    },
     canReportSpam() {
       return this.workItem.userPermissions?.reportSpam;
     },
@@ -324,6 +338,9 @@ export default {
     },
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canUpdateMetadata;
+    },
+    canSummarizeComments() {
+      return this.workItem.userPermissions?.summarizeComments;
     },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
@@ -393,6 +410,9 @@ export default {
     workItemAwardEmoji() {
       return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
     },
+    workItemErrorTrackingIdentifier() {
+      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING)?.identifier;
+    },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
     },
@@ -451,6 +471,16 @@ export default {
     shouldShowEditButton() {
       return !this.editMode && this.canUpdate;
     },
+    editShortcutKey() {
+      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
+    },
+    editTooltip() {
+      const description = __('Edit title and description');
+      const key = this.editShortcutKey;
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
     modalCloseButtonClass() {
       return {
         'sm:gl-hidden': !this.error,
@@ -505,6 +535,44 @@ export default {
     isModalOrDrawer() {
       return this.isModal || this.isDrawer;
     },
+    workItemActionProps() {
+      return {
+        fullPath: this.workItemFullPath,
+        workItemId: this.workItem.id,
+        hideSubscribe: this.newTodoAndNotificationsEnabled,
+        subscribedToNotifications: this.workItemNotificationsSubscribed,
+        workItemType: this.workItemType,
+        workItemIid: this.iid,
+        projectId: this.workItemProjectId,
+        canDelete: this.canDelete,
+        canReportSpam: this.canReportSpam,
+        canUpdate: this.canUpdate,
+        canUpdateMetadata: this.canUpdateMetadata,
+        canMove: this.canMove,
+        isConfidential: this.workItem.confidential,
+        isDiscussionLocked: this.isDiscussionLocked,
+        isParentConfidential: this.parentWorkItemConfidentiality,
+        workItemReference: this.workItem.reference,
+        workItemWebUrl: this.workItem.webUrl,
+        workItemCreateNoteEmail: this.workItem.createNoteEmail,
+        isModal: this.isModalOrDrawer,
+        workItemState: this.workItem.state,
+        hasChildren: this.hasChildren,
+        hasParent: this.shouldShowAncestors,
+        parentId: this.parentWorkItemId,
+        workItemAuthorId: this.workItemAuthorId,
+        canCreateRelatedItem: this.workItemLinkedItems !== undefined,
+        isGroup: this.isGroupWorkItem,
+        widgets: this.widgets,
+        allowedChildTypes: this.allowedChildTypes,
+        namespaceFullName: this.namespaceFullName,
+        showSidebar: this.showSidebar,
+        truncationEnabled: this.truncationEnabled,
+      };
+    },
+  },
+  mounted() {
+    addShortcutsExtension(ShortcutsWorkItems);
   },
   methods: {
     handleWorkItemCreated() {
@@ -572,7 +640,11 @@ export default {
         return;
       }
 
-      this.activeChildItem = modalWorkItem;
+      if (this.activeChildItem && this.activeChildItem.iid === modalWorkItem.iid) {
+        this.activeChildItem = null;
+      } else {
+        this.activeChildItem = modalWorkItem;
+      }
     },
     openReportAbuseModal(reply) {
       if (this.isModal) {
@@ -662,7 +734,7 @@ export default {
         optimisticResponse: designUploadOptimisticResponse(this.filesToBeSaved),
         variables: {
           files: this.filesToBeSaved,
-          projectPath: this.fullPath,
+          projectPath: this.workItemFullPath,
           iid: this.iid,
         },
         context: {
@@ -676,7 +748,7 @@ export default {
       return this.$apollo
         .mutate(mutationPayload)
         .then((res) => this.onUploadDesignDone(res))
-        .catch(() => this.onUploadDesignError());
+        .catch((error) => this.onUploadDesignError(error));
     },
     afterUploadDesign(store, { data: { designManagementUpload } }) {
       updateStoreAfterUploadDesign(store, designManagementUpload, this.designCollectionQueryBody);
@@ -696,7 +768,8 @@ export default {
       // reset state
       this.resetFilesToBeSaved();
     },
-    onUploadDesignError() {
+    onUploadDesignError(error) {
+      Sentry.captureException(error);
       this.resetFilesToBeSaved();
       this.designUploadError = UPLOAD_DESIGN_ERROR_MESSAGE;
     },
@@ -765,6 +838,12 @@ export default {
       this.info = undefined;
       updateHistory({ url: removeParams(['resolves_discussion']) });
     },
+    handleToggleSidebar() {
+      this.showSidebar = !this.showSidebar;
+    },
+    handleTruncationEnabled() {
+      this.truncationEnabled = !this.truncationEnabled;
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -799,6 +878,8 @@ export default {
       :parent-id="parentWorkItemId"
       :namespace-full-name="namespaceFullName"
       :has-children="hasChildren"
+      :show-sidebar="showSidebar"
+      :truncation-enabled="truncationEnabled"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -810,7 +891,24 @@ export default {
       @workItemStateUpdated="$emit('workItemStateUpdated')"
       @toggleReportAbuseModal="toggleReportAbuseModal"
       @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
-    />
+    >
+      <template #actions>
+        <work-item-actions
+          v-if="workItemPresent"
+          v-bind="workItemActionProps"
+          @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
+          @toggleWorkItemConfidentiality="toggleConfidentiality"
+          @error="updateError = $event"
+          @promotedToObjective="$emit('promotedToObjective', iid)"
+          @workItemStateUpdated="$emit('workItemStateUpdated')"
+          @workItemTypeChanged="workItemTypeChanged"
+          @toggleReportAbuseModal="toggleReportAbuseModal"
+          @workItemCreated="handleWorkItemCreated"
+          @toggleSidebar="handleToggleSidebar"
+          @toggleTruncationEnabled="handleTruncationEnabled"
+        />
+      </template>
+    </work-item-sticky-header>
     <section class="work-item-view">
       <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
         s__('WorkItem|Edit work item')
@@ -844,7 +942,7 @@ export default {
         <work-item-loading v-if="workItemLoading" />
         <gl-empty-state
           v-else-if="error"
-          :title="$options.i18n.fetchErrorTitle"
+          :title="s__('WorkItem|Work item not found')"
           :description="error"
           :svg-path="$options.noAccessSvg"
         />
@@ -866,6 +964,8 @@ export default {
             <div class="gl-ml-auto gl-mt-1 gl-flex gl-gap-3 gl-self-start">
               <gl-button
                 v-if="shouldShowEditButton"
+                v-gl-tooltip.bottom.html
+                :title="editTooltip"
                 category="secondary"
                 data-testid="work-item-edit-form-button"
                 class="shortcut-edit-wi-description"
@@ -891,34 +991,7 @@ export default {
               />
               <work-item-actions
                 v-if="workItemPresent"
-                :full-path="workItemFullPath"
-                :work-item-id="workItem.id"
-                :hide-subscribe="newTodoAndNotificationsEnabled"
-                :subscribed-to-notifications="workItemNotificationsSubscribed"
-                :work-item-type="workItemType"
-                :work-item-type-id="workItemTypeId"
-                :work-item-iid="iid"
-                :can-delete="canDelete"
-                :can-report-spam="canReportSpam"
-                :can-update="canUpdate"
-                :can-update-metadata="canUpdateMetadata"
-                :is-confidential="workItem.confidential"
-                :is-discussion-locked="isDiscussionLocked"
-                :is-parent-confidential="parentWorkItemConfidentiality"
-                :work-item-reference="workItem.reference"
-                :work-item-web-url="workItem.webUrl"
-                :work-item-create-note-email="workItem.createNoteEmail"
-                :is-modal="isModalOrDrawer"
-                :work-item-state="workItem.state"
-                :has-children="hasChildren"
-                :has-parent="shouldShowAncestors"
-                :parent-id="parentWorkItemId"
-                :work-item-author-id="workItemAuthorId"
-                :can-create-related-item="workItemLinkedItems !== undefined"
-                :is-group="isGroupWorkItem"
-                :widgets="widgets"
-                :allowed-child-types="allowedChildTypes"
-                :namespace-full-name="namespaceFullName"
+                v-bind="workItemActionProps"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
@@ -927,6 +1000,8 @@ export default {
                 @workItemTypeChanged="workItemTypeChanged"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
                 @workItemCreated="handleWorkItemCreated"
+                @toggleSidebar="handleToggleSidebar"
+                @toggleTruncationEnabled="handleTruncationEnabled"
               />
             </div>
             <gl-button
@@ -951,15 +1026,37 @@ export default {
               @updateWorkItem="updateWorkItem"
               @updateDraft="updateDraft('title', $event)"
             />
-            <work-item-created-updated
-              v-if="!editMode"
-              :full-path="workItemFullPath"
-              :work-item-iid="iid"
-              :update-in-progress="updateInProgress"
-            />
+            <div class="gl-flex gl-items-center gl-gap-3">
+              <work-item-created-updated
+                v-if="!editMode"
+                :full-path="workItemFullPath"
+                :work-item-iid="iid"
+                :update-in-progress="updateInProgress"
+                class="gl-grow"
+              />
+              <div v-if="!showSidebar" class="work-item-container-xs-hidden gl-hidden md:gl-block">
+                <gl-button
+                  size="small"
+                  category="secondary"
+                  data-testid="work-item-show-sidebar-button"
+                  icon="sidebar-right"
+                  @click="handleToggleSidebar"
+                >
+                  {{ s__('WorkItem|Show sidebar') }}
+                </gl-button>
+              </div>
+            </div>
           </div>
-          <div data-testid="work-item-overview" class="work-item-overview">
+          <div
+            data-testid="work-item-overview"
+            class="work-item-overview"
+            :class="{ 'sidebar-hidden': !showSidebar }"
+          >
             <section>
+              <local-storage-sync
+                v-model="truncationEnabled"
+                :storage-key="$options.ENABLE_TRUNCATION_STORAGE_KEY"
+              />
               <work-item-description
                 v-if="hasDescriptionWidget"
                 :edit-mode="editMode"
@@ -968,6 +1065,8 @@ export default {
                 :work-item-iid="workItem.iid"
                 :update-in-progress="updateInProgress"
                 :without-heading-anchors="isDrawer"
+                :hide-fullscreen-markdown-button="isDrawer"
+                :truncation-enabled="truncationEnabled"
                 @updateWorkItem="updateWorkItem"
                 @updateDraft="updateDraft('description', $event)"
                 @cancelEditing="cancelEditing"
@@ -1009,10 +1108,14 @@ export default {
                 </div>
               </div>
             </section>
+            <local-storage-sync
+              v-model="showSidebar"
+              :storage-key="$options.SHOW_SIDEBAR_STORAGE_KEY"
+            />
             <aside
               data-testid="work-item-overview-right-sidebar"
               class="work-item-overview-right-sidebar"
-              :class="{ 'is-modal': isModal }"
+              :class="{ 'is-modal': isModal, 'md:gl-hidden': !showSidebar }"
             >
               <work-item-attributes-wrapper
                 :class="{ 'gl-top-11': isDrawer }"
@@ -1024,6 +1127,12 @@ export default {
                 @attributesUpdated="$emit('attributesUpdated', $event)"
               />
             </aside>
+
+            <work-item-error-tracking
+              v-if="workItemErrorTrackingIdentifier"
+              :full-path="workItemFullPath"
+              :identifier="workItemErrorTrackingIdentifier"
+            />
 
             <design-widget
               v-if="hasDesignWidget"
@@ -1052,7 +1161,7 @@ export default {
                   @change="onUploadDesign"
                 >
                   <template #upload-text>
-                    {{ $options.i18n.addDesignEmptyState }}
+                    {{ s__('DesignManagement|Drag images here to add designs.') }}
                   </template>
                 </design-dropzone>
               </template>
@@ -1095,7 +1204,6 @@ export default {
               :work-item-id="workItem.id"
               :work-item-iid="iid"
               :work-item-full-path="workItemFullPath"
-              :work-item-type="workItem.workItemType.name"
             />
             <work-item-notes
               v-if="workItemNotes"
@@ -1104,8 +1212,10 @@ export default {
               :work-item-iid="workItem.iid"
               :work-item-type="workItemType"
               :is-modal="isModal"
+              :is-drawer="isDrawer"
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
+              :can-summarize-comments="canSummarizeComments"
               :report-abuse-path="reportAbusePath"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="workItem.confidential"
@@ -1114,6 +1224,7 @@ export default {
               :use-h2="!isModalOrDrawer"
               :small-header-style="isModal"
               :parent-id="parentWorkItemId"
+              :hide-fullscreen-markdown-button="isDrawer"
               @error="updateError = $event"
               @openReportAbuse="openReportAbuseModal"
               @startEditing="isAddingNotes = true"

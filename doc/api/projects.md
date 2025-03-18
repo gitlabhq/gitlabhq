@@ -76,6 +76,10 @@ Supported attributes:
 | `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
 | `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 
+The responses include attributes related to container registry storage size:
+
+- `container_registry_size`: Total storage size in bytes used by all container repositories in the project. Updated whenever container images are pushed or deleted. For self-managed instances, requires the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) to be enabled.
+
 Example response:
 
 ```json
@@ -173,6 +177,7 @@ Example response:
   "ci_forward_deployment_enabled": true,
   "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+  "ci_id_token_sub_claim_components": ["project_path", "ref_type", "ref"],
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
@@ -551,6 +556,7 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
     "ci_forward_deployment_enabled": true,
     "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+    "ci_id_token_sub_claim_components": ["project_path", "ref_type", "ref"],
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
@@ -742,6 +748,7 @@ Example response:
     "ci_forward_deployment_enabled": true,
     "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+    "ci_id_token_sub_claim_components": ["project_path", "ref_type", "ref"],
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
@@ -867,6 +874,7 @@ Example response:
     "ci_forward_deployment_enabled": true,
     "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+    "ci_id_token_sub_claim_components": ["project_path", "ref_type", "ref"],
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
@@ -932,7 +940,7 @@ Example response:
 
 ### List projects a user has contributed to
 
-Get a list of visible projects a given user has contributed to.
+Returns a list of visible projects a given user has contributed to within the past year. For more information about what counts as a contribution, see [view projects you have contributed to](../user/project/working_with_projects.md#view-projects-you-have-contributed-to).
 
 ```plaintext
 GET /users/:user_id/contributed_projects
@@ -1682,6 +1690,7 @@ Supported general project attributes:
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
+| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path`. The array might also include `ref_type` and `ref`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
 | `ci_pipeline_variables_minimum_override_role`      | string            | No       | When `restrict_user_defined_variables` is enabled, you can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. |
@@ -1952,6 +1961,7 @@ Example response:
   "ci_forward_deployment_enabled": true,
   "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+  "ci_id_token_sub_claim_components": ["project_path", "ref_type", "ref"],
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
@@ -2096,6 +2106,7 @@ Example response:
   "ci_forward_deployment_enabled": true,
   "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
+  "ci_id_token_sub_claim_components": ["project_path", "ref_type", "ref"],
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",

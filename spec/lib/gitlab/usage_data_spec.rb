@@ -185,6 +185,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
 
   describe 'usage_activity_by_stage_manage' do
     let_it_be(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE }
+    let(:omniauth_providers) do
+      [
+        double('provider', name: 'google_oauth2'),
+        double('provider', name: 'ldapmain'),
+        double('provider', name: 'group_saml')
+      ]
+    end
 
     it 'includes accurate usage_activity_by_stage data' do
       stub_config(
@@ -249,9 +256,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           create(:project, import_type: type, creator_id: user.id)
         end
 
-        jira_project = create(:project, creator_id: user.id)
-        create(:jira_import_state, :finished, project: jira_project)
-
         create(:issue_csv_import, user: user)
 
         group = create(:group)
@@ -285,14 +289,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           }
         }
       )
-    end
-
-    def omniauth_providers
-      [
-        double('provider', name: 'google_oauth2'),
-        double('provider', name: 'ldapmain'),
-        double('provider', name: 'group_saml')
-      ]
     end
   end
 
@@ -467,9 +463,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:projects_prometheus_active]).to eq(1)
       expect(count_data[:projects_jenkins_active]).to eq(1)
       expect(count_data[:projects_jira_active]).to eq(4)
-      expect(count_data[:jira_imports_projects_count]).to eq(2)
-      expect(count_data[:jira_imports_total_imported_count]).to eq(3)
-      expect(count_data[:jira_imports_total_imported_issues_count]).to eq(13)
       expect(count_data[:projects_slack_active]).to eq(2)
       expect(count_data[:projects_slack_slash_commands_active]).to eq(1)
       expect(count_data[:projects_custom_issue_tracker_active]).to eq(1)

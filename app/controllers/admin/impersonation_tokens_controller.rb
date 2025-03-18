@@ -73,7 +73,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def active_impersonation_tokens
-    tokens = finder(state: 'active', sort: 'expires_at_asc_id_desc').execute
+    tokens = finder(state: 'active', sort: 'expires_asc').execute
     ::ImpersonationAccessTokenSerializer.new.represent(tokens)
   end
 
@@ -83,6 +83,8 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes_for(current_user)
+
+    @scopes = ::VirtualRegistries.filter_token_scopes(@scopes, current_user)
 
     @impersonation_token ||= finder.build
     @active_impersonation_tokens = active_impersonation_tokens

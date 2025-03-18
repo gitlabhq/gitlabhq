@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Import::GitlabGroupsController < ApplicationController
+  include SafeFormatHelper
   include WorkhorseAuthorization
 
   before_action :check_import_rate_limit!, only: %i[create]
@@ -30,16 +31,15 @@ class Import::GitlabGroupsController < ApplicationController
       if Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
         redirect_to(
           group_path(group),
-          notice: s_("GroupImport|Group '%{group_name}' is being imported.") % { group_name: group.name }
+          notice: safe_format(s_("GroupImport|Group '%{group_name}' is being imported."), group_name: group.name)
         )
       else
         redirect_to group_path(group), alert: _("Group import could not be scheduled")
       end
     else
       redirect_to new_group_path(anchor: 'import-group-pane'),
-        alert: s_("GroupImport|Group could not be imported: %{errors}") % {
-          errors: group.errors.full_messages.to_sentence
-        }
+        alert: safe_format(s_("GroupImport|Group could not be imported: %{errors}"),
+          errors: group.errors.full_messages.to_sentence)
     end
   end
 

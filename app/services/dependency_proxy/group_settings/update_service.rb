@@ -3,7 +3,7 @@
 module DependencyProxy
   module GroupSettings
     class UpdateService < BaseContainerService
-      ALLOWED_ATTRIBUTES = %i[enabled].freeze
+      ALLOWED_ATTRIBUTES = %i[enabled identity secret].freeze
 
       def execute
         return ServiceResponse.error(message: 'Access Denied', http_status: 403) unless allowed?

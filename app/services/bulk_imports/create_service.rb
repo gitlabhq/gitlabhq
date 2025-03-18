@@ -51,7 +51,7 @@ module BulkImports
         self.class.name,
         'create',
         label: 'bulk_import_group',
-        extra: { source_equals_destination: source_equals_destination? }
+        extra: { source_equals_destination: bulk_import.source_equals_destination? }
       )
 
       if Feature.enabled?(:importer_user_mapping, current_user) &&
@@ -119,9 +119,9 @@ module BulkImports
       gql_query = query_type(entity_type)
 
       response = graphql_client.execute(
-        graphql_client.parse(gql_query.to_s),
-        { full_path: source_full_path }
-      ).original_hash
+        query: gql_query.to_s,
+        variables: { full_path: source_full_path }
+      )
 
       self.source_entity_identifier = ::GlobalID.parse(response.dig(*gql_query.data_path, 'id'))&.model_id
 
@@ -159,10 +159,6 @@ module BulkImports
         user: current_user,
         extra: { user_role: user_role(entity_params[:destination_namespace]), import_type: 'bulk_import_group' }
       )
-    end
-
-    def source_equals_destination?
-      credentials[:url].starts_with?(Settings.gitlab.base_url)
     end
 
     def validate_destination_namespace(entity_params)

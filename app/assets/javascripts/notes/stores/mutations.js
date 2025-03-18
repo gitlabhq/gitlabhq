@@ -1,7 +1,6 @@
 import { isEqual } from 'lodash';
 import { STATUS_CLOSED, STATUS_REOPENED } from '~/issues/constants';
 import { isInMRPage } from '~/lib/utils/common_utils';
-import { uuids } from '~/lib/utils/uuids';
 import * as constants from '../constants';
 import * as types from './mutation_types';
 import * as utils from './utils';
@@ -182,15 +181,8 @@ export default {
   },
 
   [types.SHOW_PLACEHOLDER_NOTE](state, data) {
-    let notesArr = state.discussions;
-
-    const existingDiscussion = utils.findNoteObjectById(notesArr, data.replyId);
-    if (existingDiscussion) {
-      notesArr = existingDiscussion.notes;
-    }
-
-    notesArr.push({
-      id: uuids()[0],
+    const placeholder = {
+      id: data.id,
       individual_note: true,
       isPlaceholderNote: true,
       placeholderType: data.isSystemNote ? constants.SYSTEM_NOTE : constants.NOTE,
@@ -199,7 +191,14 @@ export default {
           body: data.noteBody,
         },
       ],
-    });
+    };
+
+    const existingDiscussion = utils.findNoteObjectById(state.discussions, data.replyId);
+    if (existingDiscussion) {
+      existingDiscussion.notes = [...existingDiscussion.notes, placeholder];
+    } else {
+      state.discussions.push(placeholder);
+    }
   },
 
   [types.TOGGLE_AWARD](state, data) {

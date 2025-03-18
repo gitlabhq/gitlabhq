@@ -29,6 +29,7 @@ export const clusterAgents = [
     lastContact: null,
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: {
       config: {
@@ -45,6 +46,7 @@ export const clusterAgents = [
     lastContact: connectedTimeNow.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -76,6 +78,7 @@ export const clusterAgents = [
     userAccessAuthorizations: null,
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     connections: {
       nodes: [
@@ -101,6 +104,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -131,6 +135,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -161,6 +166,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -186,6 +192,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -211,6 +218,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -236,6 +244,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     connections: {
@@ -261,6 +270,7 @@ export const clusterAgents = [
     lastContact: connectedTimeInactive.getTime(),
     project: {
       fullPath: 'path/to/project',
+      webUrl: 'https://gdk.test/path/to/project',
     },
     userAccessAuthorizations: null,
     isShared: true,
@@ -272,6 +282,7 @@ export const clusterAgents = [
 const agentProject = {
   id: '1',
   fullPath: 'path/to/project',
+  webUrl: 'https://gdk.test/path/to/project',
 };
 
 const timestamp = '2023-05-12T15:39:58Z';
@@ -318,7 +329,11 @@ const ciAccessAuthorizedAgentsNodes = [
       userAccessAuthorizations: null,
       connections: null,
       tokens: null,
-      project: { id: '2', fullPath: 'path/to/another/project' },
+      project: {
+        id: '2',
+        fullPath: 'path/to/another/project',
+        webUrl: 'https://gdk.test/path/to/another/project',
+      },
     },
   },
 ];
@@ -333,7 +348,11 @@ const userAccessAuthorizedAgentsNodes = [
       userAccessAuthorizations: null,
       connections: null,
       tokens: null,
-      project: { id: '2', fullPath: 'path/to/another/project' },
+      project: {
+        id: '2',
+        fullPath: 'path/to/another/project',
+        webUrl: 'https://gdk.test/path/to/another/project',
+      },
     },
   },
 ];
@@ -342,6 +361,18 @@ export const clusterAgentsResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/1',
+      clusterAgents: {
+        nodes: agents,
+        count: agents.length,
+      },
+    },
+  },
+};
+
+export const clusterAgentsGroupResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
       clusterAgents: {
         nodes: agents,
         count: agents.length,

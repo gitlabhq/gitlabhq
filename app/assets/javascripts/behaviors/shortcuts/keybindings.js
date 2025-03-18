@@ -388,9 +388,12 @@ export const PROJECT_FILES_GO_BACK = {
   defaultKeys: ['esc'],
 };
 
+const { blobOverflowMenu } = gon.features ?? {};
 export const PROJECT_FILES_GO_TO_PERMALINK = {
   id: 'projectFiles.goToFilePermalink',
-  description: __('Go to file permalink (while viewing a file)'),
+  description: blobOverflowMenu
+    ? __('Copy file permalink')
+    : __('Go to file permalink (while viewing a file)'),
   defaultKeys: ['y'],
 };
 

@@ -79,7 +79,8 @@ module API
             end
             route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
               authenticate_non_public: true
-            route_setting :authorization, job_token_policies: :read_packages
+            route_setting :authorization, job_token_policies: :read_packages,
+              allow_public_access_for_enabled_project_features: :package_registry
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
 
@@ -194,7 +195,8 @@ module API
             tags %w[npm_packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :read_packages
+          route_setting :authorization, job_token_policies: :read_packages,
+            allow_public_access_for_enabled_project_features: :package_registry
           post '-/npm/v1/security/advisories/bulk' do
             redirect_or_present_audit_report
           end
@@ -214,7 +216,8 @@ module API
             tags %w[npm_packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :read_packages
+          route_setting :authorization, job_token_policies: :read_packages,
+            allow_public_access_for_enabled_project_features: :package_registry
           post '-/npm/v1/security/audits/quick' do
             redirect_or_present_audit_report
           end

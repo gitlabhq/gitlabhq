@@ -88,10 +88,10 @@ module API
 
           pipeline_params = declared_params(include_missing: false)
             .merge(variables_attributes: params[:variables])
-            .except(:variables)
+            .except(:variables, :inputs)
 
           response = ::Ci::CreatePipelineService.new(user_project, current_user, pipeline_params)
-            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+            .execute(:api, ignore_skip_ci: true, save_on_errors: false, inputs: params[:inputs])
           new_pipeline = response.payload
 
           if response.success?
@@ -291,7 +291,9 @@ module API
         put ':id/pipelines/:pipeline_id/metadata', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
-          response = ::Ci::Pipelines::UpdateMetadataService.new(pipeline, params.slice(:name)).execute
+          response = ::Ci::Pipelines::UpdateMetadataService
+            .new(pipeline, current_user: current_user, params: params.slice(:name))
+            .execute
 
           if response.success?
             present response.payload, with: Entities::Ci::PipelineWithMetadata

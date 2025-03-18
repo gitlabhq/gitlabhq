@@ -4,7 +4,6 @@ module Gitlab
   module GithubImport
     module Importer
       class IssueImporter
-        include Gitlab::Import::UsernameMentionRewriter
         include Gitlab::GithubImport::PushPlaceholderReferences
 
         attr_reader :project, :issue, :client, :user_finder, :milestone_finder,
@@ -54,9 +53,7 @@ module Gitlab
         def create_issue
           author_id, author_found = user_finder.author_id_for(issue)
 
-          description = wrap_mentions_in_backticks(issue.description)
-          description = MarkdownText.format(description, issue.author, author_found)
-
+          description = MarkdownText.format(issue.description, issue.author, author_found, project: project)
           assignee_ids = issue_assignee_map.keys
 
           attributes = {

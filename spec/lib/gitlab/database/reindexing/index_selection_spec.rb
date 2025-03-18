@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     swapout_view_for_table(:postgres_indexes, connection: connection)
 
     create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
-      create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabyte * (i + 1))
+      create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabytes * (i + 1))
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     excluded = create(
       :postgres_index_bloat_estimate,
       index: create(:postgres_index, ondisk_size_bytes: 10.gigabytes),
-      bloat_size_bytes: 1.9.gigabyte # 19% relative index bloat
+      bloat_size_bytes: 1.9.gigabytes # 19% relative index bloat
     )
 
     expect(subject).not_to include(excluded.index)
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     excluded = create(
       :postgres_index_bloat_estimate,
       index: create(:postgres_index, ondisk_size_bytes: 0.99.gigabytes),
-      bloat_size_bytes: 0.8.gigabyte
+      bloat_size_bytes: 0.8.gigabytes
     )
 
     expect(subject).not_to include(excluded.index)
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     included = create(
       :postgres_index_bloat_estimate,
       index: create(:postgres_index, ondisk_size_bytes: 101.gigabytes),
-      bloat_size_bytes: 25.gigabyte
+      bloat_size_bytes: 25.gigabytes
     )
 
     expect(subject).to include(included.index)
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
       end
 
       create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
-        create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabyte * (i + 1))
+        create(:postgres_index_bloat_estimate, index: index, bloat_size_bytes: 2.gigabytes * (i + 1))
         create(:reindex_action, index: index, action_end: Time.zone.now)
       end
 
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
       create(
         :postgres_index_bloat_estimate,
         index: create(:postgres_index, ondisk_size_bytes: 100.gigabytes, tablename: 'ci_builds'),
-        bloat_size_bytes: 20.gigabyte
+        bloat_size_bytes: 20.gigabytes
       )
     end
 

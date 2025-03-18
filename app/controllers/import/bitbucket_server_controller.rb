@@ -173,14 +173,14 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def bitbucket_connection_error(error)
-    flash[:alert] = _("Unable to connect to server: %{error}") % { error: error }
+    flash[:alert] = safe_format(_("Unable to connect to server: %{error}"), error: error)
     clear_session_data
 
     respond_to do |format|
       format.json do
         render json: {
           error: {
-            message: _("Unable to connect to server: %{error}") % { error: error },
+            message: safe_format(_("Unable to connect to server: %{error}"), error: error),
             redirect: new_import_bitbucket_server_path
           }
         }, status: :unprocessable_entity

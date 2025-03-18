@@ -118,7 +118,7 @@ module ReactiveCaching
     def refresh_reactive_cache!(*args)
       clear_reactive_cache!(*args)
       keep_alive_reactive_cache!(*args)
-      worker_class.perform_async(self.class, id, *args)
+      worker_class.perform_async(self.class.name, id, *args)
     end
 
     def keep_alive_reactive_cache!(...)
@@ -151,7 +151,7 @@ module ReactiveCaching
     def enqueuing_update(*args)
       yield
 
-      worker_class.perform_in(self.class.reactive_cache_refresh_interval, self.class, id, *args)
+      worker_class.perform_in(self.class.reactive_cache_refresh_interval, self.class.name, id, *args)
     end
 
     def worker_class

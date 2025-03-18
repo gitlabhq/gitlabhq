@@ -13,9 +13,6 @@ module VirtualRegistries
           class_name: 'VirtualRegistries::Packages::Maven::Cache::Entry',
           inverse_of: :upstream
 
-        ignore_column :encrypted_credentials, remove_with: '17.9', remove_after: '2025-01-23'
-        ignore_column :encrypted_credentials_iv, remove_with: '17.9', remove_after: '2025-01-23'
-
         attr_encrypted_options.merge!(
           mode: :per_attribute_iv,
           key: Settings.attr_encrypted_db_key_base_32,

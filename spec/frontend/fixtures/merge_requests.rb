@@ -127,19 +127,6 @@ RSpec
     end
   end
 
-  it 'merge_requests/merge_request_list.html' do
-    stub_feature_flags(vue_merge_request_list: false)
-
-    create(:merge_request, source_project: project, target_project: project)
-
-    get :index, params: {
-      namespace_id: project.namespace.to_param,
-      project_id: project
-    }
-
-    expect(response).to be_successful
-  end
-
   describe GraphQL::Query, type: :request do
     include ApiHelpers
     include GraphqlHelpers

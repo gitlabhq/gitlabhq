@@ -173,6 +173,14 @@ All backups are encrypted. After 90 days, backups are deleted.
 
 For more information about GitLab SaaS backups, see our [Backup FAQ page](https://handbook.gitlab.com/handbook/engineering/infrastructure/faq/#gitlabcom-backups).
 
+{{< alert type="note" >}}
+
+You should not use [direct transfer](../user/group/import/_index.md) or
+[project export files](../user/project/settings/import_export.md) to back up your data.
+Using project export files for backups does not always work, and not all items are exported.
+
+{{< /alert >}}
+
 ### Alternative backup strategies
 
 In some situations the Rake task for backups may not be the most optimal solution. Here are some

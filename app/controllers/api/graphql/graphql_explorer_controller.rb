@@ -4,6 +4,7 @@ module API
   module Graphql
     class GraphqlExplorerController < BaseActionController
       include Gitlab::GonHelper
+      include WithPerformanceBar
 
       def show
         # We need gon to setup gon.relative_url_root which is used by our Apollo client

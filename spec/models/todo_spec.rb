@@ -3,7 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Todo, feature_category: :notifications do
-  let(:issue) { create(:issue) }
+  let_it_be(:issue) { create(:issue) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:group) { create(:group, developers: user) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
+  let_it_be(:project2) { create(:project) }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:author).class_name("User") }
@@ -25,6 +30,38 @@ RSpec.describe Todo, feature_category: :notifications do
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:author) }
 
+    context "for project and/or group" do
+      using RSpec::Parameterized::TableSyntax
+
+      subject { described_class.new(project: project, group: group) }
+
+      where(:project?, :group?) do
+        true | true
+        true | false
+        false | true
+      end
+
+      with_them do
+        it "are valid" do
+          subject.project = project? ? project : nil
+          subject.group = group? ? group : nil
+          subject.validate
+
+          expect(subject.errors[:project]).to be_empty
+          expect(subject.errors[:group]).to be_empty
+        end
+      end
+
+      it "are both are missing" do
+        subject.project = nil
+        subject.group = nil
+        subject.validate
+
+        expect(subject.errors.messages[:project].first).to eq("can't be blank")
+        expect(subject.errors.messages[:group].first).to eq("can't be blank")
+      end
+    end
+
     context 'for commits' do
       subject { described_class.new(target_type: 'Commit') }
 
@@ -37,6 +74,24 @@ RSpec.describe Todo, feature_category: :notifications do
 
       it { is_expected.to validate_presence_of(:target_id) }
       it { is_expected.not_to validate_presence_of(:commit_id) }
+    end
+
+    context 'for parentless types' do
+      where(:action_type) do
+        [
+          [Todo::DUO_PRO_ACCESS_GRANTED],
+          [Todo::SSH_KEY_EXPIRED]
+        ]
+      end
+
+      with_them do
+        context "for #{params[:action_type]} should not require a target" do
+          subject { described_class.new(target: user, action: action_type) }
+
+          it { is_expected.not_to validate_presence_of(:project) }
+          it { is_expected.not_to validate_presence_of(:group) }
+        end
+      end
     end
   end
 
@@ -58,8 +113,6 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     it 'returns full path of target when action is member_access_requested' do
-      group = create(:group)
-
       subject.target = group
       subject.action = Todo::MEMBER_ACCESS_REQUESTED
 
@@ -145,7 +198,6 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '#target' do
     context 'for commits' do
-      let(:project) { create(:project, :repository) }
       let(:commit) { project.commit }
 
       it 'returns an instance of Commit when exists' do
@@ -185,7 +237,6 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     it 'returns commit full reference with short id' do
-      project = create(:project, :repository)
       commit = project.commit
 
       subject.project = project
@@ -211,13 +262,10 @@ RSpec.describe Todo, feature_category: :notifications do
   end
 
   describe '#target_url' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository, developers: current_user) }
-
     subject { todo.target_url }
 
     context 'when the todo is coming from a commit' do
-      let_it_be(:todo) { create(:on_commit_todo, user: current_user, project: project) }
+      let_it_be(:todo) { create(:on_commit_todo, user: user, project: project) }
 
       it 'returns the commit web path' do
         is_expected.to eq("http://localhost/#{project.full_path}/-/commit/#{todo.target.sha}")
@@ -228,7 +276,7 @@ RSpec.describe Todo, feature_category: :notifications do
       let_it_be(:issue) { create(:issue, project: project) }
 
       context 'when coming from the issue itself' do
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: issue) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, target: issue) }
 
         it 'returns the issue web path' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}")
@@ -237,7 +285,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
       context 'when coming from a note on the issue' do
         let_it_be(:note) { create(:note, project: project, noteable: issue) }
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: issue) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, note: note, target: issue) }
 
         it 'returns the issue web path with an anchor to the note' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}#note_#{note.id}")
@@ -246,7 +294,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
       context 'when coming from a design on the issue' do
         let_it_be(:design) { create(:design, project: project, issue: issue) }
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: design) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, target: design) }
 
         it 'returns the design web path' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}/designs/#{design.filename}")
@@ -258,7 +306,7 @@ RSpec.describe Todo, feature_category: :notifications do
       let_it_be(:work_item) { create(:work_item, :test_case, project: project) }
 
       context 'when coming from the work item itself' do
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: work_item, target_type: WorkItem.name) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, target: work_item, target_type: WorkItem.name) }
 
         it 'returns the work item web path' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/work_items/#{work_item.iid}")
@@ -267,7 +315,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
       context 'when coming from a note on the work item' do
         let_it_be(:note) { create(:note, project: project, noteable: work_item) }
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: work_item, target_type: WorkItem.name) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, note: note, target: work_item, target_type: WorkItem.name) }
 
         it 'returns the work item web path with an anchor to the note' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/work_items/#{work_item.iid}#note_#{note.id}")
@@ -279,7 +327,7 @@ RSpec.describe Todo, feature_category: :notifications do
       let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
       context 'when coming from the merge request itself' do
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: merge_request) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, target: merge_request) }
 
         it 'returns the merge request web path' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}")
@@ -288,7 +336,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
       context 'when coming from a note on the merge request' do
         let_it_be(:note) { create(:note, project: project, noteable: merge_request) }
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: merge_request) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, note: note, target: merge_request) }
 
         it 'returns the issue web path with an anchor to the note' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}#note_#{note.id}")
@@ -296,7 +344,7 @@ RSpec.describe Todo, feature_category: :notifications do
       end
 
       context 'when coming from a failed pipeline on the merge request' do
-        let_it_be(:todo) { create(:todo, :build_failed, project: project, user: current_user, target: merge_request) }
+        let_it_be(:todo) { create(:todo, :build_failed, project: project, user: user, target: merge_request) }
 
         it 'returns the issue web path with an anchor to the note' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}/pipelines")
@@ -308,7 +356,7 @@ RSpec.describe Todo, feature_category: :notifications do
       let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, project: project) }
 
       context 'when coming from the wiki page itself' do
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: wiki_page_meta) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, target: wiki_page_meta) }
 
         it 'returns the wiki page web path' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/wikis/#{wiki_page_meta.canonical_slug}")
@@ -317,7 +365,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
       context 'when coming from a note on the wiki page' do
         let_it_be(:note) { create(:note, project: project, noteable: wiki_page_meta) }
-        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: wiki_page_meta) }
+        let_it_be(:todo) { create(:todo, project: project, user: user, note: note, target: wiki_page_meta) }
 
         it 'returns the wiki page web path with an anchor to the note' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/wikis/#{wiki_page_meta.canonical_slug}#note_#{note.id}")
@@ -327,7 +375,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
     context 'when the todo is coming from an alert' do
       let_it_be(:alert) { create(:alert_management_alert, project: project) }
-      let_it_be(:todo) { create(:todo, project: project, user: current_user, target: alert) }
+      let_it_be(:todo) { create(:todo, project: project, user: user, target: alert) }
 
       it 'returns the merge request web path' do
         is_expected.to eq("http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details")
@@ -336,7 +384,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
     context 'when the todo is for an access request' do
       context 'when it is a project access request' do
-        let_it_be(:todo) { create(:todo, :member_access_requested, project: project, user: current_user, target: project) }
+        let_it_be(:todo) { create(:todo, :member_access_requested, project: project, user: user, target: project) }
 
         it 'returns project access requests web path' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/project_members?tab=access_requests")
@@ -344,8 +392,7 @@ RSpec.describe Todo, feature_category: :notifications do
       end
 
       context 'when it is a group access request' do
-        let_it_be(:group) { create(:group, developers: current_user) }
-        let_it_be(:todo) { create(:todo, :member_access_requested, project: nil, group: group, user: current_user, target: group) }
+        let_it_be(:todo) { create(:todo, :member_access_requested, project: nil, group: group, user: user, target: group) }
 
         it 'returns project access requests web path' do
           is_expected.to eq("http://localhost/groups/#{group.full_path}/-/group_members?tab=access_requests")
@@ -354,8 +401,8 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     context 'when todo is for an expired SSH key' do
-      let_it_be(:key) { create(:key, user: current_user) }
-      let_it_be(:todo) { build(:todo, target: key, project: nil, group: nil, user: current_user) }
+      let_it_be(:key) { create(:key, user: user) }
+      let_it_be(:todo) { build(:todo, target: key, project: nil, group: nil, user: user) }
 
       it { is_expected.to eq("http://localhost/-/user_settings/ssh_keys/#{key.id}") }
     end
@@ -448,46 +495,40 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_author' do
     it 'returns the todos for a given author' do
-      user1 = create(:user)
+      user = create(:user)
       user2 = create(:user)
-      todo = create(:todo, author: user1)
+      todo = create(:todo, author: user)
 
       create(:todo, author: user2)
 
-      expect(described_class.for_author(user1)).to eq([todo])
+      expect(described_class.for_author(user)).to eq([todo])
     end
   end
 
   describe '.for_project' do
     it 'returns the todos for a given project' do
-      project1 = create(:project)
-      project2 = create(:project)
-      todo = create(:todo, project: project1)
+      todo = create(:todo, project: project)
 
       create(:todo, project: project2)
 
-      expect(described_class.for_project(project1)).to eq([todo])
+      expect(described_class.for_project(project)).to eq([todo])
     end
 
     it 'returns the todos for many projects' do
-      project1 = create(:project)
-      project2 = create(:project)
       project3 = create(:project)
 
-      todo1 = create(:todo, project: project1)
+      todo1 = create(:todo, project: project)
       todo2 = create(:todo, project: project2)
       create(:todo, project: project3)
 
-      expect(described_class.for_project([project2, project1])).to contain_exactly(todo2, todo1)
+      expect(described_class.for_project([project2, project])).to contain_exactly(todo2, todo1)
     end
   end
 
   describe '.for_undeleted_projects' do
-    let(:project1) { create(:project) }
-    let(:project2) { create(:project) }
     let(:project3) { create(:project) }
 
-    let!(:todo1) { create(:todo, project: project1) }
+    let!(:todo1) { create(:todo, project: project) }
     let!(:todo2) { create(:todo, project: project2) }
     let!(:todo3) { create(:todo, project: project3) }
 
@@ -506,19 +547,18 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_group' do
     it 'returns the todos for a given group' do
-      group1 = create(:group)
       group2 = create(:group)
-      todo = create(:todo, group: group1)
+      todo = create(:todo, group: group)
 
       create(:todo, group: group2)
 
-      expect(described_class.for_group(group1)).to eq([todo])
+      expect(described_class.for_group(group)).to eq([todo])
     end
   end
 
   describe '.for_type' do
     it 'returns the todos for a given target type' do
-      todo = create(:todo, target: create(:issue))
+      todo = create(:todo, target: issue)
 
       create(:todo, target: create(:merge_request))
 
@@ -528,7 +568,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_target' do
     it 'returns the todos for a given target' do
-      todo = create(:todo, target: create(:issue))
+      todo = create(:todo, target: issue)
 
       create(:todo, target: create(:merge_request))
 
@@ -549,11 +589,11 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.not_in_users' do
     it 'returns the expected todos' do
-      user1 = create(:user)
+      user = create(:user)
       user2 = create(:user)
 
-      todo1 = create(:todo, user: user1)
-      todo2 = create(:todo, user: user1)
+      todo1 = create(:todo, user: user)
+      todo2 = create(:todo, user: user)
       create(:todo, user: user2)
 
       expect(described_class.not_in_users(user2)).to contain_exactly(todo1, todo2)
@@ -562,7 +602,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_group_ids_and_descendants' do
     it 'returns the todos for a group and its descendants' do
-      parent_group = create(:group)
+      parent_group = group
       child_group = create(:group, parent: parent_group)
 
       todo1 = create(:todo, group: parent_group)
@@ -587,14 +627,11 @@ RSpec.describe Todo, feature_category: :notifications do
 
   describe '.for_user' do
     it 'returns the expected todos' do
-      user1 = create(:user)
-      user2 = create(:user)
-
-      todo1 = create(:todo, user: user1)
-      todo2 = create(:todo, user: user1)
+      todo1 = create(:todo, user: user)
+      todo2 = create(:todo, user: user)
       create(:todo, user: user2)
 
-      expect(described_class.for_user(user1)).to contain_exactly(todo1, todo2)
+      expect(described_class.for_user(user)).to contain_exactly(todo1, todo2)
     end
   end
 
@@ -610,19 +647,16 @@ RSpec.describe Todo, feature_category: :notifications do
     end
   end
 
-  describe '.group_by_user_id_and_state' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
+  describe '.pending_count_by_user_id' do
     before do
-      create(:todo, user: user1, state: :pending)
-      create(:todo, user: user1, state: :pending)
-      create(:todo, user: user1, state: :done)
+      create(:todo, user: user, state: :pending)
+      create(:todo, user: user, state: :pending)
+      create(:todo, user: user, state: :done)
       create(:todo, user: user2, state: :pending)
     end
 
     specify do
-      expect(described_class.count_grouped_by_user_id_and_state).to eq({ [user1.id, "done"] => 1, [user1.id, "pending"] => 2, [user2.id, "pending"] => 1 })
+      expect(described_class.pending_count_by_user_id).to eq({ user.id => 2, user2.id => 1 })
     end
   end
 
@@ -634,7 +668,6 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     it 'returns true if there is at least one todo for a given target with state pending' do
-      issue = create(:issue)
       create(:todo, state: :done, target: issue)
       create(:todo, state: :pending, target: issue)
 
@@ -642,7 +675,6 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     it 'returns false if there are only todos for a given target with state done while searching for pending' do
-      issue = create(:issue)
       create(:todo, state: :done, target: issue)
       create(:todo, state: :done, target: issue)
 
@@ -650,8 +682,6 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     it 'returns false if there are no todos for a given target' do
-      issue = create(:issue)
-
       expect(described_class.any_for_target?(issue)).to eq(false)
     end
   end
@@ -707,13 +737,11 @@ RSpec.describe Todo, feature_category: :notifications do
   describe '.distinct_user_ids' do
     subject { described_class.distinct_user_ids }
 
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-    let_it_be(:todo) { create(:todo, user: user1) }
-    let_it_be(:todo) { create(:todo, user: user1) }
+    let_it_be(:todo) { create(:todo, user: user) }
+    let_it_be(:todo) { create(:todo, user: user) }
     let_it_be(:todo) { create(:todo, user: user2) }
 
-    it { is_expected.to contain_exactly(user1.id, user2.id) }
+    it { is_expected.to contain_exactly(user.id, user2.id) }
   end
 
   describe '.for_internal_notes' do
@@ -779,14 +807,12 @@ RSpec.describe Todo, feature_category: :notifications do
   describe '#access_request_url' do
     shared_examples 'returns member access requests tab url/path' do
       it 'returns group access requests tab url/path if target is group' do
-        group = create(:group)
         subject.target = group
 
         expect(subject.access_request_url(only_path: only_path)).to eq(Gitlab::Routing.url_helpers.group_group_members_url(group, tab: 'access_requests', only_path: only_path))
       end
 
       it 'returns project access requests tab url/path if target is project' do
-        project = create(:project)
         subject.target = project
 
         expect(subject.access_request_url(only_path: only_path)).to eq(Gitlab::Routing.url_helpers.project_project_members_url(project, tab: 'access_requests', only_path: only_path))

@@ -26,19 +26,14 @@ describe('ProjectsList', () => {
     const expectedProps = projectsListItemWrappers.map((projectsListItemWrapper) =>
       projectsListItemWrapper.props(),
     );
-    const expectedClasses = projectsListItemWrappers.map((projectsListItemWrapper) =>
-      projectsListItemWrapper.classes(),
-    );
 
     expect(expectedProps).toEqual(
       defaultPropsData.projects.map((project) => ({
         project,
         showProjectIcon: false,
+        listItemClass: defaultPropsData.listItemClass,
         timestampType: TIMESTAMP_TYPE_CREATED_AT,
       })),
-    );
-    expect(expectedClasses).toEqual(
-      defaultPropsData.projects.map(() => [defaultPropsData.listItemClass]),
     );
   });
 

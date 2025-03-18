@@ -53,7 +53,7 @@ To ensure that a `deploy` job runs once at a time, you can specify
 
 ```yaml
 deploy:
-  ...
+  # ...
   resource_group: production
 ```
 

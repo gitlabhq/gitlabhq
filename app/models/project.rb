@@ -370,7 +370,6 @@ class Project < ApplicationRecord
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
 
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
-  has_many :member_approvals, through: :members_and_requesters
 
   has_many :namespace_members_and_requesters, -> { unscope(where: %i[source_id source_type]) },
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project,
@@ -1019,6 +1018,25 @@ class Project < ApplicationRecord
     )
   end
 
+  scope :with_created_and_owned_by_banned_user, -> do
+    where_exists(
+      Users::BannedUser.joins(
+        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
+      ).where('projects.creator_id = banned_users.user_id')
+        .where('project_authorizations.project_id = projects.id')
+        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
+    )
+  end
+
+  scope :with_active_owners, -> do
+    where_exists(
+      User.active.human.joins(
+        'INNER JOIN project_authorizations ON project_authorizations.user_id = users.id'
+      ).where('project_authorizations.project_id = projects.id')
+        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
+    )
+  end
+
   class << self
     # Searches for a list of projects based on the query given in `query`.
     #
@@ -1159,6 +1177,10 @@ class Project < ApplicationRecord
           pages_unique_domain_enabled: true,
           pages_unique_domain: domain
         })
+    end
+
+    def project_namespace_for(id:)
+      find_by(id: id)&.project_namespace
     end
   end
 
@@ -1990,7 +2012,6 @@ class Project < ApplicationRecord
     # seven_days interval but we have a setting to allow webhook execution
     # for thirty_days and sixty_days interval too.
     if hooks_scope == :resource_access_token_hooks &&
-        ::Feature.enabled?(:extended_expiry_webhook_execution_setting, self.namespace) &&
         data[:interval] != :seven_days &&
         !self.extended_prat_expiry_webhooks_execute?
 
@@ -2580,23 +2601,26 @@ class Project < ApplicationRecord
   end
 
   def predefined_project_variables
-    Gitlab::Ci::Variables::Collection.new
-      .append(key: 'GITLAB_FEATURES', value: licensed_features.join(','))
-      .append(key: 'CI_PROJECT_ID', value: id.to_s)
-      .append(key: 'CI_PROJECT_NAME', value: path)
-      .append(key: 'CI_PROJECT_TITLE', value: title)
-      .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
-      .append(key: 'CI_PROJECT_PATH', value: full_path)
-      .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
-      .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
-      .append(key: 'CI_PROJECT_NAMESPACE_ID', value: namespace.id.to_s)
-      .append(key: 'CI_PROJECT_ROOT_NAMESPACE', value: namespace.root_ancestor.path)
-      .append(key: 'CI_PROJECT_URL', value: web_url)
-      .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
-      .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
-      .append(key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: external_authorization_classification_label)
-      .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
-      .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
+    strong_memoize(:predefined_project_variables) do
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'GITLAB_FEATURES', value: licensed_features.join(','))
+        .append(key: 'CI_PROJECT_ID', value: id.to_s)
+        .append(key: 'CI_PROJECT_NAME', value: path)
+        .append(key: 'CI_PROJECT_TITLE', value: title)
+        .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
+        .append(key: 'CI_PROJECT_PATH', value: full_path)
+        .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
+        .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+        .append(key: 'CI_PROJECT_NAMESPACE_SLUG', value: Gitlab::Utils.slugify(namespace.full_path))
+        .append(key: 'CI_PROJECT_NAMESPACE_ID', value: namespace.id.to_s)
+        .append(key: 'CI_PROJECT_ROOT_NAMESPACE', value: namespace.root_ancestor.path)
+        .append(key: 'CI_PROJECT_URL', value: web_url)
+        .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
+        .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
+        .append(key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: external_authorization_classification_label)
+        .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
+        .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
+    end
   end
 
   def predefined_ci_server_variables
@@ -2622,7 +2646,9 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       break unless pages_enabled?
 
-      variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+      variables
+        .append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+        .append(key: 'CI_PAGES_HOSTNAME', value: pages_hostname)
     end
   end
 
@@ -3288,8 +3314,17 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
+  def work_item_status_feature_available?
+    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag, type: :wip)) &&
+      licensed_feature_available?(:work_item_status)
+  end
+
   def glql_integration_feature_flag_enabled?
     group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
+  end
+
+  def glql_load_on_click_feature_flag_enabled?
+    group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self)
   end
 
   def continue_indented_text_feature_flag_enabled?
@@ -3437,13 +3472,13 @@ class Project < ApplicationRecord
     { namespace_id: namespace_id }
   end
 
-  private
-
   def pages_url_builder(options = nil)
     strong_memoize_with(:pages_url_builder, options) do
       Gitlab::Pages::UrlBuilder.new(self, options)
     end
   end
+
+  private
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

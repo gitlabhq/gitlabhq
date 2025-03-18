@@ -33,7 +33,7 @@ export default {
     state.frequentItems[key] = data;
   },
   [types.RECEIVE_NAVIGATION_COUNT](state, { key, count }) {
-    const item = { ...state.navigation[key], count, count_link: null };
+    const item = { ...state.navigation[key], count };
     state.navigation = { ...state.navigation, [key]: item };
   },
   [types.REQUEST_AGGREGATIONS](state) {

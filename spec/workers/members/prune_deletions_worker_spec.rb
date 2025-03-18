@@ -8,10 +8,6 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
   describe '#perform_work' do
     subject(:perform_work) { worker.perform_work }
 
-    before do
-      stub_feature_flags(limited_capacity_member_destruction: true)
-    end
-
     context 'with Members::DeletionSchedule records' do
       let_it_be(:group) { create(:group) }
       let_it_be(:owner) { create(:user) }
@@ -130,14 +126,6 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
     subject { worker.max_running_jobs }
 
     it { is_expected.to eq(described_class::MAX_RUNNING_JOBS) }
-
-    context 'with limited_capacity_member_destruction disabled' do
-      before do
-        stub_feature_flags(limited_capacity_member_destruction: false)
-      end
-
-      it { is_expected.to eq 0 }
-    end
   end
 
   describe '#remaining_work_count' do
@@ -157,16 +145,6 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
       end
 
       it { is_expected.to eq(0) }
-    end
-
-    context 'with limited_capacity_member_destruction disabled' do
-      before do
-        create(:members_deletion_schedules)
-
-        stub_feature_flags(limited_capacity_member_destruction: false)
-      end
-
-      it { is_expected.to eq 0 }
     end
   end
 end

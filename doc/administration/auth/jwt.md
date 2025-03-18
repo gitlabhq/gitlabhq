@@ -73,7 +73,7 @@ JWT provides you with a secret key for you to use.
 
    {{< alert type="note" >}}
 
-For more information on each configuration option refer to
+   For more information on each configuration option refer to
    the [OmniAuth JWT usage documentation](https://github.com/mbleigh/omniauth-jwt#usage).
 
    {{< /alert >}}

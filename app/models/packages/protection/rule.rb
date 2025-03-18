@@ -4,6 +4,9 @@ module Packages
   module Protection
     class Rule < ApplicationRecord
       enum package_type: Packages::Package.package_types.slice(:conan, :maven, :npm, :pypi)
+      enum minimum_access_level_for_delete:
+          Gitlab::Access.sym_options_with_admin.slice(:owner, :admin),
+        _prefix: :minimum_access_level_for_delete
       enum minimum_access_level_for_push:
           Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
         _prefix: :minimum_access_level_for_push
@@ -25,7 +28,8 @@ module Packages
         },
         if: :pypi?
       validates :package_type, presence: true
-      validates :minimum_access_level_for_push, presence: true
+
+      validate :at_least_one_minimum_access_level_must_be_present
 
       scope :for_package_name, ->(package_name) do
         return none if package_name.blank?
@@ -38,11 +42,18 @@ module Packages
 
       scope :for_package_type, ->(package_type) { where(package_type: package_type) }
 
-      def self.for_push_exists?(access_level:, package_name:, package_type:)
+      def self.for_delete_exists?(access_level:, package_name:, package_type:)
+        for_action_exists?(action: :delete, access_level: access_level, package_name: package_name,
+          package_type: package_type)
+      end
+
+      def self.for_action_exists?(action:, access_level:, package_name:, package_type:)
         return false if [access_level, package_name, package_type].any?(&:blank?)
 
+        minimum_access_level_column = "minimum_access_level_for_#{action}"
+
         for_package_type(package_type)
-          .where(':access_level < minimum_access_level_for_push', access_level: access_level)
+          .where(":access_level < #{minimum_access_level_column}", access_level: access_level)
           .for_package_name(package_name)
           .exists?
       end
@@ -112,6 +123,12 @@ module Packages
         ).from(Arel.sql(cte_name.to_s))
 
         connection.exec_query(query.with(cte.to_arel).to_sql)
+      end
+
+      def at_least_one_minimum_access_level_must_be_present
+        return unless minimum_access_level_for_delete.blank? && minimum_access_level_for_push.blank?
+
+        errors.add(:base, _('A rule must have at least a minimum access role for push or delete.'))
       end
     end
   end

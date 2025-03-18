@@ -11,7 +11,16 @@ module Features
     end
 
     def edit_in_web_ide
-      click_button 'Edit'
+      # rubocop:disable Gitlab/FeatureFlagWithoutActor -- omit actor param in tests
+      if Feature.enabled?(:directory_code_dropdown_updates)
+        # rubocop:enable Gitlab/FeatureFlagWithoutActor -- omit actor param in tests
+        within_testid('code-dropdown') do
+          click_button 'Code'
+        end
+      else
+        click_button 'Edit'
+      end
+
       click_link_or_button 'Web IDE'
     end
   end

@@ -96,7 +96,7 @@ export default {
       }
 
       if (this.checkingMergeChecks.length) {
-        return __('Checking if merge request can be merged...');
+        return __('Checking if merge request can be merged…');
       }
 
       if (!this.failedChecks.length) {

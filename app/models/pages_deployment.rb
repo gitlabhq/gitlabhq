@@ -96,6 +96,7 @@ class PagesDeployment < ApplicationRecord
 
   def restore
     update_attribute(:deleted_at, nil)
+    deactivate_deployments_with_same_path_prefix
   end
 
   private
@@ -120,6 +121,11 @@ class PagesDeployment < ApplicationRecord
     return unless file && file.exists?
 
     update_column(:upload_ready, true)
+  end
+
+  # Stop existing active deployment with same path when a deleted one is restored
+  def deactivate_deployments_with_same_path_prefix
+    project.pages_deployments.active.where.not(id: id).with_path_prefix(path_prefix).each(&:deactivate)
   end
 end
 

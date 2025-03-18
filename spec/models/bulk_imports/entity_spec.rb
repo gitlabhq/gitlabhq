@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers do
-  subject { described_class.new(group: Group.new) }
+  subject { build(:bulk_import_entity, group: Group.new) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:bulk_import).required }
@@ -43,7 +43,9 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         entity = build(:bulk_import_entity, group: build(:group), project: build(:project))
 
         expect(entity).not_to be_valid
-        expect(entity.errors).to include(:base, :project, :group)
+
+        expect(entity.errors[:base])
+          .to include('Import failed: Must have exactly one of organization, group or project.')
       end
     end
 
@@ -173,36 +175,64 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     end
 
     context 'validate destination namespace of a group_entity' do
-      it 'is invalid if destination namespace is the source namespace' do
-        group_a = create(:group, path: 'group_a')
-
-        entity = build(
-          :bulk_import_entity,
-          :group_entity,
-          source_full_path: group_a.full_path,
-          destination_namespace: group_a.full_path
-        )
-
-        expect(entity).not_to be_valid
-        expect(entity.errors).to include(:base)
-        expect(entity.errors[:base])
-          .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+      let_it_be(:bulk_import) do
+        create(:bulk_import, configuration: create(:bulk_import_configuration, url: 'http://example.gitlab.com'))
       end
 
-      it 'is invalid if destination namespace is a descendant of the source' do
-        group_a = create(:group, path: 'group_a')
-        group_b = create(:group, parent: group_a, path: 'group_b')
+      context 'when source instance and destination instance are the same' do
+        before do
+          allow(Settings.gitlab).to receive(:host).and_return('example.gitlab.com')
+        end
 
-        entity = build(
-          :bulk_import_entity,
-          :group_entity,
-          source_full_path: group_a.full_path,
-          destination_namespace: group_b.full_path
-        )
+        it 'is invalid if destination namespace is the source namespace' do
+          group_a = create(:group, path: 'group_a')
 
-        expect(entity).not_to be_valid
-        expect(entity.errors[:base])
-          .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+          entity = build(
+            :bulk_import_entity,
+            :group_entity,
+            source_full_path: group_a.full_path,
+            destination_namespace: group_a.full_path,
+            bulk_import: bulk_import
+          )
+
+          expect(entity).not_to be_valid
+          expect(entity.errors).to include(:base)
+          expect(entity.errors[:base])
+            .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+        end
+
+        it 'is invalid if destination namespace is a descendant of the source' do
+          group_a = create(:group, path: 'group_a')
+          group_b = create(:group, parent: group_a, path: 'group_b')
+
+          entity = build(
+            :bulk_import_entity,
+            :group_entity,
+            source_full_path: group_a.full_path,
+            destination_namespace: group_b.full_path,
+            bulk_import: bulk_import
+          )
+
+          expect(entity).not_to be_valid
+          expect(entity.errors[:base])
+            .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+        end
+      end
+
+      context 'when source instance and destination instance are not the same' do
+        it 'is valid if destination namespace is the source namespace' do
+          group_a = create(:group, path: 'group_a')
+
+          entity = build(
+            :bulk_import_entity,
+            :group_entity,
+            source_full_path: group_a.full_path,
+            destination_namespace: group_a.full_path,
+            bulk_import: bulk_import
+          )
+
+          expect(entity).to be_valid
+        end
       end
     end
 

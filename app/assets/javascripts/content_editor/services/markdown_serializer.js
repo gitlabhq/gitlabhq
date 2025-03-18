@@ -1,5 +1,7 @@
 import { MarkdownSerializer as ProseMirrorMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import * as extensions from '../extensions';
+import alert from './serializer/alert';
+import alertTitle from './serializer/alert_title';
 import codeSuggestion from './serializer/code_suggestion';
 import code from './serializer/code';
 import bold from './serializer/bold';
@@ -50,6 +52,7 @@ import tableCell from './serializer/table_cell';
 import tableHeader from './serializer/table_header';
 import tableRow from './serializer/table_row';
 import table from './serializer/table';
+import time from './serializer/time';
 import htmlNode from './serializer/html_node';
 
 const defaultSerializerConfig = {
@@ -68,6 +71,8 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
+    [extensions.Alert.name]: alert,
+    [extensions.AlertTitle.name]: alertTitle,
     [extensions.Audio.name]: audio,
     [extensions.Blockquote.name]: blockquote,
     [extensions.BulletList.name]: bulletList,
@@ -105,6 +110,7 @@ const defaultSerializerConfig = {
     [extensions.TaskItem.name]: taskItem,
     [extensions.TaskList.name]: taskList,
     [extensions.Text.name]: text,
+    [extensions.Time.name]: time,
     [extensions.Video.name]: video,
     [extensions.WordBreak.name]: wordBreak,
     ...extensions.HTMLNodes.reduce((acc, { name }) => ({ ...acc, [name]: htmlNode(name) }), {}),

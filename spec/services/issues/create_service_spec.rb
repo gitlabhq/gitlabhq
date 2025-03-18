@@ -82,6 +82,14 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
             expect(result).to be_success
             expect(issue).to be_persisted
           end
+
+          it 'publishes created event' do
+            expect { result }
+              .to publish_event(::WorkItems::WorkItemCreatedEvent).with(
+                id: an_instance_of(Integer),
+                namespace_id: project.project_namespace_id
+              )
+          end
         end
 
         context 'when the user is not authorized' do
@@ -179,16 +187,23 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       end
 
       context 'when issue template is provided' do
-        let_it_be(:files) { { '.gitlab/issue_templates/Default.md' => 'Default template contents' } }
+        let_it_be(:label) { create(:group_label, group: group, title: 'stage::plan') }
+        let_it_be(:files) { { '.gitlab/issue_templates/Default.md' => "Default template contents\n/label ~stage::plan" } }
         let_it_be_with_reload(:project) { create(:project, :custom_repo, group: group, files: files, guests: user) }
 
         context 'when description is blank' do
-          it 'sets template contents as description when description is blank' do
+          before do
             opts[:description] = ''
+          end
 
+          it 'sets template contents as description when description is blank' do
             expect(result).to be_success
             expect(issue).to be_persisted
             expect(issue).to have_attributes(description: 'Default template contents')
+          end
+
+          it 'applies quick actions from the default template' do
+            expect(issue.labels).to contain_exactly(label)
           end
         end
 
@@ -197,6 +212,10 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
             expect(result).to be_success
             expect(issue).to be_persisted
             expect(issue).to have_attributes(description: 'please fix')
+          end
+
+          it 'does not apply quick actions from the default template' do
+            expect(issue.labels).to be_empty
           end
         end
       end
@@ -623,15 +642,16 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
     end
 
     context 'Quick actions' do
-      context 'with assignee, milestone, and contact in params and command' do
+      context 'with assignee, milestone, labels and contact in params and command' do
         let_it_be(:contact) { create(:contact, group: group) }
+        let_it_be(:label) { create(:group_label, group: group, title: "stage::plan") }
 
         let(:opts) do
           {
             assignee_ids: [create(:user).id],
             milestone_id: 1,
             title: 'Title',
-            description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}"),
+            description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}"\n/label ~stage::plan),
             add_contacts: [contact.email]
           }
         end
@@ -641,11 +661,12 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           project.add_maintainer(assignee)
         end
 
-        it 'assigns, sets milestone, and sets contact to issuable from command' do
+        it 'assigns, sets milestone, labels and contact to issuable from command' do
           expect(result).to be_success
           expect(issue).to be_persisted
           expect(issue.assignees).to eq([assignee])
           expect(issue.milestone).to eq(milestone)
+          expect(issue.labels).to contain_exactly(label)
           expect(issue.issue_customer_relations_contacts.last.contact).to eq(contact)
         end
       end

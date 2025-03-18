@@ -101,7 +101,7 @@ To apply setting changes, for example adding an analyzer, either:
 To apply mapping changes, either:
 
 - Use a [zero-downtime reindexing migration](#zero-downtime-reindex-migration).
-- Use an [update mapping migration](#elasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#elasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
+- Use an [update mapping migration](#searchelasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#searchelasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
 
 #### Zero-downtime reindex migration
 
@@ -123,7 +123,7 @@ end
 
 The following migration helpers are available in `ee/app/workers/concerns/elastic/`:
 
-#### `Elastic::MigrationBackfillHelper`
+#### `Search::Elastic::MigrationBackfillHelper`
 
 Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
 
@@ -131,7 +131,7 @@ Requires the `field_name` method and `DOCUMENT_TYPE` constant to backfill a sing
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationBackfillHelper
+  include ::Search::Elastic::MigrationBackfillHelper
 
   DOCUMENT_TYPE = Issue
 
@@ -147,7 +147,7 @@ Requires the `field_names` method and `DOCUMENT_TYPE` constant to backfill multi
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationBackfillHelper
+  include ::Search::Elastic::MigrationBackfillHelper
 
   DOCUMENT_TYPE = Issue
 
@@ -159,7 +159,20 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-#### `Elastic::MigrationUpdateMappingsHelper`
+You can test this migration with the `'migration backfills fields'` shared examples.
+
+```ruby
+describe 'migration', :elastic_delete_by_query, :sidekiq_inline do
+  include_examples 'migration backfills fields' do
+    let(:expected_throttle_delay) { 1.minute }
+    let(:expected_batch_size) { 9000 }
+    let(:objects) { create_list(:issues, 3) }
+    let(:expected_fields) { schema_version: '25_09' }
+  end
+end
+```
+
+#### `Search::Elastic::MigrationUpdateMappingsHelper`
 
 Updates a mapping in an index by calling `put_mapping` with the mapping specified.
 
@@ -167,7 +180,7 @@ Requires the `new_mappings` method and `DOCUMENT_TYPE` constant.
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationUpdateMappingsHelper
+  include ::Search::Elastic::MigrationUpdateMappingsHelper
 
   DOCUMENT_TYPE = Issue
 
@@ -183,7 +196,15 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-#### `Elastic::MigrationRemoveFieldsHelper`
+You can test this migration with the `'migration adds mapping'` shared examples.
+
+```ruby
+describe 'migration', :elastic, :sidekiq_inline do
+  include_examples 'migration adds mapping'
+end
+```
+
+#### `Search::Elastic::MigrationRemoveFieldsHelper`
 
 Removes specified fields from an index.
 
@@ -193,7 +214,7 @@ Checks in batches if any documents that match `document_type` have the fields sp
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationRemoveFieldsHelper
+  include ::Search::Elastic::MigrationRemoveFieldsHelper
 
   batched!
   throttle_delay 1.minute
@@ -218,7 +239,7 @@ The default batch size is `10_000`. You can override this value by specifying `B
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationRemoveFieldsHelper
+  include ::Search::Elastic::MigrationRemoveFieldsHelper
 
   batched!
   BATCH_SIZE = 100
@@ -227,19 +248,34 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-#### `Elastic::MigrationObsolete`
+You can test this migration with the `'migration removes field'` shared examples.
+
+```ruby
+include_examples 'migration removes field' do
+  let(:expected_throttle_delay) { 1.minute }
+  let(:objects) { create_list(:work_item, 6) }
+  let(:index_name) { ::Search::Elastic::Types::WorkItem.index_name }
+  let(:field) { :correct_work_item_type_id }
+  let(:type) { 'long' }
+end
+```
+
+#### `Search::Elastic::MigrationObsolete`
 
 Marks a migration as obsolete when it's no longer required.
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationObsolete
+  include ::Search::Elastic::MigrationObsolete
 end
 ```
 
 When marking a skippable migration as obsolete, you must keep the `skip_if` condition.
 
-#### `Elastic::MigrationCreateIndex`
+You can test this migration with the `'a deprecated Advanced Search migration'`
+shared examples. Follow the [process for marking migrations as obsolete](#process-for-marking-migrations-as-obsolete).
+
+#### `Search::Elastic::MigrationCreateIndexHelper`
 
 Creates a new index.
 
@@ -256,7 +292,7 @@ You must perform a follow-up migration to populate the index in the same milesto
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationCreateIndex
+  include ::Search::Elastic::MigrationCreateIndexHelper
 
   retry_on_failure
 
@@ -266,6 +302,57 @@ class MigrationName < Elastic::Migration
 
   def target_class
     Epic
+  end
+end
+```
+
+You can test this migration with the `'migration creates a new index'` shared examples.
+
+```ruby
+it_behaves_like 'migration creates a new index', 20240501134252, WorkItem
+```
+
+#### `Search::Elastic::MigrationReindexTaskHelper`
+
+Creates a reindex task which creates a new index and copies data over to the new index.
+
+Requires:
+
+- The `targets` method.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include ::Search::Elastic::MigrationReindexTaskHelper
+
+  def targets
+    %w[MergeRequest]
+  end
+end
+```
+
+You can test this migration with the following specs.
+
+```ruby
+let(:migration) { described_class.new(version) }
+let(:task) { Search::Elastic::ReindexingTask.last }
+let(:targets) { %w[MergeRequest] }
+
+it 'does not have migration options set', :aggregate_failures do
+  expect(migration).not_to be_batched
+  expect(migration).not_to be_retry_on_failure
+end
+
+describe '#migrate', :aggregate_failures do
+  it 'creates reindexing task with correct target and options' do
+    expect { migration.migrate }.to change { Search::Elastic::ReindexingTask.count }.by(1)
+    expect(task.targets).to eq(targets)
+    expect(task.options).to eq('skip_pending_migrations_check' => true)
+  end
+end
+
+describe '#completed?' do
+  it 'always returns true' do
+    expect(migration.completed?).to be(true)
   end
 end
 ```
@@ -294,6 +381,16 @@ class MigrationName < Elastic::Migration
   DOCUMENT_TYPE = WorkItem
   NEW_SCHEMA_VERSION = 24_46
   UPDATE_BATCH_SIZE = 100
+end
+```
+
+You can test this migration with the `'migration reindex based on schema_version'` shared examples.
+
+```ruby
+include_examples 'migration reindex based on schema_version' do
+  let(:expected_throttle_delay) { 1.minute }
+  let(:expected_batch_size) { 9_000 }
+  let(:objects) { create_list(:project, 3) }
 end
 ```
 
@@ -327,6 +424,16 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+You can test this migration with the `'migration deletes documents based on schema version'` shared examples.
+
+```ruby
+include_examples 'migration deletes documents based on schema version' do
+  let(:objects) { create_list(:issue, 3) }
+  let(:expected_throttle_delay) { 1.minute }
+  let(:expected_batch_size) { 20000 }
+end
+```
+
 #### `Search::Elastic::MigrationDatabaseBackfillHelper`
 
 Reindexes all documents in the database to the elastic search index respecting the `limited_indexing` setting.
@@ -350,13 +457,13 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-#### `Elastic::MigrationHelper`
+#### `Search::Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationHelper
+  include ::Search::Elastic::MigrationHelper
 
   def migrate
   ...
@@ -378,7 +485,7 @@ end
 
 - `batch_size` - Sets the number of documents modified during a `batched!` migration run. This size should be set to a value which allows the updates
   enough time to finish. This can be tuned in combination with the `throttle_delay` option described below. The batching
-  must be handled in a custom `migrate` method or by using the [`Elastic::MigrationBackfillHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/elastic/migration_backfill_helper.rb)
+  must be handled in a custom `migrate` method or by using the [`Search::Elastic::MigrationBackfillHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/elastic/migration_backfill_helper.rb)
   `migrate` method which uses this setting. Default value is 1000 documents.
 
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
@@ -471,9 +578,9 @@ Use the following formula to calculate the runtime:
 Follow these best practices for best results:
 
 - Order all migrations for each document type so that any migrations that use
-  [`Elastic::MigrationUpdateMappingsHelper`](#elasticmigrationupdatemappingshelper)
+  [`Search::Elastic::MigrationUpdateMappingsHelper`](#searchelasticmigrationupdatemappingshelper)
   are executed before migrations that use the
-  [`Elastic::MigrationBackfillHelper`](#elasticmigrationbackfillhelper). This avoids
+  [`Search::Elastic::MigrationBackfillHelper`](#searchelasticmigrationbackfillhelper). This avoids
   reindexing the same documents multiple times if all of the migrations are unapplied
   and reduces the backfill time.
 - When working in batches, keep the batch size under 9,000 documents.
@@ -536,7 +643,7 @@ the Keep:
 1. Retains the content of the migration and adds a prepend to the bottom:
 
    ```ruby
-    ClassName.prepend ::Elastic::MigrationObsolete
+    ClassName.prepend ::Search::Elastic::MigrationObsolete
    ```
 
 1. Replaces the spec file content with the `'a deprecated Advanced Search migration'` shared example.

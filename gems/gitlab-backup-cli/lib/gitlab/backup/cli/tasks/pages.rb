@@ -11,7 +11,7 @@ module Gitlab
 
           def self.id = 'pages'
 
-          def human_name = _('pages')
+          def human_name = 'Pages'
 
           def destination_path = 'pages.tar.gz'
 

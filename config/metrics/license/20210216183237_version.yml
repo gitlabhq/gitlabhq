@@ -2,7 +2,7 @@
 data_category: operational
 key_path: git.version
 description: Information about Git version
-product_group: distribution_deploy
+product_group: self_managed
 value_type: object
 value_json_schema: 'config/metrics/objects_schemas/git_version_schema.json'
 status: active

@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Change the file name to be exactly '.gitlab-ci.yml'."
-link: https://docs.gitlab.com/ee/development/documentation/versions.html
+link: https://docs.gitlab.com/development/documentation/styleguide/availability_details/
 vocab: false
 level: error
 scope: raw

@@ -27,13 +27,29 @@ module Types
           null: false,
           description: 'Package type protected by the protection rule. For example, `NPM`, `PYPI`.'
 
+        field :minimum_access_level_for_delete,
+          Types::Packages::Protection::RuleAccessLevelForDeleteEnum,
+          null: true,
+          experiment: { milestone: '17.10' },
+          description:
+            'Minimum GitLab access required to delete packages from the package registry. ' \
+            'Valid values include `OWNER` or `ADMIN`. ' \
+            'If the value is `nil`, the default minimum access level is `MAINTAINER`. ' \
+            'Available only when feature flag `packages_protected_packages_delete` is enabled.'
+
         field :minimum_access_level_for_push,
           Types::Packages::Protection::RuleAccessLevelEnum,
-          null: false,
+          null: true,
           description:
             'Minimum GitLab access required to push packages to the package registry. ' \
             'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
             'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
+
+        def minimum_access_level_for_delete
+          return unless Feature.enabled?(:packages_protected_packages_delete, object&.project)
+
+          object.minimum_access_level_for_delete
+        end
       end
     end
   end

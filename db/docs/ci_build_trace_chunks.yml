@@ -8,15 +8,6 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9d6fe7bfdf9ff3f68ee73baa0e3d0aa7df13c351
 milestone: '10.8'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: build_id
-        table: p_ci_builds
-        sharding_key: project_id
-        belongs_to: build
-        foreign_key_name: fk_89e29fa5ee_p
-desired_sharding_key_migration_job_name: BackfillCiBuildTraceChunksProjectId
 table_size: small
+sharding_key:
+  project_id: projects

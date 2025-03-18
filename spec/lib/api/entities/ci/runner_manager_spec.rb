@@ -18,6 +18,6 @@ RSpec.describe API::Entities::Ci::RunnerManager, feature_category: :runner do
   end
 
   it "exposes runner manager system_id" do
-    expect(runner_manager_entity[:system_id]).to eq(runner_manager.public_send(:system_xid))
+    expect(runner_manager_entity[:system_id]).to eq(runner_manager.system_xid)
   end
 end

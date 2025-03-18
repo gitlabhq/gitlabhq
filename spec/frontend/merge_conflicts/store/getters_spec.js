@@ -115,7 +115,7 @@ describe('Merge Conflicts getters', () => {
   describe('getCommitButtonText', () => {
     it('when is submitting', () => {
       state.isSubmitting = true;
-      expect(getters.getCommitButtonText(state)).toBe('Committing...');
+      expect(getters.getCommitButtonText(state)).toBe('Committing…');
     });
 
     it('when is not submitting', () => {

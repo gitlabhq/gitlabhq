@@ -22,7 +22,7 @@ module API
       params :group_list_params do
         use :statistics_params
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
-        optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
+        optional :all_available, type: Boolean, desc: 'When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
           desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Search for a specific group'

@@ -204,7 +204,7 @@ To [change the default color theme](../user/profile/preferences.md#change-the-co
 
 1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-As of GitLab 17.8, `gitlab_default_theme` can specify [a value from 1 to 10](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/17.8.0+ee.0/files/gitlab-config-template/gitlab.rb.template?ref_type=tags#L137) to set the default theme. 
+As of GitLab 17.8, `gitlab_default_theme` can specify [a value from 1 to 10](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/17.8.0+ee.0/files/gitlab-config-template/gitlab.rb.template?ref_type=tags#L137) to set the default theme.
 
 | Value | Color |
 | ------ | ------  |

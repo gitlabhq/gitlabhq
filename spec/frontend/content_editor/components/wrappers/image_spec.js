@@ -37,8 +37,8 @@ describe('content/components/wrappers/image_spec', () => {
       attrs: { src: 'image.png', alt: 'My Image', width: 200, height: 200 },
     });
 
+    expect(findImage().element.src).toBe('image.png');
     expect(findImage().attributes()).toMatchObject({
-      src: 'image.png',
       alt: 'My Image',
       height: '200',
       width: '200',
@@ -57,8 +57,8 @@ describe('content/components/wrappers/image_spec', () => {
   it('sets width and height to auto if not provided', () => {
     createWrapper({ type: { name: 'image' }, attrs: { src: 'image.png', alt: 'My Image' } });
 
+    expect(findImage().element.src).toBe('image.png');
     expect(findImage().attributes()).toMatchObject({
-      src: 'image.png',
       alt: 'My Image',
       height: 'auto',
       width: 'auto',

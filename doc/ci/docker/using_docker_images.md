@@ -232,6 +232,12 @@ To access private container registries, the GitLab Runner process can use:
 - [Credentials Store](#use-a-credentials-store). For more information, see [the relevant Docker documentation](https://docs.docker.com/reference/cli/docker/login/#credential-stores).
 - [Credential Helpers](#use-credential-helpers). For more information, see [the relevant Docker documentation](https://docs.docker.com/reference/cli/docker/login/#credential-helpers).
 
+When you use the [GitLab Container Registry](../../user/packages/container_registry/_index.md) on the same GitLab instance,
+GitLab provides default credentials for this registry. With these credentials, the `CI_JOB_TOKEN` is used for authentication.
+To use the job token, the user starting the job must have at least the Developer role for the project where the private image is hosted.
+The project hosting the private image must also allow the other project to authenticate with the job token. This access is disabled by default.
+For more details, see [CI/CD job token](../jobs/ci_job_token.md#control-job-token-access-to-your-project).
+
 To define which option should be used, the runner process reads the configuration in this order:
 
 - A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/_index.md).
@@ -309,7 +315,7 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
 
   {{< alert type="note" >}}
 
-If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
+  If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
 
   {{< /alert >}}
 

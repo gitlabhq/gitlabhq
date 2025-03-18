@@ -1,23 +1,35 @@
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import '~/performance_bar/components/performance_bar_app.vue';
-import performanceBar from '~/performance_bar';
+import initPerformanceBarAndLog from '~/performance_bar';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
-
-Vue.config.ignoredElements = ['gl-emoji'];
 
 jest.mock('~/performance_bar/performance_bar_log');
 
-describe('performance bar wrapper', () => {
+function setupNormalDOM() {
+  setHTMLFixture('<div id="js-peek"></div>');
+  return document.getElementById('js-peek');
+}
+
+function setupShadowDOM() {
+  setHTMLFixture(`<div id="performance-bar-root"></div>`);
+  const host = document.querySelector('#performance-bar-root');
+  const shadow = host.attachShadow({ mode: 'open' });
+  const peekWrapper = document.createElement('div');
+  shadow.appendChild(peekWrapper);
+  return peekWrapper;
+}
+
+describe.each([
+  ['normal DOM', setupNormalDOM],
+  ['shadow DOM', setupShadowDOM],
+])('Performance Bar – Using %s', (_, setupFn) => {
   let mock;
   let vm;
 
   beforeEach(() => {
-    setHTMLFixture('<div id="js-peek"></div>');
-    const peekWrapper = document.getElementById('js-peek');
+    const peekWrapper = setupFn();
     performance.getEntriesByType = jest.fn().mockReturnValue([]);
 
     peekWrapper.setAttribute('id', 'js-peek');
@@ -47,12 +59,13 @@ describe('performance bar wrapper', () => {
       {},
     );
 
-    vm = performanceBar(peekWrapper);
+    vm = initPerformanceBarAndLog();
   });
 
   afterEach(() => {
     vm.$destroy();
-    document.getElementById('js-peek').remove();
+    document?.getElementById('performance-bar-root')?.remove?.();
+    document?.getElementById('js-peek')?.remove?.();
     mock.restore();
     resetHTMLFixture();
   });

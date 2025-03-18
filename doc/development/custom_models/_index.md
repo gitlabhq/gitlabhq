@@ -32,7 +32,7 @@ Setting [`CLOUD_CONNECTOR_BASE_URL`](https://gitlab.com/gitlab-org/gitlab/-/blob
 Currently, there are the following workarounds:
 
 1. Verify that `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1`
-1. Remove `ai_feature_settings` record responsible to the configuration to fallback to using `AI_GATEWAY_URL` as Cloud Connector URL:
+1. Remove `ai_feature_settings` record responsible for the configuration to fallback to using the AI gateway URL (configured through `Ai::Setting.instance.ai_gateway_url`) as Cloud Connector URL:
 
 ```ruby
 Ai::FeatureSetting.find_by(feature: :duo_chat).destroy!
@@ -46,10 +46,10 @@ This is required because, unlike `unit` tests, `system` specs invoke all the com
 
 To write a new `system` test and for it to run successfully, there are the following prerequisites:
 
-- AI gateway must be running (usually on port `5052`), and you must configure the environment variable `AI_GATEWAY_URL`:
+- AI gateway must be running (usually on port `5052`), and you must configure the AI gateway URL through the `Ai::Setting.instance` record:
 
   ```shell
-  export AI_GATEWAY_URL="http://localhost:5052"
+  Ai::Setting.instance.update!(ai_gateway_url: 'http://localhost:5052')
   ```
 
 - We use [LiteLLM proxy](https://www.litellm.ai/) to return mock responses. You must configure LiteLLM to return mock responses using a configuration file:

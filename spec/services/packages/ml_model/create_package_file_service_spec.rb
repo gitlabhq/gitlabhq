@@ -39,7 +39,7 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
       end
 
       it 'does not create package file', :aggregate_failures do
-        expect(execute_service).to be(nil)
+        expect(execute_service).to be_nil
       end
     end
 

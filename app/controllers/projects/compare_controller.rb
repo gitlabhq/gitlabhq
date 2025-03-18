@@ -7,6 +7,7 @@ class Projects::CompareController < Projects::ApplicationController
   include DiffHelper
   include RendersCommits
   include CompareHelper
+  include RapidDiffsResource
 
   # Authorize
   before_action :require_non_empty_project
@@ -194,5 +195,9 @@ class Projects::CompareController < Projects::ApplicationController
 
   def compare_params
     @compare_params ||= params.permit(:from, :to, :from_project_id, :straight, :to_project_id)
+  end
+
+  def diffs_resource
+    compare&.diffs(diff_options)
   end
 end

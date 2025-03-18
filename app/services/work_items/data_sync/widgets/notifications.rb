@@ -5,8 +5,11 @@ module WorkItems
     module Widgets
       class Notifications < Base
         def after_save_commit
-          return unless params[:operation] == :move
           return unless target_work_item.get_widget(:notifications)
+
+          notify_participants
+
+          return unless params[:operation] == :move
 
           work_item.subscriptions.each_batch(of: BATCH_SIZE) do |subscriptions_batch|
             ::Subscription.insert_all(new_work_item_subscriptions(subscriptions_batch))
@@ -46,6 +49,18 @@ module WorkItems
         end
 
         private
+
+        def notify_participants
+          operation = params[:operation]
+          return unless [:move, :clone].include?(operation)
+
+          arguments = [work_item, target_work_item, current_user]
+
+          target_work_item.run_after_commit_or_now do
+            NotificationService.new.async.issue_moved(*arguments) if operation == :move
+            NotificationService.new.async.issue_cloned(*arguments) if operation == :clone
+          end
+        end
 
         def new_work_item_subscriptions(subscriptions_batch)
           subscriptions_batch.map do |subscription|

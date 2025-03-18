@@ -40,7 +40,7 @@ module QA
         expect(wait_thread).to receive(:value).twice.and_return(non_errored_wait)
 
         subject.shell('docker login -u user -p secret', mask_secrets: %w[secret user]) do |output|
-          expect(output).not_to be(nil)
+          expect(output).not_to be_nil
           expect(output).to eql('logged in as **** with password ****')
         end
       end

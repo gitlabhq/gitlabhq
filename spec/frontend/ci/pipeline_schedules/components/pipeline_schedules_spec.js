@@ -73,7 +73,7 @@ describe('Pipeline schedules app', () => {
   const createComponent = (requestHandlers) => {
     wrapper = mountExtended(PipelineSchedules, {
       provide: {
-        fullPath: 'gitlab-org/gitlab',
+        projectPath: 'gitlab-org/gitlab',
         newSchedulePath: '/root/ci-project/-/pipeline_schedules/new',
       },
       mocks: {

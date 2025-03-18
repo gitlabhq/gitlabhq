@@ -12,12 +12,15 @@ title: Create a GitLab Pages deployment for a static site
 
 {{< /details >}}
 
-If you already have a GitLab project that contains your static site or framework,
-you can generate a GitLab Pages website from it.
+Create a GitLab Pages deployment to convert your static site or framework into a website hosted on GitLab.
+Through a step-by-step form, GitLab:
 
-When you provide basic information in the UI, a `.gitlab-ci.yml` file is created
-and a merge request opened. When you commit the merge request,
-a pipeline deploys your Pages website.
+- Generates a custom CI/CD configuration based on your project setup.
+- Creates a `.gitlab-ci.yml` file configured for GitLab Pages deployments.
+- Submits the changes through a merge request for your review.
+- Deploys your website automatically when the merge request is committed.
+
+This guide explains how to use the Pages UI to deploy a static site or framework-based application.
 
 ## Prerequisites
 

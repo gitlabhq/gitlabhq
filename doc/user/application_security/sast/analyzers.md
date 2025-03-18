@@ -130,7 +130,7 @@ This can interfere with automatic translation by preventing necessary identifier
 
 If a vulnerability doesn't match:
 
-- The original vulnerability is marked as "no longer detected" in the Vulnerability Report.
+- The original vulnerability is marked as "no longer detected" in the vulnerability report.
 - A new vulnerability is then created based on the Semgrep-based finding.
 
 ## Customize analyzers

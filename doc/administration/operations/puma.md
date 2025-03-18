@@ -163,7 +163,7 @@ steps below:
 
    {{< alert type="note" >}}
 
-If using a self-signed certificate from a custom Certificate Authority (CA),
+   If using a self-signed certificate from a custom Certificate Authority (CA),
    follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates)
    to make them trusted by other GitLab components.
 

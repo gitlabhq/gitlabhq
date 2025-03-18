@@ -1,0 +1,7 @@
+---
+name: your_work_groups_vue
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502477
+milestone: '17.10'
+group: group::organizations
+type: wip
+default_enabled: false

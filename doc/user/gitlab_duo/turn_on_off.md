@@ -19,6 +19,12 @@ GitLab Duo features that are generally available are automatically turned on for
   [you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
   to the users you want to have access.
 
+{{< alert type="note" >}}
+
+To turn on GitLab Duo Self-Hosted, see [Configure GitLab to access GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/configure_duo_features.md).
+
+{{< /alert >}}
+
 ## Turn off GitLab Duo features
 
 You can turn off GitLab Duo for a group, project, or instance.

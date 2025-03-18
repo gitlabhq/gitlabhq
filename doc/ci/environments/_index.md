@@ -12,13 +12,16 @@ title: Environments
 
 {{< /details >}}
 
-Environments connect GitLab to your infrastructure. An environment:
+A GitLab environment represents a specific deployment target for your application, like development, staging, or production. Use it to manage different configurations and deploy code during various stages of your software lifecycle.
 
-- Can monitor and deploy to its target infrastructure.
-- Has its own variables.
-- Can be long-lived or ephemeral, depending on its use case.
+With environments, you:
 
-In addition, access to an environment can be controlled.
+- Keep your deployment process consistent and repeatable
+- Track what code is deployed where
+- Roll back to previous versions when problems occur
+- Protect sensitive environments from unauthorized changes
+- Control deployment variables per environment to maintain security boundaries
+- Monitor environment health and get alerts if something goes wrong
 
 ## View environments and deployments
 
@@ -29,19 +32,22 @@ Prerequisites:
 There are a few ways to view a list of environments for a given project:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
-  ![Number of Environments](img/environments_project_home_v15_9.png "Incremental counter of available Environments")
+   ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
 
 - On the left sidebar, select **Operate > Environments**.
   The environments are displayed.
 
-  ![Environments list](img/environments_list_v14_8.png)
+  ![A list of available environments in a GitLab project, showing environment names, statuses, and other relevant details.](img/environments_list_v14_8.png)
 
 - To view a list of deployments for an environment, select the environment name,
   for example, `staging`.
+  ![A list of deployments for a selected environment, displaying deployment history and related details.](img/deployments_list_v13_10.png)
 
-  ![Deployments list](img/deployments_list_v13_10.png)
+  Deployments show up in this list only after a deployment job has created them.
 
-Deployments show up in this list only after a deployment job has created them.
+- To view a list of all manual jobs in a deployment pipeline, select the **Run** ({{< icon name="play" >}}) dropdown list.
+
+  ![Viewing a manual job in a deployment pipeline](img/view_manual_jobs_v17_10.png)
 
 ### Environment URL
 
@@ -415,6 +421,18 @@ To stop an environment in the GitLab UI:
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
 
+### Default stopping behavior
+
+GitLab automatically stops environments when the associated branch is deleted or merged.
+This behavior persists even if no explicit `on_stop` CI/CD job is defined.
+
+However, [issue 428625](https://gitlab.com/gitlab-org/gitlab/-/issues/428625) proposes to change this behavior
+so that production and staging environments stop only if an explicit `on_stop` CI/CD job is defined.
+
+You can configure an environment's stopping behavior with the
+[`auto_stop_setting`](../../api/environments.md#update-an-existing-environment)
+parameter in the Environments API.
+
 ### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.
@@ -461,6 +479,11 @@ the `stop` trigger is automatically enabled.
 In the following example, the `deploy_review` job calls a `stop_review` job to clean up and stop
 the environment.
 
+- When the [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) setting is turned on,
+  you can configure the [`allow_failure: true`](../yaml/_index.md#allow_failure)
+keyword on the `stop_review` job to prevent it from
+  blocking your pipelines and merge requests.
+
 ```yaml
 deploy_review:
   stage: deploy
@@ -483,6 +506,12 @@ stop_review:
     - if: $CI_MERGE_REQUEST_ID
       when: manual
 ```
+
+{{< alert type="note" >}}
+
+When using this functionality together with merge trains, the `stop` job triggers only if [duplicate pipelines are avoided](../jobs/job_rules.md#avoid-duplicate-pipelines).
+
+{{< /alert >}}
 
 ### Stop an environment after a certain time period
 
@@ -734,7 +763,11 @@ To delete an environment:
 
 ## Access an environment for preparation or verification purposes
 
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to reset `auto_stop_in` for `prepare` and `access` actions in GitLab 17.7.
+{{< history >}}
+
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to reset `auto_stop_in` for `prepare` and `access` actions in GitLab 17.7.
+
+{{< /history >}}
 
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
@@ -878,7 +911,7 @@ If you deploy to your environments with the help of a deployment service (for ex
 the [Kubernetes integration](../../user/infrastructure/clusters/_index.md)), GitLab can open
 a terminal session to your environment. You can then debug issues without leaving your web browser.
 
-The Web terminal is a container-based deployment, which often lack basic tools (like an editor),
+The Web terminal is a container-based deployment, which often lacks basic tools (like an editor),
 and can be stopped or restarted at any time. If this happens, you lose all your
 changes. Treat the Web terminal as a debugging tool, not a comprehensive online IDE.
 
@@ -887,19 +920,16 @@ Web terminals:
 - Are available to project Maintainers and Owners only.
 - Must [be enabled](../../administration/integration/terminal.md).
 
-In the UI, you can view the Web terminal by selecting **Terminal** from the actions menu:
+In the UI, to view the Web terminal, either:
 
-![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
+- From the **Actions** menu, select **Terminal**:
 
-You can also access the terminal button from the page for a specific environment:
+  ![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
 
-![Terminal button for an environment](img/environments_terminal_button_on_show_v13_10.png)
+- On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal">}}).
 
-Select the button to establish the terminal session:
-
-![Terminal page](../img/environments_terminal_page_v8_15.png)
-
-This works like any other terminal. You're in the container created
+Select the button to establish the terminal session.
+It works like any other terminal. You're in the container created
 by your deployment so you can:
 
 - Run shell commands and get responses in real time.
@@ -1004,7 +1034,7 @@ deploy:
   environment: production/$ENVIRONMENT
 ```
 
-Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
+Because the `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
 create an environment with a name `production/`, which is invalid in
 [the environment name constraint](../yaml/_index.md#environmentname).
 
@@ -1029,7 +1059,7 @@ review:
 When you create a new merge request with a branch name `bug-fix!`,
 the `review` job tries to create an environment with `review/bug-fix!`.
 However, the `!` is an invalid character for environments, so the
-deployment job fails since it was about to run without an environment.
+deployment job fails because it was about to run without an environment.
 
 To fix this, use one of the following solutions:
 

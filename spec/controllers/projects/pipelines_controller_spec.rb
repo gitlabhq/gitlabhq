@@ -843,12 +843,12 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   end
 
   describe 'POST create.json' do
-    let(:project) { create(:project, :public, :repository) }
+    let(:pipeline_params) { { ref: 'master' } }
 
-    subject do
-      post :create, params: {
-        namespace_id: project.namespace, project_id: project, pipeline: { ref: 'master' }
-      }, format: :json
+    subject(:post_request) do
+      post :create,
+        params: { namespace_id: project.namespace, project_id: project, pipeline: pipeline_params },
+        format: :json
     end
 
     before do
@@ -900,6 +900,62 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
           'jobs:build may allow multiple pipelines to run for a single action due to `rules:when`'
         )
         expect(json_response['total_warnings']).to eq(1)
+      end
+    end
+
+    context 'when using inputs' do
+      let(:inputs) do
+        {
+          deploy_strategy: 'blue-green',
+          job_stage: 'deploy',
+          test_script: ['echo "test"'],
+          test_rules: [
+            { if: '$CI_PIPELINE_SOURCE == "web"' }
+          ]
+        }
+      end
+
+      let(:pipeline_params) do
+        { ref: 'master', inputs: inputs }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(
+          File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+        )
+      end
+
+      it 'uses inputs when creating the pipeline' do
+        expect { post_request }.to change { project.ci_pipelines.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+
+        pipeline = project.ci_pipelines.last
+        expect(pipeline.builds.map(&:name)).to contain_exactly(
+          'my-job-build 1/2', 'my-job-build 2/2', 'my-job-test', 'my-job-test-2', 'my-job-deploy'
+        )
+      end
+
+      context 'when the FF ci_inputs_for_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_inputs_for_pipelines: false)
+        end
+
+        it 'behaves like the inputs are never passed and returns errors' do
+          expect { post_request }.not_to change { project.ci_pipelines.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+
+          expect(json_response['errors'][0]).to include(
+            '`deploy_strategy` input: required value has not been provided'
+          )
+          expect(json_response['errors'][0]).to include(
+            '`job_stage` input: required value has not been provided'
+          )
+          expect(json_response['errors'][0]).to include(
+            '`test_script` input: required value has not been provided'
+          )
+        end
       end
     end
   end

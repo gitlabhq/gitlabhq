@@ -10,10 +10,6 @@ module PreferencesHelper
   end
 
   def dashboard_value
-    return current_user.dashboard if Feature.enabled?(:your_work_projects_vue, current_user)
-
-    return 'projects' if current_user.dashboard == 'member_projects'
-
     current_user.dashboard
   end
 
@@ -21,7 +17,6 @@ module PreferencesHelper
   def dashboard_choices
     dashboards = User.dashboards.keys
 
-    dashboards -= ['member_projects'] unless Feature.enabled?(:your_work_projects_vue, current_user)
     validate_dashboard_choices!(dashboards)
     dashboards -= excluded_dashboard_choices
 
@@ -36,16 +31,10 @@ module PreferencesHelper
 
   # Maps `dashboard` values to more user-friendly option text
   def localized_dashboard_choices
-    projects = if Feature.enabled?(:your_work_projects_vue, current_user)
-                 _("Your Contributed Projects (default)")
-               else
-                 _("Your Projects (default)")
-               end
-
     {
-      projects: projects,
+      projects: _("Your Contributed Projects (default)"),
       stars: _("Starred Projects"),
-      member_projects: (_("Member Projects") if Feature.enabled?(:your_work_projects_vue, current_user)),
+      member_projects: _("Member Projects"),
       your_activity: _("Your Activity"),
       project_activity: _("Your Projects' Activity"),
       starred_project_activity: _("Starred Projects' Activity"),
@@ -184,12 +173,14 @@ module PreferencesHelper
   end
 
   def build_extensions_marketplace_view(title:, message:)
-    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionMarketplace.marketplace_home_url}%{linkEnd}"
+    marketplace_home_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: current_user)
+
+    extensions_marketplace_home = "%{linkStart}#{marketplace_home_url}%{linkEnd}"
     {
       name: 'extensions_marketplace',
       message: format(message, extensions_marketplace_home: extensions_marketplace_home),
       title: title,
-      message_url: WebIde::ExtensionMarketplace.marketplace_home_url,
+      message_url: marketplace_home_url,
       help_link: WebIde::ExtensionMarketplace.help_preferences_url
     }
   end

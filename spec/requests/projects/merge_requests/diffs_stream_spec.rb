@@ -51,6 +51,14 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
 
         go
       end
+
+      it 'renders merge request diff file component' do
+        expect_any_instance_of(::RapidDiffs::MergeRequestDiffFileComponent) do |component|
+          expect(component).to receive(:render_in).and_call_original
+        end
+
+        go
+      end
     end
 
     context 'when offset is not given' do
@@ -81,8 +89,8 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       it 'streams diffs except the offset' do
         go(offset: offset)
 
-        offset_file_identifier_hashes = diff_files.to_a.take(offset).map(&:file_identifier_hash)
-        remaining_file_identifier_hashes = diff_files.to_a.slice(offset..).map(&:file_identifier_hash)
+        offset_file_identifier_hashes = diff_files.to_a.take(offset).map(&:file_hash)
+        remaining_file_identifier_hashes = diff_files.to_a.slice(offset..).map(&:file_hash)
 
         expect(response).to have_gitlab_http_status(:success)
         expect(response.body).not_to include(*offset_file_identifier_hashes)

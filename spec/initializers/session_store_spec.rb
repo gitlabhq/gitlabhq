@@ -25,9 +25,9 @@ RSpec.describe 'Session initializer for GitLab' do
       load_session_store
     end
 
-    context 'when cell.id is configured' do
+    context 'when cell is enabled' do
       before do
-        stub_config(cell: { id: 1 })
+        stub_config(cell: { enabled: true, id: 1 })
       end
 
       it 'initialized as a `redis_store` with session cookies prefix that includes cell id' do
@@ -43,9 +43,9 @@ RSpec.describe 'Session initializer for GitLab' do
       end
     end
 
-    context 'when cell.id is not configured' do
+    context 'when cell is disabled' do
       before do
-        stub_config(cell: { id: nil })
+        stub_config(cell: { enabled: false })
       end
 
       it 'initialized as a `redis_store` with empty session cookie prefix' do

@@ -1,0 +1,14 @@
+---
+table_name: projects_with_pipeline_variables
+classes:
+- Ci::ProjectWithPipelineVariable
+feature_categories:
+- ci_variables
+description: A model that stores projects for which any pipeline variables have been
+  set.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176022
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

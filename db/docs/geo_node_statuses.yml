@@ -8,8 +8,7 @@ description: Contains sites status and metadata for each Geo site, updated async
   a scheduled worker.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3230
 milestone: '10.2'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 notes: Exempted because Geo nodes are an infrastructure-level concern, and are not
   org-specific.
 table_size: small

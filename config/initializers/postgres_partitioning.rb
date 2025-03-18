@@ -35,8 +35,9 @@ Gitlab::Database::Partitioning.register_models(
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     LooseForeignKeys::DeletedRecord,
     Users::GroupVisit,
-    Users::ProjectVisit,
-    WebHookLog
+    Users::ProjectVisit
+    # WebHookLog is temporarily removed from this list and managed without a model
+    # during the switch from web_hook_logs to web_hook_logs_daily
   ])
 
 if Gitlab.ee?
@@ -49,7 +50,8 @@ if Gitlab.ee?
       Ci::FinishedBuildChSyncEvent,
       Search::Zoekt::Task,
       Ai::CodeSuggestionEvent,
-      Ai::DuoChatEvent
+      Ai::DuoChatEvent,
+      Vulnerabilities::ArchiveExport
     ])
 else
   Gitlab::Database::Partitioning.register_tables(
@@ -81,27 +83,22 @@ unless Gitlab.jh?
     ])
 end
 
-# Enable partition management for the backfill table during merge_request_diff_commits partitioning.
-# This way new partitions will be created as the trigger syncs new rows across to this table.
-#
-Gitlab::Database::Partitioning.register_tables(
-  [
-    {
-      limit_connection_names: %i[main],
-      table_name: 'merge_request_diff_commits_b5377a7a34',
-      partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
-    }
-  ]
-)
-
 # Enable partition management for the backfill table during web_hook_logs partitioning.
 # This way new partitions will be created as the trigger syncs new rows across to this table.
+# We're controlling the table backing WebHookLog with the feature flag web_hook_logs_daily_enabled.
+# So that the feature flag does not interact with the partition manager, register both web_hook_logs tables here,
+# disconnected from the feature flag.
 Gitlab::Database::Partitioning.register_tables(
   [
     {
       limit_connection_names: %i[main],
       table_name: 'web_hook_logs_daily',
       partitioned_column: :created_at, strategy: :daily, retain_for: 14.days
+    },
+    {
+      limit_connection_names: %i[main],
+      table_name: 'web_hook_logs',
+      partitioned_column: :created_at, strategy: :monthly, retain_for: 1.month
     }
   ]
 )

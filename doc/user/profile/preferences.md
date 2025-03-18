@@ -38,7 +38,7 @@ Dark mode makes elements on the GitLab UI stand out on a dark background.
 
 - To turn on Dark mode, Select **Preferences > Color theme > Dark Mode**.
 
-Dark mode works only with the **Dark** Syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
+You can use dark mode with any syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 
 ## Change the syntax highlighting theme
 
@@ -144,16 +144,11 @@ To choose your home organization:
 {{< history >}}
 
 - [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+- [Homepage option changes generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-When the `your_work_projects_vue` feature flag is enabled, the **Your Contributed Projects** view becomes the default option, and an additional **Member Projects** option is available in the dropdown list. For more information, see the history.
-
-{{< /alert >}}
-
-Control what page you view when you select the GitLab logo ({{< icon name="tanuki" >}}). You can set your homepage to be Your Projects (default), Your Groups, Your Activity, and other content.
+Control what page you view when you select the GitLab logo ({{< icon name="tanuki" >}}). You can set your homepage to be Your Contributed Projects (default), Your Groups, Your Activity, and other content.
 
 To choose your homepage view:
 

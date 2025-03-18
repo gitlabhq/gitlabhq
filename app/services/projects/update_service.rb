@@ -87,6 +87,13 @@ module Projects
         raise_api_error(s_("UpdateProject|Changing the ci_pipeline_variables_minimum_override_role to the owner role is not allowed"))
       end
 
+      # If this is disabled via API we want to ensure we convert to the backwards compatible minimum
+      # override role 'developer'. We want to keep this attribute always "true" until removal.
+      if params[:restrict_user_defined_variables] == false
+        params[:restrict_user_defined_variables] = true
+        params[:ci_pipeline_variables_minimum_override_role] = 'developer'
+      end
+
       return if can?(current_user, :change_restrict_user_defined_variables, project)
 
       raise_api_error(s_("UpdateProject|Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed"))

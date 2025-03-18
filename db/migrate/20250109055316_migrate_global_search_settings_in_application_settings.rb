@@ -9,36 +9,11 @@ class MigrateGlobalSearchSettingsInApplicationSettings < Gitlab::Database::Migra
   end
 
   def up
-    ApplicationSetting.reset_column_information
-
-    application_setting = ApplicationSetting.last
-    return unless application_setting
-
-    # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Does not execute in user context
-    search = {
-      global_search_issues_enabled: Feature.enabled?(:global_search_issues_tab, type: :ops),
-      global_search_merge_requests_enabled: Feature.enabled?(:global_search_merge_requests_tab, type: :ops),
-      global_search_snippet_titles_enabled: Feature.enabled?(:global_search_snippet_titles_tab, type: :ops),
-      global_search_users_enabled: Feature.enabled?(:global_search_users_tab, type: :ops)
-    }
-
-    if Gitlab.ee?
-      search.merge!(
-        global_search_code_enabled: Feature.enabled?(:global_search_code_tab, type: :ops),
-        global_search_commits_enabled: Feature.enabled?(:global_search_commits_tab, type: :ops),
-        global_search_epics_enabled: Feature.enabled?(:global_search_epics_tab, type: :ops),
-        global_search_wiki_enabled: Feature.enabled?(:global_search_wiki_tab, type: :ops)
-      )
-    end
-    # rubocop:enable Gitlab/FeatureFlagWithoutActor
-
-    application_setting.update_columns(search: search, updated_at: Time.current)
+    # no-op this was just a data migration which is already done in 17.9. The plan is to remove the feature-flags used
+    # in this migration. So better to disable this migration in 17.11 to avoid any migration issues.
   end
 
   def down
-    application_setting = ApplicationSetting.last
-    return unless application_setting
-
-    application_setting.update_column(:search, {})
+    # No op
   end
 end

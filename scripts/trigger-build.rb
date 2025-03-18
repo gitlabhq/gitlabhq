@@ -5,6 +5,27 @@
 #
 # See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
 require 'gitlab'
+require 'yaml'
+require 'json'
+require 'open3'
+require 'tempfile'
+require 'httparty'
+require 'logger'
+
+# Monkeypatch gitlab gem in order to increase per_page size when fetching registry repositories
+# rubocop:disable Style/ClassAndModuleChildren, Gitlab/NoCodeCoverageComment -- monkeypatch
+# :nocov:
+#
+# TODO: Remove this monkeypatch once https://github.com/NARKOZ/gitlab/pull/710 is part of a new gem release (currently v5.1.0 doens't contain it) and the release is used in this project.
+class Gitlab::Client
+  module ContainerRegistry
+    def registry_repositories(project, options = {})
+      get("/projects/#{url_encode project}/registry/repositories", query: options)
+    end
+  end
+end
+# :nocov:
+# rubocop:enable Style/ClassAndModuleChildren, Gitlab/NoCodeCoverageComment
 
 module Trigger
   def self.ee?
@@ -158,7 +179,7 @@ module Trigger
 
     # Read version files from all components
     def version_file_variables
-      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params| # rubocop:disable Rails/IndexWith
+      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params| # rubocop:disable Rails/IndexWith -- Non-rails CI script
         params[version_file] = version_param_value(version_file)
       end
     end
@@ -170,18 +191,76 @@ module Trigger
     end
   end
 
+  # Variable creation for downstream CNG build triggers
+  #
+  # This class additionally contains logic to check if component versions are already present in the container registry
+  # If they are, it adds those jobs to the SKIP_JOB_REGEX variable to skip them in the CNG build pipeline
+  #
+  # In order to correctly compute container versions and skip jobs, following actions are performed:
+  #   * container version shell script is fetched from upstream
+  #   * versions.yml file is fetched which contains most of variables required for container version calculation
+  #   * image digest of stable Debian and Alpine images are fetched (alpine-stable and alpine-debian jobs functionality)
+  #   * all container versions are computed using same logic as CNG build pipeline
+  #   * registry is checked for image existence and appropriate jobs are added to skip regex pattern
+  #
   class CNG < Base
     ASSETS_HASH = "cached-assets-hash.txt"
+    DEFAULT_DEBIAN_IMAGE = "debian:bookworm-slim"
+    DEFAULT_ALPINE_IMAGE = "alpine:3.20"
+    DEFAULT_SKIPPED_JOBS = %w[final-images-listing].freeze
+    STABLE_BASE_JOBS = %w[alpine-stable debian-stable].freeze
 
     def variables
+      hash = super.dup
       # Delete variables that aren't useful when using native triggers.
-      super.tap do |hash|
-        hash.delete('TRIGGER_SOURCE')
-        hash.delete('TRIGGERED_USER')
+      hash.delete('TRIGGER_SOURCE')
+      hash.delete('TRIGGERED_USER')
+
+      unless skip_redundant_jobs?
+        logger.info("Skipping redundant jobs is disabled, skipping existing container image check")
+        return hash
+      end
+
+      begin
+        hash.merge({
+          **deploy_component_tag_variables,
+          'SKIP_JOB_REGEX' => skip_job_regex,
+          'DEBIAN_IMAGE' => debian_image,
+          'DEBIAN_DIGEST' => debian_image.split('@').last,
+          'DEBIAN_BUILD_ARGS' => "--build-arg DEBIAN_IMAGE=#{ENV['GITLAB_DEPENDENCY_PROXY']}#{debian_image}",
+          'ALPINE_IMAGE' => alpine_image,
+          'ALPINE_DIGEST' => alpine_image.split('@').last,
+          'ALPINE_BUILD_ARGS' => "--build-arg ALPINE_IMAGE=#{ENV['GITLAB_DEPENDENCY_PROXY']}#{alpine_image}"
+        })
+      rescue StandardError => e
+        logger.error("Error while calculating variables, err: #{e.message}")
+        logger.error(e.backtrace.join("\n"))
+        logger.error("Falling back to default variables")
+        hash
       end
     end
 
     private
+
+    def logger
+      @logger ||= Logger.new(ENV["CNG_VAR_SETUP_LOG_FILE"] || "tmp/cng-var-setup.log")
+    end
+
+    def downstream_project_path
+      ENV.fetch('CNG_PROJECT_PATH', 'gitlab-org/build/CNG-mirror')
+    end
+
+    def skip_redundant_jobs?
+      ENV["CNG_SKIP_REDUNDANT_JOBS"] == "true"
+    end
+
+    def default_skip_job_regex
+      "/#{DEFAULT_SKIPPED_JOBS.join('|')}/"
+    end
+
+    def skip_job_regex
+      "/#{[*DEFAULT_SKIPPED_JOBS, *STABLE_BASE_JOBS, *skippable_jobs].join('|')}/"
+    end
 
     def ref_param_name
       'CNG_BRANCH'
@@ -205,20 +284,35 @@ module Trigger
       end
     end
 
+    def gitlab_version
+      ENV['CI_COMMIT_SHA']
+    end
+
     def base_variables
-      super.merge(
-        'GITLAB_REF_SLUG' => gitlab_ref_slug
-      )
+      super.merge('GITLAB_REF_SLUG' => gitlab_ref_slug)
+    end
+
+    def default_build_vars
+      @default_build_vars ||= {
+        "CONTAINER_VERSION_SUFFIX" => ENV["CI_PROJECT_PATH_SLUG"] || "upstream-trigger",
+        "CACHE_BUSTER" => "false",
+        "ARCH_LIST" => ENV["ARCH_LIST"] || "amd64"
+      }
     end
 
     def extra_variables
       {
         "TRIGGER_BRANCH" => ref,
-        "GITLAB_VERSION" => ENV['CI_COMMIT_SHA'],
+        "GITLAB_VERSION" => gitlab_version,
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'], # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
-        "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
+        "EE_PIPELINE" => Trigger.ee? ? "true" : nil, # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
+        "FULL_RUBY_VERSION" => RUBY_VERSION,
+        "SKIP_JOB_REGEX" => default_skip_job_regex,
+        "DEBIAN_IMAGE" => DEFAULT_DEBIAN_IMAGE, # Make sure default values are always set to not end up as empty string
+        "ALPINE_IMAGE" => DEFAULT_ALPINE_IMAGE, # Make sure default values are always set to not end up as empty string
+        **default_build_vars
       }
     end
 
@@ -238,13 +332,177 @@ module Trigger
         raw_version
       end
     end
+
+    # Repository file tree in form of the output of `git ls-tree` command
+    #
+    # @return [String]
+    def repo_tree
+      logger.info("Fetching repo tree for ref '#{ref}'")
+      downstream_client
+        .repo_tree(downstream_project_path, ref: ref, per_page: 100).auto_paginate
+        .select { |node| node["type"] == "tree" }
+        .map { |node| "#{node['mode']} #{node['type']} #{node['id']}  #{node['path']}" }
+        .join("\n")
+    end
+
+    # Script used for container version calculations in CNG build jobs
+    #
+    # @return [String]
+    def container_versions_script
+      logger.info("Fetching container versions script for ref '#{ref}'")
+      downstream_client.file_contents(
+        downstream_project_path,
+        "build-scripts/container_versions.sh",
+        ref
+      )
+    end
+
+    # Debian image with digest
+    #
+    # @return [String]
+    def debian_image
+      @debian_image ||= docker_image_with_digest(cng_versions["DEBIAN_IMAGE"])
+    end
+
+    # Alpine image with digest
+    #
+    # @return [String]
+    def alpine_image
+      @alpine_image ||= docker_image_with_digest(cng_versions["ALPINE_IMAGE"])
+    end
+
+    # Edition postfix
+    #
+    # @return [String]
+    def edition
+      @edition ||= Trigger.ee? ? "ee" : "ce"
+    end
+
+    # Component versions used in CNG builds
+    #
+    # @return [Hash]
+    def cng_versions
+      @cng_versions ||= YAML
+        .safe_load(downstream_client.file_contents(downstream_project_path, "ci_files/variables.yml", ref))
+        .fetch("variables")
+    end
+
+    # Environment variables required for container version fetching
+    # All these variables influence final container version values
+    #
+    # @return [Hash]
+    def version_fetch_env_variables
+      {
+        **cng_versions,
+        **version_file_variables,
+        **default_build_vars,
+        "GITLAB_VERSION" => gitlab_version,
+        "RUBY_VERSION" => RUBY_VERSION,
+        "DEBIAN_DIGEST" => debian_image.split("@").last,
+        "ALPINE_DIGEST" => alpine_image.split("@").last,
+        "REPOSITORY_TREE" => repo_tree
+      }
+    end
+
+    # Image tags used by CNG deployments
+    #
+    # @return [Hash]
+    def deploy_component_tag_variables
+      {
+        "GITALY_TAG" => container_versions["gitaly"],
+        "GITLAB_SHELL_TAG" => container_versions["gitlab-shell"],
+        "GITLAB_TOOLBOX_TAG" => container_versions["gitlab-toolbox-#{edition}"],
+        "GITLAB_SIDEKIQ_TAG" => container_versions["gitlab-sidekiq-#{edition}"],
+        "GITLAB_WEBSERVICE_TAG" => container_versions["gitlab-webservice-#{edition}"],
+        "GITLAB_WORKHORSE_TAG" => container_versions["gitlab-workhorse-#{edition}"],
+        "GITLAB_KAS_TAG" => container_versions["gitlab-kas"]
+      }
+    end
+
+    # Container versions for all components in CNG build pipeline
+    #
+    # @return [Hash]
+    def container_versions
+      @container_versions ||= Tempfile.create('container-versions') do |file|
+        file.write(container_versions_script)
+        file.close
+
+        build_vars = version_fetch_env_variables
+        logger.info("Computing container versions using following env variables:\n#{JSON.pretty_generate(build_vars)}")
+        out, status = Open3.capture2e(build_vars, "bash -c 'source #{file.path} && get_all_versions'")
+        raise "Failed to fetch container versions! #{out}" unless status.success?
+
+        component_versions = out.split("\n")
+        unless component_versions.all? { |line| line.match?(/^[A-Za-z0-9_\-]+=[^=]+$/) }
+          raise "Invalid container versions output format! Expected key=value pairs got:\n#{out}"
+        end
+
+        component_versions
+          .to_h { |entry| entry.split("=") }
+          .reject { |name, _version| Trigger.ee? ? name.end_with?("-ce") : name.end_with?("-ee") }
+          .tap { |versions| logger.info("Computed container versions:\n#{JSON.pretty_generate(versions)}") }
+      end
+    end
+
+    # List of jobs that can be skipped because tag is already present in the registry
+    #
+    # @return [Array]
+    def skippable_jobs
+      jobs = container_versions.keys
+      logger.info("Fetching container registry repositories for project '#{downstream_project_path}'")
+      repositories = downstream_client.registry_repositories(downstream_project_path, per_page: 100).auto_paginate
+      build_repositories = repositories.each_with_object({}) do |repo, hash|
+        job = jobs.find { |job| repo.name.end_with?(job) }
+        next unless job
+
+        hash[job] = repo.id
+      end
+      logger.info("Checking repositories (#{build_repositories.keys.join(', ')}) for existing tags")
+      existing_tags = container_versions.select do |job, tag|
+        downstream_client.registry_repository_tag(downstream_project_path, build_repositories[job], tag)
+        logger.info("Tag '#{tag}' exists in the registry, job '#{job}' will be skipped")
+      rescue Gitlab::Error::ResponseError => e
+        if e.is_a?(Gitlab::Error::NotFound)
+          logger.info("Tag '#{tag}' does not exist in the registry, job '#{job}' will not skipped")
+        else
+          logger.error("Failed to do a tag '#{tag}' lookup, err: #{e.message}, job '#{job}' will not be skipped")
+        end
+
+        false
+      end
+
+      existing_tags.keys
+    end
+
+    # rubocop:disable Gitlab/HTTParty -- CI script
+
+    # Fetch Docker image with digest from DockerHub
+    #
+    # @param docker_image [String]
+    # @return [String]
+    def docker_image_with_digest(docker_image)
+      image, tag = docker_image.split(":")
+
+      logger.info("Fetching digest for image '#{docker_image}'")
+      auth_url = "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/#{image}:pull"
+      auth_response = HTTParty.get(auth_url)
+      raise "Failed to get auth token" unless auth_response.success?
+
+      token = JSON.parse(auth_response.body)['token']
+      manifest_url = "https://registry.hub.docker.com/v2/library/#{image}/manifests/#{tag}"
+      response = HTTParty.head(manifest_url, headers: {
+        'Authorization' => "Bearer #{token}",
+        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json'
+      })
+      raise "Failed to fetch image '#{docker_image}' digest" unless response.success?
+
+      digest = response.headers['docker-content-digest'] || raise("Failed to get image digest")
+      "#{image}:#{tag}@#{digest}"
+    end
+    # rubocop:enable Gitlab/HTTParty -- CI script
   end
 
-  # This is used in:
-  # - https://gitlab.com/gitlab-org/gitlab-runner/-/blob/ddaf90761c917a42ed4aab60541b6bc33871fe68/.gitlab/ci/docs.gitlab-ci.yml#L1-47
-  # - https://gitlab.com/gitlab-org/charts/gitlab/-/blob/fa348e709e901196803051669b4874b657b4ea91/.gitlab-ci.yml#L497-543
-  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L199-224
-  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L356-380
+  # For GitLab documentation review apps
   class Docs < Base
     def access_token
       ENV['DOCS_PROJECT_API_TOKEN'] || super
@@ -267,7 +525,7 @@ module Trigger
     end
 
     #
-    # Remove a remote branch in gitlab-docs.
+    # Remove a remote environment in the docs-gitlab-com project.
     #
     def cleanup!
       environment = com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
@@ -284,26 +542,23 @@ module Trigger
     private
 
     def downstream_environment
-      "review/#{ref}#{review_slug}"
+      "upstream-review/mr-${CI_MERGE_REQUEST_IID}"
     end
 
-    # We prepend the `-` here because we cannot use variable substitution in `environment.name`/`environment.url`
-    # Some projects (e.g. `omnibus-gitlab`) use this script for branch pipelines, so we fallback to using `CI_COMMIT_REF_SLUG` for those cases.
     def review_slug
       identifier = ENV['CI_MERGE_REQUEST_IID'] || ENV['CI_COMMIT_REF_SLUG']
 
-      "-#{project_slug}-#{identifier}"
+      "#{project_slug}-#{identifier}"
     end
 
     def downstream_project_path
-      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/gitlab-docs')
+      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing/docs-gitlab-com')
     end
 
     def ref_param_name
       'DOCS_BRANCH'
     end
 
-    # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
     def trigger_token
       ENV['DOCS_TRIGGER_TOKEN']
     end
@@ -333,44 +588,12 @@ module Trigger
       end
     end
 
-    # app_url is the URL of the `gitlab-docs` Review App URL defined in
-    # https://gitlab.com/gitlab-org/gitlab-docs/-/blob/b38038132cf82a24271bbb294dead7c2f529e275/.gitlab-ci.yml#L383
     def app_url
-      "http://#{ref}#{review_slug}.#{ENV['DOCS_REVIEW_APPS_DOMAIN']}/#{project_slug}"
+      "https://docs.gitlab.com/upstream-review-mr-#{review_slug}/"
     end
 
     def display_success_message
       puts format(SUCCESS_MESSAGE, app_url: app_url)
-    end
-  end
-
-  class DocsHugo < Docs
-    def access_token
-      ENV['DOCS_HUGO_PROJECT_API_TOKEN'] || super
-    end
-
-    private
-
-    def downstream_environment
-      "upstream-review/mr-${CI_MERGE_REQUEST_IID}"
-    end
-
-    def review_slug
-      identifier = ENV['CI_MERGE_REQUEST_IID'] || ENV['CI_COMMIT_REF_SLUG']
-
-      "#{project_slug}-#{identifier}"
-    end
-
-    def downstream_project_path
-      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing/docs-gitlab-com')
-    end
-
-    def trigger_token
-      ENV['DOCS_HUGO_TRIGGER_TOKEN']
-    end
-
-    def app_url
-      "https://new.docs.gitlab.com/upstream-review-mr-#{review_slug}/"
     end
   end
 
@@ -381,21 +604,25 @@ module Trigger
       pipeline = super
       project_path = variables['TOP_UPSTREAM_SOURCE_PROJECT']
       merge_request_id = variables['TOP_UPSTREAM_MERGE_REQUEST_IID']
-      comment = "<!-- #{IDENTIFIABLE_NOTE_TAG} --> \nStarted database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) " \
-                "(limited access). This comment will be updated once the pipeline has finished running."
+      comment = <<~COMMENT.strip
+        <!-- #{IDENTIFIABLE_NOTE_TAG} -->
+        Started database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) (limited access). This comment will be updated once the pipeline has finished running.
+      COMMENT
 
       # Look for an existing note
-      db_testing_notes = com_gitlab_client.merge_request_notes(project_path, merge_request_id).auto_paginate.select do |note|
-        note.body.include?(IDENTIFIABLE_NOTE_TAG)
-      end
+      db_testing_notes = com_gitlab_client
+        .merge_request_notes(project_path, merge_request_id)
+        .auto_paginate.select do |note|
+          note.body.include?(IDENTIFIABLE_NOTE_TAG)
+        end
 
-      if db_testing_notes.empty?
-        # This is the first note
-        note = com_gitlab_client.create_merge_request_note(project_path, merge_request_id, comment)
+      return unless db_testing_notes.empty?
 
-        puts "Posted comment to:\n"
-        puts "https://gitlab.com/#{project_path}/-/merge_requests/#{merge_request_id}#note_#{note.id}"
-      end
+      # This is the first note
+      note = com_gitlab_client.create_merge_request_note(project_path, merge_request_id, comment)
+
+      puts "Posted comment to:\n"
+      puts "https://gitlab.com/#{project_path}/-/merge_requests/#{merge_request_id}#note_#{note.id}"
     end
 
     private
@@ -500,8 +727,8 @@ if $PROGRAM_NAME == __FILE__
   case ARGV[0]
   when 'gitlab-com-database-testing'
     Trigger::DatabaseTesting.new.invoke!
-  when 'docs-hugo', 'docs'
-    docs_trigger = (ARGV[0] == 'docs-hugo' ? Trigger::DocsHugo : Trigger::Docs).new
+  when 'docs'
+    docs_trigger = Trigger::Docs.new
 
     case ARGV[1]
     when 'deploy'
@@ -514,9 +741,8 @@ if $PROGRAM_NAME == __FILE__
     end
   else
     puts "Please provide a valid option:
-    docs - Triggers a pipline that builds a documentation review app by using the gitlab-docs project
-    docs-hugo - Triggers a pipline that builds a documentation review app by using the gitlab-docs-hugo project
-    omnibus - Triggers a pipelines that builds the omnibus-gitlab package
+    docs - Triggers a pipeline that builds a documentation review app by using the docs-gitlab-com project
+    omnibus - Triggers a pipeline that builds the omnibus-gitlab package
     gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
   end
 end

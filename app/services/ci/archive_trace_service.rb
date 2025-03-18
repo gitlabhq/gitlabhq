@@ -58,7 +58,7 @@ module Ci
 
       # Tracks this error with application logs, Sentry, and Prometheus.
       # If `archive!` keeps failing for over a week, that could incur data loss.
-      # (See more https://docs.gitlab.com/ee/administration/job_logs.html#new-incremental-logging-architecture)
+      # (See more https://docs.gitlab.com/administration/cicd/job_logs/#incremental-logging-architecture)
       # In order to avoid interrupting the system, we do not raise an exception here.
       archive_error(e, job, worker_name)
     end

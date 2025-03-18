@@ -2,7 +2,7 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Vulnerability Page
+title: Vulnerability details
 ---
 
 {{< details >}}
@@ -108,7 +108,8 @@ The following data is shared with third-party AI APIs:
 
 - Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 
 {{< /details >}}
 
@@ -442,7 +443,7 @@ To link a vulnerability to existing GitLab issues:
 The selected GitLab issues are added to the **Linked items** section, and the linked issues counter is
 updated.
 
-GitLab issues linked to a vulnerability are shown in the Vulnerability Report and the vulnerability's page.
+GitLab issues linked to a vulnerability are shown in the vulnerability report and the vulnerability's page.
 
 Be aware of the following conditions between a vulnerability and a linked GitLab issue:
 
@@ -499,7 +500,7 @@ To resolve a vulnerability, you can either:
 - [Resolve a vulnerability with a merge request](#resolve-a-vulnerability-with-a-merge-request).
 - [Resolve a vulnerability manually](#resolve-a-vulnerability-manually).
 
-![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4_updated.png)
+![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
 
 ### Resolve a vulnerability with a merge request
 

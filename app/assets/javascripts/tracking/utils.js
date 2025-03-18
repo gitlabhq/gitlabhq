@@ -1,6 +1,7 @@
 import { omitBy, isUndefined } from 'lodash';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { getExperimentData } from '~/experimentation/utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   ACTION_ATTR_SELECTOR,
   LOAD_ACTION_ATTR_SELECTOR,
@@ -187,6 +188,12 @@ export const validateAdditionalProperties = (additionalProperties) => {
       validateProperty(additionalProperties, key, BASE_ADDITIONAL_PROPERTIES[key]);
     }
   });
+};
+
+export const validateEvent = (event) => {
+  if (event && /\s/.test(event)) {
+    Sentry.captureException(new Error(`Event name should not contain whitespace: ${event}`));
+  }
 };
 
 function filterProperties(additionalProperties, predicate) {

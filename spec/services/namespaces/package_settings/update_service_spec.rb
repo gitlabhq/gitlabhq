@@ -40,7 +40,7 @@ RSpec.describe ::Namespaces::PackageSettings::UpdateService, feature_category: :
           generic_duplicate_exception_regex: 'foo',
           nuget_duplicates_allowed: true,
           nuget_duplicate_exception_regex: 'foo',
-          maven_package_requests_forwarding: true,
+          maven_package_requests_forwarding: nil,
           lock_maven_package_requests_forwarding: false,
           npm_package_requests_forwarding: nil,
           lock_npm_package_requests_forwarding: false,

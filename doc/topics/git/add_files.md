@@ -6,7 +6,15 @@ description: Add, commit, and push a file to your Git repository using the comma
 title: Add files to your branch
 ---
 
-You can use Git to add files to a Git repository.
+Use Git to add files to a branch in your local repository.
+This action creates a snapshot of the file for your
+next commit and starts version control monitoring.
+When you add files with Git, you:
+
+- Prepare content for version control tracking.
+- Create a record of file additions and modifications.
+- Preserve file history for future reference.
+- Make project files available for team collaboration.
 
 ## Add files to a Git repository
 

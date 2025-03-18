@@ -7,34 +7,34 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateShardingKeyIdForOrphanedP
   let(:runners) { table(:ci_runners, database: :ci, primary_key: :id) }
   let(:runner_machines) { table(:ci_runner_machines, database: :ci, primary_key: :id) }
   let(:runner_projects) { table(:ci_runner_projects, database: :ci, primary_key: :id) }
-  let!(:project_runner1) { runners.create!(id: 1, runner_type: 3, sharding_key_id: 10) }
-  let!(:project_runner2) { runners.create!(id: 2, runner_type: 3, sharding_key_id: 10) }
-  let!(:project_runner3) { runners.create!(id: 3, runner_type: 3, sharding_key_id: 11) }
+  let!(:project_runner1) { runners.create!(runner_type: 3, sharding_key_id: 10) }
+  let!(:project_runner2) { runners.create!(runner_type: 3, sharding_key_id: 10) }
+  let!(:project_runner3) { runners.create!(runner_type: 3, sharding_key_id: 11) }
   let!(:project_runner1_machines) do
     common_attrs = { runner_id: project_runner1.id, runner_type: 3, sharding_key_id: 10 }
 
     [
-      runner_machines.create!(id: 1, system_xid: 'a', **common_attrs),
-      runner_machines.create!(id: 2, system_xid: 'b', **common_attrs)
+      runner_machines.create!(system_xid: 'a', **common_attrs),
+      runner_machines.create!(system_xid: 'b', **common_attrs)
     ]
   end
 
   let!(:project_runner2_machine) do
-    runner_machines.create!(id: 4, runner_id: project_runner2.id, system_xid: 'a', runner_type: 3, sharding_key_id: 10)
+    runner_machines.create!(runner_id: project_runner2.id, system_xid: 'a', runner_type: 3, sharding_key_id: 10)
   end
 
   let!(:project_runner3_machine) do
-    runner_machines.create!(id: 5, runner_id: project_runner3.id, system_xid: 'a', runner_type: 3, sharding_key_id: 11)
+    runner_machines.create!(runner_id: project_runner3.id, system_xid: 'a', runner_type: 3, sharding_key_id: 11)
   end
 
-  let!(:group_runner1) { runners.create!(id: 4, runner_type: 2, sharding_key_id: 10) }
+  let!(:group_runner1) { runners.create!(runner_type: 2, sharding_key_id: 10) }
   let!(:group_runner1_machine) do
-    runner_machines.create!(id: 6, runner_id: group_runner1.id, system_xid: 'a', runner_type: 2, sharding_key_id: 10)
+    runner_machines.create!(runner_id: group_runner1.id, system_xid: 'a', runner_type: 2, sharding_key_id: 10)
   end
 
   before do
-    runner_projects.create!(id: 3, project_id: 11, runner_id: project_runner2.id)
-    runner_projects.create!(id: 4, project_id: project_runner3.sharding_key_id, runner_id: project_runner3.id)
+    runner_projects.create!(project_id: 11, runner_id: project_runner2.id)
+    runner_projects.create!(project_id: project_runner3.sharding_key_id, runner_id: project_runner3.id)
   end
 
   describe '#perform' do

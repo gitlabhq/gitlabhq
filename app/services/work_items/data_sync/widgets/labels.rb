@@ -6,7 +6,7 @@ module WorkItems
       class Labels < Base
         include Gitlab::Utils::StrongMemoize
 
-        def after_save_commit
+        def after_create
           return unless target_work_item.get_widget(:labels)
           return if work_item.labels.blank?
 

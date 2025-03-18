@@ -4,7 +4,7 @@ import { GlLabel } from '@gitlab/ui';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
-  name: 'DetailsWrapper',
+  name: 'ReferenceLabelWrapper',
   components: {
     NodeViewWrapper,
     GlLabel,

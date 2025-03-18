@@ -110,7 +110,7 @@ verify-approvals:
 generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
-    - .use-pg14
+    - .use-pg16
     - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare
@@ -119,7 +119,7 @@ generate-frontend-fixtures-mapping:
     - source ./scripts/rspec_helpers.sh
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
   script:
-    - generate_frontend_fixtures_mapping
+    - run_with_custom_exit_code generate_frontend_fixtures_mapping
   artifacts:
     expire_in: 7d
     paths:

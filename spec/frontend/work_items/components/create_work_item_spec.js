@@ -327,6 +327,11 @@ describe('Create work item component', () => {
 
   describe('Create work item', () => {
     it('emits workItemCreated on successful mutation', async () => {
+      const workItem = { ...createWorkItemMutationResponse.data.workItemCreate.workItem };
+      // there is a mismatch between the response and the expected workItem object between CE and EE fixture
+      // so we need to remove the `promotedToEpicUrl` property from the expected workItem object
+      delete workItem.promotedToEpicUrl;
+
       createComponent();
       await waitForPromises();
 
@@ -337,7 +342,7 @@ describe('Create work item component', () => {
       expect(wrapper.emitted('workItemCreated')).toEqual([
         [
           {
-            workItem: createWorkItemMutationResponse.data.workItemCreate.workItem,
+            workItem: expect.objectContaining(workItem),
             numberOfDiscussionsResolved: '1',
           },
         ],
@@ -590,7 +595,9 @@ describe('Create work item component', () => {
     const webUrl = 'web/url';
 
     beforeEach(async () => {
-      createComponent({ props: { relatedItem: { id, type, reference, webUrl } } });
+      createComponent({
+        props: { relatedItem: { id, type, reference, webUrl }, showProjectSelector: true },
+      });
       await waitForPromises();
     });
 
@@ -605,6 +612,12 @@ describe('Create work item component', () => {
 
       expect(link.text()).toBe('#1');
       expect(link.attributes('href')).toBe('web/url');
+    });
+
+    it('provides the related item fullPath to the project listbox', () => {
+      const listbox = findProjectsSelector();
+
+      expect(listbox.props('selectedProjectFullPath')).toBe('full-path');
     });
 
     it('includes the related item in the create work item request', async () => {

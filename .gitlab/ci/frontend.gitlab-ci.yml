@@ -11,7 +11,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-rust-${RUST_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -154,7 +154,7 @@ retrieve-frontend-fixtures:
     - .default-retry
     - .default-before_script
     - .ruby-cache
-    - .use-pg14
+    - .use-pg16
     - .repo-from-artifacts
   stage: fixtures
   needs:
@@ -176,7 +176,7 @@ retrieve-frontend-fixtures:
         exit 0
       fi
     - !reference [.base-script, script]
-    - rspec_parallelized_job
+    - run_with_custom_exit_code rspec_parallelized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -236,7 +236,7 @@ graphql-schema-dump:
   stage: fixtures
   needs: []
   script:
-    - bundle exec rake gitlab:graphql:schema:dump
+    - run_with_custom_exit_code bundle exec rake gitlab:graphql:schema:dump
   artifacts:
     expire_in: 30 days
     name: graphql-schema
@@ -256,7 +256,7 @@ upload-graphql-schema-dump:
     - .with-graphql-schema-dump-needs
   script:
     - source scripts/gitlab_component_helpers.sh
-    - create_and_upload_graphql_schema_package
+    - run_with_custom_exit_code create_and_upload_graphql_schema_package
 
 
 .frontend-test-base:
@@ -334,7 +334,7 @@ jest:
       junit: junit_jest.xml
   parallel: 11
   script:
-    - run_timed_command scripts/frontend/jest_ci.js
+    - run_with_custom_exit_code run_timed_command scripts/frontend/jest_ci.js
 
 jest-with-fixtures:
   extends:
@@ -348,7 +348,7 @@ jest-with-fixtures:
     - !reference [.with-fixtures-needs, needs]
   parallel: 2
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --fixtures"
+    - run_with_custom_exit_code run_timed_command "scripts/frontend/jest_ci.js --fixtures"
 
 jest vue3:
   extends:
@@ -388,7 +388,7 @@ jest vue3 mr:
       - junit_jest.xml
   parallel: 6
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --vue3"
+    - run_with_custom_exit_code run_timed_command "scripts/frontend/jest_ci.js --vue3"
   allow_failure: false
 
 jest-with-fixtures vue3 mr:
@@ -408,7 +408,7 @@ jest-with-fixtures vue3 mr:
       - junit_jest.xml
   parallel: 1
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures"
+    - run_with_custom_exit_code run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures"
 
 jest predictive:
   extends:
@@ -418,7 +418,15 @@ jest predictive:
     - !reference [jest, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --predictive"; fi
+    - |
+      function jest_predictive() {
+        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+          run_timed_command "scripts/frontend/jest_ci.js --predictive"
+        fi
+      }
+
+      run_with_custom_exit_code jest_predictive
+
   parallel: 4
 
 jest-with-fixtures predictive:
@@ -429,7 +437,14 @@ jest-with-fixtures predictive:
     - !reference [jest-with-fixtures, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --predictive --fixtures"; fi
+    - |
+      function jest_with_fixtures_predictive() {
+        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+          run_timed_command "scripts/frontend/jest_ci.js --predictive --fixtures"
+        fi
+      }
+
+      run_with_custom_exit_code jest_with_fixtures_predictive
 
 jest vue3 predictive:
   extends:
@@ -439,7 +454,14 @@ jest vue3 predictive:
     - !reference [jest vue3 mr, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive"; fi
+    - |
+      function jest_vue3_predictive() {
+        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+          run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive"
+        fi
+      }
+
+      run_with_custom_exit_code jest_vue3_predictive
 
 jest-with-fixtures vue3 predictive:
   extends:
@@ -449,7 +471,14 @@ jest-with-fixtures vue3 predictive:
     - !reference [jest-with-fixtures vue3 mr, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive --fixtures"; fi
+    - |
+      function jest_with_fixtures_vue3_predictive() {
+        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+          run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive --fixtures";
+        fi
+      }
+
+      run_with_custom_exit_code jest_with_fixtures_vue3_predictive
   allow_failure: false
 
 jest vue3 check quarantined predictive:
@@ -460,7 +489,14 @@ jest vue3 check quarantined predictive:
     - !reference [jest vue3 mr, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "./scripts/frontend/check_jest_vue3_quarantine.js"; fi
+    - |
+      function jest_vue_check_quarantined_predictive() {
+        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+          run_timed_command "./scripts/frontend/check_jest_vue3_quarantine.js"
+        fi
+      }
+
+      run_with_custom_exit_code jest_vue_check_quarantined_predictive
   parallel: 4
   artifacts:
     name: quarantined_tests_output
@@ -483,7 +519,14 @@ jest vue3 check quarantined:
     - .frontend:rules:jest-vue3-check-quarantined
   parallel: 4
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "./scripts/frontend/check_jest_vue3_quarantine.js --all"; fi
+    - |
+      function jest_vue3_check_quarantined() {
+        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+          run_timed_command "./scripts/frontend/check_jest_vue3_quarantine.js --all"
+        fi
+      }
+
+      run_with_custom_exit_code jest_vue3_check_quarantined
 
 jest-with-fixtures vue3 check quarantined:
   extends:
@@ -498,7 +541,7 @@ jest-integration:
     - .repo-from-artifacts
     - .frontend:rules:jest-integration
   script:
-    - run_timed_command "yarn jest:integration --ci"
+    - run_with_custom_exit_code run_timed_command "yarn jest:integration --ci"
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
@@ -550,7 +593,7 @@ jest-linters:
     - .frontend:rules:jest-linters
   needs: []
   script:
-    - run_timed_command "yarn jest:eslint --ci"
+    - run_with_custom_exit_code run_timed_command "yarn jest:eslint --ci"
 
 coverage-frontend:
   extends:

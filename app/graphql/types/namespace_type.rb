@@ -56,6 +56,10 @@ module Types
       null: true,
       description: 'Package settings for the namespace.'
 
+    field :avatar_url, GraphQL::Types::String,
+      null: true,
+      description: 'URL to avatar image file of the namespace.'
+
     field :ci_cd_settings,
       Types::Ci::NamespaceSettingsType,
       null: true,
@@ -128,10 +132,6 @@ module Types
       null: true, experiment: { milestone: '17.6' },
       calls_gitaly: true,
       description: 'Work item description templates available to the namespace.'
-
-    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
-      null: true, description: 'Allowed custom statuses for the namespace.',
-      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
 
     markdown_field :description_html, null: true
 

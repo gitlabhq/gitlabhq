@@ -37,13 +37,12 @@ module Gitlab
 
       def initialize(text, text_html, source_parent, current_user)
         @text = text
-
-        # If for some reason cached html is not present it gets rendered here
-        @text_html = text_html || original_html
-
         @source_parent = source_parent
         @current_user = current_user
         @pattern = Gitlab::ReferenceExtractor.references_pattern
+
+        # If for some reason cached html is not present it gets rendered here
+        @text_html = text_html || original_html
       end
 
       def rewrite(target_parent)

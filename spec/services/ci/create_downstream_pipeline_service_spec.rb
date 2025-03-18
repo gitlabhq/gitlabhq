@@ -162,6 +162,85 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         .to change { upstream_pipeline.reload.duration }.from(nil).to(an_instance_of(Integer))
     end
 
+    context 'when the bridge contains `inputs` within its options' do
+      let(:stub_config) { false }
+
+      let_it_be(:spec_inputs_config) do
+        <<~YAML
+          spec:
+            inputs:
+              stage:
+                default: deploy
+              suffix:
+                default: job
+          ---
+          test-$[[ inputs.suffix ]]:
+            stage: $[[ inputs.stage ]]
+            script: run tests
+        YAML
+      end
+
+      shared_examples 'creates a downstream pipeline with the inputs provided' do
+        it 'creates the correct jobs as per input specification' do
+          subject
+
+          expect(pipeline.builds.first.name).to eq('test-build')
+          expect(pipeline.builds.first.stage).to eq('deploy')
+          expect(pipeline.source_bridge).to eq bridge
+          expect(bridge.reload.sourced_pipeline.pipeline).to eq pipeline
+          expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
+        end
+      end
+
+      context 'when the downstream pipeline is for another project' do
+        let(:trigger) do
+          {
+            trigger: {
+              include: {
+                project: downstream_project.full_path,
+                file: '.gitlab-ci.yml',
+                inputs: {
+                  stage: 'deploy',
+                  suffix: 'build'
+                }
+              }
+            }
+          }
+        end
+
+        before do
+          downstream_project.repository.create_file(user, '.gitlab-ci.yml', spec_inputs_config, message: 'spec inputs',
+            branch_name: downstream_project.default_branch)
+        end
+
+        it_behaves_like 'creates a downstream pipeline with the inputs provided'
+      end
+
+      context 'when the downstream pipeline is for the same project' do
+        let(:trigger) do
+          {
+            trigger: {
+              include: {
+                local: 'child-pipeline.yml',
+                inputs: {
+                  stage: 'deploy',
+                  suffix: 'build'
+                }
+              }
+            }
+          }
+        end
+
+        before do
+          upstream_project.repository.create_file(user, 'child-pipeline.yml', spec_inputs_config, message: 'inputs',
+            branch_name: upstream_project.default_branch)
+          upstream_pipeline.update!(sha: upstream_project.commit.id)
+        end
+
+        it_behaves_like 'creates a downstream pipeline with the inputs provided'
+      end
+    end
+
     context 'when bridge job has already any downstream pipeline' do
       before do
         bridge.create_sourced_pipeline!(

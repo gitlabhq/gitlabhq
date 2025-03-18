@@ -693,6 +693,34 @@ RSpec.describe 'GraphQL', feature_category: :shared do
     end
   end
 
+  context 'when rate limited' do
+    let_it_be(:project) { create(:project, :public) }
+
+    let(:input) do
+      {
+        'projectPath' => project.full_path,
+        'title' => 'new title',
+        'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s
+      }
+    end
+
+    let(:mutation) { graphql_mutation(:workItemCreate, input) }
+
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+    end
+
+    it 'returns an error' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+
+      expect(graphql_errors.pluck('message')).to include(
+        'This endpoint has been requested too many times. Try again later.'
+      )
+    end
+  end
+
   describe 'keyset pagination' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: Time.now.change(usec: 200)) }

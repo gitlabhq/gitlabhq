@@ -32,6 +32,10 @@ describe('GroupsListItem', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      scopedSlots: {
+        'children-toggle': '<div data-testid="children-toggle"></div>',
+        children: '<div data-testid="children"></div>',
+      },
     });
   };
 
@@ -380,5 +384,23 @@ describe('GroupsListItem', () => {
     it('does not render timestamp', () => {
       expect(findTimeAgoTooltip().exists()).toBe(false);
     });
+  });
+
+  it('renders listItemClass prop on first div in li element', () => {
+    createComponent({ propsData: { listItemClass: 'foo' } });
+
+    expect(wrapper.element.firstChild.classList).toContain('foo');
+  });
+
+  it('renders children-toggle slot', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('children-toggle').exists()).toBe(true);
+  });
+
+  it('renders children slot', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('children').exists()).toBe(true);
   });
 });

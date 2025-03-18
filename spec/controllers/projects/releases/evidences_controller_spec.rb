@@ -155,5 +155,63 @@ RSpec.describe Projects::Releases::EvidencesController, :with_license do
         it_behaves_like 'evidence not found'
       end
     end
+
+    context 'when tag name contains a plus sign' do
+      let(:tag_name) { "v1.0.0+rc1" }
+      let!(:release) { create(:release, project: project, tag: tag_name) }
+      let(:evidence) { release.evidences.first }
+
+      context 'when accessing with literal plus sign' do
+        let(:tag) { tag_name } # No escaping, raw "v1.0.0+rc1"
+
+        it 'returns the evidence successfully' do
+          get :show, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            tag: tag,
+            id: evidence.id,
+            format: :json
+          }
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq(evidence.summary)
+        end
+      end
+    end
+
+    context 'when tag name contains special characters' do
+      where(:tag_name) do
+        [
+          'v1.0.0+rc1',
+          'release+candidate+1',
+          'v1.0.0+build.123',
+          'release with+plus'
+        ]
+      end
+
+      with_them do
+        let!(:release) { create(:release, project: project, tag: tag_name) }
+        let(:evidence) { release.evidences.first }
+        let(:tag) { tag_name }
+
+        before do
+          ::Releases::CreateEvidenceService.new(release).execute
+          sign_in(developer)
+        end
+
+        it 'handles the tag name correctly' do
+          get :show, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            tag: tag,
+            id: evidence.id,
+            format: :json
+          }
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq(evidence.summary)
+        end
+      end
+    end
   end
 end

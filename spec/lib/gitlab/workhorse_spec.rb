@@ -64,8 +64,22 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
         'ArchivePath' => metadata['ArchivePath'],
-        'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths)
+        'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths),
+        'StoragePath' => storage_path,
+        'UseArchiveCleaner' => true
       }.deep_stringify_keys)
+    end
+
+    context 'when Workhorse archive cleaner is disabled' do
+      before do
+        stub_env('WORKHORSE_ARCHIVE_CACHE_CLEANER_DISABLED', '1')
+      end
+
+      it 'sets UseArchiveCleaner to false' do
+        _, _, params = decode_workhorse_header(subject)
+
+        expect(params).to include('UseArchiveCleaner' => false)
+      end
     end
 
     context 'when include_lfs_blobs is disabled' do

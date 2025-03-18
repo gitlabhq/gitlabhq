@@ -31,7 +31,8 @@ module API
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_packages
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/:package_id/package_files' do
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
@@ -65,6 +66,17 @@ module API
           .new(user_project, params[:package_id]).execute
 
         not_found! unless package
+
+        if Feature.enabled?(:packages_protected_packages_delete, user_project)
+          service_response =
+            Packages::Protection::CheckDeleteRuleExistenceService.new(
+              project: user_project,
+              current_user: current_user,
+              params: { package_name: package.name, package_type: package.package_type }
+            ).execute
+
+          forbidden!('Package is deletion protected.') if service_response[:protection_rule_exists?]
+        end
 
         package_file = package.installable_package_files
                               .find_by_id(params[:package_file_id])

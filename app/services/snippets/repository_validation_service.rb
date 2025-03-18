@@ -2,6 +2,8 @@
 
 module Snippets
   class RepositoryValidationService
+    INVALID_REPOSITORY = :invalid_snippet_repository
+
     attr_reader :current_user, :snippet, :repository
 
     RepositoryValidationError = Class.new(StandardError)
@@ -25,7 +27,7 @@ module Snippets
 
       ServiceResponse.success(message: 'Valid snippet repository.')
     rescue RepositoryValidationError => e
-      ServiceResponse.error(message: "Error: #{e.message}", http_status: 400)
+      ServiceResponse.error(message: "Error: #{e.message}", reason: INVALID_REPOSITORY)
     end
 
     private

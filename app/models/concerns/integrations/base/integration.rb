@@ -424,7 +424,7 @@ module Integrations
           @field_storage || :properties
         end
 
-        def build_help_page_url(url_path, help_text, link_text = _("Learn More"), options = {})
+        def build_help_page_url(url_path, help_text, options = {}, link_text: _("Learn More"))
           docs_link = ActionController::Base.helpers.link_to(
             '',
             Rails.application.routes.url_helpers.help_page_url(url_path, **options), # rubocop:disable Gitlab/DocumentationLinks/Link: -- existing code moved as is
@@ -764,9 +764,11 @@ module Integrations
         return if ::Gitlab::SilentMode.enabled?
         return unless active?
 
+        data = data.with_indifferent_access
+
         # Temporarily log when we return within this method to gather data for
         # https://gitlab.com/gitlab-org/gitlab/-/issues/382999
-        unless supported_events.include?(data[:object_kind])
+        unless supported_events.include?(data[:object_kind].to_s)
           log_info(
             'async_execute did nothing due to event not being supported',
             event: data[:object_kind]

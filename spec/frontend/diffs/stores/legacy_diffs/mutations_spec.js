@@ -982,14 +982,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_SHOW_TREE_LIST', () => {
-    it('sets showTreeList', () => {
-      store[types.SET_SHOW_TREE_LIST](true);
-
-      expect(store.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
-    });
-  });
-
   describe('SET_CURRENT_DIFF_FILE', () => {
     it('updates currentDiffFileId', () => {
       store[types.SET_CURRENT_DIFF_FILE]('somefileid');

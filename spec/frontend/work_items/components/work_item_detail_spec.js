@@ -13,6 +13,7 @@ import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
+import WorkItemErrorTracking from '~/work_items/components/work_item_error_tracking.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
@@ -116,6 +117,7 @@ describe('WorkItemDetail component', () => {
   const findAncestors = () => wrapper.findComponent(WorkItemAncestors);
   const findCloseButton = () => wrapper.findByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
+  const findErrorTrackingWidget = () => wrapper.findComponent(WorkItemErrorTracking);
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
@@ -133,6 +135,7 @@ describe('WorkItemDetail component', () => {
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
   const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
+  const findShowSidebarButton = () => wrapper.findByTestId('work-item-show-sidebar-button');
 
   const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
     return { dataTransfer: { types, files, items } };
@@ -155,6 +158,7 @@ describe('WorkItemDetail component', () => {
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
     hasLinkedItemsEpicsFeature = true,
+    showSidebar = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -179,6 +183,7 @@ describe('WorkItemDetail component', () => {
         return {
           updateInProgress,
           error,
+          showSidebar,
         };
       },
       provide: {
@@ -209,6 +214,19 @@ describe('WorkItemDetail component', () => {
 
   afterEach(() => {
     setWindowLocation('');
+  });
+
+  it.each`
+    isDrawer | expected
+    ${true}  | ${true}
+    ${false} | ${false}
+  `('passes isDrawer prop to child component props', async ({ isDrawer, expected }) => {
+    createComponent({ isDrawer });
+    await waitForPromises();
+
+    expect(findWorkItemDescription().props('hideFullscreenMarkdownButton')).toBe(expected);
+    expect(findNotesWidget().props('hideFullscreenMarkdownButton')).toBe(expected);
+    expect(findNotesWidget().props('isDrawer')).toBe(expected);
   });
 
   describe('when there is no `workItemIid` prop', () => {
@@ -264,10 +282,7 @@ describe('WorkItemDetail component', () => {
       expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
     });
 
-    it('fetches allowed children types for current work item', async () => {
-      createComponent();
-      await waitForPromises();
-
+    it('fetches allowed children types for current work item', () => {
       expect(allowedChildrenTypesHandler).toHaveBeenCalled();
     });
 
@@ -277,6 +292,13 @@ describe('WorkItemDetail component', () => {
       );
 
       expect(findHierarchyTree().props('parentMilestone')).toEqual(milestone);
+    });
+
+    it('renders error tracking widget', () => {
+      expect(findErrorTrackingWidget().props()).toEqual({
+        fullPath: 'group/project',
+        identifier: '1',
+      });
     });
   });
 
@@ -651,6 +673,30 @@ describe('WorkItemDetail component', () => {
         await waitForPromises();
 
         expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
+      });
+
+      it('closes the drawer when `close-drawer` is emitted from the selected work item', async () => {
+        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
+        await waitForPromises();
+
+        const event = {
+          preventDefault: jest.fn(),
+        };
+        const modalWorkItem = { id: 'childWorkItemId' };
+
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem,
+        });
+        await waitForPromises();
+
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem,
+        });
+        await waitForPromises();
+
+        expect(findDrawer().props('activeItem')).toEqual(null);
       });
 
       describe('work item is rendered in a modal and has children', () => {
@@ -1098,6 +1144,7 @@ describe('WorkItemDetail component', () => {
 
       it('shows the edit button', () => {
         expect(findEditButton().exists()).toBe(true);
+        expect(findEditButton().attributes('title')).toContain('Edit title and description');
       });
 
       it('renders the work item title with edit component', () => {
@@ -1185,6 +1232,27 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemDetailInfo().text()).toBe('Resolved all discussions.');
+    });
+  });
+
+  describe('shows sidebar based on view options', () => {
+    it('when sidebar is shown based on view options', async () => {
+      createComponent({ showSidebar: true });
+      await waitForPromises();
+      expect(findShowSidebarButton().exists()).toBe(false);
+      expect(findRightSidebar().classes()).not.toContain('md:gl-hidden');
+    });
+    it('when sidebar is hidden based on view options', async () => {
+      createComponent({ showSidebar: false });
+      await waitForPromises();
+      expect(findShowSidebarButton().exists()).toBe(true);
+      expect(findRightSidebar().classes()).toContain('md:gl-hidden');
+    });
+    it('when show sidebar button is used', async () => {
+      createComponent({ showSidebar: false });
+      await waitForPromises();
+      findShowSidebarButton().vm.$emit('click');
+      expect(findRightSidebar().isVisible()).toBe(true);
     });
   });
 });

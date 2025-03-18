@@ -24,30 +24,31 @@ For a full list of reference architectures, see
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 
-| Service                            | Nodes | Configuration          | GCP             | AWS          | Azure    |
+| Service                            | Nodes | Configuration          | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |------------------------------------|-------|------------------------|-----------------|--------------|----------|
-| External Load balancer<sup>3</sup> | 1     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
-| PostgreSQL<sup>1</sup>             | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Redis<sup>2</sup>                  | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
-| Gitaly<sup>5</sup>                 | 1     | 4 vCPU, 15 GB memory<sup>5</sup> | `n1-standard-4` | `m5.xlarge` | `D4s v3` |
-| Sidekiq<sup>6</sup>                | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| GitLab Rails<sup>6</sup>           | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
+| External Load balancer<sup>4</sup> | 1     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
+| PostgreSQL<sup>2</sup>             | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
+| Redis<sup>3</sup>                  | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
+| Gitaly<sup>6</sup>                 | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` | `D4s v3` |
+| Sidekiq<sup>7</sup>                | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| GitLab Rails<sup>7</sup>           | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node                    | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>4</sup>         | -     | -                      | -               | -            | -        |
+| Object storage<sup>5</sup>         | -     | -                      | -               | -            | -        |
 
 **Footnotes:**
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
+2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
    Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. See [Load Balancers](_index.md#load-balancers) for more information.
-4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-5. Gitaly specifications are based on the use of normal-sized repositories in good health.
+5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+6. Gitaly specifications are based on the use of normal-sized repositories in good health.
    However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
    Refer to [large monorepos](_index.md#large-monorepos) for more information.
-6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
+7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
@@ -100,30 +101,41 @@ monitor .[#7FFFD4]u-> sidekiq
 
 ## Requirements
 
-Before starting, see the [requirements](_index.md#requirements) for reference architectures.
+Before proceeding, review the [requirements](_index.md#requirements) for the reference architectures.
 
 ## Testing methodology
 
-The 2k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](_index.md#validation-and-test-results) by the Test Platform team
-against the following endpoint throughput targets:
+The 40 RPS / 2k user reference architecture is designed to accommodate most common workflows. The [Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
 
-- API: 40 RPS
-- Web: 4 RPS
-- Git (Pull): 4 RPS
-- Git (Push): 1 RPS
+| Endpoint Type | Target Throughput |
+| ------------- | ----------------- |
+| API           | 40 RPS            |
+| Web           | 4 RPS             |
+| Git (Pull)    | 4 RPS             |
+| Git (Push)    | 1 RPS             |
 
-The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
-including CI and other workloads.
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
 
-If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](_index.md#large-monorepos)
-or notable [additional workloads](_index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](_index.md#scaling-an-environment).
-If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+### Performance considerations
 
-Testing is done regularly by using our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
-The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](_index.md#validation-and-test-results).
+You may need additional adjustments if your environment has:
 
-The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services with NGINX Ingress for Cloud Native Hybrids. These selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
+- Consistently higher throughput than the listed targets
+- [Large monorepos](_index.md#large-monorepos)
+- Significant [additional workloads](_index.md#additional-workloads)
+
+In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
+
+### Testing tools and results
+
+We use the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) for testing, which includes a publicly available dataset. You can view detailed test results on the [GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+
+### Load Balancer configuration
+
+Our testing environment uses:
+
+- HAProxy for Linux package environments
+- Cloud Provider equivalents with NGINX Ingress for Cloud Native Hybrids
 
 ## Set up components
 
@@ -242,7 +254,7 @@ Configure your load balancer to use the `HTTP(S)` protocol rather than `TCP`.
 The load balancer will then be responsible for managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancer and GitLab will not be secure,
+Because communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
 [proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
@@ -254,7 +266,7 @@ The load balancers will be responsible for managing SSL certificates that
 end users will see.
 
 Traffic will also be secure between the load balancers and NGINX in this
-scenario. There is no need to add configuration for proxied SSL since the
+scenario. There is no need to add configuration for proxied SSL because the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
 the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
@@ -277,7 +289,7 @@ You can optionally use a [third party external service for PostgreSQL](../postgr
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
-[14.4.0](https://docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1440).
+[14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 
 See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 
@@ -436,7 +448,7 @@ specifically the number of projects and those projects' sizes.
 
 **Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
 **However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
-If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+If you believe this applies to you, contact us for additional guidance as required.
 
 {{< /alert >}}
 
@@ -482,7 +494,7 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
 
    {{< alert type="note" >}}
 
-You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+   You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
    {{< /alert >}}
 
@@ -1171,9 +1183,8 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Sidekiq              | 3.6 vCPU<br/>8 GB memory (request)<br/>16 GB memory (limit) | 2 x `n1-standard-4` | 2 x `m5.xlarge`  |
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
-- For this setup, we **recommend** and regularly [test](_index.md#validation-and-test-results)
-  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- GCP and AWS examples of how to reach the Target Node Pool Total are given for convenience. These sizes are used in performance testing but following the example is not required. Different node pool designs can be used as desired as long as the targets are met, and all pods can deploy.
+- For this setup, we regularly [test](_index.md#validation-and-test-results) and recommend [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+- Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment and any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
 - In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
@@ -1182,20 +1193,24 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
-| Service                     | Nodes | Configuration          | GCP             | AWS         |
+| Service                     | Nodes | Configuration          | GCP example<sup>1</sup> | AWS example<sup>1</sup> |
 |-----------------------------|-------|------------------------|-----------------|-------------|
-| PostgreSQL<sup>1</sup>      | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
-| Redis<sup>2</sup>           | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
-| Gitaly                      | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
-| Object storage<sup>3</sup>  | -     | -                      | -               | -           |
+| PostgreSQL<sup>2</sup>      | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
+| Redis<sup>3</sup>           | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
+| Gitaly<sup>5</sup>          | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
+| Object storage<sup>4</sup>  | -     | -                      | -               | -           |
 
 **Footnotes:**
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
-3. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
+2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+5. Gitaly specifications are based on the use of normal-sized repositories in good health.
+   However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
+   Refer to [large monorepos](_index.md#large-monorepos) for more information.
 <!-- markdownlint-enable MD029 -->
 
 {{< alert type="note" >}}

@@ -7,8 +7,7 @@ module Packages
 
       def initialize(package_protection_rule, current_user:)
         if package_protection_rule.blank? || current_user.blank?
-          raise ArgumentError,
-            'package_protection_rule and current_user must be set'
+          raise ArgumentError, 'package_protection_rule and current_user must be set'
         end
 
         @package_protection_rule = package_protection_rule

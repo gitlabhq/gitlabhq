@@ -93,7 +93,7 @@ module Keeps
         To confirm it is finished you can run:
 
         ```
-      /chatops run batched_background_migrations status #{migration_record.id}
+      /chatops run batched_background_migrations status #{migration_record.id} --database #{database_name(migration_record)}
       ```
 
       The last time this background migration was triggered was in [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
@@ -112,8 +112,12 @@ module Keeps
     def truncate_migration_name(migration_name)
       # File names not allowed to exceed 100 chars due to Cop/FilenameLength so we truncate to 70 because there will be
       # underscores added.
+      if migration_name.length > 70
+        # Consisten 5 digit integer hash so that we always get the same name every time we run this keep
+        hash = Digest::SHA256.hexdigest(migration_name).to_i(16) % 100000
+      end
 
-      migration_name[0...70]
+      migration_name[0...65] + hash.to_s
     end
 
     def add_finalized_by_to_yaml(yaml_file, migration_number)
@@ -266,6 +270,12 @@ module Keeps
       File.exist?(
         Rails.root.join(*%w[ee lib ee gitlab background_migration]).join(file_name)
       )
+    end
+
+    def database_name(migration_record)
+      gitlab_schema = migration_record.gitlab_schema
+      connection = Gitlab::Database.schemas_to_base_models[gitlab_schema].first.connection
+      Gitlab::Database.db_config_name(connection)
     end
   end
 end

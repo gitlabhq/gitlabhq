@@ -1267,6 +1267,7 @@ export const mockPipelineWithoutMR = {
   path: 'pipeline/28029444',
   ref: {
     name: 'test-branch',
+    path: 'test-branch',
   },
 };
 

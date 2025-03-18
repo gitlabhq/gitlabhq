@@ -66,7 +66,7 @@ export default [
         '\n',
         '</style>',
       ].join(''),
-      output: '<!---->',
+      output: '<style type=&quot;text/css&quot;>',
     },
   ],
   // Note: iframe is sanitized out
@@ -84,7 +84,7 @@ export default [
         '        ></iframe>\n',
         '        ',
       ].join(''),
-      output: '<!---->',
+      output: 'src=&quot;https://www.youtube.com/embed/sjfsUzECqK0&quot;',
     },
   ],
   [

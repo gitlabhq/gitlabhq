@@ -1,14 +1,11 @@
 <script>
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import CommitChangesModal from './commit_changes_modal.vue';
 
 const DIR_LABEL = __('Directory name');
-const ERROR_MESSAGE = __('Error creating new directory. Please try again.');
 const COMMIT_MESSAGE = __('Add new directory');
 
 export default {
@@ -19,7 +16,6 @@ export default {
   },
   i18n: {
     DIR_LABEL,
-    ERROR_MESSAGE,
     COMMIT_MESSAGE,
   },
   props: {
@@ -52,6 +48,7 @@ export default {
     return {
       dir: null,
       loading: false,
+      error: null,
     };
   },
   computed: {
@@ -62,6 +59,7 @@ export default {
   methods: {
     submitForm(formData) {
       this.loading = true;
+      this.error = null;
 
       formData.append('dir_name', this.dir);
       if (!formData.has('branch_name')) {
@@ -73,13 +71,11 @@ export default {
         .then((response) => {
           visitUrl(response.data.filePath);
         })
-        .catch((e) => {
+        .catch(({ response }) => {
+          this.error = response?.data?.error;
+        })
+        .finally(() => {
           this.loading = false;
-          logError(
-            __('Failed to create a new directory. See exception details for more information.'),
-            e,
-          );
-          createAlert({ message: ERROR_MESSAGE });
         });
     },
   },
@@ -91,6 +87,7 @@ export default {
     v-bind="$attrs"
     :ref="modalId"
     :loading="loading"
+    :error="error"
     :valid="isValid"
     :modal-id="modalId"
     :can-push-code="canPushCode"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LfsFileLock do
+RSpec.describe LfsFileLock, feature_category: :source_code_management do
   let_it_be(:lfs_file_lock, reload: true) { create(:lfs_file_lock) }
 
   subject { lfs_file_lock }
@@ -54,6 +54,20 @@ RSpec.describe LfsFileLock do
 
       it "can't be unlocked by other user" do
         expect(lfs_file_lock.can_be_unlocked_by?(developer)).to eq(false)
+      end
+    end
+  end
+
+  describe '#for_path!(path)' do
+    context 'when the lfs_file_lock exists' do
+      it 'returns the lfs file lock' do
+        expect(described_class.for_path!(lfs_file_lock.path)).to eq(lfs_file_lock)
+      end
+    end
+
+    context 'when the path does not exist' do
+      it 'raises an error' do
+        expect { described_class.for_path!('not_a_real_path.rb') }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

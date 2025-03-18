@@ -80,6 +80,14 @@ FactoryBot.define do
       created_at { 0.001.seconds.after(Ci::Runner.stale_deadline) }
     end
 
+    trait :created_before_registration_deadline do
+      created_at { 0.001.seconds.after(Ci::Runner::REGISTRATION_AVAILABILITY_TIME.ago) }
+    end
+
+    trait :created_after_registration_deadline do
+      created_at { Ci::Runner::REGISTRATION_AVAILABILITY_TIME.ago }
+    end
+
     trait :instance do
       runner_type { :instance_type }
     end

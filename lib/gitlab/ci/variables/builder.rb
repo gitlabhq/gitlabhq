@@ -20,6 +20,16 @@ module Gitlab
         # - scoped_variables_for_pipeline_seed
         def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            if pipeline.only_workload_variables?
+              # predefined_project_variables includes things like $CI_PROJECT_PATH which are used by the runner to clone
+              # the repo
+              variables.concat(project.predefined_project_variables)
+
+              # yaml_variables is how we inject dynamic configuration into a workload
+              variables.concat(job.yaml_variables)
+              next
+            end
+
             variables.concat(predefined_variables(job, environment))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
@@ -39,6 +49,16 @@ module Gitlab
 
         def unprotected_scoped_variables(job, expose_project_variables:, expose_group_variables:, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            if pipeline.only_workload_variables?
+              # predefined_project_variables includes things like $CI_PROJECT_PATH which are used by the runner to clone
+              # the repo
+              variables.concat(project.predefined_project_variables)
+
+              # yaml_variables is how we inject dynamic configuration into a workload
+              variables.concat(job.yaml_variables)
+              next
+            end
+
             variables.concat(predefined_variables(job, environment))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
@@ -56,9 +76,19 @@ module Gitlab
           end
         end
 
-        def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:, user:, trigger_request:)
+        def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:, user:, trigger_or_request:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(predefined_variables_from_job_attr(job_attr, environment, trigger_request))
+            if pipeline.only_workload_variables?
+              # predefined_project_variables includes things like $CI_PROJECT_PATH which are used by the runner to clone
+              # the repo
+              variables.concat(project.predefined_project_variables)
+
+              # yaml_variables is how we inject dynamic configuration into a workload
+              variables.concat(job_attr[:yaml_variables])
+              next
+            end
+
+            variables.concat(predefined_variables_from_job_attr(job_attr, environment, trigger_or_request))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
             # job.runner.predefined_variables: No need because it's not available in the Seed step.
@@ -78,6 +108,7 @@ module Gitlab
         def config_variables
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             break variables unless project
+            next if pipeline.only_workload_variables?
 
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
@@ -182,10 +213,16 @@ module Gitlab
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job.name))
+            variables.append(key: 'CI_JOB_GROUP_NAME', value: Gitlab::Utils::Job.group_name(job.name))
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
-            variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
-            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: job.trigger_short_token) if job.trigger_request
+
+            trigger_presence = Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project) ? job.pipeline.trigger_id : job.trigger_request
+
+            if trigger_presence
+              variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true')
+              variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: job.trigger_short_token)
+            end
 
             variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job.options).to_s)
@@ -199,14 +236,15 @@ module Gitlab
           end
         end
 
-        def predefined_variables_from_job_attr(job_attr, environment, trigger_request)
+        def predefined_variables_from_job_attr(job_attr, environment, trigger_or_request)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job_attr[:name])
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job_attr[:name]))
+            variables.append(key: 'CI_JOB_GROUP_NAME', value: Gitlab::Utils::Job.group_name(job_attr[:name]))
             variables.append(key: 'CI_JOB_STAGE', value: job_attr[:stage])
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if ::Ci::Processable::ACTIONABLE_WHEN.include?(job_attr[:when])
-            variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_request
-            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger_request.trigger_short_token) if trigger_request
+            variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_or_request
+            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger_or_request.trigger_short_token) if trigger_or_request
             variables.append(key: 'CI_NODE_INDEX', value: job_attr[:options][:instance].to_s) if job_attr[:options]&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job_attr[:options]).to_s)
 

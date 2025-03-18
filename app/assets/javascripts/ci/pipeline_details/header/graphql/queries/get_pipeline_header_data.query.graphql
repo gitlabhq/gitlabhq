@@ -52,6 +52,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       name
       totalJobs
       refText
+      type
       triggeredByPath
       stuck
       child

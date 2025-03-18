@@ -1,47 +1,13 @@
 ---
-stage: Create
-group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: X.509 signatures Rake task
+redirect_to: '../administration/raketasks/x509_signatures.md'
+remove_date: '2025-05-26'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+This document was moved to [another location](../administration/raketasks/x509_signatures.md).
 
-{{< /details >}}
-
-When [signing commits with X.509](../user/project/repository/signed_commits/x509.md),
-the trust anchor might change and the signatures stored in the database must be updated.
-
-## Update all X.509 signatures
-
-This task:
-
-- Iterates through all X.509-signed commits.
-- Updates their verification status based on the current certificate store.
-- Modifies only the database entries for the signatures.
-- Leaves the commits unchanged.
-
-To update all X.509 signatures, run:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-```shell
-sudo gitlab-rake gitlab:x509:update_signatures
-```
-
-{{< /tab >}}
-
-{{< tab title="Self-compiled (source)" >}}
-
-```shell
-sudo -u git -H bundle exec rake gitlab:x509:update_signatures RAILS_ENV=production
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
+<!-- This redirect file can be deleted after <2025-05-26>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

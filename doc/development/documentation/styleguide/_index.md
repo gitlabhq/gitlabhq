@@ -214,6 +214,23 @@ Instead, focus on facts and achievable goals. Be specific. For example:
 - You can use this feature to save time when you create a project. The API creates the file and you
   do not need to manually intervene.
 
+### Self-referential writing
+
+Avoid writing about the document itself. For example, do not use:
+
+- This page shows...
+- This guide explains...
+
+These phrases slow the user down. Instead, get right to the point. For example, instead of:
+
+- This page explains different types of pipelines.
+
+Use:
+
+- GitLab has different types of pipelines to help address your development needs.
+
+Tested in [`SelfReferential.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SelfReferential.yml).
+
 ### Capitalization
 
 As a company, we tend toward lowercase.
@@ -556,6 +573,11 @@ When using code blocks:
 - Use quadruple backticks (````` ```` `````) when the code block contains another (nested) code block
   which has triple backticks already. The example above uses quadruple backticks internally
   to illustrate the code block format.
+
+To represent missing information in a code block, use a comment or an [ellipsis](word_list.md#ellipsis-ellipses). For example:
+
+- `# Removed for readability`
+- `// ...`
 
 ### Keyboard commands
 
@@ -1441,18 +1463,24 @@ Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your
 Use a diagram to illustrate a process or the relationship between entities, if the information is too
 complex to be understood from text only.
 
-To create a diagram, use [Mermaid](https://mermaid.js.org/#/), which has the following advantages:
+To create a diagram, use either [Mermaid](https://mermaid.js.org/#/) (recommended) or [Draw.io](https://draw.io).
 
-- The Mermaid format is easier to maintain because the:
-  - Diagram definition is stored as a code block in the documentation's Markdown source.
-  - Diagram is rendered dynamically at runtime.
-  - Text content in the diagram (such as feature names) can be found with text search
-    tools and edited.
-- The diagram is rendered as a scalable image, better suited to various output devices and sizes.
+Mermaid is the recommended diagramming tool, but it is not suitable for all situations. For example,
+complex diagram requirements might result in a layout that is difficult to understand.
 
-To learn how to create diagrams with the [Mermaid syntax](https://mermaid.js.org/intro/syntax-reference.html),
-see the [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
-and the examples on the Mermaid site.
+GUI diagramming tools can help authors overcome Mermaid's complexity and layout issue. Draw.io is
+the preferred GUI tool because, when using the editor, both the diagram and its definition are
+stored in the SVG file, so it can be easily edited. Draw.io is also integrated with the GitLab wiki.
+
+| Feature| Mermaid | Draw.io |
+|--------|---------|---------|
+| **Editor required** | Text editor | Draw.io editor |
+| **WYSIWYG editing** | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| **Text content findable by `grep`** | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| **Appearance controlled by** | Web site's CSS | Diagram's author |
+| **File format** | SVG | SVG |
+| **VS Code integration (with extensions)** | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) |
+| **Generated dynamically** | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
 
 #### Guidelines
 
@@ -1475,9 +1503,13 @@ To create accessible and easily maintainable diagrams, follow these guidelines:
 - Do not include links. Links embedded in diagrams with [`click` actions](https://mermaid.js.org/syntax/classDiagram.html#interaction) are not testable with our link checking tools.
 - Update diagrams along with documentation or code when processes change to maintain accuracy.
 
-#### Create a diagram
+#### Create a diagram with Mermaid
 
-To create a diagram for GitLab documentation:
+To learn how to create diagrams with the [Mermaid syntax](https://mermaid.js.org/intro/syntax-reference.html),
+see the [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
+and the examples on the Mermaid site.
+
+To create a diagram for GitLab documentation with Mermaid:
 
 1. In the [Mermaid Live Editor](https://mermaid.live/), create the diagram.
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
@@ -1511,6 +1543,66 @@ flowchart TD
     A[Start here] -->|action| B[next step]
 ```
 ````
+
+#### Create a diagram with Draw.io
+
+Use either the [Draw.io](https://draw.io) web application or the (unofficial)
+VS Code [Draw.io Integration](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
+extension to create the diagram. Each tool provides the same diagram editing experience, however the web
+application provides example diagrams that you can edit to suit your needs.
+
+##### Use the web application
+
+To create a diagram by using the Draw.io web application:
+
+1. In the [Draw.io](https://draw.io) web application, create the diagram.
+   Follow the [style guidelines](#style-guidelines).
+1. Save the diagram:
+   1. In the Draw.io web application, select **File** > **Export as** > **SVG**.
+   1. Select the **Include a copy of my diagram: All pages** checkbox, then select **Export**. Use
+      the file extension `drawio.svg` to indicate it can be edited in Draw.io.
+1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
+   These SVGs use the same Markdown as other non-SVG images.
+
+##### Use the VS Code extension
+
+To create a diagram by using the Draw.io Integration extension for VS Code:
+
+1. In the directory that will contain the diagram, create an empty file with the suffix
+   `drawio.svg`.
+1. Open the file in VS Code then create the diagram.
+   Follow the [style guidelines](#style-guidelines).
+1. Save the file.
+
+   The diagram's definition is stored in Draw.io-compatible format in the SVG file.
+1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
+   These SVGs use the same Markdown as other non-SVG images.
+
+##### Style guidelines
+
+When you create a diagram in Draw.io, it should be visually consistent with a diagram you would create with Mermaid.
+The following rules are an addition to the general [style guidelines](#guidelines).
+
+Fonts:
+
+- Use the Inter font for all text. This font is not included in the default fonts.
+  To add Inter font as a custom font:
+  1. From the font dropdown list, select **Custom**.
+  1. Select **Google fonts** and in the **Font name** text box, enter `Inter`.
+
+Shapes:
+
+- For elements, use the rectangle shape.
+- For flowcharts, use shapes from the **Flowchart** shape collection.
+- Shapes that represent the same element should have the same shape and size.
+- For elements that have text, ensure adequate white space exists between the text and the
+  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
+
+Colors:
+
+- Use colors in the [GitLab Design System color range](https://design.gitlab.com/brand-design/color/) only.
+- For all elements, shapes, arrows, and text, follow the
+  [Pajamas guidelines for illustration](https://design.gitlab.com/product-foundations/illustration/).
 
 ## Emoji
 
@@ -1825,7 +1917,8 @@ For example:
   [configuration edits guide](#how-to-document-different-installation-methods))
 - `15.1 and earlier`, `15.2 and later`
 
-Until we implement automated testing for broken links to tabs ([Issue 1355](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1355)), do not link directly to a single tab, even though they do have unique URL parameters.
+Until we implement automated testing for broken links to tabs, do not link directly to a single tab.
+For more information, see [issue 225](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/225).
 
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.

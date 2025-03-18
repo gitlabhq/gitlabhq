@@ -1,4 +1,4 @@
-import { GlCollapse } from '@gitlab/ui';
+import { GlCollapse, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
@@ -12,6 +12,10 @@ describe('MenuSection component', () => {
   const findCollapse = () => wrapper.getComponent(GlCollapse);
   const findFlyout = () => wrapper.findComponent(FlyoutMenu);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
+  // In Vue3 this is kebabbed, in Vue2 it is not :(
+  const findChevronRightDownIsOn = () =>
+    wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('is-on') ||
+    wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('ison');
   const createWrapper = (item, otherProps) => {
     wrapper = shallowMountExtended(MenuSection, {
       propsData: { item: { items: [], ...item }, ...otherProps },
@@ -50,6 +54,7 @@ describe('MenuSection component', () => {
       it('is expanded', () => {
         createWrapper({ title: 'Asdf', is_active: true });
         expect(findCollapse().props('visible')).toBe(true);
+        expect(findChevronRightDownIsOn()).toBe('true');
       });
     });
 
@@ -58,14 +63,16 @@ describe('MenuSection component', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true });
         expect(findButton().attributes('aria-expanded')).toBe('true');
         expect(findCollapse().props('visible')).toBe(true);
+        expect(findChevronRightDownIsOn()).toBe('true');
       });
     });
 
     describe('when not active nor set to expanded', () => {
       it('is not expanded', () => {
-        createWrapper({ title: 'Asdf' });
+        createWrapper({ title: 'Asdf' }, { expanded: false });
         expect(findButton().attributes('aria-expanded')).toBe('false');
         expect(findCollapse().props('visible')).toBe(false);
+        expect(findChevronRightDownIsOn()).toBeUndefined();
       });
     });
   });

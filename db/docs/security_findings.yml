@@ -19,4 +19,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: scanner
 desired_sharding_key_migration_job_name: BackfillSecurityFindingsProjectId
-table_size: over_limit
+table_size: small

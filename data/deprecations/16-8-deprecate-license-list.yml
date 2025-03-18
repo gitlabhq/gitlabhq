@@ -13,4 +13,4 @@
     and the ability to filter by license on the project and group Dependency List, you can now
     access all of the licenses your project or group is using on the Dependency List.
   tiers: [Gold, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/compliance/license_list.html
+  documentation_url: https://docs.gitlab.com/user/compliance/license_list/

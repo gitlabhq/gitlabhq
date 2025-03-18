@@ -13,16 +13,22 @@ title: Creating merge requests
 
 {{< /details >}}
 
-GitLab provides many different ways to create a merge request, including by [using Git commands](../../../topics/git/merge.md).
+When you're ready to create a merge request, use a method that fits your workflow. The GitLab UI
+offers several ways to create a merge request, and methods outside of the UI are also available:
 
-{{< alert type="note" >}}
+- The command line, with the [`glab mr`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/mr)
+  command, or [Git commands](../../../topics/git/merge.md) combined with
+  [push options](../../../topics/git/commit.md#push-options).
+- The [Visual Studio Code extension](../../../editor_extensions/visual_studio_code/_index.md).
+- [An email](#by-sending-an-email).
+- [The merge requests API](../../../api/merge_requests.md).
 
-GitLab enforces [branch naming rules](../repository/branches/_index.md#name-your-branch)
-to prevent problems, and provides
-[branch naming patterns](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers)
-to streamline merge request creation.
+To streamline the process of connecting a merge request to your branch, follow the
+[branch naming patterns](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers) when
+naming your branch.
 
-{{< /alert >}}
+All methods of creating a merge request enforce your project's
+[branch naming rules](../repository/branches/_index.md#name-your-branch).
 
 ## From the merge request list
 
@@ -211,7 +217,7 @@ You can create a merge request from your fork to contribute back to the main pro
 
    {{< alert type="note" >}}
 
-If your fork's visibility is more restricted than the parent repository, the target branch defaults
+   If your fork's visibility is more restricted than the parent repository, the target branch defaults
    to your fork's default branch. This prevents potential exposure of private information in your fork.
 
    {{< /alert >}}

@@ -18,10 +18,26 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
+    self.primary_key = :id
+
     add_authentication_token_field :token,
       encrypted: :optional,
       expires_at: :compute_token_expiration,
-      format_with_prefix: :prefix_for_new_and_legacy_runner
+      format_with_prefix: :prefix_for_new_and_legacy_runner,
+      routable_token: {
+        if: ->(token_owner_record) {
+          (token_owner_record.group_type? || token_owner_record.project_type?) &&
+            token_owner_record.owner &&
+            Feature.enabled?(:routable_runner_token, token_owner_record.owner)
+        },
+        payload: {
+          # Will only be set when `runner_type == :group_type` or `runner_type == :project_type`
+          o: ->(token_owner_record) { token_owner_record.owner.organization_id },
+          g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
+          p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
+          u: ->(token_owner_record) { token_owner_record.creator_id }
+        }
+      }
 
     enum access_level: {
       not_protected: 0,
@@ -537,11 +553,19 @@ module Ci
     def registration_available?
       authenticated_user_registration_type? &&
         created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
-        !runner_managers.any?
+        started_creation_state?
     end
 
-    def gitlab_hosted?
+    # CI_JOB_JWT_V2 that uses this method is deprecated
+    #
+    # On .com all instance runners are hosted so instance_type is used to distingish hosted from non-hosted
+    def dot_com_gitlab_hosted?
       Gitlab.com? && instance_type?
+    end
+
+    # false in FOSS
+    def dedicated_gitlab_hosted?
+      false
     end
 
     private
@@ -580,14 +604,14 @@ module Ci
 
     def compute_token_expiration_group
       ::Group.id_in(runner_namespaces.map(&:namespace_id))
-        .map(&:effective_runner_token_expiration_interval)
-        .compact.min&.from_now
+        .filter_map(&:effective_runner_token_expiration_interval)
+        .min&.from_now
     end
 
     def compute_token_expiration_project
       Project.id_in(runner_projects.map(&:project_id))
-        .map(&:effective_runner_token_expiration_interval)
-        .compact.min&.from_now
+        .filter_map(&:effective_runner_token_expiration_interval)
+        .min&.from_now
     end
 
     def cleanup_runner_queue
@@ -646,7 +670,7 @@ module Ci
     def partition_id_prefix_in_16_bit_encode
       # Prefix with t1 / t2 / t3 (`t` as in runner type, to allow us to easily detect how a token got prefixed).
       # This is needed in order to ensure that tokens have unique values across partitions
-      # in the new ci_runners_e59bb2812d partitioned table.
+      # in the new ci_runners partitioned table.
       "t#{self.class.runner_types[runner_type].to_s(16)}_"
     end
 

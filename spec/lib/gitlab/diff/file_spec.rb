@@ -995,27 +995,15 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     end
 
     describe '#content_changed?' do
-      context 'when show_diff_if_head_sha_commit_is_missing is true' do
-        it 'returns true' do
-          expect(diff_file).to be_content_changed
-        end
-
-        context 'when head_sha is nil' do
-          let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::SHA1_BLANK_SHA, head_sha: nil) }
-
-          it 'returns true' do
-            expect(diff_file).to be_content_changed
-          end
-        end
+      it 'returns true' do
+        expect(diff_file).to be_content_changed
       end
 
-      context 'when show_diff_if_head_sha_commit_is_missing is false' do
-        before do
-          stub_feature_flags(show_diff_if_head_sha_commit_is_missing: false)
-        end
+      context 'when head_sha is nil' do
+        let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::SHA1_BLANK_SHA, head_sha: nil) }
 
-        it 'returns false' do
-          expect(diff_file).not_to be_content_changed
+        it 'returns true' do
+          expect(diff_file).to be_content_changed
         end
       end
     end

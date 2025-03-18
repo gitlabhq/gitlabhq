@@ -37,7 +37,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
 
     it 'includes all expected keys with correct values' do
       expect(elasticsearch_config).to include(
-        adapter: :net_http,
+        adapter: :typhoeus,
         urls: 'http://localhost:9200',
         transport_options: {
           request: {

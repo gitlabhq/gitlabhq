@@ -110,7 +110,6 @@ module InvokeRopSteps
     ok_results_for_steps:,
     context_passed_along_steps:
   )
-
     expected_rop_steps = []
 
     rop_steps.each do |rop_step|

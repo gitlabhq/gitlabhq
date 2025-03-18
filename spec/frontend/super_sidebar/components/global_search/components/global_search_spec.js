@@ -192,7 +192,7 @@ describe('GlobalSearchModal', () => {
       ${null}        | ${true}     | ${false}   | ${false}
       ${''}          | ${true}     | ${false}   | ${false}
       ${'t'}         | ${false}    | ${false}   | ${true}
-      ${'te'}        | ${false}    | ${false}   | ${true}
+      ${'te'}        | ${false}    | ${true}    | ${true}
       ${'tes'}       | ${false}    | ${true}    | ${true}
       ${MOCK_SEARCH} | ${false}    | ${true}    | ${true}
     `('Global Search Result Items', ({ search, showDefault, showScoped, showAutocomplete }) => {
@@ -219,8 +219,8 @@ describe('GlobalSearchModal', () => {
 
     describe.each`
       username         | search         | loading  | searchOptions                  | expectedDesc
-      ${null}          | ${'gi'}        | ${false} | ${[]}                          | ${GlobalSearchModal.i18n.MIN_SEARCH_TERM}
-      ${MOCK_USERNAME} | ${'gi'}        | ${false} | ${[]}                          | ${GlobalSearchModal.i18n.MIN_SEARCH_TERM}
+      ${null}          | ${'g'}         | ${false} | ${[]}                          | ${GlobalSearchModal.i18n.MIN_SEARCH_TERM}
+      ${MOCK_USERNAME} | ${'g'}         | ${false} | ${[]}                          | ${GlobalSearchModal.i18n.MIN_SEARCH_TERM}
       ${MOCK_USERNAME} | ${''}          | ${false} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
       ${MOCK_USERNAME} | ${MOCK_SEARCH} | ${true}  | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${GlobalSearchModal.i18n.SEARCH_RESULTS_LOADING}
       ${MOCK_USERNAME} | ${MOCK_SEARCH} | ${false} | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${`Results updated. ${MOCK_SCOPED_SEARCH_OPTIONS.length} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.`}

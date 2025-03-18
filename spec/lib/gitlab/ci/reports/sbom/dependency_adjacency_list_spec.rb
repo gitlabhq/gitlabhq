@@ -48,6 +48,19 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::DependencyAdjacencyList, feature_categ
           expect(dependency_list.ancestors_for(child)).to contain_exactly(component_data, component_data_2)
         end
       end
+
+      context 'with metadata component' do
+        let(:metadata_component) { 'metadata_ref' }
+
+        before do
+          dependency_list.add_component_info(metadata_component)
+          dependency_list.add_edge(metadata_component, child)
+        end
+
+        it 'returns the ancestor with empty hash' do
+          expect(dependency_list.ancestors_for(child)).to contain_exactly(component_data, {})
+        end
+      end
     end
   end
 end

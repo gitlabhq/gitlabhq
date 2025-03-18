@@ -271,6 +271,7 @@ predicate:
       CI_PROJECT_ID: '45821955'
       CI_PROJECT_NAME: npm-provenance-example
       CI_PROJECT_NAMESPACE: strongjz
+      CI_PROJECT_NAMESPACE_SLUG: strongjz
       CI_PROJECT_NAMESPACE_ID: '36018'
       CI_PROJECT_PATH: strongjz/npm-provenance-example
       CI_PROJECT_PATH_SLUG: strongjz-npm-provenance-example

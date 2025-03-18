@@ -35,12 +35,12 @@ RSpec.describe 'getting dependency proxy settings for a group', feature_category
     stub_config(dependency_proxy: { enabled: true })
   end
 
-  subject { post_graphql(query, current_user: user, variables: variables) }
+  subject(:post_query) { post_graphql(query, current_user: user, variables: variables) }
 
   shared_examples 'dependency proxy group setting query' do
     it_behaves_like 'a working graphql query' do
       before do
-        subject
+        post_query
       end
     end
 
@@ -68,10 +68,13 @@ RSpec.describe 'getting dependency proxy settings for a group', feature_category
         end
 
         it 'return the proper response' do
-          subject
+          post_query
 
           if access_granted
-            expect(dependency_proxy_group_setting_response).to eq('enabled' => true)
+            expect(dependency_proxy_group_setting_response).to eq(
+              'enabled' => true,
+              'identity' => group.dependency_proxy_setting.identity
+            )
           else
             expect(dependency_proxy_group_setting_response).to be_blank
           end
@@ -82,7 +85,7 @@ RSpec.describe 'getting dependency proxy settings for a group', feature_category
 
   context 'with the settings model created' do
     before do
-      group.create_dependency_proxy_setting!(enabled: true)
+      group.create_dependency_proxy_setting!(enabled: true, identity: 'i', secret: 's')
     end
 
     it_behaves_like 'dependency proxy group setting query'

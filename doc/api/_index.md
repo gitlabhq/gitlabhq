@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Extend with GitLab
 ---
 
-Automate with GitLab and integrate with external applications.
+Connect GitLab to your tools and workflows to build a customized development environment.
+Integrate directly with your existing systems, set up automated responses to events,
+and build custom applications on top of GitLab.
+Whether you want to automate processes or build integrations, these extensibility
+features give you control over your development processes.
 
 | | | |
 |--|--|--|

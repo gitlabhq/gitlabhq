@@ -4,7 +4,7 @@ module WorkItems
   module DataSync
     module Widgets
       class EmailParticipants < Base
-        def after_create
+        def after_save_commit
           return unless params[:operation] == :move
           return unless target_work_item.get_widget(:email_participants)
 

@@ -11,6 +11,7 @@ export const TRACKING_CATEGORY_SHOW = 'workItems:show';
 
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
+export const WIDGET_TYPE_ERROR_TRACKING = 'ERROR_TRACKING';
 export const WIDGET_TYPE_AWARD_EMOJI = 'AWARD_EMOJI';
 export const WIDGET_TYPE_NOTIFICATIONS = 'NOTIFICATIONS';
 export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
@@ -56,109 +57,26 @@ export const WORK_ITEM_TYPE_VALUE_TICKET = 'Ticket';
 export const SEARCH_DEBOUNCE = 500;
 
 export const i18n = {
-  fetchErrorTitle: s__('WorkItem|Work item not found'),
   fetchError: s__(
     "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it.",
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
-  addDesignEmptyState: s__('DesignManagement|Drag images here to add designs.'),
 };
 
-export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
-  'WorkItem|Something went wrong when fetching labels. Please try again.',
-);
-export const I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS = s__(
-  'WorkItem|Something went wrong when fetching CRM contacts. Please try again.',
-);
-export const I18N_WORK_ITEM_ERROR_FETCHING_TYPES = s__(
-  'WorkItem|Something went wrong when fetching work item types. Please try again',
-);
 export const I18N_WORK_ITEM_ERROR_CREATING = s__(
   'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
 );
 export const I18N_WORK_ITEM_ERROR_UPDATING = s__(
   'WorkItem|Something went wrong while updating the %{workItemType}. Please try again.',
 );
-export const I18N_WORK_ITEM_ERROR_CONVERTING = s__(
-  'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
-);
 export const I18N_WORK_ITEM_ERROR_DELETING = s__(
   'WorkItem|Something went wrong when deleting the %{workItemType}. Please try again.',
-);
-export const I18N_WORK_ITEM_DELETE = s__('WorkItem|Delete %{workItemType}');
-export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
-  'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
-);
-export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY = s__(
-  'WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed.',
-);
-export const I18N_WORK_ITEM_CREATED = s__('WorkItem|%{workItemType} created');
-export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
-
-export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
-  'WorkItem|Something went wrong when fetching iterations. Please try again.',
-);
-
-export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
-  'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
-);
-
-export const I18N_WORK_ITEM_FETCH_CUSTOM_FIELDS_ERROR = s__(
-  'WorkItem|Some fields could not be loaded. Refresh the page to try again.',
-);
-
-export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');
-export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
-export const I18N_WORK_ITEM_NEW_RELATED_ITEM = s__('WorkItem|New related %{workItemType}');
-export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
-export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
-export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
-  'WorkItem|Search existing items, paste URL, or enter reference ID',
 );
 export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
   'WorkItem|Something went wrong while fetching the %{workItemType}. Please try again.',
 );
-export const I18N_WORK_ITEM_NO_MATCHES_FOUND = s__('WorkItem|No matches found');
-export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
-  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
-);
-export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
-  'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
-);
-
-export const I18N_WORK_ITEM_ERROR_COPY_REFERENCE = s__(
-  'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
-);
-export const I18N_WORK_ITEM_ERROR_COPY_EMAIL = s__(
-  'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
-);
-
-export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
-  'WorkItem|Copy %{workItemType} email address',
-);
 
 export const MAX_WORK_ITEMS = 10;
-
-export const I18N_MAX_WORK_ITEMS_ERROR_MESSAGE = sprintf(
-  s__('WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time.'),
-  { MAX_WORK_ITEMS },
-);
-export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
-  s__('WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time.'),
-  { MAX_WORK_ITEMS },
-);
-
-export const I18N_WORK_ITEM_CHANGE_TYPE_PARENT_ERROR = s__(
-  'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
-);
-
-export const I18N_WORK_ITEM_CHANGE_TYPE_CHILD_ERROR = s__(
-  'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
-);
-
-export const I18N_WORK_ITEM_CHANGE_TYPE_MISSING_FIELDS_ERROR = s__(
-  'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
-);
 
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|item');
@@ -168,15 +86,6 @@ export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') =
       parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
     }),
   );
-};
-
-export const WIDGET_ICONS = {
-  TASK: 'issue-type-task',
-};
-
-export const WORK_ITEM_STATUS_TEXT = {
-  CLOSED: s__('WorkItem|Closed'),
-  OPEN: s__('WorkItem|Open'),
 };
 
 export const WORK_ITEMS_TYPE_MAP = {
@@ -236,13 +145,6 @@ export const WORK_ITEM_TYPE_VALUE_MAP = {
   [WORK_ITEM_TYPE_VALUE_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
 };
 
-export const WORK_ITEMS_TREE_TEXT = {
-  title: s__('WorkItem|Child items'),
-  empty: s__(
-    'WorkItem|No child items are currently assigned. Use child items to break down work into smaller parts.',
-  ),
-};
-
 export const FORM_TYPES = {
   create: 'create',
   add: 'add',
@@ -283,18 +185,6 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
   { value: 'desc', text: __('Newest first') },
   { value: 'asc', text: __('Oldest first') },
 ];
-
-export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
-export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
-export const TEST_ID_DELETE_ACTION = 'delete-action';
-export const TEST_ID_PROMOTE_ACTION = 'promote-action';
-export const TEST_ID_CHANGE_TYPE_ACTION = 'change-type-action';
-export const TEST_ID_LOCK_ACTION = 'lock-action';
-export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
-export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
-export const TEST_ID_TOGGLE_ACTION = 'state-toggle-action';
-export const TEST_ID_REPORT_ABUSE = 'report-abuse-action';
-export const TEST_ID_NEW_RELATED_WORK_ITEM = 'new-related-work-item';
 
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';

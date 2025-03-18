@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_category: :continuous_integration do
+RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_category: :continuous_delivery do
   describe '#unmet?' do
     let_it_be(:organization) { create(:group) }
     let_it_be(:agent_management_project) { create(:project, :private, :repository, group: organization) }

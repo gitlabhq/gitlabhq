@@ -80,6 +80,38 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
     end
   end
 
+  context 'when job is canceling' do
+    before do
+      job.update!(status: :canceling)
+    end
+
+    it 'does not contain force cancel path for developers' do
+      expect(subject).not_to include(:force_cancel_path)
+    end
+
+    context 'and user is maintainer of project' do
+      let(:maint_user) { create(:user, maintainer_of: project) }
+
+      before do
+        allow(request).to receive(:current_user).and_return(maint_user)
+      end
+
+      it 'contains force cancel path' do
+        expect(subject).to include(:force_cancel_path)
+      end
+    end
+
+    context 'when force_cancel_build flag is disabled' do
+      before do
+        stub_feature_flags(force_cancel_build: false)
+      end
+
+      it 'does not contain force cancel path' do
+        expect(subject).not_to include(:force_cancel_path)
+      end
+    end
+  end
+
   context 'when job is a regular job' do
     it 'does not contain path to play action' do
       expect(subject).not_to include(:play_path)

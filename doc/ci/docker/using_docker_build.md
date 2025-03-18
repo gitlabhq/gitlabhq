@@ -499,6 +499,23 @@ sudo gitlab-runner register -n \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
+For the `docker-windows` executor, use a configuration similar to this example:
+
+```toml
+[[runners]]
+  url = "https://gitlab.example.com/"
+  token = RUNNER_TOKEN
+  executor = "docker-windows"
+  [runners.docker]
+    tls_verify = false
+    image = "docker:windowsservercore-ltsc2022"
+    privileged = false
+    disable_cache = false
+    volumes = ["//./pipe/docker_engine://./pipe/docker_engine", "/cache"]
+  [runners.cache]
+    Insecure = false
+```
+
 For complex Docker-in-Docker setups like [Code Quality scanning using CodeClimate](../testing/code_quality_codeclimate_scanning.md), you must match host and container paths for proper execution. For more details, see
 [Use private runners for CodeClimate-based scanning](../testing/code_quality_codeclimate_scanning.md#use-private-runners).
 
@@ -944,3 +961,60 @@ The opposite configuration (`docker:24.0.5-dind` service and Docker Engine on th
 19.06.x or older) works without problems. For the best strategy, you should to frequently test and update
 job environment versions to the newest. This brings new features, improved security and - for this specific
 case - makes the upgrade on the underlying Docker Engine on the runner's host transparent for the job.
+
+### Error: `failed to verify certificate: x509: certificate signed by unknown authority`
+
+This error can appear when Docker commands like `docker build` or `docker pull` are executed in a Docker-in-Docker
+environment where custom or private certificates are used (for example, Zscaler certificates):
+
+```plaintext
+error pulling image configuration: download failed after attempts=6: tls: failed to verify certificate: x509: certificate signed by unknown authority
+```
+
+This error occurs because Docker commands in a Docker-in-Docker environment
+use two separate containers:
+
+- The **build container** runs the Docker client (`/usr/bin/docker`) and executes your job's script commands.
+- The **service container** (often named `svc`) runs the Docker daemon that processes most Docker commands.
+
+When your organization uses custom certificates, both containers need these certificates.
+Without proper certificate configuration in both containers, Docker operations that connect to external
+registries or services will fail with certificate errors.
+
+To resolve this issue:
+
+1. Store your root certificate as a [CI/CD variable](../variables/_index.md#define-a-cicd-variable-in-the-ui) named `CA_CERTIFICATE`.
+   The certificate should be in this format:
+
+   ```plaintext
+   -----BEGIN CERTIFICATE-----
+   (certificate content)
+   -----END CERTIFICATE-----
+   ```
+
+1. Configure your pipeline to install the certificate in the service container before starting the Docker daemon. For example:
+
+   ```yaml
+   image_build:
+     stage: build
+     image:
+       name: docker:19.03
+     variables:
+       DOCKER_HOST: tcp://localhost:2375  
+       DOCKER_TLS_CERTDIR: ""
+       CA_CERTIFICATE: "$CA_CERTIFICATE"
+     services:
+       - name: docker:19.03-dind
+         command:
+           - /bin/sh
+           - -c
+           - |
+             echo "$CA_CERTIFICATE" > /usr/local/share/ca-certificates/custom-ca.crt && \
+             update-ca-certificates && \
+             dockerd-entrypoint.sh || exit
+     script:  
+       - docker info
+       - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+       - docker build -t "${DOCKER_REGISTRY}/my-app:${CI_COMMIT_REF_NAME}" .
+       - docker push "${DOCKER_REGISTRY}/my-app:${CI_COMMIT_REF_NAME}"
+   ```

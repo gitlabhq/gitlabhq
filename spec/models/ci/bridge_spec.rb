@@ -82,6 +82,68 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe '#downstream_pipeline_params' do
+    it 'returns an empty hash' do
+      expect(bridge.downstream_pipeline_params).to eq({})
+    end
+
+    context 'when there is a downstream project present' do
+      it 'returns cross project params' do
+        downstream_project = create(:project)
+        options = { trigger: { project: 'our/project', inputs: {} } }
+        bridge = create(:ci_bridge, status: :created, options: options, downstream: downstream_project)
+
+        cross_project_params = {
+          project: downstream_project,
+          source: :pipeline,
+          target_revision: {
+            ref: downstream_project.default_branch,
+            variables_attributes: []
+          },
+          execute_params: {
+            ignore_skip_ci: true,
+            bridge: bridge,
+            inputs: {}
+          }
+        }
+
+        expect(bridge.downstream_pipeline_params).to eq(cross_project_params)
+      end
+    end
+
+    context 'when a child pipeline is triggered' do
+      let(:options) do
+        {
+          trigger: {
+            include: 'path/to/child.yml'
+          }
+        }
+      end
+
+      it 'returns child params' do
+        child_params = {
+          project: project,
+          source: :parent_pipeline,
+          target_revision: {
+            ref: pipeline.ref,
+            checkout_sha: pipeline.sha,
+            before: pipeline.before_sha,
+            source_sha: pipeline.source_sha,
+            target_sha: pipeline.target_sha,
+            variables_attributes: bridge.downstream_variables
+          },
+          execute_params: {
+            ignore_skip_ci: true,
+            bridge: bridge,
+            merge_request: pipeline.merge_request
+          }
+        }
+
+        expect(bridge.downstream_pipeline_params).to eq(child_params)
+      end
+    end
+  end
+
   describe '#tags' do
     it 'only has a bridge tag' do
       expect(bridge.tags).to eq [:bridge]

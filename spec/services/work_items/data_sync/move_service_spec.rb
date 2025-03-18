@@ -21,17 +21,24 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     )
   end
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   context 'when user does not have permissions' do
     context 'when user cannot read original work item' do
       let_it_be(:current_user) { target_project_member }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
 
     context 'when user cannot create work items in target namespace' do
       let_it_be(:current_user) { source_project_member }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
 
     context 'when work item is already moved once' do
@@ -41,29 +48,18 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
         original_work_item.update!(moved_to: create(:issue))
       end
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
   end
 
   context 'when user has permission to move work item' do
     let_it_be(:current_user) { projects_member }
 
-    context 'when moving a project level work item to same project' do
-      let(:target_namespace) { project }
-
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item to same project or group it originates from'
-    end
-
-    context 'when moving a project level work item to same project, using project namespace' do
-      let(:target_namespace) { project.project_namespace }
-
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item to same project or group it originates from'
-    end
-
     context 'when moving project level work item to a group' do
       let(:target_namespace) { group }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item between Projects and Groups'
+      it_behaves_like 'fails to transfer work item',
+        'Unable to move. Moving across projects and groups is not supported.'
     end
 
     context 'when moving to a pending delete project' do
@@ -75,26 +71,57 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
         target_namespace.project.update!(pending_delete: false)
       end
 
-      it_behaves_like 'fails to transfer work item',
-        'Cannot move work item to target namespace as it is pending deletion'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. Target namespace is pending deletion.'
     end
 
     context 'when moving unsupported work item type' do
       let_it_be_with_reload(:original_work_item) { create(:work_item, :task, project: project) }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work items of \'Task\' type'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. Moving \'Task\' is not supported.'
     end
 
-    context 'when moving work item raises an error' do
+    context 'when moving work item raises an error', :aggregate_failures do
       let(:error_message) { 'Something went wrong' }
 
-      before do
-        allow_next_instance_of(::WorkItems::DataSync::BaseCreateService) do |create_service|
-          allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+      context 'when create service raises error' do
+        before do
+          allow_next_instance_of(::WorkItems::DataSync::BaseCreateService) do |create_service|
+            allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+          end
+        end
+
+        it_behaves_like 'fails to transfer work item', 'Something went wrong'
+      end
+
+      context 'when a widget that is handled within transaction raises error' do
+        before do
+          allow_next_instance_of(::WorkItems::DataSync::Widgets::Notes) do |create_service|
+            allow(create_service).to receive(:after_create).and_raise(error_message)
+          end
+        end
+
+        it 'raises error and does not move work item' do
+          expect { service.execute }.to raise_error('Something went wrong').and(not_change { WorkItem.count }).and(
+            not_change { Note.where(system: true).count })
+          expect(original_work_item.state).to eq('opened')
+          expect(original_work_item.moved_to).to be_nil
         end
       end
 
-      it_behaves_like 'fails to transfer work item', 'Something went wrong'
+      context 'when a widget that is handled outside transaction raises error' do
+        before do
+          allow_next_instance_of(::WorkItems::DataSync::Widgets::Designs) do |create_service|
+            allow(create_service).to receive(:after_save_commit).and_raise(error_message)
+          end
+        end
+
+        it 'raises error and does not move work item' do
+          expect { service.execute }.to raise_error('Something went wrong').and(
+            change { WorkItem.count }.from(1).to(2)).and(change { Note.where(system: true).count }.by(2))
+          expect(original_work_item.state).to eq('closed')
+          expect(original_work_item.moved_to).not_to be_nil
+        end
+      end
     end
 
     context 'when moving work item with success', :freeze_time do
@@ -135,6 +162,28 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       end
 
       it_behaves_like 'cloneable and moveable work item'
+
+      context 'when moving a project level work item to same project' do
+        let(:target_namespace) { project }
+
+        it 'does nothing' do
+          expect(service).to receive(:data_sync_action).and_call_original
+          expect(service).not_to receive(:move_work_item)
+
+          service.execute
+        end
+      end
+
+      context 'when moving a project level work item to same project, using project namespace' do
+        let(:target_namespace) { project.project_namespace }
+
+        it 'does nothing' do
+          expect(service).to receive(:data_sync_action).and_call_original
+          expect(service).not_to receive(:move_work_item)
+
+          service.execute
+        end
+      end
 
       context 'when cleanup original data is enabled' do
         before do

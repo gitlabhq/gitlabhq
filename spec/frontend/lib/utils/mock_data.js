@@ -71,7 +71,7 @@ export const sensitiveMessages = [
   'CI_JOB_TOKEN=glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL',
   'Use this secret job token: glcbt-1_cgyKc1k_AsnEpmP-5fRL',
   'token: glffct-cgyKc1k_AsnEpmP-5fRL',
-  'Here is the runner token for this job:glrt-abc123_x-yzABCDEF01234',
+  'Here is the runner token for this job:glrt-t1_abc123_x-yzABCDEF01234',
   'token: glimt-abde52f19d2e53e987d14c8ea',
   'token: glagent-3ed828e723deff468979daf3bf007f9f528c959911bdeea90f',
   'token: glptt-dfc184477c9d3987c7b837e541063577f2ad6426',

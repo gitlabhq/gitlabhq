@@ -5,7 +5,7 @@ module Projects
     class TagsController < ::Projects::Registry::ApplicationController
       include PackagesHelper
 
-      before_action :authorize_destroy_container_image!, only: [:destroy]
+      before_action :authorize_destroy_container_image_tag!, only: [:destroy]
 
       LIMIT = 15
 

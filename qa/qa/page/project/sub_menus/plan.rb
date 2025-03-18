@@ -25,8 +25,12 @@ module QA
             open_plan_submenu("Open Jira")
           end
 
-          def go_to_issues
-            open_plan_submenu("Issues")
+          def go_to_work_items
+            if has_element?('nav-item-link', submenu_item: 'Work items')
+              open_plan_submenu("Work items")
+            else
+              open_plan_submenu("Issues")
+            end
           end
         end
       end

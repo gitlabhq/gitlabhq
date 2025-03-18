@@ -23,7 +23,7 @@ module Projects
 
         redirect_to project_ml_models_path(@project),
           status: :found,
-          notice: s_("MlExperimentTracking|Model removed")
+          notice: s_("MlModelRegistry|Model removed")
       end
 
       private

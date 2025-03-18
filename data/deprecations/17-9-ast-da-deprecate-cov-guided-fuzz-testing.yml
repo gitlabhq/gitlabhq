@@ -1,0 +1,24 @@
+- title: "Coverage-guided fuzz testing is deprecated"
+  removal_milestone: "19.0"
+  announcement_milestone: "18.0"
+  breaking_change: true
+  window: 1
+  reporter: mikeeddington
+  stage: application security testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517841
+  impact: high
+  scope: project
+  resolution_role: Owner
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    Coverage-guided fuzz testing is deprecated and will not be supported
+    from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
+
+    Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
+    If you are impacted, you can integrate your open-source fuzzers as standalone applications,
+    or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
+  end_of_support_milestone: 18.0
+  tiers: [Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing/
+  image_url:
+  video_url:

@@ -6,6 +6,7 @@ module AntiAbuse
 
     def validate(record)
       return if record.errors.include?(:email)
+      return unless ::Gitlab::CurrentSettings.enforce_email_subaddress_restrictions
 
       email = record.email
 
@@ -24,14 +25,10 @@ module AntiAbuse
     private
 
     def prevent_banned_user_email_reuse?(email)
-      return false unless ::Feature.enabled?(:block_banned_user_normalized_email_reuse, ::Feature.current_request)
-
       ::Users::BannedUser.by_detumbled_email(email).exists?
     end
 
     def limit_normalized_email_reuse?(email)
-      return false unless ::Feature.enabled?(:limit_normalized_email_reuse, ::Feature.current_request)
-
       Email.users_by_detumbled_email_count(email) >= NORMALIZED_EMAIL_ACCOUNT_LIMIT
     end
 

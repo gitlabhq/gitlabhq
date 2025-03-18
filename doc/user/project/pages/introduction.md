@@ -12,15 +12,18 @@ title: GitLab Pages settings
 
 {{< /details >}}
 
-This document is a user guide to explore the options and settings
-GitLab Pages offers.
+GitLab Pages offers configuration options to customize your static site's deployment and presentation.
+With Pages settings, you can:
 
-To familiarize yourself with GitLab Pages first:
+- Serve custom error pages for 403 and 404 responses.
+- Configure URL redirects through `_redirects` files.
+- Deploy pages from any branch using CI/CD rules.
+- Serve pre-compressed assets for faster page loads.
+- Customize the folder from which your site is published.
+- Generate and manage unique domains for your sites.
 
-- Read an [introduction to GitLab Pages](_index.md).
-- Learn [how to get started with Pages](_index.md#getting-started).
-- Learn how to enable GitLab Pages
-  across your GitLab instance on the [administrator documentation](../../../administration/pages/_index.md).
+This guide explains the settings and configuration options available for your GitLab Pages sites.
+For an introduction to Pages, see [GitLab Pages](_index.md).
 
 ## GitLab Pages requirements
 
@@ -101,7 +104,7 @@ Learn how to set up GitLab CI/CD for specific use cases.
 
 ### `.gitlab-ci.yml` for plain HTML websites
 
-Supposed your repository contained the following files:
+Suppose your repository contained the following files:
 
 ```plaintext
 ├── index.html
@@ -121,10 +124,7 @@ deploy-pages:
     - mkdir .public
     - cp -r * .public
     - mv .public public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 ```
@@ -165,10 +165,7 @@ deploy-pages:
   script:
     - gem install jekyll
     - jekyll build -d public/
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: '$CI_COMMIT_REF_NAME == "pages"'
 ```
@@ -377,10 +374,7 @@ deploy-pages:
     ARTIFACT_COMPRESSION_LEVEL: "fastest"
   script:
     - echo "Deploying pages"
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   environment: production
 ```
 

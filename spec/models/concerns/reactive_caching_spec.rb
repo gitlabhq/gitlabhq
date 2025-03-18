@@ -62,7 +62,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it 'performs caching with correct worker' do
-        expect(worker_class).to receive(:perform_async).with(test_class, 666)
+        expect(worker_class).to receive(:perform_async).with(test_class.name, 666)
 
         go!
       end

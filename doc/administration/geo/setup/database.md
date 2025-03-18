@@ -179,7 +179,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    {{< alert type="note" >}}
 
-For external PostgreSQL instances, see [additional instructions](external_database.md).
+   For external PostgreSQL instances, see [additional instructions](external_database.md).
 
    {{< /alert >}}
 
@@ -219,7 +219,7 @@ For external PostgreSQL instances, see [additional instructions](external_databa
 
    {{< alert type="note" >}}
 
-If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
+   If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
    `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
    `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
@@ -357,7 +357,7 @@ If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
 
    {{< alert type="note" >}}
 
-This step is important so you don't try to execute anything before the site is fully configured.
+   This step is important so you don't try to execute anything before the site is fully configured.
 
    {{< /alert >}}
 
@@ -369,7 +369,7 @@ This step is important so you don't try to execute anything before the site is f
 
    {{< alert type="note" >}}
 
-If this step fails, you may be using the wrong IP address, or a firewall may
+   If this step fails, you may be using the wrong IP address, or a firewall may
    be preventing access to the site. Check the IP address, paying close
    attention to the difference between public and private addresses. Ensure
    that, if a firewall is present, the **secondary** site is permitted to connect to the
@@ -415,7 +415,7 @@ If this step fails, you may be using the wrong IP address, or a firewall may
 
    {{< alert type="note" >}}
 
-If you are using manually generated certificates and want to use
+   If you are using manually generated certificates and want to use
    `sslmode=verify-full` to benefit from the full hostname verification,
    replace `verify-ca` with `verify-full` when
    running the command.

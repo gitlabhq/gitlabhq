@@ -12,12 +12,23 @@ title: Milestones
 
 {{< /details >}}
 
-Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal
-in a certain period of time, such as a program increment or upcoming release.
-When you use milestones together with [iterations](../../group/iterations/_index.md), you can track
-work across two concurrent timeboxes with different start and end dates.
+Milestones help track and organize work in GitLab.
+Milestones:
 
-Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.
+- Group related issues and merge requests to track progress toward a goal.
+- Support time-based planning with optional start and due dates.
+- Work alongside iterations to track concurrent timeboxes.
+- Track releases and generate release evidence.
+- Apply to projects and groups.
+
+Milestones can belong to a [project](../_index.md) or [group](../../group/_index.md).
+Project milestones apply to issues and merge requests in that project only.
+Group milestones apply to any issue or merge request in that group's projects.
+
+For information about project and group milestones API, see:
+
+- [Project Milestones API](../../../api/milestones.md)
+- [Group Milestones API](../../../api/group_milestones.md)
 
 ## Milestones as releases
 

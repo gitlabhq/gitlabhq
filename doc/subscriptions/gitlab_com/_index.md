@@ -416,7 +416,17 @@ To purchase additional Enterprise Agile Planning seats, contact your
 
 ## Purchase more storage
 
-To exceed the free 10 GiB storage quota, you can purchase more storage for your personal or group namespace.
+{{< details >}}
+
+- Tier: Free
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
+To exceed the free tier 10 GiB limit on your Free GitLab.com namespace, you can purchase more storage for your personal or group namespace.
+
+{{< /alert >}}
 
 Prerequisites:
 

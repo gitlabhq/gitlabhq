@@ -18,7 +18,7 @@ module Banzai
     class JsonTableFilter < HTML::Pipeline::Filter
       include Concerns::OutputSafety
 
-      CSS   = '[data-canonical-lang="json"][data-lang-params="table"] > code:only-child'
+      CSS   = '[data-canonical-lang="json"][data-lang-params~="table"] > code:only-child'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
       def call

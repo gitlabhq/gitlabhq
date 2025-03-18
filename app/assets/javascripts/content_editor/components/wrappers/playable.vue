@@ -35,7 +35,7 @@ export default {
       :src="node.attrs.src"
       controls="true"
       data-setup="{}"
-      draggable="true"
+      :draggable="true"
       data-drag-handle=""
       :data-title="node.attrs.title || node.attrs.alt"
     />
@@ -43,7 +43,7 @@ export default {
       :href="node.attrs.src"
       class="with-attachment-icon"
       target="_blank"
-      draggable="true"
+      :draggable="true"
       data-drag-handle=""
     >
       {{ node.attrs.title || node.attrs.alt }}

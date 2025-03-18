@@ -61,7 +61,7 @@ The banner can be customized with a specific message.
 
 An error is displayed when a user tries to perform a write operation that isn't allowed.
 
-![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17.6.png)
+![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17_6.png)
 
 {{< alert type="note" >}}
 
@@ -207,7 +207,7 @@ continue to work, but proxied Git pushes to primary don't.
 Features that depend on creating issues or creating or approving merge requests,
 do not work.
 
-Exporting a vulnerability list from a Vulnerability Report page does not work.
+Exporting a vulnerability list from a vulnerability report page does not work.
 
 Changing the status on a finding or vulnerability object does not work, even though no error is shown in the UI.
 

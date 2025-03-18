@@ -16,7 +16,7 @@ exports[`Design management list item component with notes renders item with mult
     bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
     class="design-list-item gl-mb-0 js-design-list-item"
     footerclass=""
-    headerclass="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
       class="gl-flex gl-grow gl-items-center gl-justify-center"
@@ -31,18 +31,18 @@ exports[`Design management list item component with notes renders item with mult
       />
     </gl-intersection-observer-stub>
     <div
-      class="gl-flex gl-flex-col str-truncated-100"
+      class="gl-flex gl-flex-col gl-truncate"
       data-testid="design-file-name"
     >
       <span
-        class="gl-font-semibold str-truncated-100"
+        class="gl-text-sm gl-truncate"
         data-testid="design-img-filename-1"
         title="test"
       >
         test
       </span>
       <span
-        class="str-truncated-100"
+        class="gl-truncate"
       >
         Updated
         <timeago-stub
@@ -79,7 +79,7 @@ exports[`Design management list item component with notes renders item with sing
     bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
     class="design-list-item gl-mb-0 js-design-list-item"
     footerclass=""
-    headerclass="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
       class="gl-flex gl-grow gl-items-center gl-justify-center"
@@ -94,18 +94,18 @@ exports[`Design management list item component with notes renders item with sing
       />
     </gl-intersection-observer-stub>
     <div
-      class="gl-flex gl-flex-col str-truncated-100"
+      class="gl-flex gl-flex-col gl-truncate"
       data-testid="design-file-name"
     >
       <span
-        class="gl-font-semibold str-truncated-100"
+        class="gl-text-sm gl-truncate"
         data-testid="design-img-filename-1"
         title="test"
       >
         test
       </span>
       <span
-        class="str-truncated-100"
+        class="gl-truncate"
       >
         Updated
         <timeago-stub

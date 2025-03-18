@@ -1107,6 +1107,39 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
   end
 
+  describe '#drop_trigger_to_sync_tables' do
+    subject { migration.drop_trigger_to_sync_tables(source_table) }
+
+    let(:target_table) { "#{source_table}_copy" }
+
+    before do
+      migration.create_table target_table do |t|
+        t.string :name, null: false
+        t.integer :age, null: false
+        t.boolean "binary"
+        t.datetime partition_column
+        t.datetime :updated_at
+      end
+      migration.create_trigger_to_sync_tables(source_table, target_table, :id)
+    end
+
+    it 'drops the sync function' do
+      expect_function_to_exist(function_name)
+
+      subject
+
+      expect_function_not_to_exist(function_name)
+    end
+
+    it 'drops the trigger' do
+      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
+
+      subject
+
+      expect_trigger_not_to_exist(source_table, trigger_name)
+    end
+  end
+
   def filter_columns_by_name(columns, names)
     columns.reject { |c| names.include?(c.name) }
   end

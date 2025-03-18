@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::NullifyBuildsAutoCanceledById,
   feature_category: :continuous_integration, migration: :gitlab_ci do
-  let(:pipelines_table) { table(:p_ci_pipelines, database: :ci, primary_key: :id) }
-  let(:builds_table) { table(:p_ci_builds, database: :ci, primary_key: :id) }
+  let(:pipelines_table) { table(:p_ci_pipelines, primary_key: :id) }
+  let(:builds_table) { table(:p_ci_builds, primary_key: :id) }
 
   let(:default_attributes) { { project_id: 600, partition_id: 100 } }
-  let!(:regular_pipeline) { pipelines_table.create!(id: 1, **default_attributes) }
-  let!(:deleted_pipeline) { pipelines_table.create!(id: 2, **default_attributes) }
-  let!(:other_pipeline) { pipelines_table.create!(id: 3, **default_attributes) }
+  let!(:regular_pipeline) { pipelines_table.create!(default_attributes) }
+  let!(:deleted_pipeline) { pipelines_table.create!(default_attributes) }
+  let!(:other_pipeline) { pipelines_table.create!(default_attributes) }
 
   let!(:regular_build) do
     builds_table.create!(commit_id: regular_pipeline.id, **default_attributes)
@@ -36,20 +36,6 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyBuildsAutoCanceledById,
 
   let(:connection) { Ci::ApplicationRecord.connection }
 
-  around do |example|
-    connection.transaction do
-      connection.execute(<<~SQL)
-        ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;
-      SQL
-
-      example.run
-
-      connection.execute(<<~SQL)
-        ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;
-      SQL
-    end
-  end
-
   describe '#perform' do
     subject(:migration) do
       described_class.new(
@@ -64,7 +50,7 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyBuildsAutoCanceledById,
     end
 
     it 'nullifies canceled columns for non-existing pipelines', :aggregate_failures do
-      expect { deleted_pipeline.delete }
+      expect { without_referential_integrity { deleted_pipeline.delete } }
         .to not_change { builds_table.where(auto_canceled_by_id: deleted_pipeline.id).count }
 
       expect { migration.perform }.to not_change { builds_table.count }
@@ -74,6 +60,15 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyBuildsAutoCanceledById,
       expect(orphaned_build.reload.auto_canceled_by_partition_id).to be_nil
       expect(other_build.reload.auto_canceled_by_id).to be_present
       expect(other_build.reload.auto_canceled_by_partition_id).to be_present
+    end
+
+    def without_referential_integrity
+      connection.transaction do
+        connection.execute('ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;')
+        result = yield
+        connection.execute('ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;')
+        result
+      end
     end
   end
 end

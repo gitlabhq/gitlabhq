@@ -69,7 +69,7 @@ Commands that change data can cause damage if not run correctly or under the rig
 ```ruby
 project = Project.find_by_full_path('<project_path>')
 user = User.find_by_username('<username>')
-ProjectDestroyWorker.new.perform(project.id, user.id, {})
+Projects::DestroyService.new(project, user, {}).execute
 ```
 
 If this fails, display why it doesn't work with:

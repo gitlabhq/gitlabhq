@@ -22,6 +22,13 @@ module Mutations
           required: false,
           description: copy_field_description(Types::DependencyProxy::ImageTtlGroupPolicyType, :enabled)
 
+        argument :identity, GraphQL::Types::String, required: false,
+          description: copy_field_description(Types::DependencyProxy::GroupSettingType, :identity)
+
+        argument :secret, GraphQL::Types::String, required: false,
+          description: 'Secret credential used to authenticate with Docker Hub when pulling images. ' \
+            'Can be a password, personal access token (PAT), or organization access token (OAT).'
+
         field :dependency_proxy_setting,
           Types::DependencyProxy::GroupSettingType,
           null: true,

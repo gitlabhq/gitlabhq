@@ -28,6 +28,14 @@ it.each`
   },
 );
 
+it('correctly escapes image links', () => {
+  // no double slashes
+  expect(serialize(paragraph(image({ src: 'gitlab\\', alt: 'x' })))).toBe('![x](gitlab\\)');
+
+  expect(serialize(paragraph(image({ src: 'foo):', alt: 'x' })))).toBe('![x](foo\\):)');
+  expect(serialize(paragraph(image({ src: '(foo', alt: 'x' })))).toBe('![x](\\(foo)');
+});
+
 it('does not serialize an image when src and canonicalSrc are empty', () => {
   expect(serialize(paragraph(image({})))).toBe('');
 });

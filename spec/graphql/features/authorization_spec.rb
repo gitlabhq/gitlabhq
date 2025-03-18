@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
+RSpec.describe 'DeclarativePolicy authorization in GraphQL', feature_category: :shared do
   include GraphqlHelpers
   include Graphql::ResolverFactories
 

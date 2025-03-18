@@ -35,7 +35,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
      - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
    - If your project is internal:
      - **Only project members**: Only project members are able to browse the website.
-     - **Everyone with access**: Everyone logged into GitLab is able to browse the website, no matter their project membership.
+     - **Everyone with access**: Everyone logged into GitLab is able to browse the website, no matter their project membership. [External users](../../../administration/external_users.md) can access the website only if they have a membership in the project.
      - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
    - If your project is public:
      - **Only project members**: Only project members are able to browse the website.
@@ -75,6 +75,32 @@ To do this:
 1. Select **Save changes**.
 
 GitLab Pages uses a cache for efficiency. Changes to access settings typically take effect within one minute when the cache updates.
+
+## Authenticate with an access token
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/388) in GitLab 17.10.
+
+{{< /history >}}
+
+To authenticate against a restricted GitLab Pages site, you can provide the `Authorization` header with an access token.
+
+Prerequisites:
+
+- You must have one of the following access tokens with the `read_api` scope:
+  - [Personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token)
+  - [Project access token](../settings/project_access_tokens.md#create-a-project-access-token)
+  - [Group access token](../../group/settings/group_access_tokens.md#create-a-group-access-token)
+  - [OAuth 2.0 token](../../../api/oauth2.md)
+
+For example, to use an access token with OAuth-compliant headers:
+
+```shell
+curl --header "Authorization: Bearer <your_access_token>" <published_pages_url>
+```
+
+For invalid or unauthorized access tokens, returns [`404`](../../../api/rest/troubleshooting.md#status-codes).
 
 ## Terminating a Pages session
 

@@ -352,6 +352,25 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect { subject }.not_to change { find_partitions(my_model.table_name).size }
       end
     end
+
+    context 'when scheduling partition drops for large partitions' do
+      before do
+        stub_const("#{described_class}::MAX_PARTITION_SIZE", 1.byte)
+
+        connection.execute(<<~SQL)
+          INSERT INTO #{partitioned_table_name} (created_at) VALUES ('2021-04-15');
+        SQL
+      end
+
+      it 'schedules large partitions for weekend drops' do
+        next_saturday = Date.parse('2021-07-03')
+
+        expect(Postgresql::DetachedPartition).to receive(:create!)
+          .with(table_name: "#{partitioned_table_name}_202104", drop_after: next_saturday)
+
+        subject
+      end
+    end
   end
 
   describe 'analyze partitioned table' do

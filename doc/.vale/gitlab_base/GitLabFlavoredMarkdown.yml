@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
 message: "Use '%s' instead of '%s' when possible."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/
 vocab: false
 level: warning
 ignorecase: true

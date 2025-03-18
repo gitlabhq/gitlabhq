@@ -115,7 +115,7 @@ module QA
 
         def runner_auth_token
           runner_list = shell("docker exec #{@name} sh -c 'gitlab-runner list'")
-          runner_list.match(/Token\e\[0;m=([a-zA-Z0-9_-]+)/i)&.[](1)
+          runner_list.match(/Token\e\[0;m=([^ ]+)/)&.[](1)
         end
 
         def unregister_command

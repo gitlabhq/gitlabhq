@@ -50,3 +50,5 @@ class Namespace::PackageSetting < ApplicationRecord
     end
   end
 end
+
+Namespace::PackageSetting.prepend_mod

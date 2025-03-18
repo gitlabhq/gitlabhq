@@ -122,3 +122,22 @@ export const mockPendingJobData = {
     },
   },
 };
+
+export const mockPipelineVariablesPermissions = (value) => ({
+  computed: {
+    canViewPipelineVariables() {
+      return value;
+    },
+  },
+});
+
+export const minimumRoleResponse = {
+  data: {
+    project: {
+      id: mockId,
+      ciCdSettings: {
+        pipelineVariablesMinimumOverrideRole: 'developer',
+      },
+    },
+  },
+};

@@ -7,7 +7,7 @@ module QA
         class HealthCheck < All
           tags :health_check
 
-          pipeline_mappings test_on_cng: ["cng-qa-min-redis-version"]
+          pipeline_mappings test_on_cng: ["cng-qa-min-redis-version"], test_on_omnibus: ["health-check"]
         end
       end
     end

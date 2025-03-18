@@ -9,8 +9,11 @@
 
   // Show active state.
   .gl-button.selected {
+    @apply gl-text-default #{!important};
     @apply gl-bg-blue-50 #{!important};
     @apply gl-border-blue-500 #{!important};
+    @apply gl-shadow-none #{!important};
+    @apply gl-border-2 #{!important};
   }
 }
 

@@ -51,7 +51,7 @@ GET /projects/:id/resource_groups/:key
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `key`     | string  | yes      | The key of the resource group |
+| `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
@@ -78,7 +78,7 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `key`     | string  | yes      | The key of the resource group |
+| `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
@@ -177,7 +177,7 @@ PUT /projects/:id/resource_groups/:key
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`            | integer/string | yes                        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)            |
-| `key`           | string  | yes                               | The key of the resource group |
+| `key`           | string  | yes                               |The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 | `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first` or `newest_first`. Read [process modes](../ci/resource_groups/_index.md#process-modes) for more information. |
 
 ```shell

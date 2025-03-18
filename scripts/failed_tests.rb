@@ -11,8 +11,8 @@ class FailedTests
     previous_tests_report_path: 'test_results/previous/test_reports.json',
     output_directory: 'tmp/previous_failed_tests/',
     format: :oneline,
-    rspec_pg_regex: /rspec .+ pg14( .+)?/,
-    rspec_ee_pg_regex: /rspec-ee .+ pg14( .+)?/
+    rspec_pg_regex: /rspec .+ pg16( .+)?/,
+    rspec_ee_pg_regex: /rspec-ee .+ pg16( .+)?/
   }.freeze
 
   def initialize(options)

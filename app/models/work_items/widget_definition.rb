@@ -28,7 +28,7 @@ module WorkItems
       weight: 8, # EE-only
       iteration: 9, # EE-only
       progress: 10, # EE-only
-      status: 11, # EE-only
+      verification_status: 11, # EE-only
       requirement_legacy: 12, # EE-only
       test_reports: 13, # EE-only
       notifications: 14,
@@ -42,10 +42,11 @@ module WorkItems
       development: 23,
       crm_contacts: 24,
       email_participants: 25,
-      custom_status: 26,
+      status: 26, # EE-only
       linked_resources: 27,
       custom_fields: 28, # EE-only
-      error_tracking: 29
+      error_tracking: 29,
+      vulnerabilities: 30 # EE-only
     }
 
     attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new
@@ -68,6 +69,10 @@ module WorkItems
       WorkItems::Widgets.const_get(widget_type.camelize, false)
     rescue NameError
       nil
+    end
+
+    def build_widget(work_item)
+      widget_class.new(work_item, widget_definition: self)
     end
   end
 end

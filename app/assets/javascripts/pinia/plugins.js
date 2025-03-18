@@ -1,3 +1,5 @@
+import { cloneDeep, isEqual } from 'lodash';
+
 /**
  * @typedef {import('pinia').PiniaPluginContext} PiniaPluginContext
  * @typedef {import('vuex').Store} VuexStore
@@ -36,21 +38,39 @@ export const syncWithVuex = (context) => {
   const { store: vuexStore, namespace } =
     /** @type {{ store: VuexStore, namespace: string }} */ config;
   const getVuexState = namespace ? () => vuexStore.state[namespace] : () => vuexStore.state;
-  context.store.$patch(getVuexState());
+  if (!isEqual(context.store.$state, getVuexState())) {
+    Object.entries(getVuexState()).forEach(([key, value]) => {
+      // we can't use store.$patch here because it will merge state, but we need to overwrite it
+      // eslint-disable-next-line no-param-reassign
+      context.store[key] = cloneDeep(value);
+    });
+  }
+
+  let committing = false;
+
   vuexStore.subscribe(
-    () => {
-      context.store.$patch(getVuexState());
+    (mutation) => {
+      if (committing) return;
+      const { payload, type } = mutation;
+      const [prefixOrName, name] = type.split('/');
+      committing = true;
+      if (!name && prefixOrName in context.store) {
+        context.store[prefixOrName](cloneDeep(payload));
+      } else if (prefixOrName === namespace && name in context.store) {
+        context.store[name](cloneDeep(payload));
+      }
+      committing = false;
     },
     { prepend: true },
   );
-  context.store.$subscribe(
-    namespace
-      ? () => {
-          vuexStore.state[namespace] = context.store.$state;
-        }
-      : () => {
-          vuexStore.replaceState(context.store.$state);
-        },
-    { flush: 'sync' },
-  );
+
+  context.store.$onAction(({ name, args }) => {
+    if (committing) return;
+    const mutationName = namespace ? `${namespace}/${name}` : name;
+    // eslint-disable-next-line no-underscore-dangle
+    if (!(mutationName in vuexStore._mutations)) return;
+    committing = true;
+    vuexStore.commit(mutationName, ...cloneDeep(args));
+    committing = false;
+  });
 };

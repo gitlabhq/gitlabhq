@@ -104,6 +104,10 @@ module Gitlab
               validate_hash!
             end
 
+            def load_uninterpolated_yaml
+              ::Gitlab::Ci::Config::Yaml::Loader.new(content).load_uninterpolated_yaml
+            end
+
             protected
 
             def content_inputs

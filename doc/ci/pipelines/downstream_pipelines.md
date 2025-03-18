@@ -185,7 +185,7 @@ You can trigger a child pipeline from a YAML file generated in a job, instead of
 static file saved in your project. This technique can be very powerful for generating pipelines
 targeting content that changed or to build a matrix of targets and architectures.
 
-The artifact containing the generated YAML file must not be [larger than 5 MB](https://gitlab.com/gitlab-org/gitlab/-/issues/249140).
+The artifact containing the generated YAML file must be within [instance limits](../../administration/instance_limits.md#maximum-size-of-the-ci-artifacts-archive).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
@@ -680,7 +680,8 @@ all jobs in a pipeline, including trigger jobs, inherit [default `variables`](..
 #### Prevent default variables from being passed
 
 You can stop default CI/CD variables from reaching the downstream pipeline with
-[`inherit:variables:false`](../yaml/_index.md#inheritvariables).
+[`inherit:variables`](../yaml/_index.md#inheritvariables). You can list specific variables to inherit,
+or block all default variables.
 
 For example:
 

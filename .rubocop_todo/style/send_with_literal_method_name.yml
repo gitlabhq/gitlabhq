@@ -2,11 +2,6 @@
 # Cop supports --autocorrect.
 Style/SendWithLiteralMethodName:
   Exclude:
-    - 'ee/spec/models/ci/build_spec.rb'
     - 'lib/gitlab/database/load_balancing/connection_proxy.rb'
-    - 'lib/sidebars/context.rb'
-    - 'spec/lib/api/entities/ci/runner_manager_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
-    - 'spec/policies/project_policy_spec.rb'
-    - 'spec/support/helpers/javascript_fixtures_helpers.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/close_quick_action_shared_examples.rb'

@@ -5,6 +5,7 @@ module BulkImports
     module Pipelines
       class MembersPipeline
         include Pipeline
+        include HexdigestCacheStrategy
 
         GROUP_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
         PROJECT_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
@@ -16,11 +17,23 @@ module BulkImports
         transformer Import::BulkImports::Common::Transformers::SourceUserMemberAttributesTransformer
 
         def extract(context)
-          graphql_extractor.extract(context)
+          extracted_data = graphql_extractor.extract(context)
+
+          # add source_xid to each entry to ensure uniqueness when caching
+          extracted_data.each do |entry|
+            entry['source_xid'] = context.source_xid
+            entry['entity_type'] = context.entity_type
+          end
+
+          extracted_data
         end
 
         def load(_context, data)
           return unless data
+
+          # Remove source_xid and entity_type since we don't use them in membership creation
+          data.delete('source_xid')
+          data.delete('entity_type')
 
           if data[:source_user]
             create_placeholder_membership(data)
@@ -49,7 +62,7 @@ module BulkImports
         end
 
         def create_placeholder_membership(data)
-          result = Import::PlaceholderMemberships::CreateService.new(**data).execute
+          result = Import::PlaceholderMemberships::CreateService.new(**data, ignore_duplicate_errors: true).execute
 
           return unless result.error?
 

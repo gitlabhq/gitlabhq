@@ -122,14 +122,6 @@
       &:focus {
         text-decoration: underline;
       }
-
-      .project-stat-value {
-        @apply gl-text-default;
-      }
-
-      .icon {
-        @apply gl-fill-icon-subtle;
-      }
     }
 
     .btn {

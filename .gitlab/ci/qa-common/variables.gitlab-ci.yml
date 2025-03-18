@@ -10,13 +10,14 @@ variables:
   ALLURE_JOB_NAME: $CI_PROJECT_NAME
   COLORIZED_LOGS: "true"
   QA_LOG_LEVEL: "info"
-  # run all tests by default when test-on-omnibus is included natively in other projects
-  # this will be overridden when selective test execution is used in gitlab canonical project
-  QA_RUN_ALL_TESTS: "true"
   # Used by gitlab-qa to set up a volume for `${CI_PROJECT_DIR}/qa/rspec:/home/gitlab/qa/rspec/`
   QA_RSPEC_REPORT_PATH: "${CI_PROJECT_DIR}/qa/rspec"
   QA_OMNIBUS_MR_TESTS: "only-smoke"
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
-  # helm chart ref used by test-on-cng pipeline
+  # Helm chart ref used by test-on-cng pipeline
   GITLAB_HELM_CHART_REF: "3f89420cf319778195403711af12c57b4aab6511"
+  # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
+  RUN_WITH_BUNDLE: "true"
+  # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder
+  QA_PATH: "qa"

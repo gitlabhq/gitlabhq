@@ -113,7 +113,7 @@ export default {
 
 <template>
   <li
-    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-z-1 has-[>a:hover]:gl-border-blue-200 has-[>a:hover]:gl-bg-blue-50"
+    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-z-2 hover:gl-border-strong hover:gl-bg-feedback-info"
     :data-testid="`todo-item-${todo.id}`"
     :class="{ 'gl-bg-subtle': isDone }"
   >
@@ -128,6 +128,7 @@ export default {
       :href="targetUrl"
       :data-track-label="trackingLabel"
       :data-track-action="$options.TRACK_ACTION"
+      :data-track-property="todo.action"
       class="gl-flex gl-min-w-0 gl-flex-1 gl-flex-wrap gl-justify-end gl-gap-y-3 !gl-text-default !gl-no-underline sm:gl-flex-nowrap sm:gl-items-center"
     >
       <div

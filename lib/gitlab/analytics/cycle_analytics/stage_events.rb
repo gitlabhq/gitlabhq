@@ -61,7 +61,7 @@ module Gitlab
 
         # hash for defining ActiveRecord enum: identifier => number
         def self.to_enum
-          enum_mapping.transform_keys { |k| k.identifier }
+          enum_mapping.transform_keys(&:identifier)
         end
 
         def self.pairing_rules

@@ -36,6 +36,7 @@ jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
 }));
 
 const workItemId = 'gid://gitlab/WorkItem/1';
+const fullPath = 'test-path';
 
 describe('Work item comment form component', () => {
   let wrapper;
@@ -75,6 +76,8 @@ describe('Work item comment form component', () => {
     canUpdate = true,
     emailParticipantsResponseHandler = emailParticipantsSuccessHandler,
     parentId = null,
+    hideFullscreenMarkdownButton,
+    isGroupWorkItem = false,
   } = {}) => {
     workItemResponse = workItemByIidResponseFactory({
       canMarkNoteAsInternal,
@@ -89,7 +92,7 @@ describe('Work item comment form component', () => {
         [workItemByIidQuery, workItemResponseHandler],
       ]),
       propsData: {
-        fullPath: 'test-project-path',
+        fullPath,
         workItemIid: '1',
         workItemState,
         workItemId,
@@ -106,6 +109,8 @@ describe('Work item comment form component', () => {
         hasReplies,
         hasEmailParticipantsWidget,
         parentId,
+        hideFullscreenMarkdownButton,
+        isGroupWorkItem,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -130,6 +135,12 @@ describe('Work item comment form component', () => {
       name: 'work-item-add-or-edit-comment',
       placeholder: 'Write a comment or drag your files here…',
     });
+  });
+
+  it('hides full screen button in markdown toolbar when hideFullscreenMarkdownButton is true', () => {
+    createComponent({ hideFullscreenMarkdownButton: true });
+
+    expect(findMarkdownEditor().props('restrictedToolBarItems')).toEqual(['full-screen']);
   });
 
   it('passes correct props to CommentFieldLayout component', () => {
@@ -469,4 +480,18 @@ describe('Work item comment form component', () => {
 
     expect(findWorkItemToggleStateButton().props('parentId')).toBe('example-id');
   });
+
+  it.each`
+    isGroupWorkItem | uploadsPath
+    ${true}         | ${`/groups/${fullPath}/-/uploads`}
+    ${false}        | ${`/${fullPath}/uploads`}
+  `(
+    'passes correct uploads path for markdown editor when isGroupWorkItem is $isGroupWorkItem',
+    async ({ isGroupWorkItem, uploadsPath }) => {
+      createComponent({ isGroupWorkItem });
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props('uploadsPath')).toBe(uploadsPath);
+    },
+  );
 });

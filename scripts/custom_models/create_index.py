@@ -1,6 +1,6 @@
 # Usage
 # 1. Install requirements:
-# pip install requests langchain langchain_text_splitter
+# pip install requests langchain langchain_text_splitters
 # 2. Run the script:
 # GLAB_TOKEN=<api_token> python3 scripts/custom_models/create_index.py --version_tag="v17.0.0"
 

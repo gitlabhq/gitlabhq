@@ -76,6 +76,7 @@ export default {
   <div>
     <gl-form-group
       :label="$options.i18n.instanceRunnerTitle"
+      label-for="group_runner_token_expiration_interval"
       :invalid-feedback="perInput.instance.feedback"
       :state="perInput.instance.valid"
     >
@@ -83,6 +84,7 @@ export default {
         <expiration-interval-description :message="$options.i18n.instanceRunnerDescription" />
       </template>
       <chronic-duration-input
+        id="group_runner_token_expiration_interval"
         v-model="perInput.instance.value"
         name="application_setting[runner_token_expiration_interval]"
         :state="perInput.instance.valid"
@@ -91,6 +93,7 @@ export default {
     </gl-form-group>
     <gl-form-group
       :label="$options.i18n.groupRunnerTitle"
+      label-for="group_runners_expiration"
       :invalid-feedback="perInput.group.feedback"
       :state="perInput.group.valid"
     >
@@ -98,6 +101,7 @@ export default {
         <expiration-interval-description :message="$options.i18n.groupRunnerDescription" />
       </template>
       <chronic-duration-input
+        id="group_runners_expiration"
         v-model="perInput.group.value"
         name="application_setting[group_runner_token_expiration_interval]"
         :state="perInput.group.valid"
@@ -106,6 +110,7 @@ export default {
     </gl-form-group>
     <gl-form-group
       :label="$options.i18n.projectRunnerTitle"
+      label-for="project_runners_expiration"
       :invalid-feedback="perInput.project.feedback"
       :state="perInput.project.valid"
     >
@@ -113,6 +118,7 @@ export default {
         <expiration-interval-description :message="$options.i18n.projectRunnerDescription" />
       </template>
       <chronic-duration-input
+        id="project_runners_expiration"
         v-model="perInput.project.value"
         name="application_setting[project_runner_token_expiration_interval]"
         :state="perInput.project.valid"

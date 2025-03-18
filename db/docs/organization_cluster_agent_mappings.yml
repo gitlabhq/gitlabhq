@@ -1,0 +1,14 @@
+---
+table_name: organization_cluster_agent_mappings
+classes:
+  - RemoteDevelopment::OrganizationClusterAgentMapping
+feature_categories:
+  - workspaces
+description: This table records associations between Organizations and Cluster Agents
+  as a part of supporting organization-cluster agent association in the context of Workspaces
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179604
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: small

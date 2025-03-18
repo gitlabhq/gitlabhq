@@ -1,6 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 fragment ImportSourceUser on ImportSourceUser {
+  createdAt
   id
   sourceUsername
   sourceName

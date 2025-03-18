@@ -81,7 +81,7 @@ export default {
     PipelineScheduleEmptyState,
   },
   inject: {
-    fullPath: {
+    projectPath: {
       default: '',
     },
     pipelinesPath: {
@@ -96,7 +96,7 @@ export default {
       query: getPipelineSchedulesQuery,
       variables() {
         return {
-          projectPath: this.fullPath,
+          projectPath: this.projectPath,
           // we need to ensure we send null to the API when
           // the scope is 'ALL'
           status: this.scope === ALL_SCOPE ? null : this.scope,

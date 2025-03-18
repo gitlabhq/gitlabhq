@@ -48,3 +48,24 @@ class Order
   end
 end
 ```
+
+If a method's return value is not used, the YARD `@return` type should be annotated
+as `void`, and the method should explicitly return `nil`. This pattern clarifies that
+the return value shouldn't be used and prevents accidental usage in chains or assignments.
+For example:
+
+```ruby
+class SomeModel < ApplicationRecord
+  # @return [void]
+  def validate_some_field
+    return unless field_is_invalid
+
+    errors.add(:some_field, format(_("some message")))
+
+    # Explicitly return nil for void methods
+    nil
+  end
+end
+```
+
+For more context and information, see [the merge request comment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182979#note_2376631108).

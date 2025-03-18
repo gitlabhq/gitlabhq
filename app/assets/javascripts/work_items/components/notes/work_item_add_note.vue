@@ -128,6 +128,16 @@ export default {
       required: false,
       default: null,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroupWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -397,6 +407,8 @@ export default {
             :work-item-iid="workItemIid"
             :has-email-participants-widget="hasEmailParticipantsWidget"
             :parent-id="parentId"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :is-group-work-item="isGroupWorkItem"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"

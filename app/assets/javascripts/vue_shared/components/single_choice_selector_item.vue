@@ -1,8 +1,12 @@
 <script>
 import { GlFormRadio } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   components: { GlFormRadio },
+  directives: {
+    SafeHtml,
+  },
   props: {
     value: {
       type: String,
@@ -42,9 +46,11 @@ export default {
           {{ title }}
         </slot>
       </div>
-      <p v-if="disabled && disabledMessage" class="help-text !gl-text-warning">
-        {{ disabledMessage }}
-      </p>
+      <p
+        v-if="disabled && disabledMessage"
+        v-safe-html="disabledMessage"
+        class="help-text !gl-text-warning"
+      ></p>
       <p v-if="description" class="help-text">
         {{ description }}
       </p>

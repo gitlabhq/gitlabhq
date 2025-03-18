@@ -22,7 +22,7 @@ and is generally not meant for manual consumption.
 {{< /alert >}}
 
 For instructions on how to upload and install NuGet packages from the GitLab
-Package Registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md).
+package registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md).
 
 {{< alert type="note" >}}
 

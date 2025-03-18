@@ -16,13 +16,13 @@ RSpec.shared_examples 'Gitaly feature flag actors are inferred from repository' 
     expect(service.repository_actor.flipper_id).to eql(repository.flipper_id)
 
     if expected_project.nil?
-      expect(service.project_actor).to be(nil)
+      expect(service.project_actor).to be_nil
     else
       expect(service.project_actor.flipper_id).to eql(expected_project.flipper_id)
     end
 
     if expected_group.nil?
-      expect(service.group_actor).to be(nil)
+      expect(service.group_actor).to be_nil
     else
       expect(service.group_actor.flipper_id).to eql(expected_group.flipper_id)
     end

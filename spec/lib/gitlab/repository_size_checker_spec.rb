@@ -43,7 +43,7 @@ RSpec.describe Gitlab::RepositorySizeChecker do
     end
 
     it 'returns false when changes do not go over' do
-      expect(subject.changes_will_exceed_size_limit?(1.megabytes, project)).to eq(false)
+      expect(subject.changes_will_exceed_size_limit?(1.megabyte, project)).to eq(false)
     end
   end
 

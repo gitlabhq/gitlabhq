@@ -15,6 +15,6 @@
     In most cases, the 45-second value was higher than the timeout value of many scanner functions. The dynamically calculated value makes the `DAST_DEVTOOLS_API_TIMEOUT` variable more useful by increasing the number of cases it applies to.
   end_of_support_milestone:
   tiers: [Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/dast/browser/configuration/variables.html
+  documentation_url: https://docs.gitlab.com/user/application_security/dast/browser/configuration/variables/
   image_url:
   video_url:

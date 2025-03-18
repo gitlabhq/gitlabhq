@@ -2,7 +2,12 @@ import { GlForm, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { groupIterationsResponse } from 'jest/work_items/mock_data';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keysFor } from '~/behaviors/shortcuts/keybindings';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
+
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/keybindings');
 
 describe('WorkItemSidebarDropdownWidget component', () => {
   let wrapper;
@@ -28,6 +33,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     infiniteScrollLoading = false,
     clearSearchOnItemSelect = false,
     listItems = [],
+    shortcut = undefined,
   } = {}) => {
     wrapper = mountExtended(WorkItemSidebarDropdownWidget, {
       propsData: {
@@ -43,6 +49,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         infiniteScroll,
         infiniteScrollLoading,
         clearSearchOnItemSelect,
+        shortcut,
       },
       slots,
     });
@@ -255,6 +262,49 @@ describe('WorkItemSidebarDropdownWidget component', () => {
           'gid://gitlab/Label/33',
         ]);
       });
+    });
+  });
+  describe('shortcut tooltip', () => {
+    const shortcut = {
+      description: 'Edit dropdown',
+    };
+
+    beforeEach(() => {
+      shouldDisableShortcuts.mockReturnValue(false);
+      keysFor.mockReturnValue(['e']);
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('shows tooltip with key when shortcut is provided', () => {
+      createComponent({
+        canUpdate: true,
+        shortcut,
+      });
+      const expectedTooltip = 'Edit dropdown <kbd aria-hidden="true" class="flat gl-ml-1">e</kbd>';
+
+      expect(findEditButton().attributes('title')).toContain(expectedTooltip);
+    });
+
+    it('does not show tooltip when shortcut is not provided', () => {
+      createComponent({
+        canUpdate: true,
+      });
+
+      expect(findEditButton().attributes('title')).toBeUndefined();
+    });
+
+    it('does not show tooltip when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+
+      createComponent({
+        canUpdate: true,
+        shortcut,
+      });
+
+      expect(findEditButton().attributes('title')).toBeUndefined();
     });
   });
 });

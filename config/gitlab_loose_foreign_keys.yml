@@ -46,6 +46,9 @@ ci_instance_runner_monthly_usages:
   - table: projects
     column: project_id
     on_delete: async_nullify
+  - table: ci_runners
+    column: runner_id
+    on_delete: async_nullify
 ci_job_token_authorizations:
   - table: projects
     column: origin_project_id
@@ -107,6 +110,10 @@ ci_pipeline_metadata:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_pipeline_schedule_inputs:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_pipeline_schedules:
   - table: users
     column: owner_id
@@ -153,14 +160,13 @@ ci_runners:
   - table: users
     column: creator_id
     on_delete: async_nullify
-ci_runners_e59bb2812d:
-  - table: users
-    column: creator_id
-    on_delete: async_nullify
 ci_running_builds:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: ci_runners
+    column: runner_id
+    on_delete: async_nullify
 ci_secure_files:
   - table: projects
     column: project_id
@@ -204,7 +210,7 @@ ci_variables:
 clusters_managed_resources:
   - table: p_ci_builds
     column: build_id
-    on_delete: async_delete  
+    on_delete: async_delete
   - table: ci_builds
     column: build_id
     on_delete: async_delete
@@ -319,6 +325,10 @@ events:
 external_pull_requests:
   - table: projects
     column: project_id
+    on_delete: async_delete
+fork_networks:
+  - table: organizations
+    column: organization_id
     on_delete: async_delete
 group_security_exclusions:
   - table: namespaces
@@ -525,6 +535,10 @@ projects_visits:
   - table: users
     column: user_id
     on_delete: async_delete
+projects_with_pipeline_variables:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 push_rules:
   - table: organizations
     column: organization_id
@@ -536,10 +550,6 @@ requirements_management_test_reports:
   - table: p_ci_builds
     column: build_id
     on_delete: async_nullify
-routes:
-  - table: namespaces
-    column: namespace_id
-    on_delete: async_delete
 sbom_component_versions:
   - table: organizations
     column: organization_id
@@ -623,6 +633,13 @@ vulnerabilities:
     on_delete: async_delete
   - table: projects
     column: project_id
+    on_delete: async_delete
+vulnerability_archive_exports:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
     on_delete: async_delete
 vulnerability_archived_records:
   - table: projects
@@ -717,6 +734,10 @@ vulnerability_merge_request_links:
     column: merge_request_id
     on_delete: async_delete
 vulnerability_namespace_historical_statistics:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
+vulnerability_namespace_statistics:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete

@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
   let(:bridge) { nil }
   let(:triggered_for_branch) { true }
   let(:ref) { 'master' }
+  let(:inputs) { nil }
 
   subject(:config) do
     described_class.new(
@@ -19,7 +20,8 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
       pipeline_source: source,
       pipeline_source_bridge: bridge,
       triggered_for_branch: triggered_for_branch,
-      ref: ref
+      ref: ref,
+      inputs: inputs
     )
   end
 
@@ -140,6 +142,25 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
       expect(config.source).to eq(:repository_source)
       expect(config.content).to eq(config_content_result)
       expect(config.url).to eq("localhost/#{project.full_path}//.gitlab-ci.yml")
+    end
+
+    context 'when passing inputs' do
+      let(:inputs) { { 'foo' => 'bar' } }
+      let(:config_content_result) do
+        <<~CICONFIG
+          ---
+          include:
+          - local: ".gitlab-ci.yml"
+            inputs:
+              foo: bar
+        CICONFIG
+      end
+
+      it 'returns root config with inputs' do
+        expect(config.source).to eq(:repository_source)
+        expect(config.content).to eq(config_content_result)
+        expect(config.url).to eq("localhost/#{project.full_path}//.gitlab-ci.yml")
+      end
     end
   end
 

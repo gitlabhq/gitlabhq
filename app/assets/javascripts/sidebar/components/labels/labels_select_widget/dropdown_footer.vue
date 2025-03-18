@@ -29,6 +29,7 @@ export default {
   <div data-testid="dropdown-footer">
     <gl-dropdown-item
       v-if="allowLabelCreate"
+      role="button"
       data-testid="create-label-button"
       @click.capture.native.stop="$emit('toggleDropdownContentsCreateView')"
     >
@@ -36,6 +37,7 @@ export default {
     </gl-dropdown-item>
     <gl-dropdown-item
       v-if="showManageLabelsItem"
+      role="button"
       data-testid="manage-labels-button"
       :href="labelsManagePath"
       @click.capture.native.stop

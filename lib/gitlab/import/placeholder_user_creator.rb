@@ -3,6 +3,8 @@
 module Gitlab
   module Import
     class PlaceholderUserCreator
+      include ::Gitlab::InternalEventsTracking
+
       delegate :import_type, :namespace, :source_user_identifier, :source_name, :source_username, to: :source_user,
         private: true
 
@@ -38,6 +40,7 @@ module Gitlab
         user.save!
 
         log_placeholder_user_creation(user)
+        track_placeholder_user_creation(user)
 
         user
       end
@@ -86,6 +89,18 @@ module Gitlab
           import_type: source_user.import_type,
           namespace_id: source_user.namespace_id,
           user_id: user.id
+        )
+      end
+
+      def track_placeholder_user_creation(user)
+        track_internal_event(
+          'create_placeholder_user',
+          namespace: source_user.namespace,
+          additional_properties: {
+            label: Gitlab::GlobalAnonymousId.user_id(user),
+            property: nil,
+            import_type: source_user.import_type
+          }
         )
       end
     end

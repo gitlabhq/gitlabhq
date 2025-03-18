@@ -92,6 +92,7 @@ export default {
     },
 
     // Component API
+    // eslint-disable-next-line vue/no-unused-properties
     refetch() {
       // Parent components can use this method to refresh the count
       this.$apollo.queries.count.refetch();

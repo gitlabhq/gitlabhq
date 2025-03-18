@@ -20,7 +20,11 @@ module DashboardHelper
 
         if href.present?
           concat(render(Pajamas::ButtonComponent.new(icon: 'settings', category: :tertiary, size: :small, href: href,
-            button_options: { title: _('Configure'), class: 'gl-ml-2 has-tooltip', aria: { label: _('Configure') } })))
+            button_options: {
+              title: _('Configure'),
+              class: 'gl-ml-2 has-tooltip',
+              aria: { label: format(_('Configure feature "%{name}"'), name: title) }
+            })))
         end
 
         if doc_href.present?
@@ -29,6 +33,7 @@ module DashboardHelper
             doc_href,
             class: 'gl-ml-4 gl-mr-2 has-tooltip',
             title: _('Documentation'),
+            aria: { label: format(_('Documentation about the "%{name}" feature'), name: title) },
             target: '_blank',
             rel: 'noopener noreferrer'
           )

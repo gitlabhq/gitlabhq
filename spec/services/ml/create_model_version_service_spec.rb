@@ -267,5 +267,77 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
         expect(service.message).to include('Version must be semantic version')
       end
     end
+
+    context 'when a candidate_id is given but is missing' do
+      let(:params) { { user: user, candidate_id: GlobalID.new('gid://gitlab/Ml::Candidate/None') } }
+
+      it 'raises an error' do
+        expect(service).to be_error.and have_attributes(message: ["Run with id not found"])
+      end
+    end
+
+    context 'when a candidate_eid is given but is missing' do
+      let(:params) { { user: user, candidate_eid: 'zzzz-none' } }
+
+      it 'raises an error' do
+        expect(service).to be_error.and have_attributes(message: ["Run with eid not found"])
+      end
+    end
+
+    context 'when a RecordNotUnique error occurs' do
+      let_it_be(:pg_error) { 'PG::UniqueViolation: ERROR: duplicate key value violates unique constraint' }
+
+      before do
+        allow_next_instance_of(::Ml::ModelVersion) do |model_version|
+          allow(model_version).to receive(:save).and_raise(
+            ActiveRecord::RecordNotUnique.new(pg_error)
+          )
+        end
+      end
+
+      it 'returns an error response with the exception message' do
+        expect(service).to be_error
+        expect(service.message).to include(pg_error)
+        expect(service.payload[:model_version]).to be_nil
+      end
+
+      it 'does not create model version or package' do
+        expect { service }.to not_change { Ml::ModelVersion.count }
+                                .and not_change { Packages::MlModel::Package.count }
+      end
+
+      it 'does not track events or audit' do
+        service
+
+        expect(Gitlab::InternalEvents).not_to have_received(:track_event)
+        expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
+      end
+    end
+
+    context 'when a RecordInvalid error occurs' do
+      before do
+        allow_next_instance_of(::Ml::ModelVersion) do |model_version|
+          allow(model_version).to receive(:add_metadata).and_raise(ActiveRecord::RecordInvalid.new(model_version))
+        end
+      end
+
+      it 'returns an error response with the exception message' do
+        expect(service).to be_error
+        expect(service.message).to include('Validation failed: ')
+        expect(service.payload[:model_version]).to be_nil
+      end
+
+      it 'does not create model version or package' do
+        expect { service }.to not_change { Ml::ModelVersion.count }
+                                .and not_change { Packages::MlModel::Package.count }
+      end
+
+      it 'does not track events or audit' do
+        service
+
+        expect(Gitlab::InternalEvents).not_to have_received(:track_event)
+        expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
+      end
+    end
   end
 end

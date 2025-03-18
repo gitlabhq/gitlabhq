@@ -36,8 +36,8 @@ Secret push protection takes place in the pre-receive hook. When you push change
 push protection checks each [file or commit](#coverage) for secrets. By default, if a secret is detected,
 the push is blocked.
 
-<!-- To edit, import the SVG with draw.io -->
-![A flowchart showing how secret protection can block a push](img/spp_workflow_v17_9.svg)
+<!-- To edit the diagram, use either Draw.io or the VS Code extension "Draw.io Integration" -->
+![A flowchart showing how secret protection can block a push](img/spp_workflow_v17_9.drawio.svg)
 
 When a push is blocked, GitLab prompts a message that includes:
 
@@ -139,6 +139,7 @@ Secret push protection does not check a file in a commit when:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `spp_scan_diffs`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/480092) in GitLab 17.6.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/491282) support for Web IDE pushes in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `secret_checks_for_web_requests`. Disabled by default.
 
 {{< /history >}}
 
@@ -154,9 +155,8 @@ cause a [push to be blocked unexpectedly](#push-blocked-unexpectedly) even thoug
 contain a secret. To instead have only the changes (diff) scanned for secrets when pushing by using
 the Git CLI client, enable diff scanning.
 
-Changes committed by using the Web IDE still result in the entire file being scanned due to a
-technical limitation. Support for improvements is proposed in
-[issue 491282](https://gitlab.com/gitlab-org/gitlab/-/issues/491282).
+To enable diff-only scanning for Web IDE pushes, enable the `secret_checks_for_web_requests`
+and `spp_scan_diffs` feature flags.
 
 ## Resolve a blocked push
 

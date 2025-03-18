@@ -16,6 +16,7 @@ const DEFAULT_PROPS = {
   removedLines: 5,
   showWhitespace: true,
   diffViewType: 'inline',
+  viewDiffsFileByFile: false,
 };
 
 describe('DiffAppControls', () => {
@@ -107,5 +108,31 @@ describe('DiffAppControls', () => {
       expect(wrapper.emitted('toggleWhitespace')).toStrictEqual([[undefined]]);
       expect(wrapper.emitted('toggleFileByFile')).toStrictEqual([[undefined]]);
     });
+  });
+
+  it('disables expand controls when loading', () => {
+    createComponent({
+      hasChanges: true,
+      isLoading: true,
+    });
+    expect(findButtonByIcon('expand').props('disabled')).toBe(true);
+    expect(findButtonByIcon('collapse').props('disabled')).toBe(true);
+  });
+
+  it('disables collapseAllFiles hotkey when loading', () => {
+    createComponent({ isLoading: true });
+    Mousetrap.trigger(keysFor(MR_COLLAPSE_ALL_FILES)[0]);
+    expect(wrapper.emitted('collapseAllFiles')).toBe(undefined);
+  });
+
+  it('disables expandAllFiles hotkey when loading', () => {
+    createComponent({ isLoading: true });
+    Mousetrap.trigger(keysFor(MR_EXPAND_ALL_FILES)[0]);
+    expect(wrapper.emitted('expandAllFiles')).toBe(undefined);
+  });
+
+  it('hides non-existent diff stats', () => {
+    createComponent({ hasChanges: true, diffsCount: '' });
+    expect(wrapper.findComponent(DiffStats).exists()).toBe(false);
   });
 });

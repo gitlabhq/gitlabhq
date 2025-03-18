@@ -43,13 +43,22 @@ module QA
       end
 
       def wait_for_latest_pipeline_to_have_status(project:, status: nil, wait: 240)
-        raise "'#{status}' is an invalid pipeline status." if AVAILABLE_STATUSES.exclude?(status)
+        wait_for_pipeline_status(
+          project: project,
+          status: status,
+          wait: wait,
+          pipeline_finder: -> { project.latest_pipeline }
+        )
+      end
 
-        Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to have status #{status}...")
-        Support::Waiter.wait_until(message: "Wait for latest pipeline #{status}", max_duration: wait) do
-          pipeline = project.latest_pipeline
-          pipeline[:status] == status
-        end
+      def wait_for_pipeline_to_have_status_by_id(project:, pipeline_id:, status: nil, wait: 240)
+        wait_for_pipeline_status(
+          project: project,
+          status: status,
+          wait: wait,
+          pipeline_finder: -> { project.pipelines.find { |p| p[:id] == pipeline_id } },
+          pipeline_identifier: pipeline_id
+        )
       end
 
       def wait_for_latest_pipeline_to_start(project:, wait: 240)
@@ -64,6 +73,23 @@ module QA
         Support::Waiter.wait_until(message: 'Wait for latest pipeline to run', max_duration: wait) do
           pipeline = project.latest_pipeline
           pipeline[:started_at].present? && pipeline[:finished_at].present?
+        end
+      end
+
+      private
+
+      def wait_for_pipeline_status(project:, status:, wait:, pipeline_finder:, pipeline_identifier: 'latest')
+        raise "'#{status}' is an invalid pipeline status." if AVAILABLE_STATUSES.exclude?(status)
+
+        pipeline_desc = pipeline_identifier == 'latest' ? 'latest pipeline' : "pipeline #{pipeline_identifier}"
+        Runtime::Logger.info("Waiting for #{project.name}'s #{pipeline_desc} to have status #{status}...")
+
+        Support::Waiter.wait_until(
+          message: "Wait for #{pipeline_desc} to have status #{status}",
+          max_duration: wait
+        ) do
+          pipeline = pipeline_finder.call
+          pipeline[:status] == status
         end
       end
     end

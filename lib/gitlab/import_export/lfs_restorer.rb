@@ -4,6 +4,7 @@ module Gitlab
   module ImportExport
     class LfsRestorer
       include Gitlab::Utils::StrongMemoize
+      include ::Import::Framework::ProgressTracking
 
       attr_accessor :project, :shared
 
@@ -16,7 +17,9 @@ module Gitlab
         return true if lfs_file_paths.empty?
 
         lfs_file_paths.each do |file_path|
-          link_or_create_lfs_object!(file_path)
+          with_progress_tracking(**progress_tracking_options(file_path)) do
+            link_or_create_lfs_object!(file_path)
+          end
         end
 
         true
@@ -84,6 +87,14 @@ module Gitlab
 
       def lfs_json_path
         File.join(shared.export_path, ImportExport.lfs_objects_filename)
+      end
+
+      def progress_tracking_options(file_path)
+        { scope: { project_id: project.id }, data: basename(file_path) }
+      end
+
+      def basename(file_path)
+        File.basename(file_path)
       end
     end
   end

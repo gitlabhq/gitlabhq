@@ -8,6 +8,5 @@ feature_categories:
 description: https://docs.gitlab.com/ee/development/feature_flags/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/671284ba375109becbfa2a288032cdc7301b157b
 milestone: '9.3'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 table_size: small

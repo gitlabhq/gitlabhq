@@ -1,11 +1,11 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Cosign.gitlab-ci.yml
 
 # This template extends Docker.gitlab-ci.yml to sign the image with Cosign after building.
 # This allows you to verify that an image was built by a trusted pipeline before running it.
-# See https://docs.gitlab.com/ee/ci/yaml/signing_examples.html for more details.
+# See https://docs.gitlab.com/ci/yaml/signing_examples/ for more details.
 
 include:
   - template: Docker.gitlab-ci.yml

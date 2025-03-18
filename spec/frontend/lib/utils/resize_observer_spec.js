@@ -10,13 +10,14 @@ function mockStickyHeaderSize(val) {
 
 describe('ResizeObserver Utility', () => {
   let cleanup;
+  const mockHeaderSize = 90;
   const triggerResize = () => {
     const entry = document.querySelector('#content-body');
     entry.dispatchEvent(new CustomEvent(`ResizeUpdate`, { detail: { entry } }));
   };
 
   beforeEach(() => {
-    mockStickyHeaderSize(90);
+    mockStickyHeaderSize(mockHeaderSize);
 
     jest.spyOn(document.documentElement, 'scrollTo');
 
@@ -34,83 +35,114 @@ describe('ResizeObserver Utility', () => {
     resetHTMLFixture();
   });
 
-  describe('Observer behavior', () => {
-    it('returns null for empty target', () => {
-      cleanup = scrollToTargetOnResize({
-        targetId: '',
-        container: '#content-body',
-      });
-
-      expect(cleanup).toBe(null);
+  it('returns null for empty target', () => {
+    cleanup = scrollToTargetOnResize({
+      targetId: '',
+      container: '#content-body',
     });
 
-    it('does not scroll if target does not exist', () => {
-      scrollToTargetOnResize({
-        targetId: 'some_imaginary_id',
+    expect(cleanup).toBe(null);
+  });
+
+  it('does not scroll if target does not exist', () => {
+    scrollToTargetOnResize({
+      targetId: 'some_imaginary_id',
+      container: '#content-body',
+    });
+
+    triggerResize();
+
+    expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
+  });
+
+  describe('with existing target', () => {
+    const topHeight = 110;
+    const scrollAmount = 160;
+
+    beforeEach(() => {
+      cleanup = scrollToTargetOnResize({
+        targetId: 'note_1234',
         container: '#content-body',
       });
+    });
+
+    it('returns cleanup function', () => {
+      cleanup();
 
       triggerResize();
 
       expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
     });
 
-    describe('with existing target', () => {
-      const cleanupTimeoutMs = 100;
-      const topHeight = 110;
-      const scrollAmount = 160;
+    it('scrolls body so anchor is just below sticky header (contentTop)', () => {
+      triggerResize();
+
+      expect(document.documentElement.scrollTo).toHaveBeenCalledWith({
+        behavior: 'instant',
+        top: topHeight,
+      });
+    });
+
+    it('maintains scroll position relative to anchor after user scroll', () => {
+      // Initial scroll to anchor
+      triggerResize();
+
+      // Simulate user scrolling down
+      window.scrollY = scrollAmount;
+      window.dispatchEvent(new Event('scroll'));
+
+      // Trigger resize again
+      triggerResize();
+
+      // Should maintain the 50px offset from original position
+      expect(document.documentElement.scrollTo).toHaveBeenCalledWith({
+        top: topHeight + scrollAmount,
+        behavior: 'instant',
+      });
+    });
+
+    it('does not scroll if another element is focused', () => {
+      const anchorEl = document.getElementById('reply-field');
+      anchorEl.focus();
+
+      triggerResize();
+
+      expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
+    });
+
+    describe('intersection observer', () => {
+      let intersectionCallback;
+      let mockIntersectionObserver;
 
       beforeEach(() => {
-        cleanup = scrollToTargetOnResize({
-          targetId: 'note_1234',
-          container: '#content-body',
+        mockIntersectionObserver = jest.fn((callback) => {
+          intersectionCallback = callback;
+          return {
+            observe: jest.fn(),
+            unobserve: jest.fn(),
+            disconnect: jest.fn(),
+          };
+        });
+
+        global.IntersectionObserver = mockIntersectionObserver;
+      });
+
+      it('sets up intersection observer after first scroll', () => {
+        triggerResize();
+
+        expect(mockIntersectionObserver).toHaveBeenCalled();
+        expect(mockIntersectionObserver.mock.calls[0][1]).toEqual({
+          root: null,
         });
       });
 
-      it('returns cleanup function', () => {
-        cleanup();
-
-        jest.advanceTimersByTime(cleanupTimeoutMs);
-
+      it('cleans up when target is no longer visible', () => {
         triggerResize();
 
-        expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
-      });
-
-      it('scrolls body so anchor is just below sticky header (contentTop)', () => {
-        triggerResize();
-
-        expect(document.documentElement.scrollTo).toHaveBeenCalledWith({
-          behavior: 'instant',
-          top: topHeight,
-        });
-      });
-
-      it('maintains scroll position relative to anchor after user scroll', () => {
-        // Initial scroll to anchor
-        triggerResize();
-
-        // Simulate user scrolling down
-        window.scrollY = scrollAmount;
-        window.dispatchEvent(new Event('scroll'));
-
-        // Trigger resize again
-        triggerResize();
-
-        // Should maintain the 50px offset from original position
-        expect(document.documentElement.scrollTo).toHaveBeenCalledWith({
-          top: topHeight + scrollAmount,
-          behavior: 'instant',
-        });
-      });
-
-      it('does not scroll if another element is focused', () => {
-        const anchorEl = document.getElementById('reply-field');
-        anchorEl.focus();
+        intersectionCallback([{ isIntersecting: false }]);
 
         triggerResize();
-
-        expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
+        expect(document.documentElement.scrollTo).toHaveBeenCalledTimes(1);
       });
     });
   });

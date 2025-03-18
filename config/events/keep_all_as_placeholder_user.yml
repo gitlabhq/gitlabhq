@@ -1,0 +1,16 @@
+---
+description: Tracks when all placeholder users are kept as placeholders and not reassigned to existing users
+internal_events: true
+action: keep_all_as_placeholder_user
+identifiers:
+- namespace
+- user
+product_group: import_and_integrate
+product_categories:
+- importers
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182679
+tiers:
+- free
+- premium
+- ultimate

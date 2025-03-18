@@ -80,7 +80,7 @@ RSpec.shared_examples 'work item drawer' do
 
     it 'shows toggle as on then as off as user toggles to subscribe and unsubscribe', :aggregate_failures do
       within_testid('notifications-toggle-form') do
-        subscription_button = find('[data-testid="toggle-wrapper"] button')
+        subscription_button = find('[data-testid="notifications-toggle"] button')
 
         expect(page).not_to have_css("button.is-checked")
 

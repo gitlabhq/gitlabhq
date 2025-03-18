@@ -1,0 +1,9 @@
+---
+name: token_api_expire_pipeline_triggers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517491
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520713
+milestone: '17.10'
+group: group::pipeline execution
+type: beta
+default_enabled: false

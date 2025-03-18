@@ -9,14 +9,6 @@ description: Links two issues by relationship type, which can be related or bloc
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1719
 milestone: '9.4'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: source_id
-        table: issues
-        sharding_key: namespace_id
-        belongs_to: source
-desired_sharding_key_migration_job_name: BackfillIssueLinksNamespaceId
 table_size: small
+sharding_key:
+  namespace_id: namespaces

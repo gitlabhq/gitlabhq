@@ -19,21 +19,17 @@
       - input_options = { label: _('File name'), id: 'file_name', name: 'file_name', value: params[:file_name] || '', required: true, placeholder: "Filename", testid: 'file-name-field', class: 'new-file-name js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
 
-    - if Feature.enabled?(:source_editor_toolbar, current_user)
-      #editor-toolbar
-
-    - else
-      .file-buttons.gl-flex.gl-items-center.gl-justify-end
-        - if is_markdown
-          .md-header.gl-flex.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
-            .gl-flex.gl-items-center.gl-flex-wrap.gl-justify-between
-              .md-header-toolbar.gl-flex.gl-py-2.gl-flex-wrap{ class: "!gl-m-0" }
-                = render 'shared/blob/markdown_buttons', supports_file_upload: false
-        %span.soft-wrap-toggle
-          = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
-            = _("No wrap")
-          = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
-            = _("Soft wrap")
+    .file-buttons.gl-flex.gl-items-center.gl-justify-end
+      - if is_markdown
+        .md-header.gl-flex.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
+          .gl-flex.gl-items-center.gl-flex-wrap.gl-justify-between
+            .md-header-toolbar.gl-flex.gl-py-2.gl-flex-wrap{ class: "!gl-m-0" }
+              = render 'shared/blob/markdown_buttons', supports_file_upload: false
+      %span.soft-wrap-toggle
+        = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
+          = _("No wrap")
+        = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
+          = _("Soft wrap")
 
   .file-editor.code
     .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container', ref: ref} }<

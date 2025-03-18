@@ -1,0 +1,6 @@
+mutation CiJobTokenScopeClearAllowlistAutopopulations($projectPath: ID!) {
+  ciJobTokenScopeClearAllowlistAutopopulations(input: { projectPath: $projectPath }) {
+    status
+    errors
+  }
+}

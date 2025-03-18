@@ -18,7 +18,7 @@ Each VM uses the Google Container-Optimized OS (COS) and the latest version of D
 [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor).
 The machine type and underlying processor type might change. Jobs optimized for a specific processor design might behave inconsistently.
 
-[Untagged](../../yaml/_index.md#tags) jobs will run on the `small` Linux x86-64 runner.
+[Untagged](../../yaml/_index.md#tags) jobs run on the `small` Linux x86-64 runner.
 
 ## Machine types available for Linux - x86-64
 
@@ -55,7 +55,7 @@ For more details, see [issue 473739](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 As runners on Linux are using the `docker+machine` [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor),
 you can choose any container image by defining the [`image`](../../yaml/_index.md#image) in your `.gitlab-ci.yml` file.
-Please be mindful that the selected Docker image is compatible with the underlying processor architecture.
+Ensure your selected Docker image is compatible with your processor architecture.
 
 If no image is set, the default is `ruby:3.1`.
 

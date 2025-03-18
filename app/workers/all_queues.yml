@@ -13,6 +13,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :activity_pub
+- :name: authorized_project_update:authorized_project_update_enqueue_group_members_refresh_authorized_projects
+  :worker_name: AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker
+  :feature_category: :permissions
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :permissions
@@ -636,6 +646,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:import_import_file_cleanup
+  :worker_name: Gitlab::Import::ImportFileCleanupWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:import_stuck_project_import_jobs
   :worker_name: Gitlab::Import::StuckProjectImportJobsWorker
   :feature_category: :importers
@@ -1159,6 +1179,16 @@
 - :name: cronjob:users_unconfirmed_secondary_emails_deletion_cron
   :worker_name: Users::UnconfirmedSecondaryEmailsDeletionCronWorker
   :feature_category: :user_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:version_version_check_cron
+  :worker_name: Gitlab::Version::VersionCheckCronWorker
+  :feature_category: :service_ping
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2114,6 +2144,16 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :package_cleanup
+- :name: package_repositories:packages_conan_process_package_file
+  :worker_name: Packages::Conan::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry
@@ -2186,6 +2226,16 @@
   :queue_namespace: :package_repositories
 - :name: package_repositories:packages_npm_process_package_file
   :worker_name: Packages::Npm::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
+- :name: package_repositories:packages_nuget_create_symbols
+  :worker_name: Packages::Nuget::CreateSymbolsWorker
   :feature_category: :package_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -3810,6 +3860,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: import_remove_import_file
+  :worker_name: Gitlab::Import::RemoveImportFileWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: import_user_mapping_assignment_from_csv
   :worker_name: Import::UserMapping::AssignmentFromCsvWorker
   :feature_category: :importers
@@ -4871,6 +4931,16 @@
 - :name: work_items_import_work_items_csv
   :worker_name: WorkItems::ImportWorkItemsCsvWorker
   :feature_category: :team_planning
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_user_preferences_destroy
+  :worker_name: WorkItems::UserPreferences::DestroyWorker
+  :feature_category: :seat_cost_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

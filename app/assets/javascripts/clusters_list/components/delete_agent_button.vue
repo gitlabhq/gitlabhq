@@ -29,7 +29,7 @@ export default {
     GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath', 'canAdminCluster'],
+  inject: ['fullPath', 'canAdminCluster', 'isGroup'],
   props: {
     agent: {
       required: true,
@@ -59,7 +59,8 @@ export default {
     },
     getAgentsQueryVariables() {
       return {
-        projectPath: this.projectPath,
+        fullPath: this.fullPath,
+        isGroup: this.isGroup,
       };
     },
     modalId() {

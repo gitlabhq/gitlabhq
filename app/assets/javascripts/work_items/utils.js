@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { queryToObject } from '~/lib/utils/url_utility';
+import { queryToObject, joinPaths } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
@@ -8,6 +8,7 @@ import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
@@ -45,6 +46,9 @@ export const isWeightWidget = (widget) => widget.type === WIDGET_TYPE_WEIGHT;
 export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
+export const findDescriptionWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
+
 export const findLinkedItemsWidget = (workItem) =>
   workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
 
@@ -65,6 +69,9 @@ export const findHierarchyWidgetAncestors = (workItem) =>
 
 export const findDesignWidget = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
+
+export const findMilestoneWidget = (widgets) =>
+  widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
 
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(WORK_ITEM_TYPE_VALUE_MAP).find(
@@ -99,6 +106,12 @@ export const findHierarchyWidgetDefinition = (workItem) =>
   workItem.workItemType.widgetDefinitions?.find(
     (widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY,
   );
+
+export const getParentGroupName = (namespaceFullName) => {
+  const parts = namespaceFullName.split('/');
+  // Gets the second-to-last item in the reference path
+  return parts.length > 1 ? parts[parts.length - 2].trim() : '';
+};
 
 const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemTypeId, isGroup }) => {
   const domain = gon.relative_url_root || '';
@@ -325,16 +338,25 @@ export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => 
 
 export const createBranchMRApiPathHelper = {
   canCreateBranch({ fullPath, workItemIid }) {
-    return `/${fullPath}/-/issues/${workItemIid}/can_create_branch`;
+    return joinPaths(
+      gon.relative_url_root || '',
+      `/${fullPath}/-/issues/${workItemIid}/can_create_branch`,
+    );
   },
   createBranch({ fullPath, workItemIid, sourceBranch, targetBranch }) {
-    return `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`;
+    return joinPaths(
+      gon.relative_url_root || '',
+      `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`,
+    );
   },
   createMR({ fullPath, workItemIid, sourceBranch, targetBranch }) {
-    return `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`;
+    return joinPaths(
+      gon.relative_url_root || '',
+      `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`,
+    );
   },
   getRefs({ fullPath }) {
-    return `/${fullPath}/refs?search=`;
+    return joinPaths(gon.relative_url_root || '', `/${fullPath}/refs?search=`);
   },
 };
 
@@ -342,3 +364,35 @@ export const formatSelectOptionForCustomField = ({ id, value }) => ({
   text: value,
   value: id,
 });
+
+/**
+ * This function takes the `descriptionHtml` property of a work item and updates any `<details>`
+ * elements within it with an `open=true` attribute to match the current state in the DOM.
+ *
+ * This is necessary for scenarios such as toggling a checkbox with an opened `<details>` element,
+ * which causes the `<details>` element to close when the frontend receives the backend response.
+ *
+ * @param {HTMLElement} element DOM element containing <details> elements
+ * @param {string} descriptionHtml The incoming HTML description
+ * @returns {string|null} The updated HTML for the incoming description that preserves the state of the <details> elements
+ */
+export const preserveDetailsState = (element, descriptionHtml) => {
+  const previousDetails = Array.from(element.getElementsByTagName('details'));
+  if (!previousDetails.some((details) => details.open)) {
+    return null;
+  }
+
+  const nextTemplate = document.createElement('div');
+  nextTemplate.innerHTML = descriptionHtml; // eslint-disable-line no-unsanitized/property
+  const nextDetails = nextTemplate.getElementsByTagName('details');
+  if (previousDetails.length !== nextDetails.length) {
+    return null;
+  }
+
+  Array.from(nextDetails).forEach((details, i) => {
+    if (previousDetails[i].open) {
+      details.setAttribute('open', 'true');
+    }
+  });
+  return nextTemplate.innerHTML;
+};

@@ -8,7 +8,8 @@ module Search
       {
         state: params[:state],
         confidential: params[:confidential],
-        include_archived: params[:include_archived]
+        include_archived: params[:include_archived],
+        autocomplete: params[:autocomplete]
       }
     end
   end

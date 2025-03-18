@@ -176,6 +176,7 @@ export default {
       id="schedule_cron"
       v-model="cronInterval"
       :placeholder="__('Define a custom pattern with cron syntax')"
+      :aria-label="__('Define a custom pattern with cron syntax')"
       :name="inputNameAttribute"
       class="form-control cron-interval-input gl-form-input gl-inline-block"
       type="text"

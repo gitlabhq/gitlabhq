@@ -5,7 +5,7 @@
       %td.rd-hunk-header-content{ data: { position: index == 0 ? :old : :new }, tabindex: '-1' }= @diff_hunk.header.text
 
 - @diff_hunk.parallel_lines.each do |pair|
-  %tr.rd-hunk-lines.rd-hunk-lines-parallel{ data: { testid: testid } }
+  %tr.rd-hunk-lines.rd-hunk-lines-parallel{ data: { testid: 'hunk-lines-parallel', hunk_lines: true } }
     - sides(pair).each do |side|
       - line, position = side.values_at(:line, :position)
       = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, **side)

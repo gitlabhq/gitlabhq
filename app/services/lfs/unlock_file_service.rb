@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Lfs
-  class UnlockFileService < BaseService
+  class UnlockFileService < BaseFileLockService
     def execute
       unless can?(current_user, :push_code, project)
         raise Gitlab::GitAccess::ForbiddenError, _('You have no permissions')
@@ -34,17 +34,15 @@ module Lfs
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def lock
       return @lock if defined?(@lock)
 
       @lock = if params[:id].present?
                 project.lfs_file_locks.find(params[:id])
               elsif params[:path].present?
-                project.lfs_file_locks.find_by!(path: params[:path])
+                project.lfs_file_locks.for_path!(params[:path])
               end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

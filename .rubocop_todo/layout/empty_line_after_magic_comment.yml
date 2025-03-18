@@ -120,7 +120,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/graphql/ee/types/repository/blob_type.rb'
     - 'ee/app/graphql/types/analytics/devops_adoption/enabled_namespace_type.rb'
     - 'ee/app/graphql/types/analytics/devops_adoption/snapshot_type.rb'
-    - 'ee/app/graphql/types/path_lock_type.rb'
     - 'ee/app/graphql/types/timebox_error_type.rb'
     - 'ee/app/graphql/types/timebox_report_type.rb'
     - 'ee/app/graphql/types/vulnerability_identifier_input_type.rb'

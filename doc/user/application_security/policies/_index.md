@@ -57,8 +57,10 @@ may require up to 10 minutes before the policy changes take effect.
 
 {{< history >}}
 
-- The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Disabled by default.
-- The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Disabled by default.
+- The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Enabled by default.
+- The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Enabled by default.
+- The deletion protection for security policy projects is generally available in GitLab 17.10. Feature flag `reject_security_policy_project_deletion` removed.
+- The deletion protection for groups that contain security policy projects is generally available in GitLab 17.10. Feature flag `reject_security_policy_project_deletion_groups` removed.
 
 {{< /history >}}
 
@@ -250,7 +252,7 @@ Development teams:
 To enforce a security policy project on a group, subgroup, or project, you must have either:
 
 - The Owner role in that group, subgroup, or project.
-- A [custom role](../../custom_roles.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
+- A [custom role](../../custom_roles/_index.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
 
 The Owner role and custom roles with the `manage_security_policy_link` permission follow the standard hierarchy rules across groups, subgroups, and projects:
 
@@ -292,7 +294,7 @@ create subgroups. Ensuring separation of duties requires more granular permissio
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../custom_roles.md) with the
+- You must have the Owner role or [custom role](../../custom_roles/_index.md) with the
   `manage_security_policy_link` permission to link to the security policy project. For more
   information, see [separation of duties](#separation-of-duties).
 
@@ -341,7 +343,7 @@ The high-level workflow for enforcing policies globally across all subgroups and
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../custom_roles.md) with the
+- You must have the Owner role or [custom role](../../custom_roles/_index.md) with the
   `manage_security_policy_link` permission to link to the security policy project. For more
   information, see [separation of duties](#separation-of-duties).
 - To support approval groups globally across your instance, enable
@@ -394,8 +396,8 @@ granularly per policy, you can set a "policy scope" in each policy.
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
-- You must have at least the Reporter role or [custom role](../../custom_roles.md) with the `manage_security_policy_link` permission to the project you want to assign as the security policy project. For more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../custom_roles/_index.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
+- You must have at least the Reporter role or [custom role](../../custom_roles/_index.md) with the `manage_security_policy_link` permission to the project you want to assign as the security policy project. For more information, see [separation of duties](#separation-of-duties).
 
 To link a group, subgroup, or project to a security policy project:
 

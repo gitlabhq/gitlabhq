@@ -30,7 +30,7 @@ module Tooling
     end
 
     def mapping
-      @mapping.transform_values { |set| set.to_a }
+      @mapping.transform_values(&:to_a)
     end
 
     private

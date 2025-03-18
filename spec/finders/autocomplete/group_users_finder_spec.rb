@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :text_editors do
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:parent_group) { create(:group) }
   let_it_be(:group) { create(:group, parent: parent_group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
@@ -11,7 +12,7 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :text_editors d
   let_it_be(:group_project) { create(:project, namespace: group) }
   let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
 
-  let(:finder) { described_class.new(group: group) }
+  let(:finder) { described_class.new(group: group, current_user: current_user) }
 
   describe '#execute' do
     context 'with group members' do

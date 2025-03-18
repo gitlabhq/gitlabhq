@@ -160,13 +160,7 @@ $comparison-empty-state-height: 62px;
 .merge-request-tabs-holder {
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
-  border-bottom: 1px solid var(--gl-border-color-default);
-  background-color: $white;
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-dark & {
-    background-color: var(--gray-10);
-  }
+  @apply gl-border-b gl-bg-default;
 
   @include media-breakpoint-up(md) {
     position: sticky;

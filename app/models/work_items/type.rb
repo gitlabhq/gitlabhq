@@ -76,8 +76,7 @@ module WorkItems
       through: :parent_restrictions, class_name: 'WorkItems::Type',
       foreign_key: :parent_type_id, source: :parent_type
     has_many :user_preferences,
-      class_name: 'WorkItems::Types::UserPreference',
-      primary_key: :correct_id,
+      class_name: 'WorkItems::UserPreference',
       inverse_of: :work_item_type
 
     before_validation :strip_whitespace
@@ -92,19 +91,19 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
-    scope :with_correct_id_and_fallback, ->(correct_ids) {
+    scope :with_id_and_fallback, ->(ids) {
       # This shouldn't work for nil ids as we expect newer instances to have NULL values in old_id
-      correct_ids = Array(correct_ids).compact
-      return none if correct_ids.blank?
+      ids = Array(ids).compact
+      return none if ids.blank?
 
-      where(correct_id: correct_ids).or(where(old_id: correct_ids))
+      where(id: ids).or(where(old_id: ids))
     }
 
-    def self.find_by_correct_id_with_fallback(correct_id)
-      results = with_correct_id_and_fallback(correct_id)
+    def self.find_by_id_with_fallback(id)
+      results = with_id_and_fallback(id)
       return results.first if results.to_a.size <= 1 # Using to_a to avoid an additional query. Loads the relationship.
 
-      results.find { |type| type.correct_id == correct_id }
+      results.find { |type| type.id == id }
     end
 
     def self.default_by_type(type)
@@ -139,12 +138,6 @@ module WorkItems
         []
       end
     end
-
-    def to_global_id
-      ::Gitlab::GlobalId.build(self, id: correct_id)
-    end
-    # Alias necessary here as the Gem uses `alias` to define the `gid` method
-    alias_method :to_gid, :to_global_id
 
     # resource_parent is used in EE
     def widgets(_resource_parent)

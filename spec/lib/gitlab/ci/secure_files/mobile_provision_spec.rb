@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::MobileProvision do
 
       describe '#decoded_plist' do
         it 'assigns the error message and returns nil' do
-          expect(invalid_profile.decoded_plist).to be nil
+          expect(invalid_profile.decoded_plist).to be_nil
           expect(invalid_profile.error).to eq('Could not parse the PKCS7: no start line (Expecting: PKCS7)')
         end
       end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::MobileProvision do
 
       it 'returns nil if the property list fails to be parsed from the decoded plist' do
         allow(subject).to receive(:decoded_plist).and_return('foo/bar')
-        expect(subject.properties).to be nil
+        expect(subject.properties).to be_nil
         expect(subject.error).to start_with('invalid XML')
       end
     end

@@ -1,6 +1,6 @@
 <%= @title %>
 
-<% if @has_errors %>
+<% if @has_errors || @skipped_count > 0%>
 <%= safe_format(s_('BulkImport|Items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_open: '', strong_close: '', group: @group.name) %>
 <% else %>
 <%= safe_format(s_('BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_open: '', strong_close: '', group: @group.name) %>
@@ -9,6 +9,13 @@
 - <%= safe_format(s_('BulkImport|%{count} placeholder users matched to users.'), count: @success_count) %>
 <% if @has_errors %>
 - <%= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count) %>
+<% end %>
+<% if @skipped_count > 0 %>
+- <%= safe_format(s_('BulkImport|%{count} placeholder users skipped.'), count: @skipped_count) %>
+<% end %>
+
+<% if @has_errors %>
+<%= s_('BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email.') %>
 <% end %>
 
 <% extra_params = @has_errors ? { status: 'failed' } : {} %>

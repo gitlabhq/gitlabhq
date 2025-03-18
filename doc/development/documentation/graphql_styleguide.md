@@ -80,8 +80,8 @@ left side of the documentation website). To do so, open a second MR, against the
 [GitLab documentation repository](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/).
 
 The global navigation is set in the
-[`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml) file,
-in the `content/data` subdirectory. You can find the GraphQL section under the
+[`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml) file,
+in the `content/data/en-us` subdirectory. You can find the GraphQL section under the
 following line:
 
 ```yaml

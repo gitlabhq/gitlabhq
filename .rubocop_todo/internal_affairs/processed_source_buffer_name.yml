@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+InternalAffairs/ProcessedSourceBufferName:
+  Details: grace period
+  Exclude:
+    - 'rubocop/cop/rspec/top_level_describe_path.rb'

@@ -770,6 +770,20 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         allow(event_definition).to receive(:extra_tracking_classes).and_return([custom_tracking_class])
       end
 
+      context 'when event is not defined' do
+        let(:event_name) { 'an_event_that_does_not_exist' }
+
+        before do
+          allow(Gitlab::Tracking::EventDefinition).to receive(:find).with(event_name).and_return(nil)
+        end
+
+        it 'does not call custom classes' do
+          expect(custom_tracking_class).not_to receive(:track_event)
+
+          described_class.track_event(event_name, user: user, project: project)
+        end
+      end
+
       it 'calls the custom classes' do
         expect(custom_tracking_class).to receive(:track_event).with(event_name, **event_kwargs)
 

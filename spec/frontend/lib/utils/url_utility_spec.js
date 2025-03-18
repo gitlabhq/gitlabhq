@@ -2,6 +2,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { setGlobalAlerts } from '~/lib/utils/global_alerts';
+import { setLocationHash } from '~/lib/utils/url_utility';
 import { validURLs, invalidURLs } from './mock_data';
 
 jest.mock('~/lib/utils/global_alerts', () => ({
@@ -358,6 +359,50 @@ describe('URL utility', () => {
       setWindowLocation('#');
 
       expect(urlUtils.getLocationHash()).toBeUndefined();
+    });
+  });
+
+  describe('setLocationHash', () => {
+    let originalLocation;
+    let originalHistory;
+    const mockPathname = '/some/path';
+    const mockSearch = '?some=query';
+
+    beforeEach(() => {
+      originalLocation = window.location;
+      originalHistory = window.history;
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          hash: jest.fn(),
+          pathname: mockPathname,
+          search: mockSearch,
+        },
+      });
+      Object.defineProperty(window, 'history', {
+        writable: true,
+        value: {
+          replaceState: jest.fn(),
+        },
+      });
+    });
+
+    afterEach(() => {
+      window.location = originalLocation;
+      window.history = originalHistory;
+    });
+
+    it('when hash is undefined', () => {
+      setLocationHash();
+
+      expect(window.history.replaceState).toHaveBeenCalledWith({}, '', mockPathname + mockSearch);
+    });
+
+    it('when hash is a string', () => {
+      setLocationHash('hash-value');
+
+      expect(window.location.hash).toBe('hash-value');
     });
   });
 

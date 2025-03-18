@@ -432,7 +432,7 @@ module SearchHelper
       return []
     end
 
-    search_using_search_service(current_user, 'users', term, limit).map do |user|
+    search_using_search_service(current_user, 'users', term, limit, { autocomplete: true }).map do |user|
       {
         category: "Users",
         id: user.id,

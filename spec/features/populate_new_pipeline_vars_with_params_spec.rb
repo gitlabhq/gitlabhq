@@ -8,6 +8,7 @@ RSpec.describe "Populate new pipeline CI variables with url params", :js, featur
   let(:page_path) { new_project_pipeline_path(project) }
 
   before do
+    stub_feature_flags(ci_inputs_for_pipelines: false)
     sign_in(user)
     project.add_maintainer(user)
 

@@ -9,10 +9,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
     {
       service_url: "https://open-vsx.org/vscode/gallery",
       item_url: "https://open-vsx.org/vscode/item",
-      resource_url_template: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}',
-      control_url: "",
-      nls_base_url: "",
-      publisher_url: ""
+      resource_url_template: 'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}'
     }
   end
 
@@ -72,7 +69,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
         stub_env("GITLAB_WEB_IDE_VSCODE_EXTENSION_MARKETPLACE",
           '{"service_url":"https://OVERRIDE.org/vscode/gallery",' \
             '"item_url":"https://OVERRIDE.org/vscode/item",' \
-            '"resource_url_template":"https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}"}'
+            '"resource_url_template":"https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}"}'
         )
       end
 
@@ -81,7 +78,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
           {
             service_url: "https://OVERRIDE.org/vscode/gallery",
             item_url: "https://OVERRIDE.org/vscode/item",
-            resource_url_template: "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}"
+            resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}"
           }
         )
       end
@@ -102,11 +99,8 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
       it "uses default value" do
         expected_value = {
           item_url: "https://open-vsx.org/vscode/item",
-          resource_url_template: "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}",
-          service_url: "https://open-vsx.org/vscode/gallery",
-          control_url: "",
-          nls_base_url: "",
-          publisher_url: ""
+          resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}",
+          service_url: "https://open-vsx.org/vscode/gallery"
         }
 
         expect(vscode_extension_marketplace_setting).to eq(expected_value)

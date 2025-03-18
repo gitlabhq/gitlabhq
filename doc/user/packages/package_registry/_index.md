@@ -33,10 +33,10 @@ Learn how to use the GitLab package registry to build your own custom package wo
 
 ## View packages
 
-You can view packages for your project or group.
+You can view packages for your project or group:
 
 1. Go to the project or group.
-1. Go to **Deploy > Package Registry**.
+1. Go to **Deploy > Package registry**.
 
 You can search, sort, and filter packages on this page. You can share your search results by copying
 and pasting the URL from your browser.
@@ -49,7 +49,7 @@ When you view packages in a group:
 - Only the projects you can access are displayed.
 - If a project is private, or you are not a member of the project, the packages from that project are not displayed.
 
-For information on how to create and upload a package, view the GitLab documentation for your package type.
+To learn how to create and upload a package, follow the instructions for your [package type](supported_package_managers.md).
 
 ## Authenticate with the registry
 
@@ -68,13 +68,15 @@ For most package types, the following credential types are valid:
 - [Job token](../../../ci/jobs/ci_job_token.md):
   allows access to packages in the project running the job for the users running the pipeline.
   Access to other external projects can be configured.
-- If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
-- If you are publishing a package by using CI/CD pipelines, you must use a CI job token.
+- If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
+- If you are publishing a package by using CI/CD pipelines, you must use a CI/CD job token.
 
 {{< alert type="note" >}}
 
-If the "Package registry" feature is turned off for your project at **Settings > General > Visibility, project features, permissions**, you will receive a 403 Forbidden response.
-Accessing the package registry with a deploy token is not available when external authorization is enabled.
+When configuring authentication to the package registry:
+
+- If the **Package registry** project setting is [turned off](#turn-off-the-package-registry), you receive a `403 Forbidden` error when you interact with the package registry, even if you have the Owner role.
+- If [external authorization](../../../administration/settings/external_authorization.md) is turned on, you can't access the package registry with a deploy token.
 
 {{< /alert >}}
 
@@ -87,7 +89,7 @@ a package registry.
 
 You can authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
-CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+To get started, you can use the available [CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
 For more information about using the GitLab package registry with CI/CD, see:
 
@@ -117,13 +119,14 @@ For a list of supported packages, see [Importing packages from other repositorie
 For information on reducing your storage use for the package registry, see
 [Reduce package registry storage use](reduce_package_registry_storage.md).
 
-## Disable the package registry
+## Turn off the package registry
 
-The package registry is automatically enabled.
+The package registry is automatically turned on.
 
-If you are using a self-managed instance of GitLab, your administrator can remove
-the menu item, **Packages and registries**, from the GitLab sidebar. For more information,
-see the [administration documentation](../../../administration/packages/_index.md).
+On a GitLab Self-Managed instance, your administrator can remove
+the **Packages and registries** menu item from the GitLab sidebar.
+For more information,
+see [GitLab package registry administration](../../../administration/packages/_index.md).
 
 You can also remove the package registry for your project specifically:
 
@@ -132,23 +135,23 @@ You can also remove the package registry for your project specifically:
    **Packages** feature.
 1. Select **Save changes**.
 
-The **Deploy > Package Registry** entry is removed from the sidebar.
+The **Deploy > Package registry** entry is removed from the sidebar.
 
 ## Package registry visibility permissions
 
-[Project-level permissions](../../permissions.md)
-determine actions such as downloading, pushing, or deleting packages.
+[Project permissions](../../permissions.md)
+determine which members and users can download, push, or delete packages.
 
 The visibility of the package registry is independent of the repository and can be controlled from
 your project's settings. For example, if you have a public project and set the repository visibility
-to **Only Project Members**, the package registry is then public. Disabling the Package
-Registry disables all package registry operations.
+to **Only Project Members**, the package registry is then public. Turning off the **Package
+registry** toggle turns off all package registry operations.
 
 | Project visibility | Action                | Minimum [role](../../permissions.md#roles) required     |
 |--------------------|-----------------------|---------------------------------------------------------|
-| Public             | View package registry | `n/a`, everyone on the internet can perform this action |
+| Public             | View package registry | N/A. Anyone on the internet can perform this action.    |
 | Public             | Publish a package     | Developer                                               |
-| Public             | Pull a package        | `n/a`, everyone on the internet can perform this action |
+| Public             | Pull a package        | N/A. Anyone on the internet can perform this action.    |
 | Internal           | View package registry | Guest                                                   |
 | Internal           | Publish a package     | Developer                                               |
 | Internal           | Pull a package        | Guest (1)                                               |
@@ -172,7 +175,7 @@ To allow anyone to pull from the package registry, regardless of project visibil
 1. On the left sidebar, select **Search or go to** and find your private or internal project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Turn on the **Allow anyone to pull from Package Registry** toggle.
+1. Turn on the **Allow anyone to pull from package registry** toggle.
 1. Select **Save changes**.
 
 Anyone on the internet can access the package registry for the project.
@@ -183,27 +186,49 @@ Prerequisites:
 
 - You must be an administrator.
 
-To hide the **Allow anyone to pull from Package Registry** toggle globally:
+To hide the **Allow anyone to pull from package registry** toggle globally:
 
 - [Update the application setting](../../../api/settings.md#update-application-settings) `package_registry_allow_anyone_to_pull_option` to `false`.
 
-Anonymous downloads are disabled, even for projects that turned on the **Allow anyone to pull from Package Registry** toggle.
+Anonymous downloads are turned off, even for projects that turned on the **Allow anyone to pull from Package Registry** toggle.
 
 Several known issues exist when you allow anyone to pull from the package registry:
 
 - Endpoints for projects are supported.
-- NuGet registry endpoints for groups are supported. However, because of how NuGet clients send the authentication credentials, anonymous downloads are not allowed. Only GitLab users can pull from the package registry, even if this feature is enabled.
-- Maven registry endpoint for groups are supported.
+- NuGet registry endpoints for groups are supported. However, because of how NuGet clients send the authentication credentials, anonymous downloads are not allowed. Only GitLab users can pull from the package registry, even if this setting is turned on.
+- Maven registry endpoints for groups are supported.
 - Terraform module registry endpoints for namespaces are supported.
 - Other group and instance endpoints are not fully supported. Support for group endpoints is proposed in [epic 14234](https://gitlab.com/groups/gitlab-org/-/epics/14234).
 - It does not work with the [Composer](../composer_repository/_index.md#install-a-composer-package), because Composer only has a group endpoint.
 - It works with Conan, but using [`conan search`](../conan_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
+## Audit events
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `package_registry_audit_events`. Disabled by default.
+
+{{< /history >}}
+
+Create audit events when a package is published or deleted. Namespace Owners can turn on the `audit_events_enabled` setting through the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
+
+You can view audit events:
+
+- On the [**Group audit events**](../../compliance/audit_events.md#group-audit-events) page if the package's project is in a group.
+- On the [**Project audit events**](../../compliance/audit_events.md#project-audit-events) page if the package's project is in a user namespace.
+
 ## Accepting contributions
 
-This table lists unsupported package manager formats that we are accepting contributions for.
-Consider contributing to GitLab. This [development documentation](../../../development/packages/_index.md)
-guides you through the process.
+The following table lists unsupported package manager formats that we are accepting contributions for.
+See the [development guidelines](../../../development/packages/_index.md)
+to learn how to contribute to GitLab.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

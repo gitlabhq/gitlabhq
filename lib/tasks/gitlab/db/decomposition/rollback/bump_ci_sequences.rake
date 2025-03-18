@@ -13,7 +13,14 @@ namespace :gitlab do
             exit 1
           end
 
-          Gitlab::Database::BumpSequences.new(:gitlab_ci, increase_by).execute
+          ci_only_schemas = Gitlab::Database
+            .all_database_connections["main"]
+            .lock_gitlab_schemas
+            .intersection(Gitlab::Database.all_database_connections["ci"].gitlab_schemas)
+
+          ci_only_schemas.each do |ci_schema|
+            Gitlab::Database::BumpSequences.new(ci_schema, increase_by).execute
+          end
         end
       end
     end

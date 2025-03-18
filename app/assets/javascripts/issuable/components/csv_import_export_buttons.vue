@@ -42,11 +42,6 @@ export default {
       required: false,
       default: undefined,
     },
-    trackImportClick: {
-      type: Boolean,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {

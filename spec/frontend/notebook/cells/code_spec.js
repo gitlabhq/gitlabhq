@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
+import rawCellFixture from 'test_fixtures/blob/notebook/raw-output.json';
 import fixture from 'test_fixtures/blob/notebook/basic.json';
 import Code from '~/notebook/cells/code.vue';
+import CodeOutput from '~/notebook/cells/code/index.vue';
 
 describe('Code component', () => {
   let wrapper;
@@ -20,6 +22,22 @@ describe('Code component', () => {
 
     it('does not render output prompt', () => {
       expect(wrapper.findAll('.prompt')).toHaveLength(1);
+    });
+  });
+
+  describe('computes the correct language for cell type', () => {
+    it('returns txt for raw cell type', () => {
+      json = JSON.parse(JSON.stringify(rawCellFixture));
+      wrapper = mountComponent(json.cells[0]);
+
+      expect(wrapper.findComponent(CodeOutput).props('language')).toBe('txt');
+    });
+
+    it('returns python for non-raw cell type', () => {
+      json = JSON.parse(JSON.stringify(json));
+      wrapper = mountComponent(json.cells[0]);
+
+      expect(wrapper.findComponent(CodeOutput).props('language')).toBe('python');
     });
   });
 

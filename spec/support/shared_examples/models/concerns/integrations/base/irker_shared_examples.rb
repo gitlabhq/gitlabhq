@@ -23,6 +23,15 @@ RSpec.shared_examples Integrations::Base::Irker do
     end
   end
 
+  describe '.help' do
+    it 'links to help page correctly' do
+      expect(described_class.help).to include(
+        'help/user/project/integrations/irker.md#set-up-an-irker-daemon',
+        'Learn More'
+      )
+    end
+  end
+
   describe 'Execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }

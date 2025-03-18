@@ -9,7 +9,9 @@ describe('tooltips/components/tooltips.vue', () => {
   let wrapper;
 
   const buildWrapper = () => {
-    wrapper = shallowMount(Tooltips);
+    wrapper = shallowMount(Tooltips, {
+      stubs: { GlTooltip },
+    });
   };
 
   const createTooltipTarget = (attributes = {}) => {

@@ -41,39 +41,8 @@ To check links on the entire [GitLab documentation site](https://docs.gitlab.com
 
 To test documentation links from GitLab code files locally, you can run
 
-- `haml-lint`: For `.haml` files.
 - `eslint`: For frontend (`.js` and `.vue`) files.
-- `rubocop`: For `.rb` files.
-
-### Run `haml-lint` tests
-
-1. Open the `gitlab` directory in a terminal window.
-1. Run:
-
-   ```shell
-   bundle exec haml-lint -i DocumentationLinks
-   ```
-
-If you receive an error the first time you run this test, run `bundle install`, which
-installs the dependencies for GitLab, and try again.
-
-If you don't want to install all of the dependencies to test the links, you can:
-
-1. Open the `gitlab` directory in a terminal window.
-1. Install `haml-lint`:
-
-   ```shell
-   gem install haml_lint
-   ```
-
-1. Run:
-
-   ```shell
-   haml-lint -i DocumentationLinks
-   ```
-
-If you manually install `haml-lint` with this process, it does not update automatically
-and you should make sure your version matches the version used by GitLab.
+- `rubocop`: For `.rb` and `.haml` files.
 
 ### Run `eslint` tests
 

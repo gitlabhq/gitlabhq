@@ -572,6 +572,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'ephemeralRegisterUrl' do
     let(:runner_args) { { registration_type: :authenticated_user, creator: creator } }
+    let(:runner_traits) { [] }
     let(:query) do
       %(
         query {
@@ -598,24 +599,24 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
     context 'with an instance runner' do
       let(:creator) { user }
-      let(:runner) { create(:ci_runner, **runner_args) }
+      let(:runner) { create(:ci_runner, *runner_traits, **runner_args) }
 
       context 'with valid ephemeral registration' do
+        let(:runner_traits) { [:unregistered, :created_before_registration_deadline] }
+
         it_behaves_like 'has register url' do
           let(:expected_url) { "http://localhost/admin/runners/#{runner.id}/register" }
         end
       end
 
       context 'when runner ephemeral registration has expired' do
-        let(:runner) do
-          create(:ci_runner, created_at: Ci::Runner::REGISTRATION_AVAILABILITY_TIME.ago, **runner_args)
-        end
+        let(:runner_traits) { [:unregistered, :created_after_registration_deadline] }
 
         it_behaves_like 'has no register url'
       end
 
       context 'when runner has already been registered' do
-        let(:runner) { create(:ci_runner, :with_runner_manager, **runner_args) }
+        let(:runner_traits) { [:created_before_registration_deadline] }
 
         it_behaves_like 'has no register url'
       end
@@ -623,43 +624,47 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
     context 'with a group runner' do
       let(:creator) { user }
-      let(:runner) { create(:ci_runner, :group, groups: [group], **runner_args) }
+      let(:runner) { create(:ci_runner, *runner_traits, :group, groups: [group], **runner_args) }
 
       context 'with valid ephemeral registration' do
+        let(:runner_traits) { [:unregistered, :created_before_registration_deadline] }
+
         it_behaves_like 'has register url' do
           let(:expected_url) { "http://localhost/groups/#{group.path}/-/runners/#{runner.id}/register" }
         end
-      end
 
-      context 'when request not from creator' do
-        let(:creator) { another_admin }
+        context 'when request not from creator' do
+          let(:creator) { another_admin }
 
-        before do
-          group.add_owner(another_admin)
+          before do
+            group.add_owner(another_admin)
+          end
+
+          it_behaves_like 'has no register url'
         end
-
-        it_behaves_like 'has no register url'
       end
     end
 
     context 'with a project runner' do
       let(:creator) { user }
-      let(:runner) { create(:ci_runner, :project, projects: [project1], **runner_args) }
+      let(:runner) { create(:ci_runner, *runner_traits, :project, projects: [project1], **runner_args) }
 
       context 'with valid ephemeral registration' do
+        let(:runner_traits) { [:unregistered, :created_before_registration_deadline] }
+
         it_behaves_like 'has register url' do
           let(:expected_url) { "http://localhost/#{project1.full_path}/-/runners/#{runner.id}/register" }
         end
-      end
 
-      context 'when request not from creator' do
-        let(:creator) { another_admin }
+        context 'when request not from creator' do
+          let(:creator) { another_admin }
 
-        before do
-          project1.add_owner(another_admin)
+          before do
+            project1.add_owner(another_admin)
+          end
+
+          it_behaves_like 'has no register url'
         end
-
-        it_behaves_like 'has no register url'
       end
     end
   end
@@ -844,10 +849,11 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   describe 'ephemeralAuthenticationToken' do
     subject(:request) { post_graphql(query, current_user: user) }
 
-    let_it_be(:creator) { create(:user) }
+    let_it_be(:creator) { create(:user, owner_of: group) }
 
     let(:created_at) { Time.current }
     let(:token_prefix) { registration_type == :authenticated_user ? 'glrt-' : '' }
+    let(:runner_traits) { [] }
     let(:registration_type) {}
     let(:query) do
       %(
@@ -864,16 +870,12 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       create(
         :ci_runner,
         :group,
+        *runner_traits,
         groups: [group],
         creator: creator,
-        created_at: created_at,
         registration_type: registration_type,
         token: "#{token_prefix}abc123"
       )
-    end
-
-    before_all do
-      group.add_owner(creator) # Allow creating runners in the group
     end
 
     shared_examples 'an ephemeral_authentication_token' do
@@ -902,28 +904,30 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       context 'with runner created in UI' do
         let(:registration_type) { :authenticated_user }
 
-        context 'with runner created in last hour' do
-          let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
+        context 'with runner created within registration deadline' do
+          let(:runner_traits) { [:created_before_registration_deadline] + extra_runner_traits }
 
-          context 'with no runner manager registered yet' do
+          context 'with runner creation not finished' do
+            let(:runner_traits) { [:unregistered] }
+
             it_behaves_like 'an ephemeral_authentication_token'
           end
 
-          context 'with first runner manager already registered' do
-            let!(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+          context 'with runner creation finished' do
+            let(:runner_traits) { [] }
 
             it_behaves_like 'a protected ephemeral_authentication_token'
           end
         end
 
         context 'with runner created almost too long ago' do
-          let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
+          let(:runner_traits) { [:unregistered, :created_before_registration_deadline] }
 
           it_behaves_like 'an ephemeral_authentication_token'
         end
 
         context 'with runner created too long ago' do
-          let(:created_at) { Ci::Runner::REGISTRATION_AVAILABILITY_TIME.ago }
+          let(:runner_traits) { [:unregistered, :created_after_registration_deadline] }
 
           it_behaves_like 'a protected ephemeral_authentication_token'
         end
@@ -932,8 +936,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       context 'with runner registered from command line' do
         let(:registration_type) { :registration_token }
 
-        context 'with runner created in last 1 hour' do
-          let(:created_at) { (Ci::Runner::REGISTRATION_AVAILABILITY_TIME - 1.second).ago }
+        context 'with runner created within registration deadline' do
+          let(:runner_traits) { [:created_before_registration_deadline] }
 
           it_behaves_like 'a protected ephemeral_authentication_token'
         end
@@ -945,6 +949,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
       context 'with runner created in UI' do
         let(:registration_type) { :authenticated_user }
+        let(:runner_traits) { [:unregistered, :created_before_registration_deadline] }
 
         it_behaves_like 'a protected ephemeral_authentication_token'
       end

@@ -19,8 +19,6 @@ module Projects
         push_frontend_feature_flag(:ci_variables_pages, current_user)
         push_frontend_feature_flag(:allow_push_repository_for_job_token, @project)
         push_frontend_feature_flag(:add_policies_to_ci_job_token, @project)
-        push_frontend_feature_flag(:authentication_logs_migration_for_allowlist, @project)
-
         push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
         push_frontend_ability(ability: :admin_protected_environments, resource: @project, user: current_user)
       end
@@ -47,7 +45,8 @@ module Projects
         Projects::UpdateService.new(project, current_user, update_params).tap do |service|
           result = service.execute
           if result[:status] == :success
-            flash[:toast] = _("Pipelines settings for '%{project_name}' were successfully updated.") % { project_name: @project.name }
+            flash[:toast] = safe_format(_("Pipelines settings for '%{project_name}' were successfully updated."),
+              project_name: @project.name)
 
             run_autodevops_pipeline(service)
 

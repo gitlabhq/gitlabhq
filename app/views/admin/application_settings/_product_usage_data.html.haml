@@ -1,0 +1,13 @@
+= gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-product-usage-data-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      - label = s_('AdminSettings|Enable product usage tracking')
+      = f.gitlab_ui_checkbox_component :product_usage_data_enabled?, '%{label}'.html_safe % { label: label },
+        checkbox_options: { id: 'application_setting_product_usage_data_enabled' },
+        label_options: { id: 'service_ping_features_label' }
+
+  = f.submit _('Save changes'), pajamas_button: true
+
+

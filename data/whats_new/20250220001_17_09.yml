@@ -1,0 +1,59 @@
+- name: GitLab Duo Self-Hosted is generally available
+  description: |
+    You can now host selected Large Language Models (LLMs) in your own infrastructure and configure those models to power GitLab Duo Code Suggestions and Chat.  With GitLab Duo Self-Hosted, you can use models hosted either in your own data center or in a private cloud as the source models for GitLab Duo Chat or Code Suggestions. We currently support open-source Mistral models on vLLM or AWS Bedrock, Claude 3.5 Sonnet on AWS Bedrock, and OpenAI models on Azure OpenAI. By enabling self-hosted models, you can leverage the power of generative AI while maintaining privacy and complete control over your data.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/administration/gitlab_duo_self_hosted/'
+  image_url: https://about.gitlab.com/images/17_9/SH-UI.png
+  published_at: 2025-02-20
+  release: 17.9
+
+- name: Run multiple Pages sites with parallel deployments
+  description: |
+    You can now create multiple versions of your GitLab Pages sites simultaneously with parallel deployments. This feature is especially helpful when you need to preview design changes or content updates, test site changes in development, review changes from merge requests and maintain multiple site versions (for example, with localized content).
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/pages/#parallel-deployments'
+  image_url: https://about.gitlab.com/images/17_9/pages_pd_ga.png
+  published_at: 2025-02-20
+  release: 17.9
+
+- name: Add project files to Duo Chat in VS Code and JetBrains IDEs
+  description: |
+    Add your project files directly to Duo Chat in VS Code and JetBrains to unlock more powerful, context-aware AI assistance. By adding project files, Duo Chat gains deep understanding of your specific codebase, enabling it to provide highly contextual and accurate responses. This context awareness gives you more relevant code explanations, precise debugging help, and suggestions that seamlessly integrate with your existing codebase.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/gitlab_duo_chat/examples.html#ask-about-specific-files'
+  image_url: https://img.youtube.com/vi/ycBgDBaUS9M/hqdefault.jpg
+  published_at: 2025-02-20
+  release: 17.9
+
+- name: Automatic CI/CD pipeline cleanup
+  description: |
+    In the past, if you wanted to delete older CI/CD pipelines, you could only do this through the API. In GitLab 17.9, we have introduced a project setting that allows you to set a CI/CD pipeline expiry time. Any pipelines and related artifacts older than the defined retention period are deleted. This can help reduce the disk usage in projects that run lots of pipelines that generate large artifacts, and even improve overall performance.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/pipelines/settings.html#automatic-pipeline-cleanup'
+  image_url: https://about.gitlab.com/images/17_9/verify_auto_pipeline_cleanup.png
+  published_at: 2025-02-20
+  release: 17.9
+
+- name: Configure DAST scans through the UI with full control
+  description: |
+    To effectively test complex applications, security teams need flexibility when they configure DAST scans. Previously, DAST scans configured through the UI had limited configuration options, which prevented successful scanning of applications with specific security requirements. This meant you had to use pipeline-based scans even for quick security assessments. You can now configure DAST scans through the UI with the same granular control available in pipeline-based scans.
+  stage: application_security_testing
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast/on-demand_scan.html'
+  image_url: https://about.gitlab.com/images/17_9/dast_parity.png
+  published_at: 2025-02-20
+  release: 17.9

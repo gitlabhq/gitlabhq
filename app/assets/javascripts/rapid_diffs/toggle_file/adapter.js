@@ -1,4 +1,6 @@
-function oppositeToggleButton(clicked) {
+import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/events';
+
+function getOppositeToggleButton(clicked) {
   const isOpened = clicked.dataset.opened;
   const parent = clicked.parentElement;
 
@@ -7,15 +9,36 @@ function oppositeToggleButton(clicked) {
     : parent.querySelector('button[data-opened]');
 }
 
+function collapse(root = this.diffElement) {
+  // eslint-disable-next-line no-param-reassign
+  root.dataset.collapsed = true;
+  // eslint-disable-next-line no-param-reassign
+  root.querySelector('[data-file-body]').hidden = true;
+}
+
+function expand(root = this.diffElement) {
+  // eslint-disable-next-line no-param-reassign
+  delete root.dataset.collapsed;
+  // eslint-disable-next-line no-param-reassign
+  root.querySelector('[data-file-body]').hidden = false;
+}
+
 export const ToggleFileAdapter = {
   clicks: {
-    toggleFile(event) {
-      const fileBody = this.diffElement.querySelector('[data-file-body]');
-      const button = event.target.closest('button');
-      const oppositeButton = oppositeToggleButton(button);
-
-      fileBody.hidden = !fileBody.hidden;
-      oppositeButton.focus();
+    toggleFile(event, button) {
+      const collapsed = this.diffElement.dataset.collapsed === 'true';
+      if (collapsed) {
+        expand.call(this);
+      } else {
+        collapse.call(this);
+      }
+      getOppositeToggleButton(button).focus();
     },
+  },
+  [EXPAND_FILE]() {
+    expand.call(this);
+  },
+  [COLLAPSE_FILE]() {
+    collapse.call(this);
   },
 };

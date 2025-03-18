@@ -1,0 +1,20 @@
+---
+description: Toggle labels on merge request dashboard
+internal_events: true
+action: click_toggle_labels_on_merge_request_dashboard
+identifiers:
+- user
+additional_properties:
+  label:
+    description: show_labels
+  property:
+    description: "[on | off]"
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181395
+tiers:
+- free
+- premium
+- ultimate

@@ -19,6 +19,8 @@ module Gitlab
 
       def execute
         if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
+          remove_import_file
+
           project
         else
           raise Projects::ImportService::Error, shared.errors.to_sentence
@@ -32,7 +34,6 @@ module Gitlab
         raise Projects::ImportService::Error, e.message
       ensure
         remove_base_tmp_dir
-        remove_import_file
       end
 
       private

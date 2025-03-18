@@ -56,12 +56,14 @@ Example response:
   {
     "id": 57,
     "username": "service_account_group_345_<random_hash>",
-    "name": "Service account user"
+    "name": "Service account user",
+    "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com"
   },
   {
     "id": 58,
     "username": "service_account_group_346_<random_hash>",
-    "name": "Service account user"
+    "name": "Service account user",
+    "email": "service_account_group_346_<random_hash>@noreply.gitlab.example.com"
   }
 ]
 ```
@@ -72,6 +74,7 @@ Example response:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
 - Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+- Specify a service account user email address was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181456) in GitLab 17.9 [with a flag](../administration/feature_flags.md) named `group_service_account_custom_email`.
 
 {{< /history >}}
 
@@ -89,16 +92,17 @@ POST /groups/:id/service_accounts
 
 Supported attributes:
 
-| Attribute  | Type           | Required | Description                                                                   |
-|:-----------|:---------------|:---------|:------------------------------------------------------------------------------|
-| `id`       | integer/string | yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.     |
-| `name`     | string         | no  | User account name. If not specified, uses `Service account user`.                  |
-| `username` | string         | no  | User account username. If not specified, generates a name prepended with `service_account_`. |
+| Attribute  | Type           | Required | Description                                                                                                                                                                                                                                                                                   |
+|:-----------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer/string | yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                               |
+| `name`     | string         | no  | User account name. If not specified, uses `Service account user`.                                                                                                                                                                                                                             |
+| `username` | string         | no  | User account username. If not specified, generates a name prepended with `service_account_group_`.                                                                                                                                                                                            |
+| `email`    | string         | no  | User account email. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation before the account is active, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#verified-domains-for-groups). |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts" --data "email=custom_email@example.com"
 ```
 
 Example response:
@@ -107,7 +111,54 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
-  "name": "Service account user"
+  "name": "Service account user",
+  "email": "custom_email@example.com"
+}
+```
+
+## Update a service account user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182607/) in GitLab 17.10.
+
+{{< /history >}}
+
+Updates a service account user in a given top-level group.
+
+{{< alert type="note" >}}
+
+This endpoint only works on top-level groups.
+
+{{< /alert >}}
+
+```plaintext
+PATCH /groups/:id/service_accounts/:user_id
+```
+
+Parameters:
+
+| Attribute  | Type           | Required | Description                                                     |
+|:-----------|:---------------|:---------|:----------------------------------------------------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`  | integer        | yes      | The ID of the service account user.                              |
+| `name`     | string         | no       | Name of the user.                                               |
+| `username` | string         | no       | Username of the user.                                           |
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/57" --data "name=Updated Service Account"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "name": "Updated Service Account",
+  "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com"
 }
 ```
 
@@ -172,6 +223,7 @@ Parameters:
 | `id`      | integer/string | yes  | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id` | integer | yes      | ID of service account user.                            |
 | `name`    | string  | yes      | Name of personal access token. |
+| `description` | string  | no   | Description of personal access token. |
 | `scopes`  | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes). |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 

@@ -168,9 +168,10 @@ When you configure related JSON objects and use the template, the pipeline:
    the [AWS CloudFormation](https://aws.amazon.com/cloudformation/) API.
 1. **Pushes to an S3 bucket**: When your build runs, it creates an artifact.
    The artifact is pushed to an [AWS S3](https://aws.amazon.com/s3/) bucket.
-1. **Deploys to EC2**: The content is deployed on an [AWS EC2](https://aws.amazon.com/ec2/) instance.
+1. **Deploys to EC2**: The content is deployed on an [AWS EC2](https://aws.amazon.com/ec2/) instance,
+   as shown in this diagram:
 
-![CF-Provision-and-Deploy-EC2 diagram](../img/cf_ec2_diagram_v13_5.png)
+![Shows the CF-Provision-and-Deploy-EC2 pipeline, including the steps of provisioning infrastructure, pushing artifacts to S3, and deploying to EC2.](../img/cf_ec2_diagram_v13_5.png)
 
 ### Configure the template and JSON
 

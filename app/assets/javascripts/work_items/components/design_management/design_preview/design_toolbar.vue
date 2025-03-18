@@ -31,10 +31,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    workItemTitle: {
-      type: String,
-      required: true,
-    },
     design: {
       type: Object,
       required: true,
@@ -86,9 +82,9 @@ export default {
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
         <h2 v-else class="gl-m-0 gl-flex gl-items-center gl-overflow-hidden gl-text-base">
           <span class="gl-truncate gl-text-heading gl-no-underline">
-            {{ workItemTitle }}
+            {{ design.issue.title }}
           </span>
-          <gl-icon name="chevron-right" class="gl-shrink-0" variant="disabled" />
+          <gl-icon name="chevron-right" class="gl-shrink-0" variant="subtle" />
           <span class="gl-truncate gl-font-normal">{{ design.filename }}</span>
           <imported-badge
             v-if="design.imported"

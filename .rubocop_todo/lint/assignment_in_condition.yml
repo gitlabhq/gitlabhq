@@ -105,7 +105,6 @@ Lint/AssignmentInCondition:
     - 'ee/app/services/ee/application_settings/update_service.rb'
     - 'ee/app/services/ee/issues/clone_service.rb'
     - 'ee/app/services/ee/issues/move_service.rb'
-    - 'ee/app/services/ee/lfs/unlock_file_service.rb'
     - 'ee/app/services/ee/projects/operations/update_service.rb'
     - 'ee/app/services/gitlab_subscriptions/fetch_subscription_plans_service.rb'
     - 'ee/app/services/incident_management/issuable_resource_links/zoom_link_service.rb'

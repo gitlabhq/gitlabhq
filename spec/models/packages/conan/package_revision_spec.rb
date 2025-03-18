@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::PackageRevision, type: :model, feature_category: :package_registry do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it 'belongs to package' do
       is_expected.to belong_to(:package).class_name('Packages::Conan::Package').inverse_of(:conan_package_revisions)
@@ -34,21 +36,27 @@ RSpec.describe Packages::Conan::PackageRevision, type: :model, feature_category:
       is_expected.to validate_uniqueness_of(:revision).scoped_to([:package_id, :package_reference_id]).case_insensitive
     end
 
-    context 'when validating the byte size of revision' do
-      let(:invalid_revision) { 'a' * (Packages::Conan::PackageRevision::REVISION_LENGTH_MAX + 1) }
-
-      it 'is not valid if revision exceeds maximum byte size', :aggregate_failures do
-        package_revision.revision = invalid_revision
-
-        expect(package_revision).not_to be_valid
-        expect(package_revision.errors[:revision]).to include(
-          "is too long (#{Packages::Conan::PackageRevision::REVISION_LENGTH_MAX + 1} B). " \
-            "The maximum size is #{Packages::Conan::PackageRevision::REVISION_LENGTH_MAX} B.")
+    context 'when validating hex format and length' do
+      where(:revision, :valid, :error_message) do
+        OpenSSL::Digest.hexdigest('MD5', 'test string')  | true  | nil
+        OpenSSL::Digest.hexdigest('SHA1', 'test string') | true  | nil
+        'df28fd816be3a119de5ce4d374436b2g'               | false | 'Revision is invalid'
+        ('a' * 41)                                       | false | 'Revision is invalid'
       end
 
-      it 'is valid if revision is within byte size limit' do
-        # package revision is set correctly in the factory
-        expect(package_revision).to be_valid
+      with_them do
+        before do
+          package_revision.revision = revision
+        end
+
+        if params[:valid]
+          it { expect(package_revision).to be_valid }
+        else
+          it 'is invalid with the expected error message' do
+            expect(package_revision).not_to be_valid
+            expect(package_revision.errors).to contain_exactly(error_message)
+          end
+        end
       end
     end
   end

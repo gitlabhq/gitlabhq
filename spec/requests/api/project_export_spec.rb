@@ -267,33 +267,13 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           end
 
           it 'prevents requesting project export' do
+            expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:project_download_export, scope: [user, project]).and_call_original
+
             request
 
             expect(response).to have_gitlab_http_status(:too_many_requests)
             expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
-          end
-        end
-
-        context 'applies correct scope when throttling' do
-          before do
-            stub_application_setting(project_download_export_limit: 1)
-          end
-
-          it 'throttles downloads within same namespaces', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413230' do
-            # simulate prior request to the same namespace, which increments the rate limit counter for that scope
-            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export, scope: [user, project_finished.namespace])
-
-            get api(download_path_finished, user, admin_mode: true)
-            expect(response).to have_gitlab_http_status(:too_many_requests)
-          end
-
-          it 'allows downloads from different namespaces' do
-            # simulate prior request to a different namespace, which increments the rate limit counter for that scope
-            Gitlab::ApplicationRateLimiter.throttled?(:project_download_export,
-              scope: [user, create(:project, :with_export, export_user: user).namespace])
-
-            get api(download_path_finished, user, admin_mode: true)
-            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -755,19 +735,43 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
       context 'with bulk_import is disabled' do
         before do
           stub_application_setting(bulk_import_enabled: false)
+          stub_feature_flags(override_bulk_import_disabled: false)
+        end
+
+        shared_examples 'flag override' do |expected_http_status:|
+          it 'enables the feature when override flag is enabled for the user' do
+            stub_feature_flags(override_bulk_import_disabled: user)
+
+            request
+
+            expect(response).to have_gitlab_http_status(expected_http_status)
+          end
+
+          it 'does not enable the feature when override flag is enabled for another user' do
+            other_user = create(:user)
+            stub_feature_flags(override_bulk_import_disabled: other_user)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
 
         describe 'POST /projects/:id/export_relations' do
+          subject(:request) { post api(path, user) }
+
           it_behaves_like '404 response' do
             let(:message) { '404 Not Found' }
-
-            subject(:request) { post api(path, user) }
           end
+
+          it_behaves_like 'flag override', expected_http_status: :accepted
         end
 
         describe 'GET /projects/:id/export_relations/download' do
           let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
           let_it_be(:upload) { create(:bulk_import_export_upload, export: export) }
+
+          subject(:request) { get api(download_path, user) }
 
           before do
             upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
@@ -775,17 +779,19 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
           it_behaves_like '404 response' do
             let(:message) { '404 Not Found' }
-
-            subject(:request) { get api(download_path, user) }
           end
+
+          it_behaves_like 'flag override', expected_http_status: :ok
         end
 
         describe 'GET /projects/:id/export_relations/status' do
+          subject(:request) { get api(status_path, user) }
+
           it_behaves_like '404 response' do
             let(:message) { '404 Not Found' }
-
-            subject(:request) { get api(status_path, user) }
           end
+
+          it_behaves_like 'flag override', expected_http_status: :ok
         end
       end
     end

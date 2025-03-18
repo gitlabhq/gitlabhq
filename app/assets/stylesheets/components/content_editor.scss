@@ -18,18 +18,20 @@
   }
 
   ::selection {
-    background-color: transparent;
+    @apply gl-bg-blue-100;
+  }
+
+  gl-emoji {
+    user-select: text;
   }
 
   &:focus {
     @apply gl-focus;
   }
 
-  &:not(.ProseMirror-hideselection) .content-editor-selection,
-  a.ProseMirror-selectednode,
-  span.ProseMirror-selectednode {
+  .content-editor-selection,
+  .ProseMirror-selectednode {
     @apply gl-bg-blue-100;
-    box-shadow: 0 2px 0 var(--blue-100, $blue-100), 0 -2px 0 var(--blue-100, $blue-100);
 
     &.gfm-project_member, .gfm-project_member {
       &:not(.current-user) {
@@ -39,6 +41,17 @@
 
     &.gfm-project_member {
       box-shadow: 0 0 0 2px var(--blue-100, $blue-100);
+    }
+  }
+
+  hr.ProseMirror-selectednode {
+    box-shadow: 0 0 0 2px var(--blue-100, $blue-100);
+  }
+
+  .selectedCell {
+    .content-editor-selection,
+    .ProseMirror-selectednode {
+      @apply gl-bg-transparent;
     }
   }
 
@@ -308,6 +321,12 @@
       padding-right: $gl-spacing-scale-2;
     }
   }
+
+  .markdown-alert {
+    > *:last-child *:only-child {
+      @apply gl-mb-0;
+    }
+  }
 }
 
 // Fixes a problem with the layout shifting
@@ -323,7 +342,8 @@
   min-width: 1rem !important;
 
   &.active {
-    border-color: $blue-500 !important;
+    border-color: var(--gl-feedback-info-text-color) !important;
+    background-color: var(--gl-feedback-info-background-color) !important;
     border-width: 2px;
   }
 
@@ -381,3 +401,4 @@
 .bubble-menu-form {
   min-width: 320px;
 }
+

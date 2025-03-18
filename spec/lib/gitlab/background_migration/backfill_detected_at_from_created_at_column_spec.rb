@@ -122,6 +122,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDetectedAtFromCreatedAtColum
     )
   end
 
+  before(:all) do
+    # This test shares the db connection to establish it's fixtures, resulting in
+    # incorrect connection usage, so we're skipping it.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   before do
     # detected_at default value is NOW(), so update it to NULL
     vulnerability_without_detected_at.update_column :detected_at, nil

@@ -40,7 +40,7 @@ module Types
     field :share_with_group_lock,
       type: GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates if sharing a project with another group within this group is prevented.'
+      description: 'Indicates if sharing a project with another group within the group is prevented.'
 
     field :project_creation_level,
       type: GraphQL::Types::String,
@@ -57,7 +57,7 @@ module Types
     field :require_two_factor_authentication,
       type: GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates if all users in this group are required to set up two-factor authentication.'
+      description: 'Indicates if all users in the group are required to set up two-factor authentication.'
 
     field :two_factor_grace_period,
       type: GraphQL::Types::Int,
@@ -67,7 +67,7 @@ module Types
     field :auto_devops_enabled,
       type: GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates whether Auto DevOps is enabled for all projects within this group.'
+      description: 'Indicates whether Auto DevOps is enabled for all projects within the group.'
 
     field :emails_disabled,
       type: GraphQL::Types::Boolean,
@@ -81,7 +81,7 @@ module Types
 
     field :max_access_level, Types::AccessLevelType,
       null: false,
-      description: 'The maximum access level of the current user in the group.'
+      description: 'Maximum access level of the current user in the group.'
 
     field :mentions_disabled,
       type: GraphQL::Types::Boolean,
@@ -139,7 +139,7 @@ module Types
     field :label,
       Types::LabelType,
       null: true,
-      description: 'Label available on this group.' do
+      description: 'Label available on the group.' do
       argument :title,
         type: GraphQL::Types::String,
         required: true,
@@ -238,17 +238,17 @@ module Types
     field :descendant_groups_count,
       GraphQL::Types::Int,
       null: false,
-      description: 'Count of direct descendant groups of this group.'
+      description: 'Count of direct descendant groups of the group.'
 
     field :group_members_count,
       GraphQL::Types::Int,
       null: false,
-      description: 'Count of direct members of this group.'
+      description: 'Count of direct members of the group.'
 
     field :projects_count,
       GraphQL::Types::Int,
       null: false,
-      description: 'Count of direct projects in this group.'
+      description: 'Count of direct projects in the group.'
 
     field :pipeline_analytics, Types::Ci::AnalyticsType,
       null: true,
@@ -339,17 +339,13 @@ module Types
       GraphQL::Types::Boolean,
       null: true,
       method: :math_rendering_limits_enabled?,
-      description: 'Indicates if math rendering limits are used for this group.'
+      description: 'Indicates if math rendering limits are used for the group.'
 
     field :is_linked_to_subscription,
       GraphQL::Types::Boolean,
       null: true,
       method: :linked_to_subscription?,
       description: 'Indicates if group is linked to a subscription.'
-
-    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
-      null: true, description: 'Allowed custom statuses for the group.',
-      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|

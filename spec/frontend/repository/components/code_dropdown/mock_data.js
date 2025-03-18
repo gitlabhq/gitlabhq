@@ -1,5 +1,28 @@
 export const mockIdeItems = [
   {
+    extraAttrs: {
+      target: '_blank',
+    },
+    href: 'webIdeUrl://foo.bar',
+    shortcut: '.',
+    text: 'Web IDE',
+    tracking: {
+      action: 'click_consolidated_edit',
+      label: 'web_ide',
+    },
+  },
+  {
+    extraAttrs: {
+      target: '_blank',
+    },
+    href: 'gitpodUrl://foo.bar',
+    text: 'GitPod',
+    tracking: {
+      action: 'click_consolidated_edit',
+      label: 'gitpod',
+    },
+  },
+  {
     items: [
       {
         href: 'vscode://vscode.git/clone?url=ssh%3A%2F%2Ffoo.bar',

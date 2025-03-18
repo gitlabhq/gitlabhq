@@ -8,7 +8,6 @@ description: Geo event to process feature flag toggles instantly on a secondary 
   invalidating the cache, belongs to geo_event_log.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7738
 milestone: '11.4'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 notes: Exempted because Not org-specific
 table_size: small

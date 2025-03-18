@@ -43,8 +43,9 @@ export default {
         </template>
       </gl-sprintf>
     </div>
-    <gl-form-group :label="$options.i18n.IMAGE_NAME">
+    <gl-form-group :label="$options.i18n.IMAGE_NAME" label-for="image-name-input">
       <gl-form-input
+        id="image-name-input"
         :value="job.image.name"
         data-testid="image-name-input"
         @input="$emit('update-job', 'image.name', $event)"
@@ -52,10 +53,12 @@ export default {
     </gl-form-group>
     <gl-form-group
       :label="$options.i18n.IMAGE_ENTRYPOINT"
+      label-for="image-entrypoint-input"
       :description="$options.i18n.ARRAY_FIELD_DESCRIPTION"
       class="gl-mb-0"
     >
       <gl-form-textarea
+        id="image-entrypoint-input"
         :no-resize="false"
         :placeholder="$options.placeholderText"
         data-testid="image-entrypoint-input"

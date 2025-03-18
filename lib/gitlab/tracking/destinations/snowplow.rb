@@ -33,6 +33,12 @@ module Gitlab
           increment_total_events_counter
         end
 
+        def emit_event_payload(payload)
+          # Using #input as the tracker doesn't have an option to track using a json object
+          # https://snowplow.github.io/snowplow-ruby-tracker/SnowplowTracker/Emitter.html#input-instance_method
+          emitter.input(payload)
+        end
+
         def options(group)
           additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
           {
@@ -77,7 +83,14 @@ module Gitlab
         end
 
         def emitter
-          emitter_options = {
+          @emitter ||= SnowplowTracker::AsyncEmitter.new(
+            endpoint: hostname,
+            options: emitter_options
+          )
+        end
+
+        def emitter_options
+          options = {
             protocol: protocol,
             on_success: method(:increment_successful_events_emissions),
             on_failure: method(:failure_callback)
@@ -86,15 +99,12 @@ module Gitlab
           if Feature.enabled?(:snowplow_tracking_post_method, :instance, type: :gitlab_com_derisk)
             # By default, Snowplow uses `get` method with buffer_size set to `1`.
             # However, setting method to `post` changes default buffer_size to `10`
-            emitter_options[:method] = 'post'
+            options[:method] = 'post'
             buffer_size = Feature.enabled?(:snowplow_buffer_events, :instance, type: :gitlab_com_derisk) ? 10 : 1
-            emitter_options[:buffer_size] = buffer_size
+            options[:buffer_size] = buffer_size
           end
 
-          SnowplowTracker::AsyncEmitter.new(
-            endpoint: hostname,
-            options: emitter_options
-          )
+          options
         end
 
         def failure_callback(success_count, failures)

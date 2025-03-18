@@ -32,8 +32,11 @@ module WorkItems
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def handle_quick_actions(work_item)
-      # Do not handle quick actions from params[:description] unless the work item is the default Issue.
-      super if work_item.work_item_type == WorkItems::Type.default_by_type(:issue)
+      # Unify description parameters into widget params for quick action processing
+      if params[:description].present?
+        description_widget_params = widget_params[::WorkItems::Widgets::Description.api_symbol] ||= {}
+        description_widget_params.reverse_merge!(params.slice(:description))
+      end
 
       # Handle quick actions from description widget depending on the available widgets for the type
       handle_widget_quick_actions!(work_item)
@@ -50,8 +53,9 @@ module WorkItems
     def handle_widget_quick_actions!(work_item)
       return unless work_item.has_widget?(:description)
 
-      description_widget_params = widget_params[::WorkItems::Widgets::Description.api_symbol]
-      return unless description_widget_params
+      # We need to run merge_quick_actions_into_params! even if there is no given description param because
+      # we want to parse and remove any residual quick actions
+      description_widget_params = widget_params[::WorkItems::Widgets::Description.api_symbol] ||= {}
 
       merge_quick_actions_into_params!(work_item, params: description_widget_params)
 

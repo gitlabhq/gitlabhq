@@ -1,6 +1,6 @@
 <script>
 import { kebabCase } from 'lodash';
-import { GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlCollapse, GlIcon, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { NAV_ITEM_LINK_ACTIVE_CLASS } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
@@ -10,6 +10,7 @@ export default {
   components: {
     GlCollapse,
     GlIcon,
+    GlAnimatedChevronRightDownIcon,
     NavItem,
     FlyoutMenu,
   },
@@ -53,18 +54,20 @@ export default {
     };
   },
   computed: {
+    navItems() {
+      return this.item.items.filter((item) => {
+        if (item.link_classes) {
+          return !item.link_classes.includes('js-super-sidebar-nav-item-hidden');
+        }
+        return true;
+      });
+    },
     buttonProps() {
       return {
         'aria-controls': this.itemId,
         'aria-expanded': String(this.isExpanded),
         'data-qa-menu-item': this.item.title,
       };
-    },
-    collapseIcon() {
-      if (this.hasFlyout) {
-        return this.isExpanded ? 'chevron-down' : 'chevron-right';
-      }
-      return this.isExpanded ? 'chevron-up' : 'chevron-down';
     },
     computedLinkClasses() {
       return {
@@ -145,15 +148,15 @@ export default {
         {{ item.title }}
       </span>
 
-      <span class="gl-text-right">
-        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" variant="subtle" />
+      <span class="gl-text-right gl-text-subtle">
+        <gl-animated-chevron-right-down-icon :is-on="isExpanded" />
       </span>
     </button>
 
     <flyout-menu
-      v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && item.items.length > 0"
+      v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && navItems.length > 0"
       :target-id="`menu-section-button-${itemId}`"
-      :items="item.items"
+      :items="navItems"
       :async-count="asyncCount"
       @mouseover="isMouseOverFlyout = true"
       @mouseleave="isMouseOverFlyout = false"
@@ -172,7 +175,7 @@ export default {
       <slot>
         <ul :aria-label="item.title" class="gl-m-0 gl-list-none gl-p-0">
           <nav-item
-            v-for="subItem of item.items"
+            v-for="subItem of navItems"
             :key="`${item.title}-${subItem.title}`"
             :item="subItem"
             :async-count="asyncCount"

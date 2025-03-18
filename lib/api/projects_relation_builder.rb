@@ -14,7 +14,9 @@ module API
 
         preload_repository_cache(projects_relation)
 
-        Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute if options[:current_user]
+        if options[:current_user]
+          Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute
+        end
 
         preload_member_roles(projects_relation, options[:current_user]) if options[:current_user]
         preload_groups(projects_relation) if options[:with] == Entities::Project
@@ -24,7 +26,7 @@ module API
 
       # This is overridden by the specific Entity class to
       # preload assocations that it needs
-      def preload_relation(projects_relation, options = {})
+      def preload_relation(projects_relation, _options = {})
         projects_relation
       end
 
@@ -50,7 +52,7 @@ module API
         group_projects = projects_for_group_preload(projects_relation)
         groups = group_projects.map(&:namespace)
 
-        Preloaders::GroupRootAncestorPreloader.new(groups).execute
+        ::Namespaces::Preloaders::GroupRootAncestorPreloader.new(groups).execute
 
         group_projects.each do |project|
           project.group = project.namespace

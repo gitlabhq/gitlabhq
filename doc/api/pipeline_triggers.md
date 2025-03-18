@@ -156,6 +156,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Trigger a pipeline with a token
 
+{{< history >}}
+
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10
+[with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+
+{{< /history >}}
+
 Trigger a pipeline by using a [pipeline trigger token](../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 or a [CI/CD job token](../ci/jobs/ci_job_token.md) for authentication.
 
@@ -177,11 +184,26 @@ Supported attributes:
 | `ref`       | string         | Yes      | The branch or tag to run the pipeline on. |
 | `token`     | string         | Yes      | The trigger token or CI/CD job token. |
 | `variables` | hash           | No       | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |
+| `inputs`    | hash           | No       | A map of inputs, as key-value pairs, to use when creating the pipeline. Required feature flag: `ci_inputs_for_pipelines` |
 
-Example request:
+Example request with [variables](../ci/variables/_index.md):
 
 ```shell
-curl --request POST --form "variables[VAR1]=value1" --form "variables[VAR2]=value2" "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+curl --request POST \
+  --form "variables[VAR1]=value1" \
+  --form "variables[VAR2]=value2" \
+  "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+```
+
+Example request with [inputs](../ci/yaml/inputs.md):
+
+_Required [feature flag](feature_flags.md): `ci_inputs_for_pipelines`_
+
+```shell
+curl --request POST \
+  --header "Content-Type: application/json" \
+  --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}' \
+  "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
 Example response:

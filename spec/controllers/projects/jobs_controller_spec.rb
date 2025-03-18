@@ -536,9 +536,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when requesting triggered job JSON' do
-      let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+      let_it_be(:trigger) { create(:ci_trigger, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, trigger: trigger) }
+      let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
       let(:user) { developer }
 
       before do
@@ -1031,6 +1032,79 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       before do
         sign_in(user)
+      end
+
+      context 'a running job which supports canceling' do
+        let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+        include_context 'when canceling support'
+
+        it 'transits to canceling' do
+          post_cancel
+          expect(job.reload).to be_canceling
+        end
+      end
+
+      context 'a canceling job canceled' do
+        let(:job) { create(:ci_build, :canceling, pipeline: pipeline) }
+
+        context 'without force parameter' do
+          before do
+            post_cancel
+          end
+
+          it 'returns unprocessable_entity' do
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'with force parameter' do
+          before do
+            post_cancel force: "true"
+          end
+
+          it 'returns unprocessable_entity' do
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+      end
+
+      context 'when user is authorized to force cancellation' do
+        let(:user) { maintainer }
+
+        context 'a canceling job force canceled' do
+          let(:job) { create(:ci_build, :canceling, pipeline: pipeline) }
+
+          before do
+            post_cancel force: "true"
+          end
+
+          it 'redirects to the builds page' do
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(builds_namespace_project_pipeline_path(id: pipeline.id))
+          end
+
+          it 'can be forced to cancel' do
+            expect(job.reload).to be_canceled
+          end
+        end
+
+        context 'a canceling job force canceled with flag :force_cancel_build disabled' do
+          let(:job) { create(:ci_build, :canceling, pipeline: pipeline) }
+
+          before do
+            stub_feature_flags(force_cancel_build: false)
+            post_cancel force: "true"
+          end
+
+          it 'returns unprocessable_entity' do
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+
+          it 'cannot be forced to cancel' do
+            expect(job.reload).to be_canceling
+          end
+        end
       end
 
       context 'when continue url is present' do

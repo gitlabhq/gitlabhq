@@ -1,3 +1,4 @@
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
@@ -50,9 +51,9 @@ describe('ListPresenter', () => {
     expect(htmlPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
     expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(listItem1.text()).toEqual('Issue 1 (#1) · @foobar ·  Open · This is a description');
+    expect(listItem1.text()).toEqual('Issue 1 (#1) @foobar ·  Open · This is a description');
     expect(listItem2.text()).toEqual(
-      'Issue 2 (#2 - closed) · @janedoe ·  Closed · This is another description',
+      'Issue 2 (#2 - closed) @janedoe ·  Closed · This is another description',
     );
   });
 
@@ -60,6 +61,15 @@ describe('ListPresenter', () => {
     createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } });
 
     expect(wrapper.find('ul')).toBeDefined();
+  });
+
+  it('renders skeleton loader if isPreview is true', () => {
+    createWrapper(
+      { data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, isPreview: true },
+      mountExtended,
+    );
+
+    expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(5);
   });
 
   it('renders a footer text', () => {
@@ -75,7 +85,7 @@ describe('ListPresenter', () => {
   });
 
   it('shows a "No data" message if the list of items provided is empty', () => {
-    createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } });
+    createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } }, mountExtended);
 
     expect(wrapper.text()).toContain('No data found for this query');
   });

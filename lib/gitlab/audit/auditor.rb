@@ -169,17 +169,21 @@ module Gitlab
         # Defined in EE
       end
 
-      def build_event(message)
-        AuditEvents::BuildService.new(
+      def build_event(message_or_attrs)
+        params = {
           author: @author,
           scope: @scope,
           target: @target,
           created_at: @created_at,
-          message: message,
+          message: message_or_attrs,
           additional_details: @additional_details,
           ip_address: @ip_address,
           target_details: @target_details
-        ).execute
+        }
+
+        params.merge!(message_or_attrs.slice(*params.keys)) if message_or_attrs.is_a?(Hash)
+
+        AuditEvents::BuildService.new(**params).execute
       end
 
       def log_to_database(events)

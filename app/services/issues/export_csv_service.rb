@@ -19,7 +19,7 @@ module Issues
 
     def associations_to_preload
       [
-        ::Gitlab::Issues::TypeAssociationGetter.call,
+        :work_item_type,
         :author,
         :assignees,
         :timelogs,

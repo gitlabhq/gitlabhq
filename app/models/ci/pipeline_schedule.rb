@@ -11,6 +11,7 @@ module Ci
     include BatchNullifyDependentAssociations
     include Gitlab::Utils::StrongMemoize
 
+    MAX_INPUTS = 20
     VALID_REF_FORMAT_REGEX = %r{\A(#{Gitlab::Git::TAG_REF_PREFIX}|#{Gitlab::Git::BRANCH_REF_PREFIX})[\S]+}
 
     SORT_ORDERS = {
@@ -36,12 +37,19 @@ module Ci
     has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline', inverse_of: :pipeline_schedule
     has_many :pipelines, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
+    has_many :inputs, class_name: 'Ci::PipelineScheduleInput'
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
     validates :variables, nested_attributes_duplicates: true
+    validates :inputs, nested_attributes_duplicates: { child_attributes: %i[name] }
+
+    validates :inputs, length: {
+      maximum: MAX_INPUTS,
+      message: ->(*) { _('exceeds the limit of %{count}.') }
+    }
 
     strip_attributes! :cron
 
@@ -51,6 +59,7 @@ module Ci
     scope :owned_by, ->(user) { where(owner: user) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
 
+    accepts_nested_attributes_for :inputs, allow_destroy: true
     accepts_nested_attributes_for :variables, allow_destroy: true
 
     alias_attribute :real_next_run, :next_run_at

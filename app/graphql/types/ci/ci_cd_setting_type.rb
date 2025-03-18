@@ -32,6 +32,10 @@ module Types
         null: true,
         description: 'Whether merged results pipelines are enabled.',
         method: :merge_pipelines_enabled?
+      field :pipeline_variables_minimum_override_role,
+        GraphQL::Types::String,
+        null: false,
+        description: 'Minimum role required to set variables when creating a pipeline or running a job.'
       field :project,
         Types::ProjectType,
         null: true,

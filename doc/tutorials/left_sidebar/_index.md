@@ -19,6 +19,8 @@ title: 'Tutorial: Use the left sidebar to navigate GitLab'
 
 {{< /history >}}
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 Follow this tutorial to learn how to use the new left sidebar to navigate the UI.
 
 ## Layout of the left sidebar
@@ -27,7 +29,7 @@ At the top of the left sidebar are several shortcuts. Use these shortcuts to
 show and hide the left sidebar, create new items, search, and view your profile. You can also view your list of issues,
 merge requests, and to-do items.
 
-![Top of sidebar](img/sidebar_top_v16_4.png)
+![Top section of the left sidebar with assigned issues, merge requests, To-Do List, and avatar.](img/sidebar_top_v16_4.png)
 
 {{< alert type="note" >}}
 
@@ -39,7 +41,7 @@ The next area of the left sidebar changes based on the information you're viewin
 you might be viewing a project, exploring projects or groups, or viewing your profile.
 To switch to other areas of the left sidebar, use **Search or go to**.
 
-![Context switching](img/sidebar_middle_v16_4.png)
+![Context switching from the left sidebar.](img/sidebar_middle_v16_4.png)
 
 The rest of the left sidebar is populated based on the option you choose. For example,
 if you're in a project, the sidebar is project-specific.

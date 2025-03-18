@@ -12,7 +12,6 @@ import DomElementListener from '~/vue_shared/components/dom_element_listener.vue
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from './constants';
 
@@ -41,13 +40,13 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   lastUsedHelpLink: helpPagePath('/user/profile/personal_access_tokens.md', {
     anchor: 'view-token-usage-information',
   }),
   i18n: {
     button: {
       revoke: s__('AccessTokens|Revoke'),
+      revokeAriaLabel: (name) => sprintf(s__('AccessTokens|Revoke %{name}'), { name }).trim(),
       rotate: s__('AccessTokens|Rotate'),
     },
     emptyDateField: __('Never'),
@@ -115,10 +114,6 @@ export default {
 
       if (!this.showRole) {
         ignoredFields.push('role');
-      }
-
-      if (!this.glFeatures.patIp) {
-        ignoredFields.push('lastUsedIps');
       }
 
       const fields = FIELDS.filter(({ key }) => !ignoredFields.includes(key));
@@ -315,7 +310,7 @@ export default {
               v-if="revokePath"
               category="tertiary"
               :title="$options.i18n.button.revoke"
-              :aria-label="$options.i18n.button.revoke"
+              :aria-label="$options.i18n.button.revokeAriaLabel(name)"
               :data-confirm="modalMessage(name, 'revoke')"
               data-confirm-btn-variant="danger"
               data-testid="revoke-button"

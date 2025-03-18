@@ -124,14 +124,6 @@ The output includes the project ID and the project name. For example:
 => #<Project id:16 it/supportteam/ticketsystem>
 ```
 
-To look up a project's name using the `config` file in the `*.git` directory:
-
-1. Locate the `*.git` directory. This directory is located in `/var/opt/gitlab/git-data/repositories/@hashed/`, where the first four
-   characters of the hash are the first two directories in the path under `@hashed/`. For example, on a default Linux package installation the
-   `*.git` directory of the hash `b17eb17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9` would be
-   `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`.
-1. Open the `config` file and locate the `fullpath=` key under `[gitlab]`.
-
 ### Hashed object pools
 
 Object pools are repositories used to deduplicate [forks of public and internal projects](../user/project/repository/forking_workflow.md) and
@@ -190,6 +182,70 @@ For example:
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
 [Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths).
+
+### Repository file archive cache
+
+Users can download an archive in formats such as `.zip` or `.tar.gz` of a repository by using either:
+
+- The GitLab UI.
+- The [Repositories API](../api/repositories.md#get-file-archive).
+
+GitLab stores this archive in a cache in a directory on the GitLab server.
+
+A background job running on Sidekiq periodically cleans out stale
+archives from this directory. For this reason, this directory must be
+accessible by both the Sidekiq and GitLab Workhorse services. If Sidekiq
+can't access the same directory used by GitLab Workhorse, the [disk containing the directory fills up](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6005).
+
+If you don't want to use a shared mount for Sidekiq and GitLab
+Workhorse, you can instead configure a separate `cron` job to delete
+files from this directory.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+The default directory for the file archive cache is `/var/opt/gitlab/gitlab-rails/shared/cache/archive`. You can
+configure this with the `gitlab_rails['gitlab_repository_downloads_path']` setting in `/etc/gitlab/gitlab.rb`.
+
+To disable the cache:
+
+1. Set the `WORKHORSE_ARCHIVE_CACHE_DISABLED` environment variable on all nodes that run Puma:
+
+   ```shell
+   sudo -e /etc/gitlab/gitlab.rb
+   ```
+
+   ```ruby
+   gitlab_rails['env'] = { 'WORKHORSE_ARCHIVE_CACHE_DISABLED' => '1' }
+   ```
+
+1. Reconfigure the updated nodes for the change to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+The Helm chart stores the cache in `/srv/gitlab/shared/cache/archive`.
+The directory cannot be configured.
+
+To disable the cache, you can use `--set gitlab.webservice.extraEnv.WORKHORSE_ARCHIVE_CACHE_DISABLED="1"`, or
+specify the following in your values file:
+
+```yaml
+gitlab:
+  webservice:
+    extraEnv:
+      WORKHORSE_ARCHIVE_CACHE_DISABLED: "1"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Object storage support
 

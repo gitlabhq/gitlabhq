@@ -104,6 +104,7 @@ module Gitlab
         # If present, DisableCache must be a Boolean. Otherwise
         # workhorse ignores it.
         params['DisableCache'] = true if git_archive_cache_disabled?
+        params['UseArchiveCleaner'] = git_archive_cache_cleaner_enabled?
         params['GitalyServer'] = gitaly_server_hash(repository)
 
         [
@@ -364,6 +365,10 @@ module Gitlab
         ENV['WORKHORSE_ARCHIVE_CACHE_DISABLED'].present? || Feature.enabled?(:workhorse_archive_cache_disabled)
       end
 
+      def git_archive_cache_cleaner_enabled?
+        ENV["WORKHORSE_ARCHIVE_CACHE_CLEANER_DISABLED"].blank?
+      end
+
       def archive_format(format)
         case format
         when "tar.bz2", "tbz", "tbz2", "tb2", "bz2"
@@ -380,6 +385,7 @@ module Gitlab
       def send_git_archive_params(repository, metadata, path, format, include_lfs_blobs, exclude_paths)
         {
           'ArchivePath' => metadata['ArchivePath'],
+          'StoragePath' => metadata['StoragePath'],
           'GetArchiveRequest' => encode_binary(
             Gitaly::GetArchiveRequest.new(
               repository: repository.gitaly_repository,

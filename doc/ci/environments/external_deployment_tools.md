@@ -46,7 +46,7 @@ You can create a [project access token](../../user/project/settings/project_acce
 
 ### Example: Track deployments of ArgoCD
 
-You can use [ArgoCD webhook](https://argocd-notifications.readthedocs.io/en/stable/services/webhook/) to send deployment events to GitLab Deployment API.
+You can use [ArgoCD webhook](https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/services/webhook/) to send deployment events to GitLab Deployment API.
 Here is an example setup that creates a `success` deployment record in GitLab when ArgoCD successfully deploys a new revision:
 
 1. Create a new webhook. You can save the following manifest file and apply it by `kubectl apply -n argocd -f <manifiest-file-path>`:
@@ -93,7 +93,7 @@ Here is an example setup that creates a `success` deployment record in GitLab wh
 
 {{< alert type="note" >}}
 
-If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argocd-notifications.readthedocs.io/en/stable/troubleshooting/).
+If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/troubleshooting/).
 For example, `argocd-notifications template notify gitlab-deployment-status <your-app-name> --recipient gitlab:argocd-notifications`
 triggers API request immediately and renders an error message from GitLab API server if any.
 

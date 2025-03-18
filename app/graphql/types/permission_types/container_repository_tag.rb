@@ -5,9 +5,9 @@ module Types
     class ContainerRepositoryTag < BasePermissionType
       graphql_name 'ContainerRepositoryTagPermissions'
 
-      ability_field :destroy_container_image,
+      ability_field :destroy_container_image_tag,
         name: 'destroy_container_repository_tag',
-        resolver_method: :destroy_container_image
+        resolver_method: :destroy_container_image_tag
     end
   end
 end

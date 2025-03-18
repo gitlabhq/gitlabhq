@@ -33,12 +33,6 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
       )
     end
 
-    it 'exposes correct_id in the API through the id field' do
-      post_graphql(query, current_user: current_user)
-
-      expect(ids_from_response).to match_array(WorkItems::Type.pluck(:correct_id))
-    end
-
     it 'prevents N+1 queries' do
       # Destroy 2 existing types
       WorkItems::Type.by_type([:issue, :task]).delete_all

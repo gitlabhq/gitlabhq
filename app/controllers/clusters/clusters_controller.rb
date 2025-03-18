@@ -105,7 +105,8 @@ class Clusters::ClustersController < ::Clusters::BaseController
     response = Clusters::Migration::CreateService.new(
       cluster.cluster,
       current_user: current_user,
-      configuration_project_id: migrate_params[:configuration_project_id]
+      configuration_project_id: migrate_params[:configuration_project_id],
+      agent_name: migrate_params[:agent_name]
     ).execute
 
     if response.success?
@@ -120,7 +121,7 @@ class Clusters::ClustersController < ::Clusters::BaseController
   private
 
   def migrate_params
-    params.permit(:configuration_project_id)
+    params.require(:cluster_migration).permit(:configuration_project_id, :agent_name)
   end
 
   def ensure_feature_enabled!

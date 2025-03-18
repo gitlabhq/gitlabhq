@@ -6,7 +6,7 @@ class CreateAiDuoChatEvents < Gitlab::Database::Migration[2.2]
 
   def up
     # rubocop:disable Migration/Datetime -- "timestamp" is a column name
-    create_table :ai_duo_chat_events, # rubocop:disable Migration/EnsureFactoryForTable -- code_suggestion_event
+    create_table :ai_duo_chat_events,
       options: 'PARTITION BY RANGE (timestamp)',
       primary_key: [:id, :timestamp] do |t|
       t.bigserial :id, null: false

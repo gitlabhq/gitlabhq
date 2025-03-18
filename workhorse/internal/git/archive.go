@@ -28,19 +28,26 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
 
-type archive struct{ senddata.Prefix }
+type archive struct {
+	senddata.Prefix
+	cleaner *archiveCleaner
+}
+
 type archiveParams struct {
 	ArchivePath       string
 	ArchivePrefix     string
-	CommitId          string
+	CommitID          string
 	GitalyServer      api.GitalyServer
 	GitalyRepository  gitalypb.Repository
 	DisableCache      bool
 	GetArchiveRequest []byte
+	StoragePath       string
+	UseArchiveCleaner bool
 }
 
 var (
-	SendArchive     = &archive{"git-archive:"}
+	// SendArchive sends a Git archive to the client, retrieving from the local disk cache if available.
+	SendArchive     = newArchive("git-archive:")
 	gitArchiveCache = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_git_archive_cache",
@@ -49,6 +56,13 @@ var (
 		[]string{"result"},
 	)
 )
+
+func newArchive(prefix string) *archive {
+	return &archive{
+		Prefix:  senddata.Prefix(prefix),
+		cleaner: newArchiveCleaner(),
+	}
+}
 
 func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params archiveParams
@@ -68,9 +82,18 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 	archiveFilename := path.Base(params.ArchivePath)
 
 	if cacheEnabled {
+		if params.UseArchiveCleaner {
+			a.cleaner.RegisterPath(params.StoragePath)
+		}
+
 		cachedArchive, err := os.Open(params.ArchivePath)
 		if err == nil {
-			defer cachedArchive.Close()
+			defer func() {
+				err = cachedArchive.Close()
+				if err != nil {
+					log.WithError(err).Error("SendArchive: failed to close cached archive")
+				}
+			}()
 			gitArchiveCache.WithLabelValues("hit").Inc()
 			setArchiveHeaders(w, format, archiveFilename)
 			// Even if somebody deleted the cachedArchive from disk since we opened
@@ -96,8 +119,15 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 			fail.Request(w, r, fmt.Errorf("SendArchive: create tempfile: %v", err))
 			return
 		}
-		defer tempFile.Close()
-		defer os.Remove(tempFile.Name())
+		defer func() {
+			// Ignore error, this may have already been closed with finalizeCachedArchive
+			_ = tempFile.Close()
+
+			err = os.Remove(tempFile.Name())
+			if err != nil {
+				log.WithError(err).Error("SendArchive: failed to remove tempfile")
+			}
+		}()
 	}
 
 	var archiveReader io.Reader
@@ -158,7 +188,7 @@ func handleArchiveWithGitaly(r *http.Request, params *archiveParams, format gita
 	} else {
 		request = &gitalypb.GetArchiveRequest{
 			Repository: &params.GitalyRepository,
-			CommitId:   params.CommitId,
+			CommitId:   params.CommitID,
 			Prefix:     params.ArchivePrefix,
 			Format:     format,
 		}

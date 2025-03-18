@@ -24,12 +24,27 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
       expect { execute }.to change { artifact.file.exists? }
     end
 
+    it 'returns an array of latency durations' do
+      freeze_time do
+        latency = 42.seconds
+
+        Ci::DeletedObject.update_all(created_at: Time.current - latency, pick_up_at: Time.current - latency)
+
+        response = service.execute
+
+        expect(response).to be_success
+        expect(response.payload).to eq({ latencies: [latency] })
+      end
+    end
+
     context 'when trying to execute without records' do
       let(:data) { [] }
 
       it 'does not change the number of objects' do
         expect { execute }.not_to change { Ci::DeletedObject.count }
       end
+
+      it { is_expected.to be_success }
     end
 
     context 'when trying to remove the same file multiple times' do

@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import CredentialsFilterApp from './components/credentials_filter_app.vue';
+import CredentialsFilterSortApp from './components/credentials_filter_sort_app.vue';
 
-export const initCredentialsFilterApp = () => {
+export const initCredentialsFilterSortApp = () => {
   return new Vue({
-    el: document.querySelector('#js-credentials-filter-app'),
-    render: (createElement) => createElement(CredentialsFilterApp),
+    el: document.querySelector('#js-credentials-filter-sort-app'),
+    render: (createElement) => createElement(CredentialsFilterSortApp),
   });
 };

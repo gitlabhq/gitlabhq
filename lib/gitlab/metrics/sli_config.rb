@@ -15,7 +15,7 @@ module Gitlab
         SliConfig.registered_classes[klass.to_s] = -> do
           return unless is_runtime_enabled_block.call
 
-          Gitlab::AppLogger.info "Gitlab::Metrics::SliConfig: enabling #{self}"
+          Gitlab::AppLogger.info "Gitlab::Metrics::SliConfig: enabling #{klass}"
           klass
         end
       end

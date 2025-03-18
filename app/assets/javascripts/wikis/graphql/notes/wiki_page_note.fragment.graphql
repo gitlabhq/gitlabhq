@@ -9,6 +9,9 @@ fragment WikiPageNote on Note {
   bodyHtml
   createdAt
   lastEditedAt
+  lastEditedBy {
+    ...Author
+  }
   url
   awardEmoji {
     nodes {

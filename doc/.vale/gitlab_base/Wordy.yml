@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
 message: "%s"
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/
 vocab: false
 level: suggestion
 ignorecase: true
