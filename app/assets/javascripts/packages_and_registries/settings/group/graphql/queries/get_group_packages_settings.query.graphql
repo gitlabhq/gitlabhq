@@ -5,6 +5,7 @@ query getGroupPackagesSettings($fullPath: ID!) {
     id
     dependencyProxySetting {
       enabled
+      identity
     }
     dependencyProxyImageTtlPolicy {
       ttl

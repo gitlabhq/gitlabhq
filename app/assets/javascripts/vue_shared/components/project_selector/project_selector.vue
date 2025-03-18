@@ -83,10 +83,11 @@ export default {
     isSelected(project) {
       return this.selectedProjects.some(({ id }) => project.id === id);
     },
-    onInput: debounce(function debouncedOnInput() {
+    onInput: debounce(function debouncedOnInput(searchQuery) {
       if (!this.hasSearched) {
         this.hasSearched = true;
       }
+      this.searchQuery = searchQuery;
       this.$emit('searched', this.searchQuery);
     }, SEARCH_INPUT_TIMEOUT_MS),
   },
@@ -95,7 +96,7 @@ export default {
 <template>
   <div>
     <gl-search-box-by-type
-      v-model="searchQuery"
+      :value="searchQuery"
       :placeholder="__('Search your projects')"
       type="search"
       class="mb-3"

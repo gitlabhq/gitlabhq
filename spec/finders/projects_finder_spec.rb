@@ -6,8 +6,8 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
   include AdminModeHelper
 
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user, organizations: [group.organization]) }
 
     let_it_be(:private_project) do
       create(:project, :private, name: 'A', path: 'A')
@@ -242,8 +242,8 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
 
       describe 'filter by topic_id' do
-        let_it_be(:topic1) { create(:topic) }
-        let_it_be(:topic2) { create(:topic) }
+        let_it_be(:topic1) { create(:topic, organization_id: public_project.organization_id) }
+        let_it_be(:topic2) { create(:topic, organization_id: public_project.organization_id) }
 
         before do
           public_project.reload

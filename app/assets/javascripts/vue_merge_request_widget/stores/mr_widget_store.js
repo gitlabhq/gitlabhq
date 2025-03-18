@@ -5,7 +5,6 @@ import { machine } from '~/lib/utils/finite_state_machine';
 import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import {
-  MTWPS_MERGE_STRATEGY,
   MT_MERGE_STRATEGY,
   MWCP_MERGE_STRATEGY,
   MWPS_MERGE_STRATEGY,
@@ -357,9 +356,6 @@ export default class MergeRequestStore {
   static getPreferredAutoMergeStrategy(availableAutoMergeStrategies) {
     if (availableAutoMergeStrategies === undefined) return undefined;
 
-    if (availableAutoMergeStrategies.includes(MTWPS_MERGE_STRATEGY)) {
-      return MTWPS_MERGE_STRATEGY;
-    }
     if (availableAutoMergeStrategies.includes(MT_MERGE_STRATEGY)) {
       return MT_MERGE_STRATEGY;
     }

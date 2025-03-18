@@ -8,7 +8,10 @@ module API
 
     helpers Helpers::ProjectsHelpers
 
-    before { authenticate_non_get! }
+    before do
+      authenticate_non_get!
+      set_current_organization(user: current_user)
+    end
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
@@ -162,7 +165,7 @@ module API
       end
 
       def load_projects
-        project_params = project_finder_params
+        project_params = project_finder_params.merge(current_organization: Current.organization)
         support_order_by_similarity!(project_params)
         verify_project_filters!(project_params)
         ProjectsFinder.new(current_user: current_user, params: project_params).execute
@@ -318,7 +321,6 @@ module API
       get feature_category: :groups_and_projects, urgency: :low do
         validate_projects_api_rate_limit!
         validate_updated_at_order_and_filter!
-
         present_projects load_projects
       end
 

@@ -117,6 +117,7 @@ see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|
+| `ci.input=<name>=<value>`      | Creates a pipeline with the specified inputs. | For example: `git push -o ci.input='stage=test' -o ci.input='security_scan=false'`. Example with an array of strings: `ci.input='["string", "double", "quotes"]'` |
 | `ci.skip`                      | Do not create a CI/CD pipeline for the latest push. Skips only branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI/CD integrations, such as Jenkins. | `git push -o ci.skip` |
 | `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/_index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
 

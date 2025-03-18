@@ -40724,7 +40724,7 @@ Represents a notes widget.
 
 ##### `WorkItemWidgetNotes.discussions`
 
-Notes on this work item.
+Discussions on this work item.
 
 Returns [`DiscussionConnection`](#discussionconnection).
 
@@ -40737,6 +40737,22 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetnotesdiscussionsfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
+
+##### `WorkItemWidgetNotes.notes`
+
+Notes on this work item.
+
+Returns [`NoteConnection!`](#noteconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetnotesnotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
 
 ### `WorkItemWidgetNotifications`
 
@@ -43191,7 +43207,6 @@ Representation of whether a GitLab merge request can be merged.
 | Value | Description |
 | ----- | ----------- |
 | <a id="mergestrategyenumadd_to_merge_train_when_checks_pass"></a>`ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS` | Use the add_to_merge_train_when_checks_pass merge strategy. |
-| <a id="mergestrategyenumadd_to_merge_train_when_pipeline_succeeds"></a>`ADD_TO_MERGE_TRAIN_WHEN_PIPELINE_SUCCEEDS` | Use the add_to_merge_train_when_pipeline_succeeds merge strategy. |
 | <a id="mergestrategyenummerge_train"></a>`MERGE_TRAIN` | Use the merge_train merge strategy. |
 | <a id="mergestrategyenummerge_when_checks_pass"></a>`MERGE_WHEN_CHECKS_PASS` | Use the merge_when_checks_pass merge strategy. |
 | <a id="mergestrategyenummerge_when_pipeline_succeeds"></a>`MERGE_WHEN_PIPELINE_SUCCEEDS` | Use the merge_when_pipeline_succeeds merge strategy. |

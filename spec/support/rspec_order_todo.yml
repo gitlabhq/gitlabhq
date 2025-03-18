@@ -1854,7 +1854,6 @@
 - './ee/spec/services/audit_events/streaming/headers/destroy_service_spec.rb'
 - './ee/spec/services/audit_events/streaming/headers/update_service_spec.rb'
 - './ee/spec/services/audit_events/user_impersonation_group_audit_event_service_spec.rb'
-- './ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb'
 - './ee/spec/services/auto_merge/merge_train_service_spec.rb'
 - './ee/spec/services/auto_merge/merge_when_pipeline_succeeds_service_spec.rb'
 - './ee/spec/services/award_emojis/add_service_spec.rb'

@@ -4,6 +4,7 @@ import initIssuablePopovers from 'ee_else_ce/issuable/popover';
 import { extractGroupOrProject } from '../../utils/common';
 
 const types = {
+  WorkItem: 'issue',
   Issue: 'issue',
   Epic: 'epic',
   MergeRequest: 'merge_request',

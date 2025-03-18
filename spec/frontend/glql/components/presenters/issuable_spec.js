@@ -1,7 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
-import { MOCK_ISSUE, MOCK_EPIC, MOCK_MERGE_REQUEST } from '../../mock_data';
+import { MOCK_ISSUE, MOCK_EPIC, MOCK_WORK_ITEM, MOCK_MERGE_REQUEST } from '../../mock_data';
 
 describe('IssuablePresenter', () => {
   let wrapper;
@@ -17,6 +17,7 @@ describe('IssuablePresenter', () => {
   describe.each`
     type               | mockData              | expectedText
     ${'issue'}         | ${MOCK_ISSUE}         | ${'Issue 1 (#1)'}
+    ${'issue'}         | ${MOCK_WORK_ITEM}     | ${'Issue 1 (#1)'}
     ${'epic'}          | ${MOCK_EPIC}          | ${'Epic 1 (&1)'}
     ${'merge_request'} | ${MOCK_MERGE_REQUEST} | ${'Merge request 1 (!1)'}
   `('when rendering an $type', ({ mockData, type, expectedText }) => {

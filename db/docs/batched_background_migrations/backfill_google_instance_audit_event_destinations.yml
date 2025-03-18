@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillGoogleInstanceAuditEventDestinations
+description: Backfill the audit_events_instance_google_cloud_logging_configurations table to audit_events_instance_external_streaming_destinations
+feature_category: audit_events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184058
+milestone: '17.11'
+queued_migration_version: 20250310155742
+finalized_by: # version of the migration that finalized this BBM

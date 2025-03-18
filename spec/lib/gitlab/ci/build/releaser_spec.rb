@@ -74,6 +74,24 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
           end
         end
       end
+
+      context 'with runner information' do
+        let(:runner) { create(:ci_runner, :with_runner_manager) }
+        let(:runner_manager) { runner.runner_managers.first }
+        let(:job) { create(:ci_build, options: { release: config[:release] }, runner: runner, runner_manager: runner_manager) }
+
+        it 'logs the runner information' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            class: described_class.to_s,
+            message: 'The release script for the release build is being prepared.',
+            runner_id: runner&.id,
+            runner_type: runner&.runner_type,
+            runner_platform: runner_manager&.platform
+          )
+
+          script
+        end
+      end
     end
 
     context 'individual nodes' do

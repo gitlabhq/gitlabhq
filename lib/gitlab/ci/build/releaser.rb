@@ -42,6 +42,14 @@ module Gitlab
         def initialize(job:)
           @job = job
           @config = job.options[:release]
+
+          Gitlab::AppJsonLogger.info(
+            class: self.class.to_s,
+            message: 'The release script for the release build is being prepared.',
+            runner_id: job.runner&.id,
+            runner_type: job.runner&.runner_type,
+            runner_platform: job.runner_manager&.platform
+          )
         end
 
         def script

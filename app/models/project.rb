@@ -841,8 +841,8 @@ class Project < ApplicationRecord
 
   scope :with_topic, ->(topic) { where(id: topic.project_topics.select(:project_id)) }
 
-  scope :with_topic_by_name, ->(topic_name) do
-    topic = Projects::Topic.find_by_name(topic_name)
+  scope :with_topic_by_name_and_organization_id, ->(topic_name, organization_ids) do
+    topic = Projects::Topic.find_by_name_and_organization_id(topic_name, organization_ids)
 
     topic ? with_topic(topic) : none
   end

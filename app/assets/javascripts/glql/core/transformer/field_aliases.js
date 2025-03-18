@@ -14,4 +14,11 @@ const fieldAliases = {
   approver: 'approvedBy',
 };
 
+if (gon.features?.glqlWorkItems) {
+  Object.assign(fieldAliases, {
+    epic: 'parent',
+    start: 'startDate',
+  });
+}
+
 export const getFieldAlias = (fieldName) => fieldAliases[fieldName] || fieldName;

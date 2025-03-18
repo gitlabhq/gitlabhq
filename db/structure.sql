@@ -1856,6 +1856,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_3c1a5f58a668() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "incident_management_oncall_rotations"
+  WHERE "incident_management_oncall_rotations"."id" = NEW."rotation_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3d1a58344b29() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15159,7 +15175,8 @@ CREATE TABLE incident_management_oncall_shifts (
     rotation_id bigint NOT NULL,
     participant_id bigint NOT NULL,
     starts_at timestamp with time zone NOT NULL,
-    ends_at timestamp with time zone NOT NULL
+    ends_at timestamp with time zone NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE incident_management_oncall_shifts_id_seq
@@ -33984,6 +34001,8 @@ CREATE INDEX index_incident_management_oncall_schedules_on_project_id ON inciden
 
 CREATE INDEX index_incident_management_oncall_shifts_on_participant_id ON incident_management_oncall_shifts USING btree (participant_id);
 
+CREATE INDEX index_incident_management_oncall_shifts_on_project_id ON incident_management_oncall_shifts USING btree (project_id);
+
 CREATE INDEX index_incident_management_pending_alert_escalations_on_alert_id ON ONLY incident_management_pending_alert_escalations USING btree (alert_id);
 
 CREATE INDEX index_incident_management_pending_alert_escalations_on_rule_id ON ONLY incident_management_pending_alert_escalations USING btree (rule_id);
@@ -39194,6 +39213,8 @@ CREATE TRIGGER trigger_397d1b13068e BEFORE INSERT OR UPDATE ON issue_customer_re
 
 CREATE TRIGGER trigger_3be1956babdb BEFORE INSERT OR UPDATE ON snippet_repository_storage_moves FOR EACH ROW EXECUTE FUNCTION trigger_3be1956babdb();
 
+CREATE TRIGGER trigger_3c1a5f58a668 BEFORE INSERT OR UPDATE ON incident_management_oncall_shifts FOR EACH ROW EXECUTE FUNCTION trigger_3c1a5f58a668();
+
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
 
 CREATE TRIGGER trigger_3e067fa9bfe3 BEFORE INSERT OR UPDATE ON incident_management_timeline_event_tag_links FOR EACH ROW EXECUTE FUNCTION trigger_3e067fa9bfe3();
@@ -40719,6 +40740,9 @@ ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
 
 ALTER TABLE ONLY compliance_requirements
     ADD CONSTRAINT fk_8f5fb77fc7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_oncall_shifts
+    ADD CONSTRAINT fk_8f8f23decb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY catalog_resource_component_last_usages
     ADD CONSTRAINT fk_909d62907f FOREIGN KEY (component_id) REFERENCES catalog_resource_components(id) ON DELETE CASCADE;
@@ -43440,9 +43464,6 @@ ALTER TABLE p_catalog_resource_component_usages
 
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_rails_e1e2cf841a FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_builds_execution_configs
-    ADD CONSTRAINT fk_rails_e214655a86_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_emails
     ADD CONSTRAINT fk_rails_e2ee00a8f7 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

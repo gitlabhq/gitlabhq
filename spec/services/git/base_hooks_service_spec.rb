@@ -152,6 +152,71 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
     end
   end
 
+  describe 'Pipeline options' do
+    context 'when pipeline options contain inputs' do
+      let(:pipeline_params) do
+        {
+          after: newrev,
+          before: oldrev,
+          checkout_sha: checkout_sha,
+          push_options: push_options,
+          ref: ref,
+          variables_attributes: variables_attributes
+        }
+      end
+
+      let(:push_options) do
+        {
+          ci: {
+            input: {
+              'security_scan=false': 1,
+              'stage=test': 1,
+              'level=20': 1,
+              'enviornments=["staging", "production"]': 1,
+              'rules=[{"if": "$CI_MERGE_REQUEST_ID"}, {"if": "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"}]': 1
+            }
+          }
+        }
+      end
+
+      let(:pipeline_service) { double(execute: service_response) }
+      let(:service_response) { double(error?: false, payload: pipeline, message: 'message') }
+      let(:pipeline) { double(persisted?: true) }
+      let(:variables_attributes) { [] }
+
+      let(:inputs) do
+        {
+          security_scan: false,
+          stage: 'test',
+          level: 20,
+          enviornments: %w[
+            staging production
+          ],
+          rules: [
+            { if: "$CI_MERGE_REQUEST_ID" },
+            { if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH" }
+          ]
+        }
+      end
+
+      before do
+        params[:push_options] = push_options
+      end
+
+      it 'calls the create pipeline service' do
+        expect(Ci::CreatePipelineService)
+          .to receive(:new)
+          .with(project, user, pipeline_params)
+          .and_return(pipeline_service)
+
+        expect(pipeline_service).to receive(:execute).with(:push, { inputs: inputs })
+        expect(subject).not_to receive(:log_pipeline_errors)
+
+        subject.execute
+      end
+    end
+  end
+
   describe 'Generating CI variables from push options' do
     let(:pipeline_params) do
       {

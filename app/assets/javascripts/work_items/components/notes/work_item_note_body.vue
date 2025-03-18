@@ -15,6 +15,11 @@ export default {
       type: Object,
       required: true,
     },
+    hasAdminNotePermission: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     hasReplies: {
       type: Boolean,
       required: false,
@@ -50,11 +55,18 @@ export default {
       gl?.lazyLoader?.searchLazyImages();
     },
     disableCheckboxes(disabled) {
+      if (!this.hasAdminNotePermission) {
+        return;
+      }
       this.$el.querySelectorAll('.task-list-item-checkbox').forEach((checkbox) => {
         checkbox.disabled = disabled; // eslint-disable-line no-param-reassign
       });
     },
     toggleCheckboxes(event) {
+      if (!this.hasAdminNotePermission) {
+        return;
+      }
+
       const { target } = event;
 
       if (!isCheckbox(target)) {

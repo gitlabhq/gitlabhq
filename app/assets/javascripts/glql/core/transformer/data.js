@@ -1,6 +1,21 @@
 const dataSourceTransformers = {
   issues: (data) => (data.project || data.group).issues,
   mergeRequests: (data) => (data.project || data.group).mergeRequests,
+  workItems: (data) => {
+    const { workItems } = structuredClone(data.project || data.group);
+    for (const workItem of workItems.nodes) {
+      for (const widget of workItem.widgets) {
+        for (const [attr, value] of Object.entries(widget)) {
+          if (!['type', '__typename'].includes(attr)) {
+            workItem[attr] = value;
+          }
+        }
+      }
+      delete workItem.widgets;
+    }
+
+    return workItems;
+  },
 };
 
 const transformForDataSource = (data) => {

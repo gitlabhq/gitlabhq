@@ -30,6 +30,7 @@
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
 #     organization: Scope the groups to the Organizations::Organization
+#     current_organization: Organizations::Organization - The current organization from the request
 #     language: int
 #     language_name: string
 #
@@ -206,7 +207,7 @@ class ProjectsFinder < UnionFinder
 
     topics = params[:topic].instance_of?(String) ? params[:topic].split(',') : params[:topic]
     topics.map(&:strip).uniq.reject(&:empty?).each do |topic|
-      items = items.with_topic_by_name(topic)
+      items = items.with_topic_by_name_and_organization_id(topic, topic_organization_ids)
     end
 
     items
@@ -215,7 +216,7 @@ class ProjectsFinder < UnionFinder
   def by_topic_id(items)
     return items unless params[:topic_id].present?
 
-    topic = Projects::Topic.find_by(id: params[:topic_id]) # rubocop: disable CodeReuse/ActiveRecord
+    topic = Projects::Topic.find_by_id_and_organization_id(params[:topic_id], topic_organization_ids)
     return Project.none unless topic
 
     items.with_topic(topic)
@@ -303,6 +304,17 @@ class ProjectsFinder < UnionFinder
     return projects if current_user&.can?(:admin_all_resources)
 
     projects.without_created_and_owned_by_banned_user
+  end
+
+  # Returns the available organizations to filter topics
+  def topic_organization_ids
+    @topic_organization_ids ||= begin
+      organization_ids = []
+      organization_ids << current_user.organization_ids if current_user
+      organization_ids << params[:organization].id if params[:organization]
+      organization_ids << params[:current_organization].id if params[:current_organization]
+      organization_ids.flatten.uniq.compact
+    end
   end
 end
 

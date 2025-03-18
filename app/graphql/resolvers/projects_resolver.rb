@@ -79,7 +79,8 @@ module Resolvers
         min_access_level: args[:min_access_level],
         language_name: args[:programming_language_name],
         trending: args[:trending],
-        not_aimed_for_deletion: args[:not_aimed_for_deletion]
+        not_aimed_for_deletion: args[:not_aimed_for_deletion],
+        current_organization: ::Current.organization
       }
     end
 

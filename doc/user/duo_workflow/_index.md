@@ -47,6 +47,9 @@ Workflow:
 - Understands the context of your project structure, codebase, and history.
   You can also add your own context, such as relevant GitLab issues or merge requests.
 
+For a click-through demo, see [GitLab Duo Workflow](https://gitlab.navattic.com/duo-workflow).
+<!-- Demo published on 2025-03-18 -->
+
 ## Prerequisites
 
 Before you can use Workflow, you must:

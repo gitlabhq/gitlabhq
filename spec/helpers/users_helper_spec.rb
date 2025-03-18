@@ -377,6 +377,16 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
     end
 
+    context 'with a placeholder user' do
+      it 'returns the "Placeholder" badge' do
+        placeholder_user = create(:user, :placeholder)
+
+        badges = helper.user_badges_in_admin_section(placeholder_user)
+
+        expect(filter_ee_badges(badges)).to match_array([text: s_("UserMapping|Placeholder"), variant: "muted"])
+      end
+    end
+
     context 'get badges for normal user' do
       it 'returns no badges' do
         user = create(:user)

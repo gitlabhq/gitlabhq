@@ -299,6 +299,17 @@ export const rawIssue = {
   iteration: null,
   healthStatus: null,
   type: 'ISSUE',
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [
+      {
+        linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/103',
+        linkType: 'blocks',
+        workItemState: 'OPEN',
+        __typename: 'LinkedWorkItemType',
+      },
+    ],
+  },
   __typename: 'Issue',
 };
 
@@ -342,6 +353,17 @@ export const mockIssue = {
   healthStatus: null,
   type: 'ISSUE',
   __typename: 'Issue',
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [
+      {
+        linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/103',
+        linkType: 'blocks',
+        workItemState: 'OPEN',
+        __typename: 'LinkedWorkItemType',
+      },
+    ],
+  },
 };
 
 export const mockEpic = {
@@ -383,6 +405,10 @@ export const mockEpic = {
     openedIssues: 0,
     __typename: 'EpicDescendantWeights',
   },
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssue2 = {
@@ -399,6 +425,10 @@ export const mockIssue2 = {
   epic: {
     id: 'gid://gitlab/Epic/40',
   },
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssue3 = {
@@ -412,6 +442,10 @@ export const mockIssue3 = {
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/28',
   epic: null,
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssue4 = {
@@ -425,6 +459,10 @@ export const mockIssue4 = {
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/28',
   epic: null,
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssue5 = {
@@ -438,6 +476,10 @@ export const mockIssue5 = {
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/40',
   epic: null,
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssue6 = {
@@ -451,6 +493,10 @@ export const mockIssue6 = {
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/41',
   epic: null,
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssue7 = {
@@ -464,6 +510,10 @@ export const mockIssue7 = {
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/42',
   epic: null,
+  linkedWorkItems: {
+    __typename: 'LinkedWorkItemTypeConnection',
+    nodes: [],
+  },
 };
 
 export const mockIssues = [mockIssue, mockIssue2];

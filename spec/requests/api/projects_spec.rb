@@ -187,6 +187,54 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    shared_examples_for 'filtering by topic (column topic_list)' do
+      let(:project_with_topics) { nil }
+
+      before do
+        project_with_topics.update!(topic_list: %w[ruby javascript])
+      end
+
+      it 'returns no projects' do
+        get api(path, user), params: { topic: 'foo' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
+      end
+
+      it 'returns matching project for a single topic' do
+        get api(path, user), params: { topic: 'ruby' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to contain_exactly a_hash_including('id' => project_with_topics.id)
+      end
+
+      it 'returns matching project for multiple topics' do
+        get api(path, user), params: { topic: 'ruby, javascript' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to contain_exactly a_hash_including('id' => project_with_topics.id)
+      end
+
+      it 'returns no projects if project match only some topic' do
+        get api(path, user), params: { topic: 'ruby, foo' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
+      end
+
+      it 'ignores topic if it is empty' do
+        get api(path, user), params: { topic: '' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_present
+      end
+    end
+
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
         let(:filter) { { search: project.path } }
@@ -196,6 +244,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       it_behaves_like 'projects response without N + 1 queries', 1 do
         let(:current_user) { nil }
+      end
+
+      it_behaves_like 'filtering by topic (column topic_list)' do
+        let(:user) { nil }
+        let(:current_user) { nil }
+        let(:namespace) { create(:namespace) }
+        let(:project_with_topics) do
+          create(:project, :repository, :public, namespace: namespace, updated_at: 5.days.ago)
+        end
+
+        before do
+          allow(Organizations::Organization).to(
+            receive(:default_organization).and_return(namespace.organization)
+          )
+        end
       end
     end
 
@@ -208,6 +271,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       it_behaves_like 'projects response without N + 1 queries', 0 do
         let(:current_user) { user }
+      end
+
+      it_behaves_like 'filtering by topic (column topic_list)' do
+        let(:project_with_topics) do
+          create(:project, :repository, namespace: user.namespace, updated_at: 5.days.ago)
+        end
       end
 
       shared_examples 'includes container_registry_access_level' do
@@ -326,55 +395,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
-      context 'filter by topic (column topic_list)' do
-        before do
-          project.update!(topic_list: %w[ruby javascript])
-        end
-
-        it 'returns no projects' do
-          get api(path, user), params: { topic: 'foo' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_empty
-        end
-
-        it 'returns matching project for a single topic' do
-          get api(path, user), params: { topic: 'ruby' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
-        end
-
-        it 'returns matching project for multiple topics' do
-          get api(path, user), params: { topic: 'ruby, javascript' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
-        end
-
-        it 'returns no projects if project match only some topic' do
-          get api(path, user), params: { topic: 'ruby, foo' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_empty
-        end
-
-        it 'ignores topic if it is empty' do
-          get api(path, user), params: { topic: '' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_present
-        end
-      end
-
       context 'filter by topic_id' do
-        let_it_be(:topic1) { create(:topic) }
-        let_it_be(:topic2) { create(:topic) }
+        let_it_be(:topic1) { create(:topic, organization_id: project.organization_id) }
+        let_it_be(:topic2) { create(:topic, organization_id: project.organization_id) }
 
         let(:current_user) { user }
 

@@ -121,6 +121,19 @@ RSpec.describe Explore::ProjectsController, :with_current_organization, feature_
           expect(response).to render_template('topic')
         end
       end
+
+      context 'when current organization is not set' do
+        before do
+          create(:topic, name: 'topic1', organization: current_organization)
+          allow(::Current).to receive(:organization).and_return(nil)
+        end
+
+        it 'renders a 404 error' do
+          get :topic, params: { topic_name: 'topic1' }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     describe 'GET #topic.atom' do

@@ -8,6 +8,19 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
 
   let(:service) { described_class.new(project, user) }
 
+  shared_examples 'when the strategy does not exist' do
+    let(:merge_request) { create(:merge_request, :merge_when_checks_pass, auto_merge_strategy: 'test') }
+
+    it 'cancels the auto merge' do
+      merge_request.merge_params['auto_merge_strategy'] = 'test'
+      merge_request.save!
+
+      expect { subject }.to change { merge_request.reload.auto_merge_enabled? }
+        .from(true)
+        .to(false)
+    end
+  end
+
   describe '.all_strategies_ordered_by_preference' do
     subject { described_class.all_strategies_ordered_by_preference }
 
@@ -15,7 +28,6 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
       if Gitlab.ee?
         is_expected.to contain_exactly(
           AutoMergeService::STRATEGY_MERGE_TRAIN,
-          AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_PIPELINE_SUCCEEDS,
           AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS,
           AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
           AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
@@ -178,10 +190,21 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
         is_expected.to eq(:merge_when_checks_pass)
       end
     end
+
+    context 'when the strategy does not exist' do
+      let(:strategy) { 'test' }
+
+      it 'does not set auto merge' do
+        expect { subject }.not_to change { merge_request.reload.auto_merge_enabled? }
+          .from(false)
+      end
+    end
   end
 
   describe '#update' do
     subject { service.update(merge_request) } # rubocop:disable Rails/SaveBang
+
+    it_behaves_like 'when the strategy does not exist'
 
     context 'when auto merge is enabled' do
       context 'when the merge request is MWCP' do
@@ -221,6 +244,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
   describe '#process' do
     subject { service.process(merge_request) }
 
+    it_behaves_like 'when the strategy does not exist'
+
     context 'when the merge request is MWCP' do
       let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
@@ -256,6 +281,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
 
   describe '#cancel' do
     subject { service.cancel(merge_request) }
+
+    it_behaves_like 'when the strategy does not exist'
 
     context 'when the merge request is MWCP' do
       let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
@@ -296,6 +323,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     subject { service.abort(merge_request, error) }
 
     let(:error) { 'an error' }
+
+    it_behaves_like 'when the strategy does not exist'
 
     context 'when the merge request is MWCP' do
       let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }

@@ -880,6 +880,12 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     }
                   }
                 }
+                notes(last: 1) {
+                  nodes {
+                    id
+                    body
+                  }
+                }
               }
             }
           GRAPHQL
@@ -919,6 +925,21 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           expect(notes).to contain_exactly(
             hash_including('maxAccessLevelOfAuthor' => 'Developer', 'authorIsContributor' => false)
+          )
+        end
+
+        it 'can return the latest note' do
+          latest_note = create(:note, project: work_item.project, noteable: work_item, note: 'Last note')
+
+          post_graphql(query, current_user: developer)
+
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          note = graphql_dig_at(notes_widget['notes'], :nodes).first
+
+          expect(note).to include(
+            'id' => latest_note.to_gid.to_s,
+            'body' => latest_note.note
           )
         end
 

@@ -1,0 +1,1 @@
+window.structuredClone = (item) => ({ ...item });

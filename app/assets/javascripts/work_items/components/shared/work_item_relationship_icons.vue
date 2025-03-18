@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
-import { LINKED_CATEGORIES_MAP, sprintfWorkItem } from '../../constants';
+import { LINKED_CATEGORIES_MAP, sprintfWorkItem, STATE_CLOSED } from '../../constants';
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
 import { findLinkedItemsWidget } from '../../utils';
 import WorkItemRelationshipPopover from './work_item_relationship_popover.vue';
@@ -32,6 +32,11 @@ export default {
       type: String,
       required: true,
     },
+    targetId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   apollo: {
     childItemLinkedItems: {
@@ -50,7 +55,6 @@ export default {
       update({ workspace }) {
         if (!workspace?.workItem) return [];
 
-        this.skipQuery = true;
         return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
       },
     },
@@ -73,10 +77,10 @@ export default {
       });
     },
     itemsBlockedByIconId() {
-      return `relationship-blocked-by-icon-${this.workItemIid}`;
+      return `relationship-blocked-by-icon-${this.targetId || this.workItemIid}`;
     },
     itemsBlocksIconId() {
-      return `relationship-blocks-icon-${this.workItemIid}`;
+      return `relationship-blocks-icon-${this.targetId || this.workItemIid}`;
     },
     blockedByLabel() {
       const message = sprintf(
@@ -105,12 +109,17 @@ export default {
     },
     childBlockedByItems() {
       return this.childItemLinkedItems.filter((item) => {
-        return item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY;
+        return (
+          item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY &&
+          item.workItemState !== STATE_CLOSED
+        );
       });
     },
     childBlocksItems() {
       return this.childItemLinkedItems.filter((item) => {
-        return item.linkType === LINKED_CATEGORIES_MAP.BLOCKS;
+        return (
+          item.linkType === LINKED_CATEGORIES_MAP.BLOCKS && item.workItemState !== STATE_CLOSED
+        );
       });
     },
   },

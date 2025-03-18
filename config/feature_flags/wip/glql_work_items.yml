@@ -1,0 +1,9 @@
+---
+name: glql_work_items
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/issues/46
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184907
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525480
+milestone: '17.11'
+group: group::knowledge
+type: wip
+default_enabled: false

@@ -16,7 +16,6 @@ Layout/LineLength:
     - 'app/controllers/projects/templates_controller.rb'
     - 'app/controllers/projects/web_ide_schemas_controller.rb'
     - 'app/controllers/projects_controller.rb'
-    - 'app/controllers/registrations_controller.rb'
     - 'app/controllers/repositories/git_http_client_controller.rb'
     - 'app/graphql/mutations/todos/mark_all_done.rb'
     - 'app/graphql/resolvers/container_repository_tags_resolver.rb'

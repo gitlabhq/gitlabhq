@@ -22,7 +22,7 @@ module Gitlab
         ]
       },
       ci: {
-        keys: [:skip, :variable]
+        keys: [:skip, :variable, :input]
       },
       integrations: {
         keys: [:skip_ci]
@@ -36,6 +36,7 @@ module Gitlab
     }).freeze
 
     MULTI_VALUE_OPTIONS = [
+      %w[ci input],
       %w[ci variable],
       %w[merge_request label],
       %w[merge_request unlabel],

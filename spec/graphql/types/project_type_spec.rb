@@ -73,6 +73,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
+    before do
+      ::Current.organization = user.namespace.organization
+    end
+
     it 'returns valid projects count' do
       create(:project, namespace: user.namespace)
       create(:project, namespace: user.namespace)

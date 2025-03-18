@@ -1,16 +1,21 @@
 <script>
 import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy, uniqueId } from 'lodash';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { updateHistory, queryToObject } from '~/lib/utils/url_utility';
-import { sprintf, __, n__ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
+import {
+  LINKED_CATEGORIES_MAP,
+  STATE_CLOSED,
+  WORK_ITEM_TYPE_VALUE_EPIC,
+} from '~/work_items/constants';
+import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { ListType } from '../constants';
 import { setError } from '../graphql/cache_updates';
 import IssueDueDate from './issue_due_date.vue';
@@ -24,9 +29,9 @@ export default {
     UserAvatarLink,
     IssueDueDate,
     IssueTimeEstimate,
+    WorkItemRelationshipIcons,
     IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
     IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
-    IssuableBlockedIcon,
     WorkItemTypeIcon,
     IssueMilestone,
     IssueHealthStatus: () =>
@@ -150,12 +155,6 @@ export default {
     orderedLabels() {
       return sortBy(this.item.labels.filter(this.isNonListLabel), 'title');
     },
-    blockedLabel() {
-      if (this.item.blockedByCount) {
-        return n__(`Blocked by %d issue`, `Blocked by %d issues`, this.item.blockedByCount);
-      }
-      return __('Blocked issue');
-    },
     descendantCounts() {
       return this.item.descendantCounts;
     },
@@ -180,9 +179,26 @@ export default {
     hasActions() {
       return !this.disabled && this.list.listType !== ListType.closed;
     },
+    workItemType() {
+      return this.isEpicBoard ? WORK_ITEM_TYPE_VALUE_EPIC : this.item.type;
+    },
     workItemDrawerEnabled() {
       if (gon.current_user_use_work_items_view) return true;
       return this.isEpicBoard ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
+    },
+    workItemFullPath() {
+      return this.item.namespace?.fullPath || this.item.referencePath?.split(this.itemPrefix)[0];
+    },
+    filteredLinkedItems() {
+      const linkedItems = this.item.linkedWorkItems?.nodes || [];
+      return linkedItems.filter((item) => {
+        return (
+          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
+        );
+      });
+    },
+    targetId() {
+      return uniqueId(`${this.item.iid}`);
     },
   },
   methods: {
@@ -238,13 +254,6 @@ export default {
         class="board-card-title gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
         :class="{ 'gl-mr-6': hasActions }"
       >
-        <issuable-blocked-icon
-          v-if="item.blocked"
-          :item="item"
-          :unique-id="`${item.id}${list.id}`"
-          :issuable-type="issuableType"
-          @blocking-issuables-error="setError"
-        />
         <gl-icon
           v-if="item.confidential"
           v-gl-tooltip
@@ -355,31 +364,43 @@ export default {
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-flex">
-        <user-avatar-link
-          v-for="assignee in cappedAssignees"
-          :key="assignee.id"
-          :link-href="assigneeUrl(assignee)"
-          :img-alt="avatarUrlTitle(assignee)"
-          :img-src="avatarUrl(assignee)"
-          :img-size="avatarSize"
-          class="js-no-trigger user-avatar-link"
-          tooltip-placement="bottom"
-        >
-          <span class="js-assignee-tooltip">
-            <span class="gl-block gl-font-bold">{{ __('Assignee') }}</span>
-            {{ assignee.name }}
-            <span>@{{ assignee.username }}</span>
-          </span>
-        </user-avatar-link>
-        <span
-          v-if="shouldRenderCounter"
-          v-gl-tooltip
-          :title="assigneeCounterTooltip"
-          class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-default"
-          data-placement="bottom"
-          >{{ assigneeCounterLabel }}</span
-        >
+      <div class="gl-flex gl-items-center">
+        <div class="board-card-assignee gl-flex">
+          <user-avatar-link
+            v-for="assignee in cappedAssignees"
+            :key="assignee.id"
+            :link-href="assigneeUrl(assignee)"
+            :img-alt="avatarUrlTitle(assignee)"
+            :img-src="avatarUrl(assignee)"
+            :img-size="avatarSize"
+            class="js-no-trigger user-avatar-link"
+            tooltip-placement="bottom"
+          >
+            <span class="js-assignee-tooltip">
+              <span class="gl-block gl-font-bold">{{ __('Assignee') }}</span>
+              {{ assignee.name }}
+              <span>@{{ assignee.username }}</span>
+            </span>
+          </user-avatar-link>
+          <span
+            v-if="shouldRenderCounter"
+            v-gl-tooltip
+            :title="assigneeCounterTooltip"
+            class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-default"
+            data-placement="bottom"
+            >{{ assigneeCounterLabel }}</span
+          >
+        </div>
+        <work-item-relationship-icons
+          v-if="filteredLinkedItems.length"
+          class="gl-ml-3 gl-whitespace-nowrap"
+          :work-item-type="workItemType"
+          :linked-work-items="filteredLinkedItems"
+          :work-item-full-path="workItemFullPath"
+          :work-item-iid="item.iid"
+          :work-item-web-url="item.webUrl"
+          :target-id="targetId"
+        />
       </div>
     </div>
   </div>

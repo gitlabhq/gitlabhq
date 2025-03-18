@@ -1,9 +1,9 @@
 ---
 name: container_registry_protected_containers_delete
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/406797
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146686
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183729
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517986
-milestone: '17.10'
+milestone: '17.11'
 group: group::container registry
 type: gitlab_com_derisk
 default_enabled: false

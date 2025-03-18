@@ -18,6 +18,8 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
     let_it_be(:other_private_project) { create(:project, :private) }
     let_it_be(:private_group_project) { create(:project, :private, group: private_group) }
     let_it_be(:private_personal_project) { create(:project, :private, namespace: user.namespace) }
+    let_it_be(:other_org) { create(:organization, :private) }
+    let_it_be(:other_org_project) { create(:project, organization: other_org, topic_list: ['postgres']) }
 
     let(:filters) { {} }
 
@@ -27,8 +29,13 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
       private_group.add_developer(user)
     end
 
+    before do
+      ::Current.organization = organization
+    end
+
     context 'when user is not logged in' do
       let(:current_user) { nil }
+      let(:organization) { project.organization }
 
       context 'when no filters are applied' do
         it 'returns all public projects' do
@@ -75,6 +82,14 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
           end
         end
 
+        context 'when filtering topics from another organization' do
+          let(:filters) { { topics: %w[postgres] } }
+
+          it 'returns no matching project' do
+            is_expected.to be_empty
+          end
+        end
+
         context 'when personal filter is provided' do
           let(:filters) { { personal: true } }
 
@@ -87,6 +102,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
     context 'when user is logged in' do
       let(:current_user) { user }
+      let(:organization) { user.organizations.first }
       let(:visible_projects) do
         [project, other_project, group_project, private_project, private_group_project, private_personal_project]
       end
@@ -162,6 +178,14 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
           it 'returns matching project' do
             is_expected.to contain_exactly(project)
+          end
+        end
+
+        context 'when filtering topics from another organization' do
+          let(:filters) { { topics: %w[postgres] } }
+
+          it 'returns no matching project' do
+            is_expected.to be_empty
           end
         end
 

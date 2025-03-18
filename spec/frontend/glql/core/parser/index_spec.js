@@ -51,6 +51,7 @@ title
 webUrl
 reference
 state
+
 }
 pageInfo {
 startCursor
@@ -110,9 +111,12 @@ id
 avatarUrl
 username
 name
-webUrl}
+webUrl
+}
+
 }
 dueDate
+
 }
 pageInfo {
 startCursor
@@ -173,9 +177,12 @@ id
 avatarUrl
 username
 name
-webUrl}
+webUrl
+}
+
 }
 dueDate
+
 }
 pageInfo {
 startCursor

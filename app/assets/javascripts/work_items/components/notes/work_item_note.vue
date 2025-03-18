@@ -439,6 +439,7 @@ export default {
             <note-body
               ref="noteBody"
               :note="note"
+              :has-admin-note-permission="hasAdminPermission"
               :has-replies="hasReplies"
               :is-updating="isUpdating"
               @updateNote="updateNote"

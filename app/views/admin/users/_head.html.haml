@@ -8,7 +8,9 @@
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Banned'), variant: :danger)
     - elsif @user.blocked?
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Blocked'), variant: :danger)
-    - if @user.internal?
+    - if @user.placeholder?
+      = render Pajamas::BadgeComponent.new(s_('UserMapping|Placeholder'), variant: :muted)
+    - elsif @user.internal?
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Internal'), variant: :neutral)
     - if @user.admin
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Admin'), variant: :success)

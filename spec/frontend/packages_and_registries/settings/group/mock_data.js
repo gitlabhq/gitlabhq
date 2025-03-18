@@ -28,6 +28,7 @@ export const packageSettings = {
 
 export const dependencyProxySettings = (extend) => ({
   enabled: true,
+  identity: 'foo',
   ...extend,
 });
 
