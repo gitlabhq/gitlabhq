@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-14 12:56\n"
+"PO-Revision-Date: 2025-03-15 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -668,9 +668,6 @@ msgstr "%{name}的%{count}/%{required}个核准"
 
 msgid "%{count} of %{total}"
 msgstr "%{count} / %{total}"
-
-msgid "%{count} open"
-msgstr ""
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
@@ -5275,9 +5272,6 @@ msgstr "始终关闭"
 msgid "AiPowered|Assign seats"
 msgstr "分配席位"
 
-msgid "AiPowered|Beta Self-hosted models"
-msgstr ""
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr "启用这些功能即表示您同意%{linkStart}GitLab 测试协议%{linkEnd}。"
 
@@ -5305,8 +5299,8 @@ msgstr ""
 msgid "AiPowered|Enable AI logs"
 msgstr "启用 AI 日志"
 
-msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
-msgstr "启用此功能即表示您同意%{linkStart}GitLab 测试协议%{linkEnd}。"
+msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
 msgstr "结束日期：%{endDate}"
@@ -5365,7 +5359,7 @@ msgstr ""
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr "GitLab Duo 的席位分配已移动"
 
-msgid "AiPowered|Self-hosted AI models"
+msgid "AiPowered|Self-hosted beta models and features"
 msgstr ""
 
 msgid "AiPowered|Setting unavailable"
@@ -5383,7 +5377,7 @@ msgstr "为了更轻松地配置 GitLab Duo，设置已移动到更显眼的位�
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr "启用实验和 Beta GitLab Duo 功能"
 
-msgid "AiPowered|Use beta self-hosted models features"
+msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
@@ -6089,6 +6083,9 @@ msgstr "为审查发现创建修复（Beta）"
 
 msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
 msgstr "为 Java 或 Python 文件中的选定代码行创建单元测试（Beta）"
+
+msgid "AmazonQ|Create unit tests for this merge request (Beta)"
+msgstr ""
 
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr "删除为 AI 网关创建的 IAM 身份提供商。"
@@ -25917,6 +25914,9 @@ msgstr "筛选 Geo 站点"
 msgid "Geo|Filter by name"
 msgstr "按名称筛选"
 
+msgid "Geo|Geo Replication - %{node_name}"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr "Geo设置"
 
@@ -38466,8 +38466,8 @@ msgstr "无数据"
 msgid "No data available"
 msgstr "无可用数据"
 
-msgid "No data found for this query"
-msgstr "未找到此查询的数据"
+msgid "No data found for this query."
+msgstr ""
 
 msgid "No deployments found"
 msgstr "没有找到部署"
@@ -40475,6 +40475,15 @@ msgstr "OpenAPI 规范文件 URL"
 msgid "OpenAPI Specification file path or URL"
 msgstr "OpenAPI 规范文件路径或 URL"
 
+msgid "OpenMrBadge|%{count} open"
+msgstr ""
+
+msgid "OpenMrBadge|Open"
+msgstr ""
+
+msgid "OpenMrBadge|Opened"
+msgstr ""
+
 msgid "OpenSSL version 3"
 msgstr ""
 
@@ -42007,6 +42016,9 @@ msgstr "对 GET 请求进行速率限制的路径"
 
 msgid "Paths with rate limiting for POST requests"
 msgstr "对 POST 请求进行速率限制的路径"
+
+msgid "Pattern"
+msgstr ""
 
 msgid "Pause"
 msgstr "暂停"
@@ -58817,6 +58829,12 @@ msgstr "您尝试批准的用户不是待批准的用户"
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr "您正在尝试冻结的用户在过去%{minimum_inactive_days}天一直处于活动状态，因此无法冻结。"
 
+msgid "The value must contain only numbers."
+msgstr ""
+
+msgid "The value must match the defined regular expression."
+msgstr ""
+
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr "提供变量的值超过了%{count}字符限制"
 
@@ -59561,26 +59579,20 @@ msgstr "这是专为您生成的私人电子邮件地址 %{helpIcon} 任何拥�
 msgid "This is a security log of authentication events involving your account."
 msgstr "这是涉及您帐户的身份验证事件的安全日志。"
 
-msgid "This is a username."
-msgstr ""
-
-msgid "This is an ID."
-msgstr ""
-
 msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr "这是一个已归档的项目。仓库和其他项目资源是只读的。"
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr "这是 GitLab Incubation Engineering 开发的一项实验性功能。"
 
+msgid "This is mandatory and must be defined."
+msgstr ""
+
 msgid "This is really just a warning"
 msgstr "这实际上只是一个警告"
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
 msgstr "这是一些信息。%{linkStart}了解更多%{linkEnd}。"
-
-msgid "This is something else."
-msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr "此数字为自许可证启动以来用户数目的最高值。"
@@ -66019,6 +66031,9 @@ msgstr "蓝色"
 msgid "WorkItem|Cancel"
 msgstr "取消"
 
+msgid "WorkItem|Change appearance for all issues, epics, and tasks"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr "变更类型"
 
@@ -66200,6 +66215,9 @@ msgid "WorkItem|Health status"
 msgstr "健康状况"
 
 msgid "WorkItem|Hide empty"
+msgstr ""
+
+msgid "WorkItem|Hide sidebar"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66460,6 +66478,9 @@ msgstr ""
 msgid "WorkItem|Show labels"
 msgstr "显示标签"
 
+msgid "WorkItem|Show sidebar"
+msgstr ""
+
 msgid "WorkItem|Similar items"
 msgstr "类似项"
 
@@ -66625,6 +66646,9 @@ msgstr "待办事项"
 msgid "WorkItem|Toggle details"
 msgstr "切换详情"
 
+msgid "WorkItem|Truncate descriptions"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr "关闭私密"
 
@@ -66757,8 +66781,8 @@ msgstr "%{workspaceName} 已被终止。"
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr "Devfile 定义了极狐GitLab 项目的开发环境。Workspace 必须在您使用的 Git 引用中具有有效的 devfile。"
 
-msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
-msgstr "Devfile 是一个文件，它通过指定 GitLab 项目所需的工具、语言、运行时和其他组件来定义开发环境。"
+msgid "Workspaces|A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr "工作区是您在极狐GitLab 中的代码的虚拟沙盒环境。"
@@ -70546,9 +70570,6 @@ msgstr "terraform 状态"
 
 msgid "test case"
 msgstr "测试用例"
-
-msgid "testing a boolean"
-msgstr ""
 
 msgid "the correct format."
 msgstr "正确的格式。"

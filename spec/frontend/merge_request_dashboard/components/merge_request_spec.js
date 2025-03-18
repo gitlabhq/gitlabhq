@@ -15,7 +15,7 @@ describe('Merge request dashboard merge request component', () => {
 
   const findBrokenBadge = () => wrapper.findByTestId('mr-broken-badge');
 
-  function createComponent(mergeRequest = {}, isShowingLabels = false) {
+  function createComponent(mergeRequest = {}, newMergeRequestIds = [], isShowingLabels = false) {
     const mockApollo = createMockApollo();
 
     mockApollo.clients.defaultClient.cache.writeQuery({
@@ -29,7 +29,9 @@ describe('Merge request dashboard merge request component', () => {
       apolloProvider: mockApollo,
       propsData: {
         listId: 'returned_to_you',
+        newMergeRequestIds,
         mergeRequest: {
+          id: 1,
           state: 'opened',
           reference: '!123456',
           title: 'Merge request title',
@@ -148,9 +150,15 @@ describe('Merge request dashboard merge request component', () => {
     ${false}        | ${false} | ${'does not render'}
     ${true}         | ${true}  | ${'renders'}
   `('$existsText when isShowingLabels is $isShowingLabels', ({ exists, isShowingLabels }) => {
-    createComponent({}, isShowingLabels);
+    createComponent({}, [], isShowingLabels);
 
     expect(wrapper.findByTestId('labels-container').exists()).toBe(exists);
     expect(wrapper.findComponent(GlLabel).exists()).toBe(exists);
+  });
+
+  it('sets background when newMergeRequestIds includes the merge request ID', () => {
+    createComponent({}, [1]);
+
+    expect(wrapper.classes()).toContain('gl-bg-green-50');
   });
 });

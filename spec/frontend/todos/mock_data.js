@@ -135,6 +135,46 @@ export const todosResponse = {
   },
 };
 
+export const todosResponseEmptyLastPage = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      todos: {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: true,
+          startCursor: null,
+          endCursor: null,
+          __typename: 'PageInfo',
+        },
+        __typename: 'TodoConnection',
+      },
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
+export const todosResponseNonFullFirstPage = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      todos: {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'id-0',
+          endCursor: 'id-6',
+          __typename: 'PageInfo',
+        },
+        __typename: 'TodoConnection',
+      },
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
 export const getPendingTodosCountResponse = {
   data: {
     currentUser: {

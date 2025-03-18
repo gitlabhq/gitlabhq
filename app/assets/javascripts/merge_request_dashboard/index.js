@@ -2,6 +2,7 @@ import { concatPagination } from '@apollo/client/utilities';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import App from './components/app.vue';
@@ -97,7 +98,8 @@ export function initMergeRequestDashboard(el) {
     apolloProvider,
     provide: {
       mergeRequestsSearchDashboardPath: el.dataset.mergeRequestsSearchDashboardPath,
-      showMergeChecksSuccess: el.dataset.showMergeChecksSuccess === 'true',
+      showMergeChecksSuccess: parseBoolean(el.dataset.showMergeChecksSuccess),
+      realtimeEnabled: parseBoolean(el.dataset.realtimeEnabled),
     },
     render(createElement) {
       return createElement(App, {

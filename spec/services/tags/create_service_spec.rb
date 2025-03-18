@@ -47,6 +47,16 @@ RSpec.describe Tags::CreateService, feature_category: :source_code_management do
       end
     end
 
+    context 'when tag format is incorrect' do
+      it 'returns an error' do
+        response = service.execute("\x7f", 'master', 'Foo')
+
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(400)
+        expect(response[:message]).to eq("Failed to create a tag: \u007F")
+      end
+    end
+
     context 'when tag already exists' do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)

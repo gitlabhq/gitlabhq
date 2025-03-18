@@ -196,6 +196,7 @@ detect-previous-failed-tests:
 e2e-test-pipeline-generate:
   extends:
     - .qa-job-base
+    - .needs-e2e-gem-cache
     - .predictive-job
     - .qa:rules:determine-e2e-tests
   stage: prepare

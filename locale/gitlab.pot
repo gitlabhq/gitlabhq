@@ -1781,6 +1781,9 @@ msgstr[1] ""
 msgid "+%{count} more"
 msgstr ""
 
+msgid "+%{count} new"
+msgstr ""
+
 msgid "+%{more_assignees_count}"
 msgstr ""
 
@@ -2320,15 +2323,6 @@ msgid "AIAgent|Update agent"
 msgstr ""
 
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
-msgstr ""
-
-msgid "AIPoweredSM|By enabling this feature, you agree to the %{link_start}GitLab Testing Agreement%{link_end}."
-msgstr ""
-
-msgid "AIPoweredSM|Disable %{link_start}direct connections%{link_end} for this instance."
-msgstr ""
-
-msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."
 msgstr ""
 
 msgid "AISummary|Generates a summary of this issue"
@@ -7422,7 +7416,7 @@ msgstr ""
 msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin area."
 msgstr ""
 
-msgid "ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) may result in a %{linkStart}true-up%{linkEnd}."
+msgid "ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) may result in %{linkStart}seat overages%{linkEnd}."
 msgstr ""
 
 msgid "ApplicationSettings|Add a link to Grafana"
@@ -10897,7 +10891,7 @@ msgstr ""
 msgid "BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."
 msgstr ""
 
-msgid "BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups."
+msgid "BulkImport|Be aware of %{visibilityLinkStart}visibility rules%{visibilityLinkEnd} and %{placeholdersLinkStart}placeholder user limits%{placeholdersLinkEnd} when importing groups."
 msgstr ""
 
 msgid "BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}"
@@ -63746,6 +63740,9 @@ msgstr ""
 msgid "UserMapping|Placeholder user could not be reassigned."
 msgstr ""
 
+msgid "UserMapping|Placeholder user limit"
+msgstr ""
+
 msgid "UserMapping|Placeholder user made permanent."
 msgstr ""
 
@@ -63870,6 +63867,9 @@ msgid "UserMapping|The provided CSV was not correctly formatted."
 msgstr ""
 
 msgid "UserMapping|The provided spreadsheet contains duplicate email addresses or usernames."
+msgstr ""
+
+msgid "UserMapping|This limit is shared with all subgroups in the group's hierarchy."
 msgstr ""
 
 msgid "UserMapping|Upload the completed CSV file."

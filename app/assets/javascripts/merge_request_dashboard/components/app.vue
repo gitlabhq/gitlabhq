@@ -1,14 +1,44 @@
 <script>
 import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlBanner } from '@gitlab/ui';
 import mergeRequestIllustration from '@gitlab/svgs/dist/illustrations/merge-requests-sm.svg';
+import Visibility from 'visibilityjs';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import eventHub from '../event_hub';
+import userMergeRequestUpdatedSubscription from '../queries/user_merge_request_updated.subscription.graphql';
 import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
 
 export default {
+  apollo: {
+    $subscribe: {
+      // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+      currentUserUpdated: {
+        query: userMergeRequestUpdatedSubscription,
+        variables() {
+          return {
+            userId: this.currentUserId,
+          };
+        },
+        skip() {
+          return !this.realtimeEnabled;
+        },
+        result({ data: { userMergeRequestUpdated: mergeRequest } }) {
+          if (!mergeRequest) return;
+
+          const isAssignee = mergeRequest.assignees.nodes.some((u) => u.id === this.currentUserId);
+          const isReviewer = mergeRequest.reviewers.nodes.some((u) => u.id === this.currentUserId);
+
+          if (isAssignee) eventHub.$emit('refetch.mergeRequests', 'assignedMergeRequests');
+          if (isReviewer) eventHub.$emit('refetch.mergeRequests', 'reviewRequestedMergeRequests');
+        },
+      },
+    },
+  },
   components: {
     GlButton,
     GlAlert,
@@ -22,7 +52,7 @@ export default {
     CollapsibleSection,
     MergeRequest,
   },
-  inject: ['mergeRequestsSearchDashboardPath'],
+  inject: ['mergeRequestsSearchDashboardPath', 'realtimeEnabled'],
   props: {
     tabs: {
       type: Array,
@@ -32,9 +62,21 @@ export default {
   data() {
     return {
       currentTab: this.$route.params.filter || '',
+      isVisible: !Visibility.hidden(),
     };
   },
+  computed: {
+    currentUserId() {
+      return convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
+    },
+  },
+  mounted() {
+    Visibility.change(() => this.onVisibilityChange());
+  },
   methods: {
+    onVisibilityChange() {
+      this.isVisible = !Visibility.hidden();
+    },
     clickTab({ key }) {
       this.currentTab = key;
       this.$router.push({ path: key || '/' });
@@ -99,18 +141,34 @@ export default {
             :query="list.query"
             :variables="list.variables"
             :hide-count="list.hideCount"
+            :is-visible="isVisible"
           >
-            <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
+            <template
+              #default="{
+                mergeRequests,
+                newMergeRequestIds,
+                count,
+                hasNextPage,
+                loadMore,
+                loading,
+                error,
+                resetNewMergeRequestIds,
+              }"
+            >
               <collapsible-section
                 :count="count"
                 :has-merge-requests="mergeRequests.length > 0"
                 :title="list.title"
                 :help-content="list.helpContent"
                 :loading="loading"
+                :new-merge-request-ids="newMergeRequestIds"
+                :merge-requests="mergeRequests"
+                :active-list="i === 0"
                 :class="{
                   '!gl-mt-0': listIndex === 0,
                   '!gl-mt-3': listIndex > 0,
                 }"
+                @clear-new="resetNewMergeRequestIds"
               >
                 <div>
                   <div class="gl-overflow-x-auto">
@@ -149,6 +207,7 @@ export default {
                             v-for="(mergeRequest, index) in mergeRequests"
                             :key="mergeRequest.id"
                             :merge-request="mergeRequest"
+                            :new-merge-request-ids="newMergeRequestIds"
                             :is-last="index === mergeRequests.length - 1"
                             :list-id="list.id"
                             data-testid="merge-request"

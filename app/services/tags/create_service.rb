@@ -19,6 +19,8 @@ module Tags
         return error("Tag #{tag_name} already exists", 409)
       rescue Gitlab::Git::PreReceiveError => ex
         return error(ex.message)
+      rescue Gitlab::Git::Repository::NoRepository
+        return error("Failed to create a tag: #{tag_name}", 400)
       end
 
       if new_tag

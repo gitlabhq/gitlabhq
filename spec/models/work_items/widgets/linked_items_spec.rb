@@ -13,10 +13,9 @@ RSpec.describe WorkItems::Widgets::LinkedItems, feature_category: :portfolio_man
     it { is_expected.to eq(:linked_items) }
   end
 
-  describe '.quick_action_commands' do
+  describe '.quick_action_commands', unless: Gitlab.ee? do
     specify do
-      expect(described_class.quick_action_commands)
-        .to contain_exactly(:blocks, :blocked_by, :relate, :unlink)
+      expect(described_class.quick_action_commands).to contain_exactly(:relate, :unlink)
     end
   end
 

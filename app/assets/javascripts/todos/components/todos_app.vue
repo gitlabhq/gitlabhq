@@ -180,8 +180,25 @@ export default {
       else if (ids.length === this.todos.length) this.selectAllChecked = true;
     },
     todos(todos) {
+      const pageSize = this.cursor.first || this.cursor.last;
+      // If we are on the last page, and have 0 todos, we want to load the previous page
       if (!this.isOnFirstPage && todos.length === 0) {
-        this.cursor.after = null; // go to first page
+        this.updateCursor({
+          last: pageSize,
+          after: null,
+          first: null,
+          before: null,
+        });
+      }
+      // If we are on the first page, have less than a page full of todos, but more todos available,
+      // we load the full first page
+      else if (this.isOnFirstPage && todos.length < pageSize && this.pageInfo.hasNextPage) {
+        this.updateCursor({
+          last: null,
+          after: null,
+          first: pageSize,
+          before: null,
+        });
       }
     },
   },

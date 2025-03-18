@@ -2079,7 +2079,7 @@ Input type: `AiAgentUpdateInput`
 
 ### `Mutation.aiFeatureSettingUpdate`
 
-Updates or create setting for the AI feature.
+Updates or creates settings for AI features.
 
 {{< details >}}
 **Introduced** in GitLab 17.4.
@@ -2092,16 +2092,16 @@ Input type: `AiFeatureSettingUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationaifeaturesettingupdateaiselfhostedmodelid"></a>`aiSelfHostedModelId` | [`AiSelfHostedModelID`](#aiselfhostedmodelid) | Global ID of the self-hosted model provide the AI setting. |
+| <a id="mutationaifeaturesettingupdateaiselfhostedmodelid"></a>`aiSelfHostedModelId` | [`AiSelfHostedModelID`](#aiselfhostedmodelid) | Global ID of the self-hosted model providing the AI setting. |
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationaifeaturesettingupdatefeature"></a>`feature` | [`AiFeatures!`](#aifeatures) | AI feature being configured. |
+| <a id="mutationaifeaturesettingupdatefeatures"></a>`features` | [`[AiFeatures!]!`](#aifeatures) | Array of AI features being configured (for single or batch update). |
 | <a id="mutationaifeaturesettingupdateprovider"></a>`provider` | [`AiFeatureProviders!`](#aifeatureproviders) | Provider for AI setting. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationaifeaturesettingupdateaifeaturesetting"></a>`aiFeatureSetting` | [`AiFeatureSetting`](#aifeaturesetting) | AI feature setting after mutation. |
+| <a id="mutationaifeaturesettingupdateaifeaturesettings"></a>`aiFeatureSettings` | [`[AiFeatureSetting!]!`](#aifeaturesetting) | List of AI feature settings after mutation. |
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaifeaturesettingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 

@@ -28,7 +28,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-Use the following endpoints to perform [bulk placeholder reassignment](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file) without using the UI.
+Use the following endpoints to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file) without using the UI.
 
 ## Download the CSV file
 

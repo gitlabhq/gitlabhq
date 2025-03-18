@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-14 12:57\n"
+"PO-Revision-Date: 2025-03-15 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start}부터 %{end}까지"
@@ -668,9 +668,6 @@ msgstr "%{name}님이 %{required} 중 %{count} 승인"
 
 msgid "%{count} of %{total}"
 msgstr "%{total} 중 %{count}"
-
-msgid "%{count} open"
-msgstr "%{count} 열림"
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
@@ -5275,9 +5272,6 @@ msgstr "항상 꺼짐"
 msgid "AiPowered|Assign seats"
 msgstr "좌석 할당"
 
-msgid "AiPowered|Beta Self-hosted models"
-msgstr "베타 자체 호스팅 모델"
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr "이 기능들을 활성화하면 %{linkStart}GitLab 테스트 약관%{linkEnd}에 동의하는 것으로 간주됩니다."
 
@@ -5305,8 +5299,8 @@ msgstr "먼저 체험하기 프로그램 배너가 해지 되었습니다. 7일 
 msgid "AiPowered|Enable AI logs"
 msgstr "AI 로그 활성화"
 
-msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
-msgstr "이 기능을 활성화하면 %{linkStart}GitLab 테스트 약관%{linkEnd}에 동의하게 됩니다."
+msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
 msgstr "종료일 : %{endDate}"
@@ -5365,8 +5359,8 @@ msgstr "먼저 체험하기 프로그램에 참여하여 GitLab을 더욱 개선
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr "GitLab Duo의 사용자 배정이 변경되었습니다."
 
-msgid "AiPowered|Self-hosted AI models"
-msgstr "자체 호스팅 AI 모델"
+msgid "AiPowered|Self-hosted beta models and features"
+msgstr ""
 
 msgid "AiPowered|Setting unavailable"
 msgstr "설정을 사용할 수 없음"
@@ -5383,8 +5377,8 @@ msgstr "GitLab Duo를 더 쉽게 구성할 수 있도록 설정이 더 눈에 �
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr "실험기능과 베타 GitLab Duo 기능 활성화"
 
-msgid "AiPowered|Use beta self-hosted models features"
-msgstr "베타 셀프 호스팅 모델 기능 사용"
+msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
+msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
 msgstr "GitLab Duo 설정 보기"
@@ -6089,6 +6083,9 @@ msgstr "리뷰 결과에 대한 수정 사항 생성(베타)"
 
 msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
 msgstr "Java 또는 Python 파일에서 선택한 코드 줄에 대한 단위 테스트 생성(베타)"
+
+msgid "AmazonQ|Create unit tests for this merge request (Beta)"
+msgstr ""
 
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr "AI 게이트웨이를 위해 생성된 IAM 식별 제공자를 삭제"
@@ -25917,6 +25914,9 @@ msgstr "Geo 사이트로 필터링"
 msgid "Geo|Filter by name"
 msgstr "이름으로 필터링"
 
+msgid "Geo|Geo Replication - %{node_name}"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr "Geo 설정"
 
@@ -38466,7 +38466,7 @@ msgstr ""
 msgid "No data available"
 msgstr "자료 없음"
 
-msgid "No data found for this query"
+msgid "No data found for this query."
 msgstr ""
 
 msgid "No deployments found"
@@ -40475,6 +40475,15 @@ msgstr "OpenAPI 스펙 파일 URL"
 msgid "OpenAPI Specification file path or URL"
 msgstr ""
 
+msgid "OpenMrBadge|%{count} open"
+msgstr ""
+
+msgid "OpenMrBadge|Open"
+msgstr ""
+
+msgid "OpenMrBadge|Opened"
+msgstr ""
+
 msgid "OpenSSL version 3"
 msgstr ""
 
@@ -42006,6 +42015,9 @@ msgid "Paths with rate limiting for GET requests"
 msgstr ""
 
 msgid "Paths with rate limiting for POST requests"
+msgstr ""
+
+msgid "Pattern"
 msgstr ""
 
 msgid "Pause"
@@ -58817,6 +58829,12 @@ msgstr "승인하려는 사용자는 승인 대기 중이 아닙니다."
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr "비활성화하려는 사용자는 지난 %{minimum_inactive_days} 일 동안 활성 상태였으며 비활성화할 수 없습니다."
 
+msgid "The value must contain only numbers."
+msgstr ""
+
+msgid "The value must match the defined regular expression."
+msgstr ""
+
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr ""
 
@@ -59561,25 +59579,19 @@ msgstr "당신을 위해 생성된 개인 이메일 주소%{helpIcon}입니다. 
 msgid "This is a security log of authentication events involving your account."
 msgstr ""
 
-msgid "This is a username."
-msgstr ""
-
-msgid "This is an ID."
-msgstr ""
-
 msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr "이것은 아카이빙된 프로젝트입니다. 리포지토리와 기타 프로젝트 리소스는 읽기 전용입니다."
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr "GitLab Incubation Engineering에서 개발한 실험적 기능입니다."
 
+msgid "This is mandatory and must be defined."
+msgstr ""
+
 msgid "This is really just a warning"
 msgstr "이건 정말 경고에 불과합니다"
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "This is something else."
 msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
@@ -66019,6 +66031,9 @@ msgstr "파란색"
 msgid "WorkItem|Cancel"
 msgstr "취소"
 
+msgid "WorkItem|Change appearance for all issues, epics, and tasks"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr "유형 변경"
 
@@ -66200,6 +66215,9 @@ msgid "WorkItem|Health status"
 msgstr "건강 상태"
 
 msgid "WorkItem|Hide empty"
+msgstr ""
+
+msgid "WorkItem|Hide sidebar"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66460,6 +66478,9 @@ msgstr ""
 msgid "WorkItem|Show labels"
 msgstr "라벨 표시"
 
+msgid "WorkItem|Show sidebar"
+msgstr ""
+
 msgid "WorkItem|Similar items"
 msgstr "유사한 항목"
 
@@ -66625,6 +66646,9 @@ msgstr "할일 아이템"
 msgid "WorkItem|Toggle details"
 msgstr "세부 정보 전환"
 
+msgid "WorkItem|Truncate descriptions"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr "비공개 해제"
 
@@ -66757,8 +66781,8 @@ msgstr ""
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr ""
 
-msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
-msgstr "devfile은 GitLab 프로젝트에 필요한 도구, 언어, 런타임 및 기타 컴포넌트를 지정하여 개발 환경을 결정하는 파일입니다."
+msgid "Workspaces|A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr ""
@@ -70546,9 +70570,6 @@ msgstr ""
 
 msgid "test case"
 msgstr "테스트 케이스"
-
-msgid "testing a boolean"
-msgstr ""
 
 msgid "the correct format."
 msgstr ""

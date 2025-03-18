@@ -1246,6 +1246,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_0ddb594934c9() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "incident_management_oncall_rotations"
+  WHERE "incident_management_oncall_rotations"."id" = NEW."oncall_rotation_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_0e13f214e504() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15076,7 +15092,8 @@ CREATE TABLE incident_management_oncall_participants (
     user_id bigint NOT NULL,
     color_palette smallint NOT NULL,
     color_weight smallint NOT NULL,
-    is_removed boolean DEFAULT false NOT NULL
+    is_removed boolean DEFAULT false NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE incident_management_oncall_participants_id_seq
@@ -33959,6 +33976,8 @@ CREATE INDEX index_incident_management_escalation_rules_on_project_id ON inciden
 
 CREATE INDEX index_incident_management_issuable_escalation_statuses_on_names ON incident_management_issuable_escalation_statuses USING btree (namespace_id);
 
+CREATE INDEX index_incident_management_oncall_participants_on_project_id ON incident_management_oncall_participants USING btree (project_id);
+
 CREATE INDEX index_incident_management_oncall_rotations_on_project_id ON incident_management_oncall_rotations USING btree (project_id);
 
 CREATE INDEX index_incident_management_oncall_schedules_on_project_id ON incident_management_oncall_schedules USING btree (project_id);
@@ -39099,6 +39118,8 @@ CREATE TRIGGER trigger_0d96daa4d734 BEFORE INSERT OR UPDATE ON bulk_import_expor
 
 CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_feature_flags_issues FOR EACH ROW EXECUTE FUNCTION trigger_0da002390fdc();
 
+CREATE TRIGGER trigger_0ddb594934c9 BEFORE INSERT OR UPDATE ON incident_management_oncall_participants FOR EACH ROW EXECUTE FUNCTION trigger_0ddb594934c9();
+
 CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_0e13f214e504();
 
 CREATE TRIGGER trigger_0f38e5af9adf BEFORE INSERT OR UPDATE ON ml_candidate_params FOR EACH ROW EXECUTE FUNCTION trigger_0f38e5af9adf();
@@ -40254,6 +40275,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 
 ALTER TABLE ONLY merge_requests_approval_rules_approver_users
     ADD CONSTRAINT fk_582e5f36e8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_oncall_participants
+    ADD CONSTRAINT fk_587217e733 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT fk_58a901ca7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

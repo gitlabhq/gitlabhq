@@ -177,6 +177,9 @@
 .if-merge-request-tier-3: &if-merge-request-tier-3
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
 
+.if-merge-train: &if-merge-train
+  if: $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"
+
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_PIPELINE_SOURCE == "schedule"'
 
@@ -761,7 +764,7 @@
   - "doc/ci/jobs/fine_grained_permissions.md"
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
 
-.cng-orchestrator-patterns: &cng-orchestrator-patterns
+.gitlab-orchestrator-patterns: &gitlab-orchestrator-patterns
   - "qa/gems/gitlab-orchestrator/**/*.rb"
   - "qa/gems/gitlab-orchestrator/{Gemfile,Gemfile.lock}"
 
@@ -1636,19 +1639,35 @@
 ############
 .qa:rules:update-gem-cache:
   rules:
+    - <<: *if-merge-train
+      when: never
     - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
       changes:
         - qa/Gemfile.lock
-    - <<: *if-schedule-maintenance
-    - <<: *if-security-schedule
-    - <<: *if-foss-schedule
-    - <<: *if-merge-request-labels-update-caches
+    - <<: *if-merge-request
+      changes:
+        - qa/Gemfile.lock
+    - when: manual
+      allow_failure: true
 
 .qa:rules:update-gem-cache-e2e:
   rules:
     - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
       when: never
     - !reference [.qa:rules:update-gem-cache, rules]
+
+.qa:rules:update-orchestrator-gem-cache:
+  rules:
+    - <<: *if-merge-train
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
+      changes:
+        - qa/gems/gitlab-orchestrator/Gemfile.lock
+    - <<: *if-merge-request
+      changes:
+        - qa/gems/gitlab-orchestrator/Gemfile.lock
+    - when: manual
+      allow_failure: true
 
 .qa:rules:metadata-lint:
   rules:
@@ -1657,14 +1676,14 @@
     - <<: *if-default-refs
       changes: *ci-qa-patterns
 
-.qa:rules:gitlab-cng:
+.qa:rules:gitlab-orchestrator:
   rules:
     - <<: *if-merge-request
-      changes: *cng-orchestrator-patterns
+      changes: *gitlab-orchestrator-patterns
     - <<: *if-merge-request
       changes: *rubocop-patterns
     - <<: *if-default-refs
-      changes: *cng-orchestrator-patterns
+      changes: *gitlab-orchestrator-patterns
 
 .qa:rules:code-merge-request:
   rules:

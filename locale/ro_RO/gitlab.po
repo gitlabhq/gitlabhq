@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-14 12:58\n"
+"PO-Revision-Date: 2025-03-15 12:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " de la %{start} până la %{end}"
@@ -900,9 +900,6 @@ msgstr "%{count} din %{required} aprobări de la %{name}"
 
 msgid "%{count} of %{total}"
 msgstr "%{count} din %{total}"
-
-msgid "%{count} open"
-msgstr ""
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
@@ -5629,9 +5626,6 @@ msgstr ""
 msgid "AiPowered|Assign seats"
 msgstr ""
 
-msgid "AiPowered|Beta Self-hosted models"
-msgstr ""
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5659,7 +5653,7 @@ msgstr ""
 msgid "AiPowered|Enable AI logs"
 msgstr ""
 
-msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
@@ -5719,7 +5713,7 @@ msgstr ""
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr ""
 
-msgid "AiPowered|Self-hosted AI models"
+msgid "AiPowered|Self-hosted beta models and features"
 msgstr ""
 
 msgid "AiPowered|Setting unavailable"
@@ -5737,7 +5731,7 @@ msgstr ""
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
-msgid "AiPowered|Use beta self-hosted models features"
+msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
@@ -6446,6 +6440,9 @@ msgid "AmazonQ|Create fixes for review findings (Beta)"
 msgstr ""
 
 msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
+msgstr ""
+
+msgid "AmazonQ|Create unit tests for this merge request (Beta)"
 msgstr ""
 
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
@@ -26437,6 +26434,9 @@ msgstr "Filtrarea site-urilor Geo"
 msgid "Geo|Filter by name"
 msgstr "Filtrare după nume"
 
+msgid "Geo|Geo Replication - %{node_name}"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr "Setări Geo"
 
@@ -39070,7 +39070,7 @@ msgstr ""
 msgid "No data available"
 msgstr "Nu există date disponibile"
 
-msgid "No data found for this query"
+msgid "No data found for this query."
 msgstr ""
 
 msgid "No deployments found"
@@ -41095,6 +41095,15 @@ msgstr "URL-ul fișierului de specificații OpenAPI"
 msgid "OpenAPI Specification file path or URL"
 msgstr "Calea sau URL-ul fișierului de specificații OpenAPI"
 
+msgid "OpenMrBadge|%{count} open"
+msgstr ""
+
+msgid "OpenMrBadge|Open"
+msgstr ""
+
+msgid "OpenMrBadge|Opened"
+msgstr ""
+
 msgid "OpenSSL version 3"
 msgstr ""
 
@@ -42632,6 +42641,9 @@ msgid "Paths with rate limiting for GET requests"
 msgstr ""
 
 msgid "Paths with rate limiting for POST requests"
+msgstr ""
+
+msgid "Pattern"
 msgstr ""
 
 msgid "Pause"
@@ -59563,6 +59575,12 @@ msgstr "Utilizatorul pe care încercați să-l aprobați nu este în așteptarea
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr "Utilizatorul pe care încercați să îl dezactivați a fost activ în ultimele %{minimum_inactive_days} (de) zile și nu poate fi dezactivat."
 
+msgid "The value must contain only numbers."
+msgstr ""
+
+msgid "The value must match the defined regular expression."
+msgstr ""
+
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr "Valoarea variabilei furnizate depășește limita de %{count} de caractere."
 
@@ -60307,25 +60325,19 @@ msgstr "Aceasta este un e-mail privat %{helpIcon} generat doar pentru dumneavoas
 msgid "This is a security log of authentication events involving your account."
 msgstr "Acesta este un jurnal de securitate al evenimentelor de autentificare implicând contul dumneavoastră."
 
-msgid "This is a username."
-msgstr ""
-
-msgid "This is an ID."
-msgstr ""
-
 msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr ""
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr "Aceasta este o caracteristică experimentală dezvoltată de GitLab Incubation Engineering."
 
+msgid "This is mandatory and must be defined."
+msgstr ""
+
 msgid "This is really just a warning"
 msgstr ""
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "This is something else."
 msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
@@ -66865,6 +66877,9 @@ msgstr ""
 msgid "WorkItem|Cancel"
 msgstr "Anulare"
 
+msgid "WorkItem|Change appearance for all issues, epics, and tasks"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr ""
 
@@ -67046,6 +67061,9 @@ msgid "WorkItem|Health status"
 msgstr ""
 
 msgid "WorkItem|Hide empty"
+msgstr ""
+
+msgid "WorkItem|Hide sidebar"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -67306,6 +67324,9 @@ msgstr ""
 msgid "WorkItem|Show labels"
 msgstr ""
 
+msgid "WorkItem|Show sidebar"
+msgstr ""
+
 msgid "WorkItem|Similar items"
 msgstr ""
 
@@ -67471,6 +67492,9 @@ msgstr ""
 msgid "WorkItem|Toggle details"
 msgstr ""
 
+msgid "WorkItem|Truncate descriptions"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr "Opriți confidențialitatea"
 
@@ -67603,7 +67627,7 @@ msgstr ""
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr ""
 
-msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgid "Workspaces|A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
 msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
@@ -71465,9 +71489,6 @@ msgid "terraform states"
 msgstr "stările terraform"
 
 msgid "test case"
-msgstr ""
-
-msgid "testing a boolean"
 msgstr ""
 
 msgid "the correct format."

@@ -6,12 +6,14 @@ RSpec.describe Import::PlaceholderUserLimit, :clean_gitlab_redis_shared_state, f
   let_it_be(:namespace) { create(:group) }
   let_it_be(:plan) { create(:default_plan) }
 
+  before_all do
+    create(:import_source_user, namespace: namespace)
+    create(:import_source_user, :completed, namespace: namespace, placeholder_user: nil)
+    create(:import_source_user)
+  end
+
   describe '#exceeded?' do
     subject(:exceeded?) { described_class.new(namespace: namespace).exceeded? }
-
-    before_all do
-      create(:import_source_user, namespace: namespace)
-    end
 
     context 'when plan has no limit' do
       it { is_expected.to eq(false) }
@@ -67,6 +69,57 @@ RSpec.describe Import::PlaceholderUserLimit, :clean_gitlab_redis_shared_state, f
           exceeded?
         end
       end
+    end
+  end
+
+  describe '#limit' do
+    subject(:instance) { described_class.new(namespace: namespace) }
+
+    context 'when plan has a limit' do
+      let(:limit) { 2 }
+
+      before do
+        create(:plan_limits, plan: plan, import_placeholder_user_limit_tier_1: limit)
+      end
+
+      it { expect(instance.limit).to eq(limit) }
+
+      it 'caches the result' do
+        allow_next_instance_of(PlanLimits) do |plan_limit|
+          expect(plan_limit).to receive(:limit_for).once.and_call_original
+        end
+
+        2.times { expect(described_class.new(namespace: namespace).limit).to eq(limit) }
+      end
+    end
+
+    context 'when plan has no limit (unlimited)' do
+      it { expect(instance.limit).to eq(0) }
+
+      it 'caches the result' do
+        allow_next_instance_of(PlanLimits) do |plan_limit|
+          expect(plan_limit).to receive(:limit_for).once.and_call_original
+        end
+
+        2.times { expect(described_class.new(namespace: namespace).limit).to eq(0) }
+      end
+    end
+  end
+
+  describe '#count' do
+    let(:limit) { 2 }
+
+    subject(:instance) { described_class.new(namespace: namespace) }
+
+    before do
+      allow(instance).to receive(:limit).and_return(limit)
+    end
+
+    it 'returns the count' do
+      expect(Import::SourceUser).to receive(:namespace_placeholder_user_count).with(namespace, limit: limit)
+                                                                              .and_call_original
+
+      expect(instance.count).to eq(1)
     end
   end
 end

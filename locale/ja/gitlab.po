@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-14 12:57\n"
+"PO-Revision-Date: 2025-03-15 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -668,9 +668,6 @@ msgstr "%{name}の承認: %{count}/%{required}"
 
 msgid "%{count} of %{total}"
 msgstr "%{count} / %{total}"
-
-msgid "%{count} open"
-msgstr ""
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
@@ -5275,9 +5272,6 @@ msgstr "常にオフ"
 msgid "AiPowered|Assign seats"
 msgstr "シートをアサイン"
 
-msgid "AiPowered|Beta Self-hosted models"
-msgstr "Beta版セルフホストモデル"
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr "これらの機能を有効にすると、%{linkStart}GitLab Testing Agreement%{linkEnd}に同意したことになります。"
 
@@ -5305,8 +5299,8 @@ msgstr "早期アクセスプログラムのバナーは終了しました。7�
 msgid "AiPowered|Enable AI logs"
 msgstr "AIログの有効化"
 
-msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
-msgstr "この機能を有効にすると、%{linkStart}GitLab Testing Agreement%{linkEnd}に同意したものとみなされます。"
+msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
 msgstr "終了日: %{endDate}"
@@ -5365,8 +5359,8 @@ msgstr "早期アクセスプログラムに参加し、GitLabの向上にご協
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr "GitLab Duoのシート割り当ては移動済みです"
 
-msgid "AiPowered|Self-hosted AI models"
-msgstr "セルフホストAIモデル"
+msgid "AiPowered|Self-hosted beta models and features"
+msgstr ""
 
 msgid "AiPowered|Setting unavailable"
 msgstr "設定が利用できません"
@@ -5383,8 +5377,8 @@ msgstr "GitLab Duoの設定をより簡単に行えるよう、見やすい場�
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr "GitLab DuoのExperiment版とBeta版の機能を有効にする"
 
-msgid "AiPowered|Use beta self-hosted models features"
-msgstr "Beta版のセルフホストモデル機能を使用する"
+msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
+msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
 msgstr "GitLab Duoの設定を表示する"
@@ -6089,6 +6083,9 @@ msgstr "レビュー検出結果に対する修正を作成する (ベータ版)
 
 msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
 msgstr "JavaまたはPythonファイル内の選択したコード行に対する単体テストを作成する (ベータ版)"
+
+msgid "AmazonQ|Create unit tests for this merge request (Beta)"
+msgstr ""
 
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr "AIゲートウェイのためのIAMアイデンティティプロバイダーを削除する。"
@@ -25917,6 +25914,9 @@ msgstr "Geoサイトのフィルタリング"
 msgid "Geo|Filter by name"
 msgstr "名前で絞り込み"
 
+msgid "Geo|Geo Replication - %{node_name}"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr "Geoの設定"
 
@@ -38466,8 +38466,8 @@ msgstr "データがありません"
 msgid "No data available"
 msgstr "利用可能なデータがありません。"
 
-msgid "No data found for this query"
-msgstr "このクエリに該当するデータは見つかりませんでした"
+msgid "No data found for this query."
+msgstr ""
 
 msgid "No deployments found"
 msgstr "デプロイが見つかりません"
@@ -40475,6 +40475,15 @@ msgstr "OpenAPI仕様ファイルのURL"
 msgid "OpenAPI Specification file path or URL"
 msgstr "OpenAPI 仕様ファイルのパスまたは URL"
 
+msgid "OpenMrBadge|%{count} open"
+msgstr ""
+
+msgid "OpenMrBadge|Open"
+msgstr ""
+
+msgid "OpenMrBadge|Opened"
+msgstr ""
+
 msgid "OpenSSL version 3"
 msgstr "OpenSSLバージョン3"
 
@@ -42007,6 +42016,9 @@ msgstr "レート制限があるGETリクエストのパス"
 
 msgid "Paths with rate limiting for POST requests"
 msgstr "レート制限があるPOSTリクエストのパス"
+
+msgid "Pattern"
+msgstr ""
 
 msgid "Pause"
 msgstr "停止"
@@ -58817,6 +58829,12 @@ msgstr "承認しようとしているユーザーは承認待ちではありま
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr "無効化しようとしているユーザーは過去 %{minimum_inactive_days} 日間アクティブであるため無効化できません"
 
+msgid "The value must contain only numbers."
+msgstr ""
+
+msgid "The value must match the defined regular expression."
+msgstr ""
+
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr "指定された変数の値は、文字の上限%{count}を超えています"
 
@@ -59561,26 +59579,20 @@ msgstr "これはあなたのために生成されたプライベートメール
 msgid "This is a security log of authentication events involving your account."
 msgstr "これはあなたのアカウントに関わる認証イベントのセキュリティログです。"
 
-msgid "This is a username."
-msgstr ""
-
-msgid "This is an ID."
-msgstr ""
-
 msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr "これはアーカイブ済みプロジェクトです。リポジトリおよびその他のプロジェクトリソースは読み取り専用です。"
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr "これはGitLab Incubation Engineeringが開発したExperiment版の機能です。"
 
+msgid "This is mandatory and must be defined."
+msgstr ""
+
 msgid "This is really just a warning"
 msgstr "これは単なる警告です"
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
 msgstr "これは情報の一部です。%{linkStart}詳しく見る%{linkEnd}。"
-
-msgid "This is something else."
-msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr "ライセンスが開始されて以来、あなたのインスタンスでのユーザーの最大数です。"
@@ -66019,6 +66031,9 @@ msgstr "ブルー"
 msgid "WorkItem|Cancel"
 msgstr "キャンセル"
 
+msgid "WorkItem|Change appearance for all issues, epics, and tasks"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr "種類の変更"
 
@@ -66200,6 +66215,9 @@ msgid "WorkItem|Health status"
 msgstr "ヘルスステータス"
 
 msgid "WorkItem|Hide empty"
+msgstr ""
+
+msgid "WorkItem|Hide sidebar"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66460,6 +66478,9 @@ msgstr ""
 msgid "WorkItem|Show labels"
 msgstr "ラベルを表示"
 
+msgid "WorkItem|Show sidebar"
+msgstr ""
+
 msgid "WorkItem|Similar items"
 msgstr "同様のアイテム"
 
@@ -66625,6 +66646,9 @@ msgstr "To Doアイテム"
 msgid "WorkItem|Toggle details"
 msgstr "詳細を切り替え"
 
+msgid "WorkItem|Truncate descriptions"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr "公開に設定する"
 
@@ -66757,8 +66781,8 @@ msgstr "%{workspaceName}は終了しました。"
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr "devfileでは、GitLabプロジェクトの開発環境が定義されます。ワークスペースで使用するGit参照には、有効なdevfileが含まれている必要があります。"
 
-msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
-msgstr "devfileはGitLabプロジェクトに必要なツール、プログラミング言語、ランタイムとその他の要素を指定する、開発環境を定義するファイルです。"
+msgid "Workspaces|A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr "ワークスペースは、GitLab内のコードの仮想サンドボックス環境です。"
@@ -70546,9 +70570,6 @@ msgstr "terraformステート"
 
 msgid "test case"
 msgstr "テストケース"
-
-msgid "testing a boolean"
-msgstr ""
 
 msgid "the correct format."
 msgstr "正しい形式です"

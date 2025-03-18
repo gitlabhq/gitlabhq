@@ -61,6 +61,8 @@ module RuboCop
           )
         PATTERN
 
+        # @!method attr_encrypted_columns(node) {yield(send_node, column_name)}
+        #   @param [RuboCop::AST::Node] node
         def_node_matcher :attr_encrypted_columns, <<~PATTERN
           (def !:down args {#{ADD_COLUMN_PATTERN} | #{CREATE_TABLE_PATTERN}})
         PATTERN
@@ -93,7 +95,7 @@ module RuboCop
         end
 
         def resolve_constant(node)
-          return node.value unless node.type == :const
+          return node.value unless node.const_type?
 
           node.ancestors.each do |ancestor|
             constant = find_constant(ancestor, node.short_name)
@@ -112,7 +114,7 @@ module RuboCop
         end
 
         def constant_assignment_matches?(node, name)
-          node.type == :casgn && node.name == name
+          node.casgn_type? && node.name == name
         end
 
         def valid_node?(node)

@@ -165,7 +165,7 @@ Before proceeding, review the [requirements](_index.md#requirements) for the ref
 
 ## Testing methodology
 
-The 200 RPS / 10k user reference architecture is designed to accommodate most common workflows. The [Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
+The 200 RPS / 10k user reference architecture is designed to accommodate most common workflows. The [GitLab Delivery: Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
 
 | Endpoint Type | Target Throughput |
 | ------------- | ----------------- |
@@ -176,6 +176,8 @@ The 200 RPS / 10k user reference architecture is designed to accommodate most co
 
 These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
 
+For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+
 ### Performance considerations
 
 You may need additional adjustments if your environment has:
@@ -185,10 +187,6 @@ You may need additional adjustments if your environment has:
 - Significant [additional workloads](_index.md#additional-workloads)
 
 In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
-
-### Testing tools and results
-
-We use the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) for testing, which includes a publicly available dataset. You can view detailed test results on the [GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
 ### Load Balancer configuration
 

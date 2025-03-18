@@ -143,15 +143,6 @@
   # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
   policy: push
 
-.qa-ruby-gems-cache: &qa-ruby-gems-cache
-  key:
-    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
-    files:
-      - qa/Gemfile.lock
-  paths:
-    - qa/vendor/ruby
-  policy: pull
-
 .setup-test-env-cache:
   cache:
     - *ruby-gems-cache
@@ -201,11 +192,30 @@
     - *ruby-gems-cache
     - *node-modules-cache
 
+# E2E related gem caching
 .qa-bundler-variables: &qa-bundler-variables
   BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
   BUNDLE_SILENCE_ROOT_WARNING: "true"
   BUNDLE_PATH: vendor
   BUNDLE_WITHOUT: development
+
+.qa-ruby-gems-cache: &qa-ruby-gems-cache
+  key:
+    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
+    files:
+      - qa/Gemfile.lock
+  paths:
+    - qa/vendor/ruby
+  policy: pull
+
+.qa-ruby-orchestrator-gems-cache: &qa-ruby-orchestrator-gems-cache
+  key:
+    prefix: "qa-orchestrator-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
+    files:
+      - qa/gems/gitlab-orchestrator/Gemfile.lock
+  paths:
+    - qa/gems/gitlab-orchestrator/vendor/ruby
+  policy: pull
 
 .cng-helm-cache: &cng-helm-cache
   key: cng-helm-cache-${GITLAB_HELM_CHART_REF}
@@ -222,7 +232,7 @@
   variables: *qa-bundler-variables
   cache:
     - <<: *qa-ruby-gems-cache
-      policy: pull-push
+      policy: push
 
 .cng-qa-cache:
   variables:
@@ -239,7 +249,18 @@
   cache:
     - *qa-ruby-gems-cache
     - <<: *cng-helm-cache
-      policy: pull-push
+      policy: push
+
+.qa-orchestrator-cache:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-orchestrator-gems-cache
+
+.qa-orchestrator-cache-push:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-orchestrator-gems-cache
+      policy: push
 
 .yarn-cache:
   cache:

@@ -1,0 +1,17 @@
+subscription currentUserMergeRequestUpdatedSubscription($userId: UserID!) {
+  userMergeRequestUpdated(userId: $userId) {
+    ... on MergeRequest {
+      id
+      assignees {
+        nodes {
+          id
+        }
+      }
+      reviewers {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}

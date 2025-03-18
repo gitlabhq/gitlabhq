@@ -16,7 +16,12 @@ import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
-import { todosResponse, getPendingTodosCountResponse } from '../mock_data';
+import {
+  todosResponse,
+  todosResponseEmptyLastPage,
+  todosResponseNonFullFirstPage,
+  getPendingTodosCountResponse,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -96,35 +101,44 @@ describe('TodosApp', () => {
     );
   });
 
-  it('resets cursor to first page when receiving empty todos on non-first page', async () => {
+  it('resets cursor to "full last page" when seeing an empty list while not being on page 1', async () => {
     createComponent();
 
-    const newCursor = { first: 50, after: 'cursor-1' };
+    const newCursor = { first: 20, after: 'id-39' };
     findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
     await waitForPromises();
-    expect(wrapper.vm.cursor.after).toBe('cursor-1');
+    expect(wrapper.vm.cursor.after).toBe('id-39');
 
-    // Modify response to be empty with hasPreviousPage true
-    const emptyResponse = {
-      data: {
-        currentUser: {
-          ...todosResponse.data.currentUser,
-          todos: {
-            nodes: [],
-            pageInfo: {
-              ...todosResponse.data.currentUser.todos.pageInfo,
-              hasPreviousPage: true,
-            },
-          },
-        },
-      },
-    };
-
-    todosQuerySuccessHandler.mockResolvedValueOnce(emptyResponse);
+    todosQuerySuccessHandler.mockResolvedValueOnce(todosResponseEmptyLastPage);
     wrapper.vm.$apollo.queries.todos.refetch();
     await waitForPromises();
 
-    expect(wrapper.vm.cursor.after).toBe(null);
+    expect(wrapper.vm.cursor).toEqual({
+      first: null,
+      last: 20,
+      after: null,
+      before: null,
+    });
+  });
+
+  it('resets cursor to "full first page" when seeing a non-full list while being on page 1', async () => {
+    createComponent();
+
+    const newCursor = { last: 20, before: 'id-7' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
+    await waitForPromises();
+    expect(wrapper.vm.cursor.before).toBe('id-7');
+
+    todosQuerySuccessHandler.mockResolvedValueOnce(todosResponseNonFullFirstPage);
+    wrapper.vm.$apollo.queries.todos.refetch();
+    await waitForPromises();
+
+    expect(wrapper.vm.cursor).toEqual({
+      first: 20,
+      last: null,
+      after: null,
+      before: null,
+    });
   });
 
   it('fetches the todos and counts when filters change', async () => {

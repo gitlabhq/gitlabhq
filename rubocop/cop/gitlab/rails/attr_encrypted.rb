@@ -27,6 +27,7 @@ module RuboCop
               corrector.replace(node, "encrypts #{node.children[2].value.inspect}")
             end
           end
+          alias_method :on_csend, :on_send
         end
       end
     end

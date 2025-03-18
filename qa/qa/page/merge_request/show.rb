@@ -239,12 +239,6 @@ module QA
           click_by_javascript(find_element('edit-title-button', skip_finished_loading_check: true))
         end
 
-        def expand_merge_checks
-          within_element('.mr-widget-section') do
-            click_element('chevron-lg-down-icon')
-          end
-        end
-
         def has_file?(file_name)
           open_file_tree
 

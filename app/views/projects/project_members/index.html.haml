@@ -1,6 +1,7 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _("Members")
 - show_the_header = can_invite_members_for_project?(@project) || project_can_be_shared?
+- content_for :reload_on_member_invite_success, true
 
 = render_if_exists 'shared/promotions/promote_planner_role'
 - if show_the_header

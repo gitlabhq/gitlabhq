@@ -37,6 +37,21 @@ export default {
       required: false,
       default: false,
     },
+    mergeRequests: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    newMergeRequestIds: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    activeList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -54,14 +69,30 @@ export default {
         },
       );
     },
+    newMergeRequests() {
+      return this.mergeRequests.filter((mr) => this.newMergeRequestIds.includes(mr.id));
+    },
+    newMergeRequestsBadgeText() {
+      return sprintf(__('+%{count} new'), { count: this.newMergeRequests.length });
+    },
   },
   watch: {
     loading(newVal) {
       this.open = newVal || this.hasMergeRequests;
     },
   },
+  methods: {
+    onCollapsedSection() {
+      this.open = false;
+      this.$emit('clear-new');
+    },
+    onExpandSection() {
+      this.open = true;
+    },
+  },
 };
 </script>
+2
 
 <template>
   <crud-component
@@ -69,6 +100,8 @@ export default {
     :collapsed="!open"
     :toggle-aria-label="toggleButtonLabel"
     body-class="!gl-mx-0 gl-mb-0"
+    @collapsed="onCollapsedSection"
+    @expanded="onExpandSection"
   >
     <template #title>
       {{ title }}
@@ -76,6 +109,13 @@ export default {
     </template>
 
     <template #actions>
+      <gl-badge
+        v-if="!open && newMergeRequests.length"
+        :variant="activeList ? 'success' : 'muted'"
+        class="gl-font-bold"
+      >
+        {{ newMergeRequestsBadgeText }}
+      </gl-badge>
       <gl-button
         v-gl-tooltip
         :title="helpContent"

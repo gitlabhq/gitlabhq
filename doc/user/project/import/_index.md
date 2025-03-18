@@ -257,6 +257,13 @@ If these limits are not sufficient for your import, [contact GitLab Support](htt
 For GitLab Self-Managed and GitLab Dedicated, no placeholder limits apply by default.
 A GitLab administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) on their instance.
 
+To view your current placeholder user usage and limits:
+
+1. On the left sidebar, select **Search or go to** and
+   find your group. This group must be at the top level.
+1. Select **Settings > Usage Quotas**.
+1. Select the **Import** tab.
+
 For imports to GitLab.com, some contributions might not be created
 because these contributions are mapped to the same user.
 For example, if multiple merge request approvers are mapped to the same user,
@@ -427,6 +434,9 @@ After you reassign contributions, GitLab sends you an email with the number of:
 - Skipped rows
 
 If any rows have not been successfully processed, the email has a CSV file with more detailed results.
+
+To reassign placeholder users in bulk without using the UI,
+see [Group placeholder reassignments API](../../../api/group_placeholder_reassignments.md).
 
 #### Keep as placeholder
 

@@ -101,6 +101,15 @@ module NamespacesHelper
     }
   end
 
+  def import_usage_app_data(namespace)
+    placeholder_user_limit = ::Import::PlaceholderUserLimit.new(namespace: namespace)
+
+    {
+      placeholder_users_count: placeholder_user_limit.count,
+      placeholder_users_limit: placeholder_user_limit.limit
+    }
+  end
+
   def group_usage_quotas_url(group, *args)
     Rails.application.routes.url_helpers.group_usage_quotas_url(group.root_ancestor, *args)
   end

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-14 12:57\n"
+"PO-Revision-Date: 2025-03-15 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} bis %{end}"
@@ -784,9 +784,6 @@ msgstr "%{count} der erforderlichen %{required} Zustimmungen durch %{name}"
 
 msgid "%{count} of %{total}"
 msgstr "%{count} von %{total}"
-
-msgid "%{count} open"
-msgstr ""
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
@@ -5452,9 +5449,6 @@ msgstr ""
 msgid "AiPowered|Assign seats"
 msgstr "Plätze zuweisen"
 
-msgid "AiPowered|Beta Self-hosted models"
-msgstr "Beta – Selbstgehostete Modelle"
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5482,8 +5476,8 @@ msgstr "Early Access Program-Banner geschlossen. Dir wird es die nächsten siebe
 msgid "AiPowered|Enable AI logs"
 msgstr "KI-Protokolle aktivieren"
 
-msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
-msgstr "Mit dem Aktivieren dieser Funktion akzeptierst du die %{linkStart}GitLab-Testvereinbarung%{linkEnd}."
+msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
 msgstr "Enddatum: %{endDate}"
@@ -5542,8 +5536,8 @@ msgstr "Nimm am Early Access-Programm teil und unterstützte uns dabei, GitLab z
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr "Die Platzzuweisung für GitLab Duo wurde verschoben"
 
-msgid "AiPowered|Self-hosted AI models"
-msgstr "Selbstgehostete KI-Modelle"
+msgid "AiPowered|Self-hosted beta models and features"
+msgstr ""
 
 msgid "AiPowered|Setting unavailable"
 msgstr "Einstellung nicht verfügbar"
@@ -5560,8 +5554,8 @@ msgstr "Um die Konfiguration von GitLab Duo zu vereinfachen, wurden die Einstell
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
-msgid "AiPowered|Use beta self-hosted models features"
-msgstr "Betafunktionen für selbstgehostete Modelle verwenden"
+msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
+msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
 msgstr "Einstellungen"
@@ -6268,6 +6262,9 @@ msgstr "Korrekturen für Review-Ergebnisse erstellen (Beta)"
 
 msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
 msgstr "Unit-Tests für ausgewählte Codezeilen in Java- oder Python-Dateien erstellen (Beta)"
+
+msgid "AmazonQ|Create unit tests for this merge request (Beta)"
+msgstr ""
 
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr ""
@@ -26177,6 +26174,9 @@ msgstr "Geo-Seiten filtern"
 msgid "Geo|Filter by name"
 msgstr "Filtere nach Name"
 
+msgid "Geo|Geo Replication - %{node_name}"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr "Geo-Einstellungen"
 
@@ -38768,8 +38768,8 @@ msgstr "Keine Daten"
 msgid "No data available"
 msgstr "Keine Daten verfügbar"
 
-msgid "No data found for this query"
-msgstr "Es wurden keine Daten für diese Abfrage gefunden"
+msgid "No data found for this query."
+msgstr ""
 
 msgid "No deployments found"
 msgstr "Keine Deployments gefunden"
@@ -40785,6 +40785,15 @@ msgstr "URL der OpenAPI-Spezifikationsdatei"
 msgid "OpenAPI Specification file path or URL"
 msgstr "Pfad oder URL der OpenAPI-Spezifikationsdatei"
 
+msgid "OpenMrBadge|%{count} open"
+msgstr ""
+
+msgid "OpenMrBadge|Open"
+msgstr ""
+
+msgid "OpenMrBadge|Opened"
+msgstr ""
+
 msgid "OpenSSL version 3"
 msgstr "OpenSSL Version 3"
 
@@ -42320,6 +42329,9 @@ msgstr "Pfade mit Ratenbegrenzung für GET-Anfragen"
 
 msgid "Paths with rate limiting for POST requests"
 msgstr "Pfade mit Ratenbegrenzung für POST-Anfragen"
+
+msgid "Pattern"
+msgstr ""
 
 msgid "Pause"
 msgstr "Pausieren"
@@ -59190,6 +59202,12 @@ msgstr "Für den/die Benutzer(in), den/die du genehmigen möchtest, steht keine 
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr "Der/Die Benutzer(in), den/die du deaktivieren möchtest, war in den letzten %{minimum_inactive_days} Tagen aktiv und kann nicht deaktiviert werden."
 
+msgid "The value must contain only numbers."
+msgstr ""
+
+msgid "The value must match the defined regular expression."
+msgstr ""
+
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr "Der angegebene Variablenwert ist zu lang (Limit: %{count} Zeichen)."
 
@@ -59934,26 +59952,20 @@ msgstr "Dies ist eine private E-Mail-Adresse %{helpIcon}, die nur für dich erst
 msgid "This is a security log of authentication events involving your account."
 msgstr "Dies ist ein Sicherheitsprotokoll der Authentifizierungsereignisse für dein Konto."
 
-msgid "This is a username."
-msgstr ""
-
-msgid "This is an ID."
-msgstr ""
-
 msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr "Archiviertes Projekt. Repository und andere Projektressourcen sind schreibgeschützt"
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr "Dies ist eine experimentelle Funktion, die von GitLab Incubation Engineering entwickelt wurde."
 
+msgid "This is mandatory and must be defined."
+msgstr ""
+
 msgid "This is really just a warning"
 msgstr "Das ist wirklich nur eine Warnung"
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
 msgstr "Dies sind einige Informationen. %{linkStart}Mehr erfahren%{linkEnd}."
-
-msgid "This is something else."
-msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr "Dies ist die höchste Anzahl an Benutzer(inne)n, die deine Installation seit Beginn der Lizenz genutzt haben."
@@ -66442,6 +66454,9 @@ msgstr "Blau"
 msgid "WorkItem|Cancel"
 msgstr "Abbrechen"
 
+msgid "WorkItem|Change appearance for all issues, epics, and tasks"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr "Typ ändern"
 
@@ -66623,6 +66638,9 @@ msgid "WorkItem|Health status"
 msgstr "Integritätsstatus"
 
 msgid "WorkItem|Hide empty"
+msgstr ""
+
+msgid "WorkItem|Hide sidebar"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66883,6 +66901,9 @@ msgstr ""
 msgid "WorkItem|Show labels"
 msgstr "Labels anzeigen"
 
+msgid "WorkItem|Show sidebar"
+msgstr ""
+
 msgid "WorkItem|Similar items"
 msgstr "Ähnliche Elemente"
 
@@ -67048,6 +67069,9 @@ msgstr "Aufgabenelement"
 msgid "WorkItem|Toggle details"
 msgstr "Details umschalten"
 
+msgid "WorkItem|Truncate descriptions"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr "Vertraulichkeit ausschalten"
 
@@ -67180,8 +67204,8 @@ msgstr "%{workspaceName} wurde beendet."
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr "Eine devfile definiert die Entwicklungsumgebung für ein GitLab-Projekt. Ein Arbeitsbereich benötigt eine gültige devfile in der von dir verwendeten Git-Referenz."
 
-msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
-msgstr "Eine Devfile ist eine Datei, die eine Entwicklungsumgebung definiert, indem sie die erforderlichen Tools, Sprachen, Laufzeiten und andere Komponenten für ein GitLab-Projekt angibt."
+msgid "Workspaces|A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr "Ein Arbeitsbereich ist eine virtuelle Sandbox-Umgebung für deinen Code in GitLab."
@@ -71006,9 +71030,6 @@ msgstr "Terraform-Status"
 
 msgid "test case"
 msgstr "Testfall"
-
-msgid "testing a boolean"
-msgstr ""
 
 msgid "the correct format."
 msgstr "das richtige Format."

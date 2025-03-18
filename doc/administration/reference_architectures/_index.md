@@ -13,7 +13,7 @@ title: Reference architectures
 
 {{< /details >}}
 
-The GitLab reference architectures provide recommended scalable and elastic environment sizes.
+The GitLab reference architectures are validated, production-ready environment designs for deploying GitLab at scale. Each architecture provides detailed specifications that you can use or adapt based on your requirements.
 
 ## Available reference architectures
 
@@ -182,13 +182,17 @@ Before you select an initial architecture, review this section thoroughly. Consi
 
 If you're uncertain about the required environment size, consider starting with a larger size, [monitoring](#monitoring) it, and then [scaling down](#scaling-an-environment) accordingly if the metrics support your situation.
 
-Starting large and then scaling down is a prudent approach when you can't determine RPS, or if the environment load could be atypically higher than expected, mostly due to [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
+Starting large and then scaling down is a prudent approach when:
 
-For example, if you have 3,000 users but also know that there's automation at play that would significantly increase the concurrent load, then you could start with a 100 RPS / 5k User class environment, monitor it, and if the metrics support it, scale down all components at once or one by one.
+- You can't determine RPS
+- The environment load could be atypically higher than expected
+- You have [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads)
+
+For example, if you have 3,000 users but also know that there's automation at play that would significantly increase the concurrent load, then you could start with a 100 RPS / 5k User class environment, monitor it, and if the metrics support it, scale down all components at once, or one by one.
 
 ### Standalone (non-HA)
 
-For environments serving 2,000 or fewer users, we recommend a standalone approach by deploying a non-HA, single or multi-node environment. With this approach, you can employ strategies such as [automated backups](../backup_restore/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery. These strategies provide a good level of recovery time objective (RTO) or recovery point objective (RPO) while avoiding the complexities that come with HA.
+For environments serving 2,000 or fewer users, it's generally recommended to follow a standalone approach by deploying a non-HA, single, or multi-node environment. With this approach, you can employ strategies such as [automated backups](../backup_restore/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery. These strategies provide a good level of recovery time objective (RTO) or recovery point objective (RPO) while avoiding the complexities that come with HA.
 
 With standalone setups, especially single node environments, various options are available for [installation](../../install/_index.md) and management. The options include [the ability to deploy directly by using select cloud provider marketplaces](https://page.gitlab.com/cloud-partner-marketplaces.html) that reduce the complexity a little further.
 
@@ -528,12 +532,9 @@ Additionally, the following cloud provider services are recommended for use as p
 If you choose to use a third-party external service, use an [external database service](../postgresql/external.md) that runs a standard, performant, and [supported PostgreSQL version](../../install/requirements.md#postgresql) and take note of the following considerations:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer, and Consul. All of these components are no longer required when using a third party external service.
-1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard
-   Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
-1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, connection count configuration may need to be adjusted depending on the environment size. If Pooling is desired, a third party option needs to be explored. [Database Load Balancing](../postgresql/database_load_balancing.md)  can also be used to spread the load accordingly.
-
-   Ensure that if a pooler is included in a Cloud Provider service, it can handle the total load without bottlenecks.
-   For example, Azure Database for PostgreSQL flexible server can optionally deploy a PgBouncer pooler in front of the database. However, PgBouncer is single threaded, which may cause bottlenecks under heavy load. To mitigate this issue, you can use database load balancing to distribute the pooler across multiple nodes.
+1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
+1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, connection count configuration may need to be adjusted depending on the environment size. If Pooling is desired, a third party option needs to be explored as the GitLab Linux Package bundled PgBouncer is only compatible with the package bundled Postgres. [Database Load Balancing](../postgresql/database_load_balancing.md) can also be used to spread the load accordingly.
+   - Ensure that if a pooler is included in a Cloud Provider service, it can handle the total load without bottlenecks. For example, Azure Database for PostgreSQL flexible server can optionally deploy a PgBouncer pooler in front of the database. However, PgBouncer is single threaded, which may cause bottlenecks under heavy load. To mitigate this issue, you can use database load balancing to distribute the pooler across multiple nodes.
 1. The number of nodes required for HA may vary depending on the service. The requirements for one deployment may vary from those for Linux package installations.
 
 1. To use [GitLab Geo](../geo/_index.md), the service should support cross-region replication.
@@ -547,11 +548,21 @@ The following database cloud provider services are not recommended due to lack o
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) are not tested and are not recommended. Both solutions are not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
 
-### Best practices for the Redis services
+### Best practices for Redis services
 
-Use an [external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) that runs a standard, performant, and supported version. Do not run the Redis service in [Cluster mode](../../install/requirements.md#redis) as it is unsupported by GitLab.
+Use an [external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) that runs a standard, performant, and supported version. The service must support:
 
-Redis is primarily single threaded. For environments targeting up to 200 RPS or 10,000 or more users, separate the instances into cache and persistent data to achieve optimum performance at this scale.
+- Redis Standalone (Primary x Replica) mode - Redis Cluster mode is specifically not supported
+- High availability through replication
+- The ability to set the [Redis eviction policy](../redis/replication_and_failover_external.md#setting-the-eviction-policy)
+
+Redis is primarily single threaded. For environments targeting the 200 RPS / 10,000 users class or larger, separate the instances into cache & persistent data to achieve optimum performance.
+
+{{< alert type="note" >}}
+
+Serverless variants of Redis services are not supported at this time.
+
+{{< /alert >}}
 
 ### Best practices for object storage
 
@@ -615,23 +626,17 @@ For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo
 
 ## Validation and test results
 
-The [Framework team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/)
+The [GitLab Delivery: Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team
 does regular smoke and performance tests for these architectures to ensure they
 remain compliant.
 
 ### How we perform the tests
 
-Testing is conducted using specific coded workloads derived from sample customer data with the following tools:
+Testing is conducted using specific coded workloads derived from sample customer data, utilizing both the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) for environment deployment with Terraform and Ansible, and the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) for performance testing with k6.
 
-- [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Terraform and Ansible scripts for building the environments.
-- [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) - Test wrapper tool based on k6.
+Testing is performed primarily on GCP and AWS using their standard compute offerings (n1 series for GCP, m5 series for AWS) as baseline configurations. These machine types were selected as a lowest common denominator target to ensure broad compatibility. Using different or newer machine types that meet the CPU and memory requirements is fully supported - see [Supported Machine Types](#supported-machine-types) for more information. The architectures are expected to perform similarly on any hardware meeting the specifications, whether on other cloud providers or on-premises.
 
-We test architectures across cloud providers, primarily GCP and AWS, using the following as baseline machine types:
-
-- The [`n1` series](https://cloud.google.com/compute/docs/general-purpose-machines#n1_machines) for GCP
-- The [`m5` series](https://aws.amazon.com/ec2/instance-types/) for AWS
-
-These machine types were selected as a lowest common denominator target to ensure broad compatibility. Using different or newer machine types that meet the CPU and memory requirements is fully supported - see [Supported Machine Types](#supported-machine-types) for more information. The architectures are expected to perform similarly on any hardware meeting the specifications, whether on other cloud providers or on-premises.
+### Performance targets
 
 Each reference architecture is tested against specific throughput targets based on real customer data. For every 1,000 users, we test:
 
@@ -648,88 +653,14 @@ Network latency between components in test environments was observed at <5 ms bu
 
 {{< /alert >}}
 
-### How to interpret the results
+### Test coverage and results
 
-{{< alert type="note" >}}
+Testing is designed to be effective and provide good coverage for all reference architecture targets. Testing frequency varies by architecture type and size:
 
-Read our blog post on [how our QA team leverages GitLab performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
+- Linux package environments: Daily or weekly of all sizes on GCP and AWS.
+- Cloud Native environments: Weekly testing of select configurations on GCP and AWS.
 
-{{< /alert >}}
-
-Testing is done publicly, and all results are shared.
-
-The following table details the testing done against the architectures along with the frequency and results. Additional testing is continuously evaluated, and the table is updated accordingly.
-
-<table class="ra-table">
-  <col>
-  <colgroup span="2"></colgroup>
-  <colgroup span="2"></colgroup>
-  <tr>
-    <th rowspan="2"><br/>Reference Architecture</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">GCP</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">AWS</th>
-  </tr>
-  <tr>
-    <th scope="col">Linux package</th>
-    <th scope="col">Cloud Native Hybrid</th>
-    <th scope="col">Linux package</th>
-    <th scope="col">Cloud Native Hybrid</th>
-  </tr>
-    <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/2k_users.html">Up to 40 RPS or 2,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k_hybrid_aws_services">Weekly</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k">Daily</a></td>
-    <td>Weekly<sup>1</sup></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_aws">Weekly</a></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid_aws_services">Weekly</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/50k_users.html">Up to 1000 RPS or 50,000 users</a></th>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
-  </tr>
-</table>
-
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD029 -->
-1. Testing for GCP Cloud Native environments happen weekly but include unreleased features for testing purposes.
-<!-- markdownlint-enable MD029 -->
+Our testing also includes prototype variations of these architectures being explored for potential future inclusion. Test results are publicly available on the [Reference Architecture wiki](https://gitlab.com/gitlab-org/reference-architectures/-/wikis/Benchmarks/Latest).
 
 ## Cost calculator templates
 

@@ -1,3 +1,6 @@
+.cache-job-base:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-rust-${RUST_VERSION}
+
 .qa-job-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-rust-${RUST_VERSION}:docker-${DOCKER_VERSION}
   extends:
@@ -13,21 +16,12 @@
     - !reference [.default-before_script, before_script]
     - cd ${WORKING_DIR:-qa} && bundle install
 
-.qa-ruby-cng-gems-cache: &qa-ruby-cng-gems-cache
-  key:
-    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
-    files:
-      - qa/gems/cng-gitlab/Gemfile.lock
-  paths:
-    - qa/gems/cng-gitlab/vendor/bundle
-  policy: pull
-
-.qa-cng-job-base:
+.qa-orchestrator-job-base:
   extends:
     - .qa-job-base
+    - .qa-orchestrator-cache
   variables:
     WORKING_DIR: qa/gems/gitlab-orchestrator
-  cache: *qa-ruby-cng-gems-cache
 
 .e2e-trigger-base:
   extends: .production  # this makes sure GITLAB_ALLOW_SEPARATE_CI_DATABASE is passed to the child pipeline
@@ -58,6 +52,18 @@
       - OMNIBUS_GITLAB_CACHE_EDITION
       - OMNIBUS_GITLAB_BUILD_ON_ALL_OS
 
+.needs-e2e-gem-cache:
+  needs:
+    - job: cache-qa-gems
+      optional: true
+  when: always # cache jobs failing or manual should not affect ability to run a job that depends on it
+
+.needs-orchestrator-gem-cache:
+  needs:
+    - job: cache-orchestrator-gems
+      optional: true
+  when: always
+
 # ==========================================
 # /qa caching
 # ==========================================
@@ -65,19 +71,22 @@
 cache-qa-gems:
   extends:
     - .qa-job-base
+    - .cache-job-base
     - .qa-cache-push
     - .qa:rules:update-gem-cache
   stage: prepare
   script:
     - echo "Cache has been updated and ready to be uploaded."
 
-cache-cng-gems:
+cache-orchestrator-gems:
   extends:
-    - .qa-cng-job-base
-    - cache-qa-gems
-  cache:
-    <<: *qa-ruby-cng-gems-cache
-    policy: pull-push
+    - .qa-orchestrator-job-base
+    - .cache-job-base
+    - .qa-orchestrator-cache-push
+    - .qa:rules:update-orchestrator-gem-cache
+  stage: prepare
+  script:
+    - echo "Cache has been updated and ready to be uploaded."
 
 # E2E runners have separate infra setup and different cache bucket
 cache-qa-gems-e2e-runners:
@@ -94,6 +103,7 @@ cache-qa-gems-e2e-runners:
 qa:metadata-lint:
   extends:
     - .qa-job-base
+    - .needs-e2e-gem-cache
     - .qa:rules:metadata-lint
   stage: lint
   variables:
@@ -112,25 +122,39 @@ qa:metadata-lint:
     paths:
       - qa/tmp/
 
-qa:cng-lint:
+qa:selectors:
   extends:
-    - .qa-cng-job-base
-    - .qa:rules:gitlab-cng
+    - .qa-job-base
+    - .needs-e2e-gem-cache
+    - .qa:rules:selectors
+  stage: lint
+  script:
+    - bundle exec bin/qa Test::Sanity::Selectors
+
+qa:orchestrator-lint:
+  extends:
+    - .qa-orchestrator-job-base
+    - .needs-orchestrator-gem-cache
+    - .qa:rules:gitlab-orchestrator
   stage: lint
   script:
     - bundle exec rubocop
 
-qa:rspec-cng:
+qa:orchestrator-rspec:
   extends:
-    - .qa-cng-job-base
-    - .qa:rules:gitlab-cng
+    - .qa-orchestrator-job-base
+    - .needs-orchestrator-gem-cache
+    - .qa:rules:gitlab-orchestrator
+  stage: test
   script:
     - bundle exec rspec --force-color
 
 qa:rspec-internal:
   extends:
     - .qa-job-base
+    - .needs-e2e-gem-cache
     - .qa:rules:internal
+  stage: test
   script:
     - bundle exec rspec -O .rspec_internal
 
