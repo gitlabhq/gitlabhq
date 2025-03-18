@@ -215,13 +215,62 @@ RSpec.describe Ci::PipelinesFinder do
     end
 
     context 'when updated_at filters are specified' do
-      let(:params) { { updated_before: 1.day.ago, updated_after: 3.days.ago } }
       let!(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
       let!(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
       let!(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
 
-      it 'returns deployments with matched updated_at' do
-        is_expected.to match_array([pipeline1])
+      context 'when both filters are specified' do
+        let(:params) { { updated_before: 1.day.ago, updated_after: 3.days.ago } }
+
+        it 'returns pipelines with matched updated_at' do
+          is_expected.to match_array([pipeline1])
+        end
+      end
+
+      context 'when only updated_before is specified' do
+        let(:params) { { updated_before: 1.day.ago } }
+
+        it 'returns pipelines with matched updated_at' do
+          is_expected.to match_array([pipeline1, pipeline2])
+        end
+      end
+
+      context 'when only updated_after is specified' do
+        let(:params) { { updated_after: 1.day.ago } }
+
+        it 'returns pipelines with matched updated_at' do
+          is_expected.to match_array([pipeline3])
+        end
+      end
+    end
+
+    context 'when created_at filters are specified' do
+      let!(:pipeline1) { create(:ci_pipeline, project: project, created_at: 2.days.ago) }
+      let!(:pipeline2) { create(:ci_pipeline, project: project, created_at: 4.days.ago) }
+      let!(:pipeline3) { create(:ci_pipeline, project: project, created_at: 1.hour.ago) }
+
+      context 'when both filters are specified' do
+        let(:params) { { created_before: 1.day.ago, created_after: 3.days.ago } }
+
+        it 'returns pipelines with matched created_at' do
+          is_expected.to match_array([pipeline1])
+        end
+      end
+
+      context 'when only created_before is specified' do
+        let(:params) { { created_before: 1.day.ago } }
+
+        it 'returns pipelines with matched created_at' do
+          is_expected.to match_array([pipeline1, pipeline2])
+        end
+      end
+
+      context 'when only created_after is specified' do
+        let(:params) { { created_after: 1.day.ago } }
+
+        it 'returns pipelines with matched created_at' do
+          is_expected.to match_array([pipeline3])
+        end
       end
     end
 

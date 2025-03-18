@@ -47,6 +47,10 @@ module API
             documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :order_by, type: String, values: ::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
             desc: 'Order pipelines',
             documentation: { example: 'status' }

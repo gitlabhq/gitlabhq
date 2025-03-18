@@ -599,8 +599,8 @@ gitlab.com/gitlab-org/gitaly/v16 v16.11.0-rc1.0.20250313033925-4cbd999aaf5d h1:v
 gitlab.com/gitlab-org/gitaly/v16 v16.11.0-rc1.0.20250313033925-4cbd999aaf5d/go.mod h1:i9SSlTe8PnTQoSTnLlx+FYHurZWg11BosyClhJHhdqI=
 gitlab.com/gitlab-org/go/reopen v1.0.0 h1:6BujZ0lkkjGIejTUJdNO1w56mN1SI10qcVQyQlOPM+8=
 gitlab.com/gitlab-org/go/reopen v1.0.0/go.mod h1:D6OID8YJDzEVZNYW02R/Pkj0v8gYFSIhXFTArAsBQw8=
-gitlab.com/gitlab-org/labkit v1.22.0 h1:TZe7ryLX+aLEqghu4lkODABpEKS4IL3o9yIq453n2DQ=
-gitlab.com/gitlab-org/labkit v1.22.0/go.mod h1:pikea0zSNSfV3wuMrFST4REaM3yrSjnccIfMyCmlrkw=
+gitlab.com/gitlab-org/labkit v1.23.1 h1:KvHn1lAykOjeYA3uO/luBDIO8gLmWQreKPvKrsh2PO4=
+gitlab.com/gitlab-org/labkit v1.23.1/go.mod h1:pikea0zSNSfV3wuMrFST4REaM3yrSjnccIfMyCmlrkw=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
 go.etcd.io/etcd/raft/v3 v3.5.18 h1:gueCda+9U76Lvk6rINjNc/mXalUp0u8OK5CVESDZh4I=
 go.etcd.io/etcd/raft/v3 v3.5.18/go.mod h1:XBaZHTJt3nLnpS8hMDR55Sxrq76cEC4xWYMBYSY3jcs=

@@ -5,8 +5,15 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Foreign keys and associations
 ---
 
-When adding an association to a model you must also add a foreign key. For
-example, say you have the following model:
+When adding an association to a model you must also add a foreign key. When
+adding a foreign key you must always add an [index](#indexes).
+
+If the [index must be created async](adding_database_indexes.md#create-indexes-asynchronously)
+due to duration reasons, you must avoid adding the foreign key until the index
+gets created. To ensure data consistency, you must avoid using the new
+association in rails until the foreign key and index both get created.
+
+For example, say you have the following model:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -150,8 +157,23 @@ this should be set to `CASCADE`.
 ## Indexes
 
 When adding a foreign key in PostgreSQL the column is not indexed automatically,
-thus you must also add a concurrent index. Not doing so results in cascading
-deletes being very slow.
+thus you must also add a concurrent index. Indexes are required for all foreign
+keys and they must be added in the same or earlier migration than the migration
+adding the foreign key.
+
+Without an index on the foreign key it forces Postgres to do a full table scan
+every time a record is deleted from the referenced table. In the past this has
+led to incidents where deleting `projects` and `namespaces` times out.
+
+It is also ok to have a composite index which covers this foreign key so long
+as the foreign key is in the first position of the composite index. For example
+if you have a foreign key `project_id` then it is OK to have a composite index
+like `BTREE (project_id, user_id)` but it is not OK to have an index like
+`BTREE (user_id, project_id)`. The latter does not allow efficient lookups by
+`project_id` alone and therefore would not prevent the cascade deletes from
+timing out. Partial indexes like `BTREE (project_id) WHERE user_id IS NULL`
+can never be used for cascading deletes and are not OK for serving as an index
+for the foreign key.
 
 ## Naming foreign keys
 

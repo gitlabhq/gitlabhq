@@ -14,33 +14,6 @@ RSpec.describe 'Database schema',
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
-  let(:ignored_indexes_on_fks_map) do
-    {
-      ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
-      ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-      ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
-      ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
-      ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
-      ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-      p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
-      p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-      p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
-      p_ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
-      p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-      slack_integrations_scopes: [%w[slack_api_scope_id]],
-      users: [%w[accepted_term_id]],
-      subscription_add_on_purchases: [["subscription_add_on_id"]] # index handled via composite index with namespace_id
-    }.with_indifferent_access.freeze
-  end
-
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
   # In the subsequent table removal MR, remove the entries.
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
@@ -219,7 +192,7 @@ RSpec.describe 'Database schema',
       todos: %w[target_id commit_id],
       uploads: %w[model_id organization_id namespace_id project_id],
       user_agent_details: %w[subject_id],
-      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
+      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
       vulnerability_identifiers: %w[external_id],
@@ -291,6 +264,17 @@ RSpec.describe 'Database schema',
     }.with_indifferent_access.freeze
   end
 
+  # For partitioned CI references we do not require a composite index starting with `partition_id` as each partition
+  # only contains records with a single `partition_id`. As such the index on the other id in the foreign key will be
+  # sufficient.
+  def ci_partitioned_foreign_key?(foreign_key)
+    target = foreign_key.to_table.split('.').last
+    schema = Gitlab::Database::GitlabSchema.table_schema!(target)
+    schema == :gitlab_ci &&
+      Array.wrap(foreign_key.column).many? &&
+      foreign_key.column.first.end_with?('partition_id')
+  end
+
   context 'for table' do
     Gitlab::Database::EachDatabase.each_connection do |connection, _|
       schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
@@ -311,7 +295,7 @@ RSpec.describe 'Database schema',
 
           context 'with all foreign keys' do
             # for index to be effective, the FK constraint has to be at first place
-            it 'are indexed' do
+            it 'are indexed', :aggregate_failures do
               indexed_columns = indexes.filter_map do |index|
                 columns = index.columns
 
@@ -324,14 +308,10 @@ RSpec.describe 'Database schema',
                 columns if index.where.nil? || index.where == "(#{columns.first} IS NOT NULL)"
               end
 
-              foreign_keys_columns = all_foreign_keys.filter_map do |fk|
-                conditions = fk.options[:conditions]
-                next fk.column unless conditions&.any?
-
-                [fk.column, *conditions.map { |c| c[:column] }]
+              required_indexed_foreign_keys = all_foreign_keys.reject do |fk|
+                ci_partitioned_foreign_key?(fk) ||
+                  fk.options[:conditions]&.any?
               end
-
-              required_indexed_columns = to_columns(foreign_keys_columns - ignored_index_columns(table))
 
               # Add the composite primary key to the list of indexed columns because
               # postgres and mysql both automatically create an index on the primary
@@ -339,7 +319,9 @@ RSpec.describe 'Database schema',
               # automatically generated indexes (like the primary key index).
               indexed_columns.push(composite_primary_key)
 
-              expect(required_indexed_columns).to be_indexed_by(indexed_columns)
+              required_indexed_foreign_keys.each do |required_indexed_foreign_key| # rubocop:disable RSpec/IteratedExpectation -- We want to aggregate all failures
+                expect(required_indexed_foreign_key).to be_indexed_by(indexed_columns)
+              end
             end
           end
 
@@ -683,10 +665,6 @@ RSpec.describe 'Database schema',
 
   def ignored_fk_columns(table)
     removed_fks_map.merge(ignored_fk_columns_map).fetch(table, [])
-  end
-
-  def ignored_index_columns(table)
-    ignored_indexes_on_fks_map.fetch(table, [])
   end
 
   def ignored_limit_enums(model)

@@ -15,7 +15,8 @@ title: Migrating to the new runner registration workflow
 {{< alert type="disclaimer" />}}
 
 In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
-runners. The legacy workflow that uses registration tokens is deprecated and is scheduled for removal in GitLab 18.0.
+runners. The legacy workflow that uses registration tokens is deprecated.
+There is no planned removal milestone or date. Use the runner creation workflow instead. 
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
@@ -44,7 +45,6 @@ The new runner registration workflow has the following benefits:
 
 - In GitLab 15.10 and later, you can use the new runner registration workflow.
 - In GitLab 17.0, we plan to disable runner registration tokens.
-- In GitLab 18.0, we plan to completely remove support for runner registration tokens.
 
 ## Prevent your runner registration workflow from breaking
 
@@ -73,13 +73,13 @@ you must [enable the tokens](../../administration/settings/continuous_integratio
 To continue using registration tokens after GitLab 17.0:
 
 - On GitLab.com, you can manually [enable the legacy runner registration process](runners_scope.md#enable-use-of-runner-registration-tokens-in-projects-and-groups)
-  in the top-level group settings until GitLab 18.0.
+  in the top-level group settings.
 - On GitLab Self-Managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens)
-  in the **Admin** area settings until GitLab 18.0.
+  in the **Admin** area settings.
 
 ## Impact on existing runners
 
-Existing runners will continue to work as usual after upgrading to GitLab 18.0. This change only affects registration of new runners.
+Existing runners will continue to work as usual after upgrading to GitLab 17.0. This change only affects registration of new runners.
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.

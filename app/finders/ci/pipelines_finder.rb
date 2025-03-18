@@ -3,6 +3,7 @@
 module Ci
   class PipelinesFinder
     include UpdatedAtFilter
+    include CreatedAtFilter
 
     attr_reader :project, :pipelines, :params, :current_user
 
@@ -35,6 +36,7 @@ module Ci
       items = by_username(items)
       items = by_yaml_errors(items)
       items = by_updated_at(items)
+      items = by_created_at(items)
       items = by_source(items)
       items = by_name(items)
 
