@@ -23,11 +23,7 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
-import {
-  CONTRIBUTED_TAB,
-  CUSTOM_DASHBOARD_ROUTE_NAMES,
-  PROJECT_DASHBOARD_TABS,
-} from '~/projects/your_work/constants';
+import { CUSTOM_DASHBOARD_ROUTE_NAMES } from '~/projects/your_work/constants';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
@@ -40,7 +36,6 @@ import TabView from './tab_view.vue';
 // Will be made more generic to work with groups and projects in future commits
 export default {
   name: 'TabsWithList',
-  PROJECT_DASHBOARD_TABS,
   i18n: {
     projectCountError: __('An error occurred loading the project counts.'),
   },
@@ -58,10 +53,16 @@ export default {
     FilteredSearchAndSort,
   },
   inject: ['initialSort', 'programmingLanguages'],
+  props: {
+    tabs: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       activeTabIndex: this.initActiveTabIndex(),
-      counts: PROJECT_DASHBOARD_TABS.reduce((accumulator, tab) => {
+      counts: this.tabs.reduce((accumulator, tab) => {
         return {
           ...accumulator,
           [tab.value]: undefined,
@@ -207,7 +208,7 @@ export default {
     initActiveTabIndex() {
       return CUSTOM_DASHBOARD_ROUTE_NAMES.includes(this.$route.name)
         ? 0
-        : PROJECT_DASHBOARD_TABS.findIndex((tab) => tab.value === this.$route.name);
+        : this.tabs.findIndex((tab) => tab.value === this.$route.name);
     },
     onTabUpdate(index) {
       // This return will prevent us overwriting the root `/` and `/dashboard/projects` paths
@@ -216,7 +217,7 @@ export default {
 
       this.activeTabIndex = index;
 
-      const tab = PROJECT_DASHBOARD_TABS[index] || CONTRIBUTED_TAB;
+      const tab = this.tabs[index] || this.tabs[0];
       this.$router.push({ name: tab.value });
     },
     tabCount(tab) {
@@ -270,7 +271,7 @@ export default {
 
 <template>
   <gl-tabs :value="activeTabIndex" @input="onTabUpdate">
-    <gl-tab v-for="tab in $options.PROJECT_DASHBOARD_TABS" :key="tab.text" lazy>
+    <gl-tab v-for="tab in tabs" :key="tab.text" lazy>
       <template #title>
         <div class="gl-flex gl-items-center gl-gap-2" data-testid="projects-dashboard-tab-title">
           <span>{{ tab.text }}</span>

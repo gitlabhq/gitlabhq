@@ -149,7 +149,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/git/diff.rb'
     - 'lib/gitlab/git/repository.rb'
     - 'lib/gitlab/git/user.rb'
-    - 'lib/gitlab/grape_logging/loggers/response_logger.rb'
     - 'lib/gitlab/internal_events.rb'
     - 'lib/gitlab/lograge/custom_options.rb'
     - 'lib/gitlab/memory/reports/heap_dump.rb'

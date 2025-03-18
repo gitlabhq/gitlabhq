@@ -343,44 +343,6 @@
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.9
       alias: zoekt-ci-image
 
-.ai-gateway-variables:
-  variables:
-    AIGW_AUTH__BYPASS_EXTERNAL: true
-    AIGW_GOOGLE_CLOUD_PLATFORM__PROJECT: $VERTEX_AI_PROJECT
-    AIGW_GOOGLE_CLOUD_PLATFORM__SERVICE_ACCOUNT_JSON_KEY: $VERTEX_AI_CREDENTIALS
-    AIGW_FASTAPI__DOCS_URL: "/docs"
-    AIGW_FASTAPI__OPENAPI_URL: "/openapi.json"
-    AIGW_FASTAPI__API_PORT: 5052
-    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY_FOR_SERVICE
-    # CI_DEBUG_SERVICES: "true"  # Enable this variable when you debug ai-gateway boot failure.
-
-.ai-gateway-services:
-  services:
-    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.18.0
-      alias: ai-gateway
-
-.litellm-proxy-variables:
-  variables:
-    LITELLM_CONFIG_CONTENT: |
-      model_list:
-        - model_name: codestral
-          litellm_params:
-            model: ollama/codestral
-            mock_response: "Mock response from codestral"
-        - model_name: mistral
-          litellm_params:
-            model: ollama/mistral
-            mock_response: "Mock response from mistral"
-
-.litellm-proxy-services:
-  services:
-    - name: ghcr.io/berriai/litellm:main-latest
-      alias: litellm-proxy
-      entrypoint: ["/bin/sh", "-c"]
-      command:
-        - |
-          mkdir -p /tmp && echo "${LITELLM_CONFIG_CONTENT}" > /tmp/config.yaml && litellm --config /tmp/config.yaml
-
 .use-pg14:
   extends:
     - .pg-base-variables
@@ -431,13 +393,9 @@
   extends:
     - .use-pg14
     - .zoekt-variables
-    - .ai-gateway-variables
-    - .litellm-proxy-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es7-services, services]
-    - !reference [.ai-gateway-services, services]
-    - !reference [.litellm-proxy-services, services]
 
 .use-pg15-es7-ee:
   extends:

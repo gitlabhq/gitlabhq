@@ -543,23 +543,25 @@ function log_disk_usage() {
 
 # all functions below are for customizing CI job exit code
 function run_with_custom_exit_code() {
-  set +e # temporarily disable exit on error to prevent premature exit
+  set -o pipefail # Take the exit status of the rightmost command that failed
+  set +e          # temporarily disable exit on error to prevent premature exit
 
-  # runs command passed in as argument, save standard error and standard output
-  output=$(set -e; "$@" 2>&1)
+  local trace_file="/tmp/stdout_stderr_log.out"
+  
+  # Run the command and tee output to both the terminal and the file
+  "$@" 2>&1 | tee "$trace_file"
   initial_exit_code=$?
-
+  
   echo "initial_exit_code: $initial_exit_code"
-
-  local trace_file="stdout_stderr_log.out"
-
-  echo "$output" | tee "$trace_file"
 
   find_custom_exit_code "$initial_exit_code" "$trace_file"
   new_exit_code=$?
 
   echo "new_exit_code=$new_exit_code"
+
+  # Restore shell default behavior
   set -e
+  set +o pipefail
 
   exit "$new_exit_code"
 }

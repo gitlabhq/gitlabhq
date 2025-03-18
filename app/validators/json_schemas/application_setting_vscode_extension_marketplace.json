@@ -21,13 +21,16 @@
       "type": "object",
       "properties": {
         "service_url": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https?://)"
         },
         "item_url": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https?://)"
         },
         "resource_url_template": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https?://)"
         }
       },
       "required": [

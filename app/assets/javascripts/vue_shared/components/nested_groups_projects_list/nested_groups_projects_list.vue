@@ -5,6 +5,7 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 
 export default {
+  name: 'NestedGroupsProjectsList',
   props: {
     items: {
       type: Array,

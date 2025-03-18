@@ -7,12 +7,44 @@ title: Python Merge Requests Guidelines
 
 GitLab standard [code review guidelines](../code_review.md#approval-guidelines) apply to Python projects as well.
 
-## How to find a reviewer
+## How to set up a Python code review process
 
-This section explains how to integrate your project with [reviewer roulette](../code_review.md#reviewer-roulette)
-and other resources to find reviewers with Python expertise.
+There are two main approaches to set up a Python code review process at GitLab:
 
-[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/514318).
+1. **Established Projects:** Larger Python projects typically have their own dedicated pool of reviewers through reviewer-roulette. To set this up, please refer to [Setting Up Reviewer Roulette](#setting-up-reviewer-roulette).
+1. **Smaller Projects:** For projects with fewer contributors, we maintain a shared pool of Python reviewers across GitLab.
+
+### Setting Up Reviewer Roulette
+
+This section explains how to integrate your project with [reviewer roulette](../code_review.md#reviewer-roulette) and other resources to connect project contributors with Python experts for code reviews.
+
+For both large and small projects, Reviewer Roulette can automate the reviewer assignment process. To set up:
+
+1. Add the Python project to the list of [GitLab projects](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/projects.yml?ref_type=heads).
+1. Project maintainer(s) should add a group for the project in the [GitLab.org maintainers repository](https://gitlab.com/gitlab-org/maintainers)
+1. Install and configure [Dangerfiles](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles) in your project, ensuring [CI is properly set up](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles#ci-configuration) to enable the Reviewer Roulette plugin.
+
+Then, depending on your project size:
+
+- **For large projects with sufficient contributors:**
+
+  - Eligible team members should add the Python project to the `projects` field in their individual entry in [team_members](https://gitlab.com/gitlab-com/www-gitlab-com/-/tree/master/data/team_members/person) or [team_database](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/doc/team_database.md), specifying appropriate roles such as reviewer or maintainer.
+  - Add the [individual roulette configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/individual_roulette?ref_type=heads) to your project.
+
+- **For smaller projects (e.g. fewer than 10 contributors):**
+
+  - Leverage the company wide pool of Python experts by adding the [shared pool configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/shared_pull/danger?ref_type=heads) to your project.
+  - You can also encourage contributors or other non-domain reviewers to reach out in your team's Slack channel for domain expertise where needed.
+
+When a merge request is created, Review Roulette will randomly select qualified reviewers based on your configuration.
+
+### Additional recommendations
+
+Please refer to [the documentation](../code_review.md#reviewer-roulette)
+
+### Ask for help
+
+If contributors have questions or need additional help with Python-specific reviews, direct them to the GitLab #python or #python_maintainers Slack channels for assistance.
 
 ## How to find a project to review
 

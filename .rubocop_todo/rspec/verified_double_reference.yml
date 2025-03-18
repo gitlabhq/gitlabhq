@@ -3,8 +3,6 @@
 RSpec/VerifiedDoubleReference:
   Exclude:
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
-    - 'ee/spec/features/custom_models/code_suggestions_spec.rb'
-    - 'ee/spec/features/custom_models/duo_chat_spec.rb'
     - 'ee/spec/features/merge_request/user_sees_security_policy_rules_licence_compliance_spec.rb'
     - 'ee/spec/features/projects/google_cloud/artifact_registry_spec.rb'
     - 'ee/spec/features/projects/integrations/google_cloud_platform/user_activates_artifact_management_spec.rb'

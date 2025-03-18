@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      dropzoneAllowList: ['.JSON'],
+      dropzoneAllowList: ['.json'],
     };
   },
   i18n: {

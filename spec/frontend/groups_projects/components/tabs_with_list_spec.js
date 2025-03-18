@@ -64,6 +64,10 @@ const defaultProvide = {
   programmingLanguages,
 };
 
+const defaultPropsData = {
+  tabs: PROJECT_DASHBOARD_TABS,
+};
+
 const searchTerm = 'foo bar';
 const mockEndCursor = 'mockEndCursor';
 const mockStartCursor = 'mockStartCursor';
@@ -86,6 +90,7 @@ describe('TabsWithList', () => {
 
   const createComponent = async ({
     provide = {},
+    propsData = {},
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
     route = defaultRoute,
@@ -104,6 +109,7 @@ describe('TabsWithList', () => {
         TabView: stubComponent(TabView),
       },
       provide: { ...defaultProvide, ...provide },
+      propsData: { ...defaultPropsData, ...propsData },
     });
   };
 

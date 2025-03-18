@@ -192,7 +192,7 @@ export default {
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
     <groups-list
-      :groups="nodes"
+      :items="nodes"
       show-group-icon
       :list-item-class="listItemClass"
       :timestamp-type="timestampType"

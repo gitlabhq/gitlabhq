@@ -9,7 +9,7 @@ describe('ProjectsList', () => {
   let wrapper;
 
   const defaultPropsData = {
-    projects: convertObjectPropsToCamelCase(projects, { deep: true }),
+    items: convertObjectPropsToCamelCase(projects, { deep: true }),
     listItemClass: 'gl-px-5',
   };
 
@@ -28,7 +28,7 @@ describe('ProjectsList', () => {
     );
 
     expect(expectedProps).toEqual(
-      defaultPropsData.projects.map((project) => ({
+      defaultPropsData.items.map((project) => ({
         project,
         showProjectIcon: false,
         listItemClass: defaultPropsData.listItemClass,

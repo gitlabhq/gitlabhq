@@ -895,21 +895,6 @@ rspec-ee integration pg16 single-db-sec-connection:
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-sec-connection-ee
 
-.custom-models-variables:
-  variables:
-    AIGW_CUSTOM_MODELS__ENABLED: true
-    AI_GATEWAY_URL: http://ai-gateway:5052
-    LITELLM_PROXY_URL: http://litellm-proxy:4000
-
-rspec-ee system custom-models pg16:
-  extends:
-    - .rspec-ee-base-pg16
-    - .rails:rules:ee-only-system
-    - .custom-models-variables
-  script:
-    - !reference [.base-script, script]
-    - rspec_parallelized_job "--tag requires_custom_models_setup"
-
 rspec-ee system pg16:
   extends:
     - .rspec-ee-base-pg16
@@ -1224,7 +1209,7 @@ rspec-ee system pg17:
   stage: test
   script:
     - !reference [.base-script, script]
-    - rspec_section rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house --tag ~real_ai_request"
+    - rspec_section rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
 
 rspec fail-fast:
   extends:

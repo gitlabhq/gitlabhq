@@ -113,8 +113,8 @@ describe('TabView', () => {
           });
         });
 
-        it('passes projects to `ProjectsList` component', () => {
-          expect(findProjectsList().props('projects')).toEqual(formatProjects(expectedProjects));
+        it('passes items to `ProjectsList` component', () => {
+          expect(findProjectsList().props('items')).toEqual(formatProjects(expectedProjects));
         });
 
         it('passes `timestampType` prop to `ProjectsList` component', () => {
@@ -292,8 +292,12 @@ describe('TabView', () => {
       });
 
       it('renders an empty state and passes title and description prop', () => {
-        expect(findEmptyState().props('title')).toBe(CONTRIBUTED_TAB.emptyState.title);
-        expect(findEmptyState().props('description')).toBe(CONTRIBUTED_TAB.emptyState.description);
+        expect(findEmptyState().props('title')).toBe(
+          CONTRIBUTED_TAB.emptyStateComponentProps.title,
+        );
+        expect(findEmptyState().props('description')).toBe(
+          CONTRIBUTED_TAB.emptyStateComponentProps.description,
+        );
       });
     });
 

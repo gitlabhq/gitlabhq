@@ -63749,6 +63749,9 @@ msgstr ""
 msgid "UserMapping|Placeholders"
 msgstr ""
 
+msgid "UserMapping|Please upload a valid CSV file."
+msgstr ""
+
 msgid "UserMapping|Reassign"
 msgstr ""
 

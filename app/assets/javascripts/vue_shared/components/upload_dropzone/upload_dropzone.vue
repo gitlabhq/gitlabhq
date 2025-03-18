@@ -181,6 +181,11 @@ export default {
       this.$refs.fileUpload.click();
     },
     onFileInputChange(e) {
+      if (!this.isValidUpload(Array.from(e.target.files))) {
+        this.$emit('error');
+        return;
+      }
+
       this.$emit('change', this.singleFileSelection ? e.target.files[0] : e.target.files);
     },
     onMouseEnter() {

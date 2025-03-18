@@ -164,7 +164,7 @@ describe('ProjectsView', () => {
         await waitForPromises();
 
         expect(findProjectsList().props()).toMatchObject({
-          projects: formatProjects(nodes),
+          items: formatProjects(nodes),
           showProjectIcon: true,
           listItemClass: defaultPropsData.listItemClass,
           timestampType: TIMESTAMP_TYPE_CREATED_AT,

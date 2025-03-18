@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import GlClearIconButton from './clear_icon_button.vue';
 
 export default {
-  name: 'GlSearchBoxByType',
+  name: 'GlobalSearchInput',
   components: {
     GlClearIconButton,
     GlIcon,

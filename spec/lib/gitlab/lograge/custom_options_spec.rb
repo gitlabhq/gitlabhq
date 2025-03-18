@@ -25,8 +25,7 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
         remote_ip: '192.168.1.2',
         ua: 'Nyxt',
         queue_duration_s: 0.2,
-        etag_route: '/etag',
-        response_bytes: 1234
+        etag_route: '/etag'
       }
     end
 
@@ -54,20 +53,6 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
 
     it 'adds the user id' do
       expect(subject[:user_id]).to eq('test')
-    end
-
-    it 'adds the response length' do
-      expect(subject[:response_bytes]).to eq(1234)
-    end
-
-    context 'with log_response_length disabled' do
-      before do
-        stub_feature_flags(log_response_length: false)
-      end
-
-      it 'does not add the response length' do
-        expect(subject).not_to include(:response_bytes)
-      end
     end
 
     it 'adds Cloudflare headers' do

@@ -1,4 +1,7 @@
 import { __, s__ } from '~/locale';
+import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
+import { formatProjects } from '~/projects/your_work/utils';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 import userProjectsQuery from './graphql/queries/user_projects.query.graphql';
 
@@ -7,13 +10,24 @@ const transformSortToUpperCase = (variables) => ({
   sort: variables.sort.toUpperCase(),
 });
 
+const baseTab = {
+  listComponent: ProjectsList,
+  listComponentProps: {
+    listItemClass: 'gl-px-5',
+    showProjectIcon: true,
+  },
+  emptyStateComponent: ProjectsListEmptyState,
+  formatter: formatProjects,
+};
+
 export const CONTRIBUTED_TAB = {
+  ...baseTab,
   text: __('Contributed'),
   value: 'contributed',
   query: userProjectsQuery,
   variables: { contributed: true },
   queryPath: 'currentUser.contributedProjects',
-  emptyState: {
+  emptyStateComponentProps: {
     title: s__("Projects|You haven't contributed to any projects yet."),
     description: s__(
       'Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here.',
@@ -23,12 +37,13 @@ export const CONTRIBUTED_TAB = {
 };
 
 export const STARRED_TAB = {
+  ...baseTab,
   text: __('Starred'),
   value: 'starred',
   query: userProjectsQuery,
   variables: { starred: true },
   queryPath: 'currentUser.starredProjects',
-  emptyState: {
+  emptyStateComponentProps: {
     title: s__("Projects|You haven't starred any projects yet."),
     description: s__(
       'Projects|Visit a project and select the star icon to save projects you want to find later.',
@@ -38,34 +53,37 @@ export const STARRED_TAB = {
 };
 
 export const PERSONAL_TAB = {
+  ...baseTab,
   text: __('Personal'),
   value: 'personal',
   query: projectsQuery,
   variables: { personal: true },
   queryPath: 'projects',
-  emptyState: {
+  emptyStateComponentProps: {
     title: s__("Projects|You don't have any personal projects yet."),
   },
 };
 
 export const MEMBER_TAB = {
+  ...baseTab,
   text: __('Member'),
   value: 'member',
   query: projectsQuery,
   variables: { membership: true },
   queryPath: 'projects',
-  emptyState: {
+  emptyStateComponentProps: {
     title: s__("Projects|You aren't a member of any projects yet."),
   },
 };
 
 export const INACTIVE_TAB = {
+  ...baseTab,
   text: __('Inactive'),
   value: 'inactive',
   query: projectsQuery,
   variables: { archived: 'ONLY', membership: true },
   queryPath: 'projects',
-  emptyState: {
+  emptyStateComponentProps: {
     title: s__("Projects|You don't have any inactive projects."),
     description: s__('Projects|Projects that are archived or pending deletion will appear here.'),
   },

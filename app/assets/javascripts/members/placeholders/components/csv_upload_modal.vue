@@ -30,6 +30,7 @@ export default {
   data() {
     return {
       file: null,
+      showModal: false,
       fileName: null,
       uploadError: false,
     };
@@ -41,6 +42,12 @@ export default {
   },
   methods: {
     reassignContributions() {
+      if (this.file === null) {
+        this.uploadError = s__('UserMapping|Please upload a valid CSV file.');
+        return;
+      }
+
+      this.showModal = false;
       const formData = new FormData();
       formData.append('file', this.file);
 
@@ -64,6 +71,9 @@ export default {
               message: s__('UserMapping|Something went wrong while uploading the CSV file.'),
             });
           }
+        })
+        .finally(() => {
+          this.clearFile();
         });
     },
     isValidFileType(file) {
@@ -78,11 +88,16 @@ export default {
       this.file = file;
     },
     onError() {
+      this.clearFile();
       this.uploadError = this.$options.i18n.errorMessage;
     },
     close() {
+      this.showModal = false;
       this.clearError();
-      this.$refs[this.modalId].hide();
+    },
+    clearFile() {
+      this.fileName = null;
+      this.file = null;
     },
   },
   dropzoneAllowList: ['.csv'],
@@ -110,12 +125,13 @@ export default {
 </script>
 <template>
   <gl-modal
-    :ref="modalId"
+    v-model="showModal"
     :modal-id="modalId"
     :title="s__('UserMapping|Reassign with CSV file')"
     :action-primary="$options.primaryAction"
     :action-cancel="$options.cancelAction"
-    @primary="reassignContributions"
+    @primary.prevent="reassignContributions"
+    @cancel="close"
   >
     <gl-sprintf :message="$options.i18n.description">
       <template #link="{ content }">

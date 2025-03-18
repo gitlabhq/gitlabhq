@@ -1,5 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
+import { PROJECT_DASHBOARD_TABS } from '~/projects/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 
 describe('YourWorkProjectsApp', () => {
@@ -13,7 +14,9 @@ describe('YourWorkProjectsApp', () => {
     createComponent();
   });
 
-  it('renders TabsWithList component', () => {
-    expect(wrapper.findComponent(TabsWithList).exists()).toBe(true);
+  it('renders TabsWithList component and passes correct props', () => {
+    expect(wrapper.findComponent(TabsWithList).props()).toEqual({
+      tabs: PROJECT_DASHBOARD_TABS,
+    });
   });
 });

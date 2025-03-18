@@ -14,6 +14,6 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  groups,
+  items: groups,
   showGroupIcon: true,
 };

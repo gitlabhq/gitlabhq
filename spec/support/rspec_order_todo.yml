@@ -5052,7 +5052,6 @@
 - './spec/lib/gitlab/grape_logging/loggers/exception_logger_spec.rb'
 - './spec/lib/gitlab/grape_logging/loggers/perf_logger_spec.rb'
 - './spec/lib/gitlab/grape_logging/loggers/queue_duration_logger_spec.rb'
-- './spec/lib/gitlab/grape_logging/loggers/response_logger_spec.rb'
 - './spec/lib/gitlab/grape_logging/loggers/token_logger_spec.rb'
 - './spec/lib/gitlab/grape_logging/loggers/urgency_logger_spec.rb'
 - './spec/lib/gitlab/graphs/commits_spec.rb'

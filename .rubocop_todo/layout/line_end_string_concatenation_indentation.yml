@@ -306,7 +306,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/services/protected_environments/update_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/ci_action/template_spec.rb'
     - 'ee/spec/services/security/token_revocation_service_spec.rb'
-    - 'ee/spec/support/llm.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/llm/chain/slash_command_tool_shared_examples.rb'
     - 'ee/spec/support/shared_examples/requests/api/graphql/ci/queueing_history_shared_examples.rb'
     - 'ee/spec/support/shared_examples/requests/identity_verification_shared_examples.rb'

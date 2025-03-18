@@ -1966,7 +1966,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/grape_logging/loggers/exception_logger_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/filter_parameters_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/queue_duration_logger_spec.rb'
-    - 'spec/lib/gitlab/grape_logging/loggers/response_logger_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/token_logger_spec.rb'
     - 'spec/lib/gitlab/graphql/batch_key_spec.rb'
     - 'spec/lib/gitlab/graphql/copy_field_description_spec.rb'

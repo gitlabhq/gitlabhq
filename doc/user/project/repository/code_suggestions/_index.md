@@ -145,18 +145,14 @@ For use cases and best practices, follow the [GitLab Duo examples documentation]
 
 ## The context Code Suggestions is aware of
 
-Code Suggestions is aware of and uses:
+Code Suggestions uses the following information about your development environment as context to enrich suggestions:
 
-- The file open in your IDE.
-- The content before and after the cursor in that file.
+- The file open in your IDE, including the content before and after the cursor in that file.
 - The filename and extension.
-
-Code Suggestions also uses files from your repository as context to make suggestions and
-generate code:
-
-- Code completion can use files in your repository that are written in the [languages enabled for Code Suggestions in your IDE](supported_extensions.md#supported-languages).
-- Code generation can use files in your repository that are written in the following
-languages:
+- (Optional) Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. On by default. To manage tabs as context, see [Using open files as context](#using-open-files-as-context).
+- (Optional) Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. Off by default. To manage imported files as context, see [Using imported files as context](#using-imported-files-as-context).
+- Code suggestion functionality uses content from the [supported languages](supported_extensions.md#supported-languages).
+- Code generation functionality uses content from the following languages:
   - Go
   - Java
   - JavaScript
@@ -197,11 +193,7 @@ GitLab recently refactored the Open Tabs internal logic for Duo Code Suggestions
 
 {{< /alert >}}
 
-As well as using files from your repository, Code Suggestions can use the files
-open in tabs in your IDE as context.
-
-These files give GitLab Duo more information about the standards and practices
-in your code project.
+If tab as context is on, Code Suggestions uses the files open in tabs in your IDE as context. These files give GitLab Duo more information about the standards and practices in your code project.
 
 #### Turn on open files as context
 

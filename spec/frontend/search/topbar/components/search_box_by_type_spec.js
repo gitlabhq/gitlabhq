@@ -6,16 +6,16 @@ import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import ClearIcon from '~/search/topbar/components/clear_icon_button.vue';
-import SearchBoxByType from '~/search/topbar/components/search_box_by_type.vue';
+import GlobalSearchInput from '~/search/topbar/components/global_search_input.vue';
 
-const modelEvent = SearchBoxByType.model.event;
+const modelEvent = GlobalSearchInput.model.event;
 const newValue = 'new value';
 
 describe('search box by type component', () => {
   let wrapper;
 
   const createComponent = ({ listeners, ...propsData }, mountFn = shallowMount) => {
-    wrapper = mountFn(SearchBoxByType, { propsData, listeners });
+    wrapper = mountFn(GlobalSearchInput, { propsData, listeners });
   };
 
   const findClearIcon = () => wrapper.findComponent(ClearIcon);

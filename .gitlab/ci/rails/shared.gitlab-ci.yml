@@ -107,7 +107,7 @@ include:
     # spec/lib, yet background migration tests are also sitting there,
     # and they should run on their own jobs so we don't need to run them
     # in unit tests again.
-    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~click_house --tag ~real_ai_request"
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~click_house"
   after_script:
     - source scripts/utils.sh
     - log_disk_usage  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
@@ -205,7 +205,7 @@ include:
 .rspec-base-migration:
   script:
     - !reference [.base-script, script]
-    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house --tag ~real_ai_request"
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
   after_script:
     - !reference [.rspec-base, after_script]
 

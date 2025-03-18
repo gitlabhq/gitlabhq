@@ -32,7 +32,7 @@ export const validateImageName = (file) => {
 
 export const validateFileFromAllowList = (fileName, allowList) => {
   const parts = fileName.split('.');
-  const ext = `.${parts[parts.length - 1]}`;
+  const ext = `.${parts[parts.length - 1]}`.toLowerCase();
 
-  return allowList.includes(ext);
+  return allowList.map((fileExt) => fileExt.toLowerCase()).includes(ext);
 };

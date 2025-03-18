@@ -168,7 +168,7 @@ export default {
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
     <projects-list
-      :projects="nodes"
+      :items="nodes"
       show-project-icon
       :list-item-class="listItemClass"
       :timestamp-type="timestampType"

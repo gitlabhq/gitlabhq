@@ -107,7 +107,7 @@ describe('GroupsView', () => {
   const findGroupsList = () => wrapper.findComponent(GroupsList);
   const findGroupsListByGroupId = (groupId) =>
     findGroupsList()
-      .props('groups')
+      .props('items')
       .find((group) => group.id === groupId);
 
   afterEach(() => {
@@ -189,7 +189,7 @@ describe('GroupsView', () => {
         await waitForPromises();
 
         expect(findGroupsList().props()).toMatchObject({
-          groups: formatGroups(nodes),
+          items: formatGroups(nodes),
           showGroupIcon: true,
           listItemClass: defaultPropsData.listItemClass,
           timestampType: TIMESTAMP_TYPE_CREATED_AT,

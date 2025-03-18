@@ -6,9 +6,10 @@ import {
 import GroupsListItem from './groups_list_item.vue';
 
 export default {
+  name: 'GroupsList',
   components: { GroupsListItem },
   props: {
-    groups: {
+    items: {
       type: Array,
       required: true,
     },
@@ -37,7 +38,7 @@ export default {
 <template>
   <ul class="gl-list-none gl-p-0">
     <groups-list-item
-      v-for="group in groups"
+      v-for="group in items"
       :key="group.id"
       :group="group"
       :show-group-icon="showGroupIcon"

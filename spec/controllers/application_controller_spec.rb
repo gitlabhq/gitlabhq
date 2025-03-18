@@ -561,28 +561,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
         expect(controller.last_payload[:target_duration_s]).to eq(0.25)
       end
     end
-
-    it 'logs response length' do
-      sign_in user
-
-      get :index
-
-      expect(controller.last_payload[:response_bytes]).to eq('authenticated'.bytesize)
-    end
-
-    context 'with log_response_length disabled' do
-      before do
-        stub_feature_flags(log_response_length: false)
-      end
-
-      it 'logs response length' do
-        sign_in user
-
-        get :index
-
-        expect(controller.last_payload).not_to include(:response_bytes)
-      end
-    end
   end
 
   describe '#access_denied' do

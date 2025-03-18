@@ -8,7 +8,7 @@ describe('GroupsList', () => {
   let wrapper;
 
   const defaultPropsData = {
-    groups,
+    items: groups,
     listItemClass: 'gl-px-5',
   };
 
@@ -27,7 +27,7 @@ describe('GroupsList', () => {
     );
 
     expect(expectedProps).toEqual(
-      defaultPropsData.groups.map((group) => ({
+      defaultPropsData.items.map((group) => ({
         group,
         showGroupIcon: false,
         listItemClass: defaultPropsData.listItemClass,
@@ -37,7 +37,7 @@ describe('GroupsList', () => {
   });
 
   describe('when `GroupsListItem` emits `delete` event', () => {
-    const [firstGroup] = defaultPropsData.groups;
+    const [firstGroup] = defaultPropsData.items;
 
     beforeEach(() => {
       createComponent();

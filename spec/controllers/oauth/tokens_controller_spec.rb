@@ -39,27 +39,5 @@ RSpec.describe Oauth::TokensController, feature_category: :user_management do
 
       expect(controller.last_payload[:metadata]).to include(Gitlab::ApplicationContext.current)
     end
-
-    it 'logs response length' do
-      sign_in user
-
-      post :create
-
-      expect(controller.last_payload[:response_bytes]).to eq('authenticated'.bytesize)
-    end
-
-    context 'with log_response_length disabled' do
-      before do
-        stub_feature_flags(log_response_length: false)
-      end
-
-      it 'logs response length' do
-        sign_in user
-
-        post :create
-
-        expect(controller.last_payload).not_to include(:response_bytes)
-      end
-    end
   end
 end

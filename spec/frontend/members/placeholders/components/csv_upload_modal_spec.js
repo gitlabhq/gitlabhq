@@ -58,10 +58,6 @@ describe('CsvUploadModal', () => {
   });
 
   describe('CSV upload', () => {
-    beforeEach(() => {
-      jest.spyOn(FileReader.prototype, 'readAsText');
-    });
-
     it('renders the upload dropzone', () => {
       expect(findUploadDropzone().exists()).toBe(true);
     });
@@ -90,18 +86,23 @@ describe('CsvUploadModal', () => {
     });
 
     describe('submitting the data', () => {
+      const preventDefault = jest.fn();
+      const file = new File(['test'], 'file.csv');
+
       beforeEach(() => {
         jest.spyOn(axios, 'post');
+
+        findUploadDropzone().vm.$emit('change', file);
+      });
+
+      it('prevents modal from getting closed', () => {
+        findGlModal().vm.$emit('primary', { preventDefault });
+
+        expect(preventDefault).toHaveBeenCalled();
       });
 
       it('calls the endpoint with the correct data', async () => {
-        const uploadDropzone = findUploadDropzone();
-        const file = new File(['test'], 'file.csv');
-
-        uploadDropzone.vm.$emit('change', file);
-        await waitForPromises();
-
-        findGlModal().vm.$emit('primary');
+        findGlModal().vm.$emit('primary', { preventDefault });
         await waitForPromises();
 
         const expectedFormData = new FormData();
@@ -118,7 +119,7 @@ describe('CsvUploadModal', () => {
             .onPost(MOCK_REASSIGNMENT_CSV_PATH)
             .reply(HTTP_STATUS_OK, { message: mockMessage });
 
-          findGlModal().vm.$emit('primary');
+          findGlModal().vm.$emit('primary', { preventDefault });
           await waitForPromises();
 
           expect(createAlert).toHaveBeenCalledWith({
@@ -136,7 +137,7 @@ describe('CsvUploadModal', () => {
             .onPost(MOCK_REASSIGNMENT_CSV_PATH)
             .reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, { message: mockMessage });
 
-          findGlModal().vm.$emit('primary');
+          findGlModal().vm.$emit('primary', { preventDefault });
           await waitForPromises();
 
           expect(createAlert).toHaveBeenCalledWith({
@@ -149,7 +150,7 @@ describe('CsvUploadModal', () => {
             .onPost(MOCK_REASSIGNMENT_CSV_PATH)
             .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: new Error('error uploading CSV') });
 
-          findGlModal().vm.$emit('primary');
+          findGlModal().vm.$emit('primary', { preventDefault });
           await waitForPromises();
 
           expect(createAlert).toHaveBeenCalledWith({

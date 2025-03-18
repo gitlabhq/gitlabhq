@@ -2384,36 +2384,6 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.rails:rules:ee-gitlab-duo-chat-base:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - if: '$ANTHROPIC_API_KEY == null'
-      when: never
-    - <<: *if-fork-merge-request
-      when: never
-
-.rails:rules:ee-gitlab-duo-chat-optional:
-  rules:
-    - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
-    - <<: *if-merge-request
-      changes: *backend-patterns
-      when: never
-      allow_failure: true
-
-.rails:rules:ee-gitlab-duo-chat-always:
-  rules:
-    - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
-    - <<: *if-merge-request
-      changes: *ai-patterns
-
-.rails:rules:ee-gitlab-duo-chat-qa-full:
-  rules:
-    - !reference [".rails:rules:ee-gitlab-duo-chat-optional", rules]
-    - <<: *if-default-branch-refs
-      changes: *setup-test-env-patterns
-      when: never
-      allow_failure: true
-
 .rails:rules:db:check-schema:
   rules:
     - <<: *if-not-ee
