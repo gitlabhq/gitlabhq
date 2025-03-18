@@ -43419,6 +43419,9 @@ msgstr ""
 msgid "Pipelines|There was a problem fetching the pipeline iid."
 msgstr ""
 
+msgid "Pipelines|There was a problem fetching the pipeline inputs."
+msgstr ""
+
 msgid "Pipelines|There was a problem fetching the pipeline stage jobs."
 msgstr ""
 
@@ -59326,6 +59329,9 @@ msgid "There are no commits yet."
 msgstr ""
 
 msgid "There are no custom project templates set up for this GitLab instance. They are enabled from GitLab's Admin area. Contact your GitLab instance administrator to setup custom project templates."
+msgstr ""
+
+msgid "There are no inputs for this configuration."
 msgstr ""
 
 msgid "There are no issues to show"

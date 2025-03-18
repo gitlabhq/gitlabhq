@@ -1,9 +1,10 @@
-query searchUserProjectsToMove($search: String) {
+query searchUserProjectsToMove($search: String, $sort: String) {
   projects(
     search: $search
+    searchNamespaces: true
     minAccessLevel: PLANNER
     withIssuesEnabled: true
-    sort: "latest_activity_desc"
+    sort: $sort
   ) {
     nodes {
       id

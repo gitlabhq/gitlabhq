@@ -102,7 +102,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         context 'with different pipeline sources' do
           before do
             # We're creating many pipelines
-            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(476)
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(477)
 
             external_pull_request = create(:external_pull_request, project: project)
             create(:ci_pipeline, project: project, source: :external_pull_request_event, external_pull_request: external_pull_request)

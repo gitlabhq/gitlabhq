@@ -67,6 +67,7 @@ export default {
       variables() {
         return {
           search: this.searchTerm,
+          sort: this.searchTerm ? 'similarity' : 'stars_desc',
         };
       },
       skip() {

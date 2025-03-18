@@ -29,7 +29,7 @@ export default {
     {
       key: 'default',
       label: __('Value'),
-      tdClass: 'gl-max-w-26',
+      tdClass: 'md:gl-max-w-26',
     },
   ],
   props: {
@@ -52,25 +52,29 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite
-    class="gl-mb-0"
-    :items="inputs"
-    :fields="$options.fields"
-    :tbody-tr-attr="{ 'data-testid': 'input-row' }"
-    stacked="sm"
-  >
-    <template #cell(name)="{ item }">
-      <span>
-        {{ item.name }}
-        <span v-if="item.required" class="gl-text-danger" data-testid="required-asterisk">*</span>
-      </span>
-    </template>
-    <template #cell(description)="{ item }">
-      <markdown v-if="hasDescription(item.description)" :markdown="item.description" />
-      <gl-icon v-else name="dash" :size="12" />
-    </template>
-    <template #cell(default)="{ item }">
-      <dynamic-value-renderer :item="item" @update="handleValueUpdated" />
-    </template>
-  </gl-table-lite>
+  <!-- Using inline style for max-height as gl-max-h-* utilities are insufficient for our needs.
+       Will replace with pagination or better utilities in the future. -->
+  <div class="gl-overflow-y-auto" style="max-height: 50rem">
+    <gl-table-lite
+      class="gl-mb-0"
+      :items="inputs"
+      :fields="$options.fields"
+      :tbody-tr-attr="{ 'data-testid': 'input-row' }"
+      stacked="sm"
+    >
+      <template #cell(name)="{ item }">
+        <span>
+          {{ item.name }}
+          <span v-if="item.required" class="gl-text-danger" data-testid="required-asterisk">*</span>
+        </span>
+      </template>
+      <template #cell(description)="{ item }">
+        <markdown v-if="hasDescription(item.description)" :markdown="item.description" />
+        <gl-icon v-else name="dash" :size="12" />
+      </template>
+      <template #cell(default)="{ item }">
+        <dynamic-value-renderer :item="item" @update="handleValueUpdated" />
+      </template>
+    </gl-table-lite>
+  </div>
 </template>

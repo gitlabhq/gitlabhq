@@ -1,56 +1,59 @@
-<!-- eslint-disable @gitlab/require-i18n-strings -->
 <script>
+import { s__ } from '~/locale';
+import { createAlert } from '~/alert';
+import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import InputsTableSkeletonLoader from './inputs_table_skeleton_loader.vue';
 import PipelineInputsTable from './pipeline_inputs_table.vue';
+import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
 
 export default {
   name: 'PipelineInputsForm',
   components: {
     CrudComponent,
+    InputsTableSkeletonLoader,
     PipelineInputsTable,
+  },
+  inject: ['projectPath'],
+  props: {
+    queryRef: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['update-inputs'],
   data() {
     return {
-      inputs: [
-        {
-          name: 'environment',
-          description: 'Target **deployment** environment',
-          type: 'STRING',
-          required: true,
-          regex: '^(production|staging|development)$',
-          default: 'development',
-          options: ['production', 'staging', 'development'],
-        },
-        {
-          name: 'api_version',
-          description: 'API version format (e.g. v1, v2.1)',
-          type: 'STRING',
-          required: true,
-          regex: '^v\\d+(\\.\\d+)?$',
-          default: 'v1',
-          options: null,
-        },
-        {
-          name: 'debug_mode',
-          description: '',
-          type: 'BOOLEAN',
-          required: false,
-          regex: null,
-          default: false,
-          options: null,
-        },
-        {
-          name: 'replicas',
-          description: 'Number of replicas to deploy',
-          type: 'NUMBER',
-          required: true,
-          regex: '^[1-9][0-9]*$',
-          default: 1,
-          options: null,
-        },
-      ],
+      inputs: [],
     };
+  },
+  apollo: {
+    inputs: {
+      query: getPipelineInputsQuery,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          ref: this.queryRef,
+        };
+      },
+      update({ project }) {
+        return project?.ciPipelineCreationInputs || [];
+      },
+      error(error) {
+        createAlert({
+          message: s__('Pipelines|There was a problem fetching the pipeline inputs.'),
+        });
+        reportToSentry(this.$options.name, error);
+      },
+    },
+  },
+  computed: {
+    hasInputs() {
+      return Boolean(this.inputs.length);
+    },
+    isLoading() {
+      return this.$apollo.queries.inputs.loading;
+    },
   },
   methods: {
     handleInputsUpdated(updatedInput) {
@@ -76,6 +79,12 @@ export default {
     :title="s__('Pipelines|Inputs')"
     icon="code"
   >
-    <pipeline-inputs-table :inputs="inputs" @update="handleInputsUpdated" />
+    <inputs-table-skeleton-loader v-if="isLoading" />
+    <template v-else>
+      <pipeline-inputs-table v-if="hasInputs" :inputs="inputs" @update="handleInputsUpdated" />
+      <div v-else class="gl-flex gl-justify-center gl-text-subtle">
+        {{ __('There are no inputs for this configuration.') }}
+      </div>
+    </template>
   </crud-component>
 </template>

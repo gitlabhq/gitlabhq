@@ -158,6 +158,9 @@ describe('Pipeline New Form', () => {
 
       it('displays the pipeline inputs form component', () => {
         expect(findPipelineInputsForm().exists()).toBe(true);
+        expect(findPipelineInputsForm().props()).toMatchObject({
+          queryRef: `refs/heads/${defaultProps.refParam}`,
+        });
       });
 
       it('includes inputs in the mutation variables', async () => {

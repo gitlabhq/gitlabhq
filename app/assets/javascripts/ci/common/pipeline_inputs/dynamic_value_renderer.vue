@@ -143,15 +143,6 @@ export default {
           return value === 'true';
         case INPUT_TYPES.NUMBER:
           return Number(value);
-        case INPUT_TYPES.ARRAY:
-          try {
-            // Try JSON parse for complex arrays
-            const parsed = JSON.parse(value);
-            return Array.isArray(parsed) ? parsed : [parsed];
-          } catch {
-            // Fallback to comma-split for simple input
-            return value.split(',').map((item) => item.trim());
-          }
         default:
           return value;
       }

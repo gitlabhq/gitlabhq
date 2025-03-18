@@ -147,42 +147,6 @@ describe('DynamicValueRenderer', () => {
         });
       });
     });
-
-    describe('array input events', () => {
-      it('converts string input to array when type is array', async () => {
-        createComponent({
-          props: { item: { ...defaultProps.item, type: 'ARRAY', default: [] } },
-        });
-
-        await findInput().vm.$emit('input', 'a, b, c');
-
-        expect(wrapper.emitted().update).toHaveLength(1);
-        expect(wrapper.emitted('update')[0][0].value).toEqual(['a', 'b', 'c']);
-      });
-
-      it('handles JSON array input when type is array', async () => {
-        createComponent({
-          props: { item: { ...defaultProps.item, type: 'ARRAY', default: [] } },
-        });
-
-        await findInput().vm.$emit('input', '["item1", "item2"]');
-
-        expect(wrapper.emitted().update).toHaveLength(1);
-        expect(wrapper.emitted('update')[0][0].value).toEqual(['item1', 'item2']);
-      });
-
-      it('handles complex JSON array input with objects', async () => {
-        createComponent({
-          props: { item: { ...defaultProps.item, type: 'ARRAY', default: [] } },
-        });
-
-        const complexInput = '[{"hello":"2"}, "4", "6"]';
-        await findInput().vm.$emit('input', complexInput);
-
-        expect(wrapper.emitted().update).toHaveLength(1);
-        expect(wrapper.emitted('update')[0][0].value).toEqual([{ hello: '2' }, '4', '6']);
-      });
-    });
   });
 
   describe('type conversion', () => {
@@ -212,13 +176,11 @@ describe('DynamicValueRenderer', () => {
 
     describe('convertToType', () => {
       it.each`
-        type         | inputValue         | expectedTypedValue | usesDropdown
-        ${'STRING'}  | ${'test'}          | ${'test'}          | ${false}
-        ${'NUMBER'}  | ${'42'}            | ${42}              | ${false}
-        ${'BOOLEAN'} | ${'true'}          | ${true}            | ${true}
-        ${'BOOLEAN'} | ${'false'}         | ${false}           | ${true}
-        ${'ARRAY'}   | ${'a,b,c'}         | ${['a', 'b', 'c']} | ${false}
-        ${'ARRAY'}   | ${'["x","y","z"]'} | ${['x', 'y', 'z']} | ${false}
+        type         | inputValue | expectedTypedValue | usesDropdown
+        ${'STRING'}  | ${'test'}  | ${'test'}          | ${false}
+        ${'NUMBER'}  | ${'42'}    | ${42}              | ${false}
+        ${'BOOLEAN'} | ${'true'}  | ${true}            | ${true}
+        ${'BOOLEAN'} | ${'false'} | ${false}           | ${true}
       `(
         'converts input value "$inputValue" to $type typed value',
         async ({ type, inputValue, expectedTypedValue, usesDropdown }) => {
