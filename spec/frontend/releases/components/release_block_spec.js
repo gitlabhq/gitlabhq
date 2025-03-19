@@ -172,7 +172,7 @@ describe('Release block', () => {
       urlUtility.getLocationHash = jest.fn().mockImplementation(() => locationHash);
     });
 
-    const hasTargetBlueBackground = () => wrapper.classes('bg-line-target-blue');
+    const hasTargetBlueBackground = () => wrapper.classes('!gl-bg-feedback-info');
 
     it('does not attempt to scroll the page if no anchor tag is included in the URL', () => {
       locationHash = '';

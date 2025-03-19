@@ -131,7 +131,7 @@ export default {
     v-bind="$attrs"
     class="gl-mt-5"
     :is-highlighted="isHighlighted"
-    :class="{ 'bg-line-target-blue': isHighlighted }"
+    :class="{ '!gl-bg-feedback-info': isHighlighted }"
     data-testid="release-block"
   >
     <template #title>

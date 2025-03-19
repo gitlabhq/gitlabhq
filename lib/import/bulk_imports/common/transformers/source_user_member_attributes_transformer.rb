@@ -8,6 +8,9 @@ module Import
           def transform(context, data)
             return data if !context.importer_user_mapping_enabled? || data.nil?
 
+            # user is nil for pending member invitations
+            return unless data['user']
+
             # Create source_user and placeholder user if they do not exists so
             # they can be mapped to contributions in subsequent pipelines
             source_user = find_or_create_source_user(context, data)

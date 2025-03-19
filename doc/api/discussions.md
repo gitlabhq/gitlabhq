@@ -873,11 +873,15 @@ Diff comments also contain position:
           "line_range": {
             "start": {
               "line_code": "588440f66559714280628a4f9799f0c4eb880a4a_10_10",
-              "type": "new"
+              "type": "new",
+              "old_line": null,
+              "new_line": 10
             },
             "end": {
               "line_code": "588440f66559714280628a4f9799f0c4eb880a4a_11_11",
-              "type": "old"
+              "type": "old",
+              "old_line": 11,
+              "new_line": 11
             }
           }
         },
@@ -1025,10 +1029,17 @@ Parameters for multiline comments only:
 | ---------------------------------------- | -------------- | -------- | ----------- |
 | `position[line_range][end][line_code]`   | string         | yes      | [Line code](#line-code) for the end line. |
 | `position[line_range][end][type]`        | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
+| `position[line_range][end][old_line]`    | integer        | no       | Old line number of the end line. |
+| `position[line_range][end][new_line]`    | integer        | no       | New line number of the end line. |
 | `position[line_range][start][line_code]` | string         | yes      | [Line code](#line-code) for the start line. |
 | `position[line_range][start][type]`      | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
+| `position[line_range][start][old_line]`  | integer        | no       | Old line number of the start line. |
+| `position[line_range][start][new_line]`  | integer        | no       | New line number of the start line. |
 | `position[line_range][end]`              | hash           | no       | Multiline note ending line. |
 | `position[line_range][start]`            | hash           | no       | Multiline note starting line. |
+
+The `old_line` and `new_line` parameters inside the `line_range` attribute display the range for
+multi-line comments. For example, "Comment on lines +296 to +297".
 
 #### Line code
 

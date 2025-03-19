@@ -7451,7 +7451,6 @@
 - './spec/services/merge_requests/resolved_discussion_notification_service_spec.rb'
 - './spec/services/merge_requests/resolve_todos_service_spec.rb'
 - './spec/services/merge_requests/retarget_chain_service_spec.rb'
-- './spec/services/merge_requests/squash_service_spec.rb'
 - './spec/services/merge_requests/update_assignees_service_spec.rb'
 - './spec/services/merge_requests/update_reviewers_service_spec.rb'
 - './spec/services/merge_requests/update_service_spec.rb'

@@ -132,8 +132,26 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
     end
 
     context 'when data is nil' do
+      let(:data) { nil }
+
       it 'returns nil' do
-        expect(subject.transform(context, nil)).to eq(nil)
+        expect(subject.transform(context, data)).to eq(nil)
+      end
+
+      it 'does not create an import source user' do
+        expect { subject.transform(context, data) }.not_to change { Import::SourceUser.count }
+      end
+    end
+
+    context 'when user is nil' do
+      let(:data) { member_data(source_user_id: nil) }
+
+      it 'returns nil' do
+        expect(subject.transform(context, data)).to eq(nil)
+      end
+
+      it 'does not create an import source user' do
+        expect { subject.transform(context, data) }.not_to change { Import::SourceUser.count }
       end
     end
 
@@ -165,6 +183,14 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
   end
 
   def member_data(source_user_id:, access_level: 30)
+    user = if source_user_id
+             {
+               'user_gid' => "gid://gitlab/User/#{source_user_id}",
+               'username' => 'source_username',
+               'name' => 'source_name'
+             }
+           end
+
     {
       'created_at' => '2020-01-01T00:00:00Z',
       'updated_at' => '2020-01-01T00:00:00Z',
@@ -172,11 +198,7 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       'access_level' => {
         'integer_value' => access_level
       },
-      'user' => {
-        'user_gid' => "gid://gitlab/User/#{source_user_id}",
-        'username' => 'source_username',
-        'name' => 'source_name'
-      }
+      'user' => user
     }
   end
 end

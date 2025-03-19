@@ -23,16 +23,17 @@ For more information, see [Cloud Connector: Configuration](../cloud_connector/co
 ### 2. Create a prompt definition in the AI gateway
 
 In [the AI gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
-new prompt definition under `ai_gateway/prompts/definitions`. Create a new subfolder corresponding to the name of your
-AI action, and a new YAML file for your prompt. Specify the model and provider you wish to use, and the prompts that
+new prompt definition under `ai_gateway/prompts/definitions` with the route `[ai-action]/base/[prompt-version].yml`
+(see [Prompt versioning conventions](#appendix-a-prompt-versioning-conventions)).
+Specify the model and provider you wish to use, and the prompts that
 will be fed to the model. You can specify inputs to be plugged into the prompt by using `{}`.
 
 ```yaml
-# ai_gateway/prompts/definitions/rewrite_description/base.yml
+# ai_gateway/prompts/definitions/rewrite_description/base/1.0.0.yml
 
 name: Description rewriter
 model:
-  name: claude-3-sonnet-20240229
+  config_file: conversation_performant
   params:
     model_class_provider: anthropic
 prompt_template:
@@ -44,23 +45,24 @@ prompt_template:
     <prompt>{prompt}</prompt>
 ```
 
-If your AI action is part of a broader feature, the definitions can be organized in a tree structure:
+When an AI action uses multiple prompts, the definitions can be organized in a tree structure in the form
+`[ai-action]/[prompt-name]/base/[version].yaml`:
 
 ```yaml
-# ai_gateway/prompts/definitions/code_suggestions/generations/base.yml
+# ai_gateway/prompts/definitions/code_suggestions/generations/base/1.0.0.yml
 
 name: Code generations
 model:
-  name: claude-3-sonnet-20240229
+  config_file: conversation_performant
   params:
     model_class_provider: anthropic
 ...
 ```
 
-To specify prompts for multiple models, use the name of the model as the filename for the definition:
+To specify prompts for multiple models, use the name of the model in the path for the definition:
 
 ```yaml
-# ai_gateway/prompts/definitions/code_suggestions/generations/mistral.yml
+# ai_gateway/prompts/definitions/code_suggestions/generations/mistral/1.0.0.yml
 
 name: Code generations
 model:
@@ -83,6 +85,9 @@ module Gitlab
     module AiGateway
       module Completions
         class RewriteDescription < Base
+          extend ::Gitlab::Utils::Override
+
+          override :inputs
           def inputs
             { description: resource.description, prompt: prompt_message.content }
           end
@@ -141,6 +146,69 @@ class AiFeaturesCatalogue
     }
   }.freeze
 ```
+
+### 6. Add a default prompt version query
+
+Go to `Gitlab::Llm::PromptVersions` and add an entry for your AI action with a query that includes your desired prompt
+version (for new features this will usually be `^1.0.0`, see [Prompt version resolution](#prompt-version-resolution)):
+
+```ruby
+class PromptVersions
+  class << self
+    VERSIONS = {
+      # ...
+      "rewrite_description/base": "^1.0.0"
+```
+
+## Updating an AI action
+
+To make changes to the template, model, or parameters of an AI feature, create a new YAML version file in the AI Gateway:
+
+```yaml
+# ai_gateway/prompts/definitions/rewrite_description/base/1.0.1.yml
+
+name: Description rewriter with Claude 3.5
+model:
+  name: claude-3-5-sonnet-20240620
+  params:
+    model_class_provider: anthropic
+prompt_template:
+  system: |
+    You are a helpful assistant that rewrites the description of resources. You'll be given the current description, and a prompt on how you should rewrite it. Reply only with your rewritten description.
+
+    <description>{description}</description>
+
+    <prompt>{prompt}</prompt>
+```
+
+### Incremental rollout of prompt versions
+
+Once a stable prompt version is added to the AI Gateway it should not be altered. You can create a mutable version of a
+prompt by adding a pre-release suffix to the file name (e.g. `1.0.1-dev.yml`). This will also prevent it from being
+automatically served to clients. Then you can use a feature flag to control the rollout this new version. If your AI
+action is implemented as a subclass of `AiGateway::Completions::Base`, you can achieve this by overriding the prompt
+version in your subclass:
+
+```ruby
+# ee/lib/gitlab/llm/ai_gateway/completions/rewrite_description.rb
+
+module Gitlab
+  module Llm
+    module AiGateway
+      module Completions
+        class RewriteDescription < Base
+          extend ::Gitlab::Utils::Override
+
+          override :prompt_version
+          def prompt_version
+            '1.0.1-dev' if Feature.enabled?(:my_feature_flag) # You can also scope it to `user` or `resource`, as appropriate
+          end
+
+          # ...
+```
+
+Once you are ready to make this version stable and start auto-serving it to compatible clients, simply rename the YAML
+definition file to remove the pre-release suffix, and remove the `prompt_version` override.
 
 ## How to migrate an existing action to the AI gateway
 
@@ -337,3 +405,61 @@ the same example:
 Gitlab::Llm::VertexAi::Client.new(user, unit_primitive: 'your_feature')
 Gitlab::Llm::Anthropic::Client.new(user, unit_primitive: 'your_feature')
 ```
+
+## Appendix A: Prompt versioning conventions
+
+Prompt versions should adjust to [Semantic Versioning](https://semver.org/) standards: `MAJOR.MINOR.PATCH[-PRERELEASE]`.
+
+- A change in the MAJOR component reflects changes will break with older versions of GitLab. For example, when the new
+prompt must receive a new property that doesn't have a default, since if this change were applied to all GitLab versions,
+requests made from older versions will throw an error since that property is not present.
+
+- A change in the MINOR component reflects feature additions, but that are still backwards compatible. For example,
+suppose we want to use a new more powerful model: requests of older versions of GitLab will still work.
+
+- A change in the PATCH component reflects small bug fixes to prompts, like a typo.
+
+The MAJOR component guarantees that older versions of GitLab will not break once a new change is added, without blocking
+the evolution of our codebase. Changes in MINOR and PATCH are more subjective.
+
+### Immutability of prompt versions
+
+To guarantee traceability of changes, only prompts with a [pre-release version](https://semver.org/#spec-item-9) (eg `1.0.1-dev.yml`)
+may be changed once committed. Prompts defining a stable version are immutable, and changing them will trigger a pipeline failure.
+
+### Using partials
+
+To better organize the prompts, it is possible to use partials to split a prompt into smaller parts. Partials must also be
+versioned. For example:
+
+```yaml
+# ai_gateway/prompts/definitions/rewrite_description/base/1.0.0.yml
+
+name: Description rewriter
+model:
+  config_file: conversation_performant
+  params:
+    model_class_provider: anthropic
+prompt_template:
+  system: |
+    {% include 'rewrite_description/system/1.0.0.jinja' %}
+  user: |
+    {% include 'rewrite_description/user/1.0.0.jinja' %}
+```
+
+### Prompt version resolution
+
+AI Gateway will fetch the latest stable version available that matches the prompt version query passed as argument.
+Queries follow [Poetry's version constraint rules](https://python-poetry.org/docs/dependency-specification/#version-constraints).
+For example, if prompt `foo/bar` has the following versions:
+
+- `1.0.1.yml`
+- `1.1.0.yml`
+- `1.5.0-dev.yml`
+- `2.0.1.yml`
+
+Then, if `/v1/prompts/foo/bar` is called with
+
+- `{'prompt_version': "^1.0.0"}`, prompt version `1.1.0.yml` will be selected.
+- `{'prompt_version': "1.5.0-dev"}`, prompt version `1.5.0-dev.yml` will be selected.
+- `{'prompt_version': "^2.0.0"}`, prompt version `2.0.1.yml` will be selected.

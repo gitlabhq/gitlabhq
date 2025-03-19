@@ -3873,7 +3873,6 @@ Layout/LineLength:
     - 'spec/services/merge_requests/rebase_service_spec.rb'
     - 'spec/services/merge_requests/refresh_service_spec.rb'
     - 'spec/services/merge_requests/request_review_service_spec.rb'
-    - 'spec/services/merge_requests/squash_service_spec.rb'
     - 'spec/services/merge_requests/update_service_spec.rb'
     - 'spec/services/milestones/transfer_service_spec.rb'
     - 'spec/services/namespace_settings/assign_attributes_service_spec.rb'
