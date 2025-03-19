@@ -6,7 +6,7 @@ module Users
 
     self.table_name = 'user_callouts'
 
-    enum feature_name: {
+    enum :feature_name, {
       gke_cluster_integration: 1,
       gcp_signup_offer: 2,
       cluster_security_warning: 3,

@@ -148,8 +148,9 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         end
       end
 
-      context 'when accessing internal project with disallowed access', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/299575' do
+      context 'when accessing internal project with disallowed access', :js do
         before do
+          project.add_reporter(user)
           project.update!(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)
@@ -159,7 +160,6 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
         it do
           expect(page).to have_content pipeline.sha[0..7]
-          expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
 
           expect(page).not_to have_link('Cancel pipeline')

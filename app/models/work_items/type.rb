@@ -60,7 +60,7 @@ module WorkItems
 
     cache_markdown_field :description, pipeline: :single_line
 
-    enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }
+    enum :base_type, BASE_TYPES.transform_values { |value| value[:enum_value] }
 
     has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,

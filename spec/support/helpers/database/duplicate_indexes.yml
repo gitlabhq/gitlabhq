@@ -44,6 +44,10 @@ list_user_preferences:
 member_tasks:
   index_member_tasks_on_member_id_and_project_id:
   - index_member_tasks_on_member_id
+merge_request_diffs:
+  index_merge_request_diffs_on_project_id_and_id:
+  # Removal issue https://gitlab.com/gitlab-org/gitlab/-/issues/521444
+  - index_merge_request_diffs_on_project_id
 ml_candidate_params:
   index_ml_candidate_params_on_candidate_id_on_name:
   - index_ml_candidate_params_on_candidate_id

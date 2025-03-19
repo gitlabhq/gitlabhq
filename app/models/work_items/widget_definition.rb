@@ -16,7 +16,7 @@ module WorkItems
 
     scope :enabled, -> { where(disabled: false) }
 
-    enum widget_type: {
+    enum :widget_type, {
       assignees: 0,
       description: 1,
       hierarchy: 2,

@@ -8,7 +8,7 @@ module Users
 
     belongs_to :project
 
-    enum feature_name: {
+    enum :feature_name, {
       awaiting_members_banner: 1, # EE-only
       web_hook_disabled: 2,
       # 3 was removed https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129703,

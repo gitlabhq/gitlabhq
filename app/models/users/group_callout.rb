@@ -8,7 +8,7 @@ module Users
 
     belongs_to :group
 
-    enum feature_name: {
+    enum :feature_name, {
       invite_members_banner: 1,
       approaching_seat_count_threshold: 2, # EE-only
       namespace_storage_pre_enforcement_banner: 3, # EE-only

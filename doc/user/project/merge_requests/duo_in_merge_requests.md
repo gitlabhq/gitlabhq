@@ -6,13 +6,6 @@ description: Use AI-assisted features for relevant information about a merge req
 title: GitLab Duo in merge requests
 ---
 
-{{< details >}}
-
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-- Offering: GitLab.com
-
-{{< /details >}}
-
 {{< alert type="disclaimer" />}}
 
 GitLab Duo is designed to provide contextually relevant information during the lifecycle of a merge request.
@@ -21,6 +14,8 @@ GitLab Duo is designed to provide contextually relevant information during the l
 
 {{< details >}}
 
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com
 - Status: Beta
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
@@ -53,9 +48,10 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 {{< details >}}
 
-- Status: Beta
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 {{< /details >}}
 
@@ -111,6 +107,8 @@ Additional settings and configuration are planned. To that work, see
 
 {{< details >}}
 
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
@@ -142,6 +140,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 {{< details >}}
 
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 

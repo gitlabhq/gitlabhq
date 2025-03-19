@@ -80,7 +80,7 @@ and [Container Registry](../../../user/packages/container_registry/_index.md).
 1. Visit **Deploy > Container Registry**. Make sure the application image has been
    pushed.
 
-   ![A containerized application image in the container registry.](img/registry_v13_10.png)
+   ![A containerized application image in the GitLab container registry.](img/registry_v13_10.png)
 
 Now you have a containerized application image that can be pulled from AWS. Next, you define the
 spec of how this application image is used in AWS.
@@ -96,7 +96,7 @@ is a specification about how the application image is started by an [ECS service
 1. Go to **ECS > Task Definitions** on [AWS console](https://aws.amazon.com/).
 1. Select **Create new Task Definition**.
 
-   ![The task definitions page.](img/ecs-task-definitions_v13_10.png)
+   ![Task definitions page with a 'Create new task definition' button.](img/ecs-task-definitions_v13_10.png)
 
 1. Choose **EC2** as the launch type. Select **Next Step**.
 1. Set `ecs_demo` to **Task Definition Name**.
@@ -106,11 +106,11 @@ is a specification about how the application image is started by an [ECS service
 1. Set `registry.gitlab.com/<your-namespace>/ecs-demo/master:latest` to **Image**.
    Alternatively, you can copy and paste the image path from the [GitLab container registry page](#push-a-containerized-application-image-to-gitlab-container-registry).
 
-   ![Completed container name and image fields.](img/container-name_v13_10.png)
+   ![Container name and image fields completed.](img/container-name_v13_10.png)
 
 1. Add a port mapping. Set `80` to **Host Port** and `5000` to **Container port**.
 
-   ![A container port mappings entry.](img/container-port-mapping_v13_10.png)
+   ![Port mappings fields completed.](img/container-port-mapping_v13_10.png)
 
 1. Select **Create**.
 
@@ -133,7 +133,7 @@ It's also associated with EC2 or Fargate as the computation resource.
 1. Select **Create**.
 1. Make sure that the ECS cluster has been successfully created.
 
-   ![A successfully created ECS cluster](img/ecs-launch-status_v13_10.png)
+   ![ECS cluster created successfully with all instances running.](img/ecs-launch-status_v13_10.png)
 
 Now you can register an ECS service to the ECS cluster in the next step.
 
@@ -157,12 +157,12 @@ is a daemon to create an application container based on the [ECS task definition
 1. Set `ecs_demo` to **Service name**.
 1. Set `1` to **Desired tasks**.
 
-   ![A completed Services page.](img/service-parameter_v13_10.png)
+   ![Services page with all inputs completed.](img/service-parameter_v13_10.png)
 
 1. Select **Deploy**.
 1. Make sure that the created service is active.
 
-   ![An active service running.](img/service-running_v13_10.png)
+   ![An active service running with tasks.](img/service-running_v13_10.png)
 
 The AWS console UI changes from time to time. If you can't find a relevant component in the
 instructions, select the closest one.
@@ -239,7 +239,7 @@ Change a file in the project and see if it's reflected in the demo application o
 1. [Access the running application on the ECS cluster](#view-the-demo-application). You should see
    this:
 
-   ![A "You're on ECS!" message from a running application.](img/view-running-app-2_v13_10.png)
+   ![Application running on ECS with a confirmation message.](img/view-running-app-2_v13_10.png)
 
 Congratulations! You successfully set up continuous deployment to ECS.
 

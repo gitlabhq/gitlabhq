@@ -2,12 +2,24 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Settings Sync in Web IDE', product_group: :remote_development, feature_category: :web_ide, quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/516980',
-      type: :investigating
-    } do
+    describe 'Settings Sync in Web IDE',
+      :orchestrated,
+      :mtls, # The extension marketplace requires running Web IDE in a secure context.
+      feature_flag: { name: :web_ide_extensions_marketplace },
+      product_group: :remote_development,
+      feature_category: :web_ide do
       include_context 'Web IDE test prep'
-      let(:project) { create(:project, :with_readme, name: 'webide-settings-sync-project') }
+      let(:test_user) { Runtime::User::Store.test_user }
+
+      let(:project) do
+        Resource::Project.fabricate_via_browser_ui! do |project|
+          project.name = 'webide-settings-sync-project'
+          project.personal_namespace = Runtime::User::Store.test_user.username
+          project.initialize_with_readme = true
+          project.description = nil
+        end
+      end
+
       let(:settings_sync_data) do
         [
           { setting_type: "settings", content: { settings: '{ "test": true }' } },
@@ -17,8 +29,12 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable(:web_ide_extensions_marketplace)
+
         load_web_ide(with_extensions_marketplace: true)
         settings_context_hash = get_settings_context_hash
+
+        Runtime::Logger.warn("No settings context hash found") if settings_context_hash.nil?
 
         settings_sync_data.each do |data|
           populate_settings_sync(setting_type: data[:setting_type], content: data[:content],
@@ -65,13 +81,8 @@ module QA
     private
 
     def get_settings_context_hash
-      Page::Project::WebIDE::VSCode.perform do |ide|
-        ide.within_vscode_editor do
-          config_element = find('meta#gl-config-json', visible: false)
-          config = JSON.parse(config_element[:'data-settings'])
-          config['settingsContextHash']
-        end
-      end
+      config_element = find('#settings-context-hash', visible: false)
+      config_element[:"data-settings-context-hash"]
     end
 
     def populate_settings_sync(setting_type:, content:, settings_context_hash: nil)
@@ -81,10 +92,10 @@ module QA
         content: content.to_json
       }
 
-      client = Runtime::User::Store.default_api_client
-      url = Runtime::API::Request.new(client,
-        "vscode/settings_sync/#{settings_context_hash}/v1/resource/#{setting_type}").url
-      Support::API.post(url, settings_data)
+      client = test_user.api_client
+      request = Runtime::API::Request.new(client,
+        "vscode/settings_sync/#{settings_context_hash}/v1/resource/#{setting_type}")
+      Support::API.post(request.url, settings_data)
     end
   end
 end

@@ -107,7 +107,7 @@ class Todo < ApplicationRecord
   scope :pending_without_hidden, -> { pending.without_banned_user }
   scope :all_without_hidden, -> { without_banned_user.or(where.not(state: :pending)) }
 
-  enum resolved_by_action: { system_done: 0, api_all_done: 1, api_done: 2, mark_all_done: 3, mark_done: 4 }, _prefix: :resolved_by
+  enum :resolved_by_action, { system_done: 0, api_all_done: 1, api_done: 2, mark_all_done: 3, mark_done: 4 }, prefix: :resolved_by
 
   state_machine :state, initial: :pending do
     event :done do

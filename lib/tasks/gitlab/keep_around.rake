@@ -53,8 +53,7 @@ namespace :gitlab do
 
     def add_merge_request_diff_shas(project, csv)
       logger.info "Checking merge request diff shas..."
-      merge_request_diffs = MergeRequestDiff
-        .joins(:merge_request).merge(MergeRequest.of_projects([project, project.forked_from_project].compact))
+      merge_request_diffs = MergeRequestDiff.by_project_id([project, project.forked_from_project].compact)
         .select(:id, :start_commit_sha, :head_commit_sha, :diff_type)
       merge_request_diffs.find_each do |diff|
         next if diff.merge_head?

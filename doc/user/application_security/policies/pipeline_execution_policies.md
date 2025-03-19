@@ -28,7 +28,7 @@ Use Pipeline execution policies to enforce CI/CD jobs for all applicable project
 {{< history >}}
 
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) the `suffix` field in GitLab 17.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7. [with a flag](../../../administration/feature_flags.md) named `ensure_pipeline_policy_pre_stage_complete`. Enabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7.
 
 {{< /history >}}
 

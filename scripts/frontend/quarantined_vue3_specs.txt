@@ -118,7 +118,6 @@ spec/frontend/clusters/components/new_cluster_spec.js
 spec/frontend/clusters/components/remove_cluster_confirmation_spec.js
 spec/frontend/clusters_list/components/delete_agent_button_spec.js
 spec/frontend/content_editor/components/bubble_menus/media_bubble_menu_spec.js
-spec/frontend/content_editor/components/wrappers/code_block_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
 spec/frontend/custom_emoji/components/list_spec.js
 spec/frontend/design_management/components/design_notes/design_reply_form_spec.js

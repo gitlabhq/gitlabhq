@@ -86,7 +86,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   scope :by_project_id, ->(project_id) do
-    joins(:merge_request).where(merge_requests: { target_project_id: project_id })
+    where(project_id: project_id)
   end
 
   scope :recent, ->(limit = 100) { order(id: :desc).limit(limit) }
