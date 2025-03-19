@@ -67,13 +67,13 @@ module NavbarStructureHelper
     insert_after_sub_nav_item(
       _('Package registry'),
       within: _('Deploy'),
-      new_sub_nav_item_name: _('Container Registry')
+      new_sub_nav_item_name: _('Container registry')
     )
   end
 
   def insert_google_artifact_registry_nav
     insert_after_sub_nav_item(
-      _('Container Registry'),
+      _('Container registry'),
       within: _('Deploy'),
       new_sub_nav_item_name: _('Google Artifact Registry')
     )

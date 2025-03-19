@@ -27,7 +27,7 @@ This is an integration between Snyk and GitLab CI via a GitLab CI/CD Component.
 
 This project has a component that runs the Snyk CLI and outputs the scan report in the SARIF format. It calls a separate component that converts SARIF to the GitLab vulnerability record format using a job based on the semgrep base image.
 
-There is a versioned container in the Container Registry that has a node base image with the Snyk CLI installed on top. This is the image used in the Snyk component job.
+There is a versioned container in the container registry that has a node base image with the Snyk CLI installed on top. This is the image used in the Snyk component job.
 The `.gitlab-ci.yml` file builds the container image, tests, and versions the component.
 
 ### Versioning

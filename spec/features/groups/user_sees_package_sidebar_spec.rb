@@ -28,7 +28,7 @@ RSpec.describe 'Groups > sidebar', :js, feature_category: :groups_and_projects d
       it 'has container registry link' do
         within_testid 'super-sidebar' do
           click_button 'Deploy'
-          expect(page).to have_link(_('Container Registry'))
+          expect(page).to have_link(_('Container registry'))
         end
       end
     end
@@ -42,7 +42,7 @@ RSpec.describe 'Groups > sidebar', :js, feature_category: :groups_and_projects d
       it 'does not have container registry link' do
         within_testid 'super-sidebar' do
           click_button 'Deploy'
-          expect(page).not_to have_link(_('Container Registry'))
+          expect(page).not_to have_link(_('Container registry'))
         end
       end
     end

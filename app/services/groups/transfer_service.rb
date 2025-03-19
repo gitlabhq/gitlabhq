@@ -274,7 +274,7 @@ module Groups
         group_is_already_root: s_('TransferGroup|Group is already a root group.'),
         same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
         invalid_policies: s_("TransferGroup|You don't have enough permissions."),
-        group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.'),
+        group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again.'),
         cannot_transfer_to_subgroup: s_('TransferGroup|Cannot transfer group to one of its subgroup.'),
         group_contains_namespaced_npm_packages: s_('TransferGroup|Group contains projects with NPM packages scoped to the current root level group.'),
         no_permissions_to_migrate_crm: s_("TransferGroup|Group contains contacts/organizations and you don't have enough permissions to move them to the new root group.")

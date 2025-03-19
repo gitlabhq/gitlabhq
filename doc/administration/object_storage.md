@@ -1372,7 +1372,7 @@ In some situations, it may be helpful to test object storage settings using the 
    connection = Fog::Storage.new(
      {
        provider: 'AWS',
-       region: `eu-central-1`,
+       region: 'eu-central-1',
        aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
        aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
      }

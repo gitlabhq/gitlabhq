@@ -855,7 +855,7 @@ module Types
       merge_requests: "Merge requests are",
       wiki: 'Wikis are',
       snippets: 'Snippets are',
-      container_registry: 'Container Registry is'
+      container_registry: 'Container registry is'
     }.each do |feature, name_string|
       field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
         description: "Indicates if #{name_string} enabled for the current user"

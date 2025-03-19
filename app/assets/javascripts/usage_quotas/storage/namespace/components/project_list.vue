@@ -132,7 +132,7 @@ export default {
         /><storage-type-warning v-if="field.key == 'containerRegistry'">
           {{
             s__(
-              'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
+              'UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
             )
           }}
           <gl-link :href="$options.containerRegistryDocsLink" target="_blank">

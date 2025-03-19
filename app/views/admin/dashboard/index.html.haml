@@ -121,7 +121,7 @@
 
         = render_if_exists 'admin/dashboard/elastic_and_geo'
 
-        = feature_entry(_('Container Registry'),
+        = feature_entry(_('Container registry'),
           href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
           enabled: Gitlab.config.registry.enabled)
 

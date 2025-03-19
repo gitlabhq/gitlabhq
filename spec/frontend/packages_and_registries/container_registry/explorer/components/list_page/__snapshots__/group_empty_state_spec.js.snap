@@ -3,7 +3,7 @@
 exports[`Registry Group Empty state to match the default snapshot 1`] = `
 <div>
   <p>
-    With the Container Registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here.
+    With the container registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here.
     <gl-link-stub
       href="/help/user/packages/container_registry/_index"
       target="_blank"

@@ -60,7 +60,7 @@ module Types
         yield
       rescue Faraday::Error
         raise_resource_not_available_error!(
-          "Can't connect to the Container Registry. " \
+          "Can't connect to the container registry. " \
             'If this error persists, please review the troubleshooting documentation.'
         )
       end

@@ -95,7 +95,7 @@ module Resolvers
     def tags
       container_repository.tags
     rescue Faraday::Error
-      raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, "Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation."
+      raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, "Can't connect to the container registry. If this error persists, please review the troubleshooting documentation."
     end
   end
 end

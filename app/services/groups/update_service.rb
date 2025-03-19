@@ -105,7 +105,7 @@ module Groups
     end
 
     def container_images_error
-      s_("GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.")
+      s_("GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again.")
     end
 
     def after_update

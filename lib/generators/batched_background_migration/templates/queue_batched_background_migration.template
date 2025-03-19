@@ -12,7 +12,6 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
   restrict_gitlab_migration # gitlab_schema: :gitlab_main / :gitlab_ci / :gitlab_main_clusterwide / ...
 
   MIGRATION = "<%= class_name %>"
-  # DELAY_INTERVAL = 2.minutes
   # BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE %>
   # SUB_BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::SUB_BATCH_SIZE %>
 
@@ -25,7 +24,6 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
       MIGRATION,
       :<%= table_name %>,
       :<%= column_name %>,
-      job_interval: DELAY_INTERVAL,
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )

@@ -49,7 +49,7 @@ describe('Container registry project settings section', () => {
 
     it('renders with description', () => {
       expect(findSettingsBlock().text()).toBe(
-        'The GitLab Container Registry is a secure and private registry for container images. It’s built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab API to manage the registry across groups and projects.',
+        'The GitLab container registry is a secure and private registry for container images. It’s built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab API to manage the registry across groups and projects.',
       );
     });
 

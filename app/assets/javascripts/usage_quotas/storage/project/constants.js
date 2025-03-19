@@ -36,13 +36,13 @@ export const PROJECT_STORAGE_TYPES = [
 export const NAMESPACE_STORAGE_TYPES = [
   {
     id: 'containerRegistry',
-    name: __('Container Registry'),
+    name: __('Container registry'),
     description: s__(
-      `UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.`,
+      `UsageQuota|Gitlab-integrated Docker container registry for storing Docker Images.`,
     ),
     warning: {
       popoverContent: s__(
-        'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
+        'UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
       ),
     },
   },

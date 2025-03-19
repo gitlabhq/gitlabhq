@@ -157,6 +157,18 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
       end
     end
 
+    context 'when the job interval is optional and defaults to the minimum' do
+      it 'sets the job interval to the minimum value' do
+        expect do
+          migration.queue_batched_background_migration(job_class.name, :events, :id)
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+
+        created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+        expect(created_migration.interval).to eq(described_class::BATCH_MIN_DELAY)
+      end
+    end
+
     context 'when additional arguments are passed to the method' do
       context 'when the job class provides job_arguments_count' do
         context 'when defined job arguments for the job class does not match provided arguments' do

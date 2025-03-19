@@ -553,3 +553,26 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - To remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
+
+### JWT format job token errors
+
+There are some known issues with the JWT format for CI/CD job tokens.
+
+#### `Error when persisting the task ARN.` error with EC2 Fargate Runner custom executor
+
+There is [a bug](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/issues/86)
+in version `0.5.0` and earlier of the EC2 Fargate custom executor. This issue causes this error:
+
+- `Error when persisting the task ARN. Will stop the task for cleanup`
+
+To fix this issue, upgrade to version `0.5.1` or later of the Fargate custom executor.
+
+#### `invalid character '\n' in string literal` error with `base64` encoding
+
+If you use `base64` to encode job tokens, you could receive an `invalid character '\n'` error.
+
+The default behavior of the `base64` command wraps strings that are longer than 79 characters.
+When `base64` encoding JWT format job tokens during job execution, for example with
+`echo $CI_JOB_TOKEN | base64`, the token is rendered invalid.
+
+To fix this issue, use `base64 -w0` to disable automatically wrapping the token.

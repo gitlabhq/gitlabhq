@@ -674,7 +674,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       it 'does not allow to path of the group to be changed' do
         post :update, params: { id: group.to_param, group: { path: 'new_path' } }
 
-        expect(assigns(:group).errors[:base].first).to match(/Docker images in their Container Registry/)
+        expect(assigns(:group).errors[:base].first).to match(/Docker images in their container registry/)
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
@@ -1055,7 +1055,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       end
 
       it 'does not allow the group to be transferred' do
-        expect(controller).to set_flash[:alert].to match(/Docker images in their Container Registry/)
+        expect(controller).to set_flash[:alert].to match(/Docker images in their container registry/)
         expect(response).to redirect_to(edit_group_path(group))
       end
     end

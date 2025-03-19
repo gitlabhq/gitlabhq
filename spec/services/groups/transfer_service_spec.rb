@@ -926,7 +926,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it 'does not transfer' do
           expect(subject).to be false
-          expect(transfer_service.error).to match(/Docker images in their Container Registry/)
+          expect(transfer_service.error).to match(/Docker images in their container registry/)
         end
       end
 
@@ -936,7 +936,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it 'does not transfer' do
           expect(subject).to be false
-          expect(transfer_service.error).to match(/Docker images in their Container Registry/)
+          expect(transfer_service.error).to match(/Docker images in their container registry/)
         end
       end
     end

@@ -9116,7 +9116,8 @@ CREATE TABLE approvals (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     patch_id_sha bytea,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_9da7c942dc CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE approvals_id_seq
@@ -27966,9 +27967,6 @@ ALTER TABLE ONLY project_type_ci_runners
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
-
-ALTER TABLE approvals
-    ADD CONSTRAINT check_9da7c942dc CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

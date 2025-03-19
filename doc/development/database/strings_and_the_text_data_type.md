@@ -251,7 +251,6 @@ class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[2.1]
       ISSUES_BACKGROUND_MIGRATION,
       :issues,
       :id,
-      job_interval: DELAY_INTERVAL,
       batch_size: BATCH_SIZE
     )
   end

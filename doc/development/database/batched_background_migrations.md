@@ -259,8 +259,7 @@ from your migration:
 queue_batched_background_migration(
   JOB_CLASS_NAME,
   TABLE_NAME,
-  JOB_ARGUMENTS,
-  JOB_INTERVAL
+  JOB_ARGUMENTS
   )
 ```
 
@@ -395,7 +394,6 @@ class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migra
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
-  DELAY_INTERVAL = 2.minutes
   BATCH_SIZE = 10_000
   SUB_BATCH_SIZE = 100
 
@@ -407,7 +405,6 @@ class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migra
       MIGRATION,
       :vulnerability_reads,
       :id,
-      job_interval: DELAY_INTERVAL,
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )
@@ -441,7 +438,7 @@ A batched background migration in running state can be stopped and removed for s
 - When the migration is no longer relevant or required as the product use case changed.
 - The migration has to be superseded with another migration with a different logic.
 
-To stop and remove an inprogress batched background migration, you must:
+To stop and remove an in-progress batched background migration, you must:
 
 - In Release N, No-op the contents of the `#up` and `#down` methods of the scheduling database migration.
 
@@ -454,13 +451,13 @@ class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
 end
 ```
 
-- In Release N, add a regular migration, to delete the existing batched migration. Delete the existing batched background migration using the `delete_batched_background_migration` method at the start of the `#up` method to ensure that any existing runs are cleaned up.
+- In Release N, add a regular migration, to delete the existing batched migration.
+  Delete the existing batched background migration using the `delete_batched_background_migration` method at the
+  start of the `#up` method to ensure that any existing runs are cleaned up.
 
 ```ruby
 class CleanupBackfillNamespaceType < Gitlab::Database::Migration[2.1]
   MIGRATION = "MyMigrationClass"
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 50_000
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
@@ -468,9 +465,7 @@ class CleanupBackfillNamespaceType < Gitlab::Database::Migration[2.1]
     delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
   end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
-  end
+  def down; end
 end
 ```
 
@@ -488,8 +483,7 @@ Batched migrations scheduled with `queue_batched_background_migration` **must** 
 queue_batched_background_migration(
   'CopyColumnUsingBackgroundMigrationJob',
   TABLE_NAME,
-  'name', 'name_convert_to_text',
-  job_interval: DELAY_INTERVAL
+  'name', 'name_convert_to_text'
 )
 ```
 
@@ -596,7 +590,6 @@ as the batching strategy.
    ```ruby
    class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillNamespaceType'
-     DELAY_INTERVAL = 2.minutes
 
      restrict_gitlab_migration gitlab_schema: :gitlab_main
 
@@ -604,8 +597,7 @@ as the batching strategy.
        queue_batched_background_migration(
          MIGRATION,
          :namespaces,
-         :id,
-         job_interval: DELAY_INTERVAL
+         :id
        )
      end
 
@@ -679,7 +671,6 @@ Database post-migration:
 ```ruby
 class ProjectsWithIssuesMigration < Gitlab::Database::Migration[2.1]
   MIGRATION = 'BatchProjectsWithIssues'
-  INTERVAL = 2.minutes
   BATCH_SIZE = 5000
   SUB_BATCH_SIZE = 500
   restrict_gitlab_migration gitlab_schema: :gitlab_main
@@ -690,7 +681,6 @@ class ProjectsWithIssuesMigration < Gitlab::Database::Migration[2.1]
       MIGRATION,
       :issues,
       :project_id,
-      job_interval: INTERVAL,
       batch_size: BATCH_SIZE,
       batch_class_name: 'LooseIndexScanBatchingStrategy', # Override the default batching strategy
       sub_batch_size: SUB_BATCH_SIZE
@@ -1278,12 +1268,11 @@ background migration.
    end
    ```
 
-1. Update the created post-deployment migration with required delay and batch sizes:
+1. Update the created post-deployment migration with required batch sizes:
 
    ```ruby
    class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillRouteNamespaceId'
-     DELAY_INTERVAL = 2.minutes
      BATCH_SIZE = 1000
      SUB_BATCH_SIZE = 100
 
@@ -1294,7 +1283,6 @@ background migration.
          MIGRATION,
          :routes,
          :id,
-         job_interval: DELAY_INTERVAL,
          batch_size: BATCH_SIZE,
          sub_batch_size: SUB_BATCH_SIZE
        )

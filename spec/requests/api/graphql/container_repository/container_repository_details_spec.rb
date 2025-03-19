@@ -302,7 +302,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect_graphql_errors_to_include("Can't connect to the container registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
 
@@ -364,7 +364,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect_graphql_errors_to_include("Can't connect to the container registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
   end
@@ -631,7 +631,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect_graphql_errors_to_include("Can't connect to the container registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
   end

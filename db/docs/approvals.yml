@@ -8,14 +8,6 @@ description: Stores merge request approvals made by users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/73faf3c7289c4fa4535b752a12247ee74b173976
 milestone: '7.12'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_id
-        table: merge_requests
-        sharding_key: target_project_id
-        belongs_to: merge_request
-desired_sharding_key_migration_job_name: BackfillApprovalsProjectId
+sharding_key:
+  project_id: projects
 table_size: small
