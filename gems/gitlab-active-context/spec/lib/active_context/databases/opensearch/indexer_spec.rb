@@ -15,6 +15,7 @@ RSpec.describe ActiveContext::Databases::Opensearch::Indexer do
       as_indexed_json: { title: 'Test Issue' },
       partition_name: 'issues',
       identifier: '1',
+      partition: 'issues_0',
       routing: 'group_1',
       serialize: 'issue 1 group_1'
     )

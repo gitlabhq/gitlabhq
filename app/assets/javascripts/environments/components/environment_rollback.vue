@@ -7,7 +7,6 @@
  */
 import { GlDisclosureDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import eventHub from '../event_hub';
 import setEnvironmentToRollback from '../graphql/mutations/set_environment_to_rollback.mutation.graphql';
 
 export default {
@@ -33,12 +32,6 @@ export default {
       type: String,
       required: true,
     },
-
-    graphql: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   data() {
@@ -58,16 +51,13 @@ export default {
         retryUrl: this.retryUrl,
         isLastDeployment: this.isLastDeployment,
       };
-      if (this.graphql) {
-        this.$apollo.mutate({
-          mutation: setEnvironmentToRollback,
-          variables: {
-            environment: rollbackEnvironmentData,
-          },
-        });
-      } else {
-        eventHub.$emit('requestRollbackEnvironment', rollbackEnvironmentData);
-      }
+
+      this.$apollo.mutate({
+        mutation: setEnvironmentToRollback,
+        variables: {
+          environment: rollbackEnvironmentData,
+        },
+      });
     },
   },
 };

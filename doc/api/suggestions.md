@@ -12,7 +12,11 @@ title: Suggest Changes API
 
 {{< /details >}}
 
-This page describes the API for [suggesting changes](../user/project/merge_requests/reviews/suggestions.md).
+You can programmatically create and apply code suggestions in merge request discussions with
+this API. When you review code, suggestions provide a way to propose specific changes
+that can be directly applied.
+
+For more information, see [Suggest changes](../user/project/merge_requests/reviews/suggestions.md).
 
 Every API call to suggestions must be authenticated.
 

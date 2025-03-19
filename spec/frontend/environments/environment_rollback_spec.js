@@ -3,7 +3,6 @@ import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RollbackComponent from '~/environments/components/environment_rollback.vue';
-import eventHub from '~/environments/event_hub';
 import setEnvironmentToRollback from '~/environments/graphql/mutations/set_environment_to_rollback.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
@@ -38,27 +37,7 @@ describe('Rollback Component', () => {
     expect(findDropdownItem().props('item').text).toBe('Rollback environment');
   });
 
-  it('should emit a "rollback" event on button click', () => {
-    const eventHubSpy = jest.spyOn(eventHub, '$emit');
-    wrapper = shallowMount(RollbackComponent, {
-      propsData: {
-        retryUrl,
-        environment: {
-          name: 'test',
-        },
-      },
-    });
-
-    findDropdownItem().vm.$emit('action');
-
-    expect(eventHubSpy).toHaveBeenCalledWith('requestRollbackEnvironment', {
-      retryUrl,
-      isLastDeployment: true,
-      name: 'test',
-    });
-  });
-
-  it('should trigger a graphql mutation when graphql is enabled', () => {
+  it('should trigger a graphql mutation', () => {
     Vue.use(VueApollo);
 
     const apolloProvider = createMockApollo();
@@ -70,7 +49,6 @@ describe('Rollback Component', () => {
     wrapper = shallowMount(RollbackComponent, {
       propsData: {
         retryUrl,
-        graphql: true,
         environment,
       },
       apolloProvider,

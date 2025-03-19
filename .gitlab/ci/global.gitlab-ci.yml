@@ -340,7 +340,7 @@
 
 .zoekt-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.9
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.10
       alias: zoekt-ci-image
 
 .use-pg14:

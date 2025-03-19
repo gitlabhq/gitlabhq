@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import { INSTRUMENT_TODO_ITEM_CLICK, TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
 import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
 import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
@@ -76,15 +77,21 @@ export default {
           variables: {
             todoId: this.todo.id,
           },
-          optimisticResponse: {
-            toggleStatus: {
-              todo: {
-                id: this.todo.id,
-                state: this.isDone ? TODO_STATE_PENDING : TODO_STATE_DONE,
-                __typename: 'Todo',
+          optimisticResponse: () => {
+            if (!this.isSnoozed) {
+              updateGlobalTodoCount(this.isDone ? +1 : -1);
+            }
+
+            return {
+              toggleStatus: {
+                todo: {
+                  id: this.todo.id,
+                  state: this.isDone ? TODO_STATE_PENDING : TODO_STATE_DONE,
+                  __typename: 'Todo',
+                },
+                errors: [],
               },
-              errors: [],
-            },
+            };
           },
         });
 

@@ -20,15 +20,32 @@ This feature is considered [experimental](../../policy/development_stages_suppor
 {{< /alert >}}
 
 Workflow is an experimental product and users should consider their
-circumstances before using this tool. Workflow is an AI Agent that is given
-some ability to perform actions on the users behalf. AI tools based on LLMs are
+circumstances before using this tool. It is subject to our [testing agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+Workflow is an AI Agent that is given some ability to perform actions on the user's behalf. AI tools based on LLMs are
 inherently unpredictable and you should take appropriate precautions.
 
-Workflow in VS Code runs workflows in a Docker container on your local
-workstation. Running Duo Workflow inside of Docker is not a security measure but a
+Workflow in VS Code runs workflows on your local workstation or in a Docker container.
+Running Duo Workflow inside of a Docker container is not a security measure but a
 convenience to reduce the amount of disruption to your usual development
 environment. All the documented risks should be considered before using this
 product. The following risks are important to understand:
+
+1. Workflow has access to the local file system of the
+   project where you started running Workflow. Workflow respects your local `.gitignore` file,
+   but it can still access files that are not committed to the project and not called out in `.gitignore`.
+   Such files can contain credentials (for example, `.env` files).
+1. Workflow also gets access to a time-limited `ai_workflows` scoped GitLab
+   OAuth token with your user's identity. This token can be used to access
+  GitLab APIs on your behalf. This token is limited to the duration of
+   the workflow and only has access to certain APIs in GitLab.
+   Without user approval, Workflow will only perform read operations but the token can still,
+   by design, perform write operations on the users behalf. You should consider
+   the access your user has in GitLab before running Workflow.
+1. You should not give Workflow any additional credentials or secrets, in
+   goals or messages, as there is a chance it might end up using those in code
+   or other API calls.
+
+Risks specifically when using Docker to isolate Workflow:
 
 1. Our supported Docker servers are running in a VM. We do not support Docker
    Engine running on the host as this offers less isolation. Because Docker
@@ -54,23 +71,7 @@ product. The following risks are important to understand:
    open in VS Code but depending on how your Docker installation works and
    whether or not you are running other containers there may still be some
    risks it could access other parts of your file system.
-1. Workflow has access to the local file system of the
-   project where you started running Workflow. This may include access to
-   any credentials that you have stored in files in this directory, even if they
-   are not committed to the project (for example, `.env` files)
 1. All your Docker containers usually run in a single VM. So this
    may mean that Workflow containers are running in the same VM as other
    non Workflow containers. While the containers are isolated to some
    degree this isolation is not as strict as VM level isolation
-
-Other risks to be aware of when using Workflow:
-
-1. Workflow also gets access to a time-limited `ai_workflows` scoped GitLab
-   OAuth token with your user's identity. This token can be used to access
-   certain GitLab APIs on your behalf. This token is limited to the duration of
-   the workflow and only has access to certain APIs in GitLab but it can still,
-   by design, perform write operations on the users behalf. You should consider
-   what access your user has in GitLab before running workflows.
-1. You should not give Workflow any additional credentials or secrets, in
-   goals or messages, as there is a chance it might end up using those in code
-   or other API calls.

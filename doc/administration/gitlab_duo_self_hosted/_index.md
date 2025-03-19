@@ -80,7 +80,7 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 - [Ask about or generate code](../../user/gitlab_duo_chat/examples.md#ask-about-or-generate-code)
 - [Ask follow up questions](../../user/gitlab_duo_chat/examples.md#ask-follow-up-questions)
 - [Ask about errors](../../user/gitlab_duo_chat/examples.md#ask-about-errors)
-- [Ask about specific files](../../user/gitlab_duo_chat/examples.md#ask-about-specific-files)
+- [Ask about specific files](../../user/gitlab_duo_chat/examples.md#ask-about-specific-files-in-the-ide)
 - [Ask about CI/CD](../../user/gitlab_duo_chat/examples.md#ask-about-cicd)
 
 ### Prerequisites

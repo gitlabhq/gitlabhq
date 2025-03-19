@@ -7,6 +7,10 @@ module ActiveContext
         string.split(self::DELIMITER)
       end
 
+      def args_to_hash(args)
+        args.each_with_index.to_h { |arg, index| [:"arg#{index + 1}", arg] }
+      end
+
       def join_delimited(array)
         [self, array].join(self::DELIMITER)
       end

@@ -13,8 +13,8 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     end
   end
 
-  let(:reference_1) { reference_class.new(collection_id, partition, object_id) }
-  let(:reference_2) { reference_class.new(collection_id, partition, object_id) }
+  let(:reference_1) { reference_class.new(collection_id: collection_id, routing: partition, args: object_id) }
+  let(:reference_2) { reference_class.new(collection_id: collection_id, routing: partition, args: object_id) }
 
   let(:mock_adapter) { double }
   let(:mock_collection) { double(name: collection_name, partition_for: partition) }

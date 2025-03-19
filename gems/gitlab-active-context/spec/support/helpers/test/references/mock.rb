@@ -4,7 +4,7 @@ module Test
   module References
     class Mock < ::ActiveContext::Reference
       def self.serialize_data(data)
-        [data.id]
+        { identifier: data.id }
       end
 
       attr_reader :identifier
@@ -13,7 +13,7 @@ module Test
         @identifier, _ = serialized_args
       end
 
-      def serialize_arguments
+      def serialized_attributes
         [identifier]
       end
 

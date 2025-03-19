@@ -1,5 +1,11 @@
 # How it works
 
+## Migrations
+
+A cron worker runs every 5 minutes to apply outstanding migrations for the currently active connection.
+
+If another connection is made active, the worker will apply that connection's outstanding migrations.
+
 ## Async processing
 
 A cron worker triggers a Sidekiq job for every queue in `ActiveContext.raw_queues` every minute. For each of the jobs, it fetches a set amount of references from the queue, processes them and removes them from the queue. The job will re-enqueue itself every second until there are no more references to process in the queue.

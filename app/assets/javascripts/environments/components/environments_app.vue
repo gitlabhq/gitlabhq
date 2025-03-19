@@ -272,9 +272,9 @@ export default {
       :modal-id="$options.stopStaleEnvsModalId"
       data-testid="stop-stale-environments-modal"
     />
-    <delete-environment-modal :environment="environmentToDelete" graphql />
-    <stop-environment-modal :environment="environmentToStop" graphql />
-    <confirm-rollback-modal :environment="environmentToRollback" graphql />
+    <delete-environment-modal :environment="environmentToDelete" />
+    <stop-environment-modal :environment="environmentToStop" />
+    <confirm-rollback-modal :environment="environmentToRollback" />
     <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
     <template v-if="showTabs">
       <gl-tabs

@@ -77,3 +77,17 @@ export function createUserCountsManager() {
     broadcastUserCounts(userCounts);
   }
 }
+
+/**
+ * EXACT update of the user to-do count. Only use this one, if you got the new
+ * to-count returned by an API. Will also broadcast the current count to
+ * all other open tabs
+ *
+ * @param {number} count
+ */
+export const setGlobalTodoCount = (count) => {
+  if (Number.isSafeInteger(count) && count >= 0) {
+    userCounts.todos = count;
+    broadcastUserCounts({ todos: userCounts.todos, last_update: Date.now() });
+  }
+};

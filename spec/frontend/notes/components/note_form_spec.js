@@ -7,7 +7,6 @@ import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
-import eventHub from '~/environments/event_hub';
 import notesEventHub from '~/notes/event_hub';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -174,7 +173,7 @@ describe('issue_note_form component', () => {
 
       describe('up', () => {
         it('should ender edit mode', () => {
-          const eventHubSpy = jest.spyOn(eventHub, '$emit');
+          const eventHubSpy = jest.spyOn(notesEventHub, '$emit');
 
           textarea.trigger('keydown.up');
 

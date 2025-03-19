@@ -77,7 +77,6 @@ export default {
         :is-loading="isLoading"
         :is-empty="isEmpty"
         :environment="environment"
-        graphql
         class="!gl-bg-inherit"
         @changeCanaryWeight="changeCanaryWeight"
       />

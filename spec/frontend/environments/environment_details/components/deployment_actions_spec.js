@@ -50,6 +50,7 @@ describe('~/environments/environment_details/components/deployment_actions.vue',
         actions,
         rollback,
         approvalEnvironment,
+        deploymentWebPath: 'deployment/web/path',
       },
     });
   };

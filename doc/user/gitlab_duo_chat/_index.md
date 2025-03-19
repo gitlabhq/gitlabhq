@@ -83,7 +83,7 @@ In the IDEs, GitLab Duo Chat knows about these areas:
 | Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
 | Epics                        | Ask about the URL. |
 | Issues                       | Ask about the URL. |
-| Files                        | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files). |
+| Files                        | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
@@ -117,7 +117,7 @@ This applies to files added via `/include`, and all generation commands.
    > - Your [**user profile**](../profile/_index.md).
    > - **Help**.
 
-1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+1. Enter your question in the chat text box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 
 To ask a new question unrelated to the previous conversation, you might receive better answers
@@ -128,6 +128,63 @@ if you clear the context by typing `/reset` or `/clear` and selecting **Send**.
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
 
 {{< /alert >}}
+
+### Have multiple conversations with Chat
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `duo_chat_multi_thread`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+In GitLab 17.10 and later, you can have multiple simultaneous conversations with Chat.
+
+1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. Enter your question in the chat text box and press **Enter** or select **Send**.
+1. To create a new conversation with Chat, you can either:
+   - In the top-left corner of the Chat drawer, select **New Chat**.
+   - In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+   A new Chat drawer appears, replacing the previous Chat drawer.
+
+   There is no limit to the number of simultaneous conversations you can have with Chat.
+
+   {{< alert type="note" >}}
+
+   When you use multiple conversations, the `/new` slash command replaces the `/reset` or `/clear` slash commands.
+
+   {{< /alert >}}
+
+1. To view all of your conversations, in the top-left corner of the Chat drawer, select **Chat History**.
+
+   Conversations created before the multiple conversations feature was enabled are not visible in the Chat history.
+
+1. To switch between conversations, in your Chat history, select the appropriate conversation.
+
+   Every conversation persists an unlimited number of messages. However, only the last 50 messages are sent to the LLM to fit the content in the LLM's context window.
+
+#### Delete a conversation
+
+To delete a conversation:
+
+1. In the top-left corner of the Chat drawer, select **Chat History**.
+1. In the Chat history, select **Delete conversation**.
+
+> Individual conversations are automatically deleted after 30 days of inactivity.
+>
+> When a user's permission or role changes in any project or group, all of that user's chat conversations are deleted.
 
 ## Use GitLab Duo Chat in the Web IDE
 

@@ -8971,9 +8971,6 @@ msgstr ""
 msgid "Availability"
 msgstr ""
 
-msgid "Available"
-msgstr ""
-
 msgid "Available ID"
 msgstr ""
 
@@ -23232,9 +23229,6 @@ msgstr ""
 msgid "Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again."
 msgstr ""
 
-msgid "Environments|An error occurred while fetching the environments."
-msgstr ""
-
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
@@ -23250,9 +23244,6 @@ msgstr ""
 msgid "Environments|Are you sure you want to delete %{podName}? This action cannot be undone."
 msgstr ""
 
-msgid "Environments|Auto stop"
-msgstr ""
-
 msgid "Environments|Auto stops %{autoStopAt}"
 msgstr ""
 
@@ -23260,9 +23251,6 @@ msgid "Environments|Clean up"
 msgstr ""
 
 msgid "Environments|Clean up environments"
-msgstr ""
-
-msgid "Environments|Commit"
 msgstr ""
 
 msgid "Environments|Create an environment"
@@ -23289,12 +23277,6 @@ msgstr ""
 msgid "Environments|Deploy to..."
 msgstr ""
 
-msgid "Environments|Deployment"
-msgstr ""
-
-msgid "Environments|Deployment %{status}"
-msgstr ""
-
 msgid "Environments|Deployment history"
 msgstr ""
 
@@ -23308,9 +23290,6 @@ msgid "Environments|Enable Review Apps"
 msgstr ""
 
 msgid "Environments|Enable review apps"
-msgstr ""
-
-msgid "Environments|Environment"
 msgstr ""
 
 msgid "Environments|Environments"
@@ -23334,9 +23313,6 @@ msgstr ""
 msgid "Environments|If a Flux resource is specified, its reconciliation status is reflected in GitLab."
 msgstr ""
 
-msgid "Environments|Job"
-msgstr ""
-
 msgid "Environments|Kubernetes namespace (optional)"
 msgstr ""
 
@@ -23353,9 +23329,6 @@ msgid "Environments|Name"
 msgstr ""
 
 msgid "Environments|New environment"
-msgstr ""
-
-msgid "Environments|No deployments yet"
 msgstr ""
 
 msgid "Environments|No selection shows all authorized resources in the cluster. %{linkStart}Learn more.%{linkEnd}"
@@ -23424,9 +23397,6 @@ msgstr ""
 msgid "Environments|Select which environments to clean up. Protected environments are excluded. Learn more about cleaning up environments."
 msgstr ""
 
-msgid "Environments|Show all"
-msgstr ""
-
 msgid "Environments|Stop"
 msgstr ""
 
@@ -23463,15 +23433,6 @@ msgstr ""
 msgid "Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again:"
 msgstr ""
 
-msgid "Environments|Upcoming"
-msgstr ""
-
-msgid "Environments|Upcoming deployment"
-msgstr ""
-
-msgid "Environments|Updated"
-msgstr ""
-
 msgid "Environments|Updating"
 msgstr ""
 
@@ -23485,12 +23446,6 @@ msgid "Environments|You are about to stop the environment %{environmentName}. An
 msgstr ""
 
 msgid "Environments|You are about to stop the environment %{environmentName}. The environment will be moved to the Stopped tab. There is no %{actionStopLinkStart}action:stop%{actionStopLinkEnd} defined for this environment, so your existing deployments will not be affected."
-msgstr ""
-
-msgid "Environments|by %{avatar}"
-msgstr ""
-
-msgid "Environments|protected"
 msgstr ""
 
 msgid "Environment|Age"
@@ -63009,7 +62964,16 @@ msgstr ""
 msgid "UsageQuotas|Container registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr ""
 
+msgid "UsageQuotas|Loading Usage Quotas tab content"
+msgstr ""
+
 msgid "UsageQuotas|Namespace transfer data used"
+msgstr ""
+
+msgid "UsageQuotas|Reload the page to try again"
+msgstr ""
+
+msgid "UsageQuotas|There was an error while loading the tab contents"
 msgstr ""
 
 msgid "UsageQuota|%{linkTitle} help link"

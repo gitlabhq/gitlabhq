@@ -2189,7 +2189,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/notes_spec.rb'
     - 'spec/requests/api/npm_project_packages_spec.rb'
     - 'spec/requests/api/oauth_tokens_spec.rb'
-    - 'spec/requests/api/package_files_spec.rb'
     - 'spec/requests/api/pages/internal_access_spec.rb'
     - 'spec/requests/api/pages/private_access_spec.rb'
     - 'spec/requests/api/pages/public_access_spec.rb'

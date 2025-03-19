@@ -8,7 +8,6 @@ import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import EnvironmentBreadcrumbs from './environment_details/environment_breadcrumbs.vue';
 import EnvironmentsDetailHeader from './components/environments_detail_header.vue';
 import { apolloProvider as createApolloProvider } from './graphql/client';
-import environmentsMixin from './mixins/environments_mixin';
 
 Vue.use(VueApollo);
 Vue.use(GlToast);
@@ -23,7 +22,6 @@ export const initHeader = () => {
   return new Vue({
     el,
     apolloProvider,
-    mixins: [environmentsMixin],
     provide: {
       projectFullPath: dataset.projectFullPath,
     },
@@ -36,10 +34,8 @@ export const initHeader = () => {
         hasTerminals: dataset.hasTerminals,
         autoStopAt: dataset.autoStopAt,
         onSingleEnvironmentPage: true,
-        // TODO: These two props are snake_case because the environments_mixin file uses
-        // them and the mixin is imported in several files. It would be nice to convert them to camelCase.
-        stop_path: dataset.environmentStopPath,
-        delete_path: dataset.environmentDeletePath,
+        stopPath: dataset.environmentStopPath,
+        deletePath: dataset.environmentDeletePath,
         descriptionHtml: dataset.descriptionHtml,
       };
 

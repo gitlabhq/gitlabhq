@@ -11,8 +11,10 @@ import { useFakeDate } from 'helpers/fake_date';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import SnoozeTimePicker from '~/todos/components/todo_snooze_until_picker.vue';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 
 Vue.use(VueApollo);
+jest.mock('~/sidebar/utils');
 
 describe('ToggleSnoozedStatus', () => {
   let wrapper;
@@ -100,6 +102,18 @@ describe('ToggleSnoozedStatus', () => {
     });
   });
 
+  it('triggers the snooze mutation and optimistic count update', () => {
+    createComponent({ props: { isSnoozed: false, isPending: true } });
+
+    findSnoozeTimePicker().vm.$emit('snooze-until', mockCurrentTime);
+
+    expect(snoozeTodoMutationSuccessHandler).toHaveBeenCalledWith({
+      snoozeUntil: mockCurrentTime,
+      todoId: mockTodo.id,
+    });
+    expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
+  });
+
   it('shows an error when the to snooze mutation returns some errors', async () => {
     createComponent({
       props: { isSnoozed: false, isPending: true },
@@ -150,7 +164,7 @@ describe('ToggleSnoozedStatus', () => {
       });
     });
 
-    it('triggers the un-snooze mutation', () => {
+    it('triggers the un-snooze mutation and optimistic count update', () => {
       createComponent({ props: { isSnoozed: true, isPending: true } });
 
       findUnSnoozeButton().vm.$emit('click');
@@ -158,6 +172,7 @@ describe('ToggleSnoozedStatus', () => {
       expect(unSnoozeTodoMutationSuccessHandler).toHaveBeenCalledWith({
         todoId: mockTodo.id,
       });
+      expect(updateGlobalTodoCount).toHaveBeenCalledWith(1);
     });
 
     it('shows an error when the to un-snooze mutation returns some errors', async () => {

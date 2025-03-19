@@ -48,7 +48,6 @@ RSpec/RepeatedSubjectCall:
     - 'spec/models/environment_spec.rb'
     - 'spec/models/packages/package_file_spec.rb'
     - 'spec/requests/api/groups_spec.rb'
-    - 'spec/requests/api/package_files_spec.rb'
     - 'spec/requests/api/projects_spec.rb'
     - 'spec/requests/api/releases_spec.rb'
     - 'spec/requests/api/users_spec.rb'

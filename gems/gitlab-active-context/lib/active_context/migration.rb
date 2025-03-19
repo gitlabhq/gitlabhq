@@ -32,6 +32,10 @@ module ActiveContext
 
         operation.completed?
       end
+
+      def all_operations_completed?
+        @operations.values.all?(&:completed?)
+      end
     end
 
     def self.[](version)

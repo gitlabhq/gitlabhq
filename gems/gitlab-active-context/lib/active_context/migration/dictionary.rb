@@ -25,8 +25,10 @@ module ActiveContext
       end
 
       # Returns all migrations sorted by version
-      def migrations
-        @migrations.sort_by { |version, _| version }.map(&:last)
+      def migrations(versions_only: false)
+        migrations = @migrations.sort_by { |version, _| version }
+
+        migrations.map { |m| versions_only ? m.first : m.last }
       end
 
       # Find a specific migration by version

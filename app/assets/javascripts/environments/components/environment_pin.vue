@@ -5,7 +5,6 @@
  */
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
-import eventHub from '../event_hub';
 import cancelAutoStopMutation from '../graphql/mutations/cancel_auto_stop.mutation.graphql';
 
 export default {
@@ -17,11 +16,6 @@ export default {
       type: String,
       required: true,
     },
-    graphql: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -30,14 +24,10 @@ export default {
   },
   methods: {
     onPinClick() {
-      if (this.graphql) {
-        this.$apollo.mutate({
-          mutation: cancelAutoStopMutation,
-          variables: { autoStopUrl: this.autoStopUrl },
-        });
-      } else {
-        eventHub.$emit('cancelAutoStop', this.autoStopUrl);
-      }
+      this.$apollo.mutate({
+        mutation: cancelAutoStopMutation,
+        variables: { autoStopUrl: this.autoStopUrl },
+      });
     },
   },
 };

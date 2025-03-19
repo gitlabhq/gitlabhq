@@ -42,6 +42,12 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
               variableType
             }
           }
+          inputs {
+            nodes {
+              name
+              value
+            }
+          }
         }
         errors
       QL
@@ -125,6 +131,62 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
               { "key" => 'ABC', "value" => "ABC123", "variableType" => 'ENV_VAR' }
             ]
           )
+      end
+    end
+
+    context 'when the pipeline schedule has inputs' do
+      let(:input_for_update) do
+        create(
+          :ci_pipeline_schedule_input, name: 'input_for_update', value: 'value', pipeline_schedule: pipeline_schedule
+        )
+      end
+
+      let(:input_for_destroy) do
+        create(
+          :ci_pipeline_schedule_input, name: 'input_for_destroy', value: 'value', pipeline_schedule: pipeline_schedule
+        )
+      end
+
+      let(:pipeline_schedule_parameters) do
+        {
+          inputs: [
+            { name: 'new_input', value: 'value' },
+            { id: input_for_update.to_global_id.to_s, name: 'input_for_update', value: 'new_value' },
+            { id: input_for_destroy.to_global_id.to_s, name: 'input_for_destroy', value: 'value', destroy: true }
+          ]
+        }
+      end
+
+      it 'adds, updates, and deletes inputs' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+
+        expect(mutation_response['errors']).to be_empty
+        expect(mutation_response['pipelineSchedule']['inputs']['nodes'])
+          .to contain_exactly(
+            { 'name' => 'new_input', 'value' => 'value' },
+            { 'name' => 'input_for_update', 'value' => 'new_value' }
+          )
+      end
+
+      context 'when ci_inputs_for_pipelines is disabled' do
+        before do
+          stub_feature_flags(ci_inputs_for_pipelines: false)
+        end
+
+        it 'does not change the inputs' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+
+          expect(mutation_response['errors']).to be_empty
+          expect(mutation_response['pipelineSchedule']['inputs']['nodes'])
+            .to contain_exactly(
+              { 'name' => 'input_for_update', 'value' => 'value' },
+              { 'name' => 'input_for_destroy', 'value' => 'value' }
+            )
+        end
       end
     end
 

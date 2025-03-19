@@ -74,11 +74,11 @@ module ActiveContext
           case ref.operation.to_sym
           when :index, :upsert
             [
-              { update: { _index: ref.partition_name, _id: ref.identifier, routing: ref.routing }.compact },
+              { update: { _index: ref.partition, _id: ref.identifier, routing: ref.routing }.compact },
               { doc: ref.as_indexed_json, doc_as_upsert: true }
             ]
           when :delete
-            [{ delete: { _index: ref.partition_name, _id: ref.identifier, routing: ref.routing }.compact }]
+            [{ delete: { _index: ref.partition, _id: ref.identifier, routing: ref.routing }.compact }]
           else
             raise StandardError, "Operation #{ref.operation} is not supported"
           end

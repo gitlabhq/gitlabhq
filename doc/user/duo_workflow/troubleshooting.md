@@ -27,6 +27,12 @@ If you encounter issues:
 1. Ensure that the project you want to use it with meets the [prerequisites](_index.md#prerequisites).
 1. Ensure that the folder you opened in VS Code has a Git repository for your GitLab project.
 1. Ensure that you've checked out the branch for the code you'd like to change.
+1. Ensure that you can connect to the Workflow service:
+   1. In Google Chrome or Firefox, open Developer Tools and the **Network** tab.
+   1. Right-click the column headers to trigger protocol column visibility.
+   1. In the address bar, enter `https://duo-workflow.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`.
+   1. Ensure the request was successful and the **Protocol** column includes `h2` in Chrome or `HTTP/2` in Firefox.
+   1. If the request fails, your network might be blocking the connection, for example with a firewall. The network must let HTTP/2 traffic through to the service.
 1. Check local debugging logs:
    1. For more output in the logs, open the settings:
       1. On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>

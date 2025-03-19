@@ -219,6 +219,6 @@ export default {
       <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
     </div>
     <empty-state v-if="!isDeploymentTableShown && !isLoading" />
-    <confirm-rollback-modal :environment="environmentToRollback" graphql @rollback="resetPage" />
+    <confirm-rollback-modal :environment="environmentToRollback" @rollback="resetPage" />
   </div>
 </template>

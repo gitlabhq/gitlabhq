@@ -6,15 +6,16 @@ description: How to install Git on your local machine.
 title: Install Git
 ---
 
-To contribute to GitLab projects, you must download and install the Git client on your local machine.
-This page explains how to install and configure Git on macOS and Ubuntu Linux.
+To contribute to GitLab projects, you must download, install, and configure the Git client on
+your local machine. GitLab uses the SSH protocol to securely communicate with Git.
+With SSH, you can authenticate to the GitLab remote server without entering your username
+and password each time.
 
 For information on downloading and installing Git on other operating systems, see the
 [official Git website](https://git-scm.com/downloads).
 
 After you install and configure Git, [generate and add an SSH key pair](../../../user/ssh.md#generate-an-ssh-key-pair)
-to your GitLab account. GitLab uses the SSH protocol to securely communicate with Git.
-With SSH, you can authenticate to the GitLab remote server without entering your username and password each time.
+to your GitLab account.
 
 ## Install and update Git
 

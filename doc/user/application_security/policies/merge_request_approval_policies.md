@@ -787,6 +787,7 @@ If you notice any inconsistencies in your merge request approval rules, you can 
 
 - Unassign and then reassign the security policy project to the affected group or project.
 - Alternatively, you can update a policy to trigger that policy to resynchronize for the affected group or project.
+- Confirm that the syntax of the YAML file in the security policy project is valid.
 
 These actions help ensure that your merge request approval policies are correctly applied and consistent across all merge requests.
 

@@ -16,6 +16,7 @@ import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
+import { userCounts } from '~/super_sidebar/user_counts_manager';
 import {
   todosResponse,
   todosResponseEmptyLastPage,
@@ -191,15 +192,18 @@ describe('TodosApp', () => {
   });
 
   it('shows the pending todos count once it has been fetched', async () => {
+    const previousCount = 5;
+    const updatedCount = getPendingTodosCountResponse.data.currentUser.todos.count;
+    Object.assign(userCounts, { todos: previousCount });
+    expect(previousCount).not.toBe(updatedCount);
+
     createComponent();
 
-    expect(findPendingTodosCount().text()).toBe('-');
+    expect(findPendingTodosCount().text()).toBe(`${previousCount}`);
 
     await waitForPromises();
 
-    expect(findPendingTodosCount().text()).toBe(
-      String(getPendingTodosCountResponse.data.currentUser.todos.count),
-    );
+    expect(findPendingTodosCount().text()).toBe(`${updatedCount}`);
   });
 
   it('refetches todos when page becomes visible again', async () => {

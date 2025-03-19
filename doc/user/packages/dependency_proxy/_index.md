@@ -193,11 +193,12 @@ You can also use [custom CI/CD variables](../../../ci/variables/_index.md#for-a-
 {{< history >}}
 
 - Support for Docker Hub credentials [added](https://gitlab.com/gitlab-org/gitlab/-/issues/331741) in GitLab 17.10.
-
+- UI support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/521954) in GitLab 17.11.
+ 
 {{< /history >}}
 
 By default, the Dependency Proxy does not use credentials when pulling images from Docker Hub.
-You can configure Docker Hub authentication through the GraphQL API using your Docker Hub credentials or tokens.
+You can configure Docker Hub authentication using your Docker Hub credentials or tokens.
 
 To authenticate with Docker Hub, you can use:
 
@@ -206,7 +207,19 @@ To authenticate with Docker Hub, you can use:
 - A Docker Hub [Personal Access Token](https://docs.docker.com/security/for-developers/access-tokens/).
 - A Docker Hub [Organization Access Token](https://docs.docker.com/security/for-admins/access-tokens/).
 
-UI support for configuring Docker Hub credentials for groups in self-managed instances is proposed in issue [521954](https://gitlab.com/gitlab-org/gitlab/-/issues/521954).
+#### Configure credentials
+
+To set Docker Hub credentials for the dependency proxy for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Packages and registries**.
+1. Expand the **Dependency Proxy** section.
+1. Turn on **Enable Proxy**.
+1. Under **Docker Hub authentication**, enter your credentials:
+   - **Identity** is your username (for password or Personal Access Token) or organization name (for Organization Access Token).
+   - **Secret** is your password, Personal Access Token, or Organization Access Token.
+
+   You must either complete both fields or leave both empty. If you leave both fields empty, requests to Docker Hub remain unauthenticated.
 
 #### Configure credentials using the GraphQL API
 

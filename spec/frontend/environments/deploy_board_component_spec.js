@@ -51,8 +51,8 @@ describe('Deploy Board', () => {
     it('should render an abort and a rollback button with the provided url', () => {
       const buttons = wrapper.findAll('.deploy-board-actions a');
 
-      expect(buttons.at(0).attributes('href')).toEqual(deployBoardMockData.rollback_url);
-      expect(buttons.at(1).attributes('href')).toEqual(deployBoardMockData.abort_url);
+      expect(buttons.at(0).attributes('href')).toEqual(deployBoardMockData.rollbackUrl);
+      expect(buttons.at(1).attributes('href')).toEqual(deployBoardMockData.abortUrl);
     });
 
     it('sets up a tooltip for the legend', () => {
@@ -67,14 +67,13 @@ describe('Deploy Board', () => {
     it('renders the canary weight selector', () => {
       const canary = wrapper.findComponent(CanaryIngress);
       expect(canary.exists()).toBe(true);
-      expect(canary.props('canaryIngress')).toEqual({ canary_weight: 50 });
+      expect(canary.props('canaryIngress')).toEqual({ canaryWeight: 50 });
     });
   });
 
   describe('with new valid data', () => {
     beforeEach(async () => {
       wrapper = createComponent({
-        graphql: true,
         deployBoardData: rolloutStatus,
       });
       await nextTick();
@@ -123,7 +122,6 @@ describe('Deploy Board', () => {
       const canary = wrapper.findComponent(CanaryIngress);
       expect(canary.exists()).toBe(true);
       expect(canary.props('canaryIngress')).toEqual({ canaryWeight: 50 });
-      expect(canary.props('graphql')).toBe(true);
     });
   });
 

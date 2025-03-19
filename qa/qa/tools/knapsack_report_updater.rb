@@ -160,11 +160,11 @@ module QA
           remove_source_branch: true,
           squash: true,
           reviewer_ids: approver_user_valid? ? [approver_user_id] : nil,
-          labels: "group::development analytics,type::maintenance,maintenance::pipelines",
+          labels: "group::development analytics,type::maintenance,maintenance::pipelines,automation:bot-authored",
           description: "Update fallback knapsack report and example runtime data report.".then do |description|
             next description if approver_user_valid?
 
-            "#{description}\n\ncc: @gl-dx/qe-maintainers"
+            "#{description}\n\ncc: @gl-dx/maintainers"
           end
         }.compact)
         @mr_iid = resp[:iid]

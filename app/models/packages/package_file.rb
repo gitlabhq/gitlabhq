@@ -9,6 +9,7 @@ class Packages::PackageFile < ApplicationRecord
 
   INSTALLABLE_STATUSES = [:default].freeze
   ENCODED_SLASH = "%2F"
+  SORTABLE_COLUMNS = %w[id file_name created_at].freeze
 
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
@@ -53,7 +54,10 @@ class Packages::PackageFile < ApplicationRecord
   scope :preload_conan_file_metadata, -> { preload(:conan_file_metadatum) }
   scope :preload_debian_file_metadata, -> { preload(:debian_file_metadatum) }
   scope :preload_helm_file_metadata, -> { preload(:helm_file_metadatum) }
-  scope :order_id_asc, -> { order(id: :asc) }
+
+  scope :order_by, ->(column, order = 'asc') do
+    reorder(arel_table[column].method(order).call) if SORTABLE_COLUMNS.include?(column) && %w[asc desc].include?(order)
+  end
 
   scope :for_rubygem_with_file_name, ->(project, file_name) do
     joins(:package).merge(project.packages.rubygems).with_file_name(file_name)

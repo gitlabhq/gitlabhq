@@ -18,7 +18,7 @@ describe('/environments/components/canary_ingress.vue', () => {
     wrapper = mountExtended(CanaryIngress, {
       propsData: {
         canaryIngress: {
-          canary_weight: 60,
+          canaryWeight: 60,
         },
         ...props,
       },
@@ -84,7 +84,6 @@ describe('/environments/components/canary_ingress.vue', () => {
   describe('graphql', () => {
     beforeEach(() => {
       createComponent({
-        graphql: true,
         canaryIngress: rolloutStatus.canaryIngress,
       });
     });

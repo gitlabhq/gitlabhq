@@ -13,11 +13,13 @@ module ActiveContext
       end
 
       def instantiate(string)
-        new(*deserialize_string(string))
+        collection_id, routing, *args = deserialize_string(string)
+        new(collection_id: collection_id, routing: routing, args: args)
       end
 
-      def serialize(collection_id, routing, data)
-        new(collection_id, routing, *serialize_data(data)).serialize
+      def serialize(collection_id:, routing:, data:)
+        args = serialize_data(data)
+        new(collection_id: collection_id, routing: routing, args: args.values).serialize
       end
 
       def serialize_data
@@ -35,11 +37,11 @@ module ActiveContext
 
     attr_reader :collection_id, :collection, :routing, :serialized_args
 
-    def initialize(collection_id, routing, *serialized_args)
+    def initialize(collection_id:, routing:, args: [])
       @collection_id = collection_id.to_i
       @collection = ActiveContext::CollectionCache.fetch(@collection_id)
       @routing = routing
-      @serialized_args = serialized_args
+      @serialized_args = Array(args)
       init
     end
 
@@ -48,14 +50,14 @@ module ActiveContext
     end
 
     def serialize
-      self.class.join_delimited([collection_id, routing, serialize_arguments].flatten.compact)
+      self.class.join_delimited([collection_id, routing, *serialized_attributes].compact)
     end
 
     def init
       raise NotImplementedError
     end
 
-    def serialize_arguments
+    def serialized_attributes
       raise NotImplementedError
     end
 
@@ -77,6 +79,10 @@ module ActiveContext
 
     def partition_number
       collection.partition_for(routing)
+    end
+
+    def partition
+      "#{partition_name}#{ActiveContext.adapter.separator}#{partition_number}"
     end
   end
 end

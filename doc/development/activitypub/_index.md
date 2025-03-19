@@ -33,14 +33,10 @@ Usage of ActivityPub in GitLab is governed by the
 The goal of those documents is to provide an implementation path for adding
 Fediverse capabilities to GitLab.
 
-This page describes the conceptual and high level point of view, while
-sub-pages discuss implementation in more technical depth (as in, how to
-implement this in the actual rails codebase of GitLab).
-
-This feature requires two feature flags:
+ActivityPub requires two feature flags:
 
 - `activity_pub`: Enables or disables all ActivityPub-related features.
-- `activity_pub_project`: Enables and disable ActivityPub features specific to
+- `activity_pub_project`: Enables and disables ActivityPub features specific to
   projects. Requires the `activity_pub` flag to also be enabled.
 
 Most of the implementation is being discussed in

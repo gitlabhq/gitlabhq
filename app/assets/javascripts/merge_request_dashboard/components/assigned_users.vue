@@ -115,7 +115,7 @@ export default {
           <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-white" />
           <span
             v-if="reviewStateIcon(user)"
-            class="gl-absolute -gl-bottom-2 -gl-right-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"
+            class="gl-absolute -gl-bottom-2 -gl-left-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"
             :class="reviewStateIcon(user).backgroundClass"
             data-testid="review-state-icon"
           >

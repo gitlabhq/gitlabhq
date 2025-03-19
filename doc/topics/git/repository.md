@@ -16,8 +16,6 @@ title: Reduce repository size
 The size of a Git repository can significantly impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-This page explains how to remove large files from your Git repository.
-
 For more information about repository size, see:
 
 - [Repository size](../../user/project/repository/repository_size.md)

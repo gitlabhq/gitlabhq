@@ -7,14 +7,14 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { Mousetrap } from '~/lib/mousetrap';
 import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
-  updateWorkItemMutationResponse,
   updateWorkItemMutationErrorResponse,
+  updateWorkItemMutationResponse,
 } from 'jest/work_items/mock_data';
+import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
 
 Vue.use(VueApollo);
 
@@ -26,11 +26,10 @@ describe('WorkItemDueDates component', () => {
   const workItemId = 'gid://gitlab/WorkItem/1';
   const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
-  const findStartDatePicker = () => wrapper.findComponent({ ref: 'startDatePicker' });
+  const findStartDatePicker = () => wrapper.findByTestId('start-date-picker');
   const findDueDatePicker = () => wrapper.findByTestId('due-date-picker');
   const findApplyButton = () => wrapper.findByTestId('apply-button');
   const findEditButton = () => wrapper.findByTestId('edit-button');
-  const findDatepickerWrapper = () => wrapper.findByTestId('datepicker-wrapper');
   const findStartDateValue = () => wrapper.findByTestId('start-date-value');
   const findDueDateValue = () => wrapper.findByTestId('due-date-value');
   const findFixedRadioButton = () => wrapper.findAllComponents(GlFormRadio).at(0);
@@ -63,6 +62,7 @@ describe('WorkItemDueDates component', () => {
           },
         }),
         GlFormRadio,
+        WorkItemSidebarWidget,
       },
     });
   };
@@ -92,7 +92,7 @@ describe('WorkItemDueDates component', () => {
         expect(findDueDateValue().classes('gl-text-subtle')).toBe(false);
       });
 
-      it('renders `None` when it is  not passed to the component`', () => {
+      it('renders `None` when it is not passed to the component`', () => {
         createComponent();
 
         expect(findDueDateValue().text()).toContain('None');
@@ -107,32 +107,9 @@ describe('WorkItemDueDates component', () => {
       expect(findDueDatePicker().exists()).toBe(false);
     });
 
-    it('does not render edit button when user cannot update work item', () => {
-      createComponent();
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
-    it('renders edit button when user can update work item', () => {
-      createComponent({ canUpdate: true });
-
-      expect(findEditButton().exists()).toBe(true);
-    });
-
-    it('expands the widget when edit button is clicked', async () => {
-      createComponent({ canUpdate: true });
-      findEditButton().vm.$emit('click');
-      await nextTick();
-
-      expect(findDatepickerWrapper().exists()).toBe(true);
-      expect(findStartDateValue().exists()).toBe(false);
-      expect(findDueDateValue().exists()).toBe(false);
-    });
-
     describe('when both start and due date are fixed', () => {
       it('checks "fixed" radio button', async () => {
         createComponent({ isFixed: true });
-
         await nextTick();
 
         expect(findFixedRadioButton().props('checked')).toBe('fixed');
@@ -142,7 +119,6 @@ describe('WorkItemDueDates component', () => {
     describe('when both start and due date are inherited', () => {
       it('checks "inherited" radio button', async () => {
         createComponent({ isFixed: false });
-
         await nextTick();
 
         expect(findInheritedRadioButton().props('checked')).toBe('inherited');
@@ -159,7 +135,6 @@ describe('WorkItemDueDates component', () => {
         expect(findInheritedRadioButton().props('checked')).toBe('inherited');
 
         await wrapper.setProps({ isFixed: true });
-        await nextTick();
 
         expect(findFixedRadioButton().props('checked')).toBe('fixed');
       });
@@ -171,7 +146,6 @@ describe('WorkItemDueDates component', () => {
         expect(findFixedRadioButton().props('checked')).toBe('fixed');
 
         await wrapper.setProps({ isFixed: false });
-        await nextTick();
 
         expect(findInheritedRadioButton().props('checked')).toBe('inherited');
       });
@@ -227,17 +201,6 @@ describe('WorkItemDueDates component', () => {
   });
 
   describe('when in editing state', () => {
-    it('collapses the widget when apply button is clicked', async () => {
-      createComponent({ canUpdate: true });
-      findEditButton().vm.$emit('click');
-      await nextTick();
-
-      findApplyButton().vm.$emit('click');
-      await nextTick();
-
-      expect(findDatepickerWrapper().exists()).toBe(false);
-    });
-
     it('updates datepicker props when component startDate and dueDate props are updated', async () => {
       createComponent({ canUpdate: true });
       findEditButton().vm.$emit('click');
@@ -322,15 +285,6 @@ describe('WorkItemDueDates component', () => {
           });
         });
 
-        it('edit button is disabled when mutation is in flight', () => {
-          expect(findEditButton().props('disabled')).toBe(true);
-        });
-
-        it('edit button is enabled after mutation is resolved', async () => {
-          await waitForPromises();
-          expect(findEditButton().props('disabled')).toBe(false);
-        });
-
         it('tracks updating the dates', () => {
           expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_dates', {
             category: TRACKING_CATEGORY_SHOW,
@@ -411,15 +365,6 @@ describe('WorkItemDueDates component', () => {
 
       it('widget is closed and dates are updated, when date picker is focused', async () => {
         findStartDatePicker().trigger('keydown.esc');
-        await nextTick();
-
-        expect(updateWorkItemMutationHandler).toHaveBeenCalled();
-        expect(findStartDatePicker().exists()).toBe(false);
-      });
-
-      it('widget is closed and dates are updated, when date picker is not focused', async () => {
-        findStartDatePicker().trigger('blur');
-        Mousetrap.trigger('esc');
         await nextTick();
 
         expect(updateWorkItemMutationHandler).toHaveBeenCalled();

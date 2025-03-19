@@ -5,10 +5,12 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Git LFS development guidelines
 ---
 
-This page contains developer-centric information for GitLab team members. For the
-user documentation, see [Git Large File Storage](../topics/git/lfs/_index.md).
+To handle large binary files, Git Large File Storage (LFS) involves several components working together.
+These guidelines explain the architecture and code flow for working on the GitLab LFS codebase.
 
-This diagram is a high-level explanation of a Git `push` when Git LFS is in use:
+For user documentation, see [Git Large File Storage](../topics/git/lfs/_index.md).
+
+The following is a high-level diagram that explains Git `push` when Git LFS is in use:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

@@ -52,11 +52,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    graphql: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     canRenderDeployBoard() {
@@ -66,11 +61,7 @@ export default {
       return this.isEmpty;
     },
     canaryIngress() {
-      if (this.graphql) {
-        return this.deployBoardData.canaryIngress;
-      }
-
-      return this.deployBoardData.canary_ingress;
+      return this.deployBoardData.canaryIngress;
     },
     canRenderCanaryWeight() {
       return !isEmpty(this.canaryIngress);
@@ -95,16 +86,10 @@ export default {
       return n__('Instance', 'Instances', this.instanceCount);
     },
     rollbackUrl() {
-      if (this.graphql) {
-        return this.deployBoardData.rollbackUrl;
-      }
-      return this.deployBoardData.rollback_url;
+      return this.deployBoardData.rollbackUrl;
     },
     abortUrl() {
-      if (this.graphql) {
-        return this.deployBoardData.abortUrl;
-      }
-      return this.deployBoardData.abort_url;
+      return this.deployBoardData.abortUrl;
     },
     deployBoardActions() {
       return this.rollbackUrl || this.abortUrl;
@@ -123,11 +108,7 @@ export default {
       this.$emit('changeCanaryWeight', weight);
     },
     podName(instance) {
-      if (this.graphql) {
-        return instance.podName;
-      }
-
-      return instance.pod_name;
+      return instance.podName;
     },
   },
   emptyStateText: s__(
@@ -189,7 +170,6 @@ export default {
             v-if="canRenderCanaryWeight"
             class="deploy-board-canary-ingress"
             :canary-ingress="canaryIngress"
-            :graphql="graphql"
             @change="changeCanaryWeight"
           />
 

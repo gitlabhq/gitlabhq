@@ -3,7 +3,6 @@ import { GlIcon, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { formatTime } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
-import eventHub from '../event_hub';
 import actionMutation from '../graphql/mutations/action.mutation.graphql';
 
 export default {
@@ -17,11 +16,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    graphql: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -61,13 +55,8 @@ export default {
       }
 
       this.isLoading = true;
-
-      if (this.graphql) {
-        await this.$apollo.mutate({ mutation: actionMutation, variables: { action } });
-        this.isLoading = false;
-      } else {
-        eventHub.$emit('postAction', { endpoint: action.playPath });
-      }
+      await this.$apollo.mutate({ mutation: actionMutation, variables: { action } });
+      this.isLoading = false;
     },
 
     isActionDisabled(action) {

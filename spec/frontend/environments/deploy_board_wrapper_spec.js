@@ -70,13 +70,12 @@ describe('~/environments/components/deploy_board_wrapper.vue', () => {
   });
 
   describe('deploy board', () => {
-    it('passes the rollout status on and sets graphql to true', async () => {
+    it('passes the rollout status on', async () => {
       wrapper = createWrapper();
       await expandCollapsedSection();
 
       const deployBoard = findDeployBoard();
       expect(deployBoard.props('deployBoardData')).toEqual(rolloutStatus);
-      expect(deployBoard.props('graphql')).toBe(true);
     });
 
     it('sets the update to the canary via graphql', () => {

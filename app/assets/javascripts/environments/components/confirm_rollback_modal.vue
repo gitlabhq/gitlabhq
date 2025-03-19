@@ -10,7 +10,6 @@ import { __, s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 import rollbackEnvironment from '../graphql/mutations/rollback_environment.mutation.graphql';
-import eventHub from '../event_hub';
 
 export default {
   name: 'ConfirmRollbackModal',
@@ -43,11 +42,6 @@ export default {
       required: false,
       default: null,
     },
-    graphql: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     modalTitle() {
@@ -61,31 +55,18 @@ export default {
     },
     commitShortSha() {
       if (this.hasMultipleCommits) {
-        if (this.graphql) {
-          const { lastDeployment } = this.environment;
-          return this.commitData(lastDeployment, 'shortId');
-        }
-
-        const { last_deployment } = this.environment;
-        return this.commitData(last_deployment, 'short_id');
+        const { lastDeployment } = this.environment;
+        return this.commitData(lastDeployment, 'shortId');
       }
 
       return this.environment.commitShortSha;
     },
     commitUrl() {
       if (this.hasMultipleCommits) {
-        if (this.graphql) {
-          const { lastDeployment } = this.environment;
-          return (
-            // data shape comming from REST and GraphQL is unfortunately different
-            // once we fully migrate to GraphQL it could be streamlined
-            this.commitData(lastDeployment, 'commitPath') ||
-            this.commitData(lastDeployment, 'webUrl')
-          );
-        }
-
-        const { last_deployment } = this.environment;
-        return this.commitData(last_deployment, 'commit_path');
+        const { lastDeployment } = this.environment;
+        return (
+          this.commitData(lastDeployment, 'commitPath') || this.commitData(lastDeployment, 'webUrl')
+        );
       }
 
       return this.environment.commitUrl;
@@ -125,21 +106,17 @@ export default {
       this.$emit('change', event);
     },
     onOk() {
-      if (this.graphql) {
-        this.$apollo
-          .mutate({
-            mutation: rollbackEnvironment,
-            variables: { environment: this.environment },
-          })
-          .then(() => {
-            this.$emit('rollback');
-          })
-          .catch((e) => {
-            Sentry.captureException(e);
-          });
-      } else {
-        eventHub.$emit('rollbackEnvironment', this.environment);
-      }
+      this.$apollo
+        .mutate({
+          mutation: rollbackEnvironment,
+          variables: { environment: this.environment },
+        })
+        .then(() => {
+          this.$emit('rollback');
+        })
+        .catch((e) => {
+          Sentry.captureException(e);
+        });
     },
     commitData(lastDeployment, key) {
       return lastDeployment?.commit?.[key] ?? '';

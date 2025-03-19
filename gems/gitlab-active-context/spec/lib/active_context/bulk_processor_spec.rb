@@ -16,6 +16,7 @@ RSpec.describe ActiveContext::BulkProcessor do
       id: 1,
       as_indexed_json: { title: 'Test Issue' },
       partition_name: 'issues',
+      partition: 'issues_0',
       identifier: '1',
       routing: 'group_1'
     )

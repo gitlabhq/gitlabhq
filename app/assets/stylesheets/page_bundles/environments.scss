@@ -1,61 +1,5 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
-.environments-container {
-  .ci-table {
-    .commit-title {
-      margin: 0;
-    }
-
-    .external-url,
-    .dropdown-new {
-      @apply gl-text-subtle;
-    }
-
-    .build-link,
-    .ref-name {
-      color: var(--gray-900, $gray-900);
-    }
-
-    .folder-icon {
-      margin-right: 3px;
-      @apply gl-fill-icon-subtle;
-      display: inline-block;
-      vertical-align: text-top;
-    }
-
-    .folder-name {
-      cursor: pointer;
-      @apply gl-text-subtle;
-      display: inline-block;
-    }
-
-    .icon-container {
-      width: 20px;
-      text-align: center;
-    }
-
-    .environment-child-row {
-      padding-left: 20px;
-    }
-  }
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-responsive-table-row {
-  .branch-commit {
-    max-width: 100%;
-  }
-}
-
-.folder-row {
-  border-left: 0;
-  border-right: 0;
-
-  @media (min-width: map-get($grid-breakpoints, md)-1) {
-    border-top: 0;
-  }
-}
-
 .x-axis path,
 .y-axis path,
 .label-x-axis-line,
@@ -143,21 +87,6 @@
     font-size: $gl-font-size-small;
     font-weight: $gl-font-weight-bold;
     line-height: 1;
-  }
-}
-
-.deploy-board-icon {
-  display: none;
-
-  @include media-breakpoint-up(md) {
-    float: left;
-    display: block;
-  }
-
-  i {
-    cursor: pointer;
-    @apply gl-text-disabled;
-    padding-right: 10px;
   }
 }
 

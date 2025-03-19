@@ -23,6 +23,7 @@ import {
   TODO_WAIT_BEFORE_RELOAD,
   TABS_INDICES,
 } from '~/todos/constants';
+import { setGlobalTodoCount, userCounts } from '~/super_sidebar/user_counts_manager';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
@@ -72,7 +73,7 @@ export default {
       pageInfo: {},
       todos: [],
       currentTab: TABS_INDICES.pending,
-      pendingTodosCount: '-',
+      refreshPendingCount: null,
       queryFilterValues: {
         groupId: [],
         projectId: [],
@@ -116,17 +117,23 @@ export default {
         this.needsRefresh = false;
       },
     },
-    pendingTodosCount: {
+    refreshPendingCount: {
       query: getPendingTodosCount,
       variables() {
         return this.queryFilterValues;
       },
-      update({ currentUser: { todos: { count } } = {} }) {
-        return count;
+      manual: true,
+      result({ loading, data }) {
+        if (!loading) {
+          setGlobalTodoCount(data?.currentUser?.todos?.count);
+        }
       },
     },
   },
   computed: {
+    pendingTodosCount() {
+      return userCounts.todos;
+    },
     statusByTab() {
       return STATUS_BY_TAB[this.currentTab];
     },
@@ -294,7 +301,7 @@ export default {
       this.updateAllQueries(false);
     },
     updateCounts() {
-      return this.$apollo.queries.pendingTodosCount.refetch();
+      return this.$apollo.queries.refreshPendingCount.refetch();
     },
     async updateAllQueries(showLoading = true) {
       this.$root.$emit('bv::hide::tooltip', 'todo-refresh-btn');

@@ -18,9 +18,6 @@ in a namespace of your choice. You can use forks to propose changes to another p
 that you don't have access to. For more information,
 see [Forking workflows](../../user/project/repository/forking_workflow.md).
 
-This page describes how to update a fork using Git commands from your command line and
-how to [collaborate across forks](#collaborate-across-forks).
-
 You can also update a fork with the [GitLab UI](../../user/project/repository/forking_workflow.md#from-the-ui).
 
 Prerequisites:

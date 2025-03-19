@@ -49,7 +49,7 @@ module ActiveContext
         collection_id = self.class.collection_record.id
 
         reference_klasses.map do |reference_klass|
-          reference_klass.serialize(collection_id, routing, object)
+          reference_klass.serialize(collection_id: collection_id, routing: routing, data: object)
         end
       end
     end

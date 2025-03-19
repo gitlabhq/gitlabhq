@@ -8908,6 +8908,7 @@ Input type: `PipelineScheduleUpdateInput`
 | <a id="mutationpipelinescheduleupdatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
 | <a id="mutationpipelinescheduleupdatedescription"></a>`description` | [`String`](#string) | Description of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdateid"></a>`id` | [`CiPipelineScheduleID!`](#cipipelinescheduleid) | ID of the pipeline schedule to mutate. |
+| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationpipelinescheduleupdateref"></a>`ref` | [`String`](#string) | Ref of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
 
@@ -45115,6 +45116,12 @@ A `CiPipelineScheduleID` is a global ID. It is encoded as a string.
 
 An example `CiPipelineScheduleID` is: `"gid://gitlab/Ci::PipelineSchedule/1"`.
 
+### `CiPipelineScheduleInputID`
+
+A `CiPipelineScheduleInputID` is a global ID. It is encoded as a string.
+
+An example `CiPipelineScheduleInputID` is: `"gid://gitlab/Ci::PipelineScheduleInput/1"`.
+
 ### `CiPipelineScheduleVariableID`
 
 A `CiPipelineScheduleVariableID` is a global ID. It is encoded as a string.
@@ -47471,6 +47478,8 @@ Attributes for defining an input.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="ciinputsinputtypedestroy"></a>`destroy` | [`Boolean`](#boolean) | Set to `true` to delete the input. |
+| <a id="ciinputsinputtypeid"></a>`id` {{< icon name="warning-solid" >}} | [`CiPipelineScheduleInputID`](#cipipelinescheduleinputid) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="ciinputsinputtypename"></a>`name` | [`String!`](#string) | Name of the input. |
 | <a id="ciinputsinputtypevalue"></a>`value` | [`CiInputsValueInputType!`](#ciinputsvalueinputtype) | Value of the input. |
 

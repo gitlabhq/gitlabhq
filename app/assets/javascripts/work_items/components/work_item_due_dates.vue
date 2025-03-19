@@ -1,26 +1,19 @@
 <script>
-import {
-  GlButton,
-  GlDatepicker,
-  GlFormGroup,
-  GlOutsideDirective as Outside,
-  GlFormRadio,
-} from '@gitlab/ui';
+import { GlDatepicker, GlFormGroup, GlFormRadio } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { newWorkItemId, findStartAndDueDateWidget } from '~/work_items/utils';
+import { findStartAndDueDateWidget, newWorkItemId } from '~/work_items/utils';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { Mousetrap } from '~/lib/mousetrap';
-import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 import { formatDate, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
   TRACKING_CATEGORY_SHOW,
   WIDGET_TYPE_START_AND_DUE_DATE,
-} from '~/work_items/constants';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
+} from '../constants';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
+import WorkItemSidebarWidget from './shared/work_item_sidebar_widget.vue';
 
 const nullObjectDate = new Date(0);
 
@@ -28,24 +21,13 @@ const ROLLUP_TYPE_FIXED = 'fixed';
 const ROLLUP_TYPE_INHERITED = 'inherited';
 
 export default {
-  i18n: {
-    dates: s__('WorkItem|Dates'),
-    dueDate: s__('WorkItem|Due'),
-    none: s__('WorkItem|None'),
-    startDate: s__('WorkItem|Start'),
-    fixed: s__('WorkItem|Fixed'),
-    inherited: s__('WorkItem|Inherited'),
-  },
   dueDateInputId: 'due-date-input',
   startDateInputId: 'start-date-input',
   components: {
-    GlButton,
     GlDatepicker,
     GlFormGroup,
     GlFormRadio,
-  },
-  directives: {
-    Outside,
+    WorkItemSidebarWidget,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -89,10 +71,9 @@ export default {
   },
   data() {
     return {
-      dirtyDueDate: null,
-      dirtyStartDate: null,
+      localDueDate: null,
+      localStartDate: null,
       isUpdating: false,
-      isEditing: false,
       rollupType: null,
     };
   },
@@ -101,13 +82,13 @@ export default {
       return this.workItem.id;
     },
     datesUnchanged() {
-      const dirtyDueDate = this.dirtyDueDate || nullObjectDate;
-      const dirtyStartDate = this.dirtyStartDate || nullObjectDate;
+      const localDueDate = this.localDueDate || nullObjectDate;
+      const localStartDate = this.localStartDate || nullObjectDate;
       const dueDate = this.dueDate ? newDate(this.dueDate) : nullObjectDate;
       const startDate = this.startDate ? newDate(this.startDate) : nullObjectDate;
       return (
-        dirtyDueDate.getTime() === dueDate.getTime() &&
-        dirtyStartDate.getTime() === startDate.getTime()
+        localDueDate.getTime() === dueDate.getTime() &&
+        localStartDate.getTime() === startDate.getTime()
       );
     },
     isDatepickerDisabled() {
@@ -124,10 +105,10 @@ export default {
     startDateValue() {
       return this.startDate
         ? formatDate(this.startDate, 'mmm d, yyyy', true)
-        : this.$options.i18n.none;
+        : s__('WorkItem|None');
     },
     dueDateValue() {
-      return this.dueDate ? formatDate(this.dueDate, 'mmm d, yyyy', true) : this.$options.i18n.none;
+      return this.dueDate ? formatDate(this.dueDate, 'mmm d, yyyy', true) : s__('WorkItem|None');
     },
     optimisticResponse() {
       const workItemDatesWidget = findStartAndDueDateWidget(this.workItem);
@@ -143,8 +124,8 @@ export default {
               ),
               {
                 ...workItemDatesWidget,
-                dueDate: this.dirtyDueDate ? toISODateFormat(this.dirtyDueDate) : null,
-                startDate: this.dirtyStartDate ? toISODateFormat(this.dirtyStartDate) : null,
+                dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
+                startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
               },
             ],
           },
@@ -155,13 +136,13 @@ export default {
   watch: {
     dueDate: {
       handler(newDueDate) {
-        this.dirtyDueDate = newDate(newDueDate);
+        this.localDueDate = newDate(newDueDate);
       },
       immediate: true,
     },
     startDate: {
       handler(newStartDate) {
-        this.dirtyStartDate = newDate(newStartDate);
+        this.localStartDate = newDate(newStartDate);
       },
       immediate: true,
     },
@@ -172,22 +153,16 @@ export default {
       immediate: true,
     },
   },
-  mounted() {
-    Mousetrap.bind(keysFor(SIDEBAR_CLOSE_WIDGET), this.collapseWidget);
-  },
-  beforeDestroy() {
-    Mousetrap.unbind(keysFor(SIDEBAR_CLOSE_WIDGET));
-  },
   methods: {
     clearDueDatePicker() {
-      this.dirtyDueDate = null;
+      this.localDueDate = null;
     },
     clearStartDatePicker() {
-      this.dirtyStartDate = null;
+      this.localStartDate = null;
     },
     handleStartDateInput() {
-      if (this.dirtyDueDate && this.dirtyStartDate > this.dirtyDueDate) {
-        this.dirtyDueDate = this.dirtyStartDate;
+      if (this.localDueDate && this.localStartDate > this.localDueDate) {
+        this.localDueDate = this.localStartDate;
       }
     },
     updateRollupType() {
@@ -260,8 +235,8 @@ export default {
               fullPath: this.fullPath,
               rolledUpDates: {
                 isFixed: true,
-                dueDate: this.dirtyDueDate ? toISODateFormat(this.dirtyDueDate) : null,
-                startDate: this.dirtyStartDate ? toISODateFormat(this.dirtyStartDate) : null,
+                dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
+                startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
                 rollUp: this.shouldRollUp,
               },
             },
@@ -280,8 +255,8 @@ export default {
               id: this.workItemId,
               startAndDueDateWidget: {
                 isFixed: true,
-                dueDate: this.dirtyDueDate ? toISODateFormat(this.dirtyDueDate) : null,
-                startDate: this.dirtyStartDate ? toISODateFormat(this.dirtyStartDate) : null,
+                dueDate: this.localDueDate ? toISODateFormat(this.localDueDate) : null,
+                startDate: this.localStartDate ? toISODateFormat(this.localStartDate) : null,
               },
             },
           },
@@ -301,132 +276,94 @@ export default {
           this.isUpdating = false;
         });
     },
-    expandWidget() {
-      this.isEditing = true;
-    },
-    collapseWidget(event = {}) {
-      // This prevents outside directive from treating
-      // a click on a select element within datepicker as an outside click,
-      // therefore allowing user to select a month and a year without
-      // triggering the mutation and immediately closing the dropdown
-      if (event.target?.classList.contains('pika-select', 'pika-select-month', 'pika-select-year'))
-        return;
-      this.isEditing = false;
-      this.updateDates();
-    },
   },
 };
 </script>
 
 <template>
-  <section data-testid="work-item-due-dates">
-    <div class="gl-flex gl-items-center gl-gap-3">
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-heading-5 !gl-mb-0">
-        {{ $options.i18n.dates }}
-      </h3>
-      <gl-button
-        v-if="canUpdate && !isEditing"
-        data-testid="edit-button"
-        category="tertiary"
-        size="small"
-        class="gl-ml-auto"
-        :disabled="isUpdating"
-        @click="expandWidget"
-        >{{ __('Edit') }}</gl-button
-      >
-    </div>
-    <fieldset v-if="!isEditing && shouldRollUp" class="gl-mt-2 gl-flex gl-gap-5">
-      <gl-form-radio
-        v-model="rollupType"
-        value="fixed"
-        :disabled="!canUpdate || isUpdating"
-        @change="updateRollupType"
-      >
-        {{ $options.i18n.fixed }}
-      </gl-form-radio>
-      <gl-form-radio
-        v-model="rollupType"
-        value="inherited"
-        :disabled="!canUpdate || isUpdating"
-        @change="updateRollupType"
-      >
-        {{ $options.i18n.inherited }}
-      </gl-form-radio>
-    </fieldset>
-    <fieldset v-if="isEditing" data-testid="datepicker-wrapper">
-      <div class="gl-flex gl-items-center gl-justify-between">
-        <legend class="gl-mb-0 gl-border-b-0 gl-text-base gl-font-bold">
-          {{ $options.i18n.dates }}
-        </legend>
-        <gl-button
-          data-testid="apply-button"
-          category="tertiary"
-          size="small"
-          class="gl-mr-2"
-          :disabled="isUpdating"
-          @click="collapseWidget"
-          >{{ __('Apply') }}</gl-button
+  <work-item-sidebar-widget
+    :can-update="canUpdate"
+    :is-updating="isUpdating"
+    data-testid="work-item-due-dates"
+    @stopEditing="updateDates"
+  >
+    <template #title>
+      {{ s__('WorkItem|Dates') }}
+    </template>
+    <template #content>
+      <fieldset v-if="shouldRollUp" class="gl-mt-2 gl-flex gl-gap-5">
+        <legend class="gl-sr-only">{{ s__('WorkItem|Dates') }}</legend>
+        <gl-form-radio
+          v-model="rollupType"
+          value="fixed"
+          :disabled="!canUpdate || isUpdating"
+          @change="updateRollupType"
         >
-      </div>
-      <div
-        v-outside="collapseWidget"
-        class="gl-flex gl-flex-col gl-flex-wrap gl-gap-x-5 gl-gap-y-3 gl-pt-2 sm:gl-flex-row md:gl-flex-col"
-      >
-        <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
-          :label="$options.i18n.startDate"
-          :label-for="$options.startDateInputId"
-          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+          {{ s__('WorkItem|Fixed') }}
+        </gl-form-radio>
+        <gl-form-radio
+          v-model="rollupType"
+          value="inherited"
+          :disabled="!canUpdate || isUpdating"
+          @change="updateRollupType"
         >
-          <gl-datepicker
-            ref="startDatePicker"
-            v-model="dirtyStartDate"
-            container="body"
-            :disabled="isDatepickerDisabled"
-            :input-id="$options.startDateInputId"
-            show-clear-button
-            :target="null"
-            class="work-item-date-picker gl-max-w-20"
-            @clear="clearStartDatePicker"
-            @close="handleStartDateInput"
-            @keydown.esc.native="collapseWidget"
-          />
-        </gl-form-group>
-        <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
-          :label="$options.i18n.dueDate"
-          :label-for="$options.dueDateInputId"
-          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
-        >
-          <gl-datepicker
-            v-model="dirtyDueDate"
-            container="body"
-            :disabled="isDatepickerDisabled"
-            :input-id="$options.dueDateInputId"
-            :min-date="dirtyStartDate"
-            show-clear-button
-            :target="null"
-            class="work-item-date-picker gl-max-w-20"
-            data-testid="due-date-picker"
-            @clear="clearDueDatePicker"
-            @keydown.esc.native="collapseWidget"
-          />
-        </gl-form-group>
-      </div>
-    </fieldset>
-    <template v-else>
+          {{ s__('WorkItem|Inherited') }}
+        </gl-form-radio>
+      </fieldset>
       <p class="gl-m-0 gl-py-1">
-        <span class="gl-inline-block gl-min-w-8">{{ $options.i18n.startDate }}:</span>
+        <span class="gl-inline-block gl-min-w-8">{{ s__('WorkItem|Start') }}:</span>
         <span data-testid="start-date-value" :class="{ 'gl-text-subtle': !startDate }">
           {{ startDateValue }}
         </span>
       </p>
       <p class="gl-m-0 gl-pt-1">
-        <span class="gl-inline-block gl-min-w-8">{{ $options.i18n.dueDate }}:</span>
+        <span class="gl-inline-block gl-min-w-8">{{ s__('WorkItem|Due') }}:</span>
         <span data-testid="due-date-value" :class="{ 'gl-text-subtle': !dueDate }">
           {{ dueDateValue }}
         </span>
       </p>
     </template>
-  </section>
+    <template #editing-content="{ stopEditing }">
+      <gl-form-group
+        class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+        :label="s__('WorkItem|Start')"
+        :label-for="$options.startDateInputId"
+        label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+      >
+        <gl-datepicker
+          v-model="localStartDate"
+          class="gl-max-w-20"
+          container="body"
+          :disabled="isDatepickerDisabled"
+          :input-id="$options.startDateInputId"
+          show-clear-button
+          :target="null"
+          data-testid="start-date-picker"
+          @clear="clearStartDatePicker"
+          @close="handleStartDateInput"
+          @keydown.esc.native="stopEditing"
+        />
+      </gl-form-group>
+      <gl-form-group
+        class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+        :label="s__('WorkItem|Due')"
+        :label-for="$options.dueDateInputId"
+        label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+      >
+        <gl-datepicker
+          v-model="localDueDate"
+          class="gl-max-w-20"
+          container="body"
+          :disabled="isDatepickerDisabled"
+          :input-id="$options.dueDateInputId"
+          :min-date="localStartDate"
+          show-clear-button
+          :target="null"
+          data-testid="due-date-picker"
+          @clear="clearDueDatePicker"
+          @keydown.esc.native="stopEditing"
+        />
+      </gl-form-group>
+    </template>
+  </work-item-sidebar-widget>
 </template>

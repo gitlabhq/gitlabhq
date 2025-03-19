@@ -329,7 +329,7 @@ Programming languages that require compiling the source code may throw cryptic e
 - `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
 - `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
 
-## Ask about specific files
+## Ask about specific files in the IDE
 
 {{< details >}}
 
@@ -345,6 +345,7 @@ Programming languages that require compiling the source code may throw cryptic e
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477258) in GitLab 17.7 [with flags](../../administration/feature_flags.md) named `duo_additional_context` and `duo_include_context_file`. Disabled by default.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/15183) in GitLab 17.9.
+- `duo_additional_context` flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/508741) in GitLab 17.10.
 
 {{< /history >}}
 
@@ -355,8 +356,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Add repository files to your Duo Chat conversations in VS Code or JetBrains IDEs by
-typing `/include` and choosing the files.
+Add repository files to your Duo Chat conversations in VS Code or JetBrains IDEs
+by typing `/include` and choosing the files.
 
 Prerequisites:
 
@@ -605,18 +606,45 @@ You can ask GitLab Duo Chat to explain a vulnerability when you are viewing a SA
 
 For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability).
 
+## Create a new conversation
+
+{{< details >}}
+
+- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com
+- Editors: GitLab UI
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `duo_chat_multi_thread`. Disabled by default.
+
+{{< /history >}}
+
+In GitLab 17.10 and later, you can have multiple simultaneous conversations with Chat.
+
+- In the top-left corner of the Chat drawer, select **New Chat**.
+- In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+
 ## Delete or reset the conversation
 
-To delete all conversations permanently and clear the chat window:
+For a single conversation with Chat:
 
-- In the text box, type `/clear` and select **Send**.
+- To delete all conversations permanently and clear the chat window:
 
-To start a new conversation, but keep the previous conversations visible in the chat window:
+  - In the text box, type `/clear` and select **Send**.
 
-- In the text box, type `/reset` and select **Send**.
+- To start a new conversation, but keep the previous conversations visible in the chat window:
+
+  - In the text box, type `/reset` and select **Send**.
 
 In both cases, the conversation history will not be considered when you ask new questions.
 Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
+
+When having multiple conversations with Chat:
+
+- The `/new` slash command replaces the `/clear` and `/reset` slash commands, and opens a new Chat drawer.
 
 ## GitLab Duo Chat slash commands
 
@@ -640,13 +668,17 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< /history >}}
 
-These commands work in Duo Chat in all IDEs and in the GitLab UI:
-
 | Command | Purpose                                                                                                                       |
 |---------|-------------------------------------------------------------------------------------------------------------------------------|
 | /clear  | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)                           |
 | /reset  | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation) |
 | /help   | Learn more about how Duo Chat works                                                                                           |
+
+{{< alert type="note" >}}
+
+On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations-with-chat), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
+
+{{< /alert >}}
 
 ### GitLab UI
 
@@ -664,7 +696,8 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)       | Vulnerabilities |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)      | Vulnerabilities |
+| /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations-with-chat). GitLab 17.10 and later.         | All |
 
 ### IDE
 
@@ -690,4 +723,4 @@ These commands work only when using Duo Chat in supported IDEs:
 | /explain  | [Explain code](#explain-selected-code)            |
 | /refactor | [Refactor the code](#refactor-code-in-the-ide)    |
 | /fix      | [Fix the code](#fix-code-in-the-ide)              |
-| /include  | [Include file context](#ask-about-specific-files) |
+| /include  | [Include file context](#ask-about-specific-files-in-the-ide) |

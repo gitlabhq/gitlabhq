@@ -106,7 +106,7 @@ export default {
 </script>
 <template>
   <div>
-    <actions-component v-if="isActionsShown" :actions="actions" graphql />
+    <actions-component v-if="isActionsShown" :actions="actions" />
     <gl-button
       v-if="isRollbackAvailable"
       v-gl-modal.confirm-rollback-modal

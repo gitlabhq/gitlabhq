@@ -67,4 +67,4 @@
   -# Project created
   .project-page-sidebar-block.gl-py-4
     %p.gl-font-bold.gl-text-strong.gl-m-0.gl-mb-1= s_('ProjectPage|Created on')
-    %span= @project.created_at.to_date.to_fs(:long)
+    %span= l(@project.created_at.to_date, format: :long)

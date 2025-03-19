@@ -13,11 +13,6 @@ export default {
       required: true,
       type: Object,
     },
-    graphql: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
   },
   ingressOptions: Array(100 / 5 + 1)
     .fill(0)
@@ -51,10 +46,7 @@ export default {
       return uniqueId('canary-weight-');
     },
     weight() {
-      if (this.graphql) {
-        return this.canaryIngress.canaryWeight;
-      }
-      return this.canaryIngress.canary_weight;
+      return this.canaryIngress.canaryWeight;
     },
     stableWeight() {
       return 100 - this.weight;

@@ -74,7 +74,6 @@ ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulne
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/components/modal_create_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
-ee/spec/frontend/tracing/details/tracing_header_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js

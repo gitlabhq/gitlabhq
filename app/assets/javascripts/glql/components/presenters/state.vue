@@ -4,14 +4,17 @@ import { __ } from '~/locale';
 
 const badgeVariants = {
   issues: { opened: 'success', closed: 'info' },
+  workItems: { OPEN: 'success', CLOSED: 'info' },
   mergeRequests: { opened: 'success', closed: 'danger', merged: 'info' },
 };
 const badgeLabels = {
   issues: { opened: __('Open'), closed: __('Closed') },
+  workItems: { OPEN: __('Open'), CLOSED: __('Closed') },
   mergeRequests: { opened: __('Open'), closed: __('Closed'), merged: __('Merged') },
 };
 const badgeIcons = {
   issues: { opened: 'issue-open-m', closed: 'issue-close' },
+  workItems: { OPEN: 'issue-open-m', CLOSED: 'issue-close' },
   mergeRequests: {
     opened: 'merge-request-open',
     closed: 'merge-request-close',
