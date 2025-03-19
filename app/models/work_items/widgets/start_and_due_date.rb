@@ -17,11 +17,11 @@ module WorkItems
         def sorting_keys
           {
             start_date_asc: {
-              description: 'start date by ascending order.',
+              description: 'Start date by ascending order.',
               experiment: { milestone: '17.9' }
             },
             start_date_desc: {
-              description: 'start date by descending order.',
+              description: 'Start date by descending order.',
               experiment: { milestone: '17.9' }
             },
             due_date_asc: {

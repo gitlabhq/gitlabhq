@@ -28,6 +28,7 @@ module Gitlab
         def with
           pool.with { |redis| yield redis }
         end
+        alias_method :then, :with
 
         def version
           with { |redis| redis.info['redis_version'] }

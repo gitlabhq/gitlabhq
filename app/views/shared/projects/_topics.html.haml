@@ -10,6 +10,7 @@
         = gl_badge_tag topic[:title], { href: explore_project_topic_path }, { itemprop: 'keywords' }
 
     - if project.has_extra_topics?
+      - popover_target_id = "more-topics-popover-#{project.id}"
       - title = _('More topics')
       - content = capture do
         %span.gl-inline-flex.gl-flex-wrap.gl-gap-2
@@ -19,5 +20,6 @@
               = gl_badge_tag truncate(topic[:title], length: max_project_topic_length), { href: explore_project_topic_path }, { class: 'has-tooltip', data: { container: "body" }, title: topic[:title], itemprop: 'keywords' }
             - else
               = gl_badge_tag topic[:title], { href: explore_project_topic_path, itemprop: 'keywords' }
-      .text-nowrap{ role: 'button', tabindex: 0, data: { toggle: 'popover', triggers: 'focus hover', html: 'true', placement: 'top', title: title, content: content } }
-        = _("+ %{count} more") % { count: project.count_of_extra_topics_not_shown }
+      %span.js-vue-popover{ data: { container: "body", toggle: 'popover', triggers: 'click', html: 'true', title: title, content: content } }
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { id: popover_target_id, class: 'text-nowrap !gl-text-subtle' }) do
+          = _("+ %{count} more") % { count: project.count_of_extra_topics_not_shown }

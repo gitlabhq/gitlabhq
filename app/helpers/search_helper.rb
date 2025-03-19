@@ -162,11 +162,6 @@ module SearchHelper
     params[:repository_ref].to_s.presence || project.default_branch
   end
 
-  # Overridden in EE
-  def search_blob_title(_project, path)
-    path
-  end
-
   def search_service
     @search_service ||= ::SearchService.new(current_user, params)
   end

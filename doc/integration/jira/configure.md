@@ -20,7 +20,7 @@ title: Jira issues integration
 
 The Jira issues integration connects one or more GitLab projects to a Jira instance.
 You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud).
-The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
+The supported Jira versions are `6.x`, `7.x`, `8.x`, `9.x`, and `10.x`.
 
 ## Configure the integration
 

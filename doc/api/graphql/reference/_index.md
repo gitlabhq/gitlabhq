@@ -44729,6 +44729,8 @@ Values for sorting work items.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="workitemsortblocking_items_asc"></a>`BLOCKING_ITEMS_ASC` | Blocking items count by ascending order. |
+| <a id="workitemsortblocking_items_desc"></a>`BLOCKING_ITEMS_DESC` | Blocking items count by descending order. |
 | <a id="workitemsortclosed_at_asc"></a>`CLOSED_AT_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Closed time by ascending order. |
 | <a id="workitemsortclosed_at_desc"></a>`CLOSED_AT_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Closed time by descending order. |
 | <a id="workitemsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
@@ -44737,6 +44739,8 @@ Values for sorting work items.
 | <a id="workitemsortdue_date_desc"></a>`DUE_DATE_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Due date by descending order. |
 | <a id="workitemsortescalation_status_asc"></a>`ESCALATION_STATUS_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Status from triggered to resolved. |
 | <a id="workitemsortescalation_status_desc"></a>`ESCALATION_STATUS_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Status from resolved to triggered. |
+| <a id="workitemsorthealth_status_asc"></a>`HEALTH_STATUS_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.11. **Status**: Experiment. Health status by ascending order. |
+| <a id="workitemsorthealth_status_desc"></a>`HEALTH_STATUS_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.11. **Status**: Experiment. Health status by descending order. |
 | <a id="workitemsortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
 | <a id="workitemsortlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | Label priority by descending order. |
 | <a id="workitemsortmilestone_due_asc"></a>`MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
@@ -44748,12 +44752,14 @@ Values for sorting work items.
 | <a id="workitemsortrelative_position_asc"></a>`RELATIVE_POSITION_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Relative position by ascending order. |
 | <a id="workitemsortseverity_asc"></a>`SEVERITY_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Severity from less critical to more critical. |
 | <a id="workitemsortseverity_desc"></a>`SEVERITY_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Severity from more critical to less critical. |
-| <a id="workitemsortstart_date_asc"></a>`START_DATE_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. start date by ascending order. |
-| <a id="workitemsortstart_date_desc"></a>`START_DATE_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. start date by descending order. |
+| <a id="workitemsortstart_date_asc"></a>`START_DATE_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Start date by ascending order. |
+| <a id="workitemsortstart_date_desc"></a>`START_DATE_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Start date by descending order. |
 | <a id="workitemsorttitle_asc"></a>`TITLE_ASC` | Title by ascending order. |
 | <a id="workitemsorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="workitemsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="workitemsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="workitemsortweight_asc"></a>`WEIGHT_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.11. **Status**: Experiment. Weight by ascending order. |
+| <a id="workitemsortweight_desc"></a>`WEIGHT_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.11. **Status**: Experiment. Weight by descending order. |
 | <a id="workitemsortcreated_asc"></a>`created_asc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
 | <a id="workitemsortcreated_desc"></a>`created_desc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
 | <a id="workitemsortupdated_asc"></a>`updated_asc` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |

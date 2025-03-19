@@ -19,6 +19,12 @@ RSpec.describe WorkItems::Widgets::LinkedItems, feature_category: :portfolio_man
     end
   end
 
+  describe '.sorting_keys', unless: Gitlab.ee? do
+    specify do
+      expect(described_class.sorting_keys.keys).to be_empty
+    end
+  end
+
   describe '#type' do
     subject { described_class.new(work_item).type }
 

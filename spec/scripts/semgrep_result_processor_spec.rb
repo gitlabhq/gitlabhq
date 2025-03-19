@@ -55,18 +55,35 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
       expect { processor.execute }.to raise_error(SystemExit)
     end
 
-    context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
-      it "prints the 'not adding comments' message" do
-        stub_env('CI_MERGE_REQUEST_LABELS', 'appsec-sast::stop')
-
+    shared_examples 'does not comment on MR with stop labels' do
+      it "returns early and does not comment" do
         expect(processor).to receive(:perform_allowlist_check)
         expect(processor).to receive(:get_sast_results)
         expect(processor).to receive(:filter_duplicate_findings).with(sample_results)
 
         expect do
           processor.execute
-        end.to output(/Not adding comments for this MR as it has the appsec-sast::stop label/).to_stdout
+        end.to output(%r{Not adding comments for this MR as it has the appsec-sast::stop / pipeline::tier-3 label})
+                 .to_stdout
+
+        expect(processor).not_to receive(:create_inline_comments)
       end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'appsec-sast::stop')
+      end
+
+      it_behaves_like 'does not comment on MR with stop labels'
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS includes pipeline::tier-3' do
+      before do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-3')
+      end
+
+      it_behaves_like 'does not comment on MR with stop labels'
     end
   end
 
@@ -74,28 +91,58 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     context 'when CI_MERGE_REQUEST_LABELS includes appsec-sast::stop' do
       it 'returns true' do
         stub_env('CI_MERGE_REQUEST_LABELS', 'appsec-sast::stop, other-label')
-        expect(processor.sast_stop_label_present?).to be true
+        expect(processor.send(:sast_stop_label_present?)).to be true
       end
     end
 
     context 'when CI_MERGE_REQUEST_LABELS does not include appsec-sast::stop' do
       it 'returns false' do
         stub_env('CI_MERGE_REQUEST_LABELS', 'another-label, different-label')
-        expect(processor.sast_stop_label_present?).to be false
+        expect(processor.send(:sast_stop_label_present?)).to be false
       end
     end
 
     context 'when CI_MERGE_REQUEST_LABELS is empty' do
       it 'returns false' do
         stub_env('CI_MERGE_REQUEST_LABELS', '')
-        expect(processor.sast_stop_label_present?).to be false
+        expect(processor.send(:sast_stop_label_present?)).to be false
       end
     end
 
     context 'when CI_MERGE_REQUEST_LABELS is nil' do
       it 'returns false' do
         stub_env('CI_MERGE_REQUEST_LABELS', nil)
-        expect(processor.sast_stop_label_present?).to be false
+        expect(processor.send(:sast_stop_label_present?)).to be false
+      end
+    end
+  end
+
+  describe '#pipeline_tier_three_label_present?' do
+    context 'when CI_MERGE_REQUEST_LABELS includes pipeline::tier-3' do
+      it 'returns true' do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-3, other-label')
+        expect(processor.send(:pipeline_tier_three_label_present?)).to be true
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS does not include pipeline::tier-3' do
+      it 'returns false' do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'another-label, different-label')
+        expect(processor.send(:pipeline_tier_three_label_present?)).to be false
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is empty' do
+      it 'returns false' do
+        stub_env('CI_MERGE_REQUEST_LABELS', '')
+        expect(processor.send(:pipeline_tier_three_label_present?)).to be false
+      end
+    end
+
+    context 'when CI_MERGE_REQUEST_LABELS is nil' do
+      it 'returns false' do
+        stub_env('CI_MERGE_REQUEST_LABELS', nil)
+        expect(processor.send(:pipeline_tier_three_label_present?)).to be false
       end
     end
   end

@@ -3,10 +3,13 @@
 require 'json'
 require 'net/http'
 require 'uri'
+require_relative '../gems/gitlab-utils/lib/gitlab/utils/strong_memoize'
 
 # rubocop:disable Layout/LineLength -- we need to construct the URLs
 
 class SemgrepResultProcessor
+  include Gitlab::Utils::StrongMemoize
+
   ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
   ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
 
@@ -32,8 +35,8 @@ class SemgrepResultProcessor
     perform_allowlist_check
     semgrep_results = get_sast_results
     unique_results = filter_duplicate_findings(semgrep_results)
-    if sast_stop_label_present?
-      puts "Not adding comments for this MR as it has the appsec-sast::stop label. Here are the new unique findings that would have otherwise been posted: #{unique_results}"
+    if sast_stop_label_present? || pipeline_tier_three_label_present?
+      puts "Not adding comments for this MR as it has the appsec-sast::stop / pipeline::tier-3 label. Here are the new unique findings that would have otherwise been posted: #{unique_results}"
       return
     end
 
@@ -156,12 +159,21 @@ class SemgrepResultProcessor
     end
   end
 
+  private
+
   def sast_stop_label_present?
-    labels = ENV['CI_MERGE_REQUEST_LABELS'] || ""
-    labels.split(',').map(&:strip).include?('appsec-sast::stop')
+    stripped_labels.include?('appsec-sast::stop')
   end
 
-  private
+  def pipeline_tier_three_label_present?
+    stripped_labels.include?('pipeline::tier-3')
+  end
+
+  def stripped_labels
+    labels = ENV['CI_MERGE_REQUEST_LABELS'] || ""
+    labels.split(',').map(&:strip)
+  end
+  strong_memoize_attr :stripped_labels
 
   def get_existing_comments
     # Retrieve existing comments on the merge request
