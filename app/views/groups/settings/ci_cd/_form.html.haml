@@ -18,8 +18,19 @@
           = link_to _('Learn more.'), help_page_path('ci/jobs/ci_job_token.md', anchor: 'use-legacy-format-for-cicd-tokens'), target: '_blank', rel: 'noopener noreferrer'
       .gl-mb-5
       = gitlab_ui_form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
-        = f.hidden_field :jwt_ci_cd_job_token_enabled, class: 'js-jwt-ci-cd-job-token-enabled-input', value: group.jwt_ci_cd_job_token_enabled?
-        = render Pajamas::ToggleComponent.new(classes: 'js-jwt-ci-cd-job-token-enabled-toggle',
+        = f.hidden_field :jwt_ci_cd_job_token_enabled, class: 'js-setting-input', value: group.jwt_ci_cd_job_token_enabled?
+        = render Pajamas::ToggleComponent.new(classes: 'js-setting-toggle',
           label: s_('GroupSettings|Enable JWT format for CI/CD job tokens'),
           is_checked: group.jwt_ci_cd_job_token_enabled?) do
           = s_('GroupSettings|Enable JWT format for the CI_JOB_TOKEN variable. When disabled, it uses the legacy database format.')
+      .gl-mb-5
+      = gitlab_ui_form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
+        %span.gl-toggle-label.gl-shrink-0= s_('GroupSettings|Enable fine-grained permissions for CI/CD job tokens')
+        %span= render_if_exists 'shared/experimental_badge_tag'
+        = f.hidden_field :job_token_policies_enabled, class: 'js-setting-input', value: group.job_token_policies_enabled?
+        = render Pajamas::ToggleComponent.new(classes: 'js-setting-toggle gl-mt-3',
+          label: s_('GroupSettings|Enable fine-grained permissions for CI/CD job tokens'),
+          label_position: :hidden,
+          is_checked: group.job_token_policies_enabled?) do
+          = s_('GroupSettings|Enable fine-grained permissions for CI/CD job tokens.')
+          = link_to _('Learn more.'), help_page_path('ci/jobs/fine_grained_permissions.md'), target: '_blank', rel: 'noopener noreferrer'

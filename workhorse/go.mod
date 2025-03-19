@@ -29,7 +29,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
 	gitlab.com/gitlab-org/gitaly/v16 v16.11.0-rc1.0.20250313033925-4cbd999aaf5d
-	gitlab.com/gitlab-org/labkit v1.23.1
+	gitlab.com/gitlab-org/labkit v1.23.2
 	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.40.1-0.20241107185025-56954848c3aa
 	golang.org/x/image v0.20.0

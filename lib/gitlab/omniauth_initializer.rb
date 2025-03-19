@@ -63,6 +63,7 @@ module Gitlab
         provider_arguments.concat arguments
         provider_arguments << defaults unless defaults.empty?
       when Hash, GitlabSettings::Options
+        verify_saml_cert_arguments!(provider['name'], arguments)
         hash_arguments = merge_hash_defaults_and_args(defaults, arguments)
         normalized = normalize_hash_arguments(hash_arguments)
 
@@ -102,6 +103,33 @@ module Gitlab
       end
 
       args
+    end
+
+    def verify_saml_cert_arguments!(provider_name, arguments)
+      return arguments unless AuthHelper.saml_providers.include?(provider_name.to_sym)
+
+      fingerprint = arguments['idp_cert_fingerprint']
+      algorithm = arguments['idp_cert_fingerprint_algorithm']
+
+      return arguments unless fingerprint.present? && algorithm.nil?
+
+      algorithm = detect_fingerprint_algorithm(fingerprint)
+
+      return arguments unless algorithm.present?
+
+      arguments['idp_cert_fingerprint_algorithm'] = algorithm
+      arguments
+    end
+
+    def detect_fingerprint_algorithm(fingerprint)
+      case fingerprint.scan(/[0-9A-Fa-f]{2}/i).length
+      when 20
+        # v2.x will change to RubySaml::XML::SHA1
+        XMLSecurity::Document::SHA1
+      when 32
+        # v2.x will change to RubySaml::XML::SHA256
+        XMLSecurity::Document::SHA256
+      end
     end
 
     def provider_defaults(provider)

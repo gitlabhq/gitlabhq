@@ -26213,6 +26213,9 @@ msgstr ""
 msgid "Geo|Container repositories synchronization concurrency limit"
 msgstr ""
 
+msgid "Geo|Created: %{timeAgo}"
+msgstr ""
+
 msgid "Geo|Data replication lag"
 msgstr ""
 
@@ -26280,6 +26283,9 @@ msgid "Geo|Geo sites are paused using a command run on the site"
 msgstr ""
 
 msgid "Geo|Go to the primary site"
+msgstr ""
+
+msgid "Geo|GraphQL ID: %{id}"
 msgstr ""
 
 msgid "Geo|Groups to synchronize"
@@ -26387,6 +26393,12 @@ msgstr ""
 msgid "Geo|Re-verification interval"
 msgstr ""
 
+msgid "Geo|Registry ID: %{id}"
+msgstr ""
+
+msgid "Geo|Registry information"
+msgstr ""
+
 msgid "Geo|Remove %{siteType} site"
 msgstr ""
 
@@ -26394,6 +26406,9 @@ msgid "Geo|Remove site"
 msgstr ""
 
 msgid "Geo|Removing a Geo site stops the synchronization to and from that site. Are you sure?"
+msgstr ""
+
+msgid "Geo|Replicable ID: %{id}"
 msgstr ""
 
 msgid "Geo|Replicated data is verified with the secondary site(s) using checksums"
@@ -28814,6 +28829,12 @@ msgid "GroupSettings|Enable email notifications"
 msgstr ""
 
 msgid "GroupSettings|Enable extension marketplace"
+msgstr ""
+
+msgid "GroupSettings|Enable fine-grained permissions for CI/CD job tokens"
+msgstr ""
+
+msgid "GroupSettings|Enable fine-grained permissions for CI/CD job tokens."
 msgstr ""
 
 msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
@@ -65326,6 +65347,9 @@ msgid "Vulnerability|Request/Response"
 msgstr ""
 
 msgid "Vulnerability|Scanner:"
+msgstr ""
+
+msgid "Vulnerability|Scanner: %{scannerName}"
 msgstr ""
 
 msgid "Vulnerability|Search or filter vulnerabilities..."

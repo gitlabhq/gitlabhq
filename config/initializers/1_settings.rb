@@ -1000,6 +1000,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker'] ||= {}
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['cron'] ||= "*/10 * * * *"
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['job_class'] = 'Analytics::DumpAiUserMetricsWriteBufferCronWorker'
+  Settings.cron_jobs['delete_expired_vulnerability_exports_worker'] ||= {}
+  Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['cron'] ||= '0 4 * * *'
+  Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['job_class'] = 'Vulnerabilities::DeleteExpiredExportsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

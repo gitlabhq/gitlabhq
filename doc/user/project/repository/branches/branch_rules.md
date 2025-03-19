@@ -161,6 +161,13 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 
 ### Edit squash commits option
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181370) in GitLab 17.9 with a flag named `branch_rule_squash_settings`. Disabled by default.

@@ -59,10 +59,10 @@ The following table lists the GitLab Duo features, and whether they are availabl
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
 | [AI Impact Dashboard](../../user/analytics/ai_impact_analytics.md)                                                                     | {{< icon name="check-circle-dashed" >}} Beta | GitLab 17.9 and later |
+| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.10 and later |
 | [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | {{< icon name="dash-circle" >}} No      | Not applicable |
 | [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                                          | {{< icon name="dash-circle" >}} No      | Not applicable |
 | [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | {{< icon name="dash-circle" >}} No      | Not applicable |
-| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | {{< icon name="dash-circle" >}} No      | Not applicable |
 | [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | {{< icon name="dash-circle" >}} No      | Not applicable |
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | {{< icon name="dash-circle" >}} No      | Not applicable |
 

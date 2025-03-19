@@ -136,7 +136,7 @@ module Routable
 
   def build_full_path
     if parent && path
-      parent.full_path + '/' + path
+      "#{parent.full_path}/#{path}"
     else
       path
     end
@@ -191,7 +191,7 @@ module Routable
 
   def build_full_name
     if parent && name
-      parent.human_name + ' / ' + name
+      "#{parent.human_name} / #{name}"
     else
       name
     end

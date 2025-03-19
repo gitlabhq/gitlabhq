@@ -90,7 +90,7 @@ RSpec.describe Projects::ImportExport::PruneExpiredExportJobsService, feature_ca
         it 'deletes stored upload files' do
           old_upload_file_paths = Uploads::Local.new.keys(old_uploads)
 
-          expect(DeleteStoredFilesWorker).to receive(:perform_async).with(Uploads::Local, old_upload_file_paths)
+          expect(DeleteStoredFilesWorker).to receive(:perform_async).with(Uploads::Local.name, old_upload_file_paths)
 
           described_class.execute
         end

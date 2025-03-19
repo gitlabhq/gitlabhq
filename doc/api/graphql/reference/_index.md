@@ -11816,6 +11816,7 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationuserpreferencesupdateextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="mutationuserpreferencesupdatemergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
@@ -39103,6 +39104,7 @@ fields relate to interactions between the two entities.
 | ---- | ---- | ----------- |
 | <a id="userpreferencesextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="userpreferencesmergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
 | <a id="userpreferencesprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
@@ -43173,6 +43175,15 @@ State of a GitLab merge request.
 | <a id="mergerequeststatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="mergerequeststatemerged"></a>`merged` | Merge request has been merged. |
 | <a id="mergerequeststateopened"></a>`opened` | Opened merge request. |
+
+### `MergeRequestsDashboardListType`
+
+Values for merge request dashboard list type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergerequestsdashboardlisttypeaction_based"></a>`ACTION_BASED` | Action based list rendering. |
+| <a id="mergerequestsdashboardlisttyperole_based"></a>`ROLE_BASED` | Role based list rendering. |
 
 ### `MergeStatus`
 

@@ -2,14 +2,6 @@
 # Cop supports --autocorrect.
 Style/StringConcatenation:
   Exclude:
-    - 'app/controllers/projects/labels_controller.rb'
-    - 'app/controllers/projects/milestones_controller.rb'
-    - 'app/models/concerns/cross_database_modification.rb'
-    - 'app/models/concerns/from_set_operator.rb'
-    - 'app/models/concerns/routable.rb'
-    - 'app/models/integrations/chat_message/merge_message.rb'
-    - 'app/models/integrations/chat_message/note_message.rb'
-    - 'app/models/namespace.rb'
     - 'app/models/packages/go/module_version.rb'
     - 'app/models/pool_repository.rb'
     - 'app/models/project_wiki.rb'

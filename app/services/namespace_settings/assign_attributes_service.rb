@@ -39,6 +39,10 @@ module NamespaceSettings
         param_key: :enabled_git_access_protocol,
         user_policy: :update_git_access_protocol
       )
+      validate_settings_param_for_root_group(
+        param_key: :job_token_policies_enabled,
+        user_policy: :admin_group
+      )
 
       handle_default_branch_name
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?

@@ -164,7 +164,7 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
       context 'when authorization is cross project' do
         it 'schedules the log' do
           expect(::Ci::JobToken::LogAuthorizationWorker)
-            .to receive(:perform_in).with(5.minutes, accessed_project.id, origin_project.id)
+            .to receive(:perform_in).with(5.minutes, accessed_project.id, origin_project.id, [])
 
           log_captures_async
         end

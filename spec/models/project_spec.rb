@@ -9993,4 +9993,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer).once
     end
   end
+
+  describe '#job_token_policies_enabled?' do
+    let_it_be(:project) { build_stubbed(:project) }
+
+    subject { project.job_token_policies_enabled? }
+
+    where(:flag_enabled, :setting_enabled, :result) do
+      true  | true  | true
+      true  | false | true
+      false | true  | true
+      false | false | false
+    end
+
+    before do
+      project.clear_memoization(:job_token_policies_enabled?)
+      stub_feature_flags(add_policies_to_ci_job_token: flag_enabled)
+      allow(project).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
+        :job_token_policies_enabled?).and_return(setting_enabled)
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
 end

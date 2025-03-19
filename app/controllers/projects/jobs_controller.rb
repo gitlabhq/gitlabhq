@@ -6,7 +6,8 @@ class Projects::JobsController < Projects::ApplicationController
   include ContinueParams
   include ProjectStatsRefreshConflictsGuard
 
-  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :viewer, :raw, :test_report_summary]
+  urgency :low,
+    [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :viewer, :raw, :test_report_summary]
 
   before_action :find_job_as_build, except: [:index, :play, :retry, :show]
   before_action :find_job_as_processable, only: [:play, :retry, :show]
@@ -149,7 +150,8 @@ class Projects::JobsController < Projects::ApplicationController
   def raw
     if @build.trace.archived?
       workhorse_set_content_type!
-      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params, proxy: params[:proxy])
+      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params,
+        proxy: params[:proxy])
     else
       @build.trace.read do |stream|
         if stream.file?
@@ -161,7 +163,8 @@ class Projects::JobsController < Projects::ApplicationController
           # to the user but, because we have the trace content, we can calculate
           # the proper content type and disposition here.
           raw_data = stream.raw
-          send_data raw_data, type: 'text/plain; charset=utf-8', disposition: raw_trace_content_disposition(raw_data), filename: 'job.log'
+          send_data raw_data, type: 'text/plain; charset=utf-8', disposition: raw_trace_content_disposition(raw_data),
+            filename: 'job.log'
         end
       end
     end

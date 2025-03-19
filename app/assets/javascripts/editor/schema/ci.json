@@ -8,6 +8,16 @@
       "type": "string",
       "format": "uri"
     },
+    "spec": {
+      "type": "object",
+      "markdownDescription": "Specification for pipeline configuration. Must be declared at the top of a configuration file, in a header section separated from the rest of the configuration with `---`. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#spec).",
+      "properties": {
+        "inputs": {
+          "$ref": "#/definitions/inputParameters"
+        }
+      },
+      "additionalProperties": false
+    },
     "image": {
       "$ref": "#/definitions/image",
       "markdownDescription": "Defining `image` globally is deprecated. Use [`default`](https://docs.gitlab.com/ee/ci/yaml/#default) instead. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#globally-defined-image-services-cache-before_script-after_script)."
@@ -388,6 +398,156 @@
           }
         }
       ]
+    },
+    "inputParameters": {
+      "type": "object",
+      "markdownDescription": "Define parameters that can be populated in reusable CI/CD configuration files when added to a pipeline. [Learn More](https://docs.gitlab.com/ee/ci/yaml/inputs).",
+      "patternProperties": {
+        ".*": {
+          "markdownDescription": "**Input Configuration**\n\nAvailable properties:\n- `type`: string (default), array, boolean, or number\n- `description`: Human-readable explanation of the parameter (supports Markdown)\n- `options`: List of allowed values\n- `default`: Value to use when not specified (makes input optional)\n- `regex`: Pattern that string values must match",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "markdownDescription": "Force a specific input type. Defaults to 'string' when not specified. [Learn More](https://docs.gitlab.com/ee/ci/yaml/inputs/#input-types).",
+                  "enum": [
+                    "array",
+                    "boolean",
+                    "number",
+                    "string"
+                  ],
+                  "default": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "markdownDescription": "Give a description to a specific input. The description does not affect the input, but can help people understand the input details or expected values. Supports markdown.",
+                  "maxLength": 1024
+                },
+                "options": {
+                  "type": "array",
+                  "markdownDescription": "Specify a list of allowed values for an input.",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "regex": {
+                  "type": "string",
+                  "markdownDescription": "Specify a regular expression that the input must match. Only impacts inputs with a `type` of `string`."
+                },
+                "default": {
+                  "markdownDescription": "Define default values for inputs when not specified. When you specify a default, the inputs are no longer mandatory."
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "string"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "default": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "number"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "default": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "boolean"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "default": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "array"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "default": {
+                        "oneOf": [
+                          {
+                            "type": "array"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
     },
     "include_item": {
       "oneOf": [
@@ -1760,8 +1920,59 @@
       "default": false
     },
     "inputs": {
-      "markdownDescription": "Used to pass input values to included templates or components. [Learn More](https://docs.gitlab.com/ee/ci/yaml/inputs.html#set-input-values-when-using-include).",
-      "type": "object"
+      "markdownDescription": "Used to pass input values to included templates, components, downstream pipelines, or child pipelines. [Learn More](https://docs.gitlab.com/ee/ci/yaml/inputs.html).",
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "description": "Input parameter value that matches parameter names defined in spec:inputs of the included configuration.",
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "additionalProperties": true
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "job": {
       "allOf": [

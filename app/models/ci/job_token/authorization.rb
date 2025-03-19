@@ -67,8 +67,9 @@ module Ci
         origin_project_id = authorizations[:origin_project_id]
         return unless accessed_project_id && origin_project_id
 
+        policies = authorizations.fetch(:policies, []).map(&:to_s)
         Ci::JobToken::LogAuthorizationWorker # rubocop:disable CodeReuse/Worker -- This method is called from a middleware and it's better tested
-          .perform_in(CAPTURE_DELAY, accessed_project_id, origin_project_id)
+          .perform_in(CAPTURE_DELAY, accessed_project_id, origin_project_id, policies)
       end
 
       def self.log_captures!(accessed_project_id:, origin_project_id:, policies: [])

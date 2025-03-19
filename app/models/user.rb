@@ -463,6 +463,7 @@ class User < ApplicationRecord
     :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
+    :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

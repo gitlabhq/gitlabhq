@@ -9,7 +9,8 @@ module Mutations
         :extensions_marketplace_opt_in_status,
         :organization_groups_projects_display,
         :visibility_pipeline_id_type,
-        :use_work_items_view
+        :use_work_items_view,
+        :merge_request_dashboard_list_type
       ].freeze
 
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
@@ -18,6 +19,9 @@ module Mutations
       argument :issues_sort, Types::IssueSortEnum,
         required: false,
         description: 'Sort order for issue lists.'
+      argument :merge_request_dashboard_list_type, Types::MergeRequests::DashboardListTypeEnum,
+        required: false,
+        description: 'Merge request dashboard list rendering type.'
       argument :merge_requests_sort, Types::MergeRequestSortEnum,
         required: false,
         description: 'Sort order for issue lists.'

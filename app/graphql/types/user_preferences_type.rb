@@ -25,6 +25,10 @@ module Types
       description: 'Use work item view instead of legacy issue view.',
       null: true
 
+    field :merge_request_dashboard_list_type, Types::MergeRequests::DashboardListTypeEnum,
+      description: 'Merge request dashboard list rendering type.',
+      null: true
+
     field :projects_sort,
       Types::Projects::ProjectSortEnum,
       description: 'Sort order for projects.',

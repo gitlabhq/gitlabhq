@@ -17,7 +17,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'organizationGroupsProjectsDisplay' => 'GROUPS',
       'organizationGroupsProjectsSort' => 'NAME_DESC',
       'visibilityPipelineIdType' => 'IID',
-      'useWorkItemsView' => true
+      'useWorkItemsView' => true,
+      'mergeRequestDashboardListType' => 'ROLE_BASED'
     }
   end
 
@@ -36,12 +37,14 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
       expect(mutation_response['userPreferences']['useWorkItemsView']).to eq(true)
+      expect(mutation_response['userPreferences']['mergeRequestDashboardListType']).to eq('ROLE_BASED')
 
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)
+      expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
     end
   end
 
@@ -54,7 +57,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         organization_groups_projects_display: Types::Organizations::GroupsProjectsDisplayEnum.values['GROUPS'].value,
         organization_groups_projects_sort: 'NAME_DESC',
         visibility_pipeline_id_type: 'id',
-        use_work_items_view: false
+        use_work_items_view: false,
+        merge_request_dashboard_list_type: 'action_based'
       }
     end
 
@@ -77,6 +81,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)
+      expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
     end
 
     context 'when input has nil attributes' do

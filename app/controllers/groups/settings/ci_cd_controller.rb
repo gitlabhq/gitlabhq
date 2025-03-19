@@ -98,7 +98,8 @@ module Groups
         params.require(:group).permit(
           :max_artifacts_size,
           :allow_runner_registration_token,
-          :jwt_ci_cd_job_token_enabled
+          :jwt_ci_cd_job_token_enabled,
+          :job_token_policies_enabled
         )
       end
 

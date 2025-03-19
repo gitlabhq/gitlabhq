@@ -39,7 +39,7 @@ module Integrations
       private
 
       def format_title(title)
-        '*' + strip_markup(title.lines.first.chomp) + '*'
+        "*#{strip_markup(title.lines.first.chomp)}*"
       end
 
       def message

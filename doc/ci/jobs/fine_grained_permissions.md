@@ -29,33 +29,26 @@ Status: Experiment
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints.
 These permissions are applied to the CI/CD job tokens in a specified project.
-This feature is an [experiment](../../policy/development_stages_support.md#experiment).
 
-## Enable fine-grained permissions
+This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature is not ready for production use. If you want to use this feature, you should test outside of production first.
 
-### On GitLab Self-Managed
+## Enable fine-grained permissions for projects
 
-1. Start the GitLab Rails console. For information, see [Enable and disable GitLab features deployed behind feature flags](../../administration/feature_flags.md#enable-or-disable-the-feature)
-1. Turn on the [feature flag](../../administration/feature_flags.md):
+Prerequisites:
 
-```ruby
-# You must include a specific project ID with this command.
-Feature.enable(:add_policies_to_ci_job_token, <project_id>)
-```
+- You must have the Owner role for a group.
 
-### On GitLab.com
+You must turn on fine-grained permissions at the group level. Then, each project in the group can
+apply fine-grained permissions for CI/CD job tokens to grant access to individual resources.
 
-Add a comment on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575) with your project ID.
+To enable fine-grained permissions for all projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Turn on the **Enable fine-grained permissions for CI/CD job tokens** toggle.
 
 ## Available API endpoints
 

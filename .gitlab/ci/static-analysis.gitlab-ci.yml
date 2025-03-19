@@ -213,7 +213,7 @@ semgrep-appsec-custom-rules:
   stage: lint
   extends:
     - .semgrep-appsec-custom-rules:rules
-  image: returntocorp/semgrep
+  image: returntocorp/semgrep:1.99.0
   needs: []
   script:
     - git fetch origin master

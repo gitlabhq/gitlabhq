@@ -1,0 +1,63 @@
+# Type mismatch: string type with number default
+type_mismatch_string:
+  spec:
+    inputs:
+      string_with_number_default:
+        type: string
+        default: 123
+
+# Type mismatch: number type with string default
+type_mismatch_number:
+  spec:
+    inputs:
+      number_with_string_default:
+        type: number
+        default: "not a number"
+
+# Type mismatch: boolean type with string default
+type_mismatch_boolean:
+  spec:
+    inputs:
+      boolean_with_string_default:
+        type: boolean
+        default: "not a boolean"
+
+# Type mismatch: array type with object default
+type_mismatch_array:
+  spec:
+    inputs:
+      array_with_object_default:
+        type: array
+        default:
+          key: "value"
+
+# Invalid input type
+invalid_input_type:
+  spec:
+    inputs:
+      invalid_type_input:
+        type: "object"
+        default: {}
+
+# Invalid property on input
+invalid_property:
+  spec:
+    inputs:
+      input_with_invalid_property:
+        type: string
+        invalid_property: "value"
+
+# Include with invalid input name
+include_invalid_input_name:
+  include:
+    - local: "template.yml"
+      inputs:
+        invalid/name: "value"
+
+# Trigger with invalid input value type
+trigger_invalid_input:
+  trigger_job:
+    trigger:
+      project: "group/project"
+      inputs:
+        number_input: "not a number"

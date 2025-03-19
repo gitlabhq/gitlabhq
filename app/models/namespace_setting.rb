@@ -55,6 +55,7 @@ class NamespaceSetting < ApplicationRecord
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
     jwt_ci_cd_job_token_enabled
+    job_token_policies_enabled
   ].freeze
 
   # matches the size set in the database constraint

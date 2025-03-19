@@ -9,24 +9,20 @@ import {
   I18N_ERROR_MESSAGE,
 } from './constants';
 
-export const initJwtCiCdJobTokenEnabledToggle = () => {
-  const toggle = () => {
-    const toggleButton = document.querySelector('.js-jwt-ci-cd-job-token-enabled-toggle button');
-
-    toggleButton.click();
-  };
-
+export const initSettingsToggles = () => {
   let toastMessage = {};
   const displayToast = (message, options = {}) => {
     toastMessage.hide?.();
     toastMessage = toast(message, options);
   };
 
-  const el = document.querySelector('.js-jwt-ci-cd-job-token-enabled-toggle');
-  const input = document.querySelector('.js-jwt-ci-cd-job-token-enabled-input');
+  const elements = document.querySelectorAll('.js-setting-toggle');
+  if (!elements.length) return null;
 
-  if (el && input) {
+  return Array.from(elements).map((el) => {
     const form = el.closest('form');
+    const input = form.querySelector('.js-setting-input');
+    const toggleButton = el.querySelector('button');
     const toggleElement = initToggle(el);
 
     toggleElement.$on('change', async (isEnabled) => {
@@ -43,7 +39,7 @@ export const initJwtCiCdJobTokenEnabledToggle = () => {
         displayToast(I18N_SUCCESS_MESSAGE, {
           action: {
             text: I18N_UNDO_ACTION_TEXT,
-            onClick: toggle,
+            onClick: () => toggleButton.click(),
           },
         });
       } catch (_) {
@@ -53,7 +49,7 @@ export const initJwtCiCdJobTokenEnabledToggle = () => {
         displayToast(I18N_ERROR_MESSAGE, {
           action: {
             text: I18N_RETRY_ACTION_TEXT,
-            onClick: toggle,
+            onClick: () => toggleButton.click(),
           },
         });
       } finally {
@@ -62,7 +58,5 @@ export const initJwtCiCdJobTokenEnabledToggle = () => {
     });
 
     return toggleElement;
-  }
-
-  return null;
+  });
 };

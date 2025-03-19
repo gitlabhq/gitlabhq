@@ -46,6 +46,8 @@ class UserPreference < ApplicationRecord
   enum :extensions_marketplace_opt_in_status, Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
   enum :organization_groups_projects_display, { projects: 0, groups: 1 }
 
+  enum :merge_request_dashboard_list_type, { action_based: 0, role_based: 1 }
+
   class << self
     def notes_filters
       {

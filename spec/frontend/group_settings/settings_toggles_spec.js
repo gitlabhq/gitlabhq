@@ -5,11 +5,11 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 
-import { initJwtCiCdJobTokenEnabledToggle } from '~/group_settings/jwt_ci_cd_job_token_enabled_toggle';
+import { initSettingsToggles } from '~/group_settings/settings_toggles';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-describe('initJwtCiCdJobTokenEnabledToggle', () => {
+describe('initSettingsToggles', () => {
   let form;
   let wrapper;
   let requestSubmitMock;
@@ -26,12 +26,12 @@ describe('initJwtCiCdJobTokenEnabledToggle', () => {
   } = {}) => {
     setHTMLFixture(`
       <form action="${action}">
-        <input class="js-jwt-ci-cd-job-token-enabled-input" value="${hiddenInputValue}" type="hidden" name="group[jwt_ci_cd_job_token_enabled]"/>
-        <span class="js-jwt-ci-cd-job-token-enabled-toggle" data-disabled="${toggleDisabled}" data-is-checked="${toggleIsChecked}" data-is-loading="false" data-label="${toggleLabel}"></span>
+        <input class="js-setting-input" value="${hiddenInputValue}" type="hidden" name="group[setting]"/>
+        <span class="js-setting-toggle" data-disabled="${toggleDisabled}" data-is-checked="${toggleIsChecked}" data-is-loading="false" data-label="${toggleLabel}"></span>
       </form>
     `);
 
-    const toggle = initJwtCiCdJobTokenEnabledToggle();
+    const toggle = initSettingsToggles()[0];
 
     form = document.querySelector('form');
     wrapper = createWrapper(toggle);
@@ -44,7 +44,7 @@ describe('initJwtCiCdJobTokenEnabledToggle', () => {
     );
   };
 
-  const findInput = () => form.querySelector('[name="group[jwt_ci_cd_job_token_enabled]"]');
+  const findInput = () => form.querySelector('[name="group[setting]"]');
   const findToggle = () => wrapper.findComponent(GlToggle);
 
   afterEach(() => {

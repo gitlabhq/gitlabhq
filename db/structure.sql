@@ -17475,6 +17475,7 @@ CREATE TABLE namespace_settings (
     jwt_ci_cd_job_token_enabled boolean DEFAULT false NOT NULL,
     jwt_ci_cd_job_token_opted_out boolean DEFAULT false NOT NULL,
     require_dpop_for_manage_api_endpoints boolean DEFAULT true NOT NULL,
+    job_token_policies_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -23498,6 +23499,7 @@ CREATE TABLE user_preferences (
     dpop_enabled boolean DEFAULT false NOT NULL,
     use_work_items_view boolean DEFAULT false NOT NULL,
     text_editor_type smallint DEFAULT 0 NOT NULL,
+    merge_request_dashboard_list_type smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_b1306f8875 CHECK ((char_length(organization_groups_projects_sort) <= 64)),

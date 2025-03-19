@@ -44,7 +44,7 @@ Please refer to [the documentation](../code_review.md#reviewer-roulette)
 
 ### Ask for help
 
-If contributors have questions or need additional help with Python-specific reviews, direct them to the GitLab #python or #python_maintainers Slack channels for assistance.
+If contributors have questions or need additional help with Python-specific reviews, direct them to the GitLab `#python` or `#python_maintainers` Slack channels for assistance.
 
 ## How to find a project to review
 

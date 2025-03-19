@@ -281,6 +281,82 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
         end
       end
 
+      context 'for SAML certificate settings' do
+        subject(:init) { initializer.execute(Gitlab.config.omniauth.providers) }
+
+        def stub_saml_config_fingerprint(fingerprint)
+          stub_omniauth_config(
+            providers: [
+              {
+                name: 'saml',
+                args: {
+                  idp_cert_fingerprint: fingerprint
+                }
+              }
+            ]
+          )
+        end
+
+        it 'sets SHA1 algorithm for SHA1 fingerprint' do
+          stub_saml_config_fingerprint("DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4")
+
+          expect(devise_config).to receive(:omniauth).with(
+            :saml,
+            {
+              attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements,
+              idp_cert_fingerprint: "DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4",
+              idp_cert_fingerprint_algorithm: "http://www.w3.org/2000/09/xmldsig#sha1"
+            }
+          )
+
+          init
+        end
+
+        it 'sets SHA256 algoritihm for SHA256 fingerprint' do
+          stub_saml_config_fingerprint(
+            "73:2D:28:C2:D2:D0:34:9F:F8:9A:9C:74:23:BF:0A:CB:66:75:78:9B:01:4D:1F:7D:60:8F:AD:47:A2:30:D7:4A"
+          )
+
+          expect(devise_config).to receive(:omniauth).with(
+            :saml,
+            {
+              attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements,
+              idp_cert_fingerprint:
+                "73:2D:28:C2:D2:D0:34:9F:F8:9A:9C:74:23:BF:0A:CB:66:75:78:9B:01:4D:1F:7D:60:8F:AD:47:A2:30:D7:4A",
+              idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+            }
+          )
+
+          init
+        end
+
+        it 'does nothing for explicitly configured algorithm' do
+          stub_omniauth_config(
+            providers: [
+              {
+                name: 'saml',
+                args: {
+                  # Mismatched fingerprint and algo to verify we do not mess with explicitly configured values
+                  idp_cert_fingerprint: "DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4",
+                  idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+                }
+              }
+            ]
+          )
+
+          expect(devise_config).to receive(:omniauth).with(
+            :saml,
+            {
+              attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements,
+              idp_cert_fingerprint: "DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4",
+              idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+            }
+          )
+
+          init
+        end
+      end
+
       it 'configures defaults args for multiple SAML providers' do
         stub_omniauth_config(
           providers: [

@@ -5,7 +5,6 @@ Layout/LineLength:
     - 'app/controllers/application_controller.rb'
     - 'app/controllers/groups/milestones_controller.rb'
     - 'app/controllers/projects/issues_controller.rb'
-    - 'app/controllers/projects/jobs_controller.rb'
     - 'app/controllers/projects/labels_controller.rb'
     - 'app/controllers/projects/milestones_controller.rb'
     - 'app/controllers/projects/notes_controller.rb'

@@ -3,6 +3,15 @@
 RSpec.shared_examples 'enforcing job token policies' do |policies, expected_success_status: :success,
     allow_public_access_for_enabled_project_features: nil|
 
+  shared_examples 'capturing job token policies' do
+    it 'captures the policies' do
+      expect(::Ci::JobToken::Authorization).to receive(:capture_job_token_policies)
+        .with(Array(policies)).and_call_original
+
+      do_request
+    end
+  end
+
   context 'when authenticating with a CI job token from another project' do
     let(:source_project) { project }
     let(:job_user) { user }
@@ -58,8 +67,12 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
       end
     end
 
+    it_behaves_like 'capturing job token policies'
+
     context 'when the policies are not allowed' do
-      let(:allowed_policies) { [] }
+      let(:allowed_policies) do
+        (::Ci::JobToken::Policies::POLICIES - Array(policies)).take(1)
+      end
 
       it { is_expected.to have_gitlab_http_status(:forbidden) }
 
@@ -82,6 +95,8 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
         let(:default_permissions) { true }
 
         it { is_expected.to have_gitlab_http_status(expected_success_status) }
+
+        it_behaves_like 'capturing job token policies'
       end
 
       context 'when job token policies are disabled' do
@@ -92,6 +107,8 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
         end
 
         it { is_expected.to have_gitlab_http_status(expected_success_status) }
+
+        it_behaves_like 'capturing job token policies'
       end
     end
 

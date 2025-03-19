@@ -12,14 +12,17 @@ class SemgrepResultProcessor
 
   ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
   ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
-
   UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
-  # Remove this when the feature is fully working
+  APPSEC_HANDLE = "@gitlab-com/gl-security/appsec"
+
+  MESSAGE_SCG_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding, which is a potential violation of [GitLab's secure coding guidelines](https://docs.gitlab.com/development/secure_coding_guidelines/).".freeze
+  MESSAGE_S1_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding. This MR potentially reintroduces code from a past S1 issue.".freeze
+
   MESSAGE_FOOTER = <<~FOOTER
 
 
     <small>
-    This AppSec automation is currently under testing.
+    This automation belongs to AppSec.
     Use ~"appsec-sast::helpful" or ~"appsec-sast::unhelpful" for quick feedback.
     To stop the bot from further commenting, you can use the ~"appsec-sast::stop" label.
     For any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).
@@ -132,8 +135,18 @@ class SemgrepResultProcessor
       message_header = "<!-- #{header_information} -->"
       new_line = finding[:line]
       message = finding[:message]
+      check_id = finding[:check_id]
       uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions")
-      message_from_bot = "#{message_header}\n#{message}\n#{MESSAGE_FOOTER}"
+      suffix = if check_id&.start_with?("builds.sast-custom-rules.secure-coding-guidelines")
+                 "\n#{MESSAGE_SCG_PING_APPSEC}"
+               elsif check_id&.start_with?("builds.sast-custom-rules.s1")
+                 "\n#{MESSAGE_S1_PING_APPSEC}"
+               else
+                 ""
+               end
+
+      message_from_bot = "#{message_header}\n#{message}#{suffix}\n#{MESSAGE_FOOTER}"
+
       request = Net::HTTP::Post.new(uri)
       request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
       request.set_form_data(
