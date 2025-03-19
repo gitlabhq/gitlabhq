@@ -585,6 +585,7 @@ module Ci
           subject { build_on(project_runner, params: params) }
 
           it 'persists the feature to build metadata' do
+            stub_feature_flags(ci_read_runner_manager_features: false)
             subject
 
             expect(pending_job.reload.cancel_gracefully?).to be true

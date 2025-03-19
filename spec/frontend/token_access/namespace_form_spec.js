@@ -23,7 +23,7 @@ describe('Namespace form component', () => {
     namespace,
     addMutationHandler = defaultAddMutationHandler,
     editMutationHandler = defaultEditMutationHandler,
-    addPoliciesToCiJobToken = true,
+    isJobTokenPoliciesEnabled = true,
   } = {}) => {
     wrapper = shallowMountExtended(NamespaceForm, {
       apolloProvider: createMockApollo([
@@ -31,7 +31,7 @@ describe('Namespace form component', () => {
         [editNamespaceMutation, editMutationHandler],
       ]),
       propsData: { namespace },
-      provide: { fullPath: 'full/path', glFeatures: { addPoliciesToCiJobToken } },
+      provide: { fullPath: 'full/path', isJobTokenPoliciesEnabled },
       stubs: {
         GlFormInput: stubComponent(GlFormInput, {
           props: ['autofocus', 'disabled', 'state', 'placeholder'],
@@ -236,8 +236,8 @@ describe('Namespace form component', () => {
     });
   });
 
-  describe('when the addPoliciesToCiJobToken feature flag is disabled', () => {
-    beforeEach(() => createWrapper({ addPoliciesToCiJobToken: false }));
+  describe('when isJobTokenPoliciesEnabled is false', () => {
+    beforeEach(() => createWrapper({ isJobTokenPoliciesEnabled: false }));
 
     it('does not show permissions selector', () => {
       expect(findPoliciesSelector().exists()).toBe(false);

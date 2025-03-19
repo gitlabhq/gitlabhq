@@ -1,7 +1,7 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
-import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -29,7 +29,7 @@ describe('Board list component', () => {
   const findBoardListCount = () => wrapper.find('.board-list-count');
   const findBoardCardButtons = () => wrapper.findAll('button.board-card-button');
 
-  const maxIssueCountWarningClass = '.gl-bg-red-50';
+  const maxIssueWeightOrCountWarningClass = '.gl-bg-red-50';
 
   const triggerInfiniteScroll = () => findIntersectionObserver().vm.$emit('appear');
 
@@ -157,7 +157,7 @@ describe('Board list component', () => {
         await waitForPromises();
       });
       it('sets background to warning color', () => {
-        const block = wrapper.find(maxIssueCountWarningClass);
+        const block = wrapper.find(maxIssueWeightOrCountWarningClass);
 
         expect(block.exists()).toBe(true);
         expect(block.attributes('class').split(' ')).toEqual(
@@ -167,7 +167,7 @@ describe('Board list component', () => {
       it('shows cut line', () => {
         const cutline = wrapper.findComponent(BoardCutLine);
         expect(cutline.exists()).toBe(true);
-        expect(cutline.props('cutLineText')).toEqual('Work in progress limit: 2');
+        expect(cutline.props('cutLineText')).toEqual('Work in progress limit: 2 items');
       });
     });
 
@@ -177,7 +177,7 @@ describe('Board list component', () => {
         await waitForPromises();
       });
       it('does not sets background to warning color', () => {
-        expect(wrapper.find(maxIssueCountWarningClass).exists()).toBe(false);
+        expect(wrapper.find(maxIssueWeightOrCountWarningClass).exists()).toBe(false);
       });
       it('does not show cut line', () => {
         expect(wrapper.findComponent(BoardCutLine).exists()).toBe(false);
@@ -190,14 +190,13 @@ describe('Board list component', () => {
         await waitForPromises();
       });
       it('does not sets background to warning color', () => {
-        expect(wrapper.find(maxIssueCountWarningClass).exists()).toBe(false);
+        expect(wrapper.find(maxIssueWeightOrCountWarningClass).exists()).toBe(false);
       });
       it('does not show cut line', () => {
         expect(wrapper.findComponent(BoardCutLine).exists()).toBe(false);
       });
     });
   });
-
   describe('drag & drop issue', () => {
     describe('when dragging is allowed', () => {
       beforeEach(() => {
@@ -400,6 +399,31 @@ describe('Board list component', () => {
         expect(listResolver).toHaveBeenCalledTimes(2);
         expect(getParameterByName).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+  describe('when handling Weight vs Items in the wipLimitText', () => {
+    it('displays weight-based WIP limit when limitMetric is WIP_WEIGHT', () => {
+      wrapper = createComponent({
+        listProps: {
+          maxIssueWeight: 5,
+          maxIssueCount: 0,
+          limitMetric: WIP_WEIGHT,
+        },
+      });
+
+      expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 5 weight');
+    });
+
+    it('displays item-based WIP limit when limitMetric is WIP_ITEMS', () => {
+      wrapper = createComponent({
+        listProps: {
+          maxIssueWeight: 0,
+          maxIssueCount: 3,
+          limitMetric: WIP_ITEMS,
+        },
+      });
+
+      expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 3 items');
     });
   });
 });

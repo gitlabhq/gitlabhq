@@ -37,8 +37,8 @@ module Mutations
           project = authorized_find!(project_path)
           target = find_target_using_path(target_path)
 
-          unless Feature.enabled?(:add_policies_to_ci_job_token, project)
-            raise_resource_not_available_error! '`add_policies_to_ci_job_token` feature flag is disabled.'
+          unless project.job_token_policies_enabled?
+            raise_resource_not_available_error! 'job token policies are disabled.'
           end
 
           result = ::Ci::JobTokenScope::UpdatePoliciesService

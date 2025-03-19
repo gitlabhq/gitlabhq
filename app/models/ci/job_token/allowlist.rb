@@ -4,6 +4,8 @@ module Ci
     class Allowlist
       include ::Gitlab::Utils::StrongMemoize
 
+      delegate :job_token_policies_enabled?, to: :@source_project
+
       def initialize(source_project, direction: :inbound)
         @source_project = source_project
         @direction = direction
@@ -33,8 +35,8 @@ module Ci
       end
 
       def add!(target_project, user:, default_permissions: true, policies: [])
-        job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
-        default_permissions = add_policies_to_ci_job_token_enabled ? default_permissions : true
+        job_token_policies = job_token_policies_enabled? ? policies : []
+        default_permissions = job_token_policies_enabled? ? default_permissions : true
 
         Ci::JobToken::ProjectScopeLink.create!(
           source_project: @source_project,
@@ -47,8 +49,8 @@ module Ci
       end
 
       def add_group!(target_group, user:, default_permissions: true, policies: [])
-        job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
-        default_permissions = add_policies_to_ci_job_token_enabled ? default_permissions : true
+        job_token_policies = job_token_policies_enabled? ? policies : []
+        default_permissions = job_token_policies_enabled? ? default_permissions : true
 
         Ci::JobToken::GroupScopeLink.create!(
           source_project: @source_project,
@@ -90,7 +92,7 @@ module Ci
 
       def bulk_add_projects!(target_projects, user:, autopopulated: false, policies: [])
         now = Time.zone.now
-        job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
+        job_token_policies = job_token_policies_enabled? ? policies : []
 
         projects = target_projects.map do |target_project|
           Ci::JobToken::ProjectScopeLink.new(
@@ -109,7 +111,7 @@ module Ci
 
       def bulk_add_groups!(target_groups, user:, autopopulated: false, policies: [])
         now = Time.zone.now
-        job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
+        job_token_policies = job_token_policies_enabled? ? policies : []
 
         groups = target_groups.map do |target_group|
           Ci::JobToken::GroupScopeLink.new(
@@ -126,11 +128,6 @@ module Ci
       end
 
       private
-
-      def add_policies_to_ci_job_token_enabled
-        Feature.enabled?(:add_policies_to_ci_job_token, @source_project)
-      end
-      strong_memoize_attr :add_policies_to_ci_job_token_enabled
 
       def group_links_for_target(target_project)
         target_group_ids = target_project.parent_groups.pluck(:id)

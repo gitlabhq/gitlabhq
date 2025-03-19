@@ -100,9 +100,9 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
           expect(project_link.job_token_policies).to eq(policies)
         end
 
-        context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+        context 'when job token policies are disabled' do
           before do
-            stub_feature_flags(add_policies_to_ci_job_token: false)
+            allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
           end
 
           it 'adds the project scope link but with empty job token policies' do
@@ -152,9 +152,9 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(group_link.job_token_policies).to eq(policies)
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the group scope link but with empty job token policies' do
@@ -328,9 +328,9 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(project_link.job_token_policies).to eq(policies)
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the project scope link but with empty job token policies' do
@@ -372,9 +372,9 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(group_link.autopopulated).to be true
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the group scope link but with empty job token policies' do

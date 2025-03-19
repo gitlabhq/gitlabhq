@@ -339,6 +339,7 @@ module Ci
     end
 
     def persist_runtime_features(build, params)
+      return if Feature.enabled?(:ci_read_runner_manager_features, build.project)
       return unless params.dig(:info, :features, :cancel_gracefully)
 
       build.set_cancel_gracefully

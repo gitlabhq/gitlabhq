@@ -113,7 +113,7 @@ describe('TokenAccess component', () => {
   const createComponent = (
     requestHandlers,
     {
-      addPoliciesToCiJobToken = false,
+      isJobTokenPoliciesEnabled = false,
       enforceAllowlist = false,
       projectAllowlistLimit = 2,
       stubs = {},
@@ -125,7 +125,7 @@ describe('TokenAccess component', () => {
         fullPath: projectPath,
         enforceAllowlist,
         projectAllowlistLimit,
-        glFeatures: { addPoliciesToCiJobToken },
+        isJobTokenPoliciesEnabled,
       },
       apolloProvider: createMockApollo(requestHandlers),
       mocks: {
@@ -908,12 +908,12 @@ describe('TokenAccess component', () => {
   });
 
   describe.each`
-    addPoliciesToCiJobToken | oldQueryCallCount | newQueryCallCount
-    ${true}                 | ${0}              | ${1}
-    ${false}                | ${1}              | ${0}
+    isJobTokenPoliciesEnabled | oldQueryCallCount | newQueryCallCount
+    ${true}                   | ${0}              | ${1}
+    ${false}                  | ${1}              | ${0}
   `(
-    'when addPoliciesToCiJobToken feature flag is $addPoliciesToCiJobToken',
-    ({ addPoliciesToCiJobToken, oldQueryCallCount, newQueryCallCount }) => {
+    'when isJobTokenPoliciesEnabled is $isJobTokenPoliciesEnabled',
+    ({ isJobTokenPoliciesEnabled, oldQueryCallCount, newQueryCallCount }) => {
       const oldQueryHandler = jest.fn();
       const newQueryHandler = jest.fn();
 
@@ -923,7 +923,7 @@ describe('TokenAccess component', () => {
             [inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery, oldQueryHandler],
             [getCiJobTokenScopeAllowlistQuery, newQueryHandler],
           ],
-          { addPoliciesToCiJobToken },
+          { isJobTokenPoliciesEnabled },
         );
       });
 

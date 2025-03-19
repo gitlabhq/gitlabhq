@@ -19681,29 +19681,6 @@ The edge type for [`WorkItemType`](#workitemtype).
 | <a id="workitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemtypeedgenode"></a>`node` | [`WorkItemType`](#workitemtype) | The item at the end of the edge. |
 
-#### `WorkItemWidgetStatusConnection`
-
-The connection type for [`WorkItemWidgetStatus`](#workitemwidgetstatus).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemwidgetstatusconnectionedges"></a>`edges` | [`[WorkItemWidgetStatusEdge]`](#workitemwidgetstatusedge) | A list of edges. |
-| <a id="workitemwidgetstatusconnectionnodes"></a>`nodes` | [`[WorkItemWidgetStatus]`](#workitemwidgetstatus) | A list of nodes. |
-| <a id="workitemwidgetstatusconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `WorkItemWidgetStatusEdge`
-
-The edge type for [`WorkItemWidgetStatus`](#workitemwidgetstatus).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemwidgetstatusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="workitemwidgetstatusedgenode"></a>`node` | [`WorkItemWidgetStatus`](#workitemwidgetstatus) | The item at the end of the edge. |
-
 #### `WorkspaceConnection`
 
 The connection type for [`Workspace`](#workspace).
@@ -26800,7 +26777,6 @@ GPG signature for a signed commit.
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupaiusagedata"></a>`aiUsageData` {{< icon name="warning-solid" >}} | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
-| <a id="groupallowedstatuses"></a>`allowedStatuses` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusConnection`](#workitemwidgetstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed statuses for the group. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within the group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
@@ -32160,7 +32136,6 @@ Product analytics events for a specific month and year.
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
-| <a id="namespaceallowedstatuses"></a>`allowedStatuses` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusConnection`](#workitemwidgetstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed statuses for the namespace. |
 | <a id="namespaceavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the namespace. |
 | <a id="namespacecicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
@@ -34021,7 +33996,6 @@ Project-level settings for product analytics provider.
 | <a id="projectaiusagedata"></a>`aiUsageData` {{< icon name="warning-solid" >}} | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="projectaixrayreports"></a>`aiXrayReports` {{< icon name="warning-solid" >}} | [`AiXrayReportConnection!`](#aixrayreportconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. X-ray reports of the project. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
-| <a id="projectallowedstatuses"></a>`allowedStatuses` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusConnection`](#workitemwidgetstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed statuses for the project. |
 | <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |
 | <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
@@ -40277,6 +40251,20 @@ Represents total number of work items for the represented states.
 | <a id="workitemstatecountstypeclosed"></a>`closed` | [`Int`](#int) | Number of work items with state CLOSED for the project or group. |
 | <a id="workitemstatecountstypeopened"></a>`opened` | [`Int`](#int) | Number of work items with state OPENED for the project or group. |
 
+### `WorkItemStatus`
+
+Represents status.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatuscolor"></a>`color` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Color of the status. |
+| <a id="workitemstatusiconname"></a>`iconName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Icon name of the status. |
+| <a id="workitemstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 17.11. **Status**: Experiment. ID of the status. |
+| <a id="workitemstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Name of the status. |
+| <a id="workitemstatusposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.11. **Status**: Experiment. Position of the status within its category. |
+
 ### `WorkItemTextFieldValue`
 
 #### Fields
@@ -40496,7 +40484,7 @@ Represents a Status widget definition.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetdefinitionstatusallowedstatuses"></a>`allowedStatuses` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusConnection`](#workitemwidgetstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed statuses for the work item type. |
+| <a id="workitemwidgetdefinitionstatusallowedstatuses"></a>`allowedStatuses` {{< icon name="warning-solid" >}} | [`[WorkItemStatus!]`](#workitemstatus) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed statuses for the work item type. |
 | <a id="workitemwidgetdefinitionstatustype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionWeight`
@@ -40828,11 +40816,7 @@ Represents status widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetstatuscolor"></a>`color` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Color of the status. |
-| <a id="workitemwidgetstatusiconname"></a>`iconName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Icon name of the status. |
-| <a id="workitemwidgetstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the status. |
-| <a id="workitemwidgetstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Name of the status. |
-| <a id="workitemwidgetstatusposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.10. **Status**: Experiment. Position of the status within its category. |
+| <a id="workitemwidgetstatusstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 17.11. **Status**: Experiment. Status assigned to work item. |
 | <a id="workitemwidgetstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetTestReports`

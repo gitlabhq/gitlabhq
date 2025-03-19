@@ -27,19 +27,17 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
 
-## Implementing GitLab Duo
+## GitLab Duo language models
 
-You can implement GitLab Duo in the following ways:
+The language models that are the source for GitLab Duo depend on where you're using it.
 
-- On GitLab.com, use the default GitLab AI vendor models and the cloud-based AI
-  gateway that is hosted by GitLab.
-- On GitLab Self-Managed:
+- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI gateway.
+- On GitLab Self-Managed, there are two options:
 
-  - [Use the default option of GitLab AI vendor models and the cloud-based AI gateway that is hosted by GitLab](setup.md).
-  - Use [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-    to self-host the AI gateway and language models. You can use GitLab AI vendor models or a
-    supported language model. This provides full control over your data and
-    security. GitLab Duo Code Suggestions and Chat are supported.
+  - **GitLab** can [host the models and the cloud-based AI gateway](setup.md).
+  - **Your organization** can [use GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md),
+    which means you host the AI gateway and language models. You can use GitLab AI vendor models
+    or the other supported language models.
     <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/TQoO3sFnb28?si=w_gFAYLYIzPEbhEl)
     <!-- Video published on 2025-02-20 -->
 

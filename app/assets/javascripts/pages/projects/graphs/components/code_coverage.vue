@@ -47,7 +47,7 @@ export default {
       coveragePercentage: '',
       chartOptions: {
         yAxis: {
-          name: __('Bi-weekly code coverage'),
+          name: __('Code Coverage in %%'),
           type: 'value',
           min: 0,
           max: 100,

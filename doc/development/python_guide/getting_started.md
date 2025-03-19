@@ -26,7 +26,13 @@ This guide helps non-Python developers get started with Python quickly and effic
       curl --silent --show-error --location "https://install.python-poetry.org" | python3 -
      ```
 
-   - Make sure to ready the Poetry installation [guide](https://python-poetry.org/docs/) for full installation details
+   - Poetry can also be installed with Mise:
+
+      ```shell
+       mise install poetry
+      ```
+
+   - Make sure to read the Poetry installation [guide](https://python-poetry.org/docs/) for full installation details
 
    - Once installed, create a new Python project with Poetry:
 

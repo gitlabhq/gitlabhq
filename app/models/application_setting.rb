@@ -10,30 +10,8 @@ class ApplicationSetting < ApplicationRecord
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
   ignore_columns %i[
-    elasticsearch_aws
-    elasticsearch_search
-    elasticsearch_indexing
-    elasticsearch_username
-    elasticsearch_aws_region
-    elasticsearch_aws_access_key
-    elasticsearch_limit_indexing
-    elasticsearch_pause_indexing
-    elasticsearch_requeue_workers
-    elasticsearch_max_bulk_size_mb
-    elasticsearch_retry_on_failure
-    elasticsearch_max_bulk_concurrency
-    elasticsearch_client_request_timeout
-    elasticsearch_worker_number_of_shards
-    elasticsearch_analyzers_smartcn_search
-    elasticsearch_analyzers_kuromoji_search
-    elasticsearch_analyzers_smartcn_enabled
-    elasticsearch_analyzers_kuromoji_enabled
-    elasticsearch_indexed_field_length_limit
-    elasticsearch_indexed_file_size_limit_kb
-    elasticsearch_max_code_indexing_concurrency
     security_policy_scheduled_scans_max_concurrency
   ], remove_with: '17.11', remove_after: '2025-04-17'
-
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'

@@ -128,7 +128,7 @@ describe('Timelogs app', () => {
       );
       // should be 1 day ahead of the initial To Date value
       expect(`${wrapper.vm.queryVariables.endTime}`).toEqual(
-        'Wed Mar 29 2023 00:00:00 GMT+0000 (Greenwich Mean Time)',
+        'Tue Mar 28 2023 23:59:59 GMT+0000 (Greenwich Mean Time)',
       );
 
       expect(createAlert).not.toHaveBeenCalled();

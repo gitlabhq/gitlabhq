@@ -112,9 +112,9 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             expect(project_link.job_token_policies).to eq(%w[read_containers read_packages])
           end
 
-          context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+          context 'when job token policies are disabled' do
             before do
-              stub_feature_flags(add_policies_to_ci_job_token: false)
+              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
             end
 
             it 'does not update the policies' do
@@ -168,9 +168,9 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             expect(group_link.job_token_policies).to eq(%w[read_containers read_packages])
           end
 
-          context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+          context 'when job token policies are disabled' do
             before do
-              stub_feature_flags(add_policies_to_ci_job_token: false)
+              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
             end
 
             it 'does not update the policies' do

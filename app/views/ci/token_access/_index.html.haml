@@ -4,5 +4,6 @@
     csv_download_path: export_job_token_authorizations_namespace_project_settings_ci_cd_path(@project.namespace, @project),
     enforce_allowlist: Gitlab::CurrentSettings.enforce_ci_inbound_job_token_scope_enabled?.to_s,
     project_allowlist_limit: Ci::JobToken::ProjectScopeLink::PROJECT_LINK_DIRECTIONAL_LIMIT,
+    job_token_policies_enabled: @project.job_token_policies_enabled?.to_s
   }
 }

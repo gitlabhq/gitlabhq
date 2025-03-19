@@ -3485,6 +3485,11 @@ class Project < ApplicationRecord
     end
   end
 
+  def job_token_policies_enabled?
+    Feature.enabled?(:add_policies_to_ci_job_token, self)
+  end
+  strong_memoize_attr :job_token_policies_enabled?
+
   private
 
   def with_redis(&block)

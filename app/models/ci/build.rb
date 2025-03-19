@@ -419,6 +419,12 @@ module Ci
       cancel_gracefully?
     end
 
+    def cancel_gracefully?
+      return super if Feature.disabled?(:ci_read_runner_manager_features, project)
+
+      !!runner_manager&.supports_after_script_on_cancel?
+    end
+
     def supports_force_cancel?
       true
     end

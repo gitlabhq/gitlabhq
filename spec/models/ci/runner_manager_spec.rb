@@ -689,4 +689,18 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       it { is_expected.to contain_exactly existing_build }
     end
   end
+
+  describe '#supports_after_script_on_cancel?' do
+    let(:runner_manager) { build_stubbed(:ci_runner_machine) }
+
+    subject { runner_manager.supports_after_script_on_cancel? }
+
+    it { is_expected.to be false }
+
+    context 'when the feature is available' do
+      let(:runner_manager) { build_stubbed(:ci_runner_machine, :with_cancelable_feature) }
+
+      it { is_expected.to be true }
+    end
+  end
 end

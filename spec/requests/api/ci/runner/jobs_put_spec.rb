@@ -18,7 +18,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+    let_it_be_with_reload(:runner_manager) { create(:ci_runner_machine, runner: runner) }
     let_it_be(:user) { create(:user) }
 
     describe 'PUT /api/v4/jobs/:id' do
@@ -255,9 +255,28 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
+      context 'when job is canceling and the FF disabled' do
+        before do
+          stub_feature_flags(ci_read_runner_manager_features: false)
+          job.set_cancel_gracefully
+          job.cancel!
+        end
+
+        it 'returns :ok with the job status' do
+          update_job(state: 'running')
+
+          job.reload
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.header['Job-Status']).to eq 'canceling'
+          expect(job).to be_canceling
+        end
+      end
+
       context 'when job is canceling' do
         before do
-          job.set_cancel_gracefully
+          attributes = attributes_for(:ci_runner_machine, :with_cancelable_feature).slice(:runtime_features)
+          runner_manager.update!(attributes)
+
           job.cancel!
         end
 

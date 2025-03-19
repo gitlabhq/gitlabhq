@@ -194,7 +194,7 @@ export default {
       );
     },
     totalIssueWeight() {
-      return this.boardList?.totalIssueWeight;
+      return parseInt(this.boardList?.totalIssueWeight, 10);
     },
     canShowTotalWeight() {
       return this.weightFeatureAvailable && !this.isLoading;
@@ -460,8 +460,8 @@ export default {
             <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"
-              :items-size="itemsCount"
-              :max-issue-count="list.maxIssueCount"
+              :current-count="itemsCount"
+              :max-count="list.maxIssueCount"
             />
           </span>
           <!-- EE start -->
@@ -469,7 +469,11 @@ export default {
             <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
             <span ref="weightTooltip" class="gl-ml-3 gl-inline-flex" data-testid="weight">
               <gl-icon class="gl-mr-2" name="weight" :size="14" />
-              {{ totalIssueWeight }}
+              <item-count
+                v-if="!isLoading"
+                :current-count="totalIssueWeight"
+                :max-count="list.maxIssueWeight"
+              />
             </span>
           </template>
           <!-- EE end -->

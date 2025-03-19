@@ -311,9 +311,9 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         it_behaves_like 'capturing job token policies'
       end
 
-      context 'when the `add_policies_to_ci_job_token` flag is disabled' do
+      context 'when job token policies are disabled' do
         before do
-          stub_feature_flags(add_policies_to_ci_job_token: false)
+          allow(accessed_project).to receive(:job_token_policies_enabled?).and_return(false)
         end
 
         it { is_expected.to be(true) }

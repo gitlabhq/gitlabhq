@@ -125,9 +125,17 @@ Prerequisites:
 
 ### Configure the feature to use a self-hosted model
 
-Configure the GitLab Duo feature to send queries to the configured self-hosted model:
+Configure the GitLab Duo feature and sub-feature to send queries to the configured self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo Self-Hosted**.
 1. Select the **AI-powered features** tab.
-1. For the feature you want to configure, from the dropdown list, choose the self-hosted model you want to use. For example, `Mistral`.
+1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
+
+   For example, for the the code generation sub-feature under GitLab Duo Code Suggestions, you can select **claude sonnet on bedrock (Claude 3)**.
+
+   ![GitLab Duo Self-Hosted Feature Configuration](../img/gitlab_duo_self_hosted_feature_configuration_v17_10.png)
+
+#### GitLab Duo Chat sub-feature fall back configuration
+
+When configuring GitLab Duo Chat sub-features, if you do not select a specific self-hosted model for a sub-feature, that sub-feature automatically falls back to using the self-hosted model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own self-hosted model.

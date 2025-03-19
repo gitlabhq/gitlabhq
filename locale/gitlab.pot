@@ -1869,6 +1869,9 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+msgid "/ %{maxCount}"
+msgstr ""
+
 msgid "/day"
 msgstr ""
 
@@ -9331,9 +9334,6 @@ msgstr ""
 msgid "BeyondIdentity|Verify that GPG keys are authorized by Beyond Identity Authenticator."
 msgstr ""
 
-msgid "Bi-weekly code coverage"
-msgstr ""
-
 msgid "Billable users"
 msgstr ""
 
@@ -10180,6 +10180,9 @@ msgstr ""
 msgid "Boards|Failed to delete board. Please try again."
 msgstr ""
 
+msgid "Boards|Items"
+msgstr ""
+
 msgid "Boards|Load more epics"
 msgstr ""
 
@@ -10208,6 +10211,12 @@ msgid "Boards|Some of your boards are hidden, add a license to see them again."
 msgstr ""
 
 msgid "Boards|Switch board"
+msgstr ""
+
+msgid "Boards|Weight"
+msgstr ""
+
+msgid "Boards|Work in progress limit: %{wipLimit} weight"
 msgstr ""
 
 msgid "Bold (%{modifierKey}B)"
@@ -14088,6 +14097,9 @@ msgid "Co-authored-by: ..."
 msgstr ""
 
 msgid "Code"
+msgstr ""
+
+msgid "Code Coverage in %%"
 msgstr ""
 
 msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
@@ -23089,9 +23101,6 @@ msgid "Enter merge request URLs"
 msgstr ""
 
 msgid "Enter new AWS Secret Access Key"
-msgstr ""
-
-msgid "Enter number of issues"
 msgstr ""
 
 msgid "Enter one or more user ID separated by commas"
@@ -32429,7 +32438,15 @@ msgstr ""
 msgid "Italic text"
 msgstr ""
 
+msgid "Item - %d"
+msgid_plural "Items - %d"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Item with ID: %{id} cannot be added. You don't have permission to perform this action."
+msgstr ""
+
+msgid "Items"
 msgstr ""
 
 msgid "Items are already linked"
@@ -65923,6 +65940,9 @@ msgstr ""
 msgid "Weight %{weight}"
 msgstr ""
 
+msgid "Weight - %{maxIssueWeight}"
+msgstr ""
+
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr ""
 
@@ -66377,7 +66397,7 @@ msgstr ""
 msgid "Work in progress limit"
 msgstr ""
 
-msgid "Work in progress limit: %{wipLimit}"
+msgid "Work in progress limit: %{wipLimit} items"
 msgstr ""
 
 msgid "Work item %{work_item_reference} has already been added to parent %{parent_reference}."

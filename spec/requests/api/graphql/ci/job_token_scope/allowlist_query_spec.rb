@@ -176,9 +176,11 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
         expect(allowlist['projectsAllowlist']).to eq(expected_projects_allowlist)
       end
 
-      context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+      context 'when job token policies are disabled' do
         before do
-          stub_feature_flags(add_policies_to_ci_job_token: false)
+          allow_next_found_instance_of(Project) do |project|
+            allow(project).to receive(:job_token_policies_enabled?).and_return(false)
+          end
         end
 
         it 'returns job token policies as null', :aggregate_failures do

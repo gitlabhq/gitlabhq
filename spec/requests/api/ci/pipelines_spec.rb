@@ -1361,14 +1361,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('canceling')
         end
+      end
 
-        context 'when cancel_gracefully is not supported by the runner' do
-          it 'cancels builds', :sidekiq_inline do
-            post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
+      context 'when cancel_gracefully is not supported by the runner' do
+        it 'cancels builds', :sidekiq_inline do
+          post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['status']).to eq('canceled')
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('canceled')
         end
       end
     end

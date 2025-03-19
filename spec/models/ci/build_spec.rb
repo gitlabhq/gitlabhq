@@ -5795,9 +5795,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when the builds runner supports canceling' do
       include_context 'when canceling support'
 
-      it 'returns true' do
-        expect(job.supports_canceling?).to be true
-      end
+      specify { expect(job.supports_canceling?).to be true }
     end
   end
 
@@ -5806,13 +5804,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when the builds runner supports canceling' do
       include_context 'when canceling support'
-      it 'returns true' do
-        expect(job.supports_force_cancel?).to be true
-      end
+
+      specify { expect(job.supports_force_cancel?).to be true }
     end
   end
 
   describe '#runtime_runner_features' do
+    before do
+      stub_feature_flags(ci_read_runner_manager_features: false)
+    end
+
     subject do
       build.save!
       build.reload.cancel_gracefully?

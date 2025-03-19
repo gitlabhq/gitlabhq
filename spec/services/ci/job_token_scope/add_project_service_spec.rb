@@ -24,9 +24,9 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
       expect(project_link.job_token_policies).to eq(policies)
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the project to the scope but without the policies', :aggregate_failures do

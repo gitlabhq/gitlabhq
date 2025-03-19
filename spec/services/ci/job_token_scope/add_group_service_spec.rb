@@ -25,9 +25,9 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
       expect(group_link.job_token_policies).to eq(policies)
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the group to the scope without the policies', :aggregate_failures do

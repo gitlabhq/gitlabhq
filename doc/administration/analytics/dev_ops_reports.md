@@ -2,6 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Monitor DevSecOps adoption in your GitLab instance, track feature usage, and get insights into team performance.
 title: DevOps adoption by instance
 ---
 

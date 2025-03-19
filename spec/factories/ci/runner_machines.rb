@@ -45,5 +45,9 @@ FactoryBot.define do
     trait :created_within_stale_deadline do
       created_at { 0.001.seconds.after(Ci::RunnerManager.stale_deadline) }
     end
+
+    trait :with_cancelable_feature do
+      runtime_features { { 'cancel_gracefully' => true } }
+    end
   end
 end

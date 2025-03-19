@@ -103,6 +103,12 @@ RSpec.describe Keeps::Helpers::Milestones, feature_category: :tooling do
     end
   end
 
+  describe '#next_milestone' do
+    subject { described_class.new.next_milestone }
+
+    it { is_expected.to eq('16.10') }
+  end
+
   describe '#before_cuttoff?' do
     let(:milestone) { '16.9' }
 

@@ -17,6 +17,7 @@ import {
   DraggableItemTypes,
   listIssuablesQueries,
   ListType,
+  WIP_WEIGHT,
 } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import {
@@ -186,15 +187,41 @@ export default {
     boardListItems() {
       return this.currentList?.[`${this.issuableType}s`].nodes || [];
     },
-    beforeCutLine() {
+    beforeIssueCutLine() {
       return this.boardItemsSizeExceedsMax
         ? this.boardListItems.slice(0, this.list.maxIssueCount)
         : this.boardListItems;
     },
-    afterCutLine() {
+    afterIssueCutLine() {
       return this.boardItemsSizeExceedsMax
         ? this.boardListItems.slice(this.list.maxIssueCount)
         : [];
+    },
+    weightCutOffIndex() {
+      let sumOfWeight = 0;
+      const cutoffIndex = this.boardListItems.findIndex((item) => {
+        sumOfWeight += item.weight;
+        return sumOfWeight > this.list.maxIssueWeight;
+      });
+      return cutoffIndex;
+    },
+    beforeWeightCutLine() {
+      return this.weightCutOffIndex === -1
+        ? this.boardListItems
+        : this.boardListItems.slice(0, this.weightCutOffIndex);
+    },
+    afterWeightCutLine() {
+      return this.weightCutOffIndex === -1 ? [] : this.boardListItems.slice(this.weightCutOffIndex);
+    },
+    beforeCutLine() {
+      return this.list.limitMetric === WIP_WEIGHT
+        ? this.beforeWeightCutLine
+        : this.beforeIssueCutLine;
+    },
+    afterCutLine() {
+      return this.list.limitMetric === WIP_WEIGHT
+        ? this.afterWeightCutLine
+        : this.afterIssueCutLine;
     },
     listQueryVariables() {
       return {
@@ -209,6 +236,9 @@ export default {
     listItemsCount() {
       return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
+    listItemsWeight() {
+      return this.isEpicBoard ? 0 : Number(this.boardList?.totalIssueWeight ?? 0);
+    },
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} %{issuableType}'), {
         pageSize: this.boardListItems.length,
@@ -217,12 +247,20 @@ export default {
       });
     },
     wipLimitText() {
-      return sprintf(__('Work in progress limit: %{wipLimit}'), {
-        wipLimit: this.list.maxIssueCount,
-      });
+      const wipLimit = this.list.maxIssueCount || this.list.maxIssueWeight;
+      if (this.list.limitMetric === WIP_WEIGHT) {
+        return sprintf(s__('Boards|Work in progress limit: %{wipLimit} weight'), { wipLimit });
+      }
+      return sprintf(__('Work in progress limit: %{wipLimit} items'), { wipLimit });
     },
     boardItemsSizeExceedsMax() {
       return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
+    },
+    boardItemsWeightExceedsMax() {
+      return this.list.maxIssueWeight > 0 && this.listItemsWeight > this.list.maxIssueWeight;
+    },
+    boardLimitExceeded() {
+      return this.boardItemsSizeExceedsMax || this.boardItemsWeightExceedsMax;
     },
     hasNextPage() {
       return this.currentList?.[`${this.issuableType}s`].pageInfo?.hasNextPage;
@@ -686,7 +724,7 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'gl-rounded-bl-base gl-rounded-br-base gl-bg-red-50': boardItemsSizeExceedsMax,
+        'gl-rounded-bl-base gl-rounded-br-base gl-bg-red-50': boardLimitExceeded,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
         'list-empty': !listItemsCount,
@@ -724,7 +762,7 @@ export default {
           @appear="onReachingListBottom"
         />
       </board-card>
-      <board-cut-line v-if="boardItemsSizeExceedsMax" :cut-line-text="wipLimitText" />
+      <board-cut-line v-if="boardLimitExceeded" :cut-line-text="wipLimitText" />
       <board-card
         v-for="(item, index) in afterCutLine"
         ref="issue"

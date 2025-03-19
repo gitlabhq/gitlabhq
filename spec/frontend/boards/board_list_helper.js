@@ -24,13 +24,16 @@ export default function createComponent({
     BoardCard,
   },
   mountOptions = {},
-  issuesCount,
+  issuesCount = undefined,
+  totalIssueWeight = undefined,
 } = {}) {
   Vue.use(VueApollo);
 
+  const queryVariables = totalIssueWeight !== undefined ? { totalIssueWeight } : { issuesCount };
+
   const fakeApollo = createMockApollo(
     [
-      [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse({ issuesCount }))],
+      [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse(queryVariables))],
       ...apolloQueryHandlers,
     ],
     apolloResolvers,
@@ -41,8 +44,18 @@ export default function createComponent({
     ...listProps,
   };
 
-  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesCount')) {
+  if (
+    !Object.prototype.hasOwnProperty.call(listProps, 'issuesCount') &&
+    totalIssueWeight === undefined
+  ) {
     list.issuesCount = 1;
+  }
+
+  if (
+    !Object.prototype.hasOwnProperty.call(listProps, 'totalIssueWeight') &&
+    issuesCount === undefined
+  ) {
+    list.totalIssueWeight = 0;
   }
 
   const component = shallowMount(BoardList, {

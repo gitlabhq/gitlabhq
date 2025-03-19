@@ -74,11 +74,11 @@ module Types
         end
 
         def default_permissions
-          Feature.enabled?(:add_policies_to_ci_job_token, object.source_project) ? object.default_permissions : true
+          object.source_project.job_token_policies_enabled? ? object.default_permissions : true
         end
 
         def job_token_policies
-          return unless Feature.enabled?(:add_policies_to_ci_job_token, object.source_project)
+          return unless object.source_project.job_token_policies_enabled?
 
           object.job_token_policies
         end

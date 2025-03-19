@@ -165,6 +165,10 @@ module Ci
       end
     end
 
+    def supports_after_script_on_cancel?
+      !!runtime_features['cancel_gracefully']
+    end
+
     private
 
     def persist_cached_data?

@@ -186,6 +186,10 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   end
 
   describe 'set_cancel_gracefully' do
+    before do
+      stub_feature_flags(ci_read_runner_manager_features: false)
+    end
+
     it 'sets cancel_gracefully' do
       job.set_cancel_gracefully
 

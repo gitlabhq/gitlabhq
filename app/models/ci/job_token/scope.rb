@@ -37,10 +37,10 @@ module Ci
       def policies_allowed?(accessed_project, policies)
         return true if self_referential?(accessed_project)
 
-        # We capture policies even if the FF is disabled, allowlists are disabled or the project is not allowlisted
+        # We capture policies even if job token policies or allowlists are disabled, or the project is not allowlisted
         Ci::JobToken::Authorization.capture_job_token_policies(policies) if policies.present?
 
-        return true unless Feature.enabled?(:add_policies_to_ci_job_token, accessed_project) # the FF is disabled
+        return true unless accessed_project.job_token_policies_enabled?
         return true unless accessed_project.ci_inbound_job_token_scope_enabled? # allowlists are disabled
         return false unless inbound_accessible?(accessed_project) # the current project is not allowlisted
 

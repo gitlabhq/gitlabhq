@@ -347,9 +347,11 @@ RSpec.describe API::Helpers, feature_category: :shared do
             find_project!
           end
 
-          context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
+          context 'when job token policies are disabled' do
             before do
-              stub_feature_flags(add_policies_to_ci_job_token: false)
+              allow_next_found_instance_of(Project) do |project|
+                allow(project).to receive(:job_token_policies_enabled?).and_return(false)
+              end
             end
 
             it { is_expected.to eq project }
