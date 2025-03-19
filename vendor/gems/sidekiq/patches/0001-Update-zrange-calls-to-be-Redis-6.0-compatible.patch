@@ -1,0 +1,103 @@
+From 60542e46e14af0f2304a8735164037d2b1dd025c Mon Sep 17 00:00:00 2001
+Message-ID: <60542e46e14af0f2304a8735164037d2b1dd025c.1724993234.git.stanhu@gmail.com>
+From: Stan Hu <stanhu@gmail.com>
+Date: Thu, 29 Aug 2024 21:08:09 -0700
+Subject: [PATCH 1/2] Update zrange calls to be Redis 6.0 compatible
+
+This reverts some of the changes in
+https://github.com/sidekiq/sidekiq/issues/5788 to maintain Redis 6.0
+compatibility.
+---
+ lib/sidekiq/api.rb                  | 6 +++---
+ lib/sidekiq/cli.rb                  | 2 +-
+ lib/sidekiq/paginator.rb            | 2 +-
+ lib/sidekiq/redis_client_adapter.rb | 2 +-
+ lib/sidekiq/scheduled.rb            | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/lib/sidekiq/api.rb b/lib/sidekiq/api.rb
+index a2a40918..0739044f 100644
+--- a/lib/sidekiq/api.rb
++++ b/lib/sidekiq/api.rb
+@@ -570,7 +570,7 @@ module Sidekiq
+     def remove_job
+       Sidekiq.redis do |conn|
+         results = conn.multi { |transaction|
+-          transaction.zrange(parent.name, score, score, "BYSCORE")
++          transaction.zrangebyscore(parent.name, score, score)
+           transaction.zremrangebyscore(parent.name, score, score)
+         }.first
+ 
+@@ -705,7 +705,7 @@ module Sidekiq
+         end
+ 
+       elements = Sidekiq.redis { |conn|
+-        conn.zrange(name, begin_score, end_score, "BYSCORE", "withscores")
++        conn.zrangebyscore(name, begin_score, end_score, withscores: true)
+       }
+ 
+       elements.each_with_object([]) do |element, result|
+@@ -746,7 +746,7 @@ module Sidekiq
+     # @api private
+     def delete_by_jid(score, jid)
+       Sidekiq.redis do |conn|
+-        elements = conn.zrange(name, score, score, "BYSCORE")
++        elements = conn.zrangebyscore(name, score, score)
+         elements.each do |element|
+           if element.index(jid)
+             message = Sidekiq.load_json(element)
+diff --git a/lib/sidekiq/cli.rb b/lib/sidekiq/cli.rb
+index 66f53418..8dcf9747 100644
+--- a/lib/sidekiq/cli.rb
++++ b/lib/sidekiq/cli.rb
+@@ -74,7 +74,7 @@ module Sidekiq # :nodoc:
+       # fire startup and start multithreading.
+       info = @config.redis_info
+       ver = Gem::Version.new(info["redis_version"])
+-      raise "You are connecting to Redis #{ver}, Sidekiq requires Redis 6.2.0 or greater" if ver < Gem::Version.new("6.2.0")
++      logger.warn "You are connecting to Redis #{ver}, Sidekiq requires Redis 6.2.0 or greater" if ver < Gem::Version.new("6.2.0")
+ 
+       maxmemory_policy = info["maxmemory_policy"]
+       if maxmemory_policy != "noeviction" && maxmemory_policy != ""
+diff --git a/lib/sidekiq/paginator.rb b/lib/sidekiq/paginator.rb
+index 194f9c0f..e895fee5 100644
+--- a/lib/sidekiq/paginator.rb
++++ b/lib/sidekiq/paginator.rb
+@@ -19,7 +19,7 @@ module Sidekiq
+           total_size, items = conn.multi { |transaction|
+             transaction.zcard(key)
+             if rev
+-              transaction.zrange(key, starting, ending, "REV", "withscores")
++              transaction.zrevrange(key, starting, ending, withscores: true)
+             else
+               transaction.zrange(key, starting, ending, "withscores")
+             end
+diff --git a/lib/sidekiq/redis_client_adapter.rb b/lib/sidekiq/redis_client_adapter.rb
+index ca78c239..ea4f35c5 100644
+--- a/lib/sidekiq/redis_client_adapter.rb
++++ b/lib/sidekiq/redis_client_adapter.rb
+@@ -10,7 +10,7 @@ module Sidekiq
+     CommandError = RedisClient::CommandError
+ 
+     # You can add/remove items or clear the whole thing if you don't want deprecation warnings.
+-    DEPRECATED_COMMANDS = %i[rpoplpush zrangebyscore zrevrange zrevrangebyscore getset hmset setex setnx].to_set
++    DEPRECATED_COMMANDS = %i[rpoplpush zrevrangebyscore getset hmset setex setnx].to_set
+ 
+     module CompatMethods
+       def info
+diff --git a/lib/sidekiq/scheduled.rb b/lib/sidekiq/scheduled.rb
+index 7c897dbf..f019e6d8 100644
+--- a/lib/sidekiq/scheduled.rb
++++ b/lib/sidekiq/scheduled.rb
+@@ -12,7 +12,7 @@ module Sidekiq
+ 
+       LUA_ZPOPBYSCORE = <<~LUA
+         local key, now = KEYS[1], ARGV[1]
+-        local jobs = redis.call("zrange", key, "-inf", now, "byscore", "limit", 0, 1)
++        local jobs = redis.call("zrangebyscore", key, "-inf", now, "limit", 0, 1)
+         if jobs[1] then
+           redis.call("zrem", key, jobs[1])
+           return jobs[1]
+-- 
+2.46.0
+

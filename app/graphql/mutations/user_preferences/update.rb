@@ -53,6 +53,12 @@ module Mutations
 
       def resolve(**attributes)
         attributes.delete_if { |key, value| NON_NULLABLE_ARGS.include?(key) && value.nil? }
+
+        if attributes.include?(:extensions_marketplace_opt_in_status)
+          attributes[:extensions_marketplace_opt_in_url] =
+            ::WebIde::ExtensionMarketplace.marketplace_home_url(user: current_user)
+        end
+
         user_preferences = current_user.user_preference
         user_preferences.update(attributes)
 

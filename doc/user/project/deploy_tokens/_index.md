@@ -205,7 +205,7 @@ Prerequisites:
 
 - A deploy token with the `read_package_registry` scope.
 
-For the [package type of your choice](../../packages/_index.md), follow the authentication
+For the [package type of your choice](../../packages/package_registry/supported_functionality.md#authentication-tokens), follow the authentication
 instructions for deploy tokens.
 
 Example of installing a NuGet package from a GitLab registry:
@@ -223,7 +223,7 @@ Prerequisites:
 
 - A deploy token with the `write_package_registry` scope.
 
-For the [package type of your choice](../../packages/_index.md), follow the authentication
+For the [package type of your choice](../../packages/package_registry/supported_functionality.md#authentication-tokens), follow the authentication
 instructions for deploy tokens.
 
 Example of publishing a NuGet package to a package registry:

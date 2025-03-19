@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :code_suggestions do
+RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :database do
   let(:table_name) { 'test_table' }
 
   subject(:generator) { described_class.new([table_name]) }

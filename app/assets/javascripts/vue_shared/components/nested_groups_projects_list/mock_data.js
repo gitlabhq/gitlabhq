@@ -31,7 +31,6 @@ const makeGroup = ({ name, fullName, childrenToLoad = [] }) => {
     accessLevel: { integerValue: 50 },
     editPath: `/${fullPath}/edit`,
     availableActions: [ACTION_EDIT, ACTION_DELETE],
-    actionLoadingStates: { [ACTION_DELETE]: false },
     children: [],
     childrenToLoad: childrenToLoad.map((child) => ({ ...child, parent: { id } })),
     hasChildren: childrenToLoad.length,

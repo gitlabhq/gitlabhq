@@ -1,25 +1,17 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
-import MockAdapter from 'axios-mock-adapter';
 import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizations/groups.query.graphql.json';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { formatGroups } from '~/organizations/shared/utils';
-import {
-  renderDeleteSuccessToast,
-  deleteParams,
-} from 'ee_else_ce/vue_shared/components/groups_list/utils';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
-import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -59,7 +51,6 @@ Vue.use(VueApollo);
 describe('GroupsView', () => {
   let wrapper;
   let mockApollo;
-  let mockAxios;
 
   const defaultProvide = {
     newGroupPath: '/groups/new',
@@ -90,7 +81,6 @@ describe('GroupsView', () => {
 
   const createComponent = ({ handler = successHandler, propsData = {} } = {}) => {
     mockApollo = createMockApollo([[groupsQuery, handler]]);
-    mockAxios = new MockAdapter(axios);
 
     wrapper = shallowMountExtended(GroupsView, {
       apolloProvider: mockApollo,
@@ -105,14 +95,9 @@ describe('GroupsView', () => {
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findNewGroupButton = () => wrapper.findComponent(NewGroupButton);
   const findGroupsList = () => wrapper.findComponent(GroupsList);
-  const findGroupsListByGroupId = (groupId) =>
-    findGroupsList()
-      .props('items')
-      .find((group) => group.id === groupId);
 
   afterEach(() => {
     mockApollo = null;
-    mockAxios.restore();
   });
 
   describe('when API call is loading', () => {
@@ -333,94 +318,15 @@ describe('GroupsView', () => {
     });
   });
 
-  describe('Deleting group', () => {
-    const MOCK_GROUP = formatGroups(nodes)[0];
-
-    describe('when API call is successful', () => {
-      beforeEach(async () => {
-        createComponent();
-
-        mockAxios.onDelete(defaultProvide.groupsPath).reply(HTTP_STATUS_OK, {});
-        await waitForPromises();
-      });
-
-      it('calls deleteGroup, properly sets loading state, and refetches list when promise resolves', async () => {
-        findGroupsList().vm.$emit('delete', MOCK_GROUP);
-
-        expect(findGroupsListByGroupId(MOCK_GROUP.id).actionLoadingStates[ACTION_DELETE]).toBe(
-          true,
-        );
-
-        await waitForPromises();
-        expect(deleteParams).toHaveBeenCalledWith(MOCK_GROUP);
-        expect(mockAxios.history.delete[0].params).toEqual({
-          id: MOCK_GROUP.fullPath,
-          ...MOCK_DELETE_PARAMS,
-        });
-
-        expect(findGroupsListByGroupId(MOCK_GROUP.id).actionLoadingStates[ACTION_DELETE]).toBe(
-          false,
-        );
-        // Refetches list
-        expect(successHandler).toHaveBeenCalledTimes(2);
-      });
-
-      it('does call renderDeleteSuccessToast', async () => {
-        findGroupsList().vm.$emit('delete', MOCK_GROUP);
-        await waitForPromises();
-
-        expect(renderDeleteSuccessToast).toHaveBeenCalledWith(MOCK_GROUP, 'Group');
-      });
-
-      it('does not call createAlert', async () => {
-        findGroupsList().vm.$emit('delete', MOCK_GROUP);
-        await waitForPromises();
-
-        expect(createAlert).not.toHaveBeenCalled();
-      });
+  describe('when lists emits refetch', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+      findGroupsList().vm.$emit('refetch');
     });
 
-    describe('when API call is not successful', () => {
-      beforeEach(async () => {
-        createComponent();
-        mockAxios.onDelete(defaultProvide.groupsPath).networkError();
-
-        await waitForPromises();
-      });
-
-      it('calls deleteGroup, properly sets loading state, and shows error alert', async () => {
-        findGroupsList().vm.$emit('delete', MOCK_GROUP);
-
-        expect(findGroupsListByGroupId(MOCK_GROUP.id).actionLoadingStates[ACTION_DELETE]).toBe(
-          true,
-        );
-
-        await waitForPromises();
-        expect(deleteParams).toHaveBeenCalledWith(MOCK_GROUP);
-        expect(mockAxios.history.delete[0].params).toEqual({
-          id: MOCK_GROUP.fullPath,
-          ...MOCK_DELETE_PARAMS,
-        });
-
-        expect(findGroupsListByGroupId(MOCK_GROUP.id).actionLoadingStates[ACTION_DELETE]).toBe(
-          false,
-        );
-
-        // Does not refetch list
-        expect(successHandler).toHaveBeenCalledTimes(1);
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred deleting the group. Please refresh the page to try again.',
-          error: new Error('Network Error'),
-          captureError: true,
-        });
-      });
-
-      it('does not call renderDeleteSuccessToast', async () => {
-        findGroupsList().vm.$emit('delete', MOCK_GROUP);
-        await waitForPromises();
-
-        expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
-      });
+    it('refetches list', () => {
+      expect(successHandler).toHaveBeenCalledTimes(2);
     });
   });
 });

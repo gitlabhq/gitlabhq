@@ -35,8 +35,8 @@ class RunPipelineScheduleWorker
       .new(schedule.project, user, ref: schedule.ref)
       .execute(
         :schedule,
-        save_on_errors: true,
-        ignore_skip_ci: true, schedule: schedule
+        save_on_errors: true, ignore_skip_ci: true,
+        schedule: schedule, inputs: schedule.inputs_hash
       )
   rescue StandardError => e
     error(schedule, e)

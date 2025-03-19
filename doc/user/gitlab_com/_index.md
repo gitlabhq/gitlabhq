@@ -65,14 +65,43 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/_index.md#create-a-new-wiki-page)
 are included when cloning.
 
-## Email confirmation
+## Email
 
-GitLab.com has the:
+Email configuration settings, IP addressees, and aliases.
+
+### Confirmation settings
+
+GitLab.com uses these email confirmation settings:
 
 - [`email_confirmation_setting`](../../administration/settings/sign_up_restrictions.md#confirm-user-email)
-  setting set to **Hard**.
+  is set to **Hard**.
 - [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users)
-  setting set to three days.
+  is set to three days.
+
+### IP addresses
+
+GitLab.com uses [Mailgun](https://www.mailgun.com/) to send emails from the `mg.gitlab.com` domain,
+and has its own dedicated IP addresses:
+
+- `23.253.183.236`
+- `69.72.35.190`
+- `69.72.44.107`
+- `159.135.226.146`
+- `161.38.202.219`
+- `192.237.158.143`
+- `192.237.159.239`
+- `198.61.254.136`
+- `198.61.254.160`
+- `209.61.151.122`
+
+The IP addresses for `mg.gitlab.com` are subject to change at any time.
+
+### Service Desk alias
+
+GitLab.com has a mailbox configured for Service Desk with the email address:
+`contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
+[custom suffix](../project/service_desk/configure.md#configure-a-suffix-for-service-desk-alias-email) in project
+settings.
 
 ## GitLab CI/CD
 
@@ -142,6 +171,12 @@ the following applications and settings to achieve scale. All settings are
 publicly available, as [Kubernetes configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com)
 or [Chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
+### Consul
+
+Service discovery:
+
+- [`gitlab-cookbooks` / `gitlab_consul` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_consul)
+
 ### Elastic cluster
 
 We use Elasticsearch and Kibana for part of our monitoring solution:
@@ -155,35 +190,29 @@ We use Fluentd to unify our GitLab logs:
 
 - [`gitlab-cookbooks` / `gitlab_fluentd` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
 
-### Prometheus
-
-Prometheus complete our monitoring stack:
-
-- [`gitlab-cookbooks` / `gitlab-prometheus` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus)
-
 ### Grafana
 
 For the visualization of monitoring data:
 
 - [`gitlab-cookbooks` / `gitlab-grafana` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-grafana)
 
-### Sentry
-
-Open source error tracking:
-
-- [`gitlab-cookbooks` / `gitlab-sentry` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-sentry)
-
-### Consul
-
-Service discovery:
-
-- [`gitlab-cookbooks` / `gitlab_consul` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_consul)
-
 ### HAProxy
 
 High Performance TCP/HTTP Load Balancer:
 
 - [`gitlab-cookbooks` / `gitlab-haproxy` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy)
+
+### Prometheus
+
+Prometheus complete our monitoring stack:
+
+- [`gitlab-cookbooks` / `gitlab-prometheus` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus)
+
+### Sentry
+
+Open source error tracking:
+
+- [`gitlab-cookbooks` / `gitlab-sentry` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-sentry)
 
 ## GitLab.com logging
 
@@ -277,24 +306,18 @@ restrictive for each IP address. For more information about the rate limits
 for GitLab.com, see
 [the documentation in the handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting).
 
-### Rate limiting responses
+### Group and project import by uploading export files
 
-For information on rate limiting responses, see:
+To help avoid abuse, the following are rate limited:
 
-- [List of headers on responses to blocked requests](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
-- [Customizable response text](../../administration/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
+- Project and group imports.
+- Group and project exports that use files.
+- Export downloads.
 
-### Protected paths throttle
+For more information, see:
 
-If the same IP address sends more than 10 POST requests in a minute to protected paths, GitLab.com returns a `429` HTTP status code.
-
-See the source below for which paths are protected. This includes user creation,
-user confirmation, user sign in, and password reset.
-
-[User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
-includes a list of the headers responded to blocked requests.
-
-See [Protected Paths](../../administration/settings/protected_paths.md) for more details.
+- [Project import/export rate limits](../project/settings/import_export.md#rate-limits).
+- [Group import/export rate limits](../project/settings/import_export.md#rate-limits-1).
 
 ### IP blocks
 
@@ -331,15 +354,34 @@ No response headers are provided.
 These requests might lead to a temporary IP block if too many requests are sent simultaneously.
 To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
 
+### Non-configurable limits
+
+See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits)
+for information on rate limits that are not configurable, and therefore also
+used on GitLab.com.
+
 ### Pagination response headers
 
 For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/rest/_index.md#pagination-response-headers).
 
-### Visibility settings
+### Protected paths throttle
 
-Projects, groups, and snippets have the
-[Internal visibility](../public_access.md#internal-projects-and-groups)
-setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+If the same IP address sends more than 10 POST requests in a minute to protected paths, GitLab.com returns a `429` HTTP status code.
+
+See the source below for which paths are protected. This includes user creation,
+user confirmation, user sign in, and password reset.
+
+[User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
+includes a list of the headers responded to blocked requests.
+
+See [Protected Paths](../../administration/settings/protected_paths.md) for more details.
+
+### Rate limiting responses
+
+For information on rate limiting responses, see:
+
+- [List of headers on responses to blocked requests](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
+- [Customizable response text](../../administration/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
 
 ### SSH maximum number of connections
 
@@ -349,24 +391,11 @@ If more than the maximum number of allowed connections occur concurrently, they
 are dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
 
-### Group and project import by uploading export files
+### Visibility settings
 
-To help avoid abuse, the following are rate limited:
-
-- Project and group imports.
-- Group and project exports that use files.
-- Export downloads.
-
-For more information, see:
-
-- [Project import/export rate limits](../project/settings/import_export.md#rate-limits).
-- [Group import/export rate limits](../project/settings/import_export.md#rate-limits-1).
-
-### Non-configurable limits
-
-See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits)
-for information on rate limits that are not configurable, and therefore also
-used on GitLab.com.
+Projects, groups, and snippets have the
+[Internal visibility](../public_access.md#internal-projects-and-groups)
+setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ## GitLab-hosted runners
 
@@ -421,31 +450,6 @@ Most GitLab.com instance runners are deployed into Google Cloud in `us-east1`, e
 You can configure any IP-based firewall by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 macOS runners are hosted on AWS in the `us-east-1` region, with runner managers hosted on Google Cloud. To configure IP-based firewall, you must allow both [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) and [Google Cloud](https://cloud.google.com/compute/docs/faq#find_ip_range).
-
-## Mail configuration
-
-GitLab.com sends emails from the `mg.gitlab.com` domain by using [Mailgun](https://www.mailgun.com/),
-and has its own dedicated IP addresses:
-
-- `23.253.183.236`
-- `69.72.35.190`
-- `69.72.44.107`
-- `159.135.226.146`
-- `161.38.202.219`
-- `192.237.158.143`
-- `192.237.159.239`
-- `198.61.254.136`
-- `198.61.254.160`
-- `209.61.151.122`
-
-The IP addresses for `mg.gitlab.com` are subject to change at any time.
-
-### Service Desk alias email address
-
-On GitLab.com, there's a mailbox configured for Service Desk with the email address:
-`contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
-[custom suffix](../project/service_desk/configure.md#configure-a-suffix-for-service-desk-alias-email) in project
-settings.
 
 ## Maximum number of reviewers and assignees
 

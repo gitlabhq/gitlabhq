@@ -3,7 +3,9 @@
 - user_theme_id = Gitlab::Themes.for_user(@user).id
 - user_color_mode_id = Gitlab::ColorModes.for_user(@user).id
 - user_color_schema_id = Gitlab::ColorSchemes.for_user(@user).id
-- user_fields = { color_mode_id: user_color_mode_id, theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled, extensions_marketplace_enabled: @user.extensions_marketplace_enabled }.to_json
+- marketplace_home_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: @user)
+- extensions_marketplace_enabled = ::WebIde::ExtensionMarketplaceOptIn.enabled?(user: @user, marketplace_home_url: marketplace_home_url)
+- user_fields = { color_mode_id: user_color_mode_id, theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled, extensions_marketplace_enabled: extensions_marketplace_enabled }.to_json
 - fixed_help_text = s_('Preferences|Content will be a maximum of 1280 pixels wide.')
 - fluid_help_text = s_('Preferences|Content will span %{percentage} of the page width.').html_safe % { percentage: '100%' }
 - plain_text_editor_help_text = s_('Preferences|Type in plain text, using Markdown.')

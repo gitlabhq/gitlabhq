@@ -199,37 +199,6 @@ Now add the Amazon Q service account user as a member of your project.
 1. For **Select a role**, select **Developer**.
 1. Select **Invite**.
 
-### Configure the AI gateway
-
-Now configure your AI gateway.
-
-1. On your GitLab instance, in a Rails console, configure your AI gateway URL.
-
-   The default settings should work for the production setup. Be sure that `GITLAB_LICENSE_MODE`, `CUSTOMER_PORTAL_URL`, and `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` are NOT set.
-
-   If `ai_gateway_url` is set in the database, update it to point to the AI Gateway production endpoint:
-
-   ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: "https://cloud.gitlab.com/ai")
-   ```
-
-   For staging, your `/etc/gitlab/gitlab.rb` should have:
-
-   ```ruby
-   gitlab_rails['env'] = {
-     "GITLAB_LICENSE_MODE" => "test",
-     "CUSTOMER_PORTAL_URL" => "https://customers.staging.gitlab.com",
-   }
-   ```
-
-   For staging, your Rails console should have:
-
-   ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: "https://cloud.staging.gitlab.com/ai")
-   ```
-
-1. Run `gitlab-ctl reconfigure` for these changes to take effect.
-
 ## Turn off GitLab Duo with Amazon Q
 
 You can turn off GitLab Duo with Amazon Q for the instance, group, or project.

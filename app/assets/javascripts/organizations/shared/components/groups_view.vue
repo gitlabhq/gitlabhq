@@ -4,14 +4,8 @@ import groupsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
-import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
-import axios from '~/lib/utils/axios_utils';
 import { formatGroups, timestampType } from '~/organizations/shared/utils';
-import {
-  renderDeleteSuccessToast,
-  deleteParams,
-} from 'ee_else_ce/vue_shared/components/groups_list/utils';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import NewGroupButton from './new_group_button.vue';
@@ -22,9 +16,6 @@ export default {
   i18n: {
     errorMessage: s__(
       'Organization|An error occurred loading the groups. Please refresh the page to try again.',
-    ),
-    deleteErrorMessage: s__(
-      'Organization|An error occurred deleting the group. Please refresh the page to try again.',
     ),
     emptyState: {
       title: s__("Organization|You don't have any groups yet."),
@@ -43,7 +34,6 @@ export default {
   },
   inject: {
     organizationGid: {},
-    groupsPath: {},
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -165,24 +155,8 @@ export default {
         startCursor,
       });
     },
-    setGroupIsDeleting(nodeIndex, value) {
-      this.groups.nodes[nodeIndex].actionLoadingStates[ACTION_DELETE] = value;
-    },
-    async deleteGroup(group) {
-      const nodeIndex = this.groups.nodes.findIndex((node) => node.id === group.id);
-
-      try {
-        this.setGroupIsDeleting(nodeIndex, true);
-        await axios.delete(this.groupsPath, {
-          params: { id: group.fullPath, ...deleteParams(group) },
-        });
-        this.$apollo.queries.groups.refetch();
-        renderDeleteSuccessToast(group, this.$options.i18n.group);
-      } catch (error) {
-        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
-      } finally {
-        this.setGroupIsDeleting(nodeIndex, false);
-      }
+    onRefetch() {
+      this.$apollo.queries.groups.refetch();
     },
   },
 };
@@ -196,7 +170,7 @@ export default {
       show-group-icon
       :list-item-class="listItemClass"
       :timestamp-type="timestampType"
-      @delete="deleteGroup"
+      @refetch="onRefetch"
     />
 
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">

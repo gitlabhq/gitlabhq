@@ -454,4 +454,17 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
       end
     end
   end
+
+  describe '#inputs_hash' do
+    let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+    before_all do
+      create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'input1', value: 'value1')
+      create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'input2', value: 'value2')
+    end
+
+    subject(:inputs_hash) { pipeline_schedule.reload.inputs_hash }
+
+    it { is_expected.to eq({ 'input1' => 'value1', 'input2' => 'value2' }) }
+  end
 end

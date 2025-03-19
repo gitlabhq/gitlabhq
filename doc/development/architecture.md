@@ -875,7 +875,7 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#mail-configuration)
+- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#email)
 
 #### Inbound Email
 
@@ -885,7 +885,7 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#mail-configuration)
+- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#email)
 
 ## GitLab by request type
 

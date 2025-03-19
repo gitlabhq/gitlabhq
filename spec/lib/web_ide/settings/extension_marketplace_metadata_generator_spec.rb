@@ -5,6 +5,7 @@ require "fast_spec_helper"
 RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
+  let(:marketplace_home_url) { "https://example.com" }
   let(:input_context) do
     {
       requested_setting_names: [:vscode_extension_marketplace_metadata],
@@ -13,6 +14,7 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
         # NOTE: default value of 'vscode_extension_marketplace_metadata' is an empty hash. Include it here to
         #       ensure that it always gets overwritten with the generated value
         vscode_extension_marketplace_metadata: {},
+        vscode_extension_marketplace_home_url: marketplace_home_url,
         some_other_existing_setting_that_should_not_be_overwritten: "some context"
       }
     }
@@ -90,7 +92,10 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
     end
 
     before do
-      allow(user).to receive(:extensions_marketplace_opt_in_status) { opt_in_status.to_s }
+      allow(::WebIde::ExtensionMarketplaceOptIn).to receive(:opt_in_status)
+        .with(user: user, marketplace_home_url: marketplace_home_url)
+        .and_return(opt_in_status.to_s)
+
       # EE feature has to be stubbed since we run EE code through CE tests
       allow(user).to receive(:enterprise_user?).and_return(false)
       allow(enums).to receive(:statuses).and_return({ unset: :unset, enabled: :enabled, disabled: :disabled })

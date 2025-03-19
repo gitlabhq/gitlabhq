@@ -42,9 +42,6 @@ export const formatGroups = (groups) =>
       accessLevel,
       editPath,
       availableActions: availableGroupActions(userPermissions),
-      actionLoadingStates: {
-        [ACTION_DELETE]: false,
-      },
     }),
   );
 

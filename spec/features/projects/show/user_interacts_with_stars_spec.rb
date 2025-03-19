@@ -40,7 +40,7 @@ RSpec.describe 'Projects > Show > User interacts with project stars', :js, featu
       visit(member_dashboard_projects_path)
       wait_for_requests
 
-      expect(find_link('Stars')).to have_content('1')
+      expect(find_by_testid('stars-btn')).to have_content('1')
     end
 
     it 'validates un-starring a project' do
@@ -53,7 +53,7 @@ RSpec.describe 'Projects > Show > User interacts with project stars', :js, featu
       visit(member_dashboard_projects_path)
       wait_for_requests
 
-      expect(find_link('Stars')).to have_content('0')
+      expect(find_by_testid('stars-btn')).to have_content('0')
     end
   end
 

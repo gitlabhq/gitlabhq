@@ -65,16 +65,46 @@ Before you can use Workflow, you must:
   - [GitLab Duo must be turned on](../gitlab_duo/_index.md).
   - The repository you want to work with should be small or medium-sized.
     Workflow can be slow or fail for large repositories.
+- [Successfully connect to your repository](#connect-to-your-repository).
 
-To isolate GitLab Duo Workflow in a Docker container, you must complete the [Docker setup](docker_set_up.md). This is not the preferred method to run Workflow.
+{{< alert type="note" >}}
+
+Though not recommended, you can [set up Workflow in a Docker container](docker_set_up.md).
+You do not need to use Docker to run Workflow.
+
+{{< /alert >}}
+
+## Connect to your repository
+
+To use Workflow in VS Code, ensure your repository is properly connected.
+
+1. In VS Code, on the top menu, select **Terminal > New Terminal**.
+1. Clone your repository: `git clone <repository>`.
+1. Change to the directory where your repository was cloned and check out your branch: `git checkout <branch_name>`.
+1. Ensure your repository is selected:
+   1. On the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
+   1. Select the repository name. If you have multiple repositories, select the one you want to work with.
+1. In the terminal, ensure your repository is configured with a remote: `git remote -v`. The results should look similar to:
+
+   ```plaintext
+   origin  git@gitlab.com:gitlab-org/gitlab.git (fetch)
+   origin  git@gitlab.com:gitlab-org/gitlab.git (push)
+   ```
+
+   If no remote is defined, or you have multiple remotes:
+
+   1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+   1. On the **Source Control** label, right-click and select **Repositories**.
+   1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote > Add Remote**.
+   1. Select **Add remote from GitLab**.
+   1. Choose a remote.
+
+Now you can use Workflow to help solve your coding tasks.
 
 ## Use Workflow in VS Code
 
 To use Workflow in VS Code:
 
-1. In VS Code, open the Git repository folder for your GitLab project.
-1. Check out the branch for the code you would like to change.
-   - If you do not check out a GitLab project and branch, Workflow will not work.
 1. Open the command palette:
    - On macOS: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.

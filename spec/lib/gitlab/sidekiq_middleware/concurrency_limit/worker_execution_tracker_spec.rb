@@ -122,7 +122,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkerExecutionTrack
     let(:dangling_process_thread_id) { 'proc-abc:tid:4567' }
     let(:long_running_process_thread_id) { 'proc-abc:tid:5678' }
 
-    # Format from https://github.com/sidekiq/sidekiq/blob/v7.2.4/lib/sidekiq/api.rb#L1180
+    # Format from https://github.com/sidekiq/sidekiq/blob/v7.3.9/lib/sidekiq/api.rb#L1209
     # The tid field in the `{pid}:work` hash contains a hash of 'payload' -> job hash.
     def generate_sidekiq_hash(worker)
       job_hash = { 'payload' => ::Gitlab::Json.dump({

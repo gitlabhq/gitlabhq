@@ -44,7 +44,7 @@ export default {
       :show-group-icon="showGroupIcon"
       :list-item-class="listItemClass"
       :timestamp-type="timestampType"
-      @delete="$emit('delete', $event)"
+      @refetch="$emit('refetch')"
     />
   </ul>
 </template>

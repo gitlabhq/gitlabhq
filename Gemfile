@@ -292,7 +292,7 @@ end
 gem 'state_machines-activerecord', '~> 0.8.0', feature_category: :shared
 
 # Background jobs
-gem 'sidekiq', path: 'vendor/gems/sidekiq-7.2.4', require: 'sidekiq', feature_category: :scalability
+gem 'sidekiq', path: 'vendor/gems/sidekiq', require: 'sidekiq', feature_category: :scalability
 gem 'sidekiq-cron', '~> 1.12.0', feature_category: :scalability
 gem 'gitlab-sidekiq-fetcher',
   path: 'vendor/gems/sidekiq-reliable-fetch',

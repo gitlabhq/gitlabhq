@@ -23,7 +23,12 @@ module WebIde
       def self.generate(context)
         return context unless context.fetch(:requested_setting_names).include?(:vscode_extension_marketplace_metadata)
 
-        context => { options: Hash => options }
+        context => {
+          options: Hash => options,
+          settings: {
+            vscode_extension_marketplace_home_url: String => marketplace_home_url,
+          }
+        }
         options_with_defaults = { user: nil, vscode_extension_marketplace_feature_flag_enabled: nil }.merge(options)
         options_with_defaults => {
           user: ::User | NilClass => user,
@@ -33,7 +38,8 @@ module WebIde
 
         extension_marketplace_metadata = build_metadata(
           user: user,
-          flag_enabled: extension_marketplace_feature_flag_enabled
+          flag_enabled: extension_marketplace_feature_flag_enabled,
+          marketplace_home_url: marketplace_home_url
         )
 
         context[:settings][:vscode_extension_marketplace_metadata] = extension_marketplace_metadata
@@ -43,7 +49,7 @@ module WebIde
       # @param [User, nil] user
       # @param [Boolean, nil] flag_enabled
       # @return [Hash]
-      def self.build_metadata(user:, flag_enabled:)
+      def self.build_metadata(user:, flag_enabled:, marketplace_home_url:)
         return metadata_disabled(:no_user) unless user
         return metadata_disabled(:no_flag) if flag_enabled.nil?
         return metadata_disabled(:instance_disabled) unless flag_enabled
@@ -52,7 +58,7 @@ module WebIde
           return metadata_disabled(:instance_disabled)
         end
 
-        build_metadata_for_user(user)
+        build_metadata_for_user(user: user, marketplace_home_url: marketplace_home_url)
       end
 
       def self.disabled_reasons
@@ -63,9 +69,12 @@ module WebIde
       #
       # @param [User] user
       # @return [Hash]
-      def self.build_metadata_for_user(user)
+      def self.build_metadata_for_user(user:, marketplace_home_url:)
         # noinspection RubyNilAnalysis -- RubyMine doesn't realize user can't be nil because of guard clause above
-        opt_in_status = user.extensions_marketplace_opt_in_status.to_sym
+        opt_in_status = ::WebIde::ExtensionMarketplaceOptIn.opt_in_status(
+          user: user,
+          marketplace_home_url: marketplace_home_url
+        ).to_sym
 
         case opt_in_status
         when :enabled

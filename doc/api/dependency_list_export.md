@@ -14,7 +14,7 @@ title: Dependency list export API
 
 Every call to this endpoint requires authentication.
 
-## Create a pipeline-level dependency list export
+## Create a dependency list export
 
 {{< history >}}
 
@@ -31,13 +31,15 @@ this request returns a `403 Forbidden` status code.
 SBOM exports can be only accessed by the export's author.
 
 ```plaintext
+POST /projects/:id/dependency_list_exports
+POST /groups/:id/dependency_list_exports
 POST /pipelines/:id/dependency_list_exports
 ```
 
 | Attribute           | Type              | Required   | Description                                                                                                                  |
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer           | yes        | The ID of the pipeline which the authenticated user has access to. |
-| `export_type`       | string            | yes        | This must be set to `sbom`. |
+| `id`                | integer           | yes        | The ID of the project, group, or pipeline that the authenticated user has access to. |
+| `export_type`       | string            | yes        | Format of the export. See [export types](#export-types) for a list of accepted values. |
 | `send_email`        | boolean           | no         | When set to `true`, sends an email notification to the user who requested the export when the export completes. |
 
 ```shell
@@ -51,6 +53,7 @@ Example response:
 ```json
 {
   "id": 2,
+  "status": "running",
   "has_finished": false,
   "export_type": "sbom",
   "send_email": false,
@@ -58,6 +61,17 @@ Example response:
   "download": "http://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 }
 ```
+
+### Export types
+
+Exports can be requested in different file formats. Some formats are only available for certain objects.
+
+| Export Type | Description | Available for |
+| ----------- | ----------- | ------------- |
+| `dependency_list` | A standard JSON object that lists the dependencies as key-value pairs. | Projects |
+| `sbom` | A [CycloneDX](https://cyclonedx.org/) 1.4 bill of materials | Pipelines |
+| `json_array` | A flat JSON array that contains component objects. | Groups |
+| `csv` | A comma-separated values (CSV) document. | Projects, Groups |
 
 ## Get single dependency list export
 

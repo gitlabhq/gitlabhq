@@ -2,7 +2,9 @@
 import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
+import { createAlert } from '~/alert';
 import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
+import axios from '~/lib/utils/axios_utils';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
@@ -14,6 +16,10 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
+import {
+  renderDeleteSuccessToast,
+  deleteParams,
+} from 'ee_else_ce/vue_shared/components/groups_list/utils';
 import GroupListItemPreventDeleteModal from './group_list_item_prevent_delete_modal.vue';
 
 export default {
@@ -21,6 +27,9 @@ export default {
     subgroups: __('Subgroups'),
     projects: __('Projects'),
     directMembers: __('Direct members'),
+    deleteErrorMessage: __(
+      'An error occurred deleting the group. Please refresh the page to try again.',
+    ),
   },
   components: {
     ListItem,
@@ -62,6 +71,7 @@ export default {
   data() {
     return {
       isDeleteModalVisible: false,
+      isDeleteLoading: false,
       modalId: uniqueId('groups-list-item-modal-id-'),
     };
   },
@@ -109,9 +119,6 @@ export default {
     hasActionDelete() {
       return this.group.availableActions?.includes(ACTION_DELETE);
     },
-    isActionDeleteLoading() {
-      return this.group.actionLoadingStates?.[ACTION_DELETE];
-    },
   },
   methods: {
     onActionDelete() {
@@ -119,6 +126,21 @@ export default {
     },
     onModalChange(isVisible) {
       this.isDeleteModalVisible = isVisible;
+    },
+    async onDeleteModalConfirm() {
+      this.isDeleteLoading = true;
+
+      try {
+        await axios.delete(`/${this.group.fullPath}`, {
+          params: deleteParams(this.group),
+        });
+        this.$emit('refetch');
+        renderDeleteSuccessToast(this.group);
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
+      } finally {
+        this.isDeleteLoading = false;
+      }
     },
   },
 };
@@ -183,9 +205,9 @@ export default {
         :visible="isDeleteModalVisible"
         :modal-id="modalId"
         :phrase="group.fullName"
-        :confirm-loading="isActionDeleteLoading"
+        :confirm-loading="isDeleteLoading"
         :group="group"
-        @confirm.prevent="$emit('delete', group)"
+        @confirm.prevent="onDeleteModalConfirm"
         @change="onModalChange"
       />
     </template>

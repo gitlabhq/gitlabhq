@@ -1,7 +1,11 @@
+import { nextTick } from 'vue';
+import MockAdapter from 'axios-mock-adapter';
 import { GlAvatarLabeled, GlIcon, GlBadge } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import waitForPromises from 'helpers/wait_for_promises';
 import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import {
@@ -17,10 +21,24 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { renderDeleteSuccessToast } from 'ee_else_ce/vue_shared/components/groups_list/utils';
+import { createAlert } from '~/alert';
 import { groups } from './mock_data';
+
+const MOCK_DELETE_PARAMS = {
+  testParam: true,
+};
+
+jest.mock('ee_else_ce/vue_shared/components/groups_list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/vue_shared/components/groups_list/utils'),
+  renderDeleteSuccessToast: jest.fn(),
+  deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
+}));
+jest.mock('~/alert');
 
 describe('GroupsListItem', () => {
   let wrapper;
+  let axiosMock;
 
   const [group] = groups;
 
@@ -48,6 +66,20 @@ describe('GroupsListItem', () => {
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const fireDeleteAction = () => findListActions().props('actions')[ACTION_DELETE].action();
+  const deleteModalFireConfirmEvent = async () => {
+    findConfirmationModal().vm.$emit('confirm', {
+      preventDefault: jest.fn(),
+    });
+    await nextTick();
+  };
+
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
 
   it('renders group avatar', () => {
     createComponent();
@@ -302,15 +334,43 @@ describe('GroupsListItem', () => {
         });
 
         describe('when deletion is confirmed', () => {
-          beforeEach(() => {
-            findConfirmationModal().vm.$emit('confirm', {
-              preventDefault: jest.fn(),
+          describe('when API call is successful', () => {
+            it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
+              axiosMock.onDelete(`/${groupWithDeleteAction.fullPath}`).reply(200);
+
+              await deleteModalFireConfirmEvent();
+              expect(findConfirmationModal().props('confirmLoading')).toBe(true);
+
+              await waitForPromises();
+
+              expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
+              expect(findConfirmationModal().props('confirmLoading')).toBe(false);
+              expect(wrapper.emitted('refetch')).toEqual([[]]);
+              expect(renderDeleteSuccessToast).toHaveBeenCalledWith(groupWithDeleteAction);
+              expect(createAlert).not.toHaveBeenCalled();
             });
-            fireDeleteAction();
           });
 
-          it('emits `delete` event', () => {
-            expect(wrapper.emitted('delete')).toMatchObject([[groupWithDeleteAction]]);
+          describe('when API call is not successful', () => {
+            it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
+              axiosMock.onDelete(`/${groupWithDeleteAction.fullPath}`).networkError();
+
+              await deleteModalFireConfirmEvent();
+              expect(findConfirmationModal().props('confirmLoading')).toBe(true);
+
+              await waitForPromises();
+
+              expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
+              expect(findConfirmationModal().props('confirmLoading')).toBe(false);
+              expect(wrapper.emitted('refetch')).toBeUndefined();
+              expect(createAlert).toHaveBeenCalledWith({
+                message:
+                  'An error occurred deleting the group. Please refresh the page to try again.',
+                error: new Error('Network Error'),
+                captureError: true,
+              });
+              expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
+            });
           });
         });
 

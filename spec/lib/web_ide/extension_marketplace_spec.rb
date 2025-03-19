@@ -7,6 +7,7 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
 
   let(:help_url) { "/help/user/project/web_ide/_index.md#extension-marketplace" }
   let(:user_preferences_url) { "/-/profile/preferences#integrations" }
+  let(:custom_home_url) { 'https://example.com:8444' }
   let(:custom_app_setting) do
     {
       enabled: true,
@@ -109,15 +110,17 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
 
   describe '#webide_extension_marketplace_settings' do
     # rubocop:disable Layout/LineLength -- last parameter extens past line but is preferable to rubocop's suggestion
-    where(:web_ide_extensions_marketplace, :vscode_extension_marketplace_settings, :app_setting, :opt_in_status, :expectation) do
-      true  | false | {}                         | :enabled  | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
-      true  | false | {}                         | :unset    | lazy { { enabled: false, reason: :opt_in_unset, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
-      true  | false | {}                         | :disabled | lazy { { enabled: false, reason: :opt_in_disabled, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
-      false | false | {}                         | :enabled  | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
-      true  | true  | {}                         | :enabled  | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
-      true  | true  | { enabled: false }         | :enabled  | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
-      true  | true  | ref(:custom_app_setting)   | :enabled  | lazy { { enabled: true, vscode_settings: custom_app_setting[:custom_values] } }
-      true  | true  | ref(:open_vsx_app_setting) | :enabled  | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
+    where(:web_ide_extensions_marketplace, :vscode_extension_marketplace_settings, :app_setting, :opt_in_status, :opt_in_url, :expectation) do
+      # web_ide_extensions_marketplace | vscode_extension_marketplace_settings | app_setting                | opt_in_status | opt_in_url            | expectation
+      true                            | false                                 | {}                         | :enabled      | nil                   | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
+      true                            | false                                 | {}                         | :unset        | nil                   | lazy { { enabled: false, reason: :opt_in_unset, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
+      true                            | false                                 | {}                         | :disabled     | nil                   | lazy { { enabled: false, reason: :opt_in_disabled, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
+      false                           | false                                 | {}                         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
+      true                            | true                                  | {}                         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
+      true                            | true                                  | { enabled: false }         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
+      true                            | true                                  | ref(:custom_app_setting)   | :enabled      | nil                   | lazy { { enabled: false, reason: :opt_in_unset, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
+      true                            | true                                  | ref(:custom_app_setting)   | :enabled      | ref(:custom_home_url) | lazy { { enabled: true, vscode_settings: custom_app_setting[:custom_values] } }
+      true                            | true                                  | ref(:open_vsx_app_setting) | :enabled      | nil                   | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
     end
     # rubocop:enable Layout/LineLength
 
@@ -132,7 +135,10 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
 
       stub_application_setting(vscode_extension_marketplace: app_setting)
 
-      current_user.update!(extensions_marketplace_opt_in_status: opt_in_status)
+      current_user.update!(
+        extensions_marketplace_opt_in_status: opt_in_status,
+        extensions_marketplace_opt_in_url: opt_in_url
+      )
     end
 
     with_them do

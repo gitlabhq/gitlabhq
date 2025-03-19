@@ -25,6 +25,18 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
   let(:mutation) { graphql_mutation(:userPreferencesUpdate, input) }
   let(:mutation_response) { graphql_mutation_response(:userPreferencesUpdate) }
 
+  before do
+    stub_application_setting(vscode_extension_marketplace: {
+      enabled: false,
+      preset: 'custom',
+      custom_values: {
+        item_url: 'https://example.com/item/url',
+        service_url: 'https://example.com/service/url',
+        resource_url_template: 'https://example.com/resource/url/template'
+      }
+    })
+  end
+
   context 'when user has no existing preference' do
     it 'creates the user preference record' do
       post_graphql_mutation(mutation, current_user: current_user)
@@ -41,6 +53,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
 
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
+      expect(current_user.user_preference.extensions_marketplace_opt_in_url).to eq('https://example.com')
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)

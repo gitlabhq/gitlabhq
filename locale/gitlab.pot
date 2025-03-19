@@ -1233,13 +1233,13 @@ msgid_plural "%{project} has %{number} forks"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{project} has %{number} merge request"
-msgid_plural "%{project} has %{number} merge requests"
+msgid "%{project} has %{number} open issue"
+msgid_plural "%{project} has %{number} open issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{project} has %{number} open issues"
-msgid_plural "%{project} has %{number} open issues"
+msgid "%{project} has %{number} open merge request"
+msgid_plural "%{project} has %{number} open merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -6543,6 +6543,9 @@ msgid "An error occurred creating the blob"
 msgstr ""
 
 msgid "An error occurred creating the new branch."
+msgstr ""
+
+msgid "An error occurred deleting the group. Please refresh the page to try again."
 msgstr ""
 
 msgid "An error occurred editing the blob"
@@ -40976,9 +40979,6 @@ msgstr ""
 msgid "Organization|An error occurred creating an organization. Please try again."
 msgstr ""
 
-msgid "Organization|An error occurred deleting the group. Please refresh the page to try again."
-msgstr ""
-
 msgid "Organization|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
@@ -61424,10 +61424,7 @@ msgstr ""
 msgid "Todos|You"
 msgstr ""
 
-msgid "Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions and GitLab Duo Chat"
-msgstr ""
-
-msgid "Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions, GitLab Duo Chat, Vulnerability Explanation, and more"
+msgid "Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE"
 msgstr ""
 
 msgid "Todos|Your SSH key has expired"

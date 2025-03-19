@@ -27,7 +27,7 @@ strict_args_mode = Gitlab.dev_or_test_env? ? :warn : false
 Sidekiq.strict_args!(strict_args_mode)
 
 # Perform version check before configuring server with the custome scheduled job enqueue class
-unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.2.4')
+unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.3.9')
   raise 'New version of Sidekiq detected, please either update the version for this check ' \
         'and update Gitlab::SidekiqSharding::ScheduledEnq is compatible.'
 end

@@ -6,7 +6,7 @@ include:
     inputs:
       cng_path: 'charts/components/images'
   - project: 'gitlab-org/quality/pipeline-common'
-    ref: '9.13.0'
+    ref: '9.14.0'
     file: ci/base.gitlab-ci.yml
 
 stages:

@@ -4248,7 +4248,6 @@ Layout/LineLength:
     - 'spec/workers/remove_expired_members_worker_spec.rb'
     - 'spec/workers/repository_check/dispatch_worker_spec.rb'
     - 'spec/workers/repository_fork_worker_spec.rb'
-    - 'spec/workers/run_pipeline_schedule_worker_spec.rb'
     - 'spec/workers/service_desk_email_receiver_worker_spec.rb'
     - 'spec/workers/stuck_merge_jobs_worker_spec.rb'
     - 'spec/workers/todos_destroyer/confidential_issue_worker_spec.rb'

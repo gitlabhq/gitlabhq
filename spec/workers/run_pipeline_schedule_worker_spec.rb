@@ -59,9 +59,12 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
 
       context 'when pipeline can be created' do
         before do
-          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
+          expect(Ci::CreatePipelineService).to receive(:new)
+            .with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
 
-          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule).and_return(service_response)
+          expect(create_pipeline_service).to receive(:execute)
+            .with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule, inputs: {})
+            .and_return(service_response)
         end
 
         context "when pipeline is persisted" do
@@ -76,7 +79,9 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
           end
 
           it "does not change the next_run_at" do
-            expect { worker.perform(pipeline_schedule.id, user.id) }.not_to change { pipeline_schedule.reload.next_run_at }
+            expect do
+              worker.perform(pipeline_schedule.id, user.id)
+            end.not_to change { pipeline_schedule.reload.next_run_at }
           end
 
           context 'when scheduling option is given as true' do
@@ -91,7 +96,9 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
             end
 
             it "changes the next_run_at" do
-              expect { worker.perform(pipeline_schedule.id, user.id, scheduling: true) }.to change { pipeline_schedule.reload.next_run_at }.by(1.day)
+              expect do
+                worker.perform(pipeline_schedule.id, user.id, scheduling: true)
+              end.to change { pipeline_schedule.reload.next_run_at }.by(1.day)
             end
           end
         end
@@ -105,14 +112,40 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
         end
 
         it 'does not change the next_run_at' do
-          expect { worker.perform(pipeline_schedule.id, user.id) }.to not_change { pipeline_schedule.reload.next_run_at }
+          expect do
+            worker.perform(pipeline_schedule.id, user.id)
+          end.to not_change { pipeline_schedule.reload.next_run_at }
         end
 
         it 'creates a pipeline' do
-          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule).and_return(service_response)
+          expect(Ci::CreatePipelineService).to receive(:new)
+            .with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
+          expect(create_pipeline_service).to receive(:execute)
+            .with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule, inputs: {})
+            .and_return(service_response)
 
           worker.perform(pipeline_schedule.id, user.id)
+        end
+      end
+
+      context 'when the schedule has inputs' do
+        let(:inputs) do
+          { 'input1' => 'value1', 'input2' => 'value2' }
+        end
+
+        before_all do
+          create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'input1', value: 'value1')
+          create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'input2', value: 'value2')
+        end
+
+        it "calls the create pipeline service with inputs" do
+          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref)
+            .and_return(create_pipeline_service)
+          expect(create_pipeline_service).to receive(:execute)
+            .with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule, inputs: inputs)
+            .and_return(service_response)
+
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
         end
       end
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if Gem::Version.new(Sidekiq::VERSION) != Gem::Version.new('7.2.4')
+if Gem::Version.new(Sidekiq::VERSION) != Gem::Version.new('7.3.9')
   raise 'New version of sidekiq detected, please remove or update this patch'
 end
 
