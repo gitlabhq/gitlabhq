@@ -18,7 +18,7 @@ If you [turn on or turn off GitLab Duo](../gitlab_duo/turn_on_off.md), you turn 
 
 ## For self-managed
 
-To enable GitLab Duo Chat on a self-managed instance,
+To enable GitLab Duo Chat on a GitLab Self-Managed instance,
 you must have the following prerequisites.
 
 Prerequisites:

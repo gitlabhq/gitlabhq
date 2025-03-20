@@ -31,7 +31,7 @@ a deleted container image, you must rebuild and re-upload it.
 ## Garbage collection
 
 Deleting a container image on self-managed instances doesn't free up storage space, it only marks the image
-as eligible for deletion. To actually delete unreferenced container images and recover storage space, self-managed instance administrators
+as eligible for deletion. To actually delete unreferenced container images and recover storage space, GitLab Self-Managed instance administrators
 must run [garbage collection](../../../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 The container registry on GitLab.com includes an automatic online garbage

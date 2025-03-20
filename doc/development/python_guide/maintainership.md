@@ -46,9 +46,23 @@ Please refer to [the documentation](../code_review.md#reviewer-roulette)
 
 If contributors have questions or need additional help with Python-specific reviews, direct them to the GitLab `#python` or `#python_maintainers` Slack channels for assistance.
 
-## How to find a project to review
+## How to become Python maintainer
 
-[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/511513).
+Established projects have their own pools of reviewers and maintainers. Smaller or new projects can benefit from the help of established Python experts at GitLab.
+
+### GitLab Python experts
+
+GitLab Python experts are professionals with Python expertise who contribute to improving code quality across different projects.
+To become one:
+
+1. Create a merge request to add `python: maintainer` competency under `projects` to your [team](https://gitlab.com/gitlab-com/www-gitlab-com/-/tree/master/data/team_members/person?ref_type=heads) file.
+1. Use [this](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/merge_request_templates/Python_expert.md) template and follow the described process.
+
+Once your merge request is merged, you'll be added to the Python maintainers group.
+
+### Reviewers and maintainers of a specific project
+
+Each project can establish their own review process. Review the maintainership guidelines and/or contact current maintainers for more information.
 
 ## Maintainer responsibilities
 
@@ -71,19 +85,14 @@ In addition to code reviews, maintainers are responsible for guiding architectur
 
 **Additional responsibilities:**
 
-- Maintain relevant documentation accuracy and completeness.
+- Maintain accurate and complete documentation.
 - Monitor and update package dependencies as necessary.
 - Mentor other engineers on Python best practices.
 - Evaluate and propose new tools and libraries.
 - Monitor performance and propose optimizations.
 - Ensure security standards are maintained.
 - Ensure the project is consistent and aligned with GitLab standards by regularly monitoring and adopting relevant engineering practices introduced in GitLab.com.
-
-## How to become a maintainer
-
-Each project has its own process and maintainership program. We recommend reviewing the following guideline:
-
-[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/514316).
+- Establish and enforce clear code review processes.
 
 ## Code review best practices
 

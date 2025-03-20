@@ -19,7 +19,7 @@ your custom cluster applications.
 
 {{< alert type="note" >}}
 
-The project template works on GitLab.com without modifications. If you're on a self-managed instance, you must modify the `.gitlab-ci.yml` file.
+The project template works on GitLab.com without modifications. If you're on a GitLab Self-Managed instance, you must modify the `.gitlab-ci.yml` file.
 
 {{< /alert >}}
 
@@ -78,9 +78,9 @@ The base image used in the pipeline is built by the
 [cluster-applications](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications) project.
 This image contains a set of Bash utility scripts to support [Helm v3 releases](https://helm.sh/docs/intro/using_helm/#three-big-concepts).
 
-If you are on a self-managed instance of GitLab, you must modify the `.gitlab-ci.yml` file.
+If you are on a GitLab Self-Managed instance, you must modify the `.gitlab-ci.yml` file.
 Specifically, the section that starts with the comment `Automatic package upgrades` does not
-work on a self-managed instance, because the `include` refers to a GitLab.com project.
+work on a GitLab Self-Managed instance, because the `include` refers to a GitLab.com project.
 If you remove everything below this comment, the pipeline succeeds.
 
 ### The main `helmfile.yml` file

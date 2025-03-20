@@ -39,7 +39,7 @@ Supported attributes:
 | `client_subscription_id` | string          | No       | Client Subscription ID.                                                 |
 | `with_clean_history`     | boolean         | No       | Indicates if we need to reset the history before and after the request. |
 | `project_id`             | integer         | No       | Project ID. Required if `resource_type` is a commit.                    |
-| `additional_context`     | hash            | No       | Additional context for this chat request. See [Context attributes](#context-attributes) for a list of parameters this attribute accepts. |
+| `additional_context`     | array           | No       | An array of additional context items for this chat request. See [Context attributes](#context-attributes) for a list of parameters this attribute accepts. |
 
 ### Context attributes
 
@@ -57,7 +57,14 @@ curl --request POST \
   --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
   --header "Content-Type: application/json" \
   --data '{
-      "content": "how to define class in ruby"
+      "content": "how to define class in ruby",
+      "additional_context": [
+        {
+          "category": "file",
+          "id": "main.rb",
+          "content": "class Foo\nend"
+        }
+      ]
     }' \
   --url "https://gitlab.example.com/api/v4/chat/completions"
 ```

@@ -11,7 +11,7 @@ through an example of how to deploy an application to Amazon Elastic Kubernetes 
 The tutorial uses the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the AWS console.
 
-You can also follow this tutorial on a self-managed instance.
+You can also follow this tutorial on a GitLab Self-Managed instance.
 Ensure your own [runners are configured](../../../ci/runners/_index.md).
 
 To deploy a project to EKS:

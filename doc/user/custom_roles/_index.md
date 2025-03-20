@@ -82,7 +82,7 @@ In **Settings > Roles and permissions**, the list of all custom roles displays t
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 After you create a custom role for your GitLab Self-Managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
@@ -133,7 +133,7 @@ Prerequisites:
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
@@ -354,7 +354,7 @@ You can sync users to custom roles with following authentication providers:
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 You can use the API to [create](../../api/graphql/reference/_index.md#mutationmemberroleadmincreate) and [assign](../../api/graphql/reference/_index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
 

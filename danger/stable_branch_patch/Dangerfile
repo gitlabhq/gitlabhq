@@ -2,12 +2,12 @@
 
 if stable_branch.encourage_package_and_qa_execution?
   markdown(<<~MARKDOWN)
-  ## QA `e2e:test-on-omnibus-ee`
+  ## `e2e:test-on-omnibus-ee`
 
   **@#{helper.mr_author}, the `e2e:test-on-omnibus` job must complete before merging this merge request.***
 
-  If there are failures on the `e2e:test-on-omnibus` pipeline, ask for assistance from a Software Engineer in Test (SET)
-  on the `#s_developer_experience` Slack channel to confirm the failures are unrelated to the merge request.
+  If the `e2e:test-on-omnibus` pipeline fails and you're unable to diagnose the issue, request assistance in the
+  `#s_developer_experience` Slack channel to confirm that the failures are unrelated to the merge request.
   MARKDOWN
 end
 

@@ -7,15 +7,6 @@ feature_categories:
 description: Separate table for job artifacts containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75264
 milestone: '14.8'
-gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: job_artifact_id
-        table: p_ci_job_artifacts
-        sharding_key: project_id
-        belongs_to: job_artifact
-desired_sharding_key_migration_job_name: BackfillCiJobArtifactStatesProjectId
+gitlab_schema: gitlab_ci_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
 table_size: medium

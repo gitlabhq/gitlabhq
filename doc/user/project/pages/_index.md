@@ -100,7 +100,7 @@ domain, you can optionally secure it with SSL/TLS certificates.
 If you're using GitLab.com, your website is publicly available to the internet.
 To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
 
-If you're using a self-managed instance, your websites are published on your
+If you're using a GitLab Self-Managed instance, your websites are published on your
 own server, according to the [Pages settings](../../../administration/pages/_index.md)
 chosen by your sysadmin, who can make them public or internal.
 
@@ -117,7 +117,7 @@ and adapt for your own needs:
 
 ## Administer GitLab Pages for self-managed instances
 
-If you are running a self-managed instance of GitLab,
+If you are running a GitLab Self-Managed instance,
 [follow the administration steps](../../../administration/pages/_index.md) to configure Pages.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=dD8c7WNcc6s) about how to get started with GitLab Pages administration.

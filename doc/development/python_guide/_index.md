@@ -34,7 +34,7 @@ large codebases.
 
 ## Creating a new Python application
 
-Scaffolding libraries and pipelines for a new codebase.
+[Scaffolding libraries and pipelines for a new codebase](create_project.md)
 
 ## Conventions Style Guidelines
 

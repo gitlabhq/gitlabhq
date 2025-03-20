@@ -151,7 +151,7 @@ User approvals are associated with a user ID. Other user contributions do not ha
 
 {{< /alert >}}
 
-## Delete the root account on a self-managed instance
+## Delete the root account on a GitLab Self-Managed instance
 
 {{< details >}}
 
@@ -177,7 +177,7 @@ Before you delete the root account:
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 To delete the root account:
 

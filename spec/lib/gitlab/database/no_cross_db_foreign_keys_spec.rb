@@ -11,10 +11,6 @@ RSpec.describe 'cross-database foreign keys' do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     [
-      'snippet_repositories.shard_id',                           # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
-      'project_repositories.shard_id',                           # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
-      'group_wiki_repositories.shard_id',                        # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
-      'pool_repositories.shard_id',                              # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
       'geo_node_namespace_links.namespace_id',
       'zoekt_indices.zoekt_enabled_namespace_id',
       'zoekt_repositories.project_id',
@@ -23,7 +19,28 @@ RSpec.describe 'cross-database foreign keys' do
       'system_access_microsoft_applications.namespace_id',
       'ci_cost_settings.runner_id',                              # The fk_rails_6a70651f75 FK needs to be dropped
       'ci_runner_taggings.tag_id',                               # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
-      'ci_runner_taggings_instance_type.tag_id'                  # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
+      'ci_runner_taggings_instance_type.tag_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
+      'ci_job_artifact_states.partition_id',
+      'ci_secure_file_states.ci_secure_file_id',
+      'dependency_proxy_blob_states.dependency_proxy_blob_id',
+      'dependency_proxy_blob_states.group_id',
+      'dependency_proxy_manifest_states.dependency_proxy_manifest_id',
+      'dependency_proxy_manifest_states.group_id',
+      'group_wiki_repositories.group_id',
+      'group_wiki_repository_states.group_id',
+      'lfs_objects_projects.lfs_object_id',
+      'merge_request_diff_details.merge_request_diff_id',
+      'merge_request_diff_details.project_id',
+      'pages_deployment_states.pages_deployment_id',
+      'pages_deployment_states.project_id',
+      'pool_repositories.source_project_id',
+      'project_repositories.project_id',
+      'project_states.project_id',
+      'projects.pool_repository_id',
+      'snippet_repositories.snippet_id',
+      'snippet_repositories.snippet_organization_id',
+      'snippet_repositories.snippet_project_id',
+      'upload_states.upload_id'
     ]
   end
 

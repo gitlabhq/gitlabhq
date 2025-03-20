@@ -649,7 +649,7 @@ The limit varies depending on your plan and the number of seats in your subscrip
 | Timeout                                                             | 10 seconds             |
 | [Parallel Pages deployments](../project/pages/parallel_deployments.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
 
-For self-managed instance limits, see:
+For GitLab Self-Managed instance limits, see:
 
 - [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
 - [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).

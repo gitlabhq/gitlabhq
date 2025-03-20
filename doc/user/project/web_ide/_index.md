@@ -244,15 +244,18 @@ To view any notification you might have missed:
 
 {{< details >}}
 
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-- Feature flags `web_ide_oauth` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated, and `web_ide_extensions_marketplace` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) on GitLab.com in GitLab 17.4.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5. Feature flag `web_ide_oauth` removed.
+- `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+- `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
+- `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -265,16 +268,14 @@ For more information, see the history.
 
 Prerequisites:
 
+- In the **Admin** area, a GitLab administrator must
+  [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md).
 - In user preferences, you must
   [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace).
 - In group settings, users with the Owner role must
   [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
 
 You can use the extension marketplace to download and run VS Code extensions in the Web IDE.
-
-The extension marketplace is preconfigured for GitLab instances,
-and is hardcoded to [`https://open-vsx.org/`](https://open-vsx.org/).
-[Epic 11770](https://gitlab.com/groups/gitlab-org/-/epics/11770) proposes to change this behavior.
 
 ### Install an extension
 

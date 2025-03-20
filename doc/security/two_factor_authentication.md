@@ -80,7 +80,7 @@ For more information, see the [list of settings that can be accessed through API
 
 {{< /history >}}
 
-Administrators can enforce 2FA for administrator users in a self-managed instance.
+Administrators can enforce 2FA for administrator users in a GitLab Self-Managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. On the left sidebar, select **Settings > General**.

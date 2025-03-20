@@ -44,6 +44,10 @@ class MigrateVSCodeExtensionMarketplaceFeatureFlagToData < Gitlab::Database::Mig
   def extension_marketplace_flag_enabled?
     # NOTE: It's possible the flag is only enabled for a specific user, but in that case we'll assume
     # the instance admin didn't want the feature globally available and we won't initialize the data.
-    Feature.enabled?(:web_ide_extensions_marketplace, nil) && Feature.enabled?(:vscode_web_ide, nil)
+    Feature.enabled?(:web_ide_extensions_marketplace, nil) &&
+      # NOTE: We only want to migrate instances that have **explicitly** opted in to the early
+      # extensions marketplace experience (not just enabled by default feature flag).
+      Feature.persisted_name?(:web_ide_extensions_marketplace) &&
+      Feature.enabled?(:vscode_web_ide, nil)
   end
 end

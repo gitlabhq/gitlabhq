@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Configure GitLab Duo on a self-managed instance
+title: Configure GitLab Duo on a GitLab Self-Managed instance
 ---
 
 {{< details >}}
@@ -13,7 +13,7 @@ title: Configure GitLab Duo on a self-managed instance
 {{< /details >}}
 
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
-To use GitLab Duo on a self-managed instance, you can do either of the following:
+To use GitLab Duo on a GitLab Self-Managed instance, you can do either of the following:
 
 - Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by
   GitLab. This is the default option.
@@ -26,7 +26,7 @@ You must have an Ultimate subscription with the GitLab Duo Enterprise add-on to 
 
 {{< /alert >}}
 
-This page focuses on how to configure a self-managed instance if you're using the default, GitLab-hosted option.
+This page focuses on how to configure a GitLab Self-Managed instance if you're using the default, GitLab-hosted option.
 
 ## Prerequisites
 

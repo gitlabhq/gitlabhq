@@ -113,7 +113,7 @@ the entire project.
 
 Renaming projects with populated container repositories is only supported on GitLab.com.
 
-On a self-managed instance, you can delete all container images before moving or renaming
+On a GitLab Self-Managed instance, you can delete all container images before moving or renaming
 a group or project. Alternatively, [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround)
 contains community suggestions to work around this limitation. [Epic 9459](https://gitlab.com/groups/gitlab-org/-/epics/9459)
 proposes adding support for moving projects and groups with container repositories

@@ -8,6 +8,6 @@ description: Holds information about a repository storing objects which are shar
   across a pool of forks.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/fff7754186202cfcdeaa0962c28e5d43ddd705b7
 milestone: '11.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_local
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490484
 table_size: small

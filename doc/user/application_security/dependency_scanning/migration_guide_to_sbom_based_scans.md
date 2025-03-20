@@ -111,7 +111,7 @@ See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/17150) for more det
 ## Identify affected projects
 
 Understanding which of your projects need attention for this migration is an important first step. The most significant impact will be on your Java and Python projects, since the way these handle dependencies is changing fundamentally.
-To help you identify affected projects, GitLab provides the [Dependency Scanning Build Support Detection Helper](https://gitlab.com/security-products/tooling/build-support-detection-helper) tool. This tool examines your GitLab group or self-managed instance and identifies projects that currently use the Dependency Scanning feature with either the `gemnasium-maven-dependency_scanning` or `gemnasium-python-dependency_scanning` CI/CD jobs.
+To help you identify affected projects, GitLab provides the [Dependency Scanning Build Support Detection Helper](https://gitlab.com/security-products/tooling/build-support-detection-helper) tool. This tool examines your GitLab group or GitLab Self-Managed instance and identifies projects that currently use the Dependency Scanning feature with either the `gemnasium-maven-dependency_scanning` or `gemnasium-python-dependency_scanning` CI/CD jobs.
 When you run this tool, it creates a comprehensive report of projects that will need your attention during the migration. Having this information early helps you plan your migration strategy effectively, especially if you manage multiple projects across your organization.
 
 ## Migrate to Dependency Scanning using SBOM

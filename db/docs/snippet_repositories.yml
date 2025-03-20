@@ -8,26 +8,7 @@ description: Stores repository information used to version control snippets.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23796
 milestone: '12.8'
 table_size: small
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-desired_sharding_key:
-  snippet_project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: snippet_id
-        table: snippets
-        sharding_key: project_id
-        belongs_to: snippet
-  snippet_organization_id:
-    references: organizations
-    backfill_via:
-      parent:
-        foreign_key: snippet_id
-        table: snippets
-        sharding_key: organization_id
-        belongs_to: snippet
-desired_sharding_key_migration_job_name:
-- BackfillSnippetRepositoriesSnippetProjectId
-- BackfillSnippetRepositoriesSnippetOrganizationId

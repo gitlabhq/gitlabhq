@@ -111,7 +111,7 @@ You can use your own hostname to access your GitLab Dedicated instance. Instead 
 Add a custom hostname to:
 
 - Increase control over branding
-- Avoid having to migrate away from an existing domain already configured for a self-managed instance
+- Avoid having to migrate away from an existing domain already configured for a GitLab Self-Managed instance
 
 When you add a custom hostname:
 

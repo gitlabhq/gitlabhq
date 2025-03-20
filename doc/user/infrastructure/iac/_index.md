@@ -92,7 +92,7 @@ GitLab features, but can potentially include breaking changes.
 You can safely use the latest Terraform template:
 
 - If you use GitLab.com.
-- If you use a self-managed instance updated with every new GitLab release.
+- If you use a GitLab Self-Managed instance updated with every new GitLab release.
 
 ### Stable and advanced Terraform templates (deprecated)
 

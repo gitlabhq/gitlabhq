@@ -474,10 +474,13 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+- `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
 - Enabled by default for [workspaces](../workspace/_index.md) in GitLab 17.6. Workspaces do not require any feature flags for the extension marketplace to be available.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
+- `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -492,6 +495,11 @@ You can use the [extension marketplace](../project/web_ide/_index.md#extension-m
 manage extensions for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
 For third-party extensions, you must enable the marketplace in user preferences.
 
+Prerequisites:
+
+- In the **Admin** area, a GitLab administrator must
+  [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
+
 To enable the extension marketplace for the Web IDE and workspaces:
 
 1. On the left sidebar, select your avatar.
@@ -500,12 +508,6 @@ To enable the extension marketplace for the Web IDE and workspaces:
 1. Select the **Enable extension marketplace** checkbox.
 1. In the third-party extension acknowledgement, select **I understand**.
 1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-This preferences checkbox will always be available, even if the feature flags are disabled.
-
-{{< /alert >}}
 
 <!-- ## Troubleshooting
 

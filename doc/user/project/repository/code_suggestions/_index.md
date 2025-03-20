@@ -359,7 +359,7 @@ Prerequisites:
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
    - To minimize latency for code completion requests, select **Direct connections**.
-   - To disable direct connections for all users, select **Indirect connections through the GitLab self-managed instance**.
+   - To disable direct connections for all users, select **Indirect connections through the GitLab Self-Managed instance**.
 1. Select **Save changes**.
 
 {{< /tab >}}

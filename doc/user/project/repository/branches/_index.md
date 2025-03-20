@@ -29,7 +29,7 @@ The development workflow for branches is:
 
 1. [Create a branch](#create-a-branch) and add commits to it.
    To streamline this process, you should follow
-   [branch naming patterns](#prefix-branch-names-with-issue-numbers).
+   [branch naming patterns](#prefix-branch-names-with-a-number).
 1. When the work is ready for review, create a [merge request](../../merge_requests/_index.md) to propose merging the changes in your branch.
 1. Preview the changes with a [review app](../../../../ci/review_apps/_index.md).
 1. [Request a review](../../merge_requests/reviews/_index.md#request-a-review).
@@ -116,13 +116,57 @@ To create a branch from an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues** and find your issue.
-1. Below the issue description, find the **Create merge request** dropdown list, and select
-   {{< icon name="chevron-down" >}} to display the dropdown list.
-1. Select **Create branch**. A default **Branch name** is provided, based on the
-   [default pattern](#configure-default-pattern-for-branch-names-from-issues) for
-   this project. If desired, enter a different **Branch name**.
-1. Select **Create branch** to create the branch based on your project's
-   [default branch](default.md).
+1. Below the issue description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
+1. Select **Create branch**.
+1. In the dialog, from the **Source (branch or tag)** dropdown list, select a source branch or tag.
+1. Review the suggested branch name. It's based on your project's
+   [default branch name pattern](#configure-default-pattern-for-branch-names-from-issues).
+1. Optional. If you need to use a different branch name, enter it in the **Branch name** text box.
+1. Select **Create branch**.
+
+For information about creating branches in empty repositories,
+see [Empty repository behavior](#empty-repository-behavior).
+
+If the name of the created branch is
+[prefixed with the issue number](#prefix-branch-names-with-a-number), GitLab cross-links
+the issue and related merge request.
+
+### From a task
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To create a branch directly from a task:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. In the issue list, find your task.
+1. Below the task description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
+1. Select **Create branch**.
+1. In the dialog, from the **Source branch or tag** dropdown list, select a source branch or tag.
+1. Review the suggested branch name. It's based on your project's
+   [default branch name pattern](#configure-default-pattern-for-branch-names-from-issues).
+1. Optional. If you need to use a different branch name, enter it in the **Branch name** text box.
+1. Select **Create branch**.
+
+For information about creating branches in empty repositories,
+see [Empty repository behavior](#empty-repository-behavior).
+
+If the name of the created branch is
+[prefixed with the task number](#prefix-branch-names-with-a-number), GitLab cross-links
+the issue and related merge request.
+
+### Empty repository behavior
+
+If your Git repository is empty, GitLab:
+
+- Creates a default branch.
+- Commits a blank `README.md` file to it.
+- Creates and redirects you to a new branch based on the issue title.
+- If your project is [configured with a deployment service](../../integrations/_index.md) like Kubernetes,
+  GitLab prompts you to set up [auto deploy](../../../../topics/autodevops/stages.md#auto-deploy)
+  by helping you create a `.gitlab-ci.yml` file.
 
 ## Name your branch
 
@@ -152,7 +196,7 @@ software packages cannot be guaranteed.
 Branch names with specific formatting offer extra benefits:
 
 - Streamline your merge request workflow by
-  [prefixing branch names with issue numbers](#prefix-branch-names-with-issue-numbers).
+  [prefixing branch names with issue numbers](#prefix-branch-names-with-a-number).
 - Automate [branch protections](protected.md) based on branch name.
 - Test branch names with [push rules](../push_rules.md) before branches are pushed up to GitLab.
 - Define which [CI/CD jobs](../../../../ci/jobs/_index.md) to run on merge requests.
@@ -176,19 +220,18 @@ To change the default pattern for branches created from issues:
    - `%{title}`: The title of the issue, modified to use only characters acceptable in Git branch names.
 1. Select **Save changes**.
 
-### Prefix branch names with issue numbers
+### Prefix branch names with a number
 
 To streamline the creation of merge requests, start your Git branch name with the
-issue number, followed by a hyphen.
-For example, to link a branch to issue `#123`, start the branch name with `123-`.
+issue or task number, followed by a hyphen. For example, to link a branch to issue `#123`,
+start the branch name with `123-`.
 
-The issue and the branch must be in the same project.
+The branch must be in the same project as the issue or task.
 
-GitLab uses the issue number to import data into the merge request:
+GitLab uses this number to import data into the merge request:
 
-- The issue is marked as related to the merge request. The issue and merge request
-  display links to each other.
-- The branch is connected to the issue.
+- The item is marked as related to the merge request, and they display links to each other.
+- The branch is connected to the issue or task.
 - If your project is configured with a
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
   merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)

@@ -48,7 +48,7 @@ to GitLab code using the Web IDE.
 
 1. Select **Commit to new branch** from the **Commit to** dropdown list, and enter `1st-contrib-example`.
 
-   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers).
+   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/_index.md#prefix-branch-names-with-a-number).
 
 1. In the notification that appears in the lower right, select **Create MR**.
 

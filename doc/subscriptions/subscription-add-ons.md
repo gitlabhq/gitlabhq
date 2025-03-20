@@ -35,7 +35,7 @@ To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can c
 
 ## Purchase additional GitLab Duo seats
 
-You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or self-managed instance. After you complete the purchase, the seats are added to the total number of GitLab Duo seats in your subscription.
+You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or GitLab Self-Managed instance. After you complete the purchase, the seats are added to the total number of GitLab Duo seats in your subscription.
 
 Prerequisites:
 

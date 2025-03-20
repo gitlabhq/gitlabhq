@@ -23,6 +23,16 @@ title: Import your project from Bitbucket Server
 
 Import your projects from Bitbucket Server to GitLab.
 
+## Estimating import duration
+
+Every import from Bitbucket Server is different, which affects the duration of imports you perform.
+However, to help estimate the duration of your import, a project comprised of the following data is likely to take 8 hours to import:
+
+- 13,000 pull requests
+- 10,00 branches
+- 7,000 tags
+- 500 GiB repository
+
 ## Prerequisites
 
 {{< history >}}

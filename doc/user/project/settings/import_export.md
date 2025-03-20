@@ -47,7 +47,7 @@ then imported into another GitLab instance.
 ### Preserving user contributions
 
 The requirements for preserving user contribution depends on whether you're migrating to GitLab.com or to a GitLab
-self-managed instance.
+Self-Managed instance.
 
 #### When migrating from GitLab Self-Managed to GitLab.com
 

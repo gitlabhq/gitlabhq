@@ -7,15 +7,6 @@ feature_categories:
 description: Separate table for dependency proxy blob verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101429
 milestone: '15.6'
-gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: dependency_proxy_blob_id
-        table: dependency_proxy_blobs
-        sharding_key: group_id
-        belongs_to: dependency_proxy_blob
-desired_sharding_key_migration_job_name: BackfillDependencyProxyBlobStatesGroupId
+gitlab_schema: gitlab_main_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
 table_size: small

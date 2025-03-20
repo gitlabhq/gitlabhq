@@ -64,7 +64,7 @@ Use `~"Category:API Security"` [label](../../../development/labels/_index.md) wh
 
 When experiencing a behavior not working as expected, consider providing contextual information:
 
-- GitLab version if using a self-managed instance.
+- GitLab version if using a GitLab Self-Managed instance.
 - `.gitlab-ci.yml` job definition.
 - Full job console output.
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.

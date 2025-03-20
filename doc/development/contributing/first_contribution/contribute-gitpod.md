@@ -18,7 +18,7 @@ I want to change `Customize the color of GitLab` to `Customize the color theme o
    Select `master` in the status bar, then from the **Select a branch or tag to checkout** box,
    select **Create new branch** and enter a name for the new branch.
 
-   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers).
+   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/_index.md#prefix-branch-names-with-a-number).
 
    The examples in this doc use a new branch called `ui-updates`.
 

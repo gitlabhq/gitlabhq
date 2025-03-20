@@ -641,7 +641,7 @@ identity provider:
    configurations for information on the terms they use.
 1. Check the [SAML SSO for GitLab Self-Managed documentation](../../../integration/saml.md).
    The GitLab Self-Managed SAML configuration file supports more options
-   than the GitLab.com file. You can find information on the self-managed instance
+   than the GitLab.com file. You can find information on the GitLab Self-Managed instance
    file in the:
    - External [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
    - [`ruby-saml` library](https://github.com/onelogin/ruby-saml).
