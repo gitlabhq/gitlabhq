@@ -994,7 +994,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/workers/elastic_full_index_worker.rb'
     - 'ee/app/workers/elastic_index_bulk_cron_worker.rb'
     - 'ee/app/workers/elastic_index_initial_bulk_cron_worker.rb'
-    - 'ee/app/workers/elastic_indexing_control_worker.rb'
     - 'ee/app/workers/elastic_namespace_indexer_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
     - 'ee/app/workers/elastic_remove_expired_namespace_subscriptions_from_index_cron_worker.rb'

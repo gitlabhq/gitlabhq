@@ -29,8 +29,8 @@ import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql'
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
 import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
-import OverflowMenu from './blob_overflow_menu.vue';
 
 export default {
   i18n: {
@@ -295,7 +295,6 @@ export default {
 
     <overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
-      :user-permissions="userPermissions"
       :project-path="projectPath"
       :is-binary-file-type="isBinaryFileType"
       :override-copy="true"

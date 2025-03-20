@@ -18,6 +18,7 @@ module Gitlab
         BATCH_CLASS_NAME = 'PrimaryKeyBatchingStrategy' # Default batch class for batched migrations
         BATCH_MIN_VALUE = 1 # Default minimum value for batched migrations
         BATCH_MIN_DELAY = 2.minutes.freeze # Minimum delay between batched migrations
+        MIGRATION_NOT_FOUND_MESSAGE = "Could not find batched background migration for the given configuration: %<configuration>s"
 
         ENFORCE_EARLY_FINALIZATION_FROM_VERSION = '20240905124117'
         EARLY_FINALIZATION_ERROR = <<-MESSAGE.squeeze(' ').strip
@@ -228,11 +229,13 @@ module Gitlab
             job_arguments: job_arguments
           }
 
+          migration_not_found_message = format(MIGRATION_NOT_FOUND_MESSAGE, configuration: configuration)
+
           if ENV['DBLAB_ENVIRONMENT'] && migration.nil?
-            raise NonExistentMigrationError, 'called ensure_batched_background_migration_is_finished with non-existent migration name'
+            raise NonExistentMigrationError, migration_not_found_message
           end
 
-          return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
+          return Gitlab::AppLogger.warn migration_not_found_message if migration.nil?
 
           if migration.respond_to?(:queued_migration_version) && !skip_early_finalization_validation
             prevent_early_finalization!(migration.queued_migration_version, version)

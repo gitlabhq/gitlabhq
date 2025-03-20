@@ -36,15 +36,15 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptCiTriggerToken, feature_categ
   it 'ensures all unencrypted tokens are encrypted' do
     expect(without_encryption.encrypted_token).to eq(nil)
     expect(without_encryption_2.encrypted_token).to eq(nil)
-    expect(with_encryption.encrypted_token).not_to be(nil)
+    expect(with_encryption.encrypted_token).not_to be_nil
 
     described_class.new(**migration_attrs).perform
 
     updated_triggers = [without_encryption, without_encryption_2]
     updated_triggers.each do |stale_trigger|
       db_trigger = Ci::Trigger.find(stale_trigger.id)
-      expect(db_trigger.encrypted_token).not_to be(nil)
-      expect(db_trigger.encrypted_token_iv).not_to be(nil)
+      expect(db_trigger.encrypted_token).not_to be_nil
+      expect(db_trigger.encrypted_token_iv).not_to be_nil
       expect(db_trigger.token).to eq(db_trigger.encrypted_token_tmp)
     end
 

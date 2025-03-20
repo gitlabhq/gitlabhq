@@ -150,7 +150,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
         end
 
         it 'does not includes initiate_deployment_gating in the commands' do
-          expect(commands).to be(nil)
+          expect(commands).to be_nil
         end
       end
 
@@ -160,7 +160,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
         end
 
         it 'does not include initiate_deployment_gating in the commands' do
-          expect(commands).to be(nil)
+          expect(commands).to be_nil
         end
       end
 
@@ -170,7 +170,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
         end
 
         it 'does not include initiate_deployment_gating in the commands' do
-          expect(commands).to be(nil)
+          expect(commands).to be_nil
         end
       end
 

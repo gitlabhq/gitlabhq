@@ -20,23 +20,6 @@ module Routing
       end
     end
 
-    def gitlab_dashboard_snippets_path(snippet, *args)
-      if snippet.is_a?(ProjectSnippet)
-        project_snippets_path(snippet.project, *args)
-      else
-        dashboard_snippets_path
-      end
-    end
-
-    def gitlab_raw_snippet_path(snippet, *args)
-      if snippet.is_a?(ProjectSnippet)
-        raw_project_snippet_path(snippet.project, snippet, *args)
-      else
-        new_args = snippet_query_params(snippet, *args)
-        raw_snippet_path(snippet, *new_args)
-      end
-    end
-
     def gitlab_raw_snippet_url(snippet, *args)
       if snippet.is_a?(ProjectSnippet)
         raw_project_snippet_url(snippet.project, snippet, *args)
@@ -60,18 +43,9 @@ module Routing
       end
     end
 
-    def gitlab_raw_snippet_blob_path(snippet, path, ref = nil, **options)
-      gitlab_raw_snippet_blob_url(snippet, path, ref, only_path: true, **options)
-    end
-
     def gitlab_snippet_notes_path(snippet, *args)
       new_args = snippet_query_params(snippet, *args)
       snippet_notes_path(snippet, *new_args)
-    end
-
-    def gitlab_snippet_notes_url(snippet, *args)
-      new_args = snippet_query_params(snippet, *args)
-      snippet_notes_url(snippet, *new_args)
     end
 
     def gitlab_snippet_note_path(snippet, note, *args)
@@ -79,29 +53,9 @@ module Routing
       snippet_note_path(snippet, note, *new_args)
     end
 
-    def gitlab_snippet_note_url(snippet, note, *args)
-      new_args = snippet_query_params(snippet, *args)
-      snippet_note_url(snippet, note, *new_args)
-    end
-
     def gitlab_toggle_award_emoji_snippet_note_path(snippet, note, *args)
       new_args = snippet_query_params(snippet, *args)
       toggle_award_emoji_snippet_note_path(snippet, note, *new_args)
-    end
-
-    def gitlab_toggle_award_emoji_snippet_note_url(snippet, note, *args)
-      new_args = snippet_query_params(snippet, *args)
-      toggle_award_emoji_snippet_note_url(snippet, note, *new_args)
-    end
-
-    def gitlab_toggle_award_emoji_snippet_path(snippet, *args)
-      new_args = snippet_query_params(snippet, *args)
-      toggle_award_emoji_snippet_path(snippet, *new_args)
-    end
-
-    def gitlab_toggle_award_emoji_snippet_url(snippet, *args)
-      new_args = snippet_query_params(snippet, *args)
-      toggle_award_emoji_snippet_url(snippet, *new_args)
     end
 
     def preview_markdown_path(parent, *args)

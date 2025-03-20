@@ -315,7 +315,8 @@ module BlobHelper
       project_path: project.full_path,
       project_short_path: project.path,
       ref_type: @ref_type.to_s,
-      ref: ref
+      ref: ref,
+      root_ref: project.repository.root_ref
     }
   end
 

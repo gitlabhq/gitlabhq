@@ -101,7 +101,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
         let(:request) { double(headers: {}) }
 
         it 'returns nil' do
-          expect(subject).to be(nil)
+          expect(subject).to be_nil
         end
       end
 
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
         let(:request) { double(headers: {}) }
 
         it 'returns nil' do
-          expect(subject).to be(nil)
+          expect(subject).to be_nil
         end
       end
 
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
         let(:request) { double(headers: {}) }
 
         it 'returns nil' do
-          expect(subject).to be(nil)
+          expect(subject).to be_nil
         end
       end
 
@@ -164,7 +164,7 @@ RSpec.describe Gitlab::APIAuthentication::TokenLocator, feature_category: :syste
         let(:request) { double(headers: {}) }
 
         it 'returns nil' do
-          expect(subject).to be(nil)
+          expect(subject).to be_nil
         end
       end
 

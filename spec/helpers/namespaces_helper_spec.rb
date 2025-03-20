@@ -150,19 +150,19 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
       context 'when attribute is nil' do
         let(:attribute) { nil }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
       end
 
       context 'when project is nil' do
         let(:project) { nil }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
       end
 
       context 'when settings_path_helper is nil' do
         let(:settings_path_helper) { nil }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
       end
 
       where(:locked_by_ancestor, :locked_by_application_setting, :locked_by_project, :expected_result) do

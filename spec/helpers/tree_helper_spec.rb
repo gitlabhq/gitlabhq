@@ -117,6 +117,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         project_id: project.id,
         ref: sha,
         ref_type: '',
+        root_ref: repository.root_ref,
         breadcrumbs: helper.breadcrumb_data_attributes,
         project_root_path: project_path(project),
         project_path: project.full_path,
@@ -166,7 +167,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       let(:pipeline) { nil }
 
       it 'does not include download_artifacts' do
-        expect(subject[:download_artifacts]).to be nil
+        expect(subject[:download_artifacts]).to be_nil
       end
     end
   end
@@ -424,7 +425,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       let(:user) { nil }
 
       it 'returns nil' do
-        expect(subject).to be nil
+        expect(subject).to be_nil
       end
     end
   end

@@ -13,10 +13,10 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 const DEFAULT_PROPS = {
-  projectPath: 'some/project/path',
   isUsingLfs: true,
   userPermissions: { pushCode: true, createMergeRequestIn: true, forkProject: true },
   currentRef: refMock,
+  isReplaceDisabled: false,
 };
 
 const DEFAULT_INJECT = {
@@ -66,11 +66,9 @@ describe('BlobButtonGroup component', () => {
   it('renders component', () => {
     expect(wrapper.props()).toMatchObject({
       isUsingLfs: true,
-      projectPath: 'some/project/path',
       userPermissions: { pushCode: true, createMergeRequestIn: true, forkProject: true },
       currentRef: 'default-ref',
-      isLoading: false,
-      pathLocks: { nodes: [] },
+      isReplaceDisabled: false,
     });
   });
 
@@ -118,6 +116,12 @@ describe('BlobButtonGroup component', () => {
   it('renders ForkSuggestionModal', () => {
     expect(findForkSuggestionModal().props()).toMatchObject({
       forkPath: 'fork/view/path',
+    });
+  });
+
+  it('should not disable replace button', () => {
+    expect(findReplaceItem().props('item')).toMatchObject({
+      extraAttrs: { disabled: false },
     });
   });
 

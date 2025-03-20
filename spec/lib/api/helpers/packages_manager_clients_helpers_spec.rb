@@ -29,7 +29,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
         env.merge!(build_auth_headers('Invalid'))
       end
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
       context 'with an unknown password' do
         let(:password) { 'Unknown' }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
       end
 
       it { is_expected.to eq expected_result }

@@ -899,6 +899,8 @@
   - 1
 - - security_scan_result_policies_add_approvers_to_rules
   - 1
+- - security_scan_result_policies_cleanup_merge_request_violations
+  - 1
 - - security_scan_result_policies_delete_scan_result_policy_reads
   - 1
 - - security_scan_result_policies_fallback_behavior_tracking

@@ -57,7 +57,7 @@ export default {
       { key: 'storage', label: __('Total'), sortable: this.sortableFields.storage },
       { key: 'repository', label: __('Repository') },
       { key: 'snippets', label: __('Snippets') },
-      { key: 'buildArtifacts', label: __('Jobs') },
+      { key: 'buildArtifacts', label: __('Job artifacts') },
       { key: 'lfsObjects', label: __('LFS') },
       { key: 'packages', label: __('Packages') },
       { key: 'wiki', label: __('Wiki') },

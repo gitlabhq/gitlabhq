@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       let(:undefined_audit_event_type) { 'undefined_audit_event_type' }
 
       it 'returns nil' do
-        expect(described_class.get(undefined_audit_event_type)).to be nil
+        expect(described_class.get(undefined_audit_event_type)).to be_nil
       end
     end
 

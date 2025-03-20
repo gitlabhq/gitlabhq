@@ -67,7 +67,7 @@ export default {
 </script>
 
 <template>
-  <runner-delete-action class="btn-group" :runner="runner" @done="onDone">
+  <runner-delete-action class="btn-group !gl-ml-0" :runner="runner" @done="onDone">
     <template #default="{ loading, onClick }">
       <gl-button
         v-gl-tooltip="loading ? '' : tooltip"

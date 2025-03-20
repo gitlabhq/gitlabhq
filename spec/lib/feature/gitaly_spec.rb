@@ -257,13 +257,13 @@ RSpec.describe Feature::Gitaly do
 
     context 'when called without user and user_id is absent from application context' do
       it 'returns nil' do
-        expect(described_class.user_actor).to be(nil)
+        expect(described_class.user_actor).to be_nil
       end
     end
 
     context 'when something else is passed' do
       it 'returns nil' do
-        expect(described_class.user_actor(1234)).to be(nil)
+        expect(described_class.user_actor(1234)).to be_nil
       end
     end
   end
@@ -279,7 +279,7 @@ RSpec.describe Feature::Gitaly do
 
     context 'when something else is passed in' do
       it 'returns nil' do
-        expect(described_class.project_actor(1234)).to be(nil)
+        expect(described_class.project_actor(1234)).to be_nil
       end
     end
   end
@@ -296,7 +296,7 @@ RSpec.describe Feature::Gitaly do
 
     context 'when something else is passed in' do
       it 'returns nil' do
-        expect(described_class.group_actor(1234)).to be(nil)
+        expect(described_class.group_actor(1234)).to be_nil
       end
     end
   end

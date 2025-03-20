@@ -54,6 +54,7 @@ export const userPermissionsMock = {
   forkProject: true,
   downloadCode: true,
   createMergeRequestIn: true,
+  adminPathLocks: true,
   __typename: 'ProjectPermissions',
 };
 
@@ -61,22 +62,6 @@ export const projectMock = {
   __typename: 'Project',
   id: 'gid://gitlab/Project/7',
   userPermissions: userPermissionsMock,
-  pathLocks: {
-    __typename: 'PathLockConnection',
-    nodes: [
-      {
-        __typename: 'PathLock',
-        id: 'gid://gitlab/PathLock/2',
-        path: 'locked_file.js',
-        user: {
-          id: 'gid://gitlab/User/1',
-          username: 'root',
-          name: 'Administrator',
-          __typename: 'UserCore',
-        },
-      },
-    ],
-  },
   repository: {
     empty: false,
   },
@@ -282,6 +267,7 @@ export const headerAppInjected = {
     'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
   ],
   isBinary: false,
+  rootRef: 'main',
 };
 
 export const FILE_SIZE_3MB = 3000000;

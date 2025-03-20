@@ -10,7 +10,7 @@ import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.g
 import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import BlobDefaultActionsGroup from '~/repository/components/header_area/blob_default_actions_group.vue';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
-import BlobButtonGroup from '~/repository/components/header_area/blob_button_group.vue';
+import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_button_group.vue';
 import BlobDeleteFileGroup from '~/repository/components/header_area/blob_delete_file_group.vue';
 import createRouter from '~/repository/router';
 import { projectMock, blobControlsDataMock, refMock } from 'ee_else_ce_jest/repository/mock_data';
@@ -38,7 +38,7 @@ describe('Blob Overflow Menu', () => {
   const createComponent = async ({
     propsData = {},
     projectInfoResolver = projectInfoQuerySuccessResolver,
-    provided = {},
+    provide = {},
   } = {}) => {
     fakeApollo = createMockApollo([[projectInfoQuery, projectInfoResolver]]);
 
@@ -48,7 +48,8 @@ describe('Blob Overflow Menu', () => {
       provide: {
         blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
         currentRef: refMock,
-        ...provided,
+        rootRef: 'main',
+        ...provide,
       },
       propsData: {
         projectPath,
@@ -127,7 +128,7 @@ describe('Blob Overflow Menu', () => {
 
     it('does not render when blob is archived', () => {
       createComponent({
-        provided: {
+        provide: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
             archived: true,
@@ -153,7 +154,7 @@ describe('Blob Overflow Menu', () => {
 
     it('does not render when blob is archived', () => {
       createComponent({
-        provided: {
+        provide: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
             archived: true,

@@ -1,7 +1,12 @@
-query getPipelineAnalytics($fullPath: ID!, $fromTime: Time!, $toTime: Time!) {
+query getPipelineAnalytics(
+  $fullPath: ID!
+  $fromTime: Time!
+  $toTime: Time!
+  $source: CiPipelineCiSources
+) {
   project(fullPath: $fullPath) {
     id
-    pipelineAnalytics(fromTime: $fromTime, toTime: $toTime) {
+    pipelineAnalytics(fromTime: $fromTime, toTime: $toTime, source: $source) {
       aggregate {
         count
         successCount: count(status: SUCCESS)

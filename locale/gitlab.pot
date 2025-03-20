@@ -42767,6 +42767,9 @@ msgstr ""
 msgid "PipelineCharts|Pipelines"
 msgstr ""
 
+msgid "PipelineCharts|Source"
+msgstr ""
+
 msgid "PipelineCharts|Success rate"
 msgstr ""
 
@@ -43061,6 +43064,9 @@ msgstr ""
 msgid "PipelineSource|API"
 msgstr ""
 
+msgid "PipelineSource|Any"
+msgstr ""
+
 msgid "PipelineSource|Chat"
 msgstr ""
 
@@ -43070,7 +43076,13 @@ msgstr ""
 msgid "PipelineSource|External Pull Request"
 msgstr ""
 
+msgid "PipelineSource|External event"
+msgstr ""
+
 msgid "PipelineSource|Merge Request"
+msgstr ""
+
+msgid "PipelineSource|Merge request"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -43092,6 +43104,9 @@ msgid "PipelineSource|Schedule"
 msgstr ""
 
 msgid "PipelineSource|Trigger"
+msgstr ""
+
+msgid "PipelineSource|Unknown"
 msgstr ""
 
 msgid "PipelineSource|Web"
@@ -54025,6 +54040,9 @@ msgstr ""
 msgid "SecurityReports|Cluster"
 msgstr ""
 
+msgid "SecurityReports|Coming soon: retention policies"
+msgstr ""
+
 msgid "SecurityReports|Comment (required)"
 msgstr ""
 
@@ -54307,6 +54325,9 @@ msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity.
 msgstr ""
 
 msgid "SecurityReports|Sorry, your filter produced no results"
+msgstr ""
+
+msgid "SecurityReports|Starting 2025-05-15, vulnerabilities that have not been updated in the last 12 months will automatically move the vulnerability archive for 3 years before deletion. To access the archive, on the left sidebar, select Secure &gt; Security Configuration &gt; Vulnerability Management."
 msgstr ""
 
 msgid "SecurityReports|Status"

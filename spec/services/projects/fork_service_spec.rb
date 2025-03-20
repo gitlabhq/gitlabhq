@@ -68,6 +68,19 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         expect(fork_of_project.squash_commit_template).to eq(project.squash_commit_template)
       end
 
+      context 'when source project repository storage is disabled' do
+        before do
+          stub_application_setting(pick_repository_storage: 'storage_1')
+        end
+
+        it 'uses source project repository storage for the fork' do
+          is_expected.to be_success
+
+          expect(fork_of_project.repository_storage).to eq('default')
+          expect(project.repository_storage).to eq('default')
+        end
+      end
+
       # This test is here because we had a bug where the from-project lost its
       # avatar after being forked.
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/26158

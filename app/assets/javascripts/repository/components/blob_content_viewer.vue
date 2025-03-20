@@ -14,7 +14,7 @@ import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
-import projectInfoQuery from '../queries/project_info.query.graphql';
+import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import {

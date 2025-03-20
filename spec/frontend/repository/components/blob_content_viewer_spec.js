@@ -21,7 +21,7 @@ import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vu
 import TooLargeViewer from '~/repository/components/blob_viewers/too_large_viewer.vue';
 import LfsViewer from '~/repository/components/blob_viewers/lfs_viewer.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
-import projectInfoQuery from '~/repository/queries/project_info.query.graphql';
+import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import getRefMixin from '~/repository/mixins/get_ref';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -36,12 +36,12 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import {
   simpleViewerMock,
   richViewerMock,
-  projectMock,
   userPermissionsMock,
   propsMock,
   axiosMockResponse,
   FILE_SIZE_3MB,
-} from '../mock_data';
+  projectMock,
+} from 'ee_else_ce_jest/repository/mock_data';
 
 jest.mock('~/repository/components/blob_viewers');
 jest.mock('~/lib/utils/url_utility');

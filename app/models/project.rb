@@ -2956,7 +2956,6 @@ class Project < ApplicationRecord
     return {} unless !forked? && git_objects_poolable?
 
     {
-      repository_storage: repository_storage,
       pool_repository: pool_repository || create_new_pool_repository
     }
   end

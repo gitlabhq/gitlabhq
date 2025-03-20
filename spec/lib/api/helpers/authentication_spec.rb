@@ -99,7 +99,7 @@ RSpec.describe API::Helpers::Authentication do
 
       shared_examples 'an anonymous request' do
         it 'returns nil' do
-          expect(subject).to be(nil)
+          expect(subject).to be_nil
         end
       end
 
@@ -173,7 +173,7 @@ RSpec.describe API::Helpers::Authentication do
       it 'returns nil if #token_from_namespace_inheritable is not a personal access token' do
         token = double
         expect(object).to receive(:token_from_namespace_inheritable).and_return(token)
-        expect(subject).to be(nil)
+        expect(subject).to be_nil
       end
     end
 

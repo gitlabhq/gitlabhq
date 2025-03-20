@@ -60,7 +60,7 @@
     "@gitlab/application-sdk-browser": "^0.3.4",
     "@gitlab/at.js": "1.5.7",
     "@gitlab/cluster-client": "^2.5.0",
-    "@gitlab/duo-ui": "^8.7.3",
+    "@gitlab/duo-ui": "^8.7.4",
     "@gitlab/favicon-overlay": "2.0.0",
     "@gitlab/fonts": "^1.3.0",
     "@gitlab/query-language-rust": "0.5.0",

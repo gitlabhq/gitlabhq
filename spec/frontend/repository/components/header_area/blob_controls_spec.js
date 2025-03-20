@@ -10,12 +10,12 @@ import { resetShortcutsForTests } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
+import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
-import OverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import { blobControlsDataMock, refMock, currentUserDataMock } from '../../mock_data';
 
@@ -278,17 +278,13 @@ describe('Blob controls component', () => {
           overrideCopy: true,
           isEmptyRepository: false,
           isUsingLfs: false,
-          userPermissions: {
-            __typename: 'ProjectPermissions',
-            createMergeRequestIn: true,
-            downloadCode: true,
-            forkProject: true,
-            pushCode: true,
-          },
+          eeCanLock: undefined,
+          eeCanModifyFile: undefined,
+          eeIsLocked: undefined,
         });
       });
 
-      it('passes the correct isBinaryFileType value to BlobOverflow when viewing a binary file', async () => {
+      it('passes the correct isBinary value to BlobOverflow when viewing a binary file', async () => {
         await createComponent({
           props: {
             isBinary: true,

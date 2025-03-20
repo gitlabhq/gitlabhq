@@ -275,7 +275,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/elastic_cluster_reindexing_cron_worker.rb'
     - 'ee/app/workers/elastic_delete_project_worker.rb'
     - 'ee/app/workers/elastic_full_index_worker.rb'
-    - 'ee/app/workers/elastic_indexing_control_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
     - 'ee/app/workers/elastic_remove_expired_namespace_subscriptions_from_index_cron_worker.rb'
     - 'ee/app/workers/epics/new_epic_issue_worker.rb'

@@ -44,6 +44,11 @@ export default {
       type: Object,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -56,6 +61,7 @@ export default {
         text: __('Delete'),
         extraAttrs: {
           'data-testid': 'delete',
+          disabled: this.disabled,
         },
       };
     },
@@ -71,6 +77,10 @@ export default {
   },
   methods: {
     showModal() {
+      if (this.disabled) {
+        return;
+      }
+
       if (this.shouldShowForkSuggestion) {
         this.isModalVisible = true;
         return;

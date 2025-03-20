@@ -852,6 +852,16 @@ Properties of customer critical merge requests:
 - On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://handbook.gitlab.com/handbook/company/culture/all-remote/asynchronous/#evaluating-efficiency).
 - After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.
 
+## Troubleshooting failing pipelines
+
+There are some cases where pipelines fail for reasons unrelated to the code changes that have been made. Some of these cases are listed here with a potential solution.
+
+Always remember that you don't need to have a passing pipeline in order to ask for a review, or help.
+If your pipeline is not passing and you have no idea why, feel free to reach out to the team, ask for help from MR coaches by leaving a comment on the MR with `@gitlab-bot help` as text, or reach out to the [Community Discord](https://discord.gg/gitlab) in the `contribute` channel.
+
+- **Tests failed for reasons that seem unrelated to the changes**: check if it also happens on the default branch. If that's the case you're facing a "broken master" and need to wait for the failure to be fixed on the default branch. After that, you can either rebase your branch, or simply run another pipeline if [merged results pipelines](../ci/pipelines/merged_results_pipelines.md) are enabled.
+- **The `danger-review` job failed**: check if your MR has more that 20 commits. If that's the case, rebase and squash them to have less commits, otherwise try to run the `danger-review` job again, it might just have been a temporary failure.
+
 ## Examples
 
 How code reviews are conducted can surprise new contributors. Here are some examples of code reviews that should help to orient you as to what to expect.

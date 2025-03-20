@@ -87,6 +87,7 @@ export default {
     'downloadLinks',
     'downloadArtifacts',
     'isBinary',
+    'rootRef',
   ],
   provide() {
     return {

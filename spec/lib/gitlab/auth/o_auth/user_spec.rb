@@ -1197,10 +1197,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
     end
 
     context "update no info when profile sync is nil" do
-      it "does not have sync_attribute" do
-        expect(gl_user.user_synced_attributes_metadata).to be(nil)
-      end
-
       it "does not update the user email" do
         expect(gl_user.email).not_to eq(info_hash[:email])
       end

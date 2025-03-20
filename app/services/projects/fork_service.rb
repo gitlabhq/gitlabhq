@@ -90,7 +90,8 @@ module Projects
         suggestion_commit_message: @project.suggestion_commit_message,
         merge_commit_template: @project.merge_commit_template,
         squash_commit_template: @project.squash_commit_template,
-        import_data: { data: { fork_branch: branch } }
+        import_data: { data: { fork_branch: branch } },
+        repository_storage: @project.repository_storage
       }
 
       if @project.avatar.present? && @project.avatar.image?

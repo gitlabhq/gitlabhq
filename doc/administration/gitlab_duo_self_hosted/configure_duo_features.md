@@ -93,7 +93,7 @@ To enable self-hosted [beta](../../policy/development_stages_support.md#beta) mo
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. In the **GitLab Duo** section, select **Change configuration**.
-1. Under **Self-hosted AI models**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
+1. Under **Self-hosted beta models and features**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}
@@ -102,7 +102,7 @@ Turning on beta self-hosted models and features also accepts the [GitLab Testing
 
 {{< /alert >}}
 
-For more information, see the [list of available beta models](supported_models_and_hardware_requirements.md) under evaluation.
+For more information, see the [list of available beta models](supported_models_and_hardware_requirements.md#experimental-and-beta-models) under evaluation.
 
 ## Configure GitLab Duo features to use self-hosted models
 
@@ -134,8 +134,26 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 
    For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **claude sonnet on bedrock (Claude 3)**.
 
-   ![GitLab Duo Self-Hosted Feature Configuration](../img/gitlab_duo_self_hosted_feature_configuration_v17_10.png)
+   ![GitLab Duo Self-Hosted Feature Configuration](../img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
 #### GitLab Duo Chat sub-feature fall back configuration
 
 When configuring GitLab Duo Chat sub-features, if you do not select a specific self-hosted model for a sub-feature, that sub-feature automatically falls back to using the self-hosted model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own self-hosted model.
+
+### Disabling GitLab Duo features
+
+To disable a feature, you must explicitly select **Disabled** when configuring a feature or sub-feature.
+
+- Not choosing a model for a sub-feature is insufficient. 
+- For Chat sub-features, not selecting a model causes that sub-feature to [fall back to using the model configured for **General Chat**](#gitlab-duo-chat-sub-feature-fall-back-configuration).
+
+To disable a GitLab Duo feature or sub-feature:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo Self-Hosted**.
+1. Select the **AI-powered features** tab.
+1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
+
+   For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:
+
+   ![Disabling GitLab Duo Feature](../img/gitlab_duo_self_hosted_disable_feature_v17_11.png)

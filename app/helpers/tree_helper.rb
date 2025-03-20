@@ -160,6 +160,7 @@ module TreeHelper
       project_id: project.id,
       ref: ref,
       ref_type: @ref_type.to_s,
+      root_ref: repository.root_ref,
       breadcrumbs: breadcrumb_data_attributes,
       project_root_path: project_path(project),
       project_path: project.full_path,

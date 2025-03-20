@@ -639,14 +639,16 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
       end
 
       context 'when DBLAB_ENVIRONMENT is set' do
-        it 'raises an error' do
+        it 'raises an error that the migration with current configuration does not exist' do
           stub_env(lab_key, 'foo')
           expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
 
           create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
 
+          error_message = format(described_class::MIGRATION_NOT_FOUND_MESSAGE, configuration: configuration)
+
           expect { ensure_batched_background_migration_is_finished }
-            .to raise_error(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::NonExistentMigrationError)
+            .to raise_error(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::NonExistentMigrationError, error_message)
         end
       end
     end

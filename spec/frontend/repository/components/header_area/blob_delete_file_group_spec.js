@@ -129,5 +129,9 @@ describe('BlobDeleteFileGroup component', () => {
       emptyRepo: false,
       isUsingLfs: true,
     });
+
+    expect(findDeleteItem().props('item')).toMatchObject({
+      extraAttrs: { disabled: false },
+    });
   });
 });

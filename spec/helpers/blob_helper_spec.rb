@@ -582,7 +582,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   describe '#vue_blob_header_app_data' do
     let_it_be(:project) { create(:project) }
     let_it_be(:blob) { fake_blob(path: 'README.md') }
-    let(:ref) { 'main' }
+    let(:ref) { 'feature' }
     let(:ref_type) { :branch }
     let(:breadcrumb_data) { { title: 'README.md', 'is-last': true } }
 
@@ -605,7 +605,8 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         project_path: project.full_path,
         project_short_path: project.path,
         ref_type: ref_type.to_s,
-        ref: ref
+        ref: ref,
+        root_ref: project.repository.root_ref
       })
     end
   end

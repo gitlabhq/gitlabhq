@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Ci::Config::FeatureFlags, feature_category: :pipeline_com
         expect(Thread.current[described_class::ACTOR_KEY]).to eq(actor)
       end
 
-      expect(Thread.current[described_class::ACTOR_KEY]).to be nil
+      expect(Thread.current[described_class::ACTOR_KEY]).to be_nil
     end
   end
 

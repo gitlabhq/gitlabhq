@@ -1,5 +1,5 @@
 import { __ } from '~/locale';
-import ImportUsageApp from './components/import_usage_app.vue';
+import { createAsyncTabContentWrapper } from '../components/async_tab_content_wrapper';
 
 export const getImportTabMetadata = () => {
   const el = document.querySelector('#js-import-usage-app');
@@ -11,6 +11,13 @@ export const getImportTabMetadata = () => {
   const provide = {
     placeholderUsersCount: parseInt(placeholderUsersCount, 10),
     placeholderUsersLimit: parseInt(placeholderUsersLimit, 10),
+  };
+
+  const ImportUsageApp = () => {
+    const component = import(
+      /* webpackChunkName: 'uq_import' */ './components/import_usage_app.vue'
+    );
+    return createAsyncTabContentWrapper(component);
   };
 
   return {
