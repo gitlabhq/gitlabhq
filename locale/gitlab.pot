@@ -12937,7 +12937,7 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
-msgid "Clone this issue"
+msgid "Clone this item"
 msgstr ""
 
 msgid "Clone with %{protocol}"
@@ -12970,10 +12970,10 @@ msgstr ""
 msgid "CloneWorkItem|Unable to clone. You have insufficient permissions."
 msgstr ""
 
-msgid "Cloned this issue to %{path_to_project}."
+msgid "Cloned this item to %{path_to_group_or_project}."
 msgstr ""
 
-msgid "Clones this issue, without comments, to %{project}."
+msgid "Clones this item, without comments, to %{group_or_project}."
 msgstr ""
 
 msgid "Close"
@@ -24790,10 +24790,7 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
-msgid "Failed to clone this issue because target project doesn't exist."
-msgstr ""
-
-msgid "Failed to clone this issue: wrong parameters."
+msgid "Failed to clone this item: wrong parameters."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
@@ -24968,9 +24965,6 @@ msgid "Failed to move this issue because label was not found."
 msgstr ""
 
 msgid "Failed to move this issue because only a single label can be provided."
-msgstr ""
-
-msgid "Failed to move this issue because target project doesn't exist."
 msgstr ""
 
 msgid "Failed to promote label due to internal error. Please contact administrators."
@@ -33559,6 +33553,9 @@ msgstr ""
 msgid "Job|Run again"
 msgstr ""
 
+msgid "Job|Run this job again"
+msgstr ""
+
 msgid "Job|Runner type"
 msgstr ""
 
@@ -37873,7 +37870,7 @@ msgstr ""
 msgid "Move test case"
 msgstr ""
 
-msgid "Move this issue to another project"
+msgid "Move this item to another group or project"
 msgstr ""
 
 msgid "Move up"
@@ -37903,13 +37900,13 @@ msgstr ""
 msgid "Moved issue to %{label} column in the board."
 msgstr ""
 
-msgid "Moved this issue to %{path_to_project}."
+msgid "Moved this item to %{path_to_container}."
 msgstr ""
 
 msgid "Moves issue to %{label} column in the board."
 msgstr ""
 
-msgid "Moves this issue to %{path_to_project}."
+msgid "Moves this item to %{group_or_project}."
 msgstr ""
 
 msgid "Moving issue"
@@ -49949,9 +49946,6 @@ msgstr ""
 msgid "Run tests against your code live using the Web Terminal"
 msgstr ""
 
-msgid "Run this job again"
-msgstr ""
-
 msgid "Run this job again in order to create the necessary resources."
 msgstr ""
 
@@ -51973,9 +51967,6 @@ msgstr ""
 msgid "Search (3 character minimum)"
 msgstr ""
 
-msgid "Search Within"
-msgstr ""
-
 msgid "Search a group"
 msgstr ""
 
@@ -52103,6 +52094,9 @@ msgid "Search to add %{title}"
 msgstr ""
 
 msgid "Search users"
+msgstr ""
+
+msgid "Search within"
 msgstr ""
 
 msgid "Search your projects"
@@ -62389,6 +62383,12 @@ msgstr ""
 msgid "Unable to build Slack link."
 msgstr ""
 
+msgid "Unable to clone. Insufficient permissions."
+msgstr ""
+
+msgid "Unable to clone. Target project or group doesn't exist or doesn't support this item type."
+msgstr ""
+
 msgid "Unable to collect CPU information"
 msgstr ""
 
@@ -62456,6 +62456,12 @@ msgid "Unable to load the merge request widget. Try reloading the page."
 msgstr ""
 
 msgid "Unable to load user list. Reload the page and try again."
+msgstr ""
+
+msgid "Unable to move. Insufficient permissions."
+msgstr ""
+
+msgid "Unable to move. Target project or group doesn't exist or doesn't support this item type."
 msgstr ""
 
 msgid "Unable to parse JSON"

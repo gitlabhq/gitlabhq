@@ -6,18 +6,15 @@ RSpec.describe Import::SourceUsersFinder, feature_category: :importers do
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:source_user_1) do
-    create(:import_source_user, :pending_reassignment, namespace: group, source_name: 'b',
-      created_at: '2025-01-08T23:07:13.000Z')
+    create(:import_source_user, :pending_reassignment, namespace: group, source_name: 'b')
   end
 
   let_it_be(:source_user_2) do
-    create(:import_source_user, :awaiting_approval, namespace: group, source_name: 'c',
-      created_at: '2024-03-08T23:07:13.000Z')
+    create(:import_source_user, :awaiting_approval, namespace: group, source_name: 'c')
   end
 
   let_it_be(:source_user_3) do
-    create(:import_source_user, :reassignment_in_progress, namespace: group, source_name: 'a',
-      created_at: '2025-01-30T04:07:13.000Z')
+    create(:import_source_user, :reassignment_in_progress, namespace: group, source_name: 'a')
   end
 
   let_it_be(:import_source_users) { [source_user_1, source_user_2, source_user_3] }

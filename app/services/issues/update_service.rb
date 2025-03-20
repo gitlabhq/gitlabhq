@@ -14,7 +14,7 @@ module Issues
       handle_move_between_ids(issue)
 
       change_issue_duplicate(issue)
-      move_issue_to_new_project(issue) || clone_issue(issue) || update_task_event(issue) || update(issue)
+      move_issue_to_new_container(issue) || clone_issue(issue) || update_task_event(issue) || update(issue)
     end
 
     def update(issue)
@@ -94,23 +94,24 @@ module Issues
       end
     end
 
-    def move_issue_to_new_project(issue)
-      target_project = params.delete(:target_project)
+    def move_issue_to_new_container(issue)
+      target_container = params.delete(:target_container)
 
-      return unless target_project &&
-        issue.can_move?(current_user, target_project) &&
-        target_project != issue.project
+      return unless target_container &&
+        issue.can_move?(current_user, target_container) &&
+        !move_to_same_container?(issue, target_container)
 
       update(issue)
 
-      if Feature.enabled?(:work_item_move_and_clone, project)
+      if Feature.enabled?(:work_item_move_and_clone, container)
+        move_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
         ::WorkItems::DataSync::MoveService.new(
-          work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace
+          work_item: issue, current_user: current_user, target_namespace: move_service_container
         ).execute[:work_item]
       else
         ::Issues::MoveService.new(
           container: project, current_user: current_user
-        ).execute(issue, target_project)
+        ).execute(issue, target_container)
       end
     end
 
@@ -147,23 +148,24 @@ module Issues
     end
 
     def clone_issue(issue)
-      target_project = params.delete(:target_clone_project)
+      target_container = params.delete(:target_clone_container)
       with_notes = params.delete(:clone_with_notes)
 
-      return unless target_project &&
-        issue.can_clone?(current_user, target_project)
+      return unless target_container &&
+        issue.can_clone?(current_user, target_container)
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
 
-      if Feature.enabled?(:work_item_move_and_clone, project)
+      if Feature.enabled?(:work_item_move_and_clone, container)
+        clone_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
         ::WorkItems::DataSync::CloneService.new(
-          work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace,
+          work_item: issue, current_user: current_user, target_namespace: clone_service_container,
           params: { clone_with_notes: with_notes }
         ).execute[:work_item]
-      else
+      elsif target_container.is_a?(Project)
         Issues::CloneService.new(container: project, current_user: current_user).execute(
-          issue, target_project, with_notes: with_notes
+          issue, target_container, with_notes: with_notes
         )
       end
     end
@@ -221,6 +223,14 @@ module Issues
       SystemNoteService.change_issue_type(issue, current_user, old_work_item_type)
 
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
+    end
+
+    def move_to_same_container?(issue, target_container)
+      target_container_identifier = target_container.id
+
+      target_container_identifier = target_container.project_namespace_id if target_container.is_a?(Project)
+
+      issue.namespace_id == target_container_identifier
     end
 
     override :allowed_update_params

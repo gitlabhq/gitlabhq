@@ -318,7 +318,7 @@ module SystemNotes
         raise ArgumentError, "Invalid direction `#{direction}`"
       end
 
-      cross_reference = noteable_ref.to_reference(project)
+      cross_reference = noteable_ref.to_reference(container)
       body = "moved #{direction} #{cross_reference}"
 
       track_issue_event(:track_issue_moved_action)
@@ -342,7 +342,7 @@ module SystemNotes
         raise ArgumentError, "Invalid direction `#{direction}`"
       end
 
-      cross_reference = noteable_ref.to_reference(project)
+      cross_reference = noteable_ref.to_reference(container)
       body = "cloned #{direction} #{cross_reference}"
 
       track_issue_event(:track_issue_cloned_action) if direction == :to

@@ -169,6 +169,20 @@ method as the default:
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
 
+## Pay for an invoice
+
+You can pay for your invoices in the Customers Portal with a credit card.
+
+To pay for an invoice:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Invoices**.
+1. On the invoice you want to pay for, select **Pay for invoice**.
+1. Complete the payment form.
+
+If you would like to use an alternative payment method,
+[contact our Billing team](https://customers.gitlab.com/contact_us#contact-billing-team).
+
 ## Link a GitLab.com account
 
 Follow this guideline if you have a legacy Customers Portal profile to sign in.

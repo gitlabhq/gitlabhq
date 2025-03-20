@@ -8,7 +8,7 @@ RSpec.shared_examples 'clone quick action' do
       it 'clones the issue in the current project' do
         add_note("/clone")
 
-        expect(page).to have_content "Cloned this issue to #{project.full_path}."
+        expect(page).to have_content "Cloned this item to #{project.full_path}."
         expect(issue.reload).to be_open
 
         visit project_issue_path(project, issue)
@@ -25,7 +25,7 @@ RSpec.shared_examples 'clone quick action' do
       it 'clones the issue' do
         add_note("/clone #{target_project.full_path}")
 
-        expect(page).to have_content "Cloned this issue to #{target_project.full_path}."
+        expect(page).to have_content "Cloned this item to #{target_project.full_path}."
         expect(issue.reload).to be_open
 
         visit project_issue_path(target_project, issue)
@@ -40,7 +40,7 @@ RSpec.shared_examples 'clone quick action' do
 
           add_note("/clone --with_notes #{target_project.full_path}")
 
-          expect(page).to have_content "Cloned this issue to #{target_project.full_path}."
+          expect(page).to have_content "Cloned this item to #{target_project.full_path}."
           expect(issue.reload).to be_open
 
           visit project_issue_path(target_project, issue)
@@ -54,7 +54,7 @@ RSpec.shared_examples 'clone quick action' do
           # Note that this is missing one `-`
           add_note("/clone -with_notes #{target_project.full_path}")
 
-          expect(page).to have_content 'Failed to clone this issue: wrong parameters.'
+          expect(page).to have_content 'Failed to clone this item: wrong parameters.'
           expect(issue.reload).to be_open
         end
       end
@@ -66,7 +66,7 @@ RSpec.shared_examples 'clone quick action' do
       it 'does not clone the issue' do
         add_note("/clone #{project_unauthorized.full_path}")
 
-        expect(page).to have_content "Cloned this issue to #{project_unauthorized.full_path}."
+        expect(page).to have_content "Unable to clone. Insufficient permissions."
         expect(issue.reload).to be_open
 
         visit project_issue_path(target_project, issue)
@@ -79,7 +79,7 @@ RSpec.shared_examples 'clone quick action' do
       it 'does not clone the issue' do
         add_note("/clone not/valid")
 
-        expect(page).to have_content "Failed to clone this issue because target project doesn't exist."
+        expect(page).to have_content "Unable to clone. Target project or group doesn't exist or doesn't support this item type."
         expect(issue.reload).to be_open
       end
     end
@@ -100,7 +100,7 @@ RSpec.shared_examples 'clone quick action' do
 
       shared_examples 'applies the commands to issues in both projects, target and source' do
         it "applies quick actions" do
-          expect(page).to have_content "Cloned this issue to #{target_project.full_path}."
+          expect(page).to have_content "Cloned this item to #{target_project.full_path}."
           expect(issue.reload).to be_open
 
           visit project_issue_path(target_project, issue)

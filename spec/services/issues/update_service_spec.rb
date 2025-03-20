@@ -1428,7 +1428,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       end
     end
 
-    context 'move issue to another project' do
+    context 'move issue to another project or group' do
       shared_examples 'move issue to another project' do
         let_it_be(:target_project) { create(:project) }
 
@@ -1442,7 +1442,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
               expect(service).to receive(:execute).and_call_original
             end
 
-            new_issue = update_issue(target_project: target_project)
+            new_issue = update_issue(target_container: target_project)
 
             expect(new_issue.project).to eq(target_project)
             expect(new_issue.title).to eq(issue.title)
@@ -1469,6 +1469,19 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           end
         end
       end
+
+      context 'when target container is a group' do
+        context 'without access to the group' do
+          let_it_be(:target_container) { create(:group) }
+
+          it 'does not call any clone service' do
+            expect(WorkItems::DataSync::MoveService).not_to receive(:new)
+            expect(Issues::MoveService).not_to receive(:new)
+
+            update_issue(target_container: target_container)
+          end
+        end
+      end
     end
 
     context 'clone an issue' do
@@ -1485,7 +1498,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
               expect(service).to receive(:execute).and_call_original
             end
 
-            new_issue = update_issue(target_clone_project: target_project)
+            new_issue = update_issue(target_clone_container: target_project)
 
             expect(new_issue.project).to eq(target_project)
             expect(new_issue.title).to eq(issue.title)
@@ -1497,7 +1510,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
                 expect(service).to receive(:execute).and_call_original
               end
 
-              new_issue = update_issue(target_clone_project: target_project, clone_with_notes: true)
+              new_issue = update_issue(target_clone_container: target_project, clone_with_notes: true)
 
               expect(new_issue.project).to eq(target_project)
               expect(new_issue.title).to eq(issue.title)
@@ -1524,6 +1537,36 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
         it_behaves_like 'clone an issue' do
           let(:clone_service_class) { ::WorkItems::DataSync::CloneService }
+        end
+      end
+
+      context 'when target container is a group' do
+        context 'without access to the group' do
+          let_it_be(:target_container) { create(:group) }
+
+          it 'does not call any clone service' do
+            expect(WorkItems::DataSync::CloneService).not_to receive(:new)
+            expect(Issues::CloneService).not_to receive(:new)
+
+            update_issue(target_clone_container: target_container, clone_with_notes: true)
+          end
+        end
+
+        context 'when user has access to the group' do
+          let_it_be(:target_container) { group }
+
+          context 'with work_item_move_and_clone disabled' do
+            before do
+              stub_feature_flags(work_item_move_and_clone: false)
+            end
+
+            it 'does not call any clone service' do
+              expect(WorkItems::DataSync::CloneService).not_to receive(:new)
+              expect(Issues::CloneService).not_to receive(:new)
+
+              update_issue(target_clone_container: target_container, clone_with_notes: true)
+            end
+          end
         end
       end
     end

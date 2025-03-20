@@ -56,7 +56,7 @@ GitLab Python experts are professionals with Python expertise who contribute to 
 To become one:
 
 1. Create a merge request to add `python: maintainer` competency under `projects` to your [team](https://gitlab.com/gitlab-com/www-gitlab-com/-/tree/master/data/team_members/person?ref_type=heads) file.
-1. Use [this](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/merge_request_templates/Python_expert.md) template and follow the described process.
+1. Use [this](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Python%20expert.md) template and follow the described process.
 
 Once your merge request is merged, you'll be added to the Python maintainers group.
 

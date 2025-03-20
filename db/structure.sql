@@ -4819,6 +4819,29 @@ CREATE TABLE vulnerability_archive_exports (
 )
 PARTITION BY LIST (partition_number);
 
+CREATE TABLE vulnerability_archived_records (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    id bigint NOT NULL,
+    date date NOT NULL,
+    project_id bigint NOT NULL,
+    archive_id bigint NOT NULL,
+    vulnerability_identifier bigint NOT NULL,
+    data jsonb DEFAULT '{}'::jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE vulnerability_archives (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    archived_records_count integer DEFAULT 0 NOT NULL,
+    date date NOT NULL,
+    CONSTRAINT chk_rails_6b9e2d707f CHECK ((archived_records_count >= 0))
+)
+PARTITION BY RANGE (date);
+
 CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
     web_hook_id bigint NOT NULL,
@@ -23806,16 +23829,6 @@ CREATE SEQUENCE vulnerability_archive_exports_id_seq
 
 ALTER SEQUENCE vulnerability_archive_exports_id_seq OWNED BY vulnerability_archive_exports.id;
 
-CREATE TABLE vulnerability_archived_records (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    project_id bigint NOT NULL,
-    archive_id bigint NOT NULL,
-    vulnerability_identifier bigint NOT NULL,
-    data jsonb DEFAULT '{}'::jsonb NOT NULL
-);
-
 CREATE SEQUENCE vulnerability_archived_records_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -23824,16 +23837,6 @@ CREATE SEQUENCE vulnerability_archived_records_id_seq
     CACHE 1;
 
 ALTER SEQUENCE vulnerability_archived_records_id_seq OWNED BY vulnerability_archived_records.id;
-
-CREATE TABLE vulnerability_archives (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    project_id bigint NOT NULL,
-    archived_records_count integer DEFAULT 0 NOT NULL,
-    date date NOT NULL,
-    CONSTRAINT chk_rails_6b9e2d707f CHECK ((archived_records_count >= 0))
-);
 
 CREATE SEQUENCE vulnerability_archives_id_seq
     START WITH 1
@@ -29942,10 +29945,10 @@ ALTER TABLE ONLY vulnerability_archive_exports
     ADD CONSTRAINT vulnerability_archive_exports_pkey PRIMARY KEY (id, partition_number);
 
 ALTER TABLE ONLY vulnerability_archived_records
-    ADD CONSTRAINT vulnerability_archived_records_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT vulnerability_archived_records_pkey PRIMARY KEY (id, date);
 
 ALTER TABLE ONLY vulnerability_archives
-    ADD CONSTRAINT vulnerability_archives_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT vulnerability_archives_pkey PRIMARY KEY (id, date);
 
 ALTER TABLE ONLY vulnerability_export_parts
     ADD CONSTRAINT vulnerability_export_parts_pkey PRIMARY KEY (id);
@@ -36378,13 +36381,15 @@ CREATE INDEX index_vulnerability_archive_exports_on_project_id ON ONLY vulnerabi
 
 CREATE INDEX index_vulnerability_archive_exports_on_status ON ONLY vulnerability_archive_exports USING btree (status);
 
-CREATE INDEX index_vulnerability_archived_records_on_archive_id_and_id ON vulnerability_archived_records USING btree (archive_id, id);
+CREATE INDEX index_vulnerability_archived_records_on_archive_id_and_date ON ONLY vulnerability_archived_records USING btree (archive_id, date);
 
-CREATE INDEX index_vulnerability_archived_records_on_project_id ON vulnerability_archived_records USING btree (project_id);
+CREATE INDEX index_vulnerability_archived_records_on_archive_id_and_id ON ONLY vulnerability_archived_records USING btree (archive_id, id);
 
-CREATE UNIQUE INDEX index_vulnerability_archived_records_on_vulnerability_id ON vulnerability_archived_records USING btree (vulnerability_identifier);
+CREATE INDEX index_vulnerability_archived_records_on_project_id ON ONLY vulnerability_archived_records USING btree (project_id);
 
-CREATE UNIQUE INDEX index_vulnerability_archives_on_project_id_and_date ON vulnerability_archives USING btree (project_id, date);
+CREATE UNIQUE INDEX index_vulnerability_archived_records_on_unique_attributes ON ONLY vulnerability_archived_records USING btree (vulnerability_identifier, date);
+
+CREATE UNIQUE INDEX index_vulnerability_archives_on_project_id_and_date ON ONLY vulnerability_archives USING btree (project_id, date);
 
 CREATE INDEX index_vulnerability_export_parts_on_organization_id ON vulnerability_export_parts USING btree (organization_id);
 
@@ -42483,8 +42488,8 @@ ALTER TABLE ONLY incident_management_oncall_participants
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_archived_records
-    ADD CONSTRAINT fk_rails_601e008d4b FOREIGN KEY (archive_id) REFERENCES vulnerability_archives(id) ON DELETE CASCADE;
+ALTER TABLE vulnerability_archived_records
+    ADD CONSTRAINT fk_rails_601e008d4b FOREIGN KEY (archive_id, date) REFERENCES vulnerability_archives(id, date) ON DELETE CASCADE;
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
     ADD CONSTRAINT fk_rails_604908851f FOREIGN KEY (system_access_microsoft_application_id) REFERENCES system_access_microsoft_applications(id) ON DELETE CASCADE;

@@ -3,9 +3,10 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Settings Sync in Web IDE',
+      :requires_admin,
+      :skip_live_env,
       :orchestrated,
       :mtls, # The extension marketplace requires running Web IDE in a secure context.
-      feature_flag: { name: :web_ide_extensions_marketplace },
       product_group: :remote_development,
       feature_category: :web_ide do
       include_context 'Web IDE test prep'
@@ -29,8 +30,9 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:web_ide_extensions_marketplace)
-
+        Runtime::ApplicationSettings.set_application_settings(
+          vscode_extension_marketplace_enabled: true
+        )
         load_web_ide(with_extensions_marketplace: true)
         settings_context_hash = get_settings_context_hash
 

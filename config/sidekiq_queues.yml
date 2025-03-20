@@ -549,6 +549,8 @@
   - 2
 - - mailers
   - 2
+- - members_delete_pending_members
+  - 1
 - - members_destroyer_clean_up_group_protected_branch_rules
   - 1
 - - members_expiring_email_notification

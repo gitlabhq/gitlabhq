@@ -14,11 +14,11 @@ module Gitlab
           end
 
           def action_title
-            'Run again'
+            s_('Job|Run again')
           end
 
           def action_button_title
-            _('Run this job again')
+            s_('Job|Run this job again')
           end
 
           def action_path

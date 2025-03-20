@@ -16,7 +16,7 @@ module WorkItems
         def move_system_notes(current_user, new_work_item, original_work_item)
           SystemNoteService.noteable_moved(
             new_work_item,
-            new_work_item.project,
+            new_work_item.resource_parent,
             original_work_item,
             current_user,
             direction: :from
@@ -24,7 +24,7 @@ module WorkItems
 
           SystemNoteService.noteable_moved(
             original_work_item,
-            original_work_item.project,
+            original_work_item.resource_parent,
             new_work_item,
             current_user,
             direction: :to

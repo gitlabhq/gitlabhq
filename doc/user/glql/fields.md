@@ -56,7 +56,7 @@ This page lists fields available to use as filters when querying issues or work 
 **Allowed value types**:
 
 - `Enum` (one of `Issue`, `Incident`, `TestCase`, `Requirement`, `Task`, `Ticket`, `Objective`,
-  `KeyResult`, `Epic`, or `MergeRequest`)
+  `KeyResult`, or `MergeRequest`)
 - `List` (containing one or more `enum` values above)
 
 **Allowed in columns of a GLQL view**: Only for issue and work item types.
@@ -595,8 +595,8 @@ This page lists fields available to use as filters when querying issues or work 
 - If omitted when using inside a GLQL view in a group object (like an epic), `group` is assumed to
   be the current group.
 - Using the `group` field queries all objects in that group, all its subgroups, and child projects.
-- By default, issues or merge requests are searched only in direct descendant projects in a group.
-  To query in the entire hierarchy of a project use the [`includeSubgroups` field](#include-subgroups).
+- By default, issues or merge requests are searched in all descendant projects across all subgroups.
+  To query only the direct child projects of the group, set the [`includeSubgroups` field](#include-subgroups) to `false`.
 
 **Examples**:
 

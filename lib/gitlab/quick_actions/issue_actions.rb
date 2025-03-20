@@ -101,15 +101,16 @@ module Gitlab
           @execution_message[:duplicate] = message
         end
 
-        desc { _('Clone this issue') }
-        explanation do |project = quick_action_target.project.full_path|
-          _("Clones this issue, without comments, to %{project}.") % { project: project }
+        desc { _('Clone this item') }
+        explanation do |target_container_path = quick_action_target.namespace.full_path|
+          _("Clones this item, without comments, to %{group_or_project}.") % { group_or_project: target_container_path }
         end
-        params 'path/to/project [--with_notes]'
-        types Issue
+        params 'path/to/group_or_project [--with_notes]'
+        types Issue, WorkItem
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"clone_#{quick_action_target.to_ability_name}", quick_action_target)
+            current_user.can?(:"clone_#{quick_action_target.to_ability_name}", quick_action_target) &&
+            can_be_moved_or_cloned?
         end
         command :clone do |params = ''|
           params = params.split(' ')
@@ -117,45 +118,50 @@ module Gitlab
 
           # If we have more than 1 param, then the user supplied too many spaces, or mistyped `--with_notes`
           if params.size > 1
-            @execution_message[:clone] = _('Failed to clone this issue: wrong parameters.')
+            @execution_message[:clone] = _('Failed to clone this item: wrong parameters.')
             next
           end
 
-          target_project_path = params[0]
-          target_project = target_project_path.present? ? Project.find_by_full_path(target_project_path) : quick_action_target.project
+          target_container_path = params[0]
+          target_container = fetch_target_container(target_container_path)
 
-          if target_project.present?
-            @updates[:target_clone_project] = target_project
-            @updates[:clone_with_notes] = with_notes
-
-            message = _("Cloned this issue to %{path_to_project}.") % { path_to_project: target_project_path || quick_action_target.project.full_path }
-          else
-            message = _("Failed to clone this issue because target project doesn't exist.")
-          end
+          message =
+            if target_container.nil?
+              _("Unable to clone. Target project or group doesn't exist or doesn't support this item type.")
+            elsif current_user.can?(:admin_issue, target_container)
+              @updates[:target_clone_container] = target_container
+              @updates[:clone_with_notes] = with_notes
+              _("Cloned this item to %{path_to_group_or_project}.") % { path_to_group_or_project: target_container_path || target_container.full_path }
+            else
+              _("Unable to clone. Insufficient permissions.")
+            end
 
           @execution_message[:clone] = message
         end
 
-        desc { _('Move this issue to another project') }
-        explanation do |path_to_project|
-          _("Moves this issue to %{path_to_project}.") % { path_to_project: path_to_project }
+        desc { _('Move this item to another group or project') }
+        explanation do |path_to_container|
+          _("Moves this item to %{group_or_project}.") % { group_or_project: path_to_container }
         end
-        params 'path/to/project'
-        types Issue
+        params 'path/to/group_or_project'
+        types Issue, WorkItem
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"move_#{quick_action_target.to_ability_name}", quick_action_target)
+            current_user.can?(:"move_#{quick_action_target.to_ability_name}", quick_action_target) &&
+            can_be_moved_or_cloned?
         end
-        command :move do |target_project_path|
-          target_project = Project.find_by_full_path(target_project_path)
+        command :move do |target_container_path|
+          target_container = fetch_target_container(target_container_path)
 
-          if target_project.present?
-            @updates[:target_project] = target_project
-
-            message = _("Moved this issue to %{path_to_project}.") % { path_to_project: target_project_path }
-          else
-            message = _("Failed to move this issue because target project doesn't exist.")
-          end
+          message =
+            if target_container.nil?
+              _("Unable to move. Target project or group doesn't exist or doesn't support this item type.")
+            elsif current_user.can?(:admin_issue, target_container)
+              @updates[:target_container] = target_container
+              _("Moved this item to %{path_to_container}.") % { path_to_container: target_container_path }
+            else
+              _("Unable to move. Insufficient permissions.")
+            end
 
           @execution_message[:move] = message
         end
@@ -431,6 +437,22 @@ module Gitlab
 
       def timeline_event_create_service(event_text, event_date_time)
         ::IncidentManagement::TimelineEvents::CreateService.new(quick_action_target, current_user, { note: event_text, occurred_at: event_date_time, editable: true })
+      end
+
+      def fetch_target_container(target_container_path)
+        return quick_action_target.namespace unless target_container_path
+
+        if quick_action_target.namespace.is_a?(Namespaces::ProjectNamespace)
+          Project.find_by_full_path(target_container_path)
+        else
+          Group.find_by_full_path(target_container_path)
+        end
+      end
+
+      def can_be_moved_or_cloned?
+        return true unless quick_action_target.is_a?(WorkItem) && quick_action_target.work_item_type.epic?
+
+        ::Feature.enabled?(:work_item_move_and_clone, container)
       end
     end
   end

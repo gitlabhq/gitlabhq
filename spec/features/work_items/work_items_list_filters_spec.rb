@@ -252,7 +252,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
     describe 'search within' do
       it 'filters', :aggregate_failures do
-        select_tokens 'Search Within', 'Titles'
+        select_tokens 'Search within', 'Titles'
         send_keys 'eee', :enter, :enter
 
         expect(page).to have_css('.issue', count: 1)
@@ -260,7 +260,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
         click_button 'Clear'
 
-        select_tokens 'Search Within', 'Descriptions'
+        select_tokens 'Search within', 'Descriptions'
         send_keys 'aaa', :enter, :enter
 
         expect(page).to have_css('.issue', count: 1)

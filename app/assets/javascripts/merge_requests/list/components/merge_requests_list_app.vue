@@ -127,7 +127,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
-    autocompleteAwardEmojisPat: { default: '' },
+    autocompleteAwardEmojisPath: { default: '' },
     fullPath: { default: '' },
     hasAnyMergeRequests: { default: false },
     hasScopedLabelsFeature: { default: false },

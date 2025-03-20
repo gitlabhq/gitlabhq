@@ -13,7 +13,7 @@ module WorkItems
         def clone_system_notes(current_user, new_work_item, work_item)
           SystemNoteService.noteable_cloned(
             new_work_item,
-            new_work_item.project,
+            new_work_item.resource_parent,
             work_item,
             current_user,
             direction: :from,
@@ -22,7 +22,7 @@ module WorkItems
 
           SystemNoteService.noteable_cloned(
             work_item,
-            work_item.project,
+            work_item.resource_parent,
             new_work_item,
             current_user,
             direction: :to
