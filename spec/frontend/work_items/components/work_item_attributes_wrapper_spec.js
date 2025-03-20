@@ -230,30 +230,15 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('CRM contacts widget', () => {
-    describe('when workItemsAlpha FF is disabled', () => {
-      it.each`
-        description                                               | crmContactsWidgetPresent | exists
-        ${'renders when widget is returned from API'}             | ${true}                  | ${false}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ crmContactsWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ crmContactsWidgetPresent });
-        createComponent({ workItem: response.data.workItem });
+    it.each`
+      description                                               | crmContactsWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}                  | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+    `('$description', ({ crmContactsWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ crmContactsWidgetPresent });
+      createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
 
-        expect(findWorkItemCrmContacts().exists()).toBe(exists);
-      });
-    });
-
-    describe('when workItemsAlpha FF is enabled', () => {
-      it.each`
-        description                                               | crmContactsWidgetPresent | exists
-        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ crmContactsWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ crmContactsWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
-
-        expect(findWorkItemCrmContacts().exists()).toBe(exists);
-      });
+      expect(findWorkItemCrmContacts().exists()).toBe(exists);
     });
   });
 

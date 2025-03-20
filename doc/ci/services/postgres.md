@@ -51,7 +51,7 @@ The workaround is to set your variables in [GitLab CI/CD variables](../variables
      POSTGRES_HOST_AUTH_METHOD: trust
    ```
 
-   For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/_index.md#how-services-are-linked-to-the-job).
+   For more information about using `postgres` for the `Host`, see [How services are linked to the job](_index.md#how-services-are-linked-to-the-job).
 
 1. Configure your application to use the database, for example:
 

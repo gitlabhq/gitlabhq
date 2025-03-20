@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlModal } from '@gitlab/ui';
+import { GlSprintf, GlModal, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
@@ -9,6 +9,7 @@ export default {
     GlSprintf,
     GlModal,
     CliCommand,
+    GlLink,
   },
   model: {
     prop: 'visible',
@@ -87,12 +88,19 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration.',
+            'Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration. Save this file in the directory most suitable to your Terraform environment. If you don\'t have a directory, create a new project, and then follow the guidelines to %{linkStart}set up Terraform with GitLab%{linkEnd}.',
           )
         "
       >
         <template #code="{ content }">
           <code>{{ content }}</code>
+        </template>
+        <template #link="{ content }">
+          <gl-link
+            href="https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html"
+            target="_blank"
+            >{{ content }}</gl-link
+          >
         </template>
       </gl-sprintf>
     </p>

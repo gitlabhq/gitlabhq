@@ -23,7 +23,7 @@ This file is where you define the CI/CD jobs that make up your pipeline.
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
-[CI Lint](../yaml/lint.md) tool.
+[CI Lint](lint.md) tool.
 
 If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
 
@@ -1116,7 +1116,7 @@ in a header section.
 
 **Supported values**: Can be one of:
 
-- `array`, to accept an [array](../yaml/inputs.md#array-type) of inputs.
+- `array`, to accept an [array](inputs.md#array-type) of inputs.
 - `string`, to accept string inputs (default when not defined).
 - `number`, to only accept numeric inputs.
 - `boolean`, to only accept `true` or `false` inputs.
@@ -3160,7 +3160,7 @@ In this example, a new pipeline causes a running pipeline to cancel `step-1` and
 ### `needs`
 
 Use `needs` to execute jobs out-of-order. Relationships between jobs
-that use `needs` can be visualized as a [directed acyclic graph](../yaml/needs.md).
+that use `needs` can be visualized as a [directed acyclic graph](needs.md).
 
 You can ignore stage ordering and run some jobs without waiting for others to complete.
 Jobs in multiple stages can run concurrently.
@@ -3355,7 +3355,7 @@ build_job:
   or the group/project must have public visibility.
 - You can't use `needs:project` in the same job as [`trigger`](#trigger).
 - When using `needs:project` to download artifacts from another pipeline, the job does not wait for
-  the needed job to complete. [Using `needs` to wait for jobs to complete](../yaml/needs.md)
+  the needed job to complete. [Using `needs` to wait for jobs to complete](needs.md)
   is limited to jobs in the same pipeline. Make sure that the needed job in the other
   pipeline completes before the job that needs it tries to download the artifacts.
 - You can't download artifacts from jobs that run in [`parallel`](#parallel).

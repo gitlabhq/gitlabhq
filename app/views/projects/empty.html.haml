@@ -39,9 +39,9 @@
         .scrolling-tabs-container.inner-page-scroll-tabs
         = gl_tabs_nav({ class: 'js-configure-git-tabs' }) do
           = gl_tab_link_to '#', item_active: true, 'aria-controls': 'local' do
-            = _('Local')
+            = s_('GitSetup|Local')
           = gl_tab_link_to '#', 'aria-controls': 'global' do
-            = _('Global')
+            = s_('GitSetup|Global')
         .tab-content
           .tab-pane.active#local
             = render partial: 'empty_git_config', locals: { scope: 'local' }

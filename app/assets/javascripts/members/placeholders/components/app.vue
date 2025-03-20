@@ -15,7 +15,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __, n__, sprintf } from '~/locale';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
@@ -285,9 +285,16 @@ export default {
               username: item.placeholderUser.username,
             },
           )
-        : sprintf(s__('UserMapping|%{count} placeholder users were kept as placeholders.'), {
-            count: placeholderCount,
-          });
+        : sprintf(
+            n__(
+              'UserMapping|%{count} placeholder user was kept as a placeholder.',
+              'UserMapping|%{count} placeholder users were kept as placeholders.',
+              placeholderCount,
+            ),
+            {
+              count: placeholderCount,
+            },
+          );
 
       this.$toast.show(message);
       this.reassignedCount += placeholderCount;

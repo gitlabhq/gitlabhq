@@ -18778,6 +18778,7 @@ CREATE TABLE packages_package_files (
     file_final_path text,
     project_id bigint,
     CONSTRAINT check_0f29938b18 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_43773f06dc CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL))
 );
 
@@ -27959,9 +27960,6 @@ ALTER TABLE security_scans
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE packages_package_files
-    ADD CONSTRAINT check_43773f06dc CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);

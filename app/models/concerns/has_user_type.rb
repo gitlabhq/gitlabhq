@@ -58,6 +58,7 @@ module HasUserType
     scope :without_humans, -> { where(user_type: USER_TYPES.keys - ['human']) }
     scope :human_or_service_user, -> { where(user_type: %i[human service_user]) }
     scope :resource_access_token_bot, -> { where(user_type: 'project_bot') }
+    scope :service_accounts, -> { where(user_type: 'service_account') }
 
     validates :user_type, presence: true
   end

@@ -94,7 +94,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'virtual_registries_packages_maven_cache_entries.group_id',
       # The table contains references in the object storage and thus can't have cascading delete
       # nor being NULL by the definition of a sharding key.
-      'packages_nuget_symbols.project_id'
+      'packages_nuget_symbols.project_id',
+      'packages_package_files.project_id'
     ]
   end
 

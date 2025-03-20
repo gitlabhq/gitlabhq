@@ -15,7 +15,7 @@ title: GPU-enabled hosted runners
 GitLab provides GPU-enabled hosted runners to accelerate heavy compute workloads for ModelOps
 or HPC such as the training or deployment of Large Language Models (LLMs) as part of ModelOps workloads.
 
-GitLab provides GPU-enabled runners only on Linux. For more information about how these runners work, see [Hosted runners on Linux](../hosted_runners/linux.md)
+GitLab provides GPU-enabled runners only on Linux. For more information about how these runners work, see [Hosted runners on Linux](linux.md)
 
 ## Machine types available for GPU-enabled runners
 

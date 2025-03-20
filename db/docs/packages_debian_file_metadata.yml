@@ -17,5 +17,4 @@ desired_sharding_key:
         table: packages_package_files
         sharding_key: project_id
         belongs_to: package_file
-    awaiting_backfill_on_parent: true
 table_size: small

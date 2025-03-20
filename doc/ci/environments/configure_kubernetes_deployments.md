@@ -59,7 +59,7 @@ job page, it's displayed above the job trace:
 ## Configure incremental rollouts
 
 Learn how to release production changes to only a portion of your Kubernetes pods with
-[incremental rollouts](../environments/incremental_rollouts.md).
+[incremental rollouts](incremental_rollouts.md).
 
 ## Related topics
 

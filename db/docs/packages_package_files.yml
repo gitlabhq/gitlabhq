@@ -8,14 +8,6 @@ description: Package registry file links and file metadata for all package types
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607
 milestone: '11.3'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: package_id
-        table: packages_packages
-        sharding_key: project_id
-        belongs_to: package
-desired_sharding_key_migration_job_name: BackfillPackagesPackageFilesProjectId
+sharding_key:
+  project_id: projects
 table_size: small

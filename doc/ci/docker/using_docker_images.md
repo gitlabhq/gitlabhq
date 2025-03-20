@@ -147,7 +147,7 @@ When a CI job runs in a Docker container, the `before_script`, `script`, and `af
 
 {{< history >}}
 
-- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](using_docker_images.md#extended-docker-configuration-options).
 
 {{< /history >}}
 

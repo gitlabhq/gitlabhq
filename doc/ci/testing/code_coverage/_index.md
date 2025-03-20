@@ -181,8 +181,8 @@ To configure coverage visualization:
 
 For language-specific configuration details see:
 
-- [Cobertura coverage report](../code_coverage/cobertura.md)
-- [JaCoCo coverage report](../code_coverage/jacoco.md)
+- [Cobertura coverage report](cobertura.md)
+- [JaCoCo coverage report](jacoco.md)
 
 ### Coverage reports from child pipelines
 

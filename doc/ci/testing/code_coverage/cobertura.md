@@ -40,8 +40,8 @@ of times the line was checked by tests.
 
 Uploading a test coverage report does not enable:
 
-- [Test coverage results](../code_coverage/_index.md#view-coverage-results) in the merge request widget.
-- [Code coverage history](../code_coverage/_index.md#view-coverage-history).
+- [Test coverage results](_index.md#view-coverage-results) in the merge request widget.
+- [Code coverage history](_index.md#view-coverage-history).
 
 You must configure these separately.
 
@@ -59,7 +59,7 @@ a [blocking manual job](../../jobs/job_control.md#types-of-manual-jobs), the
 pipeline waits for the manual job before continuing and is not considered complete.
 The visualization cannot be displayed if the blocking manual job did not run.
 
-If the job generates multiple reports, [use a wildcard in the artifact path](../code_coverage/_index.md#configure-coverage-visualization).
+If the job generates multiple reports, [use a wildcard in the artifact path](_index.md#configure-coverage-visualization).
 
 ### Automatic class path correction
 

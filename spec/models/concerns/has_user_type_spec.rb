@@ -69,6 +69,12 @@ RSpec.describe User, feature_category: :system_access do
       end
     end
 
+    describe '.service_accounts' do
+      it 'includes only service accounts' do
+        expect(described_class.service_accounts).to match_array(service_account)
+      end
+    end
+
     describe '#bot?' do
       it 'is true for all bot user types and false for others' do
         expect(bots).to all(be_bot)

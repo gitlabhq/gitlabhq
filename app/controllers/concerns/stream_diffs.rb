@@ -8,11 +8,16 @@ module StreamDiffs
   def diffs
     return render_404 unless rapid_diffs_enabled?
 
+    streaming_start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
     stream_headers
 
     offset = { offset_index: params.permit(:offset)[:offset].to_i }
 
     stream_diff_files(streaming_diff_options.merge(offset))
+
+    streaming_time = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - streaming_start_time).round(2)
+    response.stream.write "<server-timings streaming=\"#{streaming_time}\"></server-timings>"
   rescue ActionController::Live::ClientDisconnected
     # Ignored
   rescue StandardError => e

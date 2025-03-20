@@ -189,7 +189,7 @@ export default {
       return this.workItemHierarchy?.hasParent;
     },
     workItemCrmContacts() {
-      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
+      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
     },
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;

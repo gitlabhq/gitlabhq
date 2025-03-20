@@ -26,7 +26,8 @@ RSpec.shared_examples 'diffs stream tests' do
       it 'no diffs are streamed' do
         go
 
-        expect(response.body).to be_empty
+        expect(response.body).to not_include('diff-file')
+        expect(response.body).to include('server-timings')
       end
     end
   end

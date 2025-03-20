@@ -27035,6 +27035,12 @@ msgstr ""
 msgid "GitPod"
 msgstr ""
 
+msgid "GitSetup|Global"
+msgstr ""
+
+msgid "GitSetup|Local"
+msgstr ""
+
 msgid "Gitaly servers"
 msgstr ""
 
@@ -27243,9 +27249,6 @@ msgid "Given epic is already related to this epic."
 msgstr ""
 
 msgid "Given inputs not defined in the `spec` section of the included configuration file"
-msgstr ""
-
-msgid "Global"
 msgstr ""
 
 msgid "Global SAML group membership lock"
@@ -50161,7 +50164,7 @@ msgstr ""
 msgid "Runners|Copy registration token"
 msgstr ""
 
-msgid "Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration."
+msgid "Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration. Save this file in the directory most suitable to your Terraform environment. If you don't have a directory, create a new project, and then follow the guidelines to %{linkStart}set up Terraform with GitLab%{linkEnd}."
 msgstr ""
 
 msgid "Runners|Create a group runner"
@@ -63682,8 +63685,10 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
-msgid "UserMapping|%{count} placeholder users were kept as placeholders."
-msgstr ""
+msgid "UserMapping|%{count} placeholder user was kept as a placeholder."
+msgid_plural "UserMapping|%{count} placeholder users were kept as placeholders."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has declined your request to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to them in %{destination_group}. To reassign these contributions to another user, go to the \"Members\" page of %{destination_group}."
 msgstr ""

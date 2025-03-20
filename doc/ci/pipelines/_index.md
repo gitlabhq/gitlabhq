@@ -49,12 +49,12 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Pipelines that use the `needs` keyword](../yaml/needs.md) run based on dependencies
   between jobs and can run more quickly than basic pipelines.
-- [Merge request pipelines](../pipelines/merge_request_pipelines.md) run for merge
+- [Merge request pipelines](merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
-- [Merged results pipelines](../pipelines/merged_results_pipelines.md)
+- [Merged results pipelines](merged_results_pipelines.md)
   are merge request pipelines that act as though the changes from the source branch have
   already been merged into the target branch.
-- [Merge trains](../pipelines/merge_trains.md)
+- [Merge trains](merge_trains.md)
   use merged results pipelines to queue merges one after the other.
 - [Parent-child pipelines](downstream_pipelines.md#parent-child-pipelines) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
@@ -508,13 +508,13 @@ This table lists the refspecs injected for each pipeline type:
 |-------------------------------------------------------------------|----------|
 | pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
-| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+| [merge request pipeline](merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
 deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
-and [merge trains](../pipelines/merge_trains.md) that might run pipelines after branch deletion.
+and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 

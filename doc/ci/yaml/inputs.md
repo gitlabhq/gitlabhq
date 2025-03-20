@@ -201,7 +201,7 @@ test_job:
 
 #### Multi-line input string values
 
-[Inputs](../yaml/inputs.md) support different value types. You can pass multi-string values using the following format:
+[Inputs](inputs.md) support different value types. You can pass multi-string values using the following format:
 
 ```yaml
 spec:
