@@ -9,14 +9,14 @@ title: GitLab Duo Workflow
 
 - Tier: Ultimate
 - Offering: GitLab.com
-- Status: Experiment
+- Status: Private beta
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is an [experiment](../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is a [private beta](../../policy/development_stages_support.md).
 
 {{< /history >}}
 
@@ -30,7 +30,7 @@ This feature is available for internal GitLab team members for testing, but not 
 
 {{< alert type="warning" >}}
 
-This feature is considered [experimental](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+This feature is [a private beta](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
 
 {{< /alert >}}
 
@@ -61,7 +61,7 @@ Before you can use Workflow, you must:
   - The project is on GitLab.com.
   - You have at least the Developer role.
   - The project belongs to a [group namespace](../namespace/_index.md) with an Ultimate subscription.
-  - [Experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+  - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
   - [GitLab Duo must be turned on](../gitlab_duo/_index.md).
   - The repository you want to work with should be small or medium-sized.
     Workflow can be slow or fail for large repositories.
@@ -176,6 +176,6 @@ On your GitLab Self-Managed instance, you can view these events on the
 
 ## Give feedback
 
-Workflow is an experiment and your feedback is crucial to improve it for you and others.
+Workflow is a private beta and your feedback is crucial to improve it for you and others.
 To report issues or suggest improvements,
 [complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).

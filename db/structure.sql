@@ -7704,6 +7704,8 @@ CREATE TABLE ai_settings (
     amazon_q_service_account_user_id bigint,
     amazon_q_ready boolean DEFAULT false NOT NULL,
     amazon_q_role_arn text,
+    duo_workflow_service_account_user_id bigint,
+    duo_workflow_oauth_application_id bigint,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
@@ -32276,6 +32278,10 @@ CREATE INDEX index_ai_settings_on_amazon_q_oauth_application_id ON ai_settings U
 
 CREATE INDEX index_ai_settings_on_amazon_q_service_account_user_id ON ai_settings USING btree (amazon_q_service_account_user_id);
 
+CREATE INDEX index_ai_settings_on_duo_workflow_oauth_application_id ON ai_settings USING btree (duo_workflow_oauth_application_id);
+
+CREATE INDEX index_ai_settings_on_duo_workflow_service_account_user_id ON ai_settings USING btree (duo_workflow_service_account_user_id);
+
 CREATE UNIQUE INDEX index_ai_settings_on_singleton ON ai_settings USING btree (singleton);
 
 CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
@@ -40194,6 +40200,9 @@ ALTER TABLE ONLY todos
 ALTER TABLE ONLY merge_requests_approval_rules_projects
     ADD CONSTRAINT fk_451a9dfe93 FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_settings
+    ADD CONSTRAINT fk_4571bb0ccc FOREIGN KEY (duo_workflow_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY security_policy_requirements
     ADD CONSTRAINT fk_458f7f5ad5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -40730,6 +40739,9 @@ ALTER TABLE ONLY bulk_import_failures
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_settings
+    ADD CONSTRAINT fk_8c711443b0 FOREIGN KEY (duo_workflow_service_account_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY subscription_seat_assignments
     ADD CONSTRAINT fk_8d214f4142 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

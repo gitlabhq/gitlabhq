@@ -3047,7 +3047,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/arkose/truth_data_authorization_service.rb'
     - 'ee/app/services/arkose/truth_data_service.rb'
     - 'ee/app/services/auto_merge/merge_train_service.rb'
-    - 'ee/app/services/billable_members/destroy_service.rb'
     - 'ee/app/services/branch_rules/external_status_checks/create_service.rb'
     - 'ee/app/services/branch_rules/external_status_checks/destroy_service.rb'
     - 'ee/app/services/branch_rules/external_status_checks/update_service.rb'

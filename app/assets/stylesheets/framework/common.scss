@@ -8,6 +8,12 @@
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
 
+  --application-header-height: calc(
+    var(--header-height) +
+    var(--system-header-height) +
+    var(--performance-bar-height) +
+    var(--top-bar-height)
+  );
   --application-bar-left: 0px;
   --application-bar-right: 0px;
 

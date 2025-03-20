@@ -37,12 +37,14 @@ module ErrorTracking
 
     def unauthorized
       return error('Error Tracking is not enabled') unless enabled?
-      return error('Access denied', :unauthorized) unless can_read?
+
+      error('Access denied', :unauthorized) unless can_read?
     end
 
     def parse_errors(response)
       return error('Not ready. Try again later', :no_content) unless response
-      return error(response[:error], http_status_for(response[:error_type])) if response[:error].present?
+
+      error(response[:error], http_status_for(response[:error_type])) if response[:error].present?
     end
 
     def http_status_for(error_type)

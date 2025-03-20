@@ -404,7 +404,12 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
-        <div v-show="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
+        <div
+          v-show="showSelectAll"
+          data-testid="todos-bulk-bar-container"
+          class="todos-bulk-bar gl-border-b gl-z-2 gl-flex gl-items-baseline gl-gap-2 gl-bg-default gl-px-5 gl-py-3"
+          :class="{ 'is-sticky': selectedIds.length }"
+        >
           <gl-form-checkbox
             v-model="selectAllChecked"
             data-testid="todos-select-all"

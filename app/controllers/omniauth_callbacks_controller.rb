@@ -365,9 +365,23 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to new_user_session_path
   end
 
-  def log_audit_event(user, options = {})
-    AuditEventService.new(user, user, options)
-      .for_authentication.security_event
+  def log_audit_event(user, options = {}, name = 'authenticated_with_oauth')
+    return if options[:with].blank?
+
+    provider = options[:with]
+    audit_context = {
+      name: name,
+      author: user,
+      scope: user,
+      target: user,
+      message: "Signed in with #{provider.upcase} authentication",
+      authentication_event: true,
+      authentication_provider: provider,
+      additional_details: {
+        with: provider
+      }
+    }
+    ::Gitlab::Audit::Auditor.audit(audit_context)
   end
 
   def set_remember_me(user, auth_user)

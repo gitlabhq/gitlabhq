@@ -46,7 +46,7 @@ module Releases
 
       return unless inexistent_milestone_ids.any?
 
-      return error(
+      error(
         format(_("Milestone id(s) not found: %{milestones}"),
           milestones: inexistent_milestone_ids.join(', ')), 400)
     end

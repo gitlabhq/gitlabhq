@@ -67,6 +67,12 @@ RSpec.describe GroupClusterablePresenter, feature_category: :environment_managem
     it { is_expected.to eq(migrate_group_cluster_path(group, cluster)) }
   end
 
+  describe '#update_cluster_migration_path' do
+    subject { presenter.update_cluster_migration_path(cluster) }
+
+    it { is_expected.to eq(update_migration_group_cluster_path(group, cluster)) }
+  end
+
   describe '#cluster_path' do
     subject { presenter.cluster_path(cluster) }
 

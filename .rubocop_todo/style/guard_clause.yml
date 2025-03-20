@@ -257,7 +257,6 @@ Style/GuardClause:
     - 'ee/app/services/approval_rules/create_service.rb'
     - 'ee/app/services/approval_rules/params_filtering_service.rb'
     - 'ee/app/services/approval_rules/update_service.rb'
-    - 'ee/app/services/billable_members/destroy_service.rb'
     - 'ee/app/services/dora/aggregate_metrics_service.rb'
     - 'ee/app/services/ee/alert_management/alerts/update_service.rb'
     - 'ee/app/services/ee/audit_event_service.rb'

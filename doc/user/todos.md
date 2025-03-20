@@ -25,13 +25,31 @@ To access your To-Do List:
 
 On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 
-### Search the To-Do List
+### Filter the To-Do List
 
-You can search your To-Do List by `to do` and `done`.
+To filter your To-Do List:
 
-You can filter to-do items per project, author, type, and action.
-Also, you can sort them by [**Label priority**](project/labels.md#set-label-priority),
-**Last created**, and **Oldest created**.
+1. Above the list, put your cursor in the text box.
+1. Select from one of the predefined filters.
+1. Press <kbd>Enter</kbd>.
+
+### Sort the To-Do List
+
+To sort the To-Do List:
+
+1. On the **To Do** tab, in the upper-right corner, select from the options:
+
+   - **Recommended** sorts by the combination of created date and previously snoozed dates, with previously snoozed items at the top.
+   - **Updated** sorts by the date the item was most recently updated.
+   - **Label priority** sorts [by priorities you've set](project/labels.md#set-label-priority).
+
+1. Optional. Select the sort direction.
+
+{{< alert type="note" >}}
+
+On the **Snoozed** and **Done** tabs, **Recommended** sorts items by their creation date only.
+
+{{< /alert >}}
 
 ## Actions that create to-do items
 
@@ -125,7 +143,7 @@ If you marked a to-do item as done by mistake, you can re-add it from the **Done
 
 1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 1. At the top, select **Done**.
-1. [Find the to-do item](#search-the-to-do-list) you want to re-add.
+1. [Find the to-do item](#filter-the-to-do-list) you want to re-add.
 1. Next to this to-do item, select **Re-add this to-do item** {{< icon name="redo" >}}.
 
 The to-do item is now visible in the **To Do** tab of the To-Do List.

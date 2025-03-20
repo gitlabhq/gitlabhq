@@ -169,7 +169,8 @@ class NotificationRecipient
   def default_project
     return if @target.nil?
     return @target if @target.is_a?(Project)
-    return @target.project if @target.respond_to?(:project)
+
+    @target.project if @target.respond_to?(:project)
   end
 
   def find_notification_setting

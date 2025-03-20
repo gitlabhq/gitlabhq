@@ -76,7 +76,8 @@ module Boards
 
     def issuable_state
       return 'reopen' if moving_from_list.closed?
-      return 'close'  if moving_to_list.closed?
+
+      'close' if moving_to_list.closed?
     end
 
     def add_label_ids

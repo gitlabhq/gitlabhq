@@ -354,6 +354,7 @@ describe('TodosApp', () => {
 
     const findSelectedTodoItems = () => findTodoItems().filter((item) => item.props('selected'));
     const findSelectAllCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+    const findTodosBulkBarContainer = () => wrapper.findByTestId('todos-bulk-bar-container');
     const findBulkBar = () => wrapper.findComponent(TodosBulkBar);
 
     describe('select all checkbox', () => {
@@ -388,6 +389,21 @@ describe('TodosApp', () => {
         expect(findSelectAllCheckbox().attributes()).toMatchObject({
           indeterminate: 'true',
         });
+      });
+
+      it('becomes sticky when items are selected', async () => {
+        const classIsSticky = 'is-sticky';
+
+        expect(findTodosBulkBarContainer().classes()).not.toContain(classIsSticky);
+
+        findFirstTodoItem().vm.$emit(
+          'select-change',
+          todosResponse.data.currentUser.todos.nodes[0].id,
+          true,
+        );
+        await nextTick();
+
+        expect(findTodosBulkBarContainer().classes()).toContain(classIsSticky);
       });
     });
 

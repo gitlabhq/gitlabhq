@@ -129,10 +129,16 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           expect { post(provider) }.to(
             change do
               Gitlab::Metrics.registry
-                             .get(:gitlab_omniauth_login_total)
-                             .get(omniauth_provider: 'github', status: 'succeeded')
+                            .get(:gitlab_omniauth_login_total)
+                            .get(omniauth_provider: 'github', status: 'succeeded')
             end.by(1)
           )
+        end
+
+        it 'creates an authentication audit event' do
+          expect { post provider }.to change {
+            AuditEvent.where("details LIKE '%authenticated_with_oauth%'").count
+          }.by(1)
         end
       end
 

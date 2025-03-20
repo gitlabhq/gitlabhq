@@ -47,7 +47,7 @@ import AuthorToken from './filtered_search_tokens/author_token.vue';
 export const SORT_OPTIONS = [
   {
     value: 'CREATED',
-    text: s__('Todos|Created'),
+    text: s__('Todos|Recommended'),
   },
   {
     value: 'UPDATED',

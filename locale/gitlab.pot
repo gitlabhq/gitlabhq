@@ -13883,6 +13883,9 @@ msgstr ""
 msgid "ClusterIntegration|Invalid configuration project"
 msgstr ""
 
+msgid "ClusterIntegration|Invalid issue URL"
+msgstr ""
+
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
 msgstr ""
 
@@ -13922,10 +13925,25 @@ msgstr ""
 msgid "ClusterIntegration|Migrating cluster - initiated"
 msgstr ""
 
+msgid "ClusterIntegration|Migration issue"
+msgstr ""
+
+msgid "ClusterIntegration|Migration issue URL"
+msgstr ""
+
+msgid "ClusterIntegration|Migration issue update - failed: \"%{error}\""
+msgstr ""
+
+msgid "ClusterIntegration|Migration issue updated successfully"
+msgstr ""
+
 msgid "ClusterIntegration|Namespace per environment"
 msgstr ""
 
 msgid "ClusterIntegration|New agent name"
+msgstr ""
+
+msgid "ClusterIntegration|No migration found"
 msgstr ""
 
 msgid "ClusterIntegration|Node calculations use the Kubernetes Metrics API. Make sure your cluster has metrics installed"
@@ -13970,6 +13988,9 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
+msgid "ClusterIntegration|Save migration issue"
+msgstr ""
+
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
@@ -13995,6 +14016,9 @@ msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review 
 msgstr ""
 
 msgid "ClusterIntegration|Step 1. Connect the agent"
+msgstr ""
+
+msgid "ClusterIntegration|Step 2. Migrate your environments"
 msgstr ""
 
 msgid "ClusterIntegration|The %{agent_docs_link_start}GitLab Agent for Kubernetes %{agent_docs_link_end} offers improved security, reliability, and functionality. Follow the steps below to create a new agent and migrate your existing certificate-based integration. The process is automated, but you still need to %{install_docs_link_start}install the agent%{install_docs_link_end} in your cluster."
@@ -14051,6 +14075,9 @@ msgstr ""
 msgid "ClusterIntegration|To remove your integration, type %{clusterName} to confirm:"
 msgstr ""
 
+msgid "ClusterIntegration|To track migration progress, create an issue and enter the issue URL."
+msgstr ""
+
 msgid "ClusterIntegration|Troubleshooting tips:"
 msgstr ""
 
@@ -14079,6 +14106,9 @@ msgid "ClusterIntegration|You are about to remove your cluster integration and a
 msgstr ""
 
 msgid "ClusterIntegration|You are about to remove your cluster integration."
+msgstr ""
+
+msgid "ClusterIntegration|You must connect the agent before you can save a migration issue."
 msgstr ""
 
 msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct."
@@ -21956,6 +21986,12 @@ msgid "Due to inactivity, the %{project_name} (%{project_link}) project is sched
 msgstr ""
 
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
+msgstr ""
+
+msgid "Duo Workflow|Duo Workflow Settings have been saved"
+msgstr ""
+
+msgid "Duo Workflow|Something went wrong saving Duo Workflow settings"
 msgstr ""
 
 msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"
@@ -35943,6 +35979,9 @@ msgid "MemberRole|Role successfully deleted."
 msgstr ""
 
 msgid "MemberRole|Role type"
+msgstr ""
+
+msgid "MemberRole|Roles"
 msgstr ""
 
 msgid "MemberRole|Roles and permissions"
@@ -61182,9 +61221,6 @@ msgstr ""
 msgid "Todos|Could not restore to-dos."
 msgstr ""
 
-msgid "Todos|Created"
-msgstr ""
-
 msgid "Todos|Design"
 msgstr ""
 
@@ -61305,6 +61341,9 @@ msgid "Todos|Raw text search is not currently supported. Please use the availabl
 msgstr ""
 
 msgid "Todos|Reason"
+msgstr ""
+
+msgid "Todos|Recommended"
 msgstr ""
 
 msgid "Todos|Remove snooze"

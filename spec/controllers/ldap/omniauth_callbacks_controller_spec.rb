@@ -16,6 +16,12 @@ RSpec.describe Ldap::OmniauthCallbacksController, type: :controller, feature_cat
     expect(AuthenticationEvent.last.provider).to eq(provider.to_s)
   end
 
+  it 'creates an authentication audit event' do
+    expect { post provider }.to change {
+      AuditEvent.where("details LIKE '%authenticated_with_ldap%'").count
+    }.by(1)
+  end
+
   context 'with sign in prevented' do
     let(:ldap_settings) { ldap_setting_defaults.merge(prevent_ldap_sign_in: true) }
 

@@ -243,7 +243,7 @@ module Clusters
     end
 
     def platform
-      return platform_kubernetes if kubernetes?
+      platform_kubernetes if kubernetes?
     end
 
     def first_project

@@ -69,7 +69,8 @@ module ErrorTracking
 
     def unauthorized
       return error('Error Tracking is not enabled') unless enabled?
-      return error('Access denied', :unauthorized) unless can_update?
+
+      error('Access denied', :unauthorized) unless can_update?
     end
 
     def update_issue(opts)

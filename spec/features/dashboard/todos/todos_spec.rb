@@ -380,7 +380,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
     end
 
     it 'allows to change sort order and direction' do
-      # default sort is by `created_at` (desc)
+      # default sort is by `timestamp_coalesce(todos.snoozed_until, todos.created_at)` (desc)
       expect(page).to have_content(
         /#{newest_but_never_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{oldest_but_most_recently_updated.target.title}/
       )
@@ -392,7 +392,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
       )
 
       # change order
-      click_on 'Created' # to open order dropdown
+      click_on 'Recommended' # to open order dropdown
       find('li', text: 'Updated').click # to change to `updated_at`
       expect(page).to have_content(
         /#{newest_but_never_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{oldest_but_most_recently_updated.target.title}/

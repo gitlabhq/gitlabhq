@@ -622,6 +622,8 @@ Audit event types belong to the following product categories.
 | [`user_access_unlocked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124973) | User access to the instance is unlocked | {{< icon name="check-circle" >}} Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) | User |
 | [`user_disable_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89598) | A user disables two factor authentication. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171988) in GitLab 17.6. | {{< icon name="check-circle" >}} Yes | GitLab [15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) | User, Group |
 | [`user_enable_admin_mode`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104754) | Admin Mode enabled | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) | User |
+| [`authenticated_with_ldap`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175763) | User successfully signed in with LDAP | {{< icon name="check-circle" >}} Yes | GitLab [17.11](https://gitlab.com/gitlab-org/gitlab/-/issues/509377) | User |
+| [`authenticated_with_oauth`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175763) | User successfully signed in with OAuth | {{< icon name="check-circle" >}} Yes | GitLab [17.11](https://gitlab.com/gitlab-org/gitlab/-/issues/509377) | User |
 
 ### Team planning
 

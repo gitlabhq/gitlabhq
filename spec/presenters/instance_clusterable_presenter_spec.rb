@@ -27,6 +27,12 @@ RSpec.describe InstanceClusterablePresenter, feature_category: :environment_mana
     it { is_expected.to eq(migrate_admin_cluster_path(cluster)) }
   end
 
+  describe '#update_cluster_migration_path' do
+    subject { presenter.update_cluster_migration_path(cluster) }
+
+    it { is_expected.to eq(update_migration_admin_cluster_path(cluster)) }
+  end
+
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 

@@ -2,20 +2,6 @@
 # Cop supports --autocorrect.
 Style/RedundantReturn:
   Exclude:
-    - 'app/controllers/snippets/notes_controller.rb'
-    - 'app/helpers/profiles_helper.rb'
-    - 'app/models/clusters/cluster.rb'
-    - 'app/models/concerns/cascading_namespace_setting_attribute.rb'
-    - 'app/models/namespaces/randomized_suffix_path.rb'
-    - 'app/models/notification_recipient.rb'
-    - 'app/models/releases/link.rb'
-    - 'app/presenters/packages/nuget/service_index_presenter.rb'
-    - 'app/presenters/packages/nuget/version_helpers.rb'
-    - 'app/services/boards/base_item_move_service.rb'
-    - 'app/services/error_tracking/base_service.rb'
-    - 'app/services/error_tracking/issue_update_service.rb'
-    - 'app/services/jira_import/start_import_service.rb'
-    - 'app/services/releases/update_service.rb'
     - 'ee/app/controllers/concerns/audit_events/enforces_valid_date_params.rb'
     - 'ee/app/controllers/concerns/description_diff_actions.rb'
     - 'ee/app/controllers/ee/dashboard/projects_controller.rb'

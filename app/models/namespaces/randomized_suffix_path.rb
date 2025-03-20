@@ -33,7 +33,8 @@ module Namespaces
     def suffix
       return if count.nil?
       return randomized_suffix if count > MAX_TRIES
-      return count if count > 0
+
+      count if count > 0
     end
   end
 end

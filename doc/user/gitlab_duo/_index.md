@@ -32,7 +32,7 @@ how and where you can access these features.
 The language models that are the source for GitLab Duo depend on where you're using it.
 
 - On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI gateway.
-- On GitLab Self-Managed, there are two options:
+- On GitLab Self-Managed, two options exist:
 
   - **GitLab** can [host the models and the cloud-based AI gateway](setup.md).
   - **Your organization** can [use GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md),
@@ -118,7 +118,7 @@ To improve your security, try these features:
 | ------- | ---- | ------ | -------- | ------ |
 | [GitLab Duo Chat](../gitlab_duo_chat/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |
 | [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md) | Ultimate | GitLab Duo Enterprise | GitLab Self-Managed | General availability |
-| [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | - | GitLab.com | Experiment |
+| [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | - | GitLab.com | Private beta |
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |
 | [Code Suggestions](../project/repository/code_suggestions/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |

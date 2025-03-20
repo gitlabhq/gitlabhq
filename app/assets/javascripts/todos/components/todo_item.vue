@@ -113,7 +113,7 @@ export default {
 
 <template>
   <li
-    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-z-2 hover:gl-border-strong hover:gl-bg-feedback-info"
+    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-bg-feedback-info"
     :data-testid="`todo-item-${todo.id}`"
     :class="{ 'gl-bg-subtle': isDone }"
   >

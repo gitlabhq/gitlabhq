@@ -271,6 +271,7 @@ InitializerConnections.raise_if_new_database_connection do
           get :cluster_status, format: :json
           delete :clear_cache
           post :migrate
+          put :update_migration
         end
       end
     end

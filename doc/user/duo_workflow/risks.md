@@ -9,18 +9,18 @@ title: Risks in GitLab Duo Workflow
 
 - Tier: Ultimate
 - Offering: GitLab.com
-- Status: Experiment
+- Status: Private beta
 
 {{< /details >}}
 
 {{< alert type="warning" >}}
 
-This feature is considered [experimental](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+This feature is [a private beta](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
 
 {{< /alert >}}
 
-Workflow is an experimental product and users should consider their
-circumstances before using this tool. It is subject to our [testing agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+Workflow is a beta product and users should consider their
+circumstances before using this tool. It is subject to [the GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Workflow is an AI Agent that is given some ability to perform actions on the user's behalf. AI tools based on LLMs are
 inherently unpredictable and you should take appropriate precautions.
 

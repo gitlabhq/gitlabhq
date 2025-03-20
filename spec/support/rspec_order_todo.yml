@@ -1859,7 +1859,6 @@
 - './ee/spec/services/award_emojis/add_service_spec.rb'
 - './ee/spec/services/award_emojis/destroy_service_spec.rb'
 - './ee/spec/services/base_count_service_spec.rb'
-- './ee/spec/services/billable_members/destroy_service_spec.rb'
 - './ee/spec/services/boards/create_service_spec.rb'
 - './ee/spec/services/boards/epic_boards/create_service_spec.rb'
 - './ee/spec/services/boards/epic_boards/destroy_service_spec.rb'

@@ -9,8 +9,8 @@ RSpec.describe DesignManagement::GitRepository, feature_category: :design_manage
   shared_examples 'returns parsed git attributes that enable LFS for all file types' do
     it do
       expect(subject.patterns).to be_a_kind_of(Hash)
-      expect(subject.patterns).to have_key('/designs/*')
-      expect(subject.patterns['/designs/*']).to eql(
+      expect(subject.patterns).to have_key('/designs/**')
+      expect(subject.patterns['/designs/**']).to eql(
         { "filter" => "lfs", "diff" => "lfs", "merge" => "lfs", "text" => false }
       )
     end

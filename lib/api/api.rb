@@ -238,6 +238,7 @@ module API
         mount ::API::ClusterDiscovery
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
+        mount ::API::CargoProjectPackages
         mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::ComposerPackages

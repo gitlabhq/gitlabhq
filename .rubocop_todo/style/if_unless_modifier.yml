@@ -268,7 +268,6 @@ Style/IfUnlessModifier:
     - 'ee/app/services/app_sec/dast/site_profiles/destroy_service.rb'
     - 'ee/app/services/app_sec/dast/site_profiles/update_service.rb'
     - 'ee/app/services/app_sec/fuzzing/api/ci_configuration_create_service.rb'
-    - 'ee/app/services/billable_members/destroy_service.rb'
     - 'ee/app/services/boards/epic_boards/create_service.rb'
     - 'ee/app/services/boards/epic_boards/update_service.rb'
     - 'ee/app/services/boards/epics/create_service.rb'

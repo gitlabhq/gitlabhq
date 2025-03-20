@@ -10,6 +10,8 @@ foo/bar.* foo
 *.binary  binary
 /custom-highlighting/*.gitlab-custom gitlab-language=ruby
 /custom-highlighting/*.gitlab-cgi gitlab-language=erb?parent=json
+Dockerfile.* gitlab-language=dockerfile
+/designs/** filter=lfs
 
 # This uses a tab instead of spaces to ensure the parser also supports this.
 *.md	gitlab-language=markdown

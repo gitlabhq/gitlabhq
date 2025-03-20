@@ -1,0 +1,10 @@
+---
+name: authenticated_with_ldap
+description: User successfully signed in with LDAP
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/509377
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175763
+milestone: '17.11'
+feature_category: system_access
+saved_to_database: true
+streamed: true
+scope: [User]

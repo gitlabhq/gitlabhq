@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::AttributesParser do
-  let(:data) { fixture_file('gitlab/git/gitattributes') }
+RSpec.describe Gitlab::Git::AttributesParser, feature_category: :source_code_management do
+  let_it_be(:data) { fixture_file('gitlab/git/gitattributes') }
 
   subject { described_class.new(data) }
 
@@ -50,6 +50,62 @@ RSpec.describe Gitlab::Git::AttributesParser do
         expect(subject.attributes('bla/bla.txt')).to eq({})
       end
 
+      context 'with matcher "/designs/**"' do
+        it 'returns attributes for a file in a directory' do
+          expect(subject.attributes("designs/dk.lfs")).to eq({ 'filter' => 'lfs' })
+        end
+
+        it 'returns attributes for a file in a nested directory' do
+          expect(subject.attributes("designs/issue-1/dk.lfs")).to eq({ 'filter' => 'lfs' })
+        end
+
+        it 'does not return attributes when designs is not the root directory' do
+          expect(subject.attributes("path/designs/issue-1/dk.lfs")).to eq({})
+        end
+
+        context 'when "attribute_parser_fix" is disabled' do
+          before do
+            stub_feature_flags(attribute_parser_fix: false)
+          end
+
+          it 'returns attributes for a file in a directory' do
+            expect(subject.attributes("designs/dk.lfs")).to eq({ 'filter' => 'lfs' })
+          end
+
+          it 'returns attributes for a file in a nested directory' do
+            expect(subject.attributes("designs/issue-1/dk.lfs")).to eq({ 'filter' => 'lfs' })
+          end
+
+          it 'does not return attributes when designs is not the root directory' do
+            expect(subject.attributes("path/designs/issue-1/dk.lfs")).to eq({})
+          end
+        end
+      end
+
+      context 'when matcher is at the end' do
+        it 'returns attributes for a root directory' do
+          expect(subject.attributes('Dockerfile.local')).to eq({ 'gitlab-language' => 'dockerfile' })
+        end
+
+        it 'returns attributes for a sub directory' do
+          expect(subject.attributes('docker/Dockerfile.local')).to eq({ 'gitlab-language' => 'dockerfile' })
+        end
+
+        context 'when "attribute_parser_fix" is disabled' do
+          before do
+            stub_feature_flags(attribute_parser_fix: false)
+          end
+
+          it 'returns attributes for a root directory' do
+            expect(subject.attributes('Dockerfile.local')).to eq({ 'gitlab-language' => 'dockerfile' })
+          end
+
+          it 'does not return attributes for a sub directory' do
+            expect(subject.attributes('docker/Dockerfile.local')).to eq({})
+          end
+        end
+      end
+
       context 'when the "binary" option is set for a path' do
         it 'returns true for the "binary" option' do
           expect(subject.attributes('test.binary')['binary']).to eq(true)
@@ -90,20 +146,20 @@ RSpec.describe Gitlab::Git::AttributesParser do
     end
 
     it 'parses an entry that uses a tab to separate the pattern and attributes' do
-      expect(subject.patterns[File.join('/', '*.md')])
+      expect(subject.patterns[File.join('**/', '*.md')])
         .to eq({ 'gitlab-language' => 'markdown' })
     end
 
     it 'stores patterns in reverse order' do
       first = subject.patterns.to_a[0]
 
-      expect(first[0]).to eq(File.join('/', 'bla/bla.txt'))
+      expect(first[0]).to eq(File.join('**/', 'bla/bla.txt'))
     end
 
     # It's a bit hard to test for something _not_ being processed. As such we'll
     # just test the number of entries.
     it 'ignores any comments and empty lines' do
-      expect(subject.patterns.length).to eq(12)
+      expect(subject.patterns.length).to eq(14)
     end
   end
 
@@ -135,7 +191,7 @@ RSpec.describe Gitlab::Git::AttributesParser do
 
   describe '#each_line' do
     it 'iterates over every line in the attributes file' do
-      args = [String] * 16 # the number of lines in the file
+      args = [String] * 18 # the number of lines in the file
 
       expect { |b| subject.each_line(&b) }.to yield_successive_args(*args)
     end
