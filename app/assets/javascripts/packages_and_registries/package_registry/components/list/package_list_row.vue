@@ -202,11 +202,13 @@ export default {
         text-sr-only
         no-caret
       >
-        <gl-disclosure-dropdown-item data-testid="action-delete" @action="$emit('delete')">
+        <gl-disclosure-dropdown-item
+          data-testid="action-delete"
+          variant="danger"
+          @action="$emit('delete')"
+        >
           <template #list-item>
-            <span class="gl-text-red-500">
-              {{ $options.i18n.deletePackage }}
-            </span>
+            {{ $options.i18n.deletePackage }}
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown>

@@ -9,47 +9,47 @@ module RuboCop
     #
     # @example
     #
-    # # bad
-    # class MyExample
-    #   # Constant
-    #   Translation = _('A translation.')
+    #   # bad
+    #   class MyExample
+    #     # Constant
+    #     Translation = _('A translation.')
     #
-    #   # Class scope
-    #   field :foo, title: _('A title')
+    #     # Class scope
+    #     field :foo, title: _('A title')
     #
-    #   validates :title, :presence, message: _('is missing')
+    #     validates :title, :presence, message: _('is missing')
     #
-    #   # Memoized
-    #   def self.translations
-    #     @cached ||= { text: _('A translation.') }
+    #     # Memoized
+    #     def self.translations
+    #       @cached ||= { text: _('A translation.') }
+    #     end
+    #
+    #     included do # or prepended or class_methods
+    #       self.error_message = _('Something went wrong.')
+    #     end
     #   end
     #
-    #   included do # or prepended or class_methods
-    #     self.error_message = _('Something went wrong.')
+    #   # good
+    #   class MyExample
+    #     # Keep translations dynamic.
+    #     Translation = -> { _('A translation.') }
+    #     # OR
+    #     def translation
+    #       _('A translation.')
+    #     end
+    #
+    #     field :foo, title: -> { _('A title') }
+    #
+    #     validates :title, :presence, message: -> { _('is missing') }
+    #
+    #     def self.translations
+    #       { text: _('A translation.') }
+    #     end
+    #
+    #     included do # or prepended or class_methods
+    #       self.error_message = -> { _('Something went wrong.') }
+    #     end
     #   end
-    # end
-    #
-    # # good
-    # class MyExample
-    #   # Keep translations dynamic.
-    #   Translation = -> { _('A translation.') }
-    #   # OR
-    #   def translation
-    #     _('A translation.')
-    #   end
-    #
-    #   field :foo, title: -> { _('A title') }
-    #
-    #   validates :title, :presence, message: -> { _('is missing') }
-    #
-    #   def self.translations
-    #     { text: _('A translation.') }
-    #   end
-    #
-    #   included do # or prepended or class_methods
-    #     self.error_message = -> { _('Something went wrong.') }
-    #   end
-    # end
     #
     class StaticTranslationDefinition < RuboCop::Cop::Base
       MSG = <<~TEXT.tr("\n", ' ')

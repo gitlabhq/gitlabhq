@@ -100,13 +100,18 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-item :disabled="loading" :aria-busy="loading" @action="onClick">
+  <gl-disclosure-dropdown-item
+    :disabled="loading"
+    :aria-busy="loading"
+    :variant="loading ? null : 'danger'"
+    @action="onClick"
+  >
     <template #list-item>
       <div v-if="loading" class="gl-flex gl-items-center">
         <gl-loading-icon class="gl-mr-3" />
         {{ $options.i18n.loading }}
       </div>
-      <span v-else class="gl-text-red-500">
+      <span v-else>
         <slot></slot>
       </span>
     </template>

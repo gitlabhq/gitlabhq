@@ -32,8 +32,8 @@ describe('LeaveGroupDropdownItem', () => {
     createComponent();
   });
 
-  it('renders a slot with red text', () => {
-    expect(findDropdownItem().html()).toContain(`<span class="gl-text-red-500">${text}</span>`);
+  it('renders with a danger variant', () => {
+    expect(findDropdownItem().props('variant')).toEqual('danger');
   });
 
   it('contains LeaveModal component', () => {

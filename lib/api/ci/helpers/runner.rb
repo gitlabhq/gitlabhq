@@ -71,49 +71,6 @@ module API
         # HTTP status codes to terminate the job on GitLab Runner:
         # - 403
         def authenticate_job!(heartbeat_runner: false)
-          if current_job && Feature.enabled?(:ci_auth_job_finder_in_runner_api, current_job.project)
-            return authenticate_job_with_auth_job_finder!(heartbeat_runner: heartbeat_runner)
-          end
-
-          job = current_job
-
-          # 404 is not returned here because we want to terminate the job if it's
-          # running. A 404 can be returned from anywhere in the networking stack which is why
-          # we are explicit about a 403, we should improve this in
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/327703
-          forbidden! unless job
-
-          forbidden! unless job.valid_token?(job_token)
-
-          # Make sure that composite identity is propagated to `PipelineProcessWorker`
-          # when the build's status change.
-          # TODO: Once https://gitlab.com/gitlab-org/gitlab/-/issues/490992 is done we should
-          # remove this because it will be embedded in `Ci::AuthJobFinder`.
-          ::Gitlab::Auth::Identity.link_from_job(job)
-
-          forbidden!('Project has been deleted!') if job.project.nil? || job.project.pending_delete?
-          forbidden!('Job has been erased!') if job.erased?
-          job_forbidden!(job, 'Job is not processing on runner') unless processing_on_runner?(job)
-
-          # Only some requests (like updating the job or patching the trace) should trigger
-          # runner heartbeat. Operations like artifacts uploading are executed in context of
-          # the running job and in the job environment, which in many cases will cause the IP
-          # to be updated to not the expected value. And operations like artifacts downloads can
-          # be done even after the job is finished and from totally different runners - while
-          # they would then update the connection status of not the runner that they should.
-          # Runner requests done in context of job authentication should explicitly define when
-          # the heartbeat should be triggered.
-          if heartbeat_runner
-            job.runner&.heartbeat
-            job.runner_manager&.heartbeat(get_runner_ip)
-          end
-
-          job
-        end
-
-        # HTTP status codes to terminate the job on GitLab Runner:
-        # - 403
-        def authenticate_job_with_auth_job_finder!(heartbeat_runner: false)
           # 404 is not returned here because we want to terminate the job if it's
           # running. A 404 can be returned from anywhere in the networking stack which is why
           # we are explicit about a 403, we should improve this in

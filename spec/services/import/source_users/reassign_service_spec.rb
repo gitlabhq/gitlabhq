@@ -3,14 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importers do
+  let(:user) { create(:user) }
   let(:import_source_user) { create(:import_source_user) }
-  let(:user) { import_source_user.namespace.owner }
   let(:current_user) { user }
   let(:assignee_user) { create(:user) }
   let(:service) { described_class.new(import_source_user, assignee_user, current_user: current_user) }
   let(:result) { service.execute }
 
   describe '#execute' do
+    before do
+      import_source_user.namespace.add_owner(user)
+    end
+
     context 'when reassignment is successful' do
       it 'returns success' do
         expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
@@ -152,6 +156,18 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
             }
           )
       end
+    end
+  end
+
+  context 'when the top level namespace is a personal namespace' do
+    let(:import_source_user) { create(:import_source_user, :user_type_namespace) }
+    let(:user) { import_source_user.namespace.owner }
+    let(:error) { 'You cannot reassign user contributions of imports to a personal namespace.' }
+
+    it 'returns an error' do
+      expect(Notify).not_to receive(:import_source_user_reassign)
+      expect(result).to be_error
+      expect(result.message).to eq(error)
     end
   end
 end

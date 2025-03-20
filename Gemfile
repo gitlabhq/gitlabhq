@@ -551,6 +551,8 @@ group :development, :test do
   gem 'vite_ruby', '~> 3.9.0', feature_category: :shared
 
   gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper', feature_category: :tooling
+
+  gem 'yard', '~> 0.9', require: false, feature_category: :tooling
 end
 
 group :development, :test, :danger do

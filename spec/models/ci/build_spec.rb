@@ -6221,21 +6221,4 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { is_expected.to eq(expected_token) }
     end
   end
-
-  describe '#valid_token?' do
-    subject { build.valid_token?(token) }
-
-    let_it_be(:build) { create(:ci_build, :running) }
-    let(:token) { build.token }
-
-    it { is_expected.to be(true) }
-
-    context 'when the token is a database token' do
-      before do
-        stub_feature_flags(ci_job_token_jwt: false)
-      end
-
-      it { is_expected.to be(true) }
-    end
-  end
 end

@@ -76,11 +76,7 @@ export default {
         :aria-label="actionPrimaryText"
         variant="danger"
       >
-        <template #list-item>
-          <span class="gl-text-red-500">
-            {{ actionPrimaryText }}
-          </span>
-        </template>
+        <template #list-item>{{ actionPrimaryText }}</template>
       </gl-disclosure-dropdown-item>
     </gl-disclosure-dropdown>
 

@@ -16,6 +16,7 @@ pages:
     - "compile-storybook"
     - "update-tests-metadata"
     - "generate-frontend-fixtures-mapping"
+    - "rubocop:docs-site"
   before_script:
     - apt-get update && apt-get -y install brotli gzip
   script:
@@ -24,6 +25,7 @@ pages:
     - mkdir -p public/$(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$FLAKY_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$RSPEC_PACKED_TESTS_MAPPING_PATH") public/$(dirname "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH") public/$(dirname "$FRONTEND_FIXTURES_MAPPING_PATH")
     - mv coverage/ public/coverage-ruby/ || true
     - mv coverage-frontend/ public/coverage-frontend/ || true
+    - mv rubocop/docs-hugo/public/ public/rubocop-docs/ || true
     - mv storybook/public public/storybook || true
     - cp .public/assets/application-*.css public/application.css || true
     - mv $KNAPSACK_RSPEC_SUITE_REPORT_PATH public/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || true

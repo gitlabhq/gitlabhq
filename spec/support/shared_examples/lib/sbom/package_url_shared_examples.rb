@@ -18,7 +18,8 @@ RSpec.shared_examples 'purl_types enum' do
       wolfi: 13,
       cargo: 14,
       swift: 15,
-      conda: 16
+      conda: 16,
+      pub: 17
     }
   end
 

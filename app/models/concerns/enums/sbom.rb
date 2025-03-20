@@ -22,7 +22,8 @@ module Enums
       wolfi: 13,
       cargo: 14,
       swift: 15,
-      conda: 16
+      conda: 16,
+      pub: 17
     }.with_indifferent_access.freeze
 
     REACHABILITY_TYPES = {
@@ -42,6 +43,7 @@ module Enums
       cargo
       swift
       conda
+      pub
     ].freeze
 
     CONTAINER_SCANNING_PURL_TYPES = %w[

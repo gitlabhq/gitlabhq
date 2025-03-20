@@ -7,11 +7,12 @@ module Import
         @import_source_user = import_source_user
         @current_user = current_user
         @assignee_user = assignee_user
+        @root_namespace = import_source_user.namespace.root_ancestor
       end
 
       def execute
-        return error_invalid_permissions unless current_user.can?(:admin_import_source_user, import_source_user)
-        return error_invalid_assignee unless valid_assignee?(assignee_user)
+        validation_error = run_validations
+        return validation_error if validation_error.is_a?(ServiceResponse) && validation_error.error?
 
         invalid_status = false
         reassign_successful = false
@@ -39,12 +40,31 @@ module Import
 
       private
 
-      attr_reader :assignee_user
+      attr_reader :assignee_user, :root_namespace
 
       def reassign_user
         import_source_user.reassign_to_user = assignee_user
         import_source_user.reassigned_by_user = current_user
         import_source_user.reassign
+      end
+
+      def error_namespace_type
+        ServiceResponse.error(
+          message: invalid_namespace_message,
+          reason: :invalid_namespace,
+          payload: import_source_user
+        )
+      end
+
+      def invalid_namespace_message
+        s_("UserMapping|You cannot reassign user contributions of imports to a personal namespace.")
+      end
+
+      def run_validations
+        return error_invalid_permissions unless current_user.can?(:admin_import_source_user, import_source_user)
+        return error_namespace_type if root_namespace.user_namespace?
+
+        error_invalid_assignee unless valid_assignee?(assignee_user)
       end
 
       def error_invalid_assignee
@@ -81,3 +101,5 @@ module Import
     end
   end
 end
+
+Import::SourceUsers::ReassignService.prepend_mod

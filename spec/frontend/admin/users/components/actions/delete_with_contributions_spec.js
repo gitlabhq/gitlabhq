@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
@@ -53,6 +53,13 @@ describe('DeleteWithContributions', () => {
     });
   };
 
+  describe('rendering', () => {
+    it('renders a danger variant dropdown item', () => {
+      createComponent();
+      expect(wrapper.findComponent(GlDisclosureDropdownItem).props('variant')).toBe('danger');
+    });
+  });
+
   describe('when action is clicked', () => {
     describe('when API request is loading', () => {
       beforeEach(() => {
@@ -61,7 +68,7 @@ describe('DeleteWithContributions', () => {
         createComponent();
       });
 
-      it('displays loading icon and disables button', async () => {
+      it('displays loading icon, disables button, and removes danger variant', async () => {
         await wrapper.find('button').trigger('click');
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
@@ -69,6 +76,7 @@ describe('DeleteWithContributions', () => {
         // eslint-disable-next-line jest/no-restricted-matchers
         expect(wrapper.attributes('disabled')).toBeTruthy();
         expect(wrapper.attributes('aria-busy')).toBe('true');
+        expect(wrapper.findComponent(GlDisclosureDropdownItem).props('variant')).toBe(null);
       });
     });
 

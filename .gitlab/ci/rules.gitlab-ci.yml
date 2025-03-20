@@ -1274,6 +1274,10 @@
     - <<: *if-default-refs
       changes: *docs-deprecations-and-removals-patterns
 
+.docs:rules:rubocop-docs-site:
+  rules:
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
+
 ##################
 # GraphQL rules  #
 ##################

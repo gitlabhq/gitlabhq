@@ -60,10 +60,13 @@ export default {
         {{ s__('WorkItem|Convert to child item') }}
       </template>
     </gl-disclosure-dropdown-item>
-    <gl-disclosure-dropdown-item class="!gl-ml-2" data-testid="delete" @action="deleteTaskListItem">
-      <template #list-item>
-        <span class="gl-text-red-500">{{ __('Delete') }}</span>
-      </template>
+    <gl-disclosure-dropdown-item
+      class="!gl-ml-2"
+      data-testid="delete"
+      variant="danger"
+      @action="deleteTaskListItem"
+    >
+      <template #list-item>{{ __('Delete') }}</template>
     </gl-disclosure-dropdown-item>
   </gl-disclosure-dropdown>
 </template>

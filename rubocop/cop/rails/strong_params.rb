@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Rails
-      # Cop that detects passing params as an argument without making them
+      # Cop that detects passing `params` as an argument without making them
       # StrongParams first. Used to reduce the likelihood of input
       # validation errors outside of ActiveModel. E.g. when a parameter
       # is an array of strings instead of a single string, and that gets

@@ -759,15 +759,6 @@ module Ci
       Time.current - updated_at > 15.minutes.to_i
     end
 
-    def valid_token?(token)
-      jwt = ::Ci::JobToken::Jwt.decode(token)
-      if jwt
-        jwt.job == self
-      else
-        self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
-      end
-    end
-
     def remove_token!
       update!(token_encrypted: nil)
     end

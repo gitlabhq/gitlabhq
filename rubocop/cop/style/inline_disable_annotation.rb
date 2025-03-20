@@ -2,20 +2,20 @@
 
 module RuboCop
   module Cop
+    # rubocop:disable Lint/RedundantCopDisableDirective -- For examples
     module Style
-      # rubocop:disable Lint/RedundantCopDisableDirective -- For examples
-      # Checks that rubocop inline disabling is formatted according
+      # Checks that RuboCop inline disabling is formatted according
       # to guidelines.
       # See: https://docs.gitlab.com/ee/development/rubocop_development_guide.html#disabling-rules-inline,
       # https://gitlab.com/gitlab-org/gitlab/-/issues/428762
       #
+      # @example
       #   # bad
       #   # rubocop:disable Some/Cop, Another/Cop
       #
       #   # good
       #   # rubocop:disable Some/Cop, Another/Cop -- Some reason
       #
-      # rubocop:enable Lint/RedundantCopDisableDirective
       class InlineDisableAnnotation < RuboCop::Cop::Base
         include RangeHelp
 
@@ -47,5 +47,6 @@ module RuboCop
         end
       end
     end
+    # rubocop:enable Lint/RedundantCopDisableDirective
   end
 end

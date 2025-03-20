@@ -99,12 +99,9 @@ exports[`packages_list_row renders 1`] = `
       >
         <gl-disclosure-dropdown-item-stub
           data-testid="action-delete"
+          variant="danger"
         >
-          <span
-            class="gl-text-red-500"
-          >
-            Delete package
-          </span>
+          Delete package
         </gl-disclosure-dropdown-item-stub>
       </gl-disclosure-dropdown-stub>
     </div>

@@ -27,11 +27,9 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-item v-gl-modal="$options.modalId">
+  <gl-disclosure-dropdown-item v-gl-modal="$options.modalId" variant="danger">
     <template #list-item>
-      <span class="gl-text-red-500">
-        <slot></slot>
-      </span>
+      <slot></slot>
       <leave-modal :member="member" :permissions="permissions" />
     </template>
   </gl-disclosure-dropdown-item>

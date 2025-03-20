@@ -9,26 +9,28 @@ module RuboCop
       # must implement the method #handle_event(event) and
       # must not override the method #perform(*args)
       #
-      #  # bad
-      #  class MySubscriber
-      #    include Gitlab::EventStore::Subscriber
+      # @example
       #
-      #    def perform(*args)
-      #    end
-      #  end
+      #   # bad
+      #   class MySubscriber
+      #     include Gitlab::EventStore::Subscriber
       #
-      #  # bad
-      #  class MySubscriber
-      #    include Gitlab::EventStore::Subscriber
-      #  end
+      #     def perform(*args)
+      #     end
+      #   end
       #
-      #  # good
-      #  class MySubscriber
-      #    include Gitlab::EventStore::Subscriber
+      #   # bad
+      #   class MySubscriber
+      #     include Gitlab::EventStore::Subscriber
+      #   end
       #
-      #    def handle_event(event)
-      #    end
-      #  end
+      #   # good
+      #   class MySubscriber
+      #     include Gitlab::EventStore::Subscriber
+      #
+      #     def handle_event(event)
+      #     end
+      #   end
       #
       class EventStoreSubscriber < RuboCop::Cop::Base
         SUBSCRIBER_MODULE_NAME = 'Gitlab::EventStore::Subscriber'

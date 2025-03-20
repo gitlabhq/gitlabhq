@@ -59,8 +59,8 @@ describe('RemoveMemberDropdownItem', () => {
     createComponent();
   });
 
-  it('renders a slot with red text', () => {
-    expect(findDropdownItem().html()).toContain(`<span class="gl-text-red-500">${text}</span>`);
+  it('renders with a danger variant', () => {
+    expect(findDropdownItem().props('variant')).toEqual('danger');
   });
 
   it('calls Vuex action to show `remove member` modal when clicked', () => {

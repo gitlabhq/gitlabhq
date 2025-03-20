@@ -174,6 +174,76 @@ or migrate to another security feature like [GitLab Advanced SAST](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Dependency Scanning for JavaScript vendored libraries
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+</div>
+
+The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
+provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
+
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
+
+A replacement feature will be developed with [Dependency Scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### Dependency Scanning upgrades to the GitLab SBOM Vulnerability Scanner
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+</div>
+
+The Dependency Scanning feature is upgrading to the GitLab SBOM Vulnerability Scanner. As part of this change, the Gemnasium analyzer (previously used in CI/CD pipelines) is deprecated in GitLab 17.9.
+
+It is replaced with the [Dependency Scanning using SBOM](https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/) feature and
+the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) that focuses on detecting dependencies and their relationships (dependency graph).
+This upgrade represents a fundamental shift: instead of performing security analysis within CI pipelines, the new system uses GitLab's built-in SBOM Vulnerability Scanner, which is already employed by
+[Continuous Vulnerability Scanning](https://docs.gitlab.com/user/application_security/continuous_vulnerability_scanning/).
+
+As of GitLab 17.9, this new feature is in Beta. Therefore, until it reaches General Availability, GitLab will continue to support the Gemnasium analyzer. Only then,
+the Gemnasium analyzer will reach [end of support](https://docs.gitlab.com/update/terminology/#end-of-support).
+
+Due to the significant changes and feature removals this upgrade introduces, it will not be implemented automatically. Existing CI/CD jobs
+using the Gemnasium analyzer will continue to function by default to prevent disruption to CI configurations.
+
+Please review the fully detailed changes below and consult [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/) to assist you with the transition.
+
+- To prevent disruptions to your CI/CD configuration, when your application uses the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`), Dependency Scanning uses only the existing CI/CD jobs based on the Gemnasium analyzer.
+- When your application uses the latest Dependency Scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`), Dependency Scanning uses the existing CI/CD jobs based on the Gemnasium analyzer and the new Dependency Scanning analyzer also runs on the supported file types.
+You can also opt-in to enforce the new Dependency Scanning analyzer for all projects.
+- Other migration paths might be considered as the feature gains maturity.
+- The [Gemnasium analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/) project is deprecated, as well as the corresponding container images (all tags and variants): `gemnasium`, `gemnasium-maven`, `gemnasium-python`.
+These images will not be removed from the GitLab container registry.
+- The following CI/CD variables associated with the Gemnasium analyzer are also deprecated. While these variables will continue to work when using the Gemnasium analyzer, they will not be effective after migrating to the new Dependency Scanning analyzer.
+If a variable is also used in another context, the deprecation only applies to the Dependency Scanning feature (for example, `GOOS` and `GOARCH` are not specific to the Dependency Scanning feature).
+`DS_EXCLUDED_ANALYZERS`, `DS_GRADLE_RESOLUTION_POLICY`, `DS_IMAGE_SUFFIX`, `DS_JAVA_VERSION`, `DS_PIP_DEPENDENCY_PATH`, `DS_PIP_VERSION`, `DS_REMEDIATE_TIMEOUT`, `DS_REMEDIATE`, `GEMNASIUM_DB_LOCAL_PATH`, `GEMNASIUM_DB_REF_NAME`, `GEMNASIUM_DB_REMOTE_URL`,
+`GEMNASIUM_DB_UPDATE_DISABLED`, `GEMNASIUM_LIBRARY_SCAN_ENABLED`, `GOARCH`, `GOFLAGS`, `GOOS`, `GOPRIVATE`, `GRADLE_CLI_OPTS`, `GRADLE_PLUGIN_INIT_PATH`, `MAVEN_CLI_OPTS`, `PIP_EXTRA_INDEX_URL`, `PIP_INDEX_URL`, `PIPENV_PYPI_MIRROR`, `SBT_CLI_OPTS`.
+- The following [CI/CD components](https://gitlab.com/components/dependency-scanning/#components) are deprecated: Android, Rust, Swift, Cocoapods. These are replaced by
+[the main Dependency Scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main?ref_type=heads) that covers all supported languages and package managers.
+- The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature **for Yarn projects** is deprecated in GitLab 17.9.
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for more details.
+- The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature is deprecated in GitLab 17.9.
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#dependency-scanning-for-javascript-vendored-libraries) for more details.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### GitLab Self-Managed certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">
@@ -216,6 +286,28 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 The [pipeline subscriptions](https://docs.gitlab.com/ci/pipelines/#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated) feature is deprecated and will no longer be supported as of GitLab 18.0, with complete removal scheduled for GitLab 19.0. Pipeline subscriptions are used to run downstream pipelines based on tag pipelines in upstream projects.
 
 Instead, use [CI/CD jobs with pipeline trigger tokens](https://docs.gitlab.com/ci/triggers/#use-a-cicd-job) to trigger pipelines when another pipeline runs. This method is more reliable and flexible than pipeline subscriptions.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### Resolve a vulnerability for Dependency Scanning on Yarn projects
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+</div>
+
+The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature for Yarn projects
+provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
+
+While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
+See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
+
+A replacement feature is planned as part of the [Auto Remediation vision](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
 
 </div>
 
@@ -729,84 +821,6 @@ The Dependency Proxy for containers accepts `docker login` and `docker pull` req
 In GitLab 18.0, the Dependency Proxy will require both `read_registry` and `write_registry` scopes for authentication. After this change, authentication attempts using tokens without these scopes will be rejected.
 
 This is a breaking change. Before you upgrade, create new access tokens with the [required scopes](https://docs.gitlab.com/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy-for-container-images), and update your workflow variables and scripts with these new tokens.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Dependency Scanning for JavaScript vendored libraries
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- End of Support in GitLab <span class="milestone">18.0</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
-
-</div>
-
-The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
-provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9 and reaches end of support in GitLab 18.0.
-
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
-
-A replacement feature will be developed with [Dependency Scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Dependency Scanning upgrades to the GitLab SBOM Vulnerability Scanner
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- End of Support in GitLab <span class="milestone">18.0</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
-
-</div>
-
-The Dependency Scanning feature is upgrading to the GitLab SBOM Vulnerability Scanner. As part of this change, the Gemnasium analyzer (previously used in CI/CD pipelines) is deprecated in GitLab 17.9
-and reaches [end of support](https://docs.gitlab.com/update/terminology/#end-of-support) in GitLab 18.0.
-It is replaced with the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) that focuses on detecting dependencies and their relationships (dependency graph).
-This upgrade represents a fundamental shift: instead of performing security analysis within CI pipelines, the new system uses GitLab's built-in SBOM Vulnerability Scanner, which is already employed by
-[Continuous Vulnerability Scanning](https://docs.gitlab.com/user/application_security/continuous_vulnerability_scanning/).
-
-Due to the significant changes and feature removals this upgrade introduces, it will not be implemented automatically. While some breaking changes will take effect in GitLab 18.0, existing CI/CD jobs
-using the Gemnasium analyzer will continue to function by default to prevent disruption to CI configurations.
-
-Please review the fully detailed changes below and consult [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/) to assist you with the transition.
-
-- To prevent disruptions to your CI/CD configuration, when your application uses the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`), Dependency Scanning uses only the existing CI/CD jobs based on the Gemnasium analyzer.
-- When your application uses the latest Dependency Scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`), Dependency Scanning uses the existing CI/CD jobs based on the Gemnasium analyzer and the new Dependency Scanning analyzer also runs on the supported file types.
-- You can also opt-in to enforce the new Dependency Scanning analyzer for all projects.
-- Other migration paths might be considered as the feature gains maturity.
-- To transition to Dependency Scanning with SBOM, the security scan results generated by the Gemnasium analyzer will no longer be uploaded to the GitLab platform as a
-[Dependency Scanning security report artifact](https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportsdependency_scanning). Instead, Dependency Scanning results will be generated within the GitLab platform,
-using the GitLab SBOM Vulnerability Scanner, and based on the [CycloneDX SBOM report artifact](https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportscyclonedx) generated in the CI/CD pipeline.
-As a result, any workflows that rely on modifying security scan results before uploading them to the GitLab platform will be impacted.
-However, the Dependency Scanning JSON report will continue to be produced by the Gemnasium analyzer and exported as [a standard job artifact](https://docs.gitlab.com/ci/yaml/#artifactspaths) so that any workflow that consumes this
-report in a succeeding CI/CD job will continue to work. Please note that further improvements made to the GitLab SBOM Vulnerability Scanner will not be reflected in this JSON report.
-Since the new Dependency Scanning analyzer does not generate any security report, when migrating users must use the ([`Pipeline.securityReportFindings` resource](https://docs.gitlab.com/api/graphql/reference/#pipelinesecurityreportfindings))
-of the GraphQL API to programmatically consume security scan results.
-The ability to [download security scan results via the UI](https://docs.gitlab.com/user/application_security/detect/security_scan_results/#all-tiers) in this format for the GitLab Dependency Scanning feature is also removed in GitLab 18.0.
-The [Dependency Scanning security report artifact](https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportsdependency_scanning) itself is not deprecated and GitLab will continue to support these reports for third party integrations.
-- The [Gemnasium analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/) project is deprecated, as well as the corresponding container images (all tags and variants): `gemnasium`, `gemnasium-maven`, `gemnasium-python`.
-These images will not be removed from the GitLab container registry but they are [no longer supported](https://docs.gitlab.com/update/terminology/#end-of-support) with GitLab 18.0 and later.
-- The following CI/CD variables associated with the Gemnasium analyzer are also deprecated. While these variables will continue to work when using the Gemnasium analyzer, they will not be effective after migrating to the new Dependency Scanning analyzer.
-If a variable is also used in another context, the deprecation only applies to the Dependency Scanning feature (for example, `GOOS` and `GOARCH` are not specific to the Dependency Scanning feature).
-`DS_EXCLUDED_ANALYZERS`, `DS_GRADLE_RESOLUTION_POLICY`, `DS_IMAGE_SUFFIX`, `DS_JAVA_VERSION`, `DS_PIP_DEPENDENCY_PATH`, `DS_PIP_VERSION`, `DS_REMEDIATE_TIMEOUT`, `DS_REMEDIATE`, `GEMNASIUM_DB_LOCAL_PATH`, `GEMNASIUM_DB_REF_NAME`, `GEMNASIUM_DB_REMOTE_URL`,
-`GEMNASIUM_DB_UPDATE_DISABLED`, `GEMNASIUM_LIBRARY_SCAN_ENABLED`, `GOARCH`, `GOFLAGS`, `GOOS`, `GOPRIVATE`, `GRADLE_CLI_OPTS`, `GRADLE_PLUGIN_INIT_PATH`, `MAVEN_CLI_OPTS`, `PIP_EXTRA_INDEX_URL`, `PIP_INDEX_URL`, `PIPENV_PYPI_MIRROR`, `SBT_CLI_OPTS`.
-- The following [CI/CD components](https://gitlab.com/components/dependency-scanning/#components) are deprecated and reach end of support in GitLab 18.0: Android, Rust, Swift, Cocoapods. These are replaced by
-[the main Dependency Scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main?ref_type=heads) that covers all supported languages and package managers.
-- The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature **for Yarn projects** is deprecated in GitLab 17.9 and reaches end of support in GitLab 18.0.
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for more details.
-- The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature is deprecated in GitLab 17.9 and reaches end of support in GitLab 18.0.
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See the corresponding [deprecation announcement](https://docs.gitlab.com/update/deprecations/#dependency-Scanning-for-javascript-vendored-libraries) for more details.
 
 </div>
 
@@ -1807,29 +1821,6 @@ A new `maxretries` parameter has been added to control how many times an event w
 </div>
 
 The namespace GraphQL field `add_on_purchase` will be deprecated in GitLab 17.5 and removed in GitLab 18.0. Use the root `add_on_purchases` field instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Resolve a vulnerability for Dependency Scanning on Yarn projects
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- End of Support in GitLab <span class="milestone">18.0</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
-
-</div>
-
-The [Resolve a vulnerability](https://docs.gitlab.com/user/application_security/vulnerabilities/#resolve-a-vulnerability) feature for Yarn projects
-provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9 and reaches end of support in GitLab 18.0.
-
-While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
-
-A replacement feature is planned as part of the [Auto Remediation vision](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
 
 </div>
 

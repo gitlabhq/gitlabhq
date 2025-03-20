@@ -29,6 +29,7 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
       'Python (unknown)'    | 0
       :swift                | 15
       :conda                | 16
+      :pub                  | 17
     end
 
     with_them do
@@ -64,6 +65,7 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
       'wolfi'    | false
       'swift'    | true
       'conda'    | true
+      'pub'      | true
     end
 
     with_them do
@@ -94,6 +96,7 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
       'wolfi'       | true
       :swift        | false
       :conda        | false
+      'pub'         | false
     end
 
     with_them do

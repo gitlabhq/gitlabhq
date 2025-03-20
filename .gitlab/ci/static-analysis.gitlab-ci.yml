@@ -164,6 +164,25 @@ rubocop-docs:
   script:
     - bundle exec rubocop --only Gitlab/DocumentationLinks/Link
 
+rubocop:docs-site:
+  extends:
+    - .static-analysis-base
+    - .rubocop-job-cache
+    - .docs:rules:rubocop-docs-site
+  allow_failure: true
+  script:
+    - apt-get update && apt-get -y install hugo
+    - rake rubocop:docs
+    - cd rubocop/docs-hugo
+    - hugo --minify
+    - cd ../../
+  artifacts:
+    name: rubocop-docs-site
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop/docs-hugo/public
+
 rails-next-dependency-check:
   stage: lint
   needs: []

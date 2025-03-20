@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :import_source_user, class: 'Import::SourceUser' do
-    namespace
+    namespace factory: [:group]
     source_user_identifier { SecureRandom.uuid }
     source_hostname { 'https://github.com' }
     source_name { generate(:name) }
@@ -44,6 +44,10 @@ FactoryBot.define do
 
     trait :keep_as_placeholder do
       status { 6 }
+    end
+
+    trait :user_type_namespace do
+      namespace
     end
   end
 end

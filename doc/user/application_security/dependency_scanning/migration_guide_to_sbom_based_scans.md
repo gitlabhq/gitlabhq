@@ -65,14 +65,14 @@ When using the legacy Dependency Scanning feature, all scanning work happens wit
 The Dependency Scanning using SBOM approach separates these tasks into two distinct phases:
 
 - First, when you run the new Dependency Scanning analyzer in the CI/CD pipeline, it focuses solely on creating a comprehensive inventory of your project's dependencies. This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) report.
-- Second, after the CI/CD pipeline completes, the GitLab platform processes your SBOM report and performs a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) feature.
+- Second, the detected components are sent to the GitLab platform to perform a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) feature.
 
-This separation of concerns brings several advantages for future enhancements, but it also means some changes in how you work with the scan results. For instance, since the security analysis happens outside the CI/CD pipeline, certain workflows are no longer compatible.
-This also impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Please review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.
+This separation of concerns brings several advantages for future enhancements, but it also means some changes are necessary since the security analysis happens outside the CI/CD pipeline.
+This impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Please review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.
 
 ### CI/CD configuration
 
-To prevent disruption to your CI/CD pipelines, the new approach is not yet applied to the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and you must use the `latest` template (`Dependency-Scanning.latest.gitlab-ci.yml`) to enable it.
+To prevent disruption to your CI/CD pipelines, the new approach is not yet applied to the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 17.9, you must use the `latest` template (`Dependency-Scanning.latest.gitlab-ci.yml`) to enable it.
 Other migration paths might be considered as the feature gains maturity.
 
 The latest Dependency Scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`) still maintains backward compatibility by default. It continues to run existing Gemnasium analyzer jobs, while the new Dependency Scanning analyzer only activates for newly supported languages and package managers. You can opt-in to use the new Dependency Scanning analyzer for all projects by configuring the `DS_ENFORCE_NEW_ANALYZER` CI/CD variable to `true`.
@@ -88,13 +88,25 @@ One significant change affects how dependencies are discovered, particularly for
 This change means you'll need to ensure these files are available, either by committing them to your repository or generating them dynamically during the CI/CD pipeline. While this requires some initial setup, it provides more reliable and consistent results across different environments.
 The following sections will guide you through the specific steps needed to adapt your projects to this new approach if that's necessary.
 
-### Accessing scan results
+### Accessing scan results (during Beta only)
 
-When you migrate to Dependency Scanning using SBOM, you'll notice a fundamental change in how security scan results are handled. The new approach moves the security analysis out of the CI/CD pipeline and into the GitLab platform, which changes how you access and work with the results.
-With the legacy Dependency Scanning feature, CI/CD jobs using the Gemnasium analyzer generate a [Dependency Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning) containing the scan results, and upload it to the platform. You can access these results by all possible ways offered to job artifacts. This means you can process or modify the results within your CI/CD pipeline before they reach the GitLab platform.
-The Dependency Scanning using SBOM approach works differently. Since the security analysis now happens within the GitLab platform using the built-in GitLab SBOM Vulnerability Scanner, you won't find the scan results in your job artifacts anymore. Instead, GitLab analyzes the [CycloneDX SBOM report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) that your CI/CD pipeline generates, creating security findings directly in the GitLab platform.
-To help you transition smoothly, GitLab maintains some backward compatibility. While using the Gemnasium analyzer, you'll still get a standard artifact (using `artifacts:paths`) that contains the scan results. This means if you have succeeding CI/CD jobs that need these results, they can still access them. However, keep in mind that as the GitLab SBOM Vulnerability Scanner evolves and improves, these artifact-based results won't reflect the latest enhancements.
-When you're ready to fully migrate to the new Dependency Scanning analyzer, you'll need to adjust how you programmatically access scan results. Instead of reading job artifacts, you'll use GitLab GraphQL API, specifically the ([`Pipeline.securityReportFindings` resource](../../../api/graphql/reference/_index.md#pipelinesecurityreportfindings)).
+{{< alert type="warning" >}}
+
+ADDENDUM: Based on customer feedback, we have decided to reinstate the generation of the Dependency Scanning report artifact for the Generally Available release.
+However, it will not be available in the Beta release.
+See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/17150) for more details.
+
+{{< /alert >}}
+
+<details>
+  <summary>See Beta behavior</summary>
+
+  When you migrate to Dependency Scanning using SBOM, you'll notice a fundamental change in how security scan results are handled. The new approach moves the security analysis out of the CI/CD pipeline and into the GitLab platform, which changes how you access and work with the results.
+  With the legacy Dependency Scanning feature, CI/CD jobs using the Gemnasium analyzer generate a [Dependency Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning) containing the scan results, and upload it to the platform. You can access these results by all possible ways offered to job artifacts. This means you can process or modify the results within your CI/CD pipeline before they reach the GitLab platform.
+  The Dependency Scanning using SBOM approach works differently. Since the security analysis now happens within the GitLab platform using the built-in GitLab SBOM Vulnerability Scanner, you won't find the scan results in your job artifacts anymore. Instead, GitLab analyzes the [CycloneDX SBOM report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) that your CI/CD pipeline generates, creating security findings directly in the GitLab platform.
+  To help you transition smoothly, GitLab maintains some backward compatibility. While using the Gemnasium analyzer, you'll still get a standard artifact (using `artifacts:paths`) that contains the scan results. This means if you have succeeding CI/CD jobs that need these results, they can still access them. However, keep in mind that as the GitLab SBOM Vulnerability Scanner evolves and improves, these artifact-based results won't reflect the latest enhancements.
+  When you're ready to fully migrate to the new Dependency Scanning analyzer, you'll need to adjust how you programmatically access scan results. Instead of reading job artifacts, you'll use GitLab GraphQL API, specifically the ([`Pipeline.securityReportFindings` resource](../../../api/graphql/reference/_index.md#pipelinesecurityreportfindings)).
+</details>
 
 ## Identify affected projects
 
@@ -539,20 +551,6 @@ The `DS_EXCLUDED_ANALYZERS` can now contain a new value `dependency-scanning` to
 
 ## Continue with the Gemnasium analyzer
 
-While GitLab strongly encourages you to migrate to the new Dependency Scanning analyzer, you might need more time to plan and execute your migration.
 You can continue using the deprecated Gemnasium analyzer with your existing CI/CD configuration, including all your current CI/CD variables.
-However, you should consider this only as a temporary solution to extend your migration timeline.
-
-### Expected support
-
-To comply with our [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support), our existing container images for the Gemnasium analyzer must stay available for GitLab 16.x and 17.x Self-Managed instance.
-This means these container images will still be downloadable and usable until May 2027 at least, when delivering GitLab 20.0 and dropping support for these older major versions.
-
-As GitLab has announced [End of Support](../../../update/terminology.md#end-of-support) for this analyzer as of May 2025 (18.0), no support or fixes will be provided.
-
-## Disable the new Dependency Scanning analyzer
-
-If you need additional time to evaluate the new Dependency Scanning analyzer, particularly for compliance or internal validation purposes, you can temporarily prevent it from running.
-
-To disable the new analyzer for newly supported languages and package managers, set the CI/CD variable `DS_EXCLUDED_ANALYZERS` to `dependency-scanning` in your CI/CD configuration.
-This setting ensures that only the Gemnasium analyzer will run while you complete your evaluation process.
+GitLab will continue to support it until the [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md) feature and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
+are Generally Available. This work is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/15961)

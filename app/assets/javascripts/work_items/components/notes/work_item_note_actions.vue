@@ -310,10 +310,11 @@ export default {
         <gl-disclosure-dropdown-item
           v-if="showEdit"
           data-testid="delete-note-action"
+          variant="danger"
           @action="emitEvent('deleteNote')"
         >
           <template #list-item>
-            <span class="gl-text-red-500">{{ $options.i18n.deleteNoteText }}</span>
+            {{ $options.i18n.deleteNoteText }}
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>

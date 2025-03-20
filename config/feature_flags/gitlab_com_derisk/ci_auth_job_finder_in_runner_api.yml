@@ -1,9 +1,0 @@
----
-name: ci_auth_job_finder_in_runner_api
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474777
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180086
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517443
-milestone: '17.9'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false
