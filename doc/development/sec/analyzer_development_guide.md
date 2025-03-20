@@ -295,6 +295,72 @@ To backport a critical fix or patch to an earlier version, follow the steps belo
 1. If not, you have to follow the [manual release process](#manual-release-process) to release a new version.
 1. NOTE: the release pipeline will override the latest `edge` tag so the most recent release pipeline's `tag edge` job may need to be re-ran to avoid a regression for that tag.
 
+### Preparing analyzers for a major version release
+
+This major version release process applies to analyzers belonging to the following groups:
+
+- [Composition Analysis](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis)
+- [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
+
+Other groups are reponsible for documenting their own major version release process.
+
+Assuming the current analyzer release is `v{N}`:
+
+1. Create a new branch `v{N+1}` to "stage" breaking changes.
+1. Ensure the wildcard `v*` is set as both a [Protected Tag](../../user/project/protected_tags.md) and [Protected Branch](../../user/project/repository/branches/protected.md) for the project, and that the `gl-service-dev-secure-analyzers-automation` service account is `Allowed to create` protected tags. See step `3.1` of the [Officially supported images](#officially-supported-images) section for more details.
+1. In the milestones leading up to the major release milestone:
+   - Merge non-breaking changes to the `default` branch (aka `master` or `main`)
+   - Merge breaking changes to the `v{N+1}` branch, and create a separate `release candidate` entry in the `CHANGELOG.md` file for each change:
+
+      ```markdown
+      ## v{N+1}.0.0-rc.0
+      - some breaking change (!123)
+      ```
+
+      Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
+
+1. When the milestone of the major release is almost complete, and there are no more changes to be merged into the `default` or `v{N+1}` branches:
+   1. Create a `v{N}` branch from the `default` branch.
+   1. Create a Merge Request in the `v{N+1}` branch to squash all the `release candidate` changelog entries into a single entry for `v{N+1}`.
+
+      For example, if the `CHANGELOG.md` contains the following 3 `release candidate` entries for version `v{N+1}`:
+
+      ```markdown
+      ## v{N+1}.0.0-rc.2
+      - yet another breaking change (!125)
+
+      ## v{N+1}.0.0-rc.1
+      - another breaking change (!124)
+
+      ## v{N+1}.0.0-rc.0
+      - some breaking change (!123)
+      ```
+
+      Then the new Merge Request should update the `CHANGELOG.md` to have a single major release for `v{N+1}`, by combining all the `release candidate` entries into a single entry:
+
+      ```markdown
+      ## v{N+1}.0.0
+      - yet another breaking change (!125)
+      - another breaking change (!124)
+      - some breaking change (!123)
+      ```
+
+   1. Create a Merge Request to merge all the breaking changes from the `v{N+1}` branch into the `default` branch.
+   1. Delete the `v{N+1}` branch, since it's no longer needed, as the `default` branch now contains all the changes from the `v{N+1}` branch.
+   1. Ensure three scheduled pipelines exist, creating them if necessary, and set `PUBLISH_IMAGES: true` for all of them:
+      - `Republish images v{N}` (against the `v{N}` branch)
+
+         This scheduled pipeline needs to be created
+      - `Daily build` (against the `default` branch)
+
+         This scheduled pipeline should already exist
+      - `Republish images v{N-1}` (against the `v{N-1}` branch)
+
+         This scheduled pipeline should already exist
+   1. Delete the scheduled pipeline for the `v{N-2}` branch (if it exists), since we only support [two previous major versions](https://about.gitlab.com/support/statement-of-support/#version-support).
+
+When the above steps have been completed for all the secure stage analyzers, and images for the `v{N+1}` release are available under `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`, create a new MR to bump the major version for each analyzer in the [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) and [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml) CI templates.
+
 ## Development of new analyzers
 
 We occasionally need to build out new analyzer projects to support new frameworks and tools.
@@ -435,23 +501,31 @@ In order to push images to this location:
          - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
             - `Disabled`
 
-1. Configure the following [`CI/CD` environment variables](../../ci/variables/_index.md) for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
+1. Configure the following options for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
 
-   {{< alert type="note" >}}
+   1. Add the wildcard `v*` as a [Protected Tag](../../user/project/protected_tags.md).
 
-   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
+      Ensure the `gl-service-dev-secure-analyzers-automation` account has been explicitly added to the list of accounts `Allowed to create` protected tags. This is required to allow the [`upsert git tag`](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/2a3519d/includes-dev/upsert-git-tag.yml#L35-44) job to create new releases for the analyzer project.
 
-   {{< /alert >}}
+   1. Add the wildcard `v*` as a [Protected Branch](../../user/project/repository/branches/protected.md).
 
-   | Key                     | Value                                                                       |
-   |-------------------------|-----------------------------------------------------------------------------|
-   | `SEC_REGISTRY_IMAGE`    | `registry.gitlab.com/security-products/$CI_PROJECT_NAME`                    |
-   | `SEC_REGISTRY_USER`     | `gl-service-dev-secure-analyzers-automation`                                |
-   | `SEC_REGISTRY_PASSWORD` | Personal Access Token for `gl-service-dev-secure-analyzers-automation` user. Request an [administrator](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users) to configure this token value. |
+   1. [`CI/CD` environment variables](../../ci/variables/_index.md)
 
-   The above variables are used by the [tag_image.sh](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/a784f5d/scripts/tag_image.sh#L21-26) script in the `ci-templates` project to push the container image to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+      {{< alert type="note" >}}
 
-   See the [semgrep CI/CD Variables](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/settings/ci_cd#js-cicd-variables-settings) for an example.
+      It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
+
+      {{< /alert >}}
+
+      | Key                     | Value                                                                       |
+      |-------------------------|-----------------------------------------------------------------------------|
+      | `SEC_REGISTRY_IMAGE`    | `registry.gitlab.com/security-products/$CI_PROJECT_NAME`                    |
+      | `SEC_REGISTRY_USER`     | `gl-service-dev-secure-analyzers-automation`                                |
+      | `SEC_REGISTRY_PASSWORD` | Personal Access Token for `gl-service-dev-secure-analyzers-automation` user. Request an [administrator](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users) to configure this token value. |
+
+      The above variables are used by the [tag_image.sh](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/a784f5d/scripts/tag_image.sh#L21-26) script in the `ci-templates` project to push the container image to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+
+      See the [semgrep CI/CD Variables](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/settings/ci_cd#js-cicd-variables-settings) for an example.
 
 #### Temporary development images
 

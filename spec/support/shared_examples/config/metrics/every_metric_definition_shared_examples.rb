@@ -116,6 +116,7 @@ RSpec.shared_examples 'every metric definition' do
     let(:parent_metric_classes) do
       [
         Gitlab::Usage::Metrics::Instrumentations::BaseMetric,
+        Gitlab::Usage::Metrics::Instrumentations::BaseIntegrationsMetric,
         Gitlab::Usage::Metrics::Instrumentations::GenericMetric,
         Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric,
         Gitlab::Usage::Metrics::Instrumentations::RedisMetric,

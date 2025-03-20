@@ -13619,6 +13619,7 @@ CREATE TABLE duo_workflows_workflows (
     goal text,
     agent_privileges smallint[] DEFAULT '{1,2}'::smallint[] NOT NULL,
     workflow_definition text DEFAULT 'software_development'::text NOT NULL,
+    allow_agent_to_request_user boolean DEFAULT true NOT NULL,
     CONSTRAINT check_5aedde451d CHECK ((char_length(goal) <= 4096)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255))
 );

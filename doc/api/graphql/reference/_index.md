@@ -7723,10 +7723,7 @@ Input type: `MemberRoleAdminDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmemberroleadmindeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmemberroleadmindeletedescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="mutationmemberroleadmindeleteid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the admin member role to delete. |
-| <a id="mutationmemberroleadmindeletename"></a>`name` | [`String`](#string) | Name of the member role. |
-| <a id="mutationmemberroleadmindeletepermissions"></a>`permissions` | [`[MemberRoleAdminPermission!]`](#memberroleadminpermission) | List of all customizable admin permissions. |
 
 #### Fields
 
@@ -7734,7 +7731,7 @@ Input type: `MemberRoleAdminDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmemberroleadmindeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberroleadmindeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmemberroleadmindeletememberrole"></a>`memberRole` | [`AdminMemberRole`](#adminmemberrole) | Member role. |
+| <a id="mutationmemberroleadmindeletememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Deleted admin member role. |
 
 ### `Mutation.memberRoleAdminUpdate`
 

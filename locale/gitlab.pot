@@ -25154,7 +25154,7 @@ msgstr ""
 msgid "FeatureFlags|Delete feature flag"
 msgstr ""
 
-msgid "FeatureFlags|Description"
+msgid "FeatureFlags|Description (optional)"
 msgstr ""
 
 msgid "FeatureFlags|Edit Feature flag"
@@ -35783,6 +35783,9 @@ msgstr ""
 msgid "MemberRole|Added from %{role}"
 msgstr ""
 
+msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
+msgstr ""
+
 msgid "MemberRole|Are you sure you want to delete this custom role?"
 msgstr ""
 
@@ -35928,9 +35931,6 @@ msgid "MemberRole|Role ID: %{id}"
 msgstr ""
 
 msgid "MemberRole|Role details"
-msgstr ""
-
-msgid "MemberRole|Role is assigned to one or more admins. Remove role from all admins, then delete role."
 msgstr ""
 
 msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."

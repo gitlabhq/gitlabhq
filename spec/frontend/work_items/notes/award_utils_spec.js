@@ -86,6 +86,30 @@ describe('Work item note award utils', () => {
       ]);
     });
 
+    it("doesn't add duplicate new emoji to cache", () => {
+      const note = firstNote;
+      const { name } = mockAwardEmojiThumbsUp;
+
+      const updateFn = optimisticAwardUpdate({ note, name, fullPath, workItemIid });
+
+      // call update twice to simulate two identical optimistic updates
+      updateFn(apolloProvider.clients.defaultClient.cache);
+      updateFn(apolloProvider.clients.defaultClient.cache);
+
+      const updatedResult = apolloProvider.clients.defaultClient.readQuery({
+        query: workItemNotesByIidQuery,
+        variables: { fullPath, iid: workItemIid },
+      });
+
+      const updatedWorkItem = getWorkItem(updatedResult);
+      const updatedNote = getFirstNote(updatedWorkItem);
+
+      expect(updatedNote.awardEmoji.nodes).toEqual([
+        mockAwardEmojiThumbsDown,
+        mockAwardEmojiThumbsUp,
+      ]);
+    });
+
     it('removes existing emoji from cache', () => {
       const note = firstNote;
       const { name } = mockAwardEmojiThumbsDown;

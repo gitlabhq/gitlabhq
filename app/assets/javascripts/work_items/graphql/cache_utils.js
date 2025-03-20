@@ -149,7 +149,13 @@ function updateNoteAwardEmojiCache(currentNotes, note, callback) {
 
 export const updateCacheAfterAddingAwardEmojiToNote = (currentNotes, note) => {
   return updateNoteAwardEmojiCache(currentNotes, note, (n, awardEmoji) => {
-    n.awardEmoji.nodes.push(awardEmoji);
+    if (
+      !n.awardEmoji.nodes.some(
+        (emoji) => emoji.name === awardEmoji.name && emoji.user.id === awardEmoji.user.id,
+      )
+    ) {
+      n.awardEmoji.nodes.push(awardEmoji);
+    }
   });
 };
 

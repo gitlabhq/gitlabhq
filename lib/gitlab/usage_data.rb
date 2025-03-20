@@ -33,6 +33,10 @@ module Gitlab
       recorded_at
     ].freeze
 
+    MIGRATED_INTEGRATIONS = %w[
+      pivotaltracker
+    ].freeze
+
     class << self
       include Gitlab::Utils::UsageData
       include Gitlab::Utils::StrongMemoize
@@ -220,8 +224,11 @@ module Gitlab
         available_integrations.each_with_object({}) do |name, response|
           type = Integration.integration_name_to_type(name)
 
-          response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
-          response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
+          unless MIGRATED_INTEGRATIONS.include?(name)
+            response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
+            response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
+          end
+
           response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
           response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
           response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))
