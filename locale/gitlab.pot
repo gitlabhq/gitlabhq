@@ -43439,6 +43439,9 @@ msgstr ""
 msgid "Pipelines|Pipeline editor"
 msgstr ""
 
+msgid "Pipelines|Pipeline inputs now available!"
+msgstr ""
+
 msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
@@ -43611,6 +43614,9 @@ msgid "Pipelines|Use CI/CD pipelines to automatically build, test, and deploy yo
 msgstr ""
 
 msgid "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD."
+msgstr ""
+
+msgid "Pipelines|Use inputs to increase the flexibility of your CI/CD configuration files and enhance reusability across your projects."
 msgstr ""
 
 msgid "Pipelines|Use template"

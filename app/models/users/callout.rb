@@ -100,7 +100,8 @@ module Users
       planner_role_callout: 97,
       # EE-only
       pipl_compliance_alert: 98,
-      new_merge_request_dashboard_welcome: 99
+      new_merge_request_dashboard_welcome: 99,
+      pipeline_inputs_announcement_banner: 100
     }
 
     validates :feature_name,

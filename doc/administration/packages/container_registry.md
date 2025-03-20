@@ -514,15 +514,20 @@ The S3 storage driver integrates with Amazon S3 or any S3-compatible object stor
 
 {{< alert type="warning" >}}
 
-The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 18.0.
-Use the `s3_v2` driver instead when it becomes available in May 2025. This change is a breaking change.
+The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 19.0.
+
+Use the `s3_v2` driver (in Beta) instead when it becomes available in May 2025. This driver offers improved performance, reliability, and compatibility with AWS authentication requirements. While this is a breaking change, the new driver has been thoroughly tested and is designed to be a drop-in replacement for most configurations.
+
+Make sure to test the new driver in non-production environments before deploying to production to ensure compatibility with your specific setup and usage patterns. This allows you to identify and address any edge cases unique to your environment.
+
+Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 {{< /alert >}}
 
 <!--- end_remove -->
 
 ```ruby
-# Deprecated: Will be removed in GitLab 18.0
+# Deprecated: Will be removed in GitLab 19.0
 registry['storage'] = {
   's3' => {
     'accesskey' => 's3-access-key',
@@ -533,7 +538,7 @@ registry['storage'] = {
   }
 }
 
-# Recommended: s3_v2 driver
+# Beta: s3_v2 driver
 registry['storage'] = {
   's3_v2' => {
     'accesskey' => 's3-access-key',
@@ -545,16 +550,15 @@ registry['storage'] = {
 }
 ```
 
-The `s3_v2` driver only supports Signature Version 4 for authentication.
+The `s3_v2` driver (in Beta) uses AWS SDK v2 and only supports Signature Version 4 for authentication. This driver improves performance and reliability while ensuring compatibility with AWS authentication requirements, as they are phasing out support for older signature methods. For more information, see [epic 16272](https://gitlab.com/groups/gitlab-org/-/epics/16272).
 
-To avoid using static credentials, use an IAM role and omit `accesskey` and `secretkey`.
-Make sure that your IAM profile follows the [permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/).
+For improved security, you can use an IAM role instead of static credentials by omitting the `accesskey` and `secretkey` parameters.
 
 For S3 VPC endpoints:
 
 ```ruby
 registry['storage'] = {
-  's3' => {
+  's3_v2' => {  # Beta driver
     'accesskey' => 's3-access-key',
     'secretkey' => 's3-secret-key-for-access-key',
     'bucket' => 'your-s3-bucket',
@@ -593,7 +597,13 @@ The Azure storage driver integrates with Microsoft Azure Blob Storage.
 {{< alert type="warning" >}}
 
 The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-Use the `azure_v2` driver instead. This change is a breaking change.
+The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
+
+Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
+
+Make sure to test the new driver in non-production environments before deploying to production to identify and address any edge cases specific to your environment and usage patterns.
+
+Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 {{< /alert >}}
 
@@ -607,7 +617,7 @@ registry['storage'] = {
   }
 }
 
-# Recommended: azure_v2 driver
+# Beta: azure_v2 driver
 registry['storage'] = {
   'azure_v2' => {
     'credentials_type' => 'client_secret',

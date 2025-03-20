@@ -334,6 +334,32 @@ Before upgrading to GitLab 19.0, please ensure you have [migrated](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### S3 storage driver (AWS SDK v1) for the container registry
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.10</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
+
+</div>
+
+The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
+
+The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS. It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
+
+To migrate to the `s3_v2` driver:
+
+1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
+1. Move from Signature Version 2 to Signature Version 4 for authentication if you haven't already, as AWS SDK v2 only supports Signature Version 4.
+1. Test the configuration in a non-production environment before deploying to production.
+
+For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Single database connection is deprecated
 
 <div class="deprecation-notes">
@@ -1524,14 +1550,14 @@ to ensure the correct locations are being used to mirror the required scanner im
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="18.0">
+<div class="deprecation " data-milestone="18.0">
 
 ### REST API endpoint `pre_receive_secret_detection_enabled` is deprecated
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">18.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/514413).
 
 </div>
@@ -1865,32 +1891,6 @@ For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and eliminates the legacy
 [runner registration token](https://docs.gitlab.com/security/tokens/#runner-registration-tokens-deprecated).
 In GitLab 18.0, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### S3 storage driver (AWS SDK v1) for the container registry
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.10</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
-
-</div>
-
-The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 18.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
-
-The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS. It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
-
-To migrate to the `s3_v2` driver:
-
-1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
-1. Move from Signature Version 2 to Signature Version 4 for authentication if you haven't already, as AWS SDK v2 only supports Signature Version 4.
-1. Test the configuration in a non-production environment before deploying to production.
-
-For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
 
 </div>
 

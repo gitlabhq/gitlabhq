@@ -178,7 +178,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
    - **Primary region**: Select the primary AWS region to use for data storage. Note the
      [available AWS regions](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
 
-   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance.
+   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support).
 
    - **Backup region**: Select a region to replicate and store your primary data backups.
      You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).

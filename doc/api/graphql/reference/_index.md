@@ -8658,6 +8658,54 @@ Input type: `OrganizationCreateInput`
 | <a id="mutationorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
 
+### `Mutation.organizationCreateClusterAgentMapping`
+
+{{< details >}}
+**Introduced** in GitLab 17.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `OrganizationCreateClusterAgentMappingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreateclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent to be associated with the organization. |
+| <a id="mutationorganizationcreateclusteragentmappingorganizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | GlobalID of the organization to be associated with the cluster agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreateclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.organizationDeleteClusterAgentMapping`
+
+{{< details >}}
+**Introduced** in GitLab 17.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `OrganizationDeleteClusterAgentMappingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationdeleteclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationdeleteclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent to be dissociated with the organization. |
+| <a id="mutationorganizationdeleteclusteragentmappingorganizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | GlobalID of the organization to be dissociated with the cluster agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationdeleteclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationdeleteclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.organizationUpdate`
 
 {{< details >}}
@@ -44345,6 +44393,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumperiod_in_terraform_state_name_alert"></a>`PERIOD_IN_TERRAFORM_STATE_NAME_ALERT` | Callout feature name for period_in_terraform_state_name_alert. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumpersonal_project_limitations_banner"></a>`PERSONAL_PROJECT_LIMITATIONS_BANNER` | Callout feature name for personal_project_limitations_banner. |
+| <a id="usercalloutfeaturenameenumpipeline_inputs_announcement_banner"></a>`PIPELINE_INPUTS_ANNOUNCEMENT_BANNER` | Callout feature name for pipeline_inputs_announcement_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
 | <a id="usercalloutfeaturenameenumpipl_compliance_alert"></a>`PIPL_COMPLIANCE_ALERT` | Callout feature name for pipl_compliance_alert. |

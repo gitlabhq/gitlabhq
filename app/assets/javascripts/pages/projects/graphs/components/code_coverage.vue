@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -47,7 +47,7 @@ export default {
       coveragePercentage: '',
       chartOptions: {
         yAxis: {
-          name: __('Code Coverage in %%'),
+          name: sprintf(__('Code Coverage in %%')),
           type: 'value',
           min: 0,
           max: 100,

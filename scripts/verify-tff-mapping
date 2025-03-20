@@ -451,6 +451,24 @@ tests = [
   },
   {
     explanation: 'Map Remote Development GraphQL mutations to request specs',
+    changed_file: 'ee/app/graphql/mutations/remote_development/organization_cluster_agent_mapping_operations/create.rb',
+    # rubocop:disable Layout/LineLength -- fix CI failures - not sure why other lines in this file don't get errors
+    expected: %w[
+      ee/spec/requests/api/graphql/mutations/remote_development/organization_cluster_agent_mapping_operations/create_spec.rb
+    ]
+    # rubocop:enable Layout/LineLength
+  },
+  {
+    explanation: 'Map Remote Development GraphQL mutations to request specs',
+    changed_file: 'ee/app/graphql/mutations/remote_development/organization_cluster_agent_mapping_operations/delete.rb',
+    # rubocop:disable Layout/LineLength -- fix CI failures - not sure why other lines in this file don't get errors
+    expected: %w[
+      ee/spec/requests/api/graphql/mutations/remote_development/organization_cluster_agent_mapping_operations/delete_spec.rb
+    ]
+    # rubocop:enable Layout/LineLength
+  },
+  {
+    explanation: 'Map Remote Development GraphQL mutations to request specs',
     changed_file: 'ee/app/graphql/mutations/remote_development/workspace_operations/create.rb',
     expected: %w[
       ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb

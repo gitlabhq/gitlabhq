@@ -27,12 +27,9 @@ unless Rails.env.production?
       Rake::Task['eslint'].invoke
     end
 
+    require 'haml_lint/rake_task'
     desc "GitLab | Lint | Lint HAML files"
-    task :haml do
-      Rake::Task['haml_lint'].invoke
-    rescue RuntimeError # The haml_lint tasks raise a RuntimeError
-      exit(1)
-    end
+    HamlLint::RakeTask.new(:haml)
 
     desc "GitLab | Lint | Lint docs Markdown files"
     task :markdown do

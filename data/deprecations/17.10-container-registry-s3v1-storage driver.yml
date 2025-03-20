@@ -1,6 +1,6 @@
 - title: "S3 storage driver (AWS SDK v1) for the container registry"
   announcement_milestone: "17.10"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   breaking_change: true
   reporter: trizzi
   stage: Package
@@ -11,7 +11,7 @@
   manual_task: true
   window: "3"
   body: |
-    The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 18.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
+    The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
 
     The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS. It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
 

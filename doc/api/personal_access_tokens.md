@@ -308,7 +308,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Lists all groups, subgroups, and projects associated with the personal access token used to authenticate the request.
+Lists all groups and projects accessible by the personal access token used to authenticate the request. Generally, this includes any groups or projects that the user is a member of.
 
 ```plaintext
 GET /personal_access_tokens/self/associations
