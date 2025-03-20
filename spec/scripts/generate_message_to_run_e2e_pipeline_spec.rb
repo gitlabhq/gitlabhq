@@ -230,12 +230,12 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
 
       To run all E2E tests, apply the ~"pipeline:run-all-e2e" label and run a new pipeline.
 
-      E2E test jobs are allowed to fail due to [flakiness](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/dashboards).
+      E2E test jobs are allowed to fail due to [flakiness](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/dashboards/).
       See current failures at the latest [pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 
       Once done, apply the ✅ emoji on this comment.
 
-      **Team members only:** for any questions or help, reach out on the internal `#test-platform` Slack channel.
+      **Team members only:** for any questions or help, reach out on the internal `#s_developer_experience` Slack channel.
       <!-- Run e2e warning end -->
       MARKDOWN
     end

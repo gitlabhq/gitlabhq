@@ -491,7 +491,7 @@ end
 
 We have a mechanism to [collect](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resource_data_processor.rb#L32)
 all resources created during test executions, and another to [handle](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L44)
-these resources. On [dotcom environments](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/#environments), after a test suite finishes in the [QA pipelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#qa-test-pipelines), resources from all passing test are
+these resources. On [dotcom environments](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/#environments), after a test suite finishes in the [E2E pipelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/debugging-end-to-end-test-failures/), resources from all passing test are
 automatically deleted in the same pipeline run. Resources from all failed tests are reserved for investigation,
 and won't be deleted until the following Saturday by a scheduled pipeline. When introducing new resources,
 also make sure to add any resource that cannot be deleted to the [IGNORED_RESOURCES](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L29)
@@ -499,8 +499,8 @@ list.
 
 ## Where to ask for help?
 
-If you need more information, ask for help on `#test-platform` channel on Slack
+If you need more information, ask for help on `#s_developer_experience` channel on Slack
 (internal, GitLab Team only).
 
 If you are not a Team Member, and you still need help to contribute,
-open an issue in GitLab CE issue tracker with the `~QA` label.
+open an issue in GitLab issue tracker with the `~QA` label.
