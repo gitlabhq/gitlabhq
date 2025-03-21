@@ -35,8 +35,8 @@ module QA
                 current changes in this merge request.
 
                 For more help see documentation in
-                https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html
-                or ask for help on #test-platform channel on Slack (GitLab Team only).
+                https://docs.gitlab.com/development/testing_guide/end_to_end/beginners_guide/page_objects/
+                or ask for help on #s_developer_experience channel on Slack (GitLab Team only).
 
                 If you are not a Team Member, and you still need help to
                 contribute, please open an issue in GitLab QA issue tracker.
