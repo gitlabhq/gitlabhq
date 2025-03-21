@@ -44,8 +44,8 @@ You cannot edit the built-in dashboards, but you can create custom dashboards wi
 
 The following built-in dashboards are available:
 
-- [**Value Streams Dashboard**](../analytics/value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
-- [**AI Impact Dashboard**](../analytics/ai_impact_analytics.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
+- [**Value Streams Dashboard**](value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
+- [**AI Impact Dashboard**](ai_impact_analytics.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
 
 ## Custom dashboards
 
@@ -427,4 +427,4 @@ defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 If a dashboard panel displays an error message:
 
-- Make sure your [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization-template) configuration is set up correctly.
+- Make sure your [visualization](analytics_dashboards.md#define-a-chart-visualization-template) configuration is set up correctly.

@@ -103,12 +103,12 @@ You also can:
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](../import/_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
-The Gitea importer uses an [improved method](../import/_index.md#user-contribution-and-membership-mapping)
+The Gitea importer uses an [improved method](_index.md#user-contribution-and-membership-mapping)
 of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
 ### Old method of user contribution mapping
@@ -116,6 +116,6 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
 To use this method, `importer_user_mapping` and `gitea_user_mapping` must be disabled.
 For imports to GitLab.com, you must
-use the [improved method](../import/_index.md#user-contribution-and-membership-mapping) instead.
+use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
 
 Using the old method, user contributions are assigned to the project creator (usually the user who started the import process) by default.

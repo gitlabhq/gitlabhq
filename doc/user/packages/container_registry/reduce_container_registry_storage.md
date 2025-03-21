@@ -110,7 +110,7 @@ An image layer is only counted once if:
 - You share the image layer across different repositories.
 
 Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
-referenced exclusively by them are subject to [online garbage collection](../container_registry/delete_container_registry_images.md#garbage-collection).
+referenced exclusively by them are subject to [online garbage collection](delete_container_registry_images.md#garbage-collection).
 Untagged image layers are automatically deleted after 24 hours if they remain unreferenced during that period.
 
 Image layers are stored on the storage backend in the original (usually compressed) format. This
@@ -132,7 +132,7 @@ in the namespace. Untagged image layers are not ignored. As a result,
 the displayed usage size might not change significantly after deleting tags. Instead,
 the size value only changes when:
 
-- An automated [garbage collection process](../container_registry/delete_container_registry_images.md#garbage-collection)
+- An automated [garbage collection process](delete_container_registry_images.md#garbage-collection)
   runs and deletes untagged image layers. After a user deletes a tag, a garbage collection run
   is scheduled to start 24 hours later. During that run, images that were previously tagged
   are analyzed and their layers deleted if not referenced by any other tagged image.

@@ -1,4 +1,5 @@
 <script>
+import { clamp } from 'lodash';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
@@ -125,7 +126,11 @@ export default {
       }
 
       this.$apollo.queries.mergeRequests.refetch({
-        perPage: Math.min(100, Math.ceil(this.mergeRequests.nodes.length / PER_PAGE) * PER_PAGE),
+        perPage: clamp(
+          Math.ceil(this.mergeRequests.nodes.length / PER_PAGE) * PER_PAGE,
+          PER_PAGE,
+          100,
+        ),
       });
 
       if (!this.hideCount) {

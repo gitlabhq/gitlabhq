@@ -212,10 +212,10 @@ Prerequisites:
 {{< /history >}}
 
 You can configure your Pages deployments to be automatically deleted after
-a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/_index.md#pagespagesexpire_in):
+a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/_index.md#pagesexpire_in):
 
 ```yaml
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - ...

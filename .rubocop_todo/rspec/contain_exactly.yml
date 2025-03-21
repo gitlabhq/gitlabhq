@@ -163,7 +163,6 @@ RSpec/ContainExactly:
     - 'spec/models/packages/package_file_spec.rb'
     - 'spec/models/packages/package_spec.rb'
     - 'spec/models/slack_integration_spec.rb'
-    - 'spec/models/virtual_registries/packages/maven/upstream_spec.rb'
     - 'spec/presenters/packages/nuget/search_results_presenter_spec.rb'
     - 'spec/requests/api/ci/pipelines_spec.rb'
     - 'spec/requests/api/graphql/packages/package_spec.rb'

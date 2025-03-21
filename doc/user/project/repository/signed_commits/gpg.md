@@ -178,7 +178,7 @@ you can sign individual commits manually, or configure Git to default to signed 
      ```
 
   1. Enter the passphrase of your GPG key when asked.
-  1. Push to GitLab and check that your commits [are verified](../signed_commits/_index.md#verify-commits).
+  1. Push to GitLab and check that your commits [are verified](_index.md#verify-commits).
 - Sign all Git commits by default by running this command:
 
   ```shell

@@ -101,7 +101,7 @@ To sign a commit:
 ## Verify commits
 
 You can verify all types of signed commits
-[in the GitLab UI](../signed_commits/_index.md#verify-commits). Commits signed
+[in the GitLab UI](_index.md#verify-commits). Commits signed
 with an SSH key can also be verified locally.
 
 ### Verify commits locally
@@ -168,6 +168,6 @@ Removing your SSH key can impact any commits signed with the key:
 
 ## Related topics
 
-- [Sign commits and tags with X.509 certificates](../signed_commits/x509.md)
+- [Sign commits and tags with X.509 certificates](x509.md)
 - [Sign commits with GPG](gpg.md)
 - [Commits API](../../../../api/commits.md)

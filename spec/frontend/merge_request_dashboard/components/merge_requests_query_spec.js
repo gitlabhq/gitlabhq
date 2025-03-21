@@ -21,6 +21,7 @@ describe('Merge requests query component', () => {
 
   function createComponent(
     props = { query: 'reviewRequestedMergeRequests', variables: { state: 'opened' } },
+    mergeRequests = [createMockMergeRequest({ title: 'reviewer' })],
   ) {
     reviewerQueryMock = jest.fn().mockResolvedValue({
       data: {
@@ -34,7 +35,7 @@ describe('Merge requests query component', () => {
               startCursor: null,
               endCursor: null,
             },
-            nodes: [createMockMergeRequest({ title: 'reviewer' })],
+            nodes: mergeRequests,
           },
         },
       },
@@ -147,7 +148,10 @@ describe('Merge requests query component', () => {
 
   describe('when refetching', () => {
     it('refetches merge requests with eventHub emit event and query type matches', async () => {
-      createComponent();
+      createComponent(
+        { query: 'reviewRequestedMergeRequests', variables: { state: 'opened' } },
+        [],
+      );
 
       await waitForPromises();
 
@@ -156,6 +160,7 @@ describe('Merge requests query component', () => {
       await waitForPromises();
 
       expect(reviewerQueryMock.mock.calls).toHaveLength(2);
+      expect(reviewerQueryMock.mock.calls[1][0]).toEqual(expect.objectContaining({ perPage: 20 }));
     });
 
     it('does not refetch merge requests with eventHub emit event and query type does not matches', async () => {

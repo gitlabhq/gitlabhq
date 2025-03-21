@@ -84,6 +84,7 @@ include:
     # skip short lived dev image signing and verification to save time
     SKIP_IMAGE_SIGNING: "true"
     SKIP_IMAGE_VERIFICATION: "true"
+    SKIP_IMAGE_TAGGING: "${SKIP_IMAGE_TAGGING}"
     # set specific arch list
     ARCH_LIST: "${ARCH_LIST}"
     # use larger runner for complex rails build jobs

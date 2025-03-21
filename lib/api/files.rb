@@ -11,7 +11,7 @@ module API
 
     feature_category :source_code_management
 
-    allow_access_with_scope :read_repository, if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope [:read_repository, :ai_workflows], if: ->(request) { request.get? || request.head? }
 
     helpers ::API::Helpers::HeadersHelpers
 

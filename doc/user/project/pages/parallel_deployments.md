@@ -21,7 +21,7 @@ title: GitLab Pages parallel deployments
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in `path_prefix` in GitLab 17.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/487161) in GitLab 17.9. Feature flag `pages_multiple_versions_setting` removed.
-- Automatically appending `pages:pages.publish` path to `artifacts:paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) in GitLab 17.10 for Pages jobs only.
+- Automatically appending `pages.publish` path to `artifacts:paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) in GitLab 17.10 for Pages jobs only.
 
 {{< /history >}}
 
@@ -164,7 +164,7 @@ Mixing [CI/CD variables](../../../ci/variables/_index.md) with other strings can
 possibility. For example:
 
 ```yaml
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"
@@ -197,7 +197,7 @@ You can use parallel GitLab Pages deployments to create a new [environment](../.
 For example:
 
 ```yaml
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"

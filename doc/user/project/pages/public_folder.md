@@ -125,7 +125,7 @@ module.exports = nextConfig
 An example `.gitlab-ci.yml` can be as minimal as:
 
 ```yaml
-deploy-pages:
+create-pages:
   before_script:
     - npm install
   script:

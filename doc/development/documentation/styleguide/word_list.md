@@ -1112,8 +1112,8 @@ This guidance follows the [Use of Third-party Trademarks](https://handbook.gitla
 ## GitLab AI vendor model
 
 Use **GitLab AI vendor model** to refer to a [language model](#language-model-large-language-model)
-that is hosted by GitLab, and that customers access through the GitLab-hosted
-[AI gateway](#ai-gateway).
+that is hosted by a third-party provider, and that customers access using the GitLab
+[AI gateway](#ai-gateway) through the [Cloud Connector](../../cloud_connector/architecture.md).
 
 Do not use this term when the [language model is hosted by a customer](#self-hosted-model),
 or when the customer is using the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)

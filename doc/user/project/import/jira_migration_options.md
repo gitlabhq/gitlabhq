@@ -31,7 +31,7 @@ If you opt to migrate your Jira issues, you can choose from several migration op
 GitLab has a built-in tool to import your Jira issue data. To use the GitLab Jira importer:
 
 1. [Configure the GitLab Jira issues integration in your target project](../../../integration/jira/configure.md#configure-the-integration)
-1. [Import your Jira project issues to GitLab](../import/jira.md)
+1. [Import your Jira project issues to GitLab](jira.md)
 
 Alternatively, you can watch a complete demo of the process: <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Import Jira project issues to GitLab](https://www.youtube.com/watch?v=OTJdJWmODFA)
 <!-- Video published on 2023-07-27 -->

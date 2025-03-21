@@ -24,12 +24,28 @@ Before writing tests, understand the different testing levels and determine the 
 
 [Learn more about the different testing levels](../testing_guide/testing_levels.md), and how to decide at what level your changes should be tested.
 
-### Recommendation when mocking
+### Recommendations
+
+#### Name test files the same as the files they are testing
+
+For unit tests, naming the test file with `test_{file_being_tested}.py` and placing it in the same directory structure
+helps with later discoverability of tests. This also avoids confusion between files that have the same name, but
+different modules.
+
+```shell
+File: /foo/bar/cool_feature.py
+
+# Bad
+
+Test file: /tests/my_cool_feature.py
+
+# Good
+
+Test file: /tests/foo/bar/test_cool_feature.py
+```
+
+#### Mocking
 
 - Use `unittest.mock` library.
 - Mock at the right level, for example, at method call boundaries.
 - Mock external services and APIs.
-
-### Testing in Python vs. Ruby on Rails
-
-- [Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/516193)

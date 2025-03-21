@@ -108,7 +108,7 @@ test:  # builds and tests your site
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
 
-deploy-pages:  # a user-defined job that builds your pages and saves them to the specified path.
+create-pages:  # a user-defined job that builds your pages and saves them to the specified path.
   script:
     - hugo
   pages: true  # specifies that this is a Pages job

@@ -73,7 +73,7 @@ module API
       def revoke_token(token)
         service = ::PersonalAccessTokens::RevokeService.new(current_user, token: token).execute
 
-        service.success? ? no_content! : bad_request!(nil)
+        service.success? ? no_content! : bad_request!(service.message)
       end
 
       def rotate_token(token, params)

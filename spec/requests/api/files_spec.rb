@@ -104,6 +104,22 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
   end
 
+  shared_examples 'ai_workflows scope' do
+    subject(:file_action) { nil }
+
+    let(:expected_status) { nil }
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'is successful' do
+        file_action
+
+        expect(response).to have_gitlab_http_status(expected_status)
+      end
+    end
+  end
+
   describe 'HEAD /projects/:id/repository/files/:file_path' do
     shared_examples_for 'repository files' do
       let(:options) { {} }
@@ -225,6 +241,12 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like '403 response' do
           let(:request) { head api(route(file_path), guest), params: params }
         end
+      end
+
+      it_behaves_like 'ai_workflows scope' do
+        subject(:file_action) { head api(route(file_path), oauth_access_token: oauth_token), params: params }
+
+        let(:expected_status) { :ok }
       end
     end
   end
@@ -428,9 +450,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           end
         end
       end
-    end
 
-    context 'when authenticated' do
       context 'and user is an inherited member from the group' do
         context 'when project is public with private repository' do
           let(:project) { public_project_private_repo }
@@ -475,6 +495,12 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             end
           end
         end
+      end
+
+      it_behaves_like 'ai_workflows scope' do
+        subject(:file_action) { get api(route(file_path), oauth_access_token: oauth_token), params: params }
+
+        let(:expected_status) { :ok }
       end
     end
   end
@@ -710,6 +736,12 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like '403 response' do
           let(:request) { get api(route(file_path) + '/blame', guest), params: params }
         end
+      end
+
+      it_behaves_like 'ai_workflows scope' do
+        subject(:file_action) { get api(route(file_path) + '/blame', oauth_access_token: oauth_token), params: params }
+
+        let(:expected_status) { :ok }
       end
     end
 
@@ -968,6 +1000,15 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like '403 response' do
           let(:request) { get api(route(file_path), guest), params: params }
         end
+      end
+
+      it_behaves_like 'ai_workflows scope' do
+        subject(:file_action) do
+          url = route(file_path) + '/raw'
+          get api(url, oauth_access_token: oauth_token), params: params
+        end
+
+        let(:expected_status) { :ok }
       end
     end
 

@@ -81,9 +81,9 @@ To use Workflow in VS Code, ensure your repository is properly connected.
 1. In VS Code, on the top menu, select **Terminal > New Terminal**.
 1. Clone your repository: `git clone <repository>`.
 1. Change to the directory where your repository was cloned and check out your branch: `git checkout <branch_name>`.
-1. Ensure your repository is selected:
+1. Ensure your project is selected:
    1. On the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
-   1. Select the repository name. If you have multiple repositories, select the one you want to work with.
+   1. Select the project name. If you have multiple projects, select the one you want to work with.
 1. In the terminal, ensure your repository is configured with a remote: `git remote -v`. The results should look similar to:
 
    ```plaintext

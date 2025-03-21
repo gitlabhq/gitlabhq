@@ -257,6 +257,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.trigger_pipeline_status_change_subscription' do
+    let(:pipeline) { build(:ci_pipeline, user: user) }
+
+    %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
+      context "when pipeline receives #{action} event" do
+        it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
+          expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+
+          pipeline.public_send(action)
+        end
+      end
+    end
+  end
+
   describe 'unlocking pipelines based on state transition' do
     let(:ci_ref) { create(:ci_ref) }
     let(:unlock_previous_pipelines_worker_spy) { class_spy(::Ci::Refs::UnlockPreviousPipelinesWorker) }
@@ -2247,18 +2261,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when pipeline has no merge requests' do
         it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
-      end
-    end
-
-    describe 'pipeline status update subscription trigger' do
-      %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
-        context "when pipeline receives #{action} event" do
-          it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
-            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
-
-            pipeline.public_send(action)
-          end
-        end
       end
     end
 

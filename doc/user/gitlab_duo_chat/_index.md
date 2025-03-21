@@ -383,7 +383,7 @@ For tips and tricks about integrating GitLab Duo Chat into your AI-powered DevSe
 read the blog post:
 [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 
-[View examples of how to use GitLab Duo Chat](../gitlab_duo_chat/examples.md).
+[View examples of how to use GitLab Duo Chat](examples.md).
 
 ## Give feedback
 

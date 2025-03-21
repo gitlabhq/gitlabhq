@@ -178,6 +178,7 @@ module Ci
     validates :project, presence: true
 
     after_create :keep_around_commits, unless: :importing?
+    after_commit :trigger_pipeline_status_change_subscription, if: :saved_change_to_status?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -304,8 +305,6 @@ module Ci
       end
 
       after_transition do |pipeline, transition|
-        GraphqlTriggers.ci_pipeline_status_updated(pipeline)
-
         next if transition.loopback?
 
         pipeline.run_after_commit do
@@ -607,6 +606,10 @@ module Ci
 
     def self.internal_id_scope_usage
       :ci_pipelines
+    end
+
+    def trigger_pipeline_status_change_subscription
+      GraphqlTriggers.ci_pipeline_status_updated(self)
     end
 
     def uses_needs?

@@ -219,6 +219,10 @@
   background-color: var(--blue-500, $blue-500) !important;
 }
 
+.ci-card:has(.ci-job-item-failed) {
+  border-color: var(--gl-control-border-color-error);
+}
+
 .ci-job-item-failed {
   @apply gl-bg-red-50;
 

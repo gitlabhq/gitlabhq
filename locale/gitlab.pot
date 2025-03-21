@@ -54004,6 +54004,9 @@ msgstr ""
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr ""
 
+msgid "SecurityOrchestration|on every"
+msgstr ""
+
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr ""
 

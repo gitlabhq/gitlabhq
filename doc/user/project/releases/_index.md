@@ -82,7 +82,7 @@ You can access the latest release URL with the following permanent link:
 https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest#release
 ```
 
-To learn about adding permanent links to release assets, see [Permanent links to latest release assets](../releases/release_fields.md#permanent-links-to-latest-release-assets).
+To learn about adding permanent links to release assets, see [Permanent links to latest release assets](release_fields.md#permanent-links-to-latest-release-assets).
 
 #### Sorting preferences
 

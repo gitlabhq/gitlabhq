@@ -1351,10 +1351,10 @@ link outside it.
   - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 - For [GitLab Pages job](#pages):
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
-    the [`pages:pages.publish`](#pagespagespublish) path is automatically appended to `artifacts:paths`,
+    the [`pages.publish`](#pagespublish) path is automatically appended to `artifacts:paths`,
     so you don't need to specify it again.
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
-    when the [`pages:pages.publish`](#pagespagespublish) path is not specified,
+    when the [`pages.publish`](#pagespublish) path is not specified,
     the `public` directory is automatically appended to `artifacts:paths`.
 
 CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -1465,7 +1465,7 @@ job:
   them fail with a [`could not retrieve the needed artifacts` error](../jobs/job_artifacts_troubleshooting.md#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts).
   Set the expiry time to be longer, or use [`dependencies`](#dependencies) in later jobs
   to ensure they don't try to fetch expired artifacts.
-- `artifacts:expire_in` doesn't affect GitLab Pages deployments. To configure Pages deployments' expiry, use [`pages:pages.expire_in`](#pagespagesexpire_in).
+- `artifacts:expire_in` doesn't affect GitLab Pages deployments. To configure Pages deployments' expiry, use [`pages.expire_in`](#pagesexpire_in).
 
 #### `artifacts:expose_as`
 
@@ -3592,13 +3592,57 @@ uploads static content to GitLab. The content is then published as a website.
 
 You must:
 
-- Define [`artifacts`](#artifacts) with a path to the content directory, which is
-  `public` by default.
-- Use [`pages.publish`](#pagespagespublish) if want to use a different content directory.
+- Define `pages: true` to publish a directory named `public`
+- Alternatively, define [`pages.publish`](#pagespublish) if want to use a different content directory.
 
-**Keyword type**: Job name.
+**Keyword type**: Job keyword or Job name (deprecated). You can use it only as part of a job.
+
+**Supported Values**:
+
+- A boolean. Uses the default configuration when set to `true`
+- A hash of configuration options, see the following sections for details.
 
 **Example of `pages`**:
+
+```yaml
+create-pages:
+  stage: deploy
+  script:
+    - mv my-html-content public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+This example renames the `my-html-content/` directory to `public/`.
+This directory is exported as an artifact and published with GitLab Pages.
+
+**Example using a configuration hash**:
+
+```yaml
+create-pages:
+  stage: deploy
+  script:
+    - echo "nothing to do here"
+  pages:  # specifies that this is a Pages job and publishes the default public directory
+    publish: my-html-content
+    expire_in: "1 week"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+This example does not move the directory, but uses the `publish` property directly.
+It also configures the pages deployment to be unpublished after a week.
+
+**Deprecated: Use `pages` as a job name**
+
+Using `pages` as a job name results in the same behavior as specifying
+the Pages property `pages: true`. This method is available for backwards compatibility,
+but might not receive all future improvements to the Pages job configuration.
+
+**Example using `pages` as a job name**:
 
 ```yaml
 pages:  # specifies that this is a Pages job and publishes the default public directory
@@ -3610,17 +3654,28 @@ pages:  # specifies that this is a Pages job and publishes the default public di
   environment: production
 ```
 
-This example renames the `my-html-content/` directory to `public/`.
-This directory is exported as an artifact and published with GitLab Pages.
+To use `pages` as a job name without triggering a Pages deployment, set the `pages`
+property to false:
 
-#### `pages:pages.publish`
+```yaml
+pages:
+  stage: deploy
+  script:
+    - mv my-html-content public
+  pages: false # this job will not trigger a Pages deployment
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+#### `pages.publish`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
-- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages:pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
+- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
 
 {{< /history >}}
 
@@ -3637,7 +3692,7 @@ this path is automatically appended to [`artifacts:paths`](#artifactspaths).
 **Example of `pages.publish`**:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - npx @11ty/eleventy --input=path/to/eleventy/root --output=dist
@@ -3655,7 +3710,7 @@ as an artifact and published with GitLab Pages.
 It is also possible to use variables in the `pages.publish` field. For example:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - mkdir -p $CUSTOM_FOLDER/$CUSTOM_PATH
@@ -3669,7 +3724,9 @@ pages:
     CUSTOM_SUBFOLDER: "custom_subfolder"
 ```
 
-#### `pages:pages.path_prefix`
+The publish path specified must be relative to the build root.
+
+#### `pages.path_prefix`
 
 {{< details >}}
 
@@ -3705,7 +3762,7 @@ Leading and trailing hyphens or periods are not permitted.
 **Example of `pages.path_prefix`**:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
@@ -3715,7 +3772,7 @@ pages:
 
 In this example, a different pages deployment is created for each branch.
 
-#### `pages:pages.expire_in`
+#### `pages.expire_in`
 
 {{< details >}}
 
@@ -3753,10 +3810,10 @@ Valid values include:
 - `3 weeks and 2 days`
 - `never`
 
-**Example of `pages:pages.expire_in`**:
+**Example of `pages.expire_in`**:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"

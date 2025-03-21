@@ -92,10 +92,10 @@ You must host your GitLab Pages website in a project. This project can be
 [private, internal, or public](../../public_access.md) and belong
 to a [group](../../group/_index.md) or [subgroup](../../group/subgroups/_index.md).
 
-For [group websites](../pages/getting_started_part_one.md#user-and-group-website-examples),
+For [group websites](getting_started_part_one.md#user-and-group-website-examples),
 the group must be at the top level and not a subgroup.
 
-For [project websites](../pages/getting_started_part_one.md#project-website-examples),
+For [project websites](getting_started_part_one.md#project-website-examples),
 you can create your project first and access it under `http(s)://namespace.example.io/project-path`.
 
 ## Specific configuration options for Pages
@@ -119,7 +119,7 @@ directory of the project to the `public/` directory. The `.public` workaround
 is so `cp` doesn't also copy `public/` to itself in an infinite loop:
 
 ```yaml
-deploy-pages:
+create-pages:
   script:
     - mkdir .public
     - cp -r * .public
@@ -160,7 +160,7 @@ Below is a copy of `.gitlab-ci.yml` where the most significant line is the last
 one, specifying to execute everything in the `pages` branch:
 
 ```yaml
-deploy-pages:
+create-pages:
   image: ruby:2.6
   script:
     - gem install jekyll
@@ -209,7 +209,7 @@ This can be achieved by including a `script:` command like this in your
 `.gitlab-ci.yml` pages job:
 
 ```yaml
-deploy-pages:
+create-pages:
   # Other directives
   script:
     # Build the public/ directory first
@@ -274,37 +274,49 @@ for both the `/data` and `/data/` URL paths.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
+- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
 
 {{< /history >}}
 
-By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
-that contains the static files of your site needs to have the name `public`.
+By default, Pages looks for a folder named `public` in your build files to publish it.
 
 To change that folder name to any other value, add a `pages.publish` property to your
-`deploy-pages` job configuration in `.gitlab-ci.yml`. The top-level `publish` keyword
-is deprecated as of GitLab 17.9 and must now be nested under the `pages` keyword.
+`deploy-pages` job configuration in `.gitlab-ci.yml`.
 
 The following example publishes a folder named `dist` instead:
 
 ```yaml
-deploy-pages:
+create-pages:
   script:
     - npm run build
   pages:  # specifies that this is a Pages job
+    publish: dist
+```
+
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
+
+To use variables in the `pages.publish` field, see [`pages.publish`](../../../ci/yaml/_index.md#pagespublish).
+
+Pages uses artifacts to store the files of your site, so the value from
+`pages.publish` is automatically appended to [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths).
+The above example is equivalent to:
+
+```yaml
+create-pages:
+  script:
+    - npm run build
+  pages:
     publish: dist
   artifacts:
     paths:
       - dist
 ```
 
-If you're using a folder name other than `public`, you must specify
-the directory to be deployed with Pages both as an artifact, and under the
-`pages.publish` property. The reason you need both is that you can define multiple paths
-as artifacts, and GitLab doesn't know which one you want to deploy.
+{{< alert type="warning" >}}
 
-The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
+The top-level `publish` keyword was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/519499) in GitLab 17.9 and must now be nested under the `pages` keyword.
 
-To use variables in the `pages.publish` field, see [`pages:pages.publish`](../../../ci/yaml/_index.md#pagespagespublish).
+{{< /alert >}}
 
 ## Regenerate unique domain for GitLab Pages
 
@@ -367,7 +379,7 @@ Safari requires the web server to support the [Range request header](https://dev
 HTTP Range requests, you should use the following two variables in your `.gitlab-ci.yml` file:
 
 ```yaml
-deploy-pages:
+create-pages:
   stage: deploy
   variables:
     FF_USE_FASTZIP: "true"

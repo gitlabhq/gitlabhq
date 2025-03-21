@@ -112,12 +112,12 @@ The following items are changed when they are imported:
 - User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](../import/_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
-The Bitbucket Server importer uses an [improved method](../import/_index.md#user-contribution-and-membership-mapping)
+The Bitbucket Server importer uses an [improved method](_index.md#user-contribution-and-membership-mapping)
 of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
 ### Old method of user contribution mapping
@@ -125,7 +125,7 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
 To use this method, `importer_user_mapping` and `bitbucket_server_user_mapping` must be disabled.
 For imports to GitLab.com, you must
-use the [improved method](../import/_index.md#user-contribution-and-membership-mapping) instead.
+use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
 
 Using the old method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address in the GitLab user database. If no
 such user is found:

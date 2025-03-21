@@ -137,6 +137,6 @@ Vulnerabilities are listed in the following order:
 1. Higher EPSS scores (closer to 1) are prioritized.
 1. Severities are ordered from `Critical` to `Low`.
 
-Only vulnerabilities detected by [dependency scanning](../dependency_scanning/_index.md) and [container scanning](../container_scanning/_index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records. Moreover, only [detected (**Needs triage**) and confirmed](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities are shown.
+Only vulnerabilities detected by [dependency scanning](../dependency_scanning/_index.md) and [container scanning](../container_scanning/_index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records. Moreover, only [detected (**Needs triage**) and confirmed](_index.md#vulnerability-status-values) vulnerabilities are shown.
 
 To add the Vulnerability Prioritizer CI/CD component to your project's CI/CD pipeline, see the [Vulnerability Prioritizer documentation](https://gitlab.com/components/vulnerability-prioritizer).

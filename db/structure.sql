@@ -42236,9 +42236,6 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 ALTER TABLE ONLY lfs_object_states
     ADD CONSTRAINT fk_rails_4188448cd5 FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_node_namespace_links
-    ADD CONSTRAINT fk_rails_41ff5fb854 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_rails_4209981af6 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 

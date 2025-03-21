@@ -41,8 +41,7 @@ class NamespaceStatistics < ApplicationRecord # rubocop:disable Gitlab/Namespace
 
     self.dependency_proxy_size = [
       namespace.dependency_proxy_manifests,
-      namespace.dependency_proxy_blobs,
-      ::VirtualRegistries::Packages::Maven::Cache::Entry.for_group(namespace)
+      namespace.dependency_proxy_blobs
     ].sum { |rel| rel.sum(:size) }
   end
 

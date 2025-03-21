@@ -88,6 +88,10 @@ workflow:
 build-cng-env:
   stage: .pre
   extends: .build-cng-env
+  variables:
+    CNG_COMMIT_SHA: $GITLAB_CNG_MIRROR_REF
+    CNG_ACCESS_TOKEN: $CNG_MIRROR_ACCESS_TOKEN
+    CNG_SKIP_REDUNDANT_JOBS: "false"
 
 build-cng:
   stage: .pre

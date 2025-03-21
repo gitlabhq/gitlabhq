@@ -204,62 +204,82 @@ module Trigger
   #   * registry is checked for image existence and appropriate jobs are added to skip regex pattern
   #
   class CNG < Base
+    TriggerRefBranchCreationFailed = Class.new(StandardError)
+
     ASSETS_HASH = "cached-assets-hash.txt"
     DEFAULT_DEBIAN_IMAGE = "debian:bookworm-slim"
     DEFAULT_ALPINE_IMAGE = "alpine:3.20"
     DEFAULT_SKIPPED_JOBS = %w[final-images-listing].freeze
+    DEFAULT_SKIPPED_JOB_REGEX = "/#{DEFAULT_SKIPPED_JOBS.join('|')}/".freeze
     STABLE_BASE_JOBS = %w[alpine-stable debian-stable].freeze
 
     def variables
-      hash = super.dup
-      # Delete variables that aren't useful when using native triggers.
-      hash.delete('TRIGGER_SOURCE')
-      hash.delete('TRIGGERED_USER')
+      hash = without_trigger_vars(super.dup)
 
       unless skip_redundant_jobs?
         logger.info("Skipping redundant jobs is disabled, skipping existing container image check")
         return hash
       end
 
-      begin
-        hash.merge({
-          **deploy_component_tag_variables,
-          'SKIP_JOB_REGEX' => skip_job_regex,
-          'DEBIAN_IMAGE' => debian_image,
-          'DEBIAN_DIGEST' => debian_image.split('@').last,
-          'DEBIAN_BUILD_ARGS' => "--build-arg DEBIAN_IMAGE=#{ENV['GITLAB_DEPENDENCY_PROXY']}#{debian_image}",
-          'ALPINE_IMAGE' => alpine_image,
-          'ALPINE_DIGEST' => alpine_image.split('@').last,
-          'ALPINE_BUILD_ARGS' => "--build-arg ALPINE_IMAGE=#{ENV['GITLAB_DEPENDENCY_PROXY']}#{alpine_image}"
-        })
-      rescue StandardError => e
-        logger.error("Error while calculating variables, err: #{e.message}")
-        logger.error(e.backtrace.join("\n"))
-        logger.error("Falling back to default variables")
-        hash
-      end
+      hash.merge({
+        **deploy_component_tag_variables,
+        'SKIP_IMAGE_TAGGING' => "true",
+        'SKIP_JOB_REGEX' => skip_job_regex,
+        'DEBIAN_IMAGE' => debian_image,
+        'DEBIAN_DIGEST' => debian_image.split('@').last,
+        'DEBIAN_BUILD_ARGS' => "--build-arg DEBIAN_IMAGE=#{ENV['GITLAB_DEPENDENCY_PROXY']}#{debian_image}",
+        'ALPINE_IMAGE' => alpine_image,
+        'ALPINE_DIGEST' => alpine_image.split('@').last,
+        'ALPINE_BUILD_ARGS' => "--build-arg ALPINE_IMAGE=#{ENV['GITLAB_DEPENDENCY_PROXY']}#{alpine_image}"
+      })
+    rescue TriggerRefBranchCreationFailed => e
+      # raise if pipeline runs in MR that updates ref to make sure branch for trigger is created
+      raise(e) if ref_update_mr?
+
+      logger.error("Error while creating trigger ref branch, err: #{e.message}")
+      logger.error(e.backtrace.join("\n"))
+      logger.error("Falling back to default variables")
+      without_trigger_vars(super.dup)
+    rescue StandardError => e
+      # if skipping redundant jobs is enabled and fetching jobs to skip failed, attempt fallback to default variables
+      raise(e) unless skip_redundant_jobs?
+
+      logger.error("Error while calculating variables, err: #{e.message}")
+      logger.error(e.backtrace.join("\n"))
+      logger.error("Falling back to default variables")
+      hash
+    end
+
+    def simple_forwarded_variables
+      super.merge({
+        'TOP_UPSTREAM_SOURCE_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG']
+      })
     end
 
     private
 
-    def logger
-      @logger ||= Logger.new(ENV["CNG_VAR_SETUP_LOG_FILE"] || "tmp/cng-var-setup.log")
-    end
-
+    # overridden base class methods
     def downstream_project_path
       ENV.fetch('CNG_PROJECT_PATH', 'gitlab-org/build/CNG-mirror')
     end
 
-    def skip_redundant_jobs?
-      ENV["CNG_SKIP_REDUNDANT_JOBS"] == "true"
-    end
+    def ref
+      return @ref if @ref
+      return @ref = super if cng_commit_sha.to_s.empty?
 
-    def default_skip_job_regex
-      "/#{DEFAULT_SKIPPED_JOBS.join('|')}/"
-    end
+      # TODO: remove this hack once https://gitlab.com/gitlab-org/gitlab/-/issues/369583 is resolved
+      trigger_branch_name = "trigger-refs/#{cng_commit_sha}"
+      return @ref = trigger_branch_name if branch_exists?(trigger_branch_name)
 
-    def skip_job_regex
-      "/#{[*DEFAULT_SKIPPED_JOBS, *STABLE_BASE_JOBS, *skippable_jobs].join('|')}/"
+      downstream_client.create_branch(downstream_project_path, trigger_branch_name, cng_commit_sha)
+      logger.info("Created temp trigger branch '#{trigger_branch_name}' for commit '#{cng_commit_sha}'")
+      @ref = trigger_branch_name
+    rescue StandardError => e
+      # redundancy in case explicit branch existence api request failed
+      return trigger_branch_name if e.message.include?("already exists")
+
+      @ref = super
+      raise TriggerRefBranchCreationFailed, e.message
     end
 
     def ref_param_name
@@ -292,14 +312,6 @@ module Trigger
       super.merge('GITLAB_REF_SLUG' => gitlab_ref_slug)
     end
 
-    def default_build_vars
-      @default_build_vars ||= {
-        "CONTAINER_VERSION_SUFFIX" => ENV["CI_PROJECT_PATH_SLUG"] || "upstream-trigger",
-        "CACHE_BUSTER" => "false",
-        "ARCH_LIST" => ENV["ARCH_LIST"] || "amd64"
-      }
-    end
-
     def extra_variables
       {
         "TRIGGER_BRANCH" => ref,
@@ -309,17 +321,11 @@ module Trigger
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil, # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "FULL_RUBY_VERSION" => RUBY_VERSION,
-        "SKIP_JOB_REGEX" => default_skip_job_regex,
+        "SKIP_JOB_REGEX" => DEFAULT_SKIPPED_JOB_REGEX,
         "DEBIAN_IMAGE" => DEFAULT_DEBIAN_IMAGE, # Make sure default values are always set to not end up as empty string
         "ALPINE_IMAGE" => DEFAULT_ALPINE_IMAGE, # Make sure default values are always set to not end up as empty string
         **default_build_vars
       }
-    end
-
-    def simple_forwarded_variables
-      super.merge({
-        'TOP_UPSTREAM_SOURCE_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG']
-      })
     end
 
     def version_param_value(_version_file)
@@ -331,6 +337,71 @@ module Trigger
       else
         raw_version
       end
+    end
+
+    def access_token
+      ENV["CNG_ACCESS_TOKEN"].then { |token| token.to_s.empty? ? super : token }
+    end
+    # overridden base class methods
+
+    # Logger with file output
+    #
+    # @return [Logger]
+    def logger
+      @logger ||= Logger.new(ENV.fetch("CNG_VAR_SETUP_LOG_FILE", "tmp/cng-var-setup.log"))
+    end
+
+    # Specific commit sha to be used instead of branch if defined
+    #
+    # @return [String]
+    def cng_commit_sha
+      @cng_commit_sha ||= ENV['CNG_COMMIT_SHA']
+    end
+
+    # Default variables used in CNG builds that affect container version values
+    #
+    # @return [Hash]
+    def default_build_vars
+      @default_build_vars ||= {
+        "CONTAINER_VERSION_SUFFIX" => ENV.fetch("CI_PROJECT_PATH_SLUG", "upstream-trigger"),
+        "CACHE_BUSTER" => "false",
+        "ARCH_LIST" => ENV.fetch("ARCH_LIST", "amd64")
+      }
+    end
+
+    # Skip redundant build jobs by calculating if container images are already present in the registry
+    #
+    # @return [Boolean]
+    def skip_redundant_jobs?
+      ENV["CNG_SKIP_REDUNDANT_JOBS"] == "true"
+    end
+
+    # Pipeline is part of MR that updates cng-mirror ref
+    #
+    # @return [Boolean]
+    def ref_update_mr?
+      ENV["CI_MERGE_REQUEST_TARGET_BRANCH_NAME"]&.match?(%r{renovate-e2e/cng\S+digest})
+    end
+
+    # Skipped job regex based on existing container tags in the registry
+    #
+    # @return [String]
+    def skip_job_regex
+      "/#{[*DEFAULT_SKIPPED_JOBS, *STABLE_BASE_JOBS, *skippable_jobs].join('|')}/"
+    end
+
+    # Branch existence check
+    #
+    # @param branch_name [String]
+    # @return [Boolean]
+    def branch_exists?(branch_name)
+      !!downstream_client.branch(downstream_project_path, branch_name)
+    rescue Gitlab::Error::ResponseError
+      false
+    end
+
+    def without_trigger_vars(hash)
+      hash.except('TRIGGER_SOURCE', 'TRIGGERED_USER')
     end
 
     # Repository file tree in form of the output of `git ls-tree` command

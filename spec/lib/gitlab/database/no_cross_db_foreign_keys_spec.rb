@@ -11,7 +11,6 @@ RSpec.describe 'cross-database foreign keys' do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     [
-      'geo_node_namespace_links.namespace_id',
       'zoekt_indices.zoekt_enabled_namespace_id',
       'zoekt_repositories.project_id',
       'zoekt_replicas.zoekt_enabled_namespace_id',

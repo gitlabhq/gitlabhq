@@ -40,15 +40,15 @@ For a click-through demo, see [Compliance frameworks](https://gitlab.navattic.co
 
 You can create, edit, or delete a compliance framework from a compliance framework report. For more information, see:
 
-- [Create a new compliance framework](../compliance/compliance_center/compliance_frameworks_report.md#create-a-new-compliance-framework).
-- [Edit a compliance framework](../compliance/compliance_center/compliance_frameworks_report.md#edit-a-compliance-framework).
-- [Delete a compliance framework](../compliance/compliance_center/compliance_frameworks_report.md#delete-a-compliance-framework).
+- [Create a new compliance framework](compliance_center/compliance_frameworks_report.md#create-a-new-compliance-framework).
+- [Edit a compliance framework](compliance_center/compliance_frameworks_report.md#edit-a-compliance-framework).
+- [Delete a compliance framework](compliance_center/compliance_frameworks_report.md#delete-a-compliance-framework).
 
 You can create, edit, or delete a compliance framework from a compliance projects report. For more information, see:
 
-- [Create a new compliance framework](../compliance/compliance_center/compliance_projects_report.md#create-a-new-compliance-framework).
-- [Edit a compliance framework](../compliance/compliance_center/compliance_projects_report.md#edit-a-compliance-framework).
-- [Delete a compliance framework](../compliance/compliance_center/compliance_projects_report.md#delete-a-compliance-framework).
+- [Create a new compliance framework](compliance_center/compliance_projects_report.md#create-a-new-compliance-framework).
+- [Edit a compliance framework](compliance_center/compliance_projects_report.md#edit-a-compliance-framework).
+- [Delete a compliance framework](compliance_center/compliance_projects_report.md#delete-a-compliance-framework).
 
 Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
 or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
@@ -64,7 +64,7 @@ or deleted at the subgroup or project level. Project owners can choose a framewo
 You can apply multiple compliance frameworks to a project but cannot apply compliance frameworks to projects in personal namespaces.
 
 To apply a compliance framework to a project, apply the compliance framework through the
-[Compliance projects report](../compliance/compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
+[Compliance projects report](compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
 
 You can use the [GraphQL API](../../api/graphql/reference/_index.md#mutationprojectupdatecomplianceframeworks) to apply one or many
 compliance frameworks to a project.
@@ -88,7 +88,7 @@ A compliance framework that is set to default has a **default** label.
 
 ### Set and remove a default by using the compliance center
 
-To set as default (or remove the default) from [compliance projects report](../compliance/compliance_center/compliance_projects_report.md):
+To set as default (or remove the default) from [compliance projects report](compliance_center/compliance_projects_report.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
@@ -97,7 +97,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 1. Select **Set as default**.
 1. Select **Save changes**.
 
-To set as default (or remove the default) from [compliance framework report](../compliance/compliance_center/compliance_frameworks_report.md):
+To set as default (or remove the default) from [compliance framework report](compliance_center/compliance_frameworks_report.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
@@ -109,4 +109,4 @@ To set as default (or remove the default) from [compliance framework report](../
 ## Remove a compliance framework from a project
 
 To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
-[Compliance projects report](../compliance/compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
+[Compliance projects report](compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).

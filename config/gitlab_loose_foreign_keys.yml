@@ -330,6 +330,10 @@ fork_networks:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+geo_node_namespace_links:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 group_security_exclusions:
   - table: namespaces
     column: group_id

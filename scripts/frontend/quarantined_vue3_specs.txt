@@ -50,7 +50,6 @@ ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
 ee/spec/frontend/oncall_schedule/schedule/components/preset_days/days_header_sub_item_spec.js
 ee/spec/frontend/pages/admin/application_settings/general/components/allowed_integrations_spec.js
 ee/spec/frontend/password/components/password_requirement_list_spec.js
-ee/spec/frontend/product_analytics/onboarding/components/onboarding_state_spec.js
 ee/spec/frontend/product_analytics/onboarding/onboarding_view_spec.js
 ee/spec/frontend/projects/merge_requests/blocking_mr_input_root_spec.js
 ee/spec/frontend/projects/settings/branch_rules/components/view/index_spec.js
@@ -66,7 +65,6 @@ ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
-ee/spec/frontend/security_dashboard/components/shared/filters/querystring_sync_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_graphql/details_section_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js

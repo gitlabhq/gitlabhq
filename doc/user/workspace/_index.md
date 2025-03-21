@@ -342,7 +342,7 @@ The container runtime used by the Kubernetes cluster must ensure all containers 
 If you have a container image that does not support arbitrary user IDs,
 you cannot create, update, or delete files in a workspace.
 To create a container image that supports arbitrary user IDs,
-see [Create a custom workspace image that supports arbitrary user IDs](../workspace/create_image.md).
+see [Create a custom workspace image that supports arbitrary user IDs](create_image.md).
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).

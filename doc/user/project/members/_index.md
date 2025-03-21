@@ -37,7 +37,7 @@ Indirect membership can be inherited, shared, or inherited shared.
 | Direct | The user is added directly to the current group or project. |
 | Inherited | The user is a member of a parent group that contains the current group or project. |
 | [Shared](sharing_projects_groups.md) | The user is a member of a group invited to the current group or project. |
-| [Inherited shared](../members/sharing_projects_groups.md#invite-a-group-to-a-group) | The user is a member of a group invited to an ancestor of the current group or project. |
+| [Inherited shared](sharing_projects_groups.md#invite-a-group-to-a-group) | The user is a member of a group invited to an ancestor of the current group or project. |
 | Indirect | An umbrella term for inherited, shared, or inherited shared members. |
 
 ```mermaid

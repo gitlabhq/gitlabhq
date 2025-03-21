@@ -97,10 +97,10 @@ This error occurs when an unexpected issue arises during the processing of a sla
 
 For more information about slash commands, refer to the documentation:
 
-- [/tests](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)
-- [/refactor](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
-- [/fix](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)
-- [/explain](../gitlab_duo_chat/examples.md#explain-selected-code)
+- [/tests](examples.md#write-tests-in-the-ide)
+- [/refactor](examples.md#refactor-code-in-the-ide)
+- [/fix](examples.md#fix-code-in-the-ide)
+- [/explain](examples.md#explain-selected-code)
 
 ## `Error M4001`
 
@@ -114,7 +114,7 @@ This error occurs when there is a problem finding the information needed to comp
 You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: M4002`.
 
-This error occurs when there is a problem answering [questions related to CI/CD](../gitlab_duo_chat/examples.md#ask-about-cicd). Try your request again.
+This error occurs when there is a problem answering [questions related to CI/CD](examples.md#ask-about-cicd). Try your request again.
 
 ## `Error M4003`
 
@@ -122,7 +122,7 @@ You might get an error that states
 `This command is used for explaining vulnerabilities and can only be invoked from a vulnerability detail page.` or
 `Vulnerability Explanation currently only supports vulnerabilities reported by SAST. Error code: M4003`.
 
-This error occurs when there is a problem when using [`Explain Vulnerability`](../gitlab_duo_chat/examples.md#explain-a-vulnerability) feature.
+This error occurs when there is a problem when using [`Explain Vulnerability`](examples.md#explain-a-vulnerability) feature.
 
 ## `Error M4004`
 
@@ -136,7 +136,7 @@ This error occurs when there is a problem when using `Summarize Discussion` feat
 You might get an error that states
 `There is no job log to troubleshoot.` or `This command is used for troubleshooting jobs and can only be invoked from a failed job log page.`.
 
-This error occurs when there is a problem when using [`Troubleshoot job`](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) feature.
+This error occurs when there is a problem when using [`Troubleshoot job`](examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) feature.
 
 ## `Error M5000`
 

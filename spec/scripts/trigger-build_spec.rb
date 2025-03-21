@@ -5,6 +5,9 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
+require 'gitlab/error'
+require 'gitlab/objectified_hash'
+
 require_relative '../../scripts/trigger-build'
 
 RSpec.describe Trigger, feature_category: :tooling do
@@ -477,6 +480,172 @@ RSpec.describe Trigger, feature_category: :tooling do
             "CACHE_BUSTER" => "false",
             "ARCH_LIST" => 'amd64,arm64'
           })
+        end
+      end
+
+      describe 'with skipping redundant jobs' do
+        let(:downstream_project_path) { 'gitlab-org/build/cng' }
+        let(:ref) { 'main' }
+        let(:image_digest) { 'sha256:digest' }
+        let(:debian_image) { 'debian:bookworm-slim' }
+        let(:alpine_image) { 'alpine:3.20' }
+
+        let(:tree_node) do
+          {
+            'mode' => '040000',
+            'type' => 'tree',
+            'id' => 'df239f023af22fc672d31dc50fdd5f593d4481b1',
+            'path' => '.gitlab'
+          }
+        end
+
+        before do
+          stub_env('CNG_SKIP_REDUNDANT_JOBS', 'true')
+          stub_env('CNG_BRANCH', ref)
+          stub_env('CNG_PROJECT_PATH', downstream_project_path)
+          stub_env('CI_PROJECT_PATH_SLUG', 'project-path')
+          stub_env('GITLAB_DEPENDENCY_PROXY', '')
+
+          # mock repo tree and file fetching
+          allow(downstream_gitlab_client).to receive(:repo_tree).with(
+            downstream_project_path,
+            ref: ref,
+            per_page: 100
+          ).and_return(double(auto_paginate: [tree_node]))
+          allow(downstream_gitlab_client).to receive(:file_contents).with(
+            downstream_project_path,
+            "build-scripts/container_versions.sh",
+            ref
+          ).and_return("script")
+          allow(downstream_gitlab_client).to receive(:file_contents).with(
+            downstream_project_path,
+            "ci_files/variables.yml",
+            ref
+          ).and_return("---\nvariables:\n  DEBIAN_IMAGE: '#{debian_image}'\n  ALPINE_IMAGE: '#{alpine_image}'")
+
+          # mock fetching image digest
+          allow(HTTParty).to receive(:get).with(
+            %r{https://auth\.docker\.io/token\?service=registry\.docker\.io&scope=repository:library/(debian|alpine):pull}
+          ).and_return(double(body: '{"token": "token"}', success?: true))
+          allow(HTTParty).to receive(:head).with(
+            %r{https://registry\.hub\.docker\.com/v2/library/(debian|alpine)/manifests/(bookworm-slim|3\.20)},
+            {
+              headers: {
+                'Authorization' => 'Bearer token',
+                'Accept' => 'application/vnd.docker.distribution.manifest.v2+json'
+              }
+            }
+          ).and_return(double(headers: { 'docker-content-digest' => image_digest }, success?: true))
+
+          # mock version calculation script execution
+          allow(Open3).to receive(:capture2e).with(
+            hash_including({
+              "REPOSITORY_TREE" => "#{tree_node['mode']} #{tree_node['type']} #{tree_node['id']}  #{tree_node['path']}",
+              "DEBIAN_DIGEST" => image_digest,
+              "ALPINE_DIGEST" => image_digest
+            }),
+            /bash -c 'source (\S+) && get_all_versions'/
+          ).and_return(["gitlab-base=32a931c622f7ef7728bf8255cca9e8a46d472e85\n", double(success?: true)])
+
+          # mock existing tag check
+          allow(downstream_gitlab_client).to receive(:registry_repositories).with(
+            downstream_project_path,
+            per_page: 100
+          ).and_return(double(auto_paginate: [double(name: 'registry/gitlab-base', id: 1)]))
+          allow(downstream_gitlab_client).to receive(:registry_repository_tag).with(
+            downstream_project_path,
+            1,
+            "32a931c622f7ef7728bf8255cca9e8a46d472e85"
+          ).and_return({})
+        end
+
+        it 'includes additional variables for skipping redundant jobs' do
+          expect(subject.variables).to include({
+            "SKIP_IMAGE_TAGGING" => "true",
+            "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable|gitlab-base/",
+            "DEBIAN_IMAGE" => "#{debian_image}@#{image_digest}",
+            "DEBIAN_DIGEST" => image_digest,
+            "DEBIAN_BUILD_ARGS" => "--build-arg DEBIAN_IMAGE=#{debian_image}@#{image_digest}",
+            "ALPINE_IMAGE" => "#{alpine_image}@#{image_digest}",
+            "ALPINE_DIGEST" => image_digest,
+            "ALPINE_BUILD_ARGS" => "--build-arg ALPINE_IMAGE=#{alpine_image}@#{image_digest}"
+          })
+        end
+
+        context 'when tag does not exist in repository' do
+          let(:response) do
+            Gitlab::ObjectifiedHash.new(
+              code: 404,
+              parsed_response: "Failure",
+              request: { base_uri: "gitlab.com", path: "/repository_tag" }
+            )
+          end
+
+          before do
+            allow(downstream_gitlab_client).to receive(:registry_repository_tag).and_raise(
+              Gitlab::Error::NotFound.new(response)
+            )
+          end
+
+          it 'does not skip jobs with non existing tags' do
+            expect(subject.variables).to include({
+              "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable/"
+            })
+          end
+        end
+      end
+
+      describe 'with specific commit sha' do
+        let(:downstream_project_path) { 'gitlab-org/build/cng' }
+        let(:sha) { '3f1b1cdc5209' }
+        let(:trigger_ref) { "trigger-refs/#{sha}" }
+
+        let(:response) do
+          Gitlab::ObjectifiedHash.new(
+            code: 404,
+            parsed_response: "Failure",
+            request: { base_uri: "gitlab.com", path: "/branch" }
+          )
+        end
+
+        before do
+          stub_env('CNG_PROJECT_PATH', downstream_project_path)
+          stub_env('CNG_COMMIT_SHA', sha)
+
+          allow(downstream_gitlab_client).to receive(:branch).with(downstream_project_path, trigger_ref).and_raise(
+            Gitlab::Error::ResponseError.new(response)
+          )
+          allow(downstream_gitlab_client).to receive(:create_branch).with(downstream_project_path, trigger_ref, sha)
+        end
+
+        it "uses trigger ref branch with specific commit sha" do
+          expect(subject.variables).to include({
+            "TRIGGER_BRANCH" => trigger_ref
+          })
+        end
+
+        context 'when trigger ref branch creation fails' do
+          before do
+            allow(downstream_gitlab_client).to receive(:create_branch).and_raise("failed to create branch")
+          end
+
+          it "falls back to default ref" do
+            expect(subject.variables).to include({
+              "TRIGGER_BRANCH" => "master"
+            })
+          end
+        end
+
+        context 'when trigger ref branch creation fails in sha update mr' do
+          before do
+            stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', 'renovate-e2e/cng-mirror-digest')
+
+            allow(downstream_gitlab_client).to receive(:create_branch).and_raise("failed to create branch")
+          end
+
+          it "raises error" do
+            expect { subject.variables }.to raise_error("failed to create branch")
+          end
         end
       end
     end

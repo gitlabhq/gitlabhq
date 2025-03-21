@@ -90,7 +90,7 @@ to move any project to any namespace.
 
 When you transfer a project from a namespace licensed for GitLab.com Premium or Ultimate to GitLab Free:
 
-- [Project access tokens](../settings/project_access_tokens.md) are revoked.
+- [Project access tokens](project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
   and [test cases](../../../ci/test_cases/_index.md) are deleted.
 
