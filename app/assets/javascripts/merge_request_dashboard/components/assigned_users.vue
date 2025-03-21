@@ -112,7 +112,7 @@ export default {
           class="js-user-link gl-relative"
           data-testid="assigned-user"
         >
-          <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-white" />
+          <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-subtle" />
           <span
             v-if="reviewStateIcon(user)"
             class="gl-absolute -gl-bottom-2 -gl-left-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"
@@ -142,7 +142,7 @@ export default {
 }
 
 .mr-users-list .gl-avatar {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--gl-background-color-subtle);
   outline-offset: 0;
 }
 </style>

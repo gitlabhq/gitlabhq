@@ -574,7 +574,7 @@ module MergeRequestsHelper
               id: 'merged_recently',
               title: _('Merged recently'),
               helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
-                date: 2.weeks.ago.to_date.to_formatted_s(:long)
+                date: l(2.weeks.ago.to_date, format: :long)
               },
               query: 'assigneeOrReviewerMergeRequests',
               variables: {
