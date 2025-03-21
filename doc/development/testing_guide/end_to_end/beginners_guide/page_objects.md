@@ -297,8 +297,8 @@ from within the `qa` directory.
 
 ## Where to ask for help?
 
-If you need more information, ask for help on `#test-platform` channel on Slack
+If you need more information, ask for help on `#s_developer_experience` channel on Slack
 (internal, GitLab Team only).
 
 If you are not a Team Member, and you still need help to contribute,
-open an issue in GitLab CE issue tracker with the `~QA` label.
+open an issue in GitLab issue tracker with the `~QA` label.

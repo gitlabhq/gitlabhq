@@ -538,7 +538,7 @@ and, as an Admin, easily create licensed groups for testing.
 Duo Chat end-to-end tests run continuously against [Staging](https://staging.gitlab.com/users/sign_in) and [Production](https://gitlab.com/) GitLab environments.
 
 These tests run in scheduled pipelines and ensure the end-to-end user experiences are functioning correctly.
-Results can be viewed in the `#e2e-run-staging` and `#e2e-run-production` Slack channels. The pipelines can be found below, access can be requested in `#test-platform`:
+Results can be viewed in the `#e2e-run-staging` and `#e2e-run-production` Slack channels. The pipelines can be found below, access can be requested in `#s_developer_experience`:
 
 - [Staging-canary pipelines](https://ops.gitlab.net/gitlab-org/quality/staging-canary/-/pipelines)
 - [Staging pipelines](https://ops.gitlab.net/gitlab-org/quality/staging/-/pipelines)

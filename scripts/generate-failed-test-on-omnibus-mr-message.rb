@@ -53,8 +53,8 @@ class GenerateFailedTestOnOmnibusMrMessage
     `e2e:test-on-omnibus-ee` pipeline is allowed to fail due its [flakiness](#{package_and_test_link}). Failures should be
     investigated to guarantee this backport complies with the Quality standards.
 
-    Ping your team's associated Software Engineer in Test (SET) to confirm the failures are unrelated to the merge request.
-    If there's no SET assigned, ask for assistance on the `#test-platform` Slack channel.
+    Ask for assistance from a Software Engineer in Test (SET) on the `#s_developer_experience` Slack channel to confirm
+    the failures are unrelated to the merge request.
     MARKDOWN
   end
 
@@ -63,7 +63,7 @@ class GenerateFailedTestOnOmnibusMrMessage
   end
 
   def package_and_test_link
-    "https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/dashboards"
+    "https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/dashboards/"
   end
 end
 
