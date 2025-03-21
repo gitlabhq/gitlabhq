@@ -167,7 +167,6 @@ gem 'rack-cors', '~> 2.0.1', require: 'rack/cors', feature_category: :shared
 gem 'graphql', '2.4.11', path: 'vendor/gems/graphql', feature_category: :api
 gem 'graphql-docs', '~> 5.0.0', group: [:development, :test], feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
-gem 'graphlient', '~> 0.8.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
 # Cells
 gem 'gitlab-topology-service-client', '~> 0.1',

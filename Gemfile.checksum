@@ -292,7 +292,6 @@
 {"name":"grape-swagger","version":"2.1.2","platform":"ruby","checksum":"8ad7bd53c8baee704575808875dba8c08d269c457db3cf8f1b8a2a1dbf827294"},
 {"name":"grape-swagger-entity","version":"0.5.5","platform":"ruby","checksum":"a2a0eb28964b1a56775a3571358a9f0a300b703dbaee1ee535adb2a7bed7ece6"},
 {"name":"grape_logging","version":"1.8.4","platform":"ruby","checksum":"efcc3e322dbd5d620a68f078733b7db043cf12680144cd03c982f14115c792d1"},
-{"name":"graphlient","version":"0.8.0","platform":"ruby","checksum":"98c408da1d083454e9f5e274f3b0b6261e2a0c2b5f2ed7b3ef9441d46f8e7cb1"},
 {"name":"graphlyte","version":"1.0.0","platform":"ruby","checksum":"b5af4ab67dde6e961f00ea1c18f159f73b52ed11395bb4ece297fe628fa1804d"},
 {"name":"graphql-client","version":"0.23.0","platform":"ruby","checksum":"f238b8e451676baad06bd15f95396e018192243dcf12c4e6d13fb41d9a2babc1"},
 {"name":"graphql-docs","version":"5.0.0","platform":"ruby","checksum":"76baca6e5a803a4b6a9fbbbfdbf16742b7c4c546c8592b6e1a7aa4e79e562d04"},

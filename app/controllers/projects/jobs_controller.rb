@@ -24,6 +24,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_filter_by_name, only: [:index]
+  before_action :push_populate_and_use_build_source_table, only: [:index]
   before_action :push_force_cancel_build, only: [:cancel, :show]
   layout 'project'
 
@@ -299,6 +300,10 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_filter_by_name
     push_frontend_feature_flag(:fe_search_build_by_name, @project)
+  end
+
+  def push_populate_and_use_build_source_table
+    push_frontend_feature_flag(:populate_and_use_build_source_table, @project)
   end
 
   def push_force_cancel_build

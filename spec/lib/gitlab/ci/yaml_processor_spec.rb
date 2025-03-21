@@ -3836,6 +3836,45 @@ module Gitlab
             end
           end
         end
+
+        context 'with valid and invalid publish configurations' do
+          where(:config, :expected_errors) do
+            [
+              [
+                YAML.dump(
+                  { pages: { stage: 'deploy', script: 'test', pages: { publish: 'custom' }, publish: 'public' } }),
+                ['pages job: use either pages:publish or pages:pages:publish']
+              ],
+              [
+                YAML.dump({ pages: { stage: 'deploy', script: 'test', publish: 'public' } }),
+                []
+              ],
+              [
+                YAML.dump(
+                  { pages: { stage: 'deploy', script: 'test', publish: 'public', pages: { path_prefix: 'foo' } } }),
+                []
+              ],
+              [
+                YAML.dump({ pages: { stage: 'deploy', script: 'test', pages: { publish: 'custom' } } }),
+                []
+              ],
+              [
+                YAML.dump({ pages: { stage: 'deploy', script: 'test', pages: true } }),
+                []
+              ],
+              [
+                YAML.dump({ pages: { stage: 'deploy', script: 'test', pages: true, publish: 'public' } }),
+                []
+              ]
+            ]
+          end
+
+          with_them do
+            it 'validates publish configurations and returns errors if there are any' do
+              expect(subject.errors).to match_array(expected_errors)
+            end
+          end
+        end
       end
     end
   end

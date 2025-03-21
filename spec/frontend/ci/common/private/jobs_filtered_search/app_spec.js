@@ -6,6 +6,8 @@ import {
   TOKEN_TYPE_STATUS,
   TOKEN_TYPE_JOBS_RUNNER_TYPE,
   TOKEN_TITLE_JOBS_RUNNER_TYPE,
+  TOKEN_TITLE_JOBS_SOURCE,
+  TOKEN_TYPE_JOBS_SOURCE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import { mockFailedSearchToken } from 'jest/ci/jobs_mock_data';
@@ -21,6 +23,7 @@ describe('Jobs filtered search', () => {
 
   const findStatusToken = () => getSearchToken('status');
   const findRunnerTypeToken = () => getSearchToken('jobs-runner-type');
+  const findJobSourceToken = () => getSearchToken('jobs-source');
 
   const createComponent = (props, provideOptions = {}) => {
     wrapper = shallowMount(JobsFilteredSearch, {
@@ -28,7 +31,11 @@ describe('Jobs filtered search', () => {
         ...props,
       },
       provide: {
-        glFeatures: { adminJobsFilterRunnerType: true, feSearchBuildByName: true },
+        glFeatures: {
+          adminJobsFilterRunnerType: true,
+          feSearchBuildByName: true,
+          populateAndUseBuildSourceTable: true,
+        },
         ...provideOptions,
       },
     });
@@ -60,6 +67,18 @@ describe('Jobs filtered search', () => {
       type: TOKEN_TYPE_STATUS,
       icon: 'status',
       title: TOKEN_TITLE_STATUS,
+      unique: true,
+      operators: OPERATORS_IS,
+    });
+  });
+
+  it('displays job source token', () => {
+    createComponent();
+
+    expect(findJobSourceToken()).toMatchObject({
+      type: TOKEN_TYPE_JOBS_SOURCE,
+      icon: 'trigger-source',
+      title: TOKEN_TITLE_JOBS_SOURCE,
       unique: true,
       operators: OPERATORS_IS,
     });
@@ -115,6 +134,32 @@ describe('Jobs filtered search', () => {
           },
         },
       ]);
+    });
+  });
+
+  describe('when feature flag `populateAndUseBuildSourceTable` is disabled', () => {
+    const provideOptions = { glFeatures: { populateAndUseBuildSourceTable: false } };
+
+    it('does not display token for job source', () => {
+      createComponent(null, provideOptions);
+
+      expect(findJobSourceToken()).toBeUndefined();
+    });
+
+    describe('with query string passed', () => {
+      it('filtered search returns only data shape for search token `status` and not for search token `job source`', () => {
+        const tokenStatusesValue = 'SUCCESS';
+        const tokenJobSourceValue = 'PUSH';
+
+        createComponent(
+          { queryString: { statuses: tokenStatusesValue, sources: tokenJobSourceValue } },
+          provideOptions,
+        );
+
+        expect(findFilteredSearch().props('value')).toEqual([
+          { type: TOKEN_TYPE_STATUS, value: { data: tokenStatusesValue, operator: '=' } },
+        ]);
+      });
     });
   });
 

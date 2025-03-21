@@ -15,23 +15,23 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundAutovacuum, feature
     using RSpec::Parameterized::TableSyntax
 
     where(:dot_com, :jh, :dev_or_test, :wraparound_prevention, :expectation) do
-      true  | true  | true  | true  | false
-      true  | true  | false | true  | false
-      false | true  | true  | true  | false
-      false | true  | false | true  | false
+      true  | true  | true  | true  | true
+      true  | true  | false | true  | true
+      false | true  | true  | true  | true
+      false | true  | false | true  | true
       true  | true  | true  | false | true
-      true  | true  | false | false | false
+      true  | true  | false | false | true
       false | true  | true  | false | true
-      false | true  | false | false | false
+      false | true  | false | false | true
 
       true  | false | true  | true  | false
       true  | false | false | true  | false
-      false | false | true  | true  | false
-      false | false | false | true  | false
+      false | false | true  | true  | true
+      false | false | false | true  | true
       true  | false | true  | false | true
       true  | false | false | false | true
       false | false | true  | false | true
-      false | false | false | false | false
+      false | false | false | false | true
     end
 
     with_them do
