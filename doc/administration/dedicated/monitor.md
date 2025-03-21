@@ -46,7 +46,7 @@ For information about how to access S3 buckets after you have the name, see the 
 
 The Amazon S3 bucket contains a combination of infrastructure logs and application logs from the GitLab [log system](../logs/_index.md).
 
-The logs in the bucket are encrypted using an AWS KMS key managed by GitLab. If you choose to enable [BYOK](../dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
+The logs in the bucket are encrypted using an AWS KMS key managed by GitLab. If you choose to enable [BYOK](create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

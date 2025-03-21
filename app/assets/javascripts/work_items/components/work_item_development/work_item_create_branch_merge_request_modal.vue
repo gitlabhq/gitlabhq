@@ -283,10 +283,10 @@ export default {
 
       if (target === WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE) {
         this.checkingSourceValidity = true;
-        this.sourceDescription = __('Checking source validity...');
+        this.sourceDescription = __('Checking source validity…');
       } else {
         this.checkingBranchValidity = true;
-        this.branchDescription = __('Checking branch validity...');
+        this.branchDescription = __('Checking branch validity…');
       }
 
       this.refCancelToken = axios.CancelToken.source();

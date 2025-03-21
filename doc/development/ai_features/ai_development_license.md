@@ -8,7 +8,14 @@ title: GitLab Duo licensing for local development
 
 This document explains the different licensing options available for GitLab Duo features in local development environments.
 
-> **Note:** When developing GitLab Duo features, it's important to test in both multi-tenant (GitLab.com) and single-tenant (Self-managed/Dedicated) environments where appropriate. There is no default or recommended approach - the setup you choose should be based on your specific testing requirements.
+{{< alert type="note" >}}
+
+When developing GitLab Duo features, it's important to test in both multi-tenant
+(GitLab.com) and single-tenant (GitLab Self-Managed/Dedicated) environments where
+appropriate. There is no default or recommended approach - the setup you choose
+should be based on your specific testing requirements.
+
+{{< /alert >}}
 
 ## Overview
 
@@ -27,7 +34,7 @@ You should choose a license setup based on your development needs. Each approach
 | Development Scenario | License Setup | Instructions |
 |----------------------|---------------------------|-------------|
 | Multi-tenant setup (GitLab.com) | Local license with Rake task | [Option A](#option-a-local-license-with-rake-task-multi-tenantgitlabcom-mode) |
-| Single-tenant setup (Self-managed/Dedicated) | Local license with Rake task in self-managed mode | [Option B](#option-b-local-license-with-rake-task-in-self-managed-mode-single-tenant-setup) |
+| Single-tenant setup (GitLab Self-Managed/Dedicated) | Local license with Rake task in self-managed mode | [Option B](#option-b-local-license-with-rake-task-in-self-managed-mode-single-tenant-setup) |
 | Full dog-fooding experience | Cloud license via CustomersDot | [Option C](#option-c-cloud-license-via-customersdot) |
 
 ## Prerequisites for all options
@@ -115,7 +122,7 @@ This approach configures your environment to behave like a self-managed or Dedic
 
 ### When to use
 
-- When you need to test in a single-tenant environment (similar to Self-managed or Dedicated)
+- When you need to test in a single-tenant environment (similar to GitLab Self-Managed or Dedicated)
 - When developing features that are specific to or need validation in self-managed or Dedicated environments
 - When testing integration points that behave differently in single-tenant mode
 
@@ -275,7 +282,7 @@ If you're having issues with your Duo license setup:
 
 ## Additional resources
 
-- [AI Features Documentation](../ai_features/_index.md)
-- [Code Suggestions Development](../ai_features/code_suggestions.md)
-- [License Management Guidelines for Code Suggestions](../ai_features/code_suggestions.md#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on)
+- [AI Features Documentation](_index.md)
+- [Code Suggestions Development](code_suggestions.md)
+- [License Management Guidelines for Code Suggestions](code_suggestions.md#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on)
 - [Duo Enterprise License Access Process for Staging Environment](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/duo/duo_license.md?ref_type=heads)

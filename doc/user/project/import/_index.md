@@ -709,7 +709,7 @@ Check the import status:
 
 Search logs for relevant information:
 
-For self-managed instances:
+For GitLab Self-Managed instances:
 
 1. Check the [Sidekiq logs](../../../administration/logs/_index.md#sidekiqlog) and [`exceptions_json` logs](../../../administration/logs/_index.md#exceptions_jsonlog).
 1. Search for entries related to `RepositoryImportWorker` and the correlation ID from [Check import status](#check-import-status).
@@ -731,7 +731,7 @@ For GitLab.com (GitLab team members only):
    json.class: "RepositoryImportWorker" AND json.meta.project: "<project.full_path>"
    ```
 
-1. Look for the same fields as mentioned for self-managed instances.
+1. Look for the same fields as mentioned for GitLab Self-Managed instances.
 
 #### Identify common issues
 

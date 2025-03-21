@@ -11,7 +11,7 @@
   alert_options: { class: 'hidden js-cluster-creating gl-mt-5 gl-mb-5' }) do |c|
   - c.with_body do
     = render Pajamas::SpinnerComponent.new(inline: true)
-    %span.gl-ml-2= s_('ClusterIntegration|Kubernetes cluster is being created...')
+    %span.gl-ml-2= s_('ClusterIntegration|Kubernetes cluster is being created…')
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   alert_options: { class: 'hidden js-cluster-api-unreachable' }) do |c|

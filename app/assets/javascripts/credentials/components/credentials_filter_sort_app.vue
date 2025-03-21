@@ -58,7 +58,7 @@ export default {
     <gl-filtered-search
       class="gl-min-w-0 gl-grow"
       :value="tokens"
-      :placeholder="s__('CredentialsInventory|Search or filter credentials...')"
+      :placeholder="s__('CredentialsInventory|Search or filter credentials…')"
       :available-tokens="availableTokens"
       terms-as-tokens
       @submit="search"

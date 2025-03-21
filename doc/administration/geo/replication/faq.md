@@ -85,11 +85,11 @@ No, Geo sites can be based on different reference architectures. For example, yo
 
 ## Does Geo replicate archived projects?
 
-Yes, provided they are not excluded through [selective sync](../replication/selective_synchronization.md).
+Yes, provided they are not excluded through [selective sync](selective_synchronization.md).
 
 ## Does Geo replicate personal projects?
 
-Yes, provided they are not excluded through [selective sync](../replication/selective_synchronization.md).
+Yes, provided they are not excluded through [selective sync](selective_synchronization.md).
 
 ## Are delayed deletion projects replicated to secondary sites?
 

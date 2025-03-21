@@ -66,7 +66,7 @@ The settings contained in `GITLAB_OMNIBUS_CONFIG` aren't written to the
 settings, separate them with a colon (`;`).
 
 The following example sets the external URL, enables LFS, and starts
-the container with a [minimal shm size required for Prometheus](../docker/troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container):
+the container with a [minimal shm size required for Prometheus](troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container):
 
 ```shell
 sudo docker run --detach \

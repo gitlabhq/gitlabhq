@@ -17,7 +17,7 @@ When the feature changes from experiment or beta to generally available:
 
 - Remove the **Status** from the product availability details.
 - Remove any language about the feature not being ready for production.
-- Update the [history](../documentation/styleguide/availability_details.md#history).
+- Update the [history](styleguide/availability_details.md#history).
 
 ## Features that require user enrollment or feedback
 

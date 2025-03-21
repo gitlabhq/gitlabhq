@@ -14,7 +14,7 @@ The following tables are intended to guide you to choose the right combination o
 
 | Capability | Availability | Recoverability | Data Resiliency | Performance | Risks/Trade-offs|
 |------------|--------------|----------------|-----------------|-------------|-----------------|
-|Gitaly Cluster | Very high - tolerant of node failures | RTO for a single node of 10 s with no manual intervention | Data is stored on multiple nodes | Good - While writes may take slightly longer due to voting, read distribution improves read speeds | **Trade-off** - Slight decrease in write speed for redundant, strongly-consistent storage solution. **Risks** - [Does not support snapshot backups](../gitaly/_index.md#snapshot-backup-and-recovery), GitLab backup task can be slow for large data sets |
+|Gitaly Cluster | Very high - tolerant of node failures | RTO for a single node of 10 s with no manual intervention | Data is stored on multiple nodes | Good - While writes may take slightly longer due to voting, read distribution improves read speeds | **Trade-off** - Slight decrease in write speed for redundant, strongly-consistent storage solution. **Risks** - [Does not support snapshot backups](_index.md#snapshot-backup-and-recovery), GitLab backup task can be slow for large data sets |
 |Gitaly Shards | Single storage location is a single point of failure | Would need to restore only shards which failed | Single point of failure | Good - can allocate repositories to shards to spread load | **Trade-off** - Need to manually configure repositories into different shards to balance loads / storage space **Risks** - Single point of failure relies on recovery process when single-node failure occurs |
 
 ## Geo capabilities

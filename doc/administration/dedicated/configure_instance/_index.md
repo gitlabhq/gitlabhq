@@ -33,15 +33,15 @@ You can use Switchboard to make limited configuration changes to your GitLab Ded
 
 The following configuration settings are available in Switchboard:
 
-- [IP allowlist](../configure_instance/network_security.md#ip-allowlist)
-- [SAML settings](../configure_instance/saml.md)
-- [Custom certificates](../configure_instance/network_security.md#custom-certificates)
-- [Outbound private links](../configure_instance/network_security.md#outbound-private-link)
-- [Private hosted zones](../configure_instance/network_security.md#private-hosted-zones)
+- [IP allowlist](network_security.md#ip-allowlist)
+- [SAML settings](saml.md)
+- [Custom certificates](network_security.md#custom-certificates)
+- [Outbound private links](network_security.md#outbound-private-link)
+- [Private hosted zones](network_security.md#private-hosted-zones)
 
 Prerequisites:
 
-- You must have the [Admin](../configure_instance/users_notifications.md#add-switchboard-users) role.
+- You must have the [Admin](users_notifications.md#add-switchboard-users) role.
 
 To make a configuration change:
 
@@ -63,7 +63,7 @@ When you apply changes immediately:
 - You can save multiple changes and apply them in one batch.
 
 After the deployment job is complete, you receive an email notification. Check your spam folder if you do not see a notification in your main inbox.
-All users with access to view or edit your tenant in Switchboard receive a notification for each change. For more information, see [Manage Switchboard notification preferences](../configure_instance/users_notifications.md#manage-notification-preferences).
+All users with access to view or edit your tenant in Switchboard receive a notification for each change. For more information, see [Manage Switchboard notification preferences](users_notifications.md#manage-notification-preferences).
 
 {{< alert type="note" >}}
 

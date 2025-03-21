@@ -83,7 +83,7 @@ or a GitLab instance.
 ## EE-only considerations
 
 Group webhooks are a Premium-licensed feature. All code related to triggering group webhooks,
-or building payloads for webhooks that are configurable only for groups, [must be in the `ee/` directory](../development/ee_features.md).
+or building payloads for webhooks that are configurable only for groups, [must be in the `ee/` directory](ee_features.md).
 
 ## Triggering a webhook
 
@@ -396,7 +396,7 @@ to feature removal, set the value to `null`, `{}`, or `[]` rather than remove th
 
 When writing a unit test for the [`DataBuilder` class](#defining-payloads), assert that:
 
-- A set number of database requests are made, using [`QueryRecorder`](../development/database/query_recorder.md),
+- A set number of database requests are made, using [`QueryRecorder`](database/query_recorder.md),
   You can do this by measuring the number of queries using `QueryRecorder` and then
   comparing against that number in the spec, to ensure that the query count does
   not change without our conscious choice. Also see [preloading](#minimizing-database-requests) of associated data.
@@ -410,6 +410,6 @@ You can configure the webhook URL to one provided by <https://webhook.site> to v
 
 ## Having changes reviewed
 
-In addition to the [usual reviewers for code review](../development/code_review.md#approval-guidelines), changes to webhooks
+In addition to the [usual reviewers for code review](code_review.md#approval-guidelines), changes to webhooks
 should be reviewed by a backend team member from
 [Import & Integrate](https://handbook.gitlab.com/handbook/product/categories/#import-and-integrate-group).

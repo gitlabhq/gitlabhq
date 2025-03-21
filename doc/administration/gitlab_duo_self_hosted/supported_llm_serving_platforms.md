@@ -78,7 +78,7 @@ For more information on:
 
 - vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
 - Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
-- The hardware needed for the models, see the [Supported models and Hardware requirements documentation](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
+- The hardware needed for the models, see the [Supported models and Hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 Examples:
 

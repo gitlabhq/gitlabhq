@@ -262,7 +262,7 @@ After you set up your identity provider to work with GitLab, you must configure 
    1. The role to assign to
       [users who are not members of a mapped SAML group](group_sync.md#automatic-member-removal)
       when SAML Group Links is configured for the group.
-1. For groups on self-managed instances: in the **Default membership role** field,
+1. For groups on GitLab Self-Managed instances: in the **Default membership role** field,
    select the role to assign to new users.
    The default role is **Guest**. That role becomes the starting role of all users
    added to the group:

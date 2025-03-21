@@ -401,7 +401,7 @@ The AI Framework team should create a main migration issue following this templa
 
 ## Technical Details
 - [Any technical specifics about this migration]
-- [Impact on GitLab.com and self-managed instances]
+- [Impact on GitLab.com and GitLab Self-Managed instances]
 
 ## Implementation Steps
 - [ ] Update model configurations in each feature

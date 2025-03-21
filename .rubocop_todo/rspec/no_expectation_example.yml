@@ -47,7 +47,7 @@ RSpec/NoExpectationExample:
     - 'qa/qa/specs/features/browser_ui/4_verify/ci_variable/ui_variable_inheritable_when_forward_pipeline_variables_true_spec.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/ci_variable/ui_variable_non_inheritable_when_forward_pipeline_variables_false_spec.rb'
     - 'qa/qa/specs/features/ee/api/2_plan/epics_to_work_items_sync_spec.rb'
-    - 'qa/qa/specs/features/ee/api/9_data_stores/elasticsearch/elasticsearch_api_spec.rb'
+    - 'qa/qa/specs/features/ee/api/9_tenant_scale/elasticsearch/elasticsearch_api_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/change_vulnerability_status_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/group/group_ldap_sync_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/security_reports_spec.rb'

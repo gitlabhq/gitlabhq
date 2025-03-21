@@ -33,7 +33,7 @@ UltraAuth has removed their software which supports OmniAuth integration. We hav
 The external authentication and authorization providers may support the following capabilities.
 For more information, see the links shown on this page for each external provider.
 
-| Capability                                      | GitLab.com                              | Self-managed                       |
+| Capability                                      | GitLab.com                              | GitLab Self-Managed                       |
 |-------------------------------------------------|-----------------------------------------|------------------------------------|
 | **User Provisioning**                           | SCIM<br>SAML <sup>1</sup> | LDAP <sup>1</sup><br>SAML <sup>1</sup><br>[OmniAuth Providers](../../integration/omniauth.md#supported-providers) <sup>1</sup><br>SCIM  |
 | **User Detail Updating** (not group management) | Not Available                           | LDAP Sync                          |

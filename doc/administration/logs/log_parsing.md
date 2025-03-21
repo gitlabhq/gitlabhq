@@ -14,7 +14,7 @@ title: Parsing GitLab logs with `jq`
 
 We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
 but if they are not available you can still quickly parse
-[GitLab logs](../logs/_index.md) in JSON format
+[GitLab logs](_index.md) in JSON format
 using [`jq`](https://stedolan.github.io/jq/).
 
 {{< alert type="note" >}}
@@ -34,7 +34,7 @@ include use cases targeted for parsing GitLab log files.
 
 The examples listed below address their respective log files by
 their relative Linux package installation paths and default filenames.
-Find the respective full paths in the [GitLab logs sections](../logs/_index.md#production_jsonlog).
+Find the respective full paths in the [GitLab logs sections](_index.md#production_jsonlog).
 
 ### Compressed logs
 

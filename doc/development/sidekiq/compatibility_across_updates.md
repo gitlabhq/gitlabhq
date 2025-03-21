@@ -196,7 +196,7 @@ Add a migration (not a post-deployment migration) that uses `sidekiq_remove_jobs
 
 ### In the M+2 release
 
-Delete the worker class file and follow the guidance in our [Sidekiq queues documentation](../sidekiq/_index.md#sidekiq-queues) around running Rake tasks to regenerate/update related files.
+Delete the worker class file and follow the guidance in our [Sidekiq queues documentation](_index.md#sidekiq-queues) around running Rake tasks to regenerate/update related files.
 
 ## Renaming queues
 

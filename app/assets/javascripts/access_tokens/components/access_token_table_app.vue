@@ -46,7 +46,8 @@ export default {
   i18n: {
     button: {
       revoke: s__('AccessTokens|Revoke'),
-      revokeAriaLabel: (name) => sprintf(s__('AccessTokens|Revoke %{name}'), { name }).trim(),
+      revokeAriaLabel: (name) =>
+        sprintf(s__('AccessTokens|Revoke %{name}'), { name }, false).trim(),
       rotate: s__('AccessTokens|Rotate'),
     },
     emptyDateField: __('Never'),
@@ -216,10 +217,14 @@ export default {
       }
     },
     modalMessage(tokenName, action) {
-      return sprintf(this.$options.i18n.modal.message[action], {
-        accessTokenType: this.accessTokenType,
-        tokenName,
-      });
+      return sprintf(
+        this.$options.i18n.modal.message[action],
+        {
+          accessTokenType: this.accessTokenType,
+          tokenName,
+        },
+        false,
+      );
     },
     sortingChanged(aRow, bRow, key) {
       if (['createdAt', 'lastUsedAt', 'expiresAt'].includes(key)) {

@@ -42,7 +42,7 @@ RSpec.describe 'Projects > Files > Project owner sees a link to create a license
   end
 
   def select_template(template)
-    click_button 'Choose a template...'
+    click_button 'Choose a template…'
     click_button template
     wait_for_requests
   end

@@ -20816,6 +20816,15 @@ Stores Amazon S3 configurations for audit event streaming.
 | <a id="amazons3configurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="amazons3configurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
+### `AncestorType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ancestortypename"></a>`name` | [`String`](#string) | Name of the ancestor. |
+| <a id="ancestortypeversion"></a>`version` | [`String`](#string) | Version of the ancestor. |
+
 ### `ApiFuzzingCiConfiguration`
 
 Data associated with configuring API fuzzing scans in GitLab CI.
@@ -29796,6 +29805,7 @@ Represents an entry from the Cloud License history.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="locationancestors"></a>`ancestors` | [`[AncestorType!]`](#ancestortype) | Ancestors of the dependency. |
 | <a id="locationblobpath"></a>`blobPath` | [`String`](#string) | HTTP URI path to view the input file in GitLab. |
 | <a id="locationpath"></a>`path` | [`String`](#string) | Path, relative to the root of the repository, of the filewhich was analyzed to detect the dependency. |
 | <a id="locationtoplevel"></a>`topLevel` | [`Boolean`](#boolean) | Is top level dependency. |

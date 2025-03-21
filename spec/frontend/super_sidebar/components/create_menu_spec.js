@@ -62,7 +62,7 @@ describe('CreateMenu component', () => {
     });
 
     it("sets the toggle's label", () => {
-      expect(findGlDisclosureDropdown().props('toggleText')).toBe('Create new...');
+      expect(findGlDisclosureDropdown().props('toggleText')).toBe('Create new…');
     });
     it('has correct amount of dropdown groups', () => {
       const items = findGlDisclosureDropdownGroups();
@@ -131,7 +131,7 @@ describe('CreateMenu component', () => {
       await nextTick();
 
       const tooltip = getBinding(findGlDisclosureDropdown().element, 'gl-tooltip');
-      expect(tooltip.value).toBe('Create new...');
+      expect(tooltip.value).toBe('Create new…');
     });
   });
 

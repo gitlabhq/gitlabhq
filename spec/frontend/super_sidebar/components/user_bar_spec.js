@@ -86,7 +86,7 @@ describe('UserBar component', () => {
       createWrapper();
     });
 
-    describe('"Create new..." menu', () => {
+    describe('"Create new…" menu', () => {
       describe('when there are no menu items for it', () => {
         // This scenario usually happens for an "External" user.
         it('does not render it', () => {
@@ -96,7 +96,7 @@ describe('UserBar component', () => {
       });
 
       describe('when there are menu items for it', () => {
-        it('passes the "Create new..." menu groups to the create-menu component', () => {
+        it('passes the "Create new…" menu groups to the create-menu component', () => {
           expect(findCreateMenu().props('groups')).toBe(mockSidebarData.create_new_menu_groups);
         });
       });

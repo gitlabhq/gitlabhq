@@ -98,7 +98,7 @@ In addition:
 - Ensure that the output generates properly.
 - Ensure the version history begins with `-`.
 - If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.
-- Do not link to [confidential issues](../styleguide/_index.md#confidential-or-restricted-access-links).
+- Do not link to [confidential issues](_index.md#confidential-or-restricted-access-links).
 - Do not link to the pricing page. Do not include the subscription tier.
 
 #### Updated features

@@ -11,7 +11,7 @@ recommends these word choices. In addition:
 
 - The GitLab handbook contains a list of
   [top misused terms](https://handbook.gitlab.com/handbook/communication/top-misused-terms/).
-- The documentation [style guide](../styleguide/_index.md#language) includes details
+- The documentation [style guide](_index.md#language) includes details
   about language and capitalization.
 - The GitLab handbook provides guidance on the [use of third-party trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
@@ -873,7 +873,7 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 Avoid ellipses when you can. If you must include them, for example as part of a code block or other CLI response,
 use three periods with no space (`...`) instead of the `&hellip;` HTML entity or the `&#8230;` HTML code.
 
-For more information, see [code blocks](../styleguide/_index.md#code-blocks).
+For more information, see [code blocks](_index.md#code-blocks).
 
 Do not include any ellipses when documenting UI text.
 

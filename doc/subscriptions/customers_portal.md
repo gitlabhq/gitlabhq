@@ -9,7 +9,7 @@ title: The Customers Portal
 For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
 
 - [GitLab SaaS subscription](gitlab_com/_index.md)
-- [Self-managed subscription](self_managed/_index.md)
+- [GitLab Self-Managed subscription](self_managed/_index.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).

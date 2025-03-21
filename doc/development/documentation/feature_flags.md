@@ -48,7 +48,7 @@ When documenting the [offerings](styleguide/availability_details.md#offering), f
 ## Add history text
 
 When the state of a flag changes (for example, from disabled by default to enabled by default), add the change to the
-[history](../documentation/styleguide/availability_details.md#history).
+[history](styleguide/availability_details.md#history).
 
 Possible history entries are:
 

@@ -358,7 +358,7 @@ This also implies that database queries are executed which makes this category s
 
 See also:
 
-- The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+- The [RSpec testing guidelines](best_practices.md#rspec).
 - System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
 
 ```mermaid

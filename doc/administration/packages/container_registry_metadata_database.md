@@ -21,7 +21,7 @@ title: Container registry metadata database
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
-The work on the self-managed release of the registry metadata database feature
+The work on the GitLab Self-Managed release of the registry metadata database feature
 is tracked in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 By default, the container registry uses object storage to persist metadata

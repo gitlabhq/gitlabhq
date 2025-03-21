@@ -102,7 +102,7 @@ The protection rule is deleted and matching tags are no longer protected.
 Rule changes rely on JWT tokens to propagate between services. As a result, changes to protection rules and user access roles might take effect only after current JWT tokens expire. The delay equals the [configured token duration](../../../administration/packages/container_registry.md#increase-token-duration):
 
 - Default: 5 minutes
-- GitLab.com: [15 minutes](../../gitlab_com/_index.md#gitlab-container-registry)
+- GitLab.com: [15 minutes](../../gitlab_com/_index.md#container-registry)
 
 Most container registry clients (including Docker, the GitLab UI, and the API) request a new token for each operation, but custom clients might retain a token for its full validity period.
 

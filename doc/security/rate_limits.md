@@ -15,7 +15,7 @@ title: Rate limits
 {{< alert type="note" >}}
 
 For GitLab.com, see
-[GitLab.com-specific rate limits](../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
+[GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
 {{< /alert >}}
 

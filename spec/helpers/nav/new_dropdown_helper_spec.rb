@@ -12,7 +12,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
     let(:with_can_create_group) { false }
     let(:with_can_create_snippet) { false }
     let(:with_can_create_organization) { false }
-    let(:title) { 'Create new...' }
+    let(:title) { 'Create new…' }
 
     subject(:view_model) do
       helper.new_dropdown_view_model(project: current_project, group: current_group)
@@ -50,7 +50,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
     end
 
     it 'has title' do
-      expect(view_model[:title]).to eq('Create new...')
+      expect(view_model[:title]).to eq('Create new…')
     end
 
     context 'when current_user is nil (anonymous)' do

@@ -7,7 +7,7 @@ title: Rust Language and Ecosystem Solutions Index
 
 This page attempts to index the ways in which GitLab supports Rust. It does so whether the integration is the result of configuring general functionality, was built in to Rust or GitLab or is provided as a solution.
 
-Unless otherwise noted, all of this content applies to both GitLab.com and self-managed instances.
+Unless otherwise noted, all of this content applies to both GitLab.com and GitLab Self-Managed instances.
 
 | Text Tag                 | Configuration / Built / Solution                             | Support/Maintenance                                          |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |

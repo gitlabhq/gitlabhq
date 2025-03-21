@@ -125,7 +125,7 @@ describe('IDE commit form', () => {
 
     it('renders commit button in compact mode', () => {
       expect(findBeginCommitButton().exists()).toBe(true);
-      expect(findBeginCommitButton().text()).toBe('Create commit...');
+      expect(findBeginCommitButton().text()).toBe('Create commit…');
     });
 
     it('does not render form', () => {

@@ -179,7 +179,7 @@ You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.m
 - Groups
 
 The default maximum size for each artifact file in a job is 100 MB.
-For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
+For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
 
 Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
 In this case, the smaller value is used.
@@ -296,7 +296,7 @@ After that time passes, the jobs are archived in the background and no longer ab
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
-For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#gitlab-cicd).
+For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
 
 ## Protect CI/CD variables by default
 

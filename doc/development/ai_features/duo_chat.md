@@ -299,7 +299,7 @@ We strongly recommend running the regression evaluator in at least the following
 
 | Environment                                                                 | Evaluation pipeline name                                  |
 | -----------                                                                 | ------------------------                                  |
-| Self-managed GitLab and a custom model that is widely adopted               | `duo-chat regression sm: [bedrock_mistral_8x7b_instruct]` |
+| GitLab Self-Managed and a custom model that is widely adopted               | `duo-chat regression sm: [bedrock_mistral_8x7b_instruct]` |
 | GitLab.com and GitLab Duo Enterprise add-on                                 | `duo-chat regression .com: [duo_enterprise]`              |
 | GitLab.com and GitLab Duo Pro add-on                                        | `duo-chat regression .com: [duo_pro]`                     |
 
@@ -477,7 +477,7 @@ The analysis can contain any of the attributes defined in the latest [iglu schem
 This table describes the requirements for the `access_duo_chat` policy to
 return `true` in different contexts.
 
-| | GitLab.com | Dedicated or Self-managed | All instances |
+| | GitLab.com | Dedicated or GitLab Self-Managed | All instances |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
 | for user outside of project or group (`user.can?(:access_duo_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `duo_features_enabled` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on |  |
 | for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and the group must have `duo_features_enabled` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must have at least _read_ permissions on the group |

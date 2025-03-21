@@ -117,7 +117,7 @@ The user is sent a confirmation email.
 
 #### Configure network and proxy settings
 
-For self-managed instances, to enable GitLab Duo features,
+For GitLab Self-Managed instances, to enable GitLab Duo features,
 you must [enable network connectivity](../user/ai_features_enable.md).
 
 ## Assign and remove GitLab Duo seats in bulk
@@ -158,7 +158,7 @@ Prerequisites:
    - To remove users from seats, select **Remove seat**, then **Remove seats** to confirm.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
-Administrators of self-managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
+Administrators of GitLab Self-Managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
 
 #### Managing GitLab Duo seats with LDAP configuration
 

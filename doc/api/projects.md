@@ -78,7 +78,7 @@ Supported attributes:
 
 The responses include attributes related to container registry storage size:
 
-- `container_registry_size`: Total storage size in bytes used by all container repositories in the project. Updated whenever container images are pushed or deleted. For self-managed instances, requires the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) to be enabled.
+- `container_registry_size`: Total storage size in bytes used by all container repositories in the project. Updated whenever container images are pushed or deleted. For GitLab Self-Managed instances, requires the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) to be enabled.
 
 Example response:
 

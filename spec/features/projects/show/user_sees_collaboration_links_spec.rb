@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
   end
 
   def find_new_menu_toggle
-    find_by_testid('base-dropdown-toggle', text: 'Create new...')
+    find_by_testid('base-dropdown-toggle', text: 'Create new…')
   end
 
   context 'with developer user' do

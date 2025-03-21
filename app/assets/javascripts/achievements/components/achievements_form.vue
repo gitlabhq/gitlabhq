@@ -240,7 +240,7 @@ export default {
               <div class="gl-overflow-hidden">
                 <div class="gl-flex">
                   <gl-button data-testid="select-file-button" @click="$refs.fileUpload.click()">
-                    {{ __('Choose File...') }}
+                    {{ __('Choose File…') }}
                   </gl-button>
                   <gl-button
                     v-if="filename"

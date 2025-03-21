@@ -30,7 +30,7 @@ The log system is similar to [audit events](../audit_event_reports.md).
 For more information, see also:
 
 - [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
-- [Parsing and analyzing GitLab logs in JSON format](../logs/log_parsing.md)
+- [Parsing and analyzing GitLab logs in JSON format](log_parsing.md)
 
 ## Log Levels
 

@@ -77,6 +77,6 @@ GitLab performs emergency maintenance per
 Emergency maintenance is initiated when urgent actions need to be executed by GitLab on a
 GitLab Dedicated tenant instance. For example, when a critical (S1) security vulnerability requires urgent patching, GitLab performs emergency maintenance to upgrade your tenant instance to a secure version. This maintenance can occur outside scheduled maintenance windows.
 
-GitLab provides advance emergency maintenance notice when possible and sends complete details after the issue is resolved. The GitLab Support team creates a support ticket and notifies all [Switchboard users](../dedicated/create_instance.md#step-1-get-access-to-switchboard) by email.
+GitLab provides advance emergency maintenance notice when possible and sends complete details after the issue is resolved. The GitLab Support team creates a support ticket and notifies all [Switchboard users](create_instance.md#step-1-get-access-to-switchboard) by email.
 
 You cannot postpone emergency maintenance, because the same process must be applied to all GitLab Dedicated instances to ensure their security and availability.

@@ -59,7 +59,7 @@ Before any upgrade, consider all audiences and targets, ordered by how immediate
    GitLab SaaS is affected with the next deployment.
 1. **GitLab Self-Managed.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
    Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
-   Self-managed customers are affected as soon as they upgrade to the release containing this change.
+   GitLab Self-Managed customers are affected as soon as they upgrade to the release containing this change.
 
 ## Ruby upgrade approach
 

@@ -6,7 +6,7 @@ module Nav
       return unless current_user
 
       menu_sections = []
-      data = { title: _('Create new...') }
+      data = { title: _('Create new…') }
 
       if project&.persisted?
         menu_sections.push(project_menu_section(project))

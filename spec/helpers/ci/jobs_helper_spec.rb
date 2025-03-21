@@ -29,7 +29,7 @@ RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
         "test_report_summary_url" => "/#{project.full_path}/-/jobs/#{job.id}/test_report_summary.json",
         "page_path" => "/#{project.full_path}/-/jobs/#{job.id}",
         "project_path" => project.full_path,
-        "artifact_help_url" => "/help/user/gitlab_com/_index.md#gitlab-cicd",
+        "artifact_help_url" => "/help/user/gitlab_com/_index.md#cicd",
         "deployment_help_url" => "/help/user/project/clusters/deploy_to_cluster.md#troubleshooting",
         "runner_settings_url" => "/#{project.full_path}/-/runners#js-runners-settings",
         "retry_outdated_job_docs_url" => "/help/ci/pipelines/settings.md#prevent-outdated-deployment-jobs",

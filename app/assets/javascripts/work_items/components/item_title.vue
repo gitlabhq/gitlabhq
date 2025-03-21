@@ -11,7 +11,7 @@ export default {
     placeholder: {
       type: String,
       required: false,
-      default: __('Add a title...'),
+      default: __('Add a title…'),
     },
     disabled: {
       type: Boolean,

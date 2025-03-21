@@ -35,5 +35,6 @@ Client-side secret detection checks only the following for secrets:
 - Comments in issues or merge requests.
 - Descriptions of issues or merge requests.
 
-For details of which types of secrets are covered by client-side secret detection, see
+Secrets with custom prefixes are supported only for GitLab personal access tokens.
+For more information about which types of secrets are covered by client-side secret detection, see
 [Detected secrets](../detected_secrets.md).

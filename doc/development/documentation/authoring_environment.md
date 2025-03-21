@@ -13,9 +13,9 @@ Use this guidance to help ensure you have the tools you need.
 - Install a code editor, like VS Code or Sublime Text, to work with Markdown files.
 - [Install Git](../../topics/git/how_to_install_git/_index.md) and
   [add an SSH key to your GitLab profile](../../user/ssh.md#add-an-ssh-key-to-your-gitlab-account).
-- Install documentation [linters](../documentation/testing/_index.md) and configure them in your code editor:
-  - [markdownlint](../documentation/testing/markdownlint.md)
-  - [Vale](../documentation/testing/vale.md)
+- Install documentation [linters](testing/_index.md) and configure them in your code editor:
+  - [markdownlint](testing/markdownlint.md)
+  - [Vale](testing/vale.md)
 - [Set up the docs site to build locally](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/setup.md).
 - Optional. Install the [Conventional Comments](https://gitlab.com/conventionalcomments/conventional-comments-button) extension for Chrome.
   The plugin adds **Conventional Comment** buttons to GitLab comments.

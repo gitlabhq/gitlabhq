@@ -72,7 +72,7 @@ export default {
     <devops-score-callout />
     <gl-empty-state
       v-if="isEmpty"
-      :title="__('Data is still calculating...')"
+      :title="__('Data is still calculating…')"
       :svg-path="noDataImagePath"
     >
       <template #description>

@@ -43,7 +43,7 @@ If you want to avoid downtime, consider using [zero-downtime upgrades](../../../
 To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**
 and all **secondary** sites:
 
-1. Optional. [Pause replication on each **secondary** site](../replication/pause_resume_replication.md)
+1. Optional. [Pause replication on each **secondary** site](pause_resume_replication.md)
    to protect the disaster recovery (DR) capability of the **secondary** sites.
 1. SSH into each node of the **primary** site.
 1. [Upgrade GitLab on the **primary** site](../../../update/package/_index.md#by-using-the-official-repositories-recommended).

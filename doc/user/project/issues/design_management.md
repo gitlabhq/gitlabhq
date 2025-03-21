@@ -27,9 +27,9 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
-  - On self-managed instances, a GitLab administrator must
+  - On GitLab Self-Managed instances, a GitLab administrator must
     [enable LFS globally](../../../administration/lfs/_index.md).
-  - On both GitLab.com and self-managed instances, LFS must be
+  - On both GitLab.com and GitLab Self-Managed instances, LFS must be
     [enabled for the project itself](../settings/_index.md#configure-project-features-and-permissions).
     If enabled globally, LFS is enabled by default for all projects. If you have
     disabled it for your project, you must enable it again.

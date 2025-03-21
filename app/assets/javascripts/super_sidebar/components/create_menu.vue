@@ -30,7 +30,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   i18n: {
-    createNew: __('Create new...'),
+    createNew: __('Create new…'),
   },
   inject: ['isImpersonating'],
   props: {

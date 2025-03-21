@@ -129,7 +129,9 @@ curl --request GET \
 
 {{< /history >}}
 
-Creates a project access token for a specified project. You cannot create a token with an access level greater than your account. For example, a user with the Maintainer role cannot create a project access token with the Owner role.
+Creates a project access token for a specified project. You cannot create a token with an access level greater than your account. For example, a user with the Maintainer role cannot create a project access token with the Owner role. 
+
+You must use a personal access token with this endpoint. You cannot authenticate with a project access token. There is an [open feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/359953) to add this functionality.
 
 ```plaintext
 POST projects/:id/access_tokens
@@ -146,7 +148,7 @@ POST projects/:id/access_tokens
 
 ```shell
 curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "PRIVATE-TOKEN: <your_personal_access_token>" \
   --header "Content-Type:application/json" \
   --data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level":30 }' \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"

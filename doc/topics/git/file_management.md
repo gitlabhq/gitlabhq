@@ -216,7 +216,7 @@ It's a good option for:
 
 Prerequisites:
 
-- You must have [Git LFS installed](../git/lfs/_index.md).
+- You must have [Git LFS installed](lfs/_index.md).
 - You must have the Maintainer role for the project.
 
 ### Configure file locks

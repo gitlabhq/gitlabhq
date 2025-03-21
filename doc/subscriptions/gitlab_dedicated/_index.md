@@ -256,7 +256,7 @@ Features behind flags that are disabled by default are not ready for production 
 
 When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in
 GitLab Dedicated in the same GitLab version. GitLab Dedicated follows its own
-[release schedule](../gitlab_dedicated/maintenance.md) for version deployments.
+[release schedule](maintenance.md) for version deployments.
 
 ## Migrate to GitLab Dedicated
 

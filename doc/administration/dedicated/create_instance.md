@@ -184,7 +184,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
      You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
 
    - **Time zone**: Select a weekly four-hour time slot when GitLab performs routine
-     maintenance and upgrades. For more information, see [maintenance windows](../dedicated/maintenance.md#maintenance-windows).
+     maintenance and upgrades. For more information, see [maintenance windows](maintenance.md#maintenance-windows).
 
 1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you do not add keys, GitLab generates encryption keys for your instance. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
 
@@ -221,17 +221,17 @@ To access and configure your GitLab Dedicated instance:
 1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
 1. [Change your temporary root password](../../user/profile/user_passwords.md#change-your-password) to a new secure password.
 1. Go to the Admin area and [add the license key](../license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
-1. Return to Switchboard and [add users](../dedicated/configure_instance/users_notifications.md#add-switchboard-users), if needed.
-1. Review the [release rollout schedule](../dedicated/maintenance.md#release-rollout-schedule) for upgrades and maintenance.
+1. Return to Switchboard and [add users](configure_instance/users_notifications.md#add-switchboard-users), if needed.
+1. Review the [release rollout schedule](maintenance.md#release-rollout-schedule) for upgrades and maintenance.
 
 Also plan ahead if you need the following GitLab Dedicated features:
 
-- [Inbound Private Link](../dedicated/configure_instance/network_security.md#inbound-private-link)
-- [Outbound Private Link](../dedicated/configure_instance/network_security.md#outbound-private-link)
-- [SAML SSO](../dedicated/configure_instance/saml.md)
-- [Bring your own domain](../dedicated/configure_instance/network_security.md#bring-your-own-domain-byod)
+- [Inbound Private Link](configure_instance/network_security.md#inbound-private-link)
+- [Outbound Private Link](configure_instance/network_security.md#outbound-private-link)
+- [SAML SSO](configure_instance/saml.md)
+- [Bring your own domain](configure_instance/network_security.md#bring-your-own-domain-byod)
 
-To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../dedicated/configure_instance/_index.md).
+To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](configure_instance/_index.md).
 
 {{< alert type="note" >}}
 

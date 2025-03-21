@@ -104,7 +104,7 @@ Example response:
 
 ## History
 
-Add [history](../documentation/styleguide/availability_details.md#history)
+Add [history](styleguide/availability_details.md#history)
 to describe new or updated API calls.
 
 To add history for an individual attribute, include it in the history
@@ -126,7 +126,7 @@ If the API or attribute is deployed behind a feature flag,
 ## Deprecations
 
 To document the deprecation of an API endpoint, follow the steps to
-[deprecate a page or topic](../documentation/styleguide/deprecations_and_removals.md).
+[deprecate a page or topic](styleguide/deprecations_and_removals.md).
 
 To deprecate an attribute:
 

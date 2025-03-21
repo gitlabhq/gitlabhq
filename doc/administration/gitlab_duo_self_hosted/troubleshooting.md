@@ -432,7 +432,7 @@ If problem persists, report the issue to the GitLab support team.
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
 
-This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Check the [AI Gateway logs](../gitlab_duo_self_hosted/logging.md) for any errors.
+This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Check the [AI Gateway logs](logging.md) for any errors.
 
 ### Error A1003
 
@@ -478,7 +478,7 @@ This error typically occurs due to issues with streaming from the model to the A
 
    If streaming is working, chunked responses should be displayed. If it is not, it will likely show an empty response.
 
-1. Check the [AI gateway logs](../gitlab_duo_self_hosted/logging.md) for specific error messages, because this is usually a model deployment issue.
+1. Check the [AI gateway logs](logging.md) for specific error messages, because this is usually a model deployment issue.
 
 1. To validate the connection, disable the streaming by setting the `AIGW_CUSTOM_MODELS__DISABLE_STREAMING` environment variable in your AI gateway container:
 

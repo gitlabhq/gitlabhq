@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     title() {
-      return __('Deploy to...');
+      return __('Deploy to…');
     },
     actionItems() {
       return this.actions.map((actionItem) => ({

@@ -55,7 +55,7 @@ GitLab Duo Chat uses the GitLab documentation from the [GitLab repository](https
 To keep Chat up to date with the documentation, its knowledge base is updated daily.
 
 - On GitLab.com, the most recent version of the documentation is used.
-- On Self-managed and GitLab Dedicated, the documentation for the version of the instance is used.
+- On GitLab Self-Managed and GitLab Dedicated, the documentation for the version of the instance is used.
 
 ## Ask about a specific issue
 

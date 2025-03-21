@@ -94,6 +94,10 @@ The default prefix is `glpat-` but administrators can change it.
 [Project access tokens](../../user/project/settings/project_access_tokens.md) and
 [group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
 
+By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) and
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom prefixes.
+Custom prefixes might cause an increase in false positives.
+
 ### Set a prefix
 
 To change the default global prefix:

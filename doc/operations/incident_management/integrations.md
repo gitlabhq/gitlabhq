@@ -246,7 +246,7 @@ Ensure your requests are smaller than the
 
 #### Prometheus severity options
 
-Alerts from Prometheus can provide any of the case-insensitive follow values for [alert severity](../incident_management/alerts.md#alert-severity):
+Alerts from Prometheus can provide any of the case-insensitive follow values for [alert severity](alerts.md#alert-severity):
 
 - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`
 - **High**: `high`, `s2`, `p2`, `major`, `page`
@@ -432,7 +432,7 @@ part of the payload.
 For more information on alert properties and mappings, see
 [Customize the alert payload outside of GitLab](#customize-the-alert-payload-outside-of-gitlab).
 
-You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
+You can also configure the associated [incident to be closed automatically](manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
 ## Link to your Opsgenie Alerts
 

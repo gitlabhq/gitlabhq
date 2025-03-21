@@ -187,7 +187,7 @@ You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`, `
 to avoid man-in-the-middle attack warnings if you have to perform a full machine restore.
 
 In the unlikely event that the secrets file is lost, see
-[When the secrets file is lost](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
+[When the secrets file is lost](troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
 
 ### Other data
 

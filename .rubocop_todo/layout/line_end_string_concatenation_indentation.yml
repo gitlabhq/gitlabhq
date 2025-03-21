@@ -392,7 +392,7 @@ Layout/LineEndStringConcatenationIndentation:
     - 'qa/qa/service/docker_run/product_analytics/dotnet_sdk_app.rb'
     - 'qa/qa/specs/features/ee/api/10_govern/compliance_pipeline_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/export_vulnerability_report_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/9_data_stores/elasticsearch/elasticsearch_reindexing_spec.rb'
+    - 'qa/qa/specs/features/ee/browser_ui/9_tenant_scale/elasticsearch/elasticsearch_reindexing_spec.rb'
     - 'qa/qa/support/system_logs/kibana.rb'
     - 'qa/qa/tools/revoke_user_personal_access_tokens.rb'
     - 'qa/qa/tools/test_resources_handler.rb'

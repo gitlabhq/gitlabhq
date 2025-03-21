@@ -218,7 +218,7 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/workers/group_destroy_worker_spec.rb'
     - 'ee/spec/workers/security/scan_execution_policies/create_pipeline_worker_spec.rb'
     - 'ee/spec/workers/security/scan_execution_policies/rule_schedule_worker_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/9_data_stores/project/dashboard_images_spec.rb'
+    - 'qa/qa/specs/features/browser_ui/9_tenant_scale/project/dashboard_images_spec.rb'
     - 'qa/spec/specs/helpers/feature_flag_spec.rb'
     - 'spec/bin/audit_event_type_spec.rb'
     - 'spec/bin/feature_flag_spec.rb'

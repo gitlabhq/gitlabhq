@@ -65,6 +65,48 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/_index.md#create-a-new-wiki-page)
 are included when cloning.
 
+## CI/CD
+
+Below are the current settings regarding [GitLab CI/CD](../../ci/_index.md).
+Any settings or feature limits not listed here are using the defaults listed in
+the related documentation.
+
+| Setting                                                                          | GitLab.com                                                                                                 | Default (GitLab Self-Managed) |
+|----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------|
+| Artifacts maximum size (compressed)                                              | 1 GB                                                                                                       | See [Maximum artifacts size](../../administration/settings/continuous_integration.md#maximum-artifacts-size). |
+| Artifacts [expiry time](../../ci/yaml/_index.md#artifactsexpire_in)               | 30 days unless otherwise specified                                                                         | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#default-artifacts-expiration). Artifacts created before June 22, 2020 have no expiry. |
+| Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                              | See [Pipeline schedules advanced configuration](../../administration/cicd/_index.md#change-maximum-scheduled-pipeline-frequency). |
+| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.           | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
+| Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                        | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
+| Maximum number of pipeline triggers in a project                                 | `25000`                                                                                                    | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
+| Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
+| Maximum pipelines for each schedule                                                   | `24` for Free tier, `288` for all paid tiers                                                               | See [Limit the number of pipelines created by a pipeline schedule each day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-each-day). |
+| Maximum number of schedule rules defined for each security policy project        | Unlimited for all paid tiers                                                                               | See [Number of schedule rules defined for each security policy project](../../administration/instance_limits.md#limit-the-number-of-schedule-rules-defined-for-security-policy-project). |
+| Scheduled job archiving                                                          | 3 months                                                                                                   | Never. Jobs created before June 22, 2020 were archived after September 22, 2020. |
+| Maximum test cases for each [unit test report](../../ci/testing/unit_test_reports.md) | `500000`                                                                                                   | Unlimited.             |
+| Maximum registered runners                                                       | Free tier: `50` for each group and `50`for each project<br/>All paid tiers: `1000` for each group and `1000` for each project | See [Number of registered runners for each scope](../../administration/instance_limits.md#number-of-registered-runners-for-each-scope). |
+| Limit of dotenv variables                                                        | Free tier: `50`<br>Premium tier: `100`<br>Ultimate tier: `150`                                             | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables). |
+| Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` each minute                                                                                           | See [Maximum downstream pipeline trigger rate](../../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). |
+
+## Container registry
+
+| Setting                                | GitLab.com                       | Default (self-managed) |
+|:---------------------------------------|:---------------------------------|------------------------|
+| Domain name                            | `registry.gitlab.com`            |                        |
+| IP address                             | `35.227.35.254`                  |                        |
+| CDN domain name                        | `cdn.registry.gitlab-static.net` |                        |
+| CDN IP address                         | `34.149.22.116`                  |                        |
+| Authorization token duration (minutes) | `15`                             | See [increase container registry token duration](../../administration/packages/container_registry.md#increase-token-duration). |
+
+To use the GitLab container registry, Docker clients must have access to:
+
+- The registry endpoint and GitLab.com for authorization.
+- Google Cloud Storage or Google Cloud Content Delivery Network to download images.
+
+GitLab.com is fronted by Cloudflare.
+For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
+([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
+
 ## Email
 
 Email configuration settings, IP addressees, and aliases.
@@ -103,47 +145,11 @@ GitLab.com has a mailbox configured for Service Desk with the email address:
 [custom suffix](../project/service_desk/configure.md#configure-a-suffix-for-service-desk-alias-email) in project
 settings.
 
-## GitLab CI/CD
+## Gitaly RPC concurrency limits on GitLab.com
 
-Below are the current settings regarding [GitLab CI/CD](../../ci/_index.md).
-Any settings or feature limits not listed here are using the defaults listed in
-the related documentation.
+Per-repository Gitaly RPC concurrency and queuing limits are configured for different types of Git operations such as `git clone`. When these limits are exceeded, a `fatal: remote error: GitLab is currently unable to handle this request due to load` message is returned to the client.
 
-| Setting                                                                          | GitLab.com                                                                                                 | Default (GitLab Self-Managed) |
-|----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------|
-| Artifacts maximum size (compressed)                                              | 1 GB                                                                                                       | See [Maximum artifacts size](../../administration/settings/continuous_integration.md#maximum-artifacts-size). |
-| Artifacts [expiry time](../../ci/yaml/_index.md#artifactsexpire_in)               | 30 days unless otherwise specified                                                                         | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#default-artifacts-expiration). Artifacts created before June 22, 2020 have no expiry. |
-| Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                              | See [Pipeline schedules advanced configuration](../../administration/cicd/_index.md#change-maximum-scheduled-pipeline-frequency). |
-| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.           | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
-| Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                        | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
-| Maximum number of pipeline triggers in a project                                 | `25000`                                                                                                    | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
-| Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
-| Maximum pipelines for each schedule                                                   | `24` for Free tier, `288` for all paid tiers                                                               | See [Limit the number of pipelines created by a pipeline schedule each day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-each-day). |
-| Maximum number of schedule rules defined for each security policy project        | Unlimited for all paid tiers                                                                               | See [Number of schedule rules defined for each security policy project](../../administration/instance_limits.md#limit-the-number-of-schedule-rules-defined-for-security-policy-project). |
-| Scheduled job archiving                                                          | 3 months                                                                                                   | Never. Jobs created before June 22, 2020 were archived after September 22, 2020. |
-| Maximum test cases for each [unit test report](../../ci/testing/unit_test_reports.md) | `500000`                                                                                                   | Unlimited.             |
-| Maximum registered runners                                                       | Free tier: `50` for each group and `50`for each project<br/>All paid tiers: `1000` for each group and `1000` for each project | See [Number of registered runners for each scope](../../administration/instance_limits.md#number-of-registered-runners-for-each-scope). |
-| Limit of dotenv variables                                                        | Free tier: `50`<br>Premium tier: `100`<br>Ultimate tier: `150`                                             | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables). |
-| Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` each minute                                                                                           | See [Maximum downstream pipeline trigger rate](../../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). |
-
-## GitLab container registry
-
-| Setting                                | GitLab.com                       | Default (self-managed) |
-|:---------------------------------------|:---------------------------------|------------------------|
-| Domain name                            | `registry.gitlab.com`            |                        |
-| IP address                             | `35.227.35.254`                  |                        |
-| CDN domain name                        | `cdn.registry.gitlab-static.net` |                        |
-| CDN IP address                         | `34.149.22.116`                  |                        |
-| Authorization token duration (minutes) | `15`                             | See [increase container registry token duration](../../administration/packages/container_registry.md#increase-token-duration). |
-
-To use the GitLab container registry, Docker clients must have access to:
-
-- The registry endpoint and GitLab.com for authorization.
-- Google Cloud Storage or Google Cloud Content Delivery Network to download images.
-
-GitLab.com is fronted by Cloudflare.
-For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
-([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
+For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 
 ## GitLab Pages
 
@@ -160,9 +166,9 @@ Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 | Number of custom domains for each GitLab Pages website | 150                    |
 
 The maximum size of your Pages site depends on the maximum artifact size,
-which is part of [GitLab CI/CD](#gitlab-cicd).
+which is part of [GitLab CI/CD](#cicd).
 
-[Rate limits](#gitlabcom-specific-rate-limits) also exist for GitLab Pages.
+[Rate limits](#rate-limits-on-gitlabcom) also exist for GitLab Pages.
 
 ## GitLab.com at scale
 
@@ -214,7 +220,61 @@ Open source error tracking:
 
 - [`gitlab-cookbooks` / `gitlab-sentry` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-sentry)
 
-## GitLab.com logging
+## GitLab-hosted runners
+
+You can use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to seamlessly build, test, and deploy your application on different environments.
+
+For more information, see [GitLab-hosted runners](../../ci/runners/_index.md).
+
+## Hostname list
+
+Add these hostnames when you configure allow-lists in local HTTP(S) proxies,
+or other web-blocking software that governs end-user computers. Pages on
+GitLab.com load content from these hostnames:
+
+- `gitlab.com`
+- `*.gitlab.com`
+- `*.gitlab-static.net`
+- `*.gitlab.io`
+- `*.gitlab.net`
+
+Documentation and Company pages served over `docs.gitlab.com` and `about.gitlab.com`
+also load certain page content directly from common public CDN hostnames.
+
+## Imports
+
+Settings related to importing data into GitLab.
+
+### Default import sources
+
+The [import sources](../project/import/_index.md#supported-import-sources) that are available to you by default depend on
+which GitLab you use:
+
+- GitLab.com: All available import sources are enabled by default.
+- GitLab Self-Managed: No import sources are enabled by default and must be
+  [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
+
+### Import placeholder user limits
+
+The number of [placeholder users](../project/import/_index.md#placeholder-users) created during an import on GitLab.com is limited for each top-level namespace. The limits
+differ depending on your plan and seat count.
+For more information, see the [table of placeholder user limits for GitLab.com](../project/import/_index.md#placeholder-user-limits).
+
+## IP range
+
+GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API
+fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
+from those IPs and allow them.
+
+GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
+
+For outgoing connections from CI/CD runners, we are not providing static IP addresses.
+Most GitLab.com instance runners are deployed into Google Cloud in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
+You can configure any IP-based firewall by looking up
+[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
+macOS runners are hosted on AWS in the `us-east-1` region, with runner managers hosted on Google Cloud. To configure IP-based firewall, you must allow both [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) and [Google Cloud](https://cloud.google.com/compute/docs/faq#find_ip_range).
+
+## Logs on GitLab.com
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
 to parse our logs. Fluentd sends our logs to
@@ -236,13 +296,114 @@ and can't be configured on GitLab.com to expire. You can erase job logs
 [manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
 [deleting a pipeline](../../ci/pipelines/_index.md#delete-a-pipeline)
 
-## GitLab.com-specific Gitaly RPC concurrency limits
+## Maximum number of reviewers and assignees
 
-Per-repository Gitaly RPC concurrency and queuing limits are configured for different types of Git operations such as `git clone`. When these limits are exceeded, a `fatal: remote error: GitLab is currently unable to handle this request due to load` message is returned to the client.
+{{< history >}}
 
-For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency).
+- Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+- Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
 
-## GitLab.com-specific rate limits
+{{< /history >}}
+
+Merge requests enforce these maximums:
+
+- Maximum assignees: 200
+- Maximum reviewers: 200
+
+## Merge request limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `merge_requests_diffs_limit`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+GitLab limits each merge request to 1000 [diff versions](../project/merge_requests/versions.md).
+Merge requests that reach this limit cannot be updated further. Instead,
+close the affected merge request and create a new merge request.
+
+## Password requirements
+
+GitLab.com has the following requirements for passwords on new accounts and password changes:
+
+- Minimum character length 8 characters.
+- Maximum character length 128 characters.
+- All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
+  `[]`, `_`, `+`,  `=`, and `-`.
+
+## Project and group deletion
+
+Settings related to the deletion of projects and groups.
+
+### Delayed group deletion
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+After May 08, 2023, all groups have delayed deletion enabled by default.
+
+Groups are permanently deleted after a seven-day delay.
+
+If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
+
+You can [view and restore groups marked for deletion](../group/_index.md#restore-a-group).
+
+### Delayed project deletion
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+After May 08, 2023, all groups have delayed project deletion enabled by default.
+
+Projects are permanently deleted after a seven-day delay.
+
+If you are on the Free tier, your projects are immediately deleted, and you will not be able to restore them.
+
+You can [view and restore projects marked for deletion](../project/working_with_projects.md#restore-a-project).
+
+### Inactive project deletion
+
+[Inactive project deletion](../../administration/inactive_project_deletion.md) is disabled on GitLab.com.
+
+## Package registry limits
+
+The [maximum file size](../../administration/instance_limits.md#file-size-limits)
+for a package uploaded to the [GitLab package registry](../packages/package_registry/_index.md)
+varies by format:
+
+| Package type           | GitLab.com                         |
+|------------------------|------------------------------------|
+| Conan                  | 5 GB                               |
+| Generic                | 5 GB                               |
+| Helm                   | 5 MB                               |
+| Maven                  | 5 GB                               |
+| npm                    | 5 GB                               |
+| NuGet                  | 5 GB                               |
+| PyPI                   | 5 GB                               |
+| Terraform              | 1 GB                               |
+| Machine learning model | 10 GB (uploads are capped at 5 GB) |
+
+## Puma
+
+GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
+
+## Rate limits on GitLab.com
 
 {{< alert type="note" >}}
 
@@ -396,167 +557,6 @@ are dropped and users get
 Projects, groups, and snippets have the
 [Internal visibility](../public_access.md#internal-projects-and-groups)
 setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
-
-## GitLab-hosted runners
-
-You can use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to seamlessly build, test, and deploy your application on different environments.
-
-For more information, see [GitLab-hosted runners](../../ci/runners/_index.md).
-
-## Hostname list
-
-Add these hostnames when you configure allow-lists in local HTTP(S) proxies,
-or other web-blocking software that governs end-user computers. Pages on
-GitLab.com load content from these hostnames:
-
-- `gitlab.com`
-- `*.gitlab.com`
-- `*.gitlab-static.net`
-- `*.gitlab.io`
-- `*.gitlab.net`
-
-Documentation and Company pages served over `docs.gitlab.com` and `about.gitlab.com`
-also load certain page content directly from common public CDN hostnames.
-
-## Imports
-
-Settings related to importing data into GitLab.
-
-### Default import sources
-
-The [import sources](../project/import/_index.md#supported-import-sources) that are available to you by default depend on
-which GitLab you use:
-
-- GitLab.com: All available import sources are enabled by default.
-- GitLab Self-Managed: No import sources are enabled by default and must be
-  [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
-
-### Import placeholder user limits
-
-The number of [placeholder users](../project/import/_index.md#placeholder-users) created during an import on GitLab.com is limited for each top-level namespace. The limits
-differ depending on your plan and seat count.
-For more information, see the [table of placeholder user limits for GitLab.com](../project/import/_index.md#placeholder-user-limits).
-
-## IP range
-
-GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API
-fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
-from those IPs and allow them.
-
-GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
-
-For outgoing connections from CI/CD runners, we are not providing static IP addresses.
-Most GitLab.com instance runners are deployed into Google Cloud in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
-You can configure any IP-based firewall by looking up
-[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
-macOS runners are hosted on AWS in the `us-east-1` region, with runner managers hosted on Google Cloud. To configure IP-based firewall, you must allow both [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) and [Google Cloud](https://cloud.google.com/compute/docs/faq#find_ip_range).
-
-## Maximum number of reviewers and assignees
-
-{{< history >}}
-
-- Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
-- Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
-
-{{< /history >}}
-
-Merge requests enforce these maximums:
-
-- Maximum assignees: 200
-- Maximum reviewers: 200
-
-## Merge request limits
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `merge_requests_diffs_limit`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-GitLab limits each merge request to 1000 [diff versions](../project/merge_requests/versions.md).
-Merge requests that reach this limit cannot be updated further. Instead,
-close the affected merge request and create a new merge request.
-
-## Password requirements
-
-GitLab.com has the following requirements for passwords on new accounts and password changes:
-
-- Minimum character length 8 characters.
-- Maximum character length 128 characters.
-- All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
-  `[]`, `_`, `+`,  `=`, and `-`.
-
-## Project and group deletion
-
-Settings related to the deletion of projects and groups.
-
-### Delayed group deletion
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
-
-After May 08, 2023, all groups have delayed deletion enabled by default.
-
-Groups are permanently deleted after a seven-day delay.
-
-If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
-
-You can [view and restore groups marked for deletion](../group/_index.md#restore-a-group).
-
-### Delayed project deletion
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
-
-After May 08, 2023, all groups have delayed project deletion enabled by default.
-
-Projects are permanently deleted after a seven-day delay.
-
-If you are on the Free tier, your projects are immediately deleted, and you will not be able to restore them.
-
-You can [view and restore projects marked for deletion](../project/working_with_projects.md#restore-a-project).
-
-### Inactive project deletion
-
-[Inactive project deletion](../../administration/inactive_project_deletion.md) is disabled on GitLab.com.
-
-## Package registry limits
-
-The [maximum file size](../../administration/instance_limits.md#file-size-limits)
-for a package uploaded to the [GitLab package registry](../packages/package_registry/_index.md)
-varies by format:
-
-| Package type           | GitLab.com                         |
-|------------------------|------------------------------------|
-| Conan                  | 5 GB                               |
-| Generic                | 5 GB                               |
-| Helm                   | 5 MB                               |
-| Maven                  | 5 GB                               |
-| npm                    | 5 GB                               |
-| NuGet                  | 5 GB                               |
-| PyPI                   | 5 GB                               |
-| Terraform              | 1 GB                               |
-| Machine learning model | 10 GB (uploads are capped at 5 GB) |
-
-## Puma
-
-GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#change-the-worker-timeout).
 
 ## Sidekiq
 

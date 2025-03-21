@@ -226,7 +226,7 @@ If you find a bug, let us know in the [feedback issue](https://gitlab.com/gitlab
 To view the global time tracking report:
 
 1. In your browser, enter the global report's URL:
-   - For self-managed, add `/-/timelogs` to your base URL. For example, `https://gitlab.example.com/-/timelogs`.
+   - For GitLab Self-Managed, add `/-/timelogs` to your base URL. For example, `https://gitlab.example.com/-/timelogs`.
    - For GitLab.com, go to <https://gitlab.com/-/timelogs>.
 1. Optional. To filter by a specific user, enter their username without the `@` symbol.
 1. Select start and end dates.

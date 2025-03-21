@@ -87,8 +87,8 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 
 Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
-- A [supported model](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
-- A [supported serving platform](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) (either cloud-based or on-premises).
+- A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
+- A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A [locally hosted AI gateway](../../install/install_ai_gateway.md).
 - [Ultimate with GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
 - GitLab 17.9 or later.
@@ -105,7 +105,7 @@ The differences between these options are:
 | Feature | Self-hosted AI gateway | GitLab.com AI gateway |
 |---------|------------------------|------------------------|
 | Infrastructure requirements | Requires hosting your own AI gateway and models | No additional infrastructure needed |
-| Model options | Choose from [supported models](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) | Uses the default GitLab external vendor LLMs |
+| Model options | Choose from [supported models](supported_models_and_hardware_requirements.md) | Uses the default GitLab external vendor LLMs |
 | Network requirements | Can operate in fully isolated networks | Requires internet connectivity |
 | Responsibilities | You set up your infrastructure, and do your own maintenance | GitLab does the set up and maintenance |
 
@@ -153,19 +153,19 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
 
 1. **Install a Large Language Model (LLM) Serving Infrastructure**
 
-   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) for more information on each platform's features.
+   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](supported_llm_serving_platforms.md) for more information on each platform's features.
 
-   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
+   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 1. **Install the GitLab AI gateway**
    [Install the AI gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
 
 1. **Configure GitLab Duo features**
-   See the [Configure GitLab Duo features documentation](../gitlab_duo_self_hosted/configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
+   See the [Configure GitLab Duo features documentation](configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
 
 1. **Enable logging**
-   You can find configuration details for enabling logging in your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](../gitlab_duo_self_hosted/logging.md).
+   You can find configuration details for enabling logging in your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](logging.md).
 
 ## Related topics
 
-- [Troubleshooting](../gitlab_duo_self_hosted/troubleshooting.md)
+- [Troubleshooting](troubleshooting.md)

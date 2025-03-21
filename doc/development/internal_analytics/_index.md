@@ -180,7 +180,7 @@ The following diagram illustrates the process:
 ## Data flow
 
 On SaaS event records are directly sent to a collection system, called Snowplow, and imported into our data warehouse.
-Self-managed and GitLab Dedicated instances record event counts locally. Every week, a process called Service Ping sends the current
+GitLab Self-Managed and GitLab Dedicated instances record event counts locally. Every week, a process called Service Ping sends the current
 values for all pre-defined and active metrics to our data warehouse. For GitLab.com, metrics are calculated directly in the data warehouse.
 
 The following chart aims to illustrate this data flow:

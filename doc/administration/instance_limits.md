@@ -197,7 +197,7 @@ This endpoint has been requested too many times. Try again later.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -465,7 +465,7 @@ If a new pipeline would cause the total number of jobs to exceed the limit, the 
 fails with a `job_activity_limit_exceeded` error.
 
 - On GitLab.com, a limit is
-  [defined for each subscription tier](../user/gitlab_com/_index.md#gitlab-cicd),
+  [defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
   and this limit affects all projects with that tier.
 - On GitLab Self-Managed, [Premium or Ultimate](https://about.gitlab.com/pricing/) subscriptions,
   this limit is defined under a `default` plan that affects all
@@ -525,7 +525,7 @@ If a new subscription would cause the total number of subscription to exceed the
 limit, the subscription is considered invalid.
 
 - On GitLab.com, a limit is
-  [defined for each subscription tier](../user/gitlab_com/_index.md#gitlab-cicd),
+  [defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
   and this limit affects all projects with that tier.
 - On GitLab Self-Managed [Premium or Ultimate](https://about.gitlab.com/pricing/),
   this limit is defined under a `default` plan that
@@ -557,7 +557,7 @@ To set this limit to `100` on a GitLab Self-Managed instance, run the following 
 Plan.default.actual_limits.update!(pipeline_triggers: 100)
 ```
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#cicd).
 
 ### Number of pipeline schedules
 
@@ -567,7 +567,7 @@ would cause the total number of pipeline schedules to exceed the limit, the
 pipeline schedule is not created.
 
 On GitLab.com, the limit is
-[defined for each subscription tier](../user/gitlab_com/_index.md#gitlab-cicd),
+[defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
 and this limit affects all projects with that tier.
 
 On GitLab Self-Managed [Premium or Ultimate](https://about.gitlab.com/pricing/),
@@ -603,7 +603,7 @@ To set this limit to `1440` on a GitLab Self-Managed instance, run the following
 Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
 ```
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#cicd).
 
 ### Limit the number of schedule rules defined for security policy project
 
@@ -627,7 +627,7 @@ To set this limit for a GitLab Self-Managed instance, run the following in the
 Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100)
 ```
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#cicd).
 
 ### CI/CD variable limits
 
@@ -884,7 +884,7 @@ Plan.default.actual_limits.update!(dotenv_variables: 100)
 You can also set this limit by using the [GitLab UI](settings/continuous_integration.md#set-cicd-limits) or the
 [Plan limits API](../api/plan_limits.md).
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#cicd).
 
 ### Limit dotenv file size
 

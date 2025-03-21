@@ -368,7 +368,7 @@ This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usag
    - Add tests for the individual metric [`spec/lib/gitlab/usage/metrics/instrumentations/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage/metrics/instrumentations).
    - Add tests for Service Ping.
 
-1. [Generate the metric definition file](../metrics/metrics_dictionary.md#create-a-new-metric-definition).
+1. [Generate the metric definition file](metrics_dictionary.md#create-a-new-metric-definition).
 
 1. Remove the code from [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) or [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
 

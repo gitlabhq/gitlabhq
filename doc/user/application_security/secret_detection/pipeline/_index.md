@@ -112,9 +112,12 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 ### Detected secrets
 
 Pipeline secret detection scans the repository's content for specific patterns. Each pattern matches
-a specific type of secret and is specified in a rule by using a TOML syntax. The default set of
-rules is maintained by GitLab. In the Ultimate tier, you can customize the default ruleset to suit
-your needs. For details, see [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets). To confirm
+a specific type of secret and is specified in a rule by using a TOML syntax. GitLab maintains the default set of rules.
+
+With GitLab Ultimate you can extend these rules to suit your needs. For example, while personal access tokens that use a custom prefix are not detected by default, you can customize the rules to identify these tokens.
+For details, see [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets).
+
+To confirm
 which secrets are detected by pipeline secret detection, see
 [Detected secrets](../detected_secrets.md). To provide reliable, high-confidence results, pipeline
 secret detection only looks for passwords or other unstructured secrets in specific contexts like

@@ -25,7 +25,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-This is the group-level documentation. For self-managed instances, see the [administration documentation](../../../administration/reporting/git_abuse_rate_limit.md).
+This is the group-level documentation. For GitLab Self-Managed instances, see the [administration documentation](../../../administration/reporting/git_abuse_rate_limit.md).
 
 Git abuse rate limiting is a feature to automatically ban users who download, clone, pull, fetch, or fork more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups through HTTP or SSH. The rate limit also applies to users who authenticate with [personal](../../profile/personal_access_tokens.md) or [group access tokens](../settings/group_access_tokens.md), as well as [CI/CD job tokens](../../../ci/jobs/ci_job_token.md). Access to unrelated groups is unaffected.
 

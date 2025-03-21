@@ -130,8 +130,6 @@ To link one epic to another:
    - Enter `&`, followed by a word from the epic's title. For example, `&Deliver`.
    - Paste in the epic's full URL.
 
-   ![Adding a related epic](img/related_epics_add_v14_9.png)
-
    Epics of the same group can be specified just by the reference number.
    Epics from a different group require additional information like the
    group name. For example:
@@ -144,8 +142,6 @@ To link one epic to another:
 1. Select **Add**.
 
 The linked epics are then displayed on the epic grouped by relationship.
-
-![Related epic block](img/related_epic_block_v14_9.png)
 
 ## Remove a linked epic
 
@@ -164,8 +160,6 @@ To remove a linked epic:
 - In the **Linked epics** section of an epic, next to each epic, select **Remove** ({{< icon name="close" >}}).
 
 The relationship is removed from both epics.
-
-![Removing a related epic](img/related_epics_remove_v14_9.png)
 
 ## Blocking epics
 
