@@ -22,18 +22,17 @@ import {
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  SORT_DIRECTION_DESC,
+  SORT_DIRECTION_ASC,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   SORT_OPTIONS,
   SORT_OPTION_CREATED,
   SORT_OPTION_UPDATED,
-  SORT_DIRECTION_DESC,
-  SORT_DIRECTION_ASC,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
-import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import userPreferencesUpdateMutation from '~/groups_projects/graphql/mutations/user_preferences_update.mutation.graphql';
@@ -66,6 +65,15 @@ const defaultProvide = {
 
 const defaultPropsData = {
   tabs: PROJECT_DASHBOARD_TABS,
+  filteredSearchSupportedTokens: [
+    FILTERED_SEARCH_TOKEN_LANGUAGE,
+    FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  ],
+  filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
+  filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
+  filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
+  sortOptions: SORT_OPTIONS,
+  defaultSortOption: SORT_OPTION_UPDATED,
 };
 
 const searchTerm = 'foo bar';
@@ -176,7 +184,11 @@ describe('TabsWithList', () => {
     });
 
     it('renders filtered search bar with correct props', async () => {
-      await createComponent();
+      await createComponent({
+        propsData: {
+          filteredSearchSupportedTokens: [FILTERED_SEARCH_TOKEN_LANGUAGE],
+        },
+      });
 
       expect(findFilteredSearchAndSort().props()).toMatchObject({
         filteredSearchTokens: [
@@ -192,26 +204,13 @@ describe('TabsWithList', () => {
               { value: '8', title: 'CoffeeScript' },
             ],
           },
-          {
-            type: FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-            icon: 'user',
-            title: 'Role',
-            token: GlFilteredSearchToken,
-            unique: true,
-            operators: OPERATORS_IS,
-            options: [
-              {
-                value: '50',
-                title: 'Owner',
-              },
-            ],
-          },
         ],
         filteredSearchQuery: {},
-        filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
-        filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
-        filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-        sortOptions: SORT_OPTIONS,
+        filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
+        filteredSearchNamespace: defaultPropsData.filteredSearchNamespace,
+        filteredSearchRecentSearchesStorageKey:
+          defaultPropsData.filteredSearchRecentSearchesStorageKey,
+        sortOptions: defaultPropsData.sortOptions,
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
       });
@@ -222,13 +221,15 @@ describe('TabsWithList', () => {
         await createComponent();
 
         findFilteredSearchAndSort().vm.$emit('filter', {
-          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
         });
         await waitForPromises();
       });
 
       it('updates query string', () => {
-        expect(router.currentRoute.query).toEqual({ [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+        expect(router.currentRoute.query).toEqual({
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
+        });
       });
     });
 
@@ -238,7 +239,7 @@ describe('TabsWithList', () => {
           route: {
             ...defaultRoute,
             query: {
-              [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+              [defaultPropsData.filteredSearchTermKey]: searchTerm,
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
@@ -250,7 +251,7 @@ describe('TabsWithList', () => {
 
       it('updates query string', () => {
         expect(router.currentRoute.query).toEqual({
-          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
         });
       });
@@ -272,7 +273,7 @@ describe('TabsWithList', () => {
           route: {
             ...defaultRoute,
             query: {
-              [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+              [defaultPropsData.filteredSearchTermKey]: searchTerm,
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
@@ -284,7 +285,7 @@ describe('TabsWithList', () => {
 
       it('updates query string', () => {
         expect(router.currentRoute.query).toEqual({
-          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}`,
         });
       });
@@ -329,7 +330,7 @@ describe('TabsWithList', () => {
   `('onMount when route name is $name', ({ name, expectedTab }) => {
     const query = {
       sort: 'name_desc',
-      [FILTERED_SEARCH_TERM_KEY]: 'foo',
+      [defaultPropsData.filteredSearchTermKey]: 'foo',
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
@@ -354,7 +355,7 @@ describe('TabsWithList', () => {
       expect(findTabView().props()).toMatchObject({
         sort: query.sort,
         filters: {
-          [FILTERED_SEARCH_TERM_KEY]: query[FILTERED_SEARCH_TERM_KEY],
+          [defaultPropsData.filteredSearchTermKey]: query[defaultPropsData.filteredSearchTermKey],
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
         },
@@ -396,9 +397,9 @@ describe('TabsWithList', () => {
       });
     });
 
-    it('falls back to updated in ascending order', () => {
+    it('falls back to defaultSortOption prop ascending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`,
+        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_ASC}`,
       });
     });
   });

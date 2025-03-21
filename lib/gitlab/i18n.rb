@@ -44,30 +44,30 @@ module Gitlab
     TRANSLATION_LEVELS = {
       'bg' => 0,
       'cs_CZ' => 0,
-      'da_DK' => 19,
+      'da_DK' => 18,
       'de' => 95,
       'en' => 100,
       'eo' => 0,
-      'es' => 41,
+      'es' => 42,
       'fil_PH' => 0,
-      'fr' => 98,
+      'fr' => 97,
       'gl_ES' => 0,
       'id_ID' => 0,
       'it' => 85,
-      'ja' => 94,
-      'ko' => 63,
+      'ja' => 93,
+      'ko' => 83,
       'nb_NO' => 15,
       'nl_NL' => 0,
       'pl_PL' => 1,
       'pt_BR' => 92,
       'ro_RO' => 47,
-      'ru' => 61,
+      'ru' => 64,
       'si_LK' => 9,
       'tr_TR' => 5,
       'uk' => 36,
-      'zh_CN' => 95,
+      'zh_CN' => 94,
       'zh_HK' => 0,
-      'zh_TW' => 79
+      'zh_TW' => 78
     }.freeze
     private_constant :TRANSLATION_LEVELS
 

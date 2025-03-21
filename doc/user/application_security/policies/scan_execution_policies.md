@@ -184,6 +184,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) `scan_execution_pipeline_worker` removed in GitLab 17.6.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) `scan_execution_pipeline_concurrency_control` removed in GitLab 17.9.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178892) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.11
 
 {{< /history >}}
 

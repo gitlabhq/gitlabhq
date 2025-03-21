@@ -1,6 +1,7 @@
 import { GlAvatar, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import DesignVersionDropdown from '~/work_items/components/design_management/design_version_dropdown.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockAllVersions } from './mock_data';
@@ -21,6 +22,7 @@ const MOCK_ROUTE = {
 };
 
 describe('Design management design version dropdown component', () => {
+  const $router = { push: jest.fn() };
   let wrapper;
 
   function createComponent({ maxVersions = -1, $route = MOCK_ROUTE } = {}) {
@@ -33,6 +35,7 @@ describe('Design management design version dropdown component', () => {
       },
       mocks: {
         $route,
+        $router,
       },
       stubs: { GlAvatar: true, GlCollapsibleListbox },
     });
@@ -123,6 +126,22 @@ describe('Design management design version dropdown component', () => {
       await waitForPromises();
 
       expect(wrapper.findAllComponents(TimeAgo)).toHaveLength(mockAllVersions.length);
+    });
+
+    it('should update the route when a version is selected', async () => {
+      const originalLocation = window.location.href;
+      setWindowLocation(`${originalLocation}?show=foo`);
+
+      createComponent();
+
+      await waitForPromises();
+
+      findListbox().vm.$emit('select', mockAllVersions[1].id);
+
+      expect($router.push).toHaveBeenCalledWith({
+        path: MOCK_ROUTE.path,
+        query: { version: '2', show: 'foo' },
+      });
     });
   });
 });

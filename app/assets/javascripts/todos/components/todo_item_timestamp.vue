@@ -12,11 +12,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
   computed: {
     dueDate() {
       if (!this.todo?.targetEntity?.dueDate) {

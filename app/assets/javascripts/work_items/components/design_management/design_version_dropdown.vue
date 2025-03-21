@@ -3,6 +3,7 @@ import { GlAvatar, GlCollapsibleListbox } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { queryToObject } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { findVersionId } from './utils';
@@ -82,9 +83,13 @@ export default {
   methods: {
     findVersionId,
     routeToVersion(versionId) {
+      const { show } = queryToObject(window.location.search);
       this.$router.push({
         path: this.$route.path,
-        query: { version: this.findVersionId(versionId) },
+        query: {
+          version: this.findVersionId(versionId),
+          ...(show && { show }),
+        },
       });
     },
     versionText(item) {

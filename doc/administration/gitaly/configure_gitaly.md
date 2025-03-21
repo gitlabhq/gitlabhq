@@ -635,17 +635,17 @@ This secret can be generated with `openssl rand -base64 24` to generate a random
 For example, to change the Gitaly listening interface to `0.0.0.0:8075`:
 
 ```ruby
-# in /etc/gitlab/gitlab.rb
-gitlab_rails['gitaly_token'] = 'enter-secret-token-here'
+# /etc/gitlab/gitlab.rb
+# Add a shared token for Gitaly authentication
+gitlab_shell['secret_token'] = 'your_secure_token_here'
+gitlab_rails['gitaly_token'] = 'your_secure_token_here'
 
-gitlab_rails['repositories_storages'] = {
-  'default'  => { 'gitaly_address' => 'tcp://gitlab.example.com:8075' },
-}
-
+# Gitaly configuration
+gitaly['gitlab_secret'] = 'your_secure_token_here'
 gitaly['configuration'] = {
   listen_addr: '0.0.0.0:8075',
   auth: {
-    token: 'enter-secret-token-here',
+    token: 'your_secure_token_here',
   },
   storage: [
     {
@@ -654,6 +654,14 @@ gitaly['configuration'] = {
     },
   ]
 }
+
+# Tell Rails where to find Gitaly
+gitlab_rails['repositories_storages'] = {
+  'default' => { 'gitaly_address' => 'tcp://ip_address_here:8075' },
+}
+
+# Internal API URL (important for multi-server setups)
+gitlab_rails['internal_api_url'] = 'http://ip_address_here'
 ```
 
 ## Control groups

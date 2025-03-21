@@ -29,9 +29,6 @@ export default {
     },
   },
   computed: {
-    showToggleSnoozed() {
-      return (!this.isSnoozed && this.isPending) || this.isSnoozed;
-    },
     isDone() {
       return this.todo.state === TODO_STATE_DONE;
     },

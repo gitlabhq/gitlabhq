@@ -166,6 +166,22 @@ To set the number of concurrent indexing tasks:
 
 1. Select **Save changes**.
 
+## Run Zoekt on a separate server
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To run Zoekt on a different server than GitLab:
+
+1. [Change the Gitaly listening interface](../../administration/gitaly/configure_gitaly.md#change-the-gitaly-listening-interface).
+1. [Install Zoekt](#install-zoekt).
+
+Zoekt does not support any authentication, so ensure:
+
+- The zoekt instance is not publicly accessible.
+- Only the GitLab server has access to the Zoekt server through firewall policies or IP rules.
+
 ## Troubleshooting
 
 When working with Zoekt, you might encounter the following issues.
@@ -196,3 +212,59 @@ To index a namespace manually, run this command:
 namespace = Namespace.find_by_full_path('<top-level-group-to-index>')
 Search::Zoekt::EnabledNamespace.find_or_create_by(namespace: namespace)
 ```
+
+### Error: `SilentModeBlockedError`
+
+You might get a `SilentModeBlockedError` when you try to run exact code search.
+This issue occurs when [Silent Mode](../../administration/silent_mode) is enabled on the GitLab instance.
+
+To resolve this issue, ensure Silent Mode is disabled.
+
+### Error: `connections to all backends failing`
+
+In `application_json.log`, you might get the following error:
+
+```plaintext
+connections to all backends failing; last error: UNKNOWN: ipv4:1.2.3.4:5678: Trying to connect an http1.x server 
+```
+
+To resolve this issue, check if you're using any proxies.
+If you are, set the IP address of the GitLab server to `no_proxy`:
+
+```ruby
+gitlab_rails['env'] = {
+  "http_proxy" => "http://proxy.domain.com:1234",
+  "https_proxy" => "http://proxy.domain.com:1234",
+  "no_proxy" => ".domain.com,IP_OF_GITLAB_INSTANCE,127.0.0.1,localhost"
+}
+```
+
+`proxy.domain.com:1234` is the domain of the proxy instance and the port.
+`IP_OF_GITLAB_INSTANCE` points to the public IP address of the GitLab instance.
+
+You can get this information by running `ip a` and checking one of the following:
+
+- The IP address of the appropriate network interface
+- The public IP address of any load balancer you're using
+
+### Verify Zoekt node connections
+
+To verify that your Zoekt nodes are properly configured and connected,
+in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+- Check the total number of configured Zoekt nodes:
+
+  ```ruby
+  Search::Zoekt::Node.count
+  ```
+
+- Check how many nodes are online:
+
+  ```ruby
+  Search::Zoekt::Node.online.count
+  ```
+
+Alternatively, you can use the `gitlab:zoekt:info` Rake task.
+
+If the number of online nodes is lower than the number of configured nodes or is zero when nodes are configured,
+you might have connectivity issues between GitLab and your Zoekt nodes.

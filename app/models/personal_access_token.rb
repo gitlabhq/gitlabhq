@@ -50,7 +50,7 @@ class PersonalAccessToken < ApplicationRecord
   # this scope must use a string condition, otherwise Postgres will not use the correct indices
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND seven_days_notification_sent_at IS NULL AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
   scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
-  scope :expired_before, ->(date) { expired.where(arel_table[:expires_at].lt(date)) }
+  scope :expired_after, ->(date) { expired.where(arel_table[:expires_at].gteq(date)) }
   scope :expires_before, ->(date) { where(arel_table[:expires_at].lt(date)) }
   scope :expires_after, ->(date) { where(arel_table[:expires_at].gteq(date)) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
@@ -58,7 +58,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
   scope :revoked, -> { where(revoked: true) }
-  scope :revoked_before, ->(date) { revoked.where(arel_table[:updated_at].lt(date)) }
+  scope :revoked_after, ->(date) { revoked.where(arel_table[:updated_at].gteq(date)) }
   scope :not_revoked, -> { where(revoked: [false, nil]) }
   scope :for_user, ->(user) { where(user: user) }
   scope :for_users, ->(users) { where(user: users) }

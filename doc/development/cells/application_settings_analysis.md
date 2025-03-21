@@ -400,7 +400,6 @@ title: Application Settings analysis
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |
-| `security_policy_scheduled_scans_max_concurrency` | `false` | `integer` | `` | `true` | `10000` | `false` | `false`| `false` |
 | `security_txt_content` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `sentry_clientside_dsn` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `sentry_clientside_traces_sample_rate` | `false` | `double` | `` | `true` | `0.0` | `true` | `false`| `false` |

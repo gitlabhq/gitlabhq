@@ -6,6 +6,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -170,7 +171,9 @@ export default {
       });
     },
     handleClose(isClickedOutside) {
-      updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
+      updateHistory({
+        url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME, DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME]),
+      });
 
       if (!isClickedOutside) {
         document

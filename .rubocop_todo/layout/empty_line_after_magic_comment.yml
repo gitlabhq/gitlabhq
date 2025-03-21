@@ -241,7 +241,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/lib/gitlab/auth/group_saml/membership_enforcer_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/token_actor_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/user_spec.rb'
-    - 'ee/spec/lib/gitlab/code_owners/entry_spec.rb'
     - 'ee/spec/lib/gitlab/geo/replication/blob_retriever_spec.rb'
     - 'ee/spec/lib/gitlab/license_scanning/branch_components_spec.rb'
     - 'ee/spec/lib/gitlab/license_scanning/pipeline_components_spec.rb'

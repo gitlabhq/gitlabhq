@@ -2,6 +2,7 @@ import { GlAlert, GlEmptyState, GlIntersectionObserver } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -1253,6 +1254,89 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
       findShowSidebarButton().vm.$emit('click');
       expect(findRightSidebar().isVisible()).toBe(true);
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    describe('sidebar visibility tracking', () => {
+      it('tracks when sidebar is toggled', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findWorkItemActions().vm.$emit('toggleSidebar');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_sidebar_visibility',
+          {
+            label: 'false',
+          },
+          undefined,
+        );
+
+        findWorkItemActions().vm.$emit('toggleSidebar');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_sidebar_visibility',
+          {
+            label: 'true',
+          },
+          undefined,
+        );
+      });
+
+      it('tracks when show sidebar button is clicked', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        createComponent({ showSidebar: false });
+        await waitForPromises();
+
+        findShowSidebarButton().vm.$emit('click');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_sidebar_visibility',
+          {
+            label: 'true',
+          },
+          undefined,
+        );
+      });
+    });
+
+    describe('description truncation tracking', () => {
+      it('tracks when truncation setting is toggled', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_description_truncation',
+          {
+            label: 'false',
+          },
+          undefined,
+        );
+
+        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_description_truncation',
+          {
+            label: 'true',
+          },
+          undefined,
+        );
+      });
     });
   });
 });

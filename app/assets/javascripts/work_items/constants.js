@@ -268,6 +268,7 @@ export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const FEATURE_NAME = 'work_item_epic_feedback';
 
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
+export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 export const ROUTES = {
   index: 'workItemList',
   workItem: 'workItem',

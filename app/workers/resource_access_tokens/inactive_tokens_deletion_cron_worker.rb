@@ -29,8 +29,7 @@ module ResourceAccessTokens
                 .and(
                   PersonalAccessToken.active
                     .or(
-                      PersonalAccessToken.expired_before(cut_off).or(PersonalAccessToken.revoked_before(cut_off))
-                        .invert_where
+                      PersonalAccessToken.expired_after(cut_off).or(PersonalAccessToken.revoked_after(cut_off))
                     )
                 )
             )

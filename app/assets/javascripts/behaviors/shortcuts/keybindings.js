@@ -546,6 +546,13 @@ export const SIDEBAR_CLOSE_WIDGET = {
   defaultKeys: ['esc'],
 };
 
+export const WORK_ITEM_TOGGLE_SIDEBAR = {
+  id: 'workitems.toggleSidebar',
+  description: __('Show or hide sidebar'),
+  defaultKeys: ['mod+/'], // eslint-disable-line @gitlab/require-i18n-strings
+  customizable: false,
+};
+
 /**
  * Legacy Web IDE uses the same shortcuts as MR_GO_TO_FILE, from this shared component:
  * https://gitlab.com/gitlab-org/gitlab/-/blob/f3e807cdff5cf25765894163b4e92f8b2bcf8a68/app/assets/javascripts/vue_shared/components/file_finder/index.vue#L6

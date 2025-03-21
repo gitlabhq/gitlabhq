@@ -12,6 +12,7 @@ import {
   ISSUABLE_EDIT_DESCRIPTION,
   ISSUABLE_COPY_REF,
   ISSUABLE_COMMENT_OR_REPLY,
+  WORK_ITEM_TOGGLE_SIDEBAR,
 } from './keybindings';
 
 export default class ShortcutsWorkItem {
@@ -30,6 +31,7 @@ export default class ShortcutsWorkItem {
       [ISSUE_MR_CHANGE_MILESTONE, () => ShortcutsWorkItem.openSidebarDropdown('js-milestone')],
       [ISSUABLE_CHANGE_LABEL, () => ShortcutsWorkItem.openSidebarDropdown('js-labels')],
       [ISSUABLE_EDIT_DESCRIPTION, ShortcutsWorkItem.editDescription],
+      [WORK_ITEM_TOGGLE_SIDEBAR, ShortcutsWorkItem.toggleSidebar],
       [ISSUABLE_COPY_REF, () => this.copyReference()],
       [ISSUABLE_COMMENT_OR_REPLY, ShortcutsWorkItem.replyWithSelectedText],
     ]);
@@ -77,6 +79,15 @@ export default class ShortcutsWorkItem {
       document.querySelector(editDescriptionSelector);
 
     editButton?.click();
+
+    return false;
+  }
+
+  static toggleSidebar() {
+    // Need to click the button within the actions dropdown item
+    const sidebarBtn = document.querySelector('.js-sidebar-toggle-action button');
+
+    sidebarBtn?.click();
 
     return false;
   }

@@ -1,21 +1,14 @@
 <script>
 import { GlLink, GlIcon, GlFormCheckbox } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
-import dateFormat from '~/lib/dateformat';
-import { formatDate, getDayDifference, fallsBefore } from '~/lib/utils/datetime_utility';
-import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { fallsBefore } from '~/lib/utils/datetime_utility';
 import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemBody from './todo_item_body.vue';
 import TodoItemTimestamp from './todo_item_timestamp.vue';
+import TodoSnoozedTimestamp from './todo_snoozed_timestamp.vue';
 import TodoItemActions from './todo_item_actions.vue';
 import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
-
-const ONE_WEEK = 6;
-const TODAY = 0;
-const TOMORROW = 1;
 
 export default {
   TRACK_ACTION: INSTRUMENT_TODO_ITEM_FOLLOW,
@@ -26,10 +19,11 @@ export default {
     TodoItemTitle,
     TodoItemBody,
     TodoItemTimestamp,
+    TodoSnoozedTimestamp,
     TodoItemActions,
     TodoItemTitleHiddenBySaml,
   },
-  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin()],
   inject: ['currentTab'],
   props: {
     currentUserId: {
@@ -57,55 +51,18 @@ export default {
       return this.todo.state === TODO_STATE_DONE;
     },
     isSnoozed() {
-      if (this.todo.snoozedUntil == null) {
+      if (this.todo.snoozedUntil === null) {
         return false;
       }
 
       const snoozedUntil = new Date(this.todo.snoozedUntil);
       return !fallsBefore(snoozedUntil, new Date());
     },
-    hasReachedSnoozeTimestamp() {
-      return this.todo.snoozedUntil != null && !this.isSnoozed;
-    },
     targetUrl() {
       return this.todo.targetUrl;
     },
     trackingLabel() {
       return this.todo.targetType ?? 'UNKNOWN';
-    },
-    formattedCreatedAt() {
-      return sprintf(s__('Todos|First sent %{timeago}'), {
-        timeago: this.timeFormatted(this.todo.createdAt),
-      });
-    },
-    formattedSnoozedUntil() {
-      if (!this.todo.snoozedUntil) {
-        return null;
-      }
-
-      const snoozedUntil = new Date(this.todo.snoozedUntil);
-      const difference = getDayDifference(new Date(), snoozedUntil);
-
-      if (difference > ONE_WEEK) {
-        return sprintf(s__('Todos|Snoozed until %{date}'), {
-          date: formatDate(this.todo.snoozedUntil, 'mmm dd, yyyy'),
-        });
-      }
-
-      const time = localeDateFormat.asTime.format(snoozedUntil);
-
-      if (difference === TODAY) {
-        return sprintf(s__('Todos|Snoozed until %{time}'), { time });
-      }
-
-      if (difference === TOMORROW) {
-        return sprintf(s__('Todos|Snoozed until tomorrow, %{time}'), { time });
-      }
-
-      return sprintf(s__('Todos|Snoozed until %{day}, %{time}'), {
-        day: dateFormat(snoozedUntil, 'DDDD'),
-        time,
-      });
     },
   },
 };
@@ -146,21 +103,14 @@ export default {
         />
       </div>
 
-      <span
-        v-if="isSnoozed"
-        class="gl-w-full gl-text-nowrap gl-px-2 gl-text-sm gl-text-subtle sm:gl-w-auto"
-      >
-        {{ formattedSnoozedUntil }}
-      </span>
-      <span
-        v-else-if="hasReachedSnoozeTimestamp"
-        class="gl-w-full gl-text-nowrap gl-px-2 gl-text-sm gl-text-subtle sm:gl-w-auto"
-      >
-        <gl-icon name="clock" class="gl-mr-2" />
-        {{ formattedCreatedAt }}
-      </span>
+      <todo-snoozed-timestamp
+        v-if="todo.snoozedUntil"
+        class="gl-mr-2"
+        :snoozed-until="todo.snoozedUntil"
+        :has-reached-snooze-timestamp="!isSnoozed"
+      />
+
       <todo-item-timestamp
-        v-else
         :todo="todo"
         class="gl-w-full gl-whitespace-nowrap gl-px-2 sm:gl-w-auto"
       />

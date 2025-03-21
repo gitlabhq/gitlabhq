@@ -16,4 +16,5 @@ This page is a work in progress. If you have access to the GitLab Slack workspac
 - [Metric definition guide](metric_definition_guide.md)
 - [Local setup and debugging](local_setup_and_debugging.md)
 - [Internal Events CLI contribution guide](../cli_contribution_guidelines.md)
+- [Internal Events Payload Samples](internal_events_payload.md)
 - [Standard context fields description](standard_context_fields.md)

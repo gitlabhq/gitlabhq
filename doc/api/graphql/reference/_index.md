@@ -26879,7 +26879,6 @@ GPG signature for a signed commit.
 | <a id="grouppendingmembers"></a>`pendingMembers` {{< icon name="warning-solid" >}} | [`PendingMemberInterfaceConnection`](#pendingmemberinterfaceconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
 | <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group will be deleted if delayed group deletion is enabled. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
-| <a id="groupprojectcompliancerequirementsstatus"></a>`projectComplianceRequirementsStatus` {{< icon name="warning-solid" >}} | [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection) | **Introduced** in GitLab 17.10. **Status**: Experiment. Compliance standards adherence for the projects in a group and its subgroups. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in the group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
@@ -27948,6 +27947,27 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="grouppipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="grouppipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
+##### `Group.projectComplianceRequirementsStatus`
+
+Compliance standards adherence for the projects in a group and its subgroups.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupprojectcompliancerequirementsstatusfilters"></a>`filters` | [`GroupProjectRequirementComplianceStatusInput`](#groupprojectrequirementcompliancestatusinput) | Filters applied when retrieving compliance requirement statuses. |
 
 ##### `Group.projectComplianceStandardsAdherence`
 
@@ -47825,6 +47845,16 @@ Labels for the Node Pool of a GKE cluster.
 | ---- | ---- | ----------- |
 | <a id="googlecloudnodepoollabelkey"></a>`key` | [`String!`](#string) | Key of the label. |
 | <a id="googlecloudnodepoollabelvalue"></a>`value` | [`String!`](#string) | Value of the label. |
+
+### `GroupProjectRequirementComplianceStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupprojectrequirementcompliancestatusinputframeworkid"></a>`frameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Filter compliance requirement statuses by compliance framework. |
+| <a id="groupprojectrequirementcompliancestatusinputprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Filter compliance requirement statuses by project. |
+| <a id="groupprojectrequirementcompliancestatusinputrequirementid"></a>`requirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Filter compliance requirement statuses by compliance requirement. |
 
 ### `JiraUsersMappingInputType`
 

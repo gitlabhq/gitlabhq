@@ -11,6 +11,7 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -95,6 +96,8 @@ const defaultWorkspacePermissions = {
   moveDesign: false,
 };
 
+const trackingMixin = InternalEvents.mixin();
+
 export default {
   name: 'WorkItemDetail',
   i18n,
@@ -134,7 +137,7 @@ export default {
     WorkItemDevelopment,
     WorkItemCreateBranchMergeRequestSplitButton,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), trackingMixin],
   inject: [
     'fullPath',
     'reportAbusePath',
@@ -840,9 +843,15 @@ export default {
     },
     handleToggleSidebar() {
       this.showSidebar = !this.showSidebar;
+      this.trackEvent('change_work_item_sidebar_visibility', {
+        label: this.showSidebar.toString(), // New sidebar visibility
+      });
     },
     handleTruncationEnabled() {
       this.truncationEnabled = !this.truncationEnabled;
+      this.trackEvent('change_work_item_description_truncation', {
+        label: this.truncationEnabled.toString(), // New user truncation setting
+      });
     },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,

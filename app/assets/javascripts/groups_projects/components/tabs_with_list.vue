@@ -11,17 +11,11 @@ import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { createAlert } from '~/alert';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
-import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import {
-  SORT_OPTIONS,
-  SORT_DIRECTION_ASC,
-  SORT_DIRECTION_DESC,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
-  FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
 import { CUSTOM_DASHBOARD_ROUTE_NAMES } from '~/projects/your_work/constants';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
@@ -29,6 +23,8 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  SORT_DIRECTION_ASC,
+  SORT_DIRECTION_DESC,
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
@@ -38,12 +34,6 @@ export default {
   name: 'TabsWithList',
   i18n: {
     projectCountError: __('An error occurred loading the project counts.'),
-  },
-  filteredSearchAndSort: {
-    sortOptions: SORT_OPTIONS,
-    namespace: FILTERED_SEARCH_NAMESPACE,
-    recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-    searchTermKey: FILTERED_SEARCH_TERM_KEY,
   },
   components: {
     GlTabs,
@@ -56,6 +46,33 @@ export default {
   props: {
     tabs: {
       type: Array,
+      required: true,
+    },
+    filteredSearchSupportedTokens: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    filteredSearchTermKey: {
+      type: String,
+      required: true,
+    },
+    filteredSearchNamespace: {
+      type: String,
+      required: true,
+    },
+    filteredSearchRecentSearchesStorageKey: {
+      type: String,
+      required: true,
+    },
+    sortOptions: {
+      type: Array,
+      required: true,
+    },
+    defaultSortOption: {
+      type: Object,
       required: true,
     },
   },
@@ -127,13 +144,15 @@ export default {
             },
           ],
         },
-      ];
+      ].filter((filteredSearchToken) =>
+        this.filteredSearchSupportedTokens.includes(filteredSearchToken.type),
+      );
     },
     sortQuery() {
       return this.$route.query.sort;
     },
     sort() {
-      const sortOptionValues = SORT_OPTIONS.flatMap(({ value }) => [
+      const sortOptionValues = this.sortOptions.flatMap(({ value }) => [
         `${value}_${SORT_DIRECTION_ASC}`,
         `${value}_${SORT_DIRECTION_DESC}`,
       ]);
@@ -146,10 +165,10 @@ export default {
         return this.initialSort;
       }
 
-      return `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`;
+      return `${this.defaultSortOption.value}_${SORT_DIRECTION_ASC}`;
     },
     activeSortOption() {
-      return SORT_OPTIONS.find((sortItem) => this.sort.includes(sortItem.value));
+      return this.sortOptions.find((sortItem) => this.sort.includes(sortItem.value));
     },
     isAscending() {
       return this.sort.endsWith(SORT_DIRECTION_ASC);
@@ -173,7 +192,7 @@ export default {
       const filters = pick(this.routeQueryWithoutPagination, [
         FILTERED_SEARCH_TOKEN_LANGUAGE,
         FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-        FILTERED_SEARCH_TERM_KEY,
+        this.filteredSearchTermKey,
       ]);
 
       // Normalize the property to Number since Vue Router 4 will
@@ -302,15 +321,13 @@ export default {
       <li class="gl-w-full">
         <filtered-search-and-sort
           class="gl-border-b-0"
-          :filtered-search-namespace="$options.filteredSearchAndSort.namespace"
+          :filtered-search-namespace="filteredSearchNamespace"
           :filtered-search-tokens="filteredSearchTokens"
-          :filtered-search-term-key="$options.filteredSearchAndSort.searchTermKey"
-          :filtered-search-recent-searches-storage-key="
-            $options.filteredSearchAndSort.recentSearchesStorageKey
-          "
+          :filtered-search-term-key="filteredSearchTermKey"
+          :filtered-search-recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
           :filtered-search-query="$route.query"
           :is-ascending="isAscending"
-          :sort-options="$options.filteredSearchAndSort.sortOptions"
+          :sort-options="sortOptions"
           :active-sort-option="activeSortOption"
           @filter="onFilter"
           @sort-direction-change="onSortDirectionChange"

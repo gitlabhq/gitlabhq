@@ -15,7 +15,9 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { __, s__ } from '~/locale';
+import { getModifierKey } from '~/constants';
 import Tracking from '~/tracking';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -375,6 +377,10 @@ export default {
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
     },
+    toggleSidebarKeys() {
+      const modifierKey = getModifierKey();
+      return shouldDisableShortcuts() ? null : `${modifierKey}/`;
+    },
   },
   methods: {
     copyToClipboard(text, message) {
@@ -688,10 +694,15 @@ export default {
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           data-testid="sidebar-toggle-action"
-          class="work-item-container-xs-hidden gl-hidden md:gl-block"
+          class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden md:gl-block"
           @action="$emit('toggleSidebar')"
         >
-          <template #list-item>{{ toggleSidebarLabel }}</template>
+          <template #list-item>
+            <div class="gl-flex gl-items-center gl-justify-between">
+              <span>{{ toggleSidebarLabel }}</span>
+              <kbd v-if="toggleSidebarKeys" class="flat">{{ toggleSidebarKeys }}</kbd>
+            </div>
+          </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>

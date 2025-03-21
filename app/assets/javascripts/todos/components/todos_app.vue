@@ -73,7 +73,6 @@ export default {
       pageInfo: {},
       todos: [],
       currentTab: TABS_INDICES.pending,
-      refreshPendingCount: null,
       queryFilterValues: {
         groupId: [],
         projectId: [],
@@ -117,6 +116,7 @@ export default {
         this.needsRefresh = false;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties -- The query is not tied to an internal state property
     refreshPendingCount: {
       query: getPendingTodosCount,
       variables() {
@@ -147,9 +147,6 @@ export default {
       // Ignore sort value. It is always present and not really a filter.
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
-    },
-    isOnDoneTab() {
-      return this.currentTab === TABS_INDICES.done;
     },
     isOnSnoozedTab() {
       return this.currentTab === TABS_INDICES.snoozed;

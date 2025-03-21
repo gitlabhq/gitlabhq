@@ -8687,7 +8687,6 @@ CREATE TABLE application_settings (
     package_registry jsonb DEFAULT '{}'::jsonb NOT NULL,
     rate_limits_unauthenticated_git_http jsonb DEFAULT '{}'::jsonb NOT NULL,
     importers jsonb DEFAULT '{}'::jsonb NOT NULL,
-    security_policy_scheduled_scans_max_concurrency integer DEFAULT 10000 NOT NULL,
     code_creation jsonb DEFAULT '{}'::jsonb NOT NULL,
     code_suggestions_api_rate_limit integer DEFAULT 60 NOT NULL,
     ai_action_api_rate_limit integer DEFAULT 160 NOT NULL,

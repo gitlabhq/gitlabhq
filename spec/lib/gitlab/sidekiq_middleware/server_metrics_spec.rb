@@ -433,6 +433,41 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
     end
   end
 
+  context 'handling RetryError' do
+    let(:middleware) { described_class.new }
+    let(:worker_class) do
+      Class.new do
+        def self.name
+          "TestWorker"
+        end
+        include ApplicationWorker
+      end
+    end
+
+    let(:worker) { worker_class.new }
+    let(:job) { {} }
+    let(:queue) { :test }
+
+    it 'does not record execution SLI metrics when RetryError is raised' do
+      running_jobs_metric = double('running jobs metric')
+      transaction = double('background transaction')
+
+      allow(middleware).to receive(:metrics).and_return(
+        { sidekiq_running_jobs: running_jobs_metric }
+      )
+      allow(running_jobs_metric).to receive(:increment)
+      allow(Gitlab::Metrics::BackgroundTransaction).to receive(:new).and_return(transaction)
+      allow(transaction).to receive(:run).and_raise(Gitlab::SidekiqMiddleware::RetryError, "Retry")
+
+      expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_apdex)
+      expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_error)
+
+      expect do
+        middleware.call(worker, job, queue) { nil }
+      end.to raise_error(Gitlab::SidekiqMiddleware::RetryError, "Retry")
+    end
+  end
+
   context 'feature attribution' do
     let(:test_worker) do
       category = worker_category
