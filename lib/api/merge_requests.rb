@@ -120,15 +120,15 @@ module API
         ::Ci::PipelinesForMergeRequestFinder.new(mr, current_user).execute
       end
 
-      def automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
+      def automatically_mergeable?(auto_merge, merge_request)
         available_strategies = AutoMergeService.new(merge_request.project,
           current_user).available_strategies(merge_request)
 
-        merge_when_pipeline_succeeds && available_strategies.include?(merge_request.default_auto_merge_strategy)
+        auto_merge && available_strategies.include?(merge_request.default_auto_merge_strategy)
       end
 
-      def immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
-        if merge_when_pipeline_succeeds
+      def immediately_mergeable?(auto_merge, merge_request)
+        if auto_merge
           merge_request.diff_head_pipeline_success?
         else
           merge_request.mergeable_state?
@@ -738,7 +738,9 @@ module API
         optional :should_remove_source_branch, type: Boolean,
           desc: 'If `true`, removes the source branch.'
         optional :merge_when_pipeline_succeeds, type: Boolean,
-          desc: 'If `true`, the merge request is merged when the pipeline succeeds.'
+          desc: 'Deprecated: Use auto_merge instead.'
+        optional :auto_merge, type: Boolean,
+          desc: 'If `true`, the merge request is set to auto merge.'
         optional :sha, type: String, desc: 'If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.'
         optional :squash, type: Grape::API::Boolean, desc: 'If `true`, the commits are squashed into a single commit on merge.'
 
@@ -753,9 +755,9 @@ module API
         #   permissions to push into target branch.
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        merge_when_pipeline_succeeds = to_boolean(params[:merge_when_pipeline_succeeds])
-        automatically_mergeable = automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
-        immediately_mergeable = immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
+        auto_merge = to_boolean(params[:merge_when_pipeline_succeeds]) || to_boolean(params[:auto_merge])
+        automatically_mergeable = automatically_mergeable?(auto_merge, merge_request)
+        immediately_mergeable = immediately_mergeable?(auto_merge, merge_request)
 
         not_allowed! if !immediately_mergeable && !automatically_mergeable
 

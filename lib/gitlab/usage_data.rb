@@ -222,13 +222,12 @@ module Gitlab
       def integrations_usage
         # rubocop: disable UsageData/LargeTable:
         available_integrations.each_with_object({}) do |name, response|
+          next if MIGRATED_INTEGRATIONS.include?(name)
+
           type = Integration.integration_name_to_type(name)
 
-          unless MIGRATED_INTEGRATIONS.include?(name)
-            response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
-            response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
-          end
-
+          response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
+          response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
           response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
           response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
           response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))

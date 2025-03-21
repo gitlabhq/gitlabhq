@@ -36,6 +36,11 @@ export default {
       default: false,
       required: false,
     },
+    noteableType: {
+      type: String,
+      default: '',
+      required: false,
+    },
   },
   computed: {
     showAiActions() {
@@ -57,6 +62,7 @@ export default {
     <div class="gl-mt-3 gl-flex gl-w-full gl-gap-3 sm:gl-mt-0 sm:gl-w-auto">
       <ai-summarize-notes
         v-if="showAiActions"
+        :work-item-type="noteableType"
         :resource-global-id="resourceGlobalId"
         :loading="aiLoading"
       />

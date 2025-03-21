@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
   end
 
   shared_context 'when retry value is a hash', :hash do
-    let(:config) { { max: max, when: public_send(:when), exit_codes: public_send(:exit_codes) }.compact }
+    let(:config) { { max: max, when: public_send(:when), exit_codes: exit_codes }.compact }
     let(:when) {}
     let(:exit_codes) {}
     let(:max) {}

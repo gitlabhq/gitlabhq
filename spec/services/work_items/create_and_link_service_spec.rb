@@ -30,15 +30,15 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
     it 'creates a work item successfully with links' do
       expect do
         service_result
-      end.to change(WorkItem, :count).by(1).and(
-        change(WorkItems::ParentLink, :count).by(1)
+      end.to change { WorkItem.count }.by(1).and(
+        change { WorkItems::ParentLink.count }.by(1)
       )
     end
 
     it 'copies confidential status from the parent' do
       expect do
         service_result
-      end.to change(WorkItem, :count).by(1)
+      end.to change { WorkItem.count }.by(1)
 
       created_task = WorkItem.last
 
@@ -55,7 +55,7 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
       it 'creates a work item successfully with no links' do
         expect do
           service_result
-        end.to change(WorkItem, :count).by(1).and(
+        end.to change { WorkItem.count }.by(1).and(
           not_change(IssueLink, :count)
         )
       end
@@ -87,7 +87,7 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
           expect do
             service_result
           end.to not_change(WorkItems::ParentLink, :count).and(
-            change(WorkItem, :count).by(1)
+            change { WorkItem.count }.by(1)
           )
         end
 

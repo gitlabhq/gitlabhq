@@ -77,6 +77,7 @@ unless Rails.env.production?
     desc 'Update documentation of all cops'
     task :docs do
       require 'yard'
+      require 'rubocop'
 
       YARD::Rake::YardocTask.new(:yard_rubocop_docs) do |task|
         task.files = ['rubocop/cop/**/*.rb'] + gitlab_styles_cops

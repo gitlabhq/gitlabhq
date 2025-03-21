@@ -263,7 +263,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect do
             update_work_item
             work_item.reload
-          end.to change(work_item, :state).from('opened').to('closed')
+          end.to change { work_item.state }.from('opened').to('closed')
         end
       end
 
@@ -280,7 +280,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect do
             update_work_item
             work_item.reload
-          end.to change(work_item, :state).from('closed').to('opened')
+          end.to change { work_item.state }.from('closed').to('opened')
         end
       end
     end
@@ -322,7 +322,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         end
 
         it 'ignores widget param' do
-          expect { update_work_item }.not_to change(work_item, :description)
+          expect { update_work_item }.not_to change { work_item.description }
         end
       end
 
@@ -336,7 +336,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         end
 
         it 'ignores widget param' do
-          expect { update_work_item }.not_to change(work_item, :description)
+          expect { update_work_item }.not_to change { work_item.description }
         end
       end
 
@@ -368,7 +368,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         context 'with mentions', :mailer, :sidekiq_might_not_need_inline do
           shared_examples 'creates the todo and sends email' do |attribute|
             it 'creates a todo and sends email' do
-              expect { perform_enqueued_jobs { update_work_item } }.to change(Todo, :count).by(1)
+              expect { perform_enqueued_jobs { update_work_item } }.to change { Todo.count }.by(1)
               expect(work_item.reload.attributes[attribute.to_s]).to eq("mention #{guest.to_reference}")
               should_email(guest)
             end
@@ -488,7 +488,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect do
             update_work_item
             work_item.reload
-          end.to change(WorkItems::ParentLink, :count).by(1)
+          end.to change { WorkItems::ParentLink.count }.by(1)
 
           expect(work_item.work_item_children).to include(child_work_item)
         end
@@ -605,7 +605,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
               update_work_item
               user_todo.reload
               other_todo.reload
-            end.to change(user_todo, :state).from('pending').to('done').and not_change { other_todo.state }
+            end.to change { user_todo.state }.from('pending').to('done').and not_change { other_todo.state }
           end
 
           it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
@@ -620,7 +620,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
             expect do
               update_work_item
               work_item.reload
-            end.to change(Todo, :count).by(1)
+            end.to change { Todo.count }.by(1)
           end
         end
       end
@@ -634,7 +634,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect do
             update_work_item
             work_item.reload
-          end.to change(work_item, :assignees).from([developer]).to([assignee]).and change(work_item, :updated_at)
+          end.to change { work_item.assignees }.from([developer]).to([assignee]).and change { work_item.updated_at }
         end
 
         context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/485027' do

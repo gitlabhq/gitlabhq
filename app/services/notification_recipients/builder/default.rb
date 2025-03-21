@@ -64,7 +64,15 @@ module NotificationRecipients
       # Build event key to search on custom notification level
       # Check NotificationSetting.email_events
       def custom_action
-        @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
+        return @custom_action unless @custom_action.nil?
+
+        target_name = if target.respond_to?(:custom_notification_target_name)
+                        target.custom_notification_target_name
+                      else
+                        target.class.model_name.name.underscore
+                      end
+
+        @custom_action = "#{action}_#{target_name}".to_sym
       end
 
       def self.mention_type_actions

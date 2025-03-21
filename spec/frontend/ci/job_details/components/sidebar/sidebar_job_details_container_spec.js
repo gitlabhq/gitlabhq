@@ -39,7 +39,7 @@ describe('Job Sidebar Details Container', () => {
       expect(wrapper.find('*').exists()).toBe(false);
     });
 
-    it.each(['duration', 'erased_at', 'finished_at', 'queued_at', 'runner', 'coverage'])(
+    it.each(['duration', 'erased_at', 'finished_at', 'queued_at', 'runner', 'source', 'coverage'])(
       'should not render %s details when missing',
       async (detail) => {
         await store.dispatch('receiveJobSuccess', { [detail]: undefined });
@@ -73,6 +73,45 @@ describe('Job Sidebar Details Container', () => {
       const tagsComponent = findJobTags();
 
       expect(tagsComponent.text()).toBe('Tags: tag');
+    });
+  });
+
+  describe('when source is available', () => {
+    beforeEach(createWrapper);
+
+    it.each([
+      ['api', 'Source: API'],
+      ['chat', 'Source: Chat'],
+      ['external', 'Source: External'],
+      ['external_pull_request_event', 'Source: External pull request event'],
+      ['merge_request_event', 'Source: Merge request event'],
+      ['ondemand_dast_scan', 'Source: On-demand DAST scan'],
+      ['ondemand_dast_validation', 'Source: On-demand DAST validation'],
+      ['parent_pipeline', 'Source: Parent pipeline'],
+      ['pipeline', 'Source: Pipeline'],
+      ['push', 'Source: Push'],
+      ['schedule', 'Source: Schedule'],
+      ['security_orchestration_policy', 'Source: Security orchestration policy'],
+      ['trigger', 'Source: Trigger'],
+      ['web', 'Source: Web'],
+      ['webide', 'Source: Web IDE'],
+    ])(`uses source to render %s`, async (source, value) => {
+      await store.dispatch('receiveJobSuccess', { source });
+      const detailsRow = findAllDetailsRow();
+
+      expect(detailsRow).toHaveLength(1);
+      expect(detailsRow.at(0).text()).toBe(value);
+    });
+
+    describe('when source value is not in predefined list', () => {
+      it('should render the given source value as received', async () => {
+        const source = 'unexpected_source';
+        await store.dispatch('receiveJobSuccess', { source });
+        const detailsRow = findAllDetailsRow();
+
+        expect(detailsRow).toHaveLength(1);
+        expect(detailsRow.at(0).text()).toBe(`Source: ${source}`);
+      });
     });
   });
 

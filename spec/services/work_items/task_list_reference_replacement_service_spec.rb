@@ -56,7 +56,7 @@ RSpec.describe WorkItems::TaskListReferenceReplacementService, feature_category:
       it_behaves_like 'successful work item task reference replacement service'
 
       it 'creates description version note' do
-        expect { result }.to change(Note, :count).by(1)
+        expect { result }.to change { Note.count }.by(1)
         expect(work_item.notes.last.note).to eq('changed the description')
         expect(work_item.saved_description_version.id).to eq(work_item.notes.last.system_note_metadata.description_version_id)
       end

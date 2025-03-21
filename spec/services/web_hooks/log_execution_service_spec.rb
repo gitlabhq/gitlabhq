@@ -28,7 +28,7 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
     subject(:service) { described_class.new(hook: project_hook, log_data: data, response_category: response_category) }
 
     it 'logs the data' do
-      expect { service.execute }.to change(::WebHookLog, :count).by(1)
+      expect { service.execute }.to change { ::WebHookLog.count }.by(1)
 
       expect(WebHookLog.recent.first).to have_attributes(data)
     end
@@ -39,7 +39,7 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       end
 
       it 'casts to safe properties and logs the data' do
-        expect { service.execute }.to change(::WebHookLog, :count).by(1)
+        expect { service.execute }.to change { ::WebHookLog.count }.by(1)
 
         expect(WebHookLog.recent.first).to have_attributes('request_data' => { 'data' => described_class.to_s })
       end
@@ -98,11 +98,11 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
 
     context 'when response_category is :ok' do
       it 'does not increment the failure count' do
-        expect { service.execute }.not_to change(project_hook, :recent_failures)
+        expect { service.execute }.not_to change { project_hook.recent_failures }
       end
 
       it 'does not change the disabled_until attribute' do
-        expect { service.execute }.not_to change(project_hook, :disabled_until)
+        expect { service.execute }.not_to change { project_hook.disabled_until }
       end
 
       context 'when the hook had previously failed' do
@@ -111,7 +111,7 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
         end
 
         it 'resets the failure count' do
-          expect { service.execute }.to change(project_hook, :recent_failures).to(0)
+          expect { service.execute }.to change { project_hook.recent_failures }.to(0)
         end
       end
     end
@@ -124,17 +124,17 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       end
 
       it 'increments the failure count' do
-        expect { service.execute }.to change(project_hook, :recent_failures).by(1)
+        expect { service.execute }.to change { project_hook.recent_failures }.by(1)
       end
 
       it 'does not change the disabled_until attribute' do
-        expect { service.execute }.not_to change(project_hook, :disabled_until)
+        expect { service.execute }.not_to change { project_hook.disabled_until }
       end
 
       it 'does not allow the failure count to overflow' do
         project_hook.update!(recent_failures: 32767)
 
-        expect { service.execute }.not_to change(project_hook, :recent_failures)
+        expect { service.execute }.not_to change { project_hook.recent_failures }
       end
     end
 
@@ -164,7 +164,7 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       let(:expected_headers) { { 'X-Token-Id' => '{foo}-{bar}', 'X-Request' => 'PUBLIC-{bar}' } }
 
       it 'logs the data and masks response headers' do
-        expect { service.execute }.to change(::WebHookLog, :count).by(1)
+        expect { service.execute }.to change { ::WebHookLog.count }.by(1)
 
         expect(WebHookLog.recent.first.response_headers).to eq(expected_headers)
       end

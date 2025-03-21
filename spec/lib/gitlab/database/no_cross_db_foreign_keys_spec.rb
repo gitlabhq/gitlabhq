@@ -26,7 +26,6 @@ RSpec.describe 'cross-database foreign keys' do
       'dependency_proxy_blob_states.group_id',
       'dependency_proxy_manifest_states.dependency_proxy_manifest_id',
       'dependency_proxy_manifest_states.group_id',
-      'group_wiki_repositories.group_id',
       'group_wiki_repository_states.group_id',
       'lfs_objects_projects.lfs_object_id',
       'merge_request_diff_details.merge_request_diff_id',

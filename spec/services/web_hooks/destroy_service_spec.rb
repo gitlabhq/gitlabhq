@@ -30,11 +30,11 @@ RSpec.describe WebHooks::DestroyService, feature_category: :webhooks do
       end
 
       it 'destroys the hook' do
-        expect { subject.execute(hook) }.to change(WebHook, :count).from(1).to(0)
+        expect { subject.execute(hook) }.to change { WebHook.count }.from(1).to(0)
       end
 
       it 'does not destroy logs' do
-        expect { subject.execute(hook) }.not_to change(WebHookLog, :count)
+        expect { subject.execute(hook) }.not_to change { WebHookLog.count }
       end
 
       it 'schedules the destruction of logs' do

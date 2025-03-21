@@ -2,11 +2,11 @@
 
 module Types
   module Ci
-    class PipelineCiSourcesEnum < BaseEnum
-      graphql_name 'CiPipelineCiSources'
-      description 'Ci Pipeline Ci sources enum'
+    class PipelineSourcesEnum < BaseEnum
+      graphql_name 'CiPipelineSources'
+      description 'Ci Pipeline sources enum'
 
-      Enums::Ci::Pipeline.ci_sources.each_key do |source|
+      Enums::Ci::Pipeline.sources.each_key do |source|
         article = %w[a e i o u].include?(source.to_s[0].downcase) ? 'an' : 'a'
         desc_source = source.to_s.include?('api') ? 'API' : source
         description = "Pipeline created by #{article} #{desc_source.to_s.tr('_', ' ').delete_suffix(' event')} event"

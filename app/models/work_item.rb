@@ -154,6 +154,13 @@ class WorkItem < Issue
     'issue'
   end
 
+  def custom_notification_target_name
+    # This is needed so we match the issue events NotificationSetting::EMAIL_EVENTS
+    return 'issue' if work_item_type.issue?
+
+    'work_item'
+  end
+
   # Todo: remove method after target_type cleanup
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/416009
   def todoable_target_type_name

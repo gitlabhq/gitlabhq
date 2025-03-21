@@ -52,6 +52,7 @@ export default {
           this.job.erased_at ||
           this.job.queued_duration ||
           this.job.runner ||
+          this.job.source ||
           this.job.coverage,
       );
     },
@@ -65,6 +66,9 @@ export default {
     },
     shouldRenderBlock() {
       return Boolean(this.hasAnyDetail || this.hasTimeout || this.hasTags);
+    },
+    source() {
+      return this.$options.i18n.sources[this.job.source] || this.job.source;
     },
     timeout() {
       return `${this.job?.metadata?.timeout_human_readable}${this.timeoutSource}`;
@@ -114,9 +118,29 @@ export default {
     ERASED: __('Erased'),
     QUEUED: __('Queued'),
     RUNNER: __('Runner'),
+    SOURCE: __('Source'),
     TAGS: __('Tags'),
     TEST_SUMMARY: __('Test summary'),
     TIMEOUT: __('Timeout'),
+    // Human-readable values of possible source values found in
+    // https://docs.gitlab.com/ci/jobs/job_rules/#ci_pipeline_source-predefined-variable
+    sources: {
+      api: __('API'),
+      chat: __('Chat'),
+      external: __('External'),
+      external_pull_request_event: __('External pull request event'),
+      merge_request_event: __('Merge request event'),
+      ondemand_dast_scan: __('On-demand DAST scan'),
+      ondemand_dast_validation: __('On-demand DAST validation'),
+      parent_pipeline: __('Parent pipeline'),
+      pipeline: __('Pipeline'),
+      push: __('Push'),
+      schedule: __('Schedule'),
+      security_orchestration_policy: __('Security orchestration policy'),
+      trigger: __('Trigger'),
+      web: __('Web'),
+      webide: __('Web IDE'),
+    },
   },
   TIMEOUT_HELP_URL: helpPagePath('/ci/pipelines/settings.md', {
     anchor: 'set-a-limit-for-how-long-jobs-can-run',
@@ -148,6 +172,7 @@ export default {
       :title="$options.i18n.RUNNER"
       :path="runnerAdminPath"
     />
+    <detail-row v-if="job.source" :value="source" :title="$options.i18n.SOURCE" />
     <detail-row v-if="showCoverage" :value="coverage" :title="$options.i18n.COVERAGE" />
     <detail-row
       v-if="hasTestSummaryDetails"

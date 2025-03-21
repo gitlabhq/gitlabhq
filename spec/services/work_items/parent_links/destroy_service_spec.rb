@@ -34,8 +34,8 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
 
       it 'removes relation and creates notes', :aggregate_failures do
         expect { subject }
-          .to change(parent_link_class, :count).by(-1)
-          .and change(WorkItems::ResourceLinkEvent, :count).by(1)
+          .to change { parent_link_class.count }.by(-1)
+          .and change { WorkItems::ResourceLinkEvent.count }.by(1)
 
         expect(work_item.notes.last.note).to eq("removed child task #{task.to_reference}")
         expect(task.notes.last.note).to eq("removed parent issue #{work_item.to_reference}")
@@ -58,7 +58,7 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
             allow(SystemNoteService).to receive(:unrelate_work_item).and_return(unrelate_child_note)
 
             expect { subject }
-              .to change(WorkItems::ResourceLinkEvent, :count).by(1)
+              .to change { WorkItems::ResourceLinkEvent.count }.by(1)
               .and not_change(Note, :count)
 
             expect(WorkItems::ResourceLinkEvent.last).to have_attributes(

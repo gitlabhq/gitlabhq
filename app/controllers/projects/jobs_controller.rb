@@ -50,7 +50,9 @@ class Projects::JobsController < Projects::ApplicationController
             {
               # Pipeline will show all failed builds by default if not using disable_failed_builds
               disable_coverage: true,
-              disable_failed_builds: true
+              disable_failed_builds: true,
+              # By default, :source is not exposed in the JobEntity. We want to expose it for this endpoint
+              enable_source: true
             },
             BuildDetailsEntity
           )

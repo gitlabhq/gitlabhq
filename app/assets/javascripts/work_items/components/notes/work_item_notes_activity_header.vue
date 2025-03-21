@@ -85,6 +85,7 @@ export default {
       <ai-summarize-notes
         v-if="canSummarizeComments"
         :resource-global-id="workItemId"
+        :work-item-type="workItemType"
         size="small"
       />
     </div>

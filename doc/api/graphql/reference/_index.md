@@ -27929,7 +27929,7 @@ Returns [`PipelineAnalytics`](#pipelineanalytics).
 | ---- | ---- | ----------- |
 | <a id="grouppipelineanalyticsfromtime"></a>`fromTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
 | <a id="grouppipelineanalyticsref"></a>`ref` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
-| <a id="grouppipelineanalyticssource"></a>`source` {{< icon name="warning-solid" >}} | [`CiPipelineCiSources`](#cipipelinecisources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
+| <a id="grouppipelineanalyticssource"></a>`source` {{< icon name="warning-solid" >}} | [`CiPipelineSources`](#cipipelinesources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
 | <a id="grouppipelineanalyticstotime"></a>`toTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
 
 ##### `Group.pipelineExecutionPolicies`
@@ -35582,7 +35582,7 @@ Returns [`PipelineAnalytics`](#pipelineanalytics).
 | ---- | ---- | ----------- |
 | <a id="projectpipelineanalyticsfromtime"></a>`fromTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
 | <a id="projectpipelineanalyticsref"></a>`ref` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
-| <a id="projectpipelineanalyticssource"></a>`source` {{< icon name="warning-solid" >}} | [`CiPipelineCiSources`](#cipipelinecisources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
+| <a id="projectpipelineanalyticssource"></a>`source` {{< icon name="warning-solid" >}} | [`CiPipelineSources`](#cipipelinesources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
 | <a id="projectpipelineanalyticstotime"></a>`toTime` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
 
 ##### `Project.pipelineCounts`
@@ -41637,24 +41637,6 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
 | <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
 
-### `CiPipelineCiSources`
-
-Ci Pipeline Ci sources enum.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cipipelinecisourcesapi"></a>`API` | Pipeline created by an API event. |
-| <a id="cipipelinecisourceschat"></a>`CHAT` | Pipeline created by a chat event. |
-| <a id="cipipelinecisourcesexternal"></a>`EXTERNAL` | Pipeline created by an external event. |
-| <a id="cipipelinecisourcesexternal_pull_request_event"></a>`EXTERNAL_PULL_REQUEST_EVENT` | Pipeline created by an external pull request event. |
-| <a id="cipipelinecisourcesmerge_request_event"></a>`MERGE_REQUEST_EVENT` | Pipeline created by a merge request event. |
-| <a id="cipipelinecisourcespipeline"></a>`PIPELINE` | Pipeline created by a pipeline event. |
-| <a id="cipipelinecisourcespush"></a>`PUSH` | Pipeline created by a push event. |
-| <a id="cipipelinecisourcesschedule"></a>`SCHEDULE` | Pipeline created by a schedule event. |
-| <a id="cipipelinecisourcestrigger"></a>`TRIGGER` | Pipeline created by a trigger event. |
-| <a id="cipipelinecisourcesunknown"></a>`UNKNOWN` | Pipeline created by an unknown event. |
-| <a id="cipipelinecisourcesweb"></a>`WEB` | Pipeline created by a web event. |
-
 ### `CiPipelineCreationStatus`
 
 The status of a pipeline creation.
@@ -41664,6 +41646,32 @@ The status of a pipeline creation.
 | <a id="cipipelinecreationstatusfailed"></a>`FAILED` | The pipeline creation is failed. |
 | <a id="cipipelinecreationstatusin_progress"></a>`IN_PROGRESS` | The pipeline creation is in progress. |
 | <a id="cipipelinecreationstatussucceeded"></a>`SUCCEEDED` | The pipeline creation is succeeded. |
+
+### `CiPipelineSources`
+
+Ci Pipeline sources enum.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cipipelinesourcesapi"></a>`API` | Pipeline created by an API event. |
+| <a id="cipipelinesourceschat"></a>`CHAT` | Pipeline created by a chat event. |
+| <a id="cipipelinesourcescontainer_registry_push"></a>`CONTAINER_REGISTRY_PUSH` | Pipeline created by a container registry push event. |
+| <a id="cipipelinesourcesduo_workflow"></a>`DUO_WORKFLOW` | Pipeline created by a duo workflow event. |
+| <a id="cipipelinesourcesexternal"></a>`EXTERNAL` | Pipeline created by an external event. |
+| <a id="cipipelinesourcesexternal_pull_request_event"></a>`EXTERNAL_PULL_REQUEST_EVENT` | Pipeline created by an external pull request event. |
+| <a id="cipipelinesourcesmerge_request_event"></a>`MERGE_REQUEST_EVENT` | Pipeline created by a merge request event. |
+| <a id="cipipelinesourcesondemand_dast_scan"></a>`ONDEMAND_DAST_SCAN` | Pipeline created by an ondemand dast scan event. |
+| <a id="cipipelinesourcesondemand_dast_validation"></a>`ONDEMAND_DAST_VALIDATION` | Pipeline created by an ondemand dast validation event. |
+| <a id="cipipelinesourcesparent_pipeline"></a>`PARENT_PIPELINE` | Pipeline created by a parent pipeline event. |
+| <a id="cipipelinesourcespipeline"></a>`PIPELINE` | Pipeline created by a pipeline event. |
+| <a id="cipipelinesourcespipeline_execution_policy_schedule"></a>`PIPELINE_EXECUTION_POLICY_SCHEDULE` | Pipeline created by a pipeline execution policy schedule event. |
+| <a id="cipipelinesourcespush"></a>`PUSH` | Pipeline created by a push event. |
+| <a id="cipipelinesourcesschedule"></a>`SCHEDULE` | Pipeline created by a schedule event. |
+| <a id="cipipelinesourcessecurity_orchestration_policy"></a>`SECURITY_ORCHESTRATION_POLICY` | Pipeline created by a security orchestration policy event. |
+| <a id="cipipelinesourcestrigger"></a>`TRIGGER` | Pipeline created by a trigger event. |
+| <a id="cipipelinesourcesunknown"></a>`UNKNOWN` | Pipeline created by an unknown event. |
+| <a id="cipipelinesourcesweb"></a>`WEB` | Pipeline created by a web event. |
+| <a id="cipipelinesourceswebide"></a>`WEBIDE` | Pipeline created by a webide event. |
 
 ### `CiRunnerAccessLevel`
 

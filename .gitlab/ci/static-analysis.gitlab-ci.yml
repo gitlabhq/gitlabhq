@@ -172,7 +172,7 @@ rubocop:docs-site:
   allow_failure: true
   script:
     - apt-get update && apt-get -y install hugo
-    - rake rubocop:docs
+    - bundle exec rake rubocop:docs
     - cd rubocop/docs-hugo
     - hugo --minify
     - cd ../../

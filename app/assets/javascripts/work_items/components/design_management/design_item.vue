@@ -173,7 +173,7 @@ export default {
   >
     <gl-card
       class="js-design-list-item design-list-item gl-mb-0"
-      header-class="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+      header-class="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base gl-aspect-video"
       body-class="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
       @click="onTileClick"
     >

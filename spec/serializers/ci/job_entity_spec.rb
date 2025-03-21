@@ -60,6 +60,30 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
     expect(subject).to include :queued_duration
   end
 
+  # Replace the existing "contains source" test with these tests
+  context 'when exposing source' do
+    it 'contains source when enable_source option is true' do
+      entity = described_class.new(job, request: request, enable_source: true)
+      expect(entity.as_json).to include(:source)
+    end
+
+    it 'does not contain source when enable_source option is false' do
+      entity = described_class.new(job, request: request, enable_source: false)
+      expect(entity.as_json).not_to include(:source)
+    end
+
+    it 'does not contain source by default for backward compatibility' do
+      # This tests the current behavior to ensure backward compatibility
+      expect(subject).not_to include(:source)
+    end
+
+    it 'does not contain source when job is not a Ci::Build' do
+      generic_status = create(:generic_commit_status)
+      entity = described_class.new(generic_status, request: request, enable_source: true)
+      expect(entity.as_json).not_to include(:source)
+    end
+  end
+
   context 'when job is retryable' do
     before do
       job.update!(status: :failed)

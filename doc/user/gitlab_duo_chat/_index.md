@@ -125,7 +125,7 @@ if you clear the context by typing `/reset` or `/clear` and selecting **Send**.
 
 {{< alert type="note" >}}
 
-Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
+Only the last 25 messages are retained in the chat history.
 
 {{< /alert >}}
 
@@ -173,7 +173,7 @@ In GitLab 17.10 and later, you can have multiple simultaneous conversations with
 
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
 
-   Every conversation persists an unlimited number of messages. However, only the last 50 messages are sent to the LLM to fit the content in the LLM's context window.
+   Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
 
 #### Delete a conversation
 

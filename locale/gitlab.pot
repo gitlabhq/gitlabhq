@@ -24606,6 +24606,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr ""
 
@@ -24613,6 +24616,9 @@ msgid "External User:"
 msgstr ""
 
 msgid "External authorization denied access to this project"
+msgstr ""
+
+msgid "External pull request event"
 msgstr ""
 
 msgid "External storage URL"
@@ -34348,6 +34354,9 @@ msgstr ""
 msgid "Latest pipeline for the most recent commit on this ref"
 msgstr ""
 
+msgid "Latest version"
+msgstr ""
+
 msgid "Launch a ready-to-code development environment for your project."
 msgstr ""
 
@@ -36462,6 +36471,9 @@ msgid "Merge request dependencies"
 msgstr ""
 
 msgid "Merge request dependencies must be merged."
+msgstr ""
+
+msgid "Merge request event"
 msgstr ""
 
 msgid "Merge request events"
@@ -40399,6 +40411,12 @@ msgstr ""
 msgid "On-call schedules"
 msgstr ""
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr ""
 
@@ -42363,6 +42381,9 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parent"
+msgstr ""
+
+msgid "Parent pipeline"
 msgstr ""
 
 msgid "Parent removed successfully"
@@ -51955,6 +51976,9 @@ msgstr ""
 msgid "Scanner profile not found for given parameters"
 msgstr ""
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr ""
 
@@ -52519,6 +52543,9 @@ msgid "Security dashboard"
 msgstr ""
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -65673,6 +65700,9 @@ msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
+msgstr ""
+
+msgid "Web"
 msgstr ""
 
 msgid "Web IDE"

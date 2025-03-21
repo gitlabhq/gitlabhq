@@ -260,7 +260,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         # which tests that we can serialize the data to the DB correctly.
         service = described_class.new(project_hook, data, :push_hooks, force: true)
 
-        expect { service.execute }.to change(::WebHookLog, :count).by(1)
+        expect { service.execute }.to change { ::WebHookLog.count }.by(1)
       end
     end
 
@@ -604,11 +604,11 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         end
 
         it 'queues LogExecutionWorker correctly, resulting in a log record (integration-style test)', :sidekiq_inline do
-          expect { service_instance.execute }.to change(::WebHookLog, :count).by(1)
+          expect { service_instance.execute }.to change { ::WebHookLog.count }.by(1)
         end
 
         it 'does not log in the service itself' do
-          expect { service_instance.execute }.not_to change(::WebHookLog, :count)
+          expect { service_instance.execute }.not_to change { ::WebHookLog.count }
         end
       end
 

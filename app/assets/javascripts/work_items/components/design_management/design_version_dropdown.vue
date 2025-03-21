@@ -43,7 +43,7 @@ export default {
     },
     dropdownText() {
       if (this.isLatestVersion) {
-        return __('Showing latest version');
+        return __('Latest version');
       }
       // allVersions is sorted in reverse chronological order (the latest first)
       const currentVersionNumber = this.allVersions.length - this.currentVersionIdx;

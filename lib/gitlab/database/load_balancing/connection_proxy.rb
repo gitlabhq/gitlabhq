@@ -65,7 +65,7 @@ module Gitlab
         def schema_cache(*args, **kwargs, &block)
           # Ignore primary stickiness for schema_cache queries and always use replicas
           @load_balancer.read do |connection|
-            connection.public_send(:schema_cache, *args, **kwargs, &block)
+            connection.schema_cache(*args, **kwargs, &block)
           end
         end
 

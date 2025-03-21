@@ -2,7 +2,7 @@ query getPipelineAnalytics(
   $fullPath: ID!
   $fromTime: Time!
   $toTime: Time!
-  $source: CiPipelineCiSources
+  $source: CiPipelineSources
 ) {
   project(fullPath: $fullPath) {
     id

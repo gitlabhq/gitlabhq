@@ -82,7 +82,7 @@ describe('Design management design version dropdown component', () => {
 
       await waitForPromises();
 
-      expect(findListbox().props('toggleText')).toBe('Showing latest version');
+      expect(findListbox().props('toggleText')).toBe('Latest version');
     });
 
     it('displays latest version text when only 1 version is present', async () => {
@@ -90,7 +90,7 @@ describe('Design management design version dropdown component', () => {
 
       await waitForPromises();
 
-      expect(findListbox().props('toggleText')).toBe('Showing latest version');
+      expect(findListbox().props('toggleText')).toBe('Latest version');
     });
 
     it('displays version text when the current version is not the latest', async () => {
@@ -106,7 +106,7 @@ describe('Design management design version dropdown component', () => {
 
       await waitForPromises();
 
-      expect(findListbox().props('toggleText')).toBe('Showing latest version');
+      expect(findListbox().props('toggleText')).toBe('Latest version');
     });
 
     it('should have the same length as apollo query', async () => {

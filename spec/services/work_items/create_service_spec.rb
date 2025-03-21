@@ -18,7 +18,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
     describe '#execute' do
       shared_examples 'fails creating work item and returns errors' do
         it 'does not create new work item if parent can not be set' do
-          expect { service_result }.not_to change(WorkItem, :count)
+          expect { service_result }.not_to change { WorkItem.count }
 
           expect(service_result[:status]).to be(:error)
           expect(service_result[:message]).to match(error_message)
@@ -135,8 +135,8 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
             end
 
             it 'creates new work item and sets parent reference' do
-              expect { service_result }.to change(WorkItem, :count).by(1).and(
-                change(WorkItems::ParentLink, :count).by(1)
+              expect { service_result }.to change { WorkItem.count }.by(1).and(
+                change { WorkItems::ParentLink.count }.by(1)
               )
 
               expect(service_result[:status]).to be(:success)
