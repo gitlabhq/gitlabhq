@@ -179,7 +179,10 @@ This flag is not recommended for use.
 
 #### `@final` artifacts not deleted from object store
 
-An issue in GitLab 16.1 and 16.2 caused [`@final` artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920).
+In GitLab 16.1 and later, artifacts are uploaded directly to their final storage location in the `@final` directory, rather than using a temporary location first.
+
+An issue in GitLab 16.1 and 16.2 causes [artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920) when they expire. 
+The cleanup process for expired artifacts does not remove artifacts from the `@final` directory. This issue is fixed in GitLab 16.3 and later.
 
 Administrators of GitLab instances that ran GitLab 16.1 or 16.2 for some time could see an increase
 in object storage used by artifacts. Follow this procedure to check for and remove these artifacts.

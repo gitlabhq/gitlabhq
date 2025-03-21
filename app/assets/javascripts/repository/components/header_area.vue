@@ -68,11 +68,11 @@ export default {
     'isReadmeView',
     'isFork',
     'needsToFork',
-    'gitpodEnabled',
+    'isGitpodEnabledForUser',
     'isBlob',
     'showEditButton',
     'showWebIdeButton',
-    'showGitpodButton',
+    'isGitpodEnabledForInstance',
     'showPipelineEditorUrl',
     'webIdeUrl',
     'editUrl',
@@ -285,11 +285,11 @@ export default {
           :project-path="projectPath"
           :is-fork="isFork"
           :needs-to-fork="needsToFork"
-          :gitpod-enabled="gitpodEnabled"
+          :is-gitpod-enabled-for-user="isGitpodEnabledForUser"
           :is-blob="isBlob"
           :show-edit-button="showEditButton"
           :show-web-ide-button="showWebIdeButton"
-          :show-gitpod-button="showGitpodButton"
+          :is-gitpod-enabled-for-instance="isGitpodEnabledForInstance"
           :show-pipeline-editor-url="showPipelineEditorUrl"
           :web-ide-url="webIDEUrl"
           :edit-url="editUrl"
@@ -334,7 +334,7 @@ export default {
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
               :show-web-ide-button="showWebIdeButton"
-              :show-gitpod-button="showGitpodButton"
+              :show-gitpod-button="isGitpodEnabledForInstance"
             />
             <repository-overflow-menu v-if="comparePath" />
           </div>

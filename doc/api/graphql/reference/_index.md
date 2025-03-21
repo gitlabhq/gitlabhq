@@ -40172,6 +40172,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemnamespace"></a>`namespace` {{< icon name="warning-solid" >}} | [`Namespace`](#namespace) | **Introduced** in GitLab 15.10. **Status**: Experiment. Namespace the work item belongs to. |
 | <a id="workitemproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **Introduced** in GitLab 15.3. **Status**: Experiment. Project the work item belongs to. |
 | <a id="workitempromotedtoepicurl"></a>`promotedToEpicUrl` | [`String`](#string) | URL of the epic that the work item has been promoted to. |
+| <a id="workitemshowplanupgradepromotion"></a>`showPlanUpgradePromotion` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Whether to show the promotional message for the work item. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |

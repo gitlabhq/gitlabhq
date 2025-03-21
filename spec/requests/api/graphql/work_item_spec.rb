@@ -52,6 +52,19 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
   end
 
+  context "for showPlanUpgradePromotion field" do
+    context "when the namespace is in a free plan" do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it "returns true" do
+        # For FOSS/ce version the api will always return true
+        expect(work_item_data).to include('showPlanUpgradePromotion' => true)
+      end
+    end
+  end
+
   context 'when the user can read the work item' do
     let(:incoming_email_token) { current_user.incoming_email_token }
     let(:work_item_email) do

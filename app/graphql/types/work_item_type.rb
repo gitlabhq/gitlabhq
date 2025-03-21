@@ -84,6 +84,9 @@ module Types
       description: 'URL of the work item that the work item is marked as a duplicate of.'
     field :moved_to_work_item_url, GraphQL::Types::String, null: true,
       description: 'URL of the work item that the work item was moved to.'
+    field :show_plan_upgrade_promotion, GraphQL::Types::Boolean, null: false,
+      description: 'Whether to show the promotional message for the work item.',
+      experiment: { milestone: '17.11' }
 
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
@@ -104,6 +107,13 @@ module Types
       return false if object.project.blank?
 
       object.project.archived?
+    end
+
+    def show_plan_upgrade_promotion
+      # It should be true for namespaces in free plan.
+      # As we don't have a direct way to check that. We can check if the licensed feature for epics is enabled,
+      # which is a premium and ultimate feature.
+      !object.namespace.licensed_feature_available?(:epics)
     end
   end
 end

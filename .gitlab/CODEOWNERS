@@ -1,6 +1,6 @@
 # When adding a group as a code owner, make sure to invite the group to the
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
-# As described in https://docs.gitlab.com/ee/user/project/codeowners
+# As described in https://docs.gitlab.com/user/project/codeowners/reference/#add-a-group-as-a-code-owner
 
 * @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
 

@@ -131,6 +131,7 @@ export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_SEARCH_WITHIN = 'in';
 export const TOKEN_TYPE_CREATED = 'created';
 export const TOKEN_TYPE_CLOSED = 'closed';
+export const TOKEN_TYPE_CUSTOM_FIELD = 'custom-field';
 export const TOKEN_TYPE_DEPLOYED_BEFORE = 'deployed-before';
 export const TOKEN_TYPE_DEPLOYED_AFTER = 'deployed-after';
 export const TOKEN_TYPE_ENVIRONMENT = 'environment';

@@ -5,17 +5,60 @@ require 'spec_helper'
 RSpec.describe OmniauthCallbacksController, type: :controller, feature_category: :system_access do
   include LoginHelpers
 
-  shared_examples 'store provider2FA value in session' do
-    before do
-      stub_omniauth_setting(allow_bypass_two_factor: true)
-      saml_config.args[:upstream_two_factor_authn_contexts] << "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
-      sign_in user
+  shared_examples 'stores value for provider_2FA to session according to saml response' do
+    let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+
+    context 'with IDP bypass two factor request' do
+      before do
+        stub_omniauth_setting(allow_bypass_two_factor: true)
+        saml_config.args[:upstream_two_factor_authn_contexts] << "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
+        sign_in user
+      end
+
+      it "sets the session variable for provider 2FA" do
+        post :saml, params: { SAMLResponse: mock_saml_response }
+
+        expect(session[:provider_2FA]).to eq(true)
+      end
     end
 
-    it "sets the session variable for provider 2FA" do
-      post :saml, params: { SAMLResponse: mock_saml_response }
+    context 'without IDP bypass two factor request' do
+      before do
+        stub_omniauth_setting(allow_bypass_two_factor: true)
+        sign_in user
+      end
 
-      expect(session[:provider_2FA]).to eq(true)
+      it "sets the session variable as nil" do
+        post :saml, params: { SAMLResponse: mock_saml_response }
+
+        expect(session[:provider_2FA]).to be_nil
+      end
+    end
+  end
+
+  shared_examples "sets provider_2FA session variable according to bypass_two_factor return value" do
+    context 'when method returns true' do
+      it "sets value as true" do
+        allow_next_instance_of(Gitlab::Auth::OAuth::User) do |instance|
+          allow(instance).to receive(:bypass_two_factor?).and_return(true)
+        end
+
+        post provider
+
+        expect(session[:provider_2FA]).to be(true)
+      end
+    end
+
+    context 'when method returns false' do
+      it "sets value to nil" do
+        allow_next_instance_of(Gitlab::Auth::OAuth::User) do |instance|
+          allow(instance).to receive(:bypass_two_factor?).and_return(false)
+        end
+
+        post provider
+
+        expect(session[:provider_2FA]).to be_nil
+      end
     end
   end
 
@@ -161,6 +204,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           )
         end
       end
+
+      it_behaves_like "sets provider_2FA session variable according to bypass_two_factor return value"
     end
 
     context 'for a deactivated user' do
@@ -189,15 +234,21 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       let(:provider) { :github }
       let(:extern_uid) { 'my-uid' }
 
-      it 'renders omniauth error page' do
+      before do
         allow_next_instance_of(Gitlab::Auth::OAuth::User) do |instance|
           allow(instance).to receive(:valid_sign_in?).and_return(false)
         end
 
         post provider
+      end
 
+      it 'renders omniauth error page' do
         expect(response).to render_template("errors/omniauth_error")
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+
+      it "does not set provider_2FA in session" do
+        expect(session[:provider_2FA]).to be_nil
       end
     end
 
@@ -756,6 +807,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
       end
     end
+
+    it_behaves_like "sets provider_2FA session variable according to bypass_two_factor return value"
   end
 
   describe '#saml' do
@@ -892,12 +945,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       it 'doesn\'t link a new identity to the user' do
         expect { post :saml, params: { SAMLResponse: mock_saml_response } }.not_to change { user.identities.count }
       end
-
-      context 'with IDP bypass two factor request' do
-        let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
-
-        it_behaves_like 'store provider2FA value in session'
-      end
     end
 
     context 'with a blocked user trying to log in when there are hooks set up' do
@@ -933,9 +980,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
     end
 
-    context 'with IDP bypass two factor request' do
-      it_behaves_like 'store provider2FA value in session'
-    end
+    it_behaves_like "stores value for provider_2FA to session according to saml response"
   end
 
   describe 'enable admin mode' do

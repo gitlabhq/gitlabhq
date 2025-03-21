@@ -260,7 +260,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         end
 
         # session variable for storing bypass two-factor request from IDP
-        store_idp_two_factor_status(true)
+        store_idp_two_factor_status(auth_user.bypass_two_factor?)
 
         accept_pending_invitations(user: @user) if new_user
         synchronize_broadcast_message_dismissals(@user) unless new_user

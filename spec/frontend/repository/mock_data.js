@@ -241,11 +241,11 @@ export const headerAppInjected = {
   isReadmeView: false,
   isFork: false,
   needsToFork: true,
-  gitpodEnabled: false,
+  isGitpodEnabledForUser: false,
   isBlob: true,
   showEditButton: true,
   showWebIdeButton: true,
-  showGitpodButton: false,
+  isGitpodEnabledForInstance: false,
   showPipelineEditorUrl: true,
   webIdeUrl: 'https://gitlab.com/project/-/ide/',
   editUrl: 'https://gitlab.com/project/-/edit/main/',
@@ -279,3 +279,5 @@ export const currentUserDataMock = {
   preferencesGitpodPath: 'preferences/gitpod/path',
   profileEnableGitpodPath: 'profile/enable/gitpod/path',
 };
+
+export const applicationInfoMock = { gitpodEnabled: true };

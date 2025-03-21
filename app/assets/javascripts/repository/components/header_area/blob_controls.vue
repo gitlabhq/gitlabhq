@@ -2,6 +2,8 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { computed } from 'vue';
 import { __ } from '~/locale';
+import { logError } from '~/lib/logger';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -27,6 +29,7 @@ import {
 } from '~/repository/utils/fork_suggestion_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
+import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
@@ -65,18 +68,39 @@ export default {
       skip() {
         return !this.filePath;
       },
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.errorMessage });
+        logError(
+          `Failed to fetch blob controls. See exception details for more information.`,
+          error,
+        );
+        Sentry.captureException(error);
       },
     },
     currentUser: {
       query: userGitpodInfo,
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.errorMessage });
+        logError(
+          `Failed to fetch current user. See exception details for more information.`,
+          error,
+        );
+        Sentry.captureException(error);
+      },
+    },
+    gitpodEnabled: {
+      query: applicationInfoQuery,
+      error(error) {
+        createAlert({ message: this.$options.i18n.errorMessage });
+        logError(
+          `Failed to fetch application info. See exception details for more information.`,
+          error,
+        );
+        Sentry.captureException(error);
       },
     },
   },
-  inject: ['currentRef', 'gitpodEnabled'],
+  inject: ['currentRef'],
   provide() {
     return {
       blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
@@ -107,6 +131,7 @@ export default {
     return {
       project: {},
       currentUser: {},
+      gitpodEnabled: false,
     };
   },
   computed: {
@@ -282,8 +307,8 @@ export default {
       :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
       :pipeline-editor-url="blobInfo.pipelineEditorPath"
       :gitpod-url="blobInfo.gitpodBlobUrl"
-      :show-gitpod-button="gitpodEnabled"
-      :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+      :is-gitpod-enabled-for-instance="gitpodEnabled"
+      :is-gitpod-enabled-for-user="currentUser && currentUser.gitpodEnabled"
       :project-path="projectPath"
       :project-id="projectIdAsNumber"
       :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"

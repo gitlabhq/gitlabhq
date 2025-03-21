@@ -254,6 +254,10 @@ role as Code Owners for `file.md`:
 You can set **direct members** of a group or subgroup as a Code Owner.
 For more information about group membership, see [Membership types](../members/_index.md#membership-types).
 
+Prerequisites:
+
+- The group must be [invited to the project](../members/sharing_projects_groups.md#invite-a-group-to-a-project).
+
 To set direct members of a group or subgroup as a Code Owner:
 
 1. Open the `CODEOWNERS` file.
