@@ -178,7 +178,7 @@ If you try to close a blocked epic using the "Close epic" button, a confirmation
 
 {{< history >}}
 
-- Linking epics to issues, tasks, and OKRs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.5. Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- Linking epics to issues, tasks, and OKRs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.5. [The new look for epics](epic_work_items.md) must be enabled.
 
 {{< /history >}}
 
@@ -205,7 +205,7 @@ To manage linked epics through our API, see the
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 - You must have at least the Guest role for both groups or group and project.
 - For GitLab SaaS: the epic that you're editing must be in a group on GitLab Ultimate.
   The item you're linking can be in a group on a lower tier.
@@ -242,7 +242,7 @@ The linked items are then displayed on the epic grouped by relationship.
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 - You must have at least the Guest role for the epic's group.
 
 To remove a linked item:

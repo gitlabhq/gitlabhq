@@ -31,7 +31,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [GitLab Runner platforms and setup instructions in GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/387937) | Low | Verify | Instance, group, project |
 | [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
-| [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) |  | Secure |  |
+| [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) | Low | Secure | Project |
 | [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Depoy | Project |
 | [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low | Fulfillment | Instance, group |
 | [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low | Fulfillment | Instance, group |
@@ -80,7 +80,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
-| [Runner `active` GraphQL fields replaced by `paused`](https://gitlab.com/gitlab-org/gitlab/-/issues/351109) | Low | Verify |  |
+| [Runner `active` GraphQL fields replaced by `paused`](https://gitlab.com/gitlab-org/gitlab/-/issues/351109) | Low | Verify | Instance, group, project |
 | [ZenTao integration](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) | Low | Foundations | Instance |
 | [GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field](https://gitlab.com/gitlab-org/gitlab/-/issues/414236) | Low | Package | Group |
 | [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |

@@ -11,7 +11,7 @@
   stage: Verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351109
   impact: low
-  scope:  # Can be one or a combination of: [instance, group, project]
+  scope: instance, group, project
   resolution_role: Developer
   manual_task: true
   body: |  # (required) Don't change this line.

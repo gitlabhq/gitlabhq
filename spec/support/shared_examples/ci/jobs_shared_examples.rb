@@ -27,7 +27,7 @@ RSpec.shared_examples 'a job with artifacts and trace' do |result_is_array: true
 end
 
 RSpec.shared_context 'when canceling support' do
-  let_it_be(:runner_manager) { create(:ci_runner_machine, :with_cancelable_feature) }
+  let_it_be(:runner_manager) { create(:ci_runner_machine, :cancel_gracefully_feature) }
 
   before do
     create(:ci_runner_machine_build, build: job, runner_manager: runner_manager)

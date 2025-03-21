@@ -698,7 +698,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     it { is_expected.to be false }
 
     context 'when the feature is available' do
-      let(:runner_manager) { build_stubbed(:ci_runner_machine, :with_cancelable_feature) }
+      let(:runner_manager) { build_stubbed(:ci_runner_machine, :cancel_gracefully_feature) }
 
       it { is_expected.to be true }
     end

@@ -2,6 +2,8 @@
   announcement_milestone: "17.9"
   removal_milestone: "18.0"
   breaking_change: true
+  impact:  # Can be one of: [critical, high, medium, low]
+  scope:  # Can be one or a combination of: [instance, group, project]
   reporter: jayswain
   stage: Software Supply Chain Security
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509578

@@ -23038,9 +23038,9 @@ Code Quality report for a pipeline.
 | <a id="codesuggestioneventevent"></a>`event` | [`AiUsageCodeSuggestionEvent!`](#aiusagecodesuggestionevent) | Type of the event. |
 | <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
 | <a id="codesuggestioneventlanguage"></a>`language` | [`String`](#string) | Programming language in the context of the suggestion. |
-| <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion. |
+| <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion measured in lines of code. |
 | <a id="codesuggestioneventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
-| <a id="codesuggestioneventuniquetrackingid"></a>`uniqueTrackingId` | [`String`](#string) | Unique tracking number. |
+| <a id="codesuggestioneventuniquetrackingid"></a>`uniqueTrackingId` | [`String`](#string) | Unique tracking number of sequence of events for one suggestion. |
 | <a id="codesuggestioneventuser"></a>`user` | [`UserCore!`](#usercore) | User associated with the event. |
 
 ### `CodequalityReportsComparer`

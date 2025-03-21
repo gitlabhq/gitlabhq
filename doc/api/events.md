@@ -23,13 +23,13 @@ These options are in lowercase.
 
 {{< history >}}
 
-- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. [The new look for epics](../user/group/epics/epic_work_items.md) must be enabled.
 
 {{< /history >}}
 
 Available target types for the `target_type` parameter are:
 
-- `epic`. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+- `epic`. [The new look for epics](../user/group/epics/epic_work_items.md) must be enabled.
 - `issue`.
 - `milestone`.
 - `merge_request`.

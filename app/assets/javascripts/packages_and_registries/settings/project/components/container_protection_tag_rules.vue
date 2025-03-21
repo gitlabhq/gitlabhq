@@ -17,7 +17,7 @@ import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/p
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
-import { MinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
+import { getAccessLevelLabel } from '~/packages_and_registries/settings/project/utils';
 import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
@@ -161,9 +161,6 @@ export default {
         this.resetProtectionRuleMutation();
       }
     },
-    formatAccessLevel(level) {
-      return MinimumAccessLevelText[level];
-    },
     handleSubmit() {
       this.$toast.show(this.toastMessage);
       this.closeDrawer();
@@ -223,6 +220,7 @@ export default {
       ),
     },
   },
+  getAccessLevelLabel,
   MAX_LIMIT,
   modal: { id: 'delete-protection-tag-rule-confirmation-modal' },
   modalActionPrimary: {
@@ -308,13 +306,13 @@ export default {
 
         <template #cell(minimumAccessLevelForPush)="{ item }">
           <span data-testid="minimum-access-level-push-value">
-            {{ formatAccessLevel(item.minimumAccessLevelForPush) }}
+            {{ $options.getAccessLevelLabel(item.minimumAccessLevelForPush) }}
           </span>
         </template>
 
         <template #cell(minimumAccessLevelForDelete)="{ item }">
           <span data-testid="minimum-access-level-delete-value">
-            {{ formatAccessLevel(item.minimumAccessLevelForDelete) }}
+            {{ $options.getAccessLevelLabel(item.minimumAccessLevelForDelete) }}
           </span>
         </template>
 

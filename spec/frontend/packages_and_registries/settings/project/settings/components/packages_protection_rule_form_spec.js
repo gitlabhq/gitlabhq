@@ -6,10 +6,13 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import createPackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_packages_protection_rule.mutation.graphql';
+import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
 import {
+  packagesProtectionRulesData,
   createPackagesProtectionRuleMutationPayload,
   createPackagesProtectionRuleMutationInput,
   createPackagesProtectionRuleMutationPayloadErrors,
+  updatePackagesProtectionRuleMutationPayload,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -31,12 +34,14 @@ describe('Packages Protection Rule Form', () => {
   const findPackageTypeSelect = () => wrapper.findByRole('combobox', { name: /type/i });
   const findMinimumAccessLevelForPushSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for push/i });
-  const findSubmitButton = () => wrapper.findByTestId('add-rule-btn');
+  const findCancelButton = () => wrapper.findByRole('button', { name: /cancel/i });
+  const findSubmitButton = () => wrapper.findByTestId('submit-btn');
   const findForm = () => wrapper.findComponent(GlForm);
 
-  const mountComponent = ({ data, config, provide = defaultProvidedValues } = {}) => {
+  const mountComponent = ({ data, config, props, provide = defaultProvidedValues } = {}) => {
     wrapper = mountExtended(PackagesProtectionRuleForm, {
       provide,
+      propsData: props,
       data() {
         return { ...data };
       },
@@ -44,12 +49,23 @@ describe('Packages Protection Rule Form', () => {
     });
   };
 
-  const mountComponentWithApollo = ({ provide = defaultProvidedValues, mutationResolver } = {}) => {
-    const requestHandlers = [[createPackagesProtectionRuleMutation, mutationResolver]];
+  const mountComponentWithApollo = ({
+    props = {},
+    provide = defaultProvidedValues,
+    mutationResolver,
+    updatePackagesProtectionRuleMutationResolver = jest
+      .fn()
+      .mockResolvedValue(updatePackagesProtectionRuleMutationPayload()),
+  } = {}) => {
+    const requestHandlers = [
+      [createPackagesProtectionRuleMutation, mutationResolver],
+      [updatePackagesProtectionRuleMutation, updatePackagesProtectionRuleMutationResolver],
+    ];
 
     fakeApollo = createMockApollo(requestHandlers);
 
     mountComponent({
+      props,
       provide,
       config: {
         apolloProvider: fakeApollo,
@@ -138,8 +154,32 @@ describe('Packages Protection Rule Form', () => {
     });
   });
 
+  describe.each`
+    description                       | props                                       | submitButtonText
+    ${'when form has no prop "rule"'} | ${{}}                                       | ${'Add rule'}
+    ${'when form has prop "rule"'}    | ${{ rule: packagesProtectionRulesData[0] }} | ${'Save changes'}
+  `('$description', ({ props, submitButtonText }) => {
+    beforeEach(() => {
+      mountComponent({
+        props,
+      });
+    });
+
+    describe('submit button', () => {
+      it(`renders text: ${submitButtonText}`, () => {
+        expect(findSubmitButton().text()).toBe(submitButtonText);
+      });
+    });
+
+    describe('cancel button', () => {
+      it('renders with text: "Cancel"', () => {
+        expect(findCancelButton().text()).toBe('Cancel');
+      });
+    });
+  });
+
   describe('form actions', () => {
-    describe('button "Protect"', () => {
+    describe('submit button', () => {
       it.each`
         packageNamePattern                                              | submitButtonDisabled
         ${''}                                                           | ${true}
@@ -188,7 +228,7 @@ describe('Packages Protection Rule Form', () => {
       });
     });
 
-    describe('submit', () => {
+    describe('submit a new rule', () => {
       const findAlert = () => wrapper.findByRole('alert');
 
       const submitForm = () => {
@@ -200,8 +240,14 @@ describe('Packages Protection Rule Form', () => {
         const mutationResolver = jest
           .fn()
           .mockResolvedValue(createPackagesProtectionRuleMutationPayload());
+        const updatePackagesProtectionRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(updatePackagesProtectionRuleMutationPayload());
 
-        mountComponentWithApollo({ mutationResolver });
+        mountComponentWithApollo({
+          mutationResolver,
+          updatePackagesProtectionRuleMutationResolver,
+        });
 
         await findPackageNamePatternInput().setValue(
           createPackagesProtectionRuleMutationInput.packageNamePattern,
@@ -212,6 +258,7 @@ describe('Packages Protection Rule Form', () => {
         expect(mutationResolver).toHaveBeenCalledWith({
           input: { projectPath: 'path', ...createPackagesProtectionRuleMutationInput },
         });
+        expect(updatePackagesProtectionRuleMutationResolver).not.toHaveBeenCalled();
       });
 
       it('emits event "submit" when apollo mutation successful', async () => {
@@ -250,6 +297,99 @@ describe('Packages Protection Rule Form', () => {
       it('shows error alert with general message when apollo mutation request fails', async () => {
         mountComponentWithApollo({
           mutationResolver: jest.fn().mockRejectedValue(new Error('GraphQL error')),
+        });
+
+        await submitForm();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toMatch(
+          'Something went wrong while saving the package protection rule',
+        );
+      });
+    });
+
+    describe('update existing rule', () => {
+      const findAlert = () => wrapper.findByRole('alert');
+
+      const submitForm = async () => {
+        await findPackageNamePatternInput().setValue(
+          createPackagesProtectionRuleMutationInput.packageNamePattern,
+        );
+        await findMinimumAccessLevelForPushSelect().findAll('option').at(0).setSelected();
+        findForm().trigger('submit');
+        await waitForPromises();
+      };
+
+      const [rule] = packagesProtectionRulesData;
+
+      it('dispatches correct apollo mutation', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createPackagesProtectionRuleMutationPayload());
+        const updatePackagesProtectionRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(updatePackagesProtectionRuleMutationPayload());
+
+        mountComponentWithApollo({
+          props: { rule },
+          mutationResolver,
+          updatePackagesProtectionRuleMutationResolver,
+        });
+
+        await submitForm();
+
+        expect(mutationResolver).not.toHaveBeenCalled();
+        expect(updatePackagesProtectionRuleMutationResolver).toHaveBeenCalledWith({
+          input: {
+            id: packagesProtectionRulesData[0].id,
+            ...createPackagesProtectionRuleMutationInput,
+          },
+        });
+      });
+
+      it('emits event "submit" when apollo mutation successful', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createPackagesProtectionRuleMutationPayload());
+
+        mountComponentWithApollo({
+          props: { rule },
+          mutationResolver,
+        });
+
+        await submitForm();
+
+        expect(wrapper.emitted('submit')).toBeDefined();
+        const expectedEventSubmitPayload =
+          updatePackagesProtectionRuleMutationPayload().data.updatePackagesProtectionRule
+            .packageProtectionRule;
+        expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
+
+        expect(wrapper.emitted()).not.toHaveProperty('cancel');
+      });
+
+      it('shows error alert with general message when apollo mutation request responds with errors', async () => {
+        mountComponentWithApollo({
+          props: { rule },
+          updatePackagesProtectionRuleMutationResolver: jest.fn().mockResolvedValue(
+            updatePackagesProtectionRuleMutationPayload({
+              errors: createPackagesProtectionRuleMutationPayloadErrors,
+            }),
+          ),
+        });
+
+        await submitForm();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toBe(createPackagesProtectionRuleMutationPayloadErrors[0]);
+      });
+
+      it('shows error alert with general message when apollo mutation request fails', async () => {
+        mountComponentWithApollo({
+          props: { rule },
+          updatePackagesProtectionRuleMutationResolver: jest
+            .fn()
+            .mockRejectedValue(new Error('GraphQL error')),
         });
 
         await submitForm();

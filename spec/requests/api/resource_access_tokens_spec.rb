@@ -480,7 +480,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             it "creates a #{source_type} access token with the default expires_at value", :aggregate_failures do
               freeze_time do
                 create_token
-                expires_at = PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+                expires_at = PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.getlocal
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response["name"]).to eq("test")
@@ -764,7 +764,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context 'for admin user', :enable_admin_mode do
-          it 'returns not found', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448693' do
+          it 'returns not found' do
             admin = create(:admin)
             post api(invalid_path, admin)
 

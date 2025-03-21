@@ -193,7 +193,6 @@ spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
 spec/frontend/search/topbar/components/app_spec.js
-spec/frontend/set_status_modal/set_status_modal_wrapper_spec.js
 spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
 spec/frontend/sidebar/components/assignees/sidebar_assignees_widget_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js

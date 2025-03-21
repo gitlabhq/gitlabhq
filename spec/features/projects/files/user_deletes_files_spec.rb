@@ -8,6 +8,8 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
 
+  let(:commit_message) { 'New commit message' }
+
   let_it_be(:protected_branch) { 'protected-branch' }
 
   let_it_be(:project) { create(:project, :repository, name: 'Shop') }
@@ -45,11 +47,12 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
       expect(page).to have_content('.gitignore')
 
       click_on('Delete')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
       expect(page).to have_current_path(project_tree_path(project, 'master/'), ignore_query: true)
       expect(page).not_to have_content('.gitignore')
+      expect(page).to have_content(commit_message)
     end
   end
 
@@ -78,13 +81,13 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
       expect(page).to have_content(fork_message)
 
       click_on('Delete')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
       fork = user.fork_of(project2.reload)
 
       expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
-      expect(page).to have_content('New commit message')
+      expect(page).to have_content(commit_message)
     end
   end
 
@@ -109,11 +112,11 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
       expect(page).to have_checked_field _('Create a merge request for this change')
       expect(find_field('branch_name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
 
-      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
       expect(page).to have_current_path(project_new_merge_request_path(project3), ignore_query: true)
-      expect(page).to have_content('New commit message')
+      expect(page).to have_content(commit_message)
     end
   end
 end

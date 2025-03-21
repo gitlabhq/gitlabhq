@@ -520,7 +520,7 @@ This truncation makes it easier to find other elements on the page without scrol
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for issues](issue_work_items.md).
+- [The new look for issues](issue_work_items.md) must be enabled.
 
 To change whether descriptions are truncated:
 
@@ -543,7 +543,7 @@ Issue attributes are shown in a sidebar to the right of the description when spa
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for issues](issue_work_items.md).
+- [The new look for issues](issue_work_items.md) must be enabled.
 
 To hide the sidebar and increase space for the description:
 

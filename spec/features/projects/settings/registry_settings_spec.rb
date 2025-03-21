@@ -72,20 +72,20 @@ RSpec.describe 'Project > Settings > Packages and registries',
 
             within_testid settings_block_id do
               click_button 'Add protection rule'
-
-              fill_in 'Name pattern', with: '*test*'
-              select 'Npm', from: 'Type'
-              select 'Owner', from: access_level_dropdown
-
-              click_button 'Add rule'
             end
 
-            within_testid settings_block_id do
-              expect(page).not_to have_button 'Add rule'
-              expect(page).to have_content('*test*')
-              expect(page).to have_content('npm')
-              expect(page).to have_select(access_level_dropdown, selected: 'Owner')
-            end
+            expect(page).to have_selector 'h2', text: 'Add protection rule'
+            fill_in 'Name pattern', with: 'v.*'
+            select 'Owner', from: access_level_dropdown
+            select 'PyPI', from: 'Type'
+            click_button 'Add rule'
+
+            settings_block = find_by_testid(settings_block_id)
+            expect(page).not_to have_selector 'h2', text: 'Add protection rule'
+            expect(page).to have_content('Package protection rule created.')
+            expect(settings_block).to have_content('v.*')
+            expect(settings_block).to have_content('PyPI')
+            expect(settings_block).to have_content('Owner')
           end
         end
 
@@ -102,16 +102,30 @@ RSpec.describe 'Project > Settings > Packages and registries',
             within_testid settings_block_id do
               expect(page).to have_content(package_protection_rule.package_name_pattern)
               expect(page).to have_content(package_protection_rule.package_type)
-              expect(page).to have_select(access_level_dropdown, selected: 'Maintainer')
+              expect(find_by_testid('minimum-access-level-push-value')).to have_content('Maintainer')
             end
           end
 
-          it 'allows editing the rule' do
+          it 'updates a rule' do
             within_testid settings_block_id do
-              select 'Admin', from: access_level_dropdown
+              click_button 'Edit'
             end
 
+            expect(page).to have_selector 'h2', text: 'Edit protection rule'
+
+            within_testid 'packages-protection-rule-form' do
+              fill_in 'Name pattern', with: 'v1.*'
+              select 'PyPI', from: 'Type'
+              select 'Administrator', from: access_level_dropdown
+              click_button 'Save changes'
+            end
+
+            settings_block = find_by_testid(settings_block_id)
+            expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
             expect(page).to have_content('Package protection rule updated.')
+            expect(settings_block).to have_content('v1.*')
+            expect(find_by_testid('package-type')).to have_content('PyPI')
+            expect(find_by_testid('minimum-access-level-push-value')).to have_content('Administrator')
           end
 
           it 'allows deleting the rule' do

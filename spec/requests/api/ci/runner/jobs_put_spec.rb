@@ -274,7 +274,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       context 'when job is canceling' do
         before do
-          attributes = attributes_for(:ci_runner_machine, :with_cancelable_feature).slice(:runtime_features)
+          attributes = attributes_for(:ci_runner_machine, :cancel_gracefully_feature).slice(:runtime_features)
           runner_manager.update!(attributes)
 
           job.cancel!

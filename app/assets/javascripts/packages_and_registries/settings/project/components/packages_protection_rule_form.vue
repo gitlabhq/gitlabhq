@@ -10,17 +10,17 @@ import {
 } from '@gitlab/ui';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import createPackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_packages_protection_rule.mutation.graphql';
+import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  MinimumAccessLevelOptions,
+  GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+} from '~/packages_and_registries/settings/project/constants';
 
-const PACKAGES_PROTECTION_RULES_SAVED_SUCCESS_MESSAGE = s__('PackageRegistry|Rule saved.');
 const PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while saving the package protection rule.',
 );
-
-const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
 export default {
   components: {
@@ -35,8 +35,14 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
+  props: {
+    rule: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   i18n: {
-    PACKAGES_PROTECTION_RULES_SAVED_SUCCESS_MESSAGE,
     PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE,
     packageNamePatternInputHelpText: s__(
       'PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `my-package-*` are supported.',
@@ -45,17 +51,29 @@ export default {
   data() {
     return {
       packageProtectionRuleFormData: {
-        packageNamePattern: '',
-        packageType: 'NPM',
-        minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        packageNamePattern: this.rule?.packageNamePattern ?? '',
+        packageType: this.rule?.packageType ?? 'NPM',
+        minimumAccessLevelForPush:
+          this.rule?.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
       alertErrorMessage: '',
     };
   },
   computed: {
+    mutation() {
+      return this.rule
+        ? updatePackagesProtectionRuleMutation
+        : createPackagesProtectionRuleMutation;
+    },
+    mutationKey() {
+      return this.rule ? 'updatePackagesProtectionRule' : 'createPackagesProtectionRule';
+    },
     showLoadingIcon() {
       return this.updateInProgress;
+    },
+    submitButtonText() {
+      return this.rule ? __('Save changes') : s__('PackageRegistry|Add rule');
     },
     isEmptyPackageName() {
       return !this.packageProtectionRuleFormData.packageNamePattern;
@@ -69,9 +87,13 @@ export default {
     createPackagesProtectionRuleMutationInput() {
       return {
         projectPath: this.projectPath,
-        packageNamePattern: this.packageProtectionRuleFormData.packageNamePattern,
-        packageType: this.packageProtectionRuleFormData.packageType,
-        minimumAccessLevelForPush: this.packageProtectionRuleFormData.minimumAccessLevelForPush,
+        ...this.packageProtectionRuleFormData,
+      };
+    },
+    updatePackagesProtectionRuleMutationInput() {
+      return {
+        id: this.rule?.id,
+        ...this.packageProtectionRuleFormData,
       };
     },
     packageTypeOptions() {
@@ -90,34 +112,31 @@ export default {
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },
-    minimumAccessLevelForPushOptions() {
-      return [
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
-      ];
-    },
   },
   methods: {
     submit() {
       this.clearAlertErrorMessage();
 
       this.updateInProgress = true;
+      const input = this.rule
+        ? this.updatePackagesProtectionRuleMutationInput
+        : this.createPackagesProtectionRuleMutationInput;
+
       return this.$apollo
         .mutate({
-          mutation: createPackagesProtectionRuleMutation,
+          mutation: this.mutation,
           variables: {
-            input: this.createPackagesProtectionRuleMutationInput,
+            input,
           },
         })
         .then(({ data }) => {
-          const [errorMessage] = data?.createPackagesProtectionRule?.errors ?? [];
+          const [errorMessage] = data?.[this.mutationKey]?.errors ?? [];
           if (errorMessage) {
             this.alertErrorMessage = errorMessage;
             return;
           }
 
-          this.$emit('submit', data.createPackagesProtectionRule.packageProtectionRule);
+          this.$emit('submit', data[this.mutationKey].packageProtectionRule);
         })
         .catch(() => {
           this.alertErrorMessage = PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE;
@@ -134,11 +153,12 @@ export default {
       this.$emit('cancel');
     },
   },
+  minimumAccessLevelForPushOptions: MinimumAccessLevelOptions,
 };
 </script>
 
 <template>
-  <gl-form @submit.prevent="submit" @reset="cancelForm">
+  <gl-form data-testid="packages-protection-rule-form" @submit.prevent="submit" @reset="cancelForm">
     <gl-alert
       v-if="alertErrorMessage"
       class="gl-mb-5"
@@ -194,7 +214,7 @@ export default {
       <gl-form-select
         id="input-minimum-access-level-for-push"
         v-model="packageProtectionRuleFormData.minimumAccessLevelForPush"
-        :options="minimumAccessLevelForPushOptions"
+        :options="$options.minimumAccessLevelForPushOptions"
         :disabled="isFieldDisabled"
         required
       />
@@ -206,8 +226,8 @@ export default {
         type="submit"
         :disabled="isSubmitButtonDisabled"
         :loading="showLoadingIcon"
-        data-testid="add-rule-btn"
-        >{{ s__('PackageRegistry|Add rule') }}</gl-button
+        data-testid="submit-btn"
+        >{{ submitButtonText }}</gl-button
       >
       <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
     </div>

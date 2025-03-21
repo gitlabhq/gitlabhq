@@ -506,7 +506,7 @@ To enable the extension marketplace for the Web IDE and workspaces:
 1. Select **Preferences**.
 1. Go to the **Integrations** section.
 1. Select the **Enable extension marketplace** checkbox.
-1. In the third-party extension acknowledgement, select **I understand**.
+1. In the third-party extension acknowledgment, select **I understand**.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting

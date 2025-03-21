@@ -41691,6 +41691,9 @@ msgstr ""
 msgid "PackageRegistry|Duplicate packages"
 msgstr ""
 
+msgid "PackageRegistry|Edit protection rule"
+msgstr ""
+
 msgid "PackageRegistry|Enforce %{packageType} setting for all subgroups"
 msgstr ""
 
@@ -41855,6 +41858,9 @@ msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "PackageRegistry|Package protection rule created."
+msgstr ""
+
 msgid "PackageRegistry|Package protection rule deleted."
 msgstr ""
 
@@ -41937,9 +41943,6 @@ msgid "PackageRegistry|Required Python: %{pythonVersion}"
 msgstr ""
 
 msgid "PackageRegistry|RubyGems"
-msgstr ""
-
-msgid "PackageRegistry|Rule saved."
 msgstr ""
 
 msgid "PackageRegistry|Show Composer commands"

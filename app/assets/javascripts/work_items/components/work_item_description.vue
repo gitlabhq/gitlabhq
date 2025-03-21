@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
+import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate_description';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
@@ -44,6 +45,13 @@ export default {
     WorkItemDescriptionTemplateListbox,
   },
   mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  provide: {
+    editorAiActions() {
+      return window.gon?.licensed_features?.generateDescription
+        ? [generateDescriptionAction()]
+        : [];
+    },
+  },
   inject: ['isGroup'],
   props: {
     description: {
