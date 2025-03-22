@@ -14596,6 +14596,29 @@ The edge type for [`ComplianceViolation`](#complianceviolation).
 | <a id="complianceviolationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="complianceviolationedgenode"></a>`node` | [`ComplianceViolation`](#complianceviolation) | The item at the end of the edge. |
 
+#### `ComponentVersionConnection`
+
+The connection type for [`ComponentVersion`](#componentversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="componentversionconnectionedges"></a>`edges` | [`[ComponentVersionEdge]`](#componentversionedge) | A list of edges. |
+| <a id="componentversionconnectionnodes"></a>`nodes` | [`[ComponentVersion]`](#componentversion) | A list of nodes. |
+| <a id="componentversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ComponentVersionEdge`
+
+The edge type for [`ComponentVersion`](#componentversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="componentversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="componentversionedgenode"></a>`node` | [`ComponentVersion`](#componentversion) | The item at the end of the edge. |
+
 #### `ConnectedAgentConnection`
 
 The connection type for [`ConnectedAgent`](#connectedagent).
@@ -34612,7 +34635,11 @@ Find software dependency versions by component.
 **Status**: Experiment.
 {{< /details >}}
 
-Returns [`[ComponentVersion!]!`](#componentversion).
+Returns [`ComponentVersionConnection!`](#componentversionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
