@@ -1785,7 +1785,7 @@ ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb
 ee/lib/gitlab/llm/chain/utils/chat_conversation.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
-[Category:Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @lma-git @missy-gitlab @tgao3701908 @emeraldjayde @squadri
+[Category:Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @missy-gitlab @tgao3701908 @emeraldjayde @squadri
 ee/lib/api/code_suggestions.rb
 ee/lib/ai/additional_context.rb
 ee/lib/code_suggestions/

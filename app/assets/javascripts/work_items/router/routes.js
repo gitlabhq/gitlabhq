@@ -32,11 +32,21 @@ function getRoutes() {
       children: [
         {
           name: ROUTES.design,
-          path: 'designs/:id',
+          path: 'designs/:id?',
           component: DesignDetail,
-          beforeEnter({ params: { id } }, _, next) {
-            if (typeof id === 'string') {
-              next();
+          beforeEnter(to, _, next) {
+            if (to.params.id) {
+              if (typeof to.params.id === 'string') {
+                next();
+              }
+            } else {
+              // If no ID route to main work item view.
+              // This supports design version notes with format /designs?version=##
+              next({
+                name: ROUTES.workItem,
+                params: to.params,
+                query: to.query,
+              });
             }
           },
           props: ({ params: { id, iid } }) => ({ id, iid }),

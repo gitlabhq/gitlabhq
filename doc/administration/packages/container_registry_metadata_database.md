@@ -593,6 +593,30 @@ Use separate database instances on each site because:
 1. The container registry requires write access to its database at both sites.
 1. Homogeneous setups ensure the greatest parity between Geo sites.
 
+## Revert to object storage metadata
+
+You can revert your registry to use object storage metadata after completing a migration.
+
+{{< alert type="warning" >}}
+
+When you revert to object storage metadata, any container images, tags, or repositories
+added or deleted between the migration completion and this revert operation are not available.
+
+{{< /alert >}}
+
+To revert to object storage metadata:
+
+1. Restore a [backup](../backup_restore/backup_gitlab.md#container-registry) taken before the migration.
+1. Add the following configuration to your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false,
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
 ## Troubleshooting
 
 ### Error: `there are pending database migrations`
