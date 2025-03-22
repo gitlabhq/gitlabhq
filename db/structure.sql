@@ -2448,6 +2448,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_6fc75a2395f3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_package_files"
+  WHERE "packages_package_files"."id" = NEW."package_file_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_700f29b1312e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18769,7 +18785,8 @@ ALTER SEQUENCE packages_nuget_symbols_id_seq OWNED BY packages_nuget_symbols.id;
 CREATE TABLE packages_package_file_build_infos (
     id bigint NOT NULL,
     package_file_id bigint NOT NULL,
-    pipeline_id bigint
+    pipeline_id bigint,
+    project_id bigint
 );
 
 CREATE SEQUENCE packages_package_file_build_infos_id_seq
@@ -35059,6 +35076,8 @@ CREATE INDEX index_packages_package_file_build_infos_on_package_file_id ON packa
 
 CREATE INDEX index_packages_package_file_build_infos_on_pipeline_id ON packages_package_file_build_infos USING btree (pipeline_id);
 
+CREATE INDEX index_packages_package_file_build_infos_on_project_id ON packages_package_file_build_infos USING btree (project_id);
+
 CREATE INDEX index_packages_package_files_on_file_name ON packages_package_files USING gin (file_name gin_trgm_ops);
 
 CREATE INDEX index_packages_package_files_on_file_name_file_sha256 ON packages_package_files USING btree (file_name, file_sha256);
@@ -39315,6 +39334,8 @@ CREATE TRIGGER trigger_6cdea9559242 BEFORE INSERT OR UPDATE ON issue_links FOR E
 
 CREATE TRIGGER trigger_6d6c79ce74e1 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_6d6c79ce74e1();
 
+CREATE TRIGGER trigger_6fc75a2395f3 BEFORE INSERT OR UPDATE ON packages_package_file_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_6fc75a2395f3();
+
 CREATE TRIGGER trigger_700f29b1312e BEFORE INSERT OR UPDATE ON packages_rubygems_metadata FOR EACH ROW EXECUTE FUNCTION trigger_700f29b1312e();
 
 CREATE TRIGGER trigger_70d3f0bba1de BEFORE INSERT OR UPDATE ON compliance_framework_security_policies FOR EACH ROW EXECUTE FUNCTION trigger_70d3f0bba1de();
@@ -39748,6 +39769,9 @@ ALTER TABLE ONLY project_pages_metadata
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_105c1d6d08 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_package_file_build_infos
+    ADD CONSTRAINT fk_10705aa7b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters
     ADD CONSTRAINT fk_107946dffb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
