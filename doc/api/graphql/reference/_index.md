@@ -40995,6 +40995,7 @@ Represents a remote development workspace.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workspaceactualstate"></a>`actualState` | [`String!`](#string) | Actual state of the workspace. |
+| <a id="workspaceactualstateupdatedat"></a>`actualStateUpdatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 17.11. **Status**: Experiment. Timestamp of the last update to the actual state. |
 | <a id="workspaceclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Kubernetes agent associated with the workspace. |
 | <a id="workspacecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspace was created. |
 | <a id="workspacedeploymentresourceversion"></a>`deploymentResourceVersion` | [`Int`](#int) | Version of the deployment resource for the workspace. |
