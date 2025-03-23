@@ -303,6 +303,12 @@ and must be paid at the next [quarterly reconciliation](../../subscriptions/quar
 When you turn on restricted access, groups cannot add new billable users when there are no seats
 left in the subscription.
 
+{{< alert type="note" >}}
+
+If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
+
+{{< /alert >}}
+
 Prerequisites:
 
 - You must have the Owner role for the group.
