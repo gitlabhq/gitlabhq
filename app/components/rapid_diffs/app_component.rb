@@ -24,8 +24,21 @@ module RapidDiffs
       @preload = preload
     end
 
-    def initial_sidebar_width
-      helpers.cookies[:mr_tree_list_width]
+    def browser_visible?
+      helpers.cookies[:file_browser_visible] != 'false'
+    end
+
+    def initial_browser_width
+      Integer(helpers.cookies[:mr_tree_list_width])
+    rescue StandardError
+      nil
+    end
+
+    def sidebar_style
+      styles = []
+      styles << "width: #{initial_browser_width}px;" if initial_browser_width
+      styles << "display: none;" unless browser_visible?
+      styles.join(' ')
     end
   end
 end

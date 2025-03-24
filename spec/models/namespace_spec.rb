@@ -2617,10 +2617,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#uploads_sharding_key' do
     it 'returns organization_id' do
-      organization = build_stubbed(:organization)
-      namespace = build_stubbed(:namespace, organization: organization)
+      namespace = build_stubbed(:namespace)
 
-      expect(namespace.uploads_sharding_key).to eq(organization_id: organization.id)
+      expect(namespace.uploads_sharding_key).to eq(namespace_id: namespace.id)
     end
   end
 end

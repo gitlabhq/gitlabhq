@@ -5,27 +5,23 @@ import { PiniaVuePlugin } from 'pinia';
 import FileBrowser from '~/rapid_diffs/app/file_browser.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import store from '~/mr_notes/stores';
-import * as types from '~/diffs/store/mutation_types';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 
 Vue.use(PiniaVuePlugin);
 
 describe('FileBrowser', () => {
   let wrapper;
-  let commit;
 
   const createComponent = () => {
     const pinia = createTestingPinia();
     useDiffsList();
+    useFileBrowser();
     wrapper = shallowMount(FileBrowser, {
       store,
       pinia,
     });
   };
-
-  beforeEach(() => {
-    commit = jest.spyOn(store, 'commit');
-  });
 
   it('passes down loaded files', async () => {
     const loadedFiles = { foo: 1 };
@@ -37,13 +33,14 @@ describe('FileBrowser', () => {
 
   it('is visible by default', () => {
     createComponent();
-    expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
+    expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
   });
 
-  it('toggles visibility', async () => {
+  it('hides file browser', async () => {
     createComponent();
-    await wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
-    expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
+    useFileBrowser().fileBrowserVisible = false;
+    await nextTick();
+    expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(false);
   });
 
   it('handles click', async () => {
@@ -51,10 +48,5 @@ describe('FileBrowser', () => {
     createComponent();
     await wrapper.findComponent(DiffsFileTree).vm.$emit('clickFile', file);
     expect(wrapper.emitted('clickFile')).toStrictEqual([[file]]);
-    expect(commit).toHaveBeenCalledWith(
-      `diffs/${types.SET_CURRENT_DIFF_FILE}`,
-      file.fileHash,
-      undefined,
-    );
   });
 });

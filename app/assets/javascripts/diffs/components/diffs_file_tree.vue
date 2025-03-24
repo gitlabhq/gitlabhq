@@ -1,8 +1,9 @@
 <script>
-import { Mousetrap } from '~/lib/mousetrap';
-import { keysFor, MR_TOGGLE_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+// eslint-disable-next-line no-restricted-imports
+import { mapMutations } from 'vuex';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import * as types from '~/diffs/store/mutation_types';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -17,10 +18,6 @@ export default {
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: window.innerWidth / 2,
   props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
     loadedFiles: {
       type: Object,
       required: false,
@@ -43,25 +40,23 @@ export default {
       return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
   },
-  mounted() {
-    Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggle);
-  },
-  beforeDestroy() {
-    Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggle);
-  },
   methods: {
-    toggle() {
-      this.$emit('toggled');
-    },
+    ...mapMutations('diffs', {
+      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
+    }),
     cacheTreeListWidth(size) {
       setCookie(TREE_LIST_WIDTH_STORAGE_KEY, size);
+    },
+    onFileClick(file) {
+      this.setCurrentDiffFile(file.fileHash);
+      this.$emit('clickFile', file);
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="visible" :style="{ width: `${treeWidth}px` }" class="diff-tree-list gl-px-5">
+  <div :style="{ width: `${treeWidth}px` }" class="rd-app-sidebar diff-tree-list">
     <panel-resizer
       :size.sync="treeWidth"
       :start-size="treeWidth"
@@ -73,7 +68,7 @@ export default {
     <tree-list
       :hide-file-stats="hideFileStats"
       :loaded-files="loadedFiles"
-      @clickFile="$emit('clickFile', $event)"
+      @clickFile="onFileClick"
     />
   </div>
 </template>

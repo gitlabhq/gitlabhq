@@ -1,0 +1,14 @@
+---
+table_name: ai_vectorizable_file_uploads
+classes:
+- Ai::VectorizableFile
+- Upload
+feature_categories:
+- mlops
+description: Stores uploads for Ai::VectorizableFile model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

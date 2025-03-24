@@ -36,7 +36,7 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
       click_on 'Changes'
       wait_for_requests
 
-      find('.js-toggle-tree-list').click
+      find_by_testid('file-tree-button').click
 
       within find('.diff-file', text: 'files/ruby/popen.rb') do
         expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")

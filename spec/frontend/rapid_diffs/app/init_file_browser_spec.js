@@ -20,6 +20,16 @@ jest.mock('~/rapid_diffs/app/file_browser.vue', () => ({
   },
 }));
 
+jest.mock('~/diffs/components/file_browser_toggle.vue', () => ({
+  render(h) {
+    return h('div', {
+      attrs: {
+        'data-file-browser-toggle-component': true,
+      },
+    });
+  },
+}));
+
 describe('Init file browser', () => {
   const getFileBrowser = () => document.querySelector('[data-file-browser-component]');
 
@@ -27,6 +37,7 @@ describe('Init file browser', () => {
     window.mrTabs = { eventHub: createEventHub() };
     setHTMLFixture(
       `
+        <div data-file-browser-toggle></div>
         <div data-file-browser data-metadata-endpoint="/metadata"></div>
         <diff-file id="first"></diff-file>
       `,
@@ -54,5 +65,11 @@ describe('Init file browser', () => {
     getFileBrowser().click();
     expect(spy).toHaveBeenCalledWith('first');
     expect(selectFile).toHaveBeenCalled();
+  });
+
+  it('shows file browser toggle', async () => {
+    initFileBrowser();
+    await waitForPromises();
+    expect(document.querySelector('[data-file-browser-toggle-component]')).not.toBe(null);
   });
 });

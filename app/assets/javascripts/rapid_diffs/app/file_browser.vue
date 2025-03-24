@@ -1,41 +1,33 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapMutations } from 'vuex';
 import { mapState } from 'pinia';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
-import * as types from '~/diffs/store/mutation_types';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 
 export default {
   name: 'FileBrowser',
   components: {
     DiffsFileTree,
   },
-  data() {
-    return {
-      visible: true,
-    };
-  },
   computed: {
     ...mapState(useDiffsList, ['loadedFiles']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible']),
+  },
+  created() {
+    document.addEventListener(DIFF_FILE_MOUNTED, this.addLoadedFile);
+  },
+  beforeDestroy() {
+    document.removeEventListener(DIFF_FILE_MOUNTED, this.addLoadedFile);
   },
   methods: {
-    ...mapMutations('diffs', {
-      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
-    }),
     clickFile(file) {
       this.$emit('clickFile', file);
-      this.setCurrentDiffFile(file.fileHash);
     },
   },
 };
 </script>
 
 <template>
-  <diffs-file-tree
-    :visible="visible"
-    :loaded-files="loadedFiles"
-    @toggled="visible = !visible"
-    @clickFile="clickFile"
-  />
+  <diffs-file-tree v-if="fileBrowserVisible" :loaded-files="loadedFiles" @clickFile="clickFile" />
 </template>

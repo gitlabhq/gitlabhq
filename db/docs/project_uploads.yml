@@ -1,0 +1,14 @@
+---
+table_name: project_uploads
+classes:
+- Project
+- Upload
+feature_categories:
+- groups_and_projects
+description: Stores uploads for Project model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

@@ -12,13 +12,15 @@
 
 .rd-app{ data: { rapid_diffs: true, reload_stream_url: @reload_stream_url, metadata_endpoint: @metadata_endpoint } }
   .rd-app-header
+    .rd-app-file-browser-toggle
+      %div{ data: { file_browser_toggle: true } }
     .rd-app-settings
       %div{ data: { view_settings: true, show_whitespace: @show_whitespace.to_json, diff_view_type: @diff_view, update_user_endpoint: @update_user_endpoint } }
   .rd-app-body
-    .rd-app-sidebar{ data: { file_browser: true }, style: ("width: #{initial_sidebar_width}px" if initial_sidebar_width) }
+    .rd-app-sidebar{ data: { file_browser: true }, style: sidebar_style }
       .rd-app-sidebar-loading
         = helpers.gl_loading_icon(size: 'sm')
-    .rd-app-content{ data: { sidebar_visible: true } }
+    .rd-app-content
       .rd-app-content-header{ data: { hidden_files_warning: true } }
       .code{ class: helpers.user_color_scheme }
         %div{ data: { diffs_list: true } }

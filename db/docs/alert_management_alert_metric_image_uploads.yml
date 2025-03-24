@@ -1,0 +1,14 @@
+---
+table_name: alert_management_alert_metric_image_uploads
+classes:
+- AlertManagement::MetricImage
+- Upload
+feature_categories:
+- incident_management
+description: Stores uploads for AlertManagement:MetricImage model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

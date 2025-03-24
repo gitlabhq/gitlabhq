@@ -40,7 +40,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 | Capability                                                                                           | In Free & Premium      | In Ultimate            |
 |:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| [Customize analyzer settings](configure.md#customize-analyzer-settings)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [Customize analyzer behavior](configure.md#customize-analyzer-behavior)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | Download [output](#output)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |

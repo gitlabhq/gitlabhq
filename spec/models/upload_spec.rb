@@ -49,23 +49,23 @@ RSpec.describe Upload do
     end
 
     context 'before_save' do
+      let_it_be(:project) { create(:project) }
+
       it 'sets sharding key on create' do
-        project = build_stubbed(:project)
         upload = build(:upload, model: project)
 
         expect { upload.save! }
-          .to change { upload.namespace_id }.from(nil)
-          .to(project.uploads_sharding_key.each_value.first)
+          .to change { upload.project_id }.from(nil)
+          .to(project.id)
       end
 
       it 'sets sharding key on update' do
-        project = build_stubbed(:project)
         upload = create(:upload, model: project)
-        other_project = build_stubbed(:project)
+        other_project = create(:project)
 
         expect { upload.update!(model: other_project) }
-          .to change { upload.namespace_id }.from(project.uploads_sharding_key.each_value.first)
-          .to(other_project.uploads_sharding_key.each_value.first)
+          .to change { upload.project_id }.from(project.id)
+          .to(other_project.id)
       end
     end
 

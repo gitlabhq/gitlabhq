@@ -3469,7 +3469,7 @@ class Project < ApplicationRecord
   end
 
   def uploads_sharding_key
-    { namespace_id: namespace_id }
+    { project_id: id }
   end
 
   def pages_url_builder(options = nil)

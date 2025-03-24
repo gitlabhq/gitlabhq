@@ -467,7 +467,7 @@ export default {
       'goToFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
-    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility', 'toggleFileBrowserVisibility']),
+    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility']),
     closeDrawer() {
       this.setDrawer({});
     },
@@ -737,10 +737,6 @@ export default {
         this.trackEvent(types[event.name]);
       }
     },
-    fileTreeToggled() {
-      this.toggleFileBrowserVisibility();
-      this.adjustView();
-    },
     isDiffViewActive(item) {
       return this.virtualScrollCurrentIndex >= 0 && this.currentDiffFileId === item.file_hash;
     },
@@ -790,8 +786,8 @@ export default {
         class="files gl-mt-2 gl-flex"
       >
         <diffs-file-tree
-          :visible="renderFileTree"
-          @toggled="fileTreeToggled"
+          v-if="renderFileTree"
+          class="gl-px-5"
           @clickFile="goToFile({ path: $event.path })"
         />
         <div class="col-12 col-md-auto diff-files-holder">

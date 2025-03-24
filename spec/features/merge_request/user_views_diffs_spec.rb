@@ -15,7 +15,7 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
 
     wait_for_requests
 
-    find('.js-toggle-tree-list').click
+    find_by_testid('file-tree-button').click
   end
 
   shared_examples 'unfold diffs' do

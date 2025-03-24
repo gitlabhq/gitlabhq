@@ -1,0 +1,12 @@
+---
+table_name: appearance_uploads
+classes:
+- Appearance
+- Upload
+feature_categories:
+- navigation
+description: Stores uploads for Appearance model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_clusterwide

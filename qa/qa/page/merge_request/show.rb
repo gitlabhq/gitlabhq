@@ -26,6 +26,9 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/compare_versions.vue' do
           element 'target-version-dropdown'
+        end
+
+        view 'app/assets/javascripts/diffs/components/file_browser_toggle.vue' do
           element 'file-tree-button'
         end
 

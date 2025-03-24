@@ -30,26 +30,25 @@
   flex: 1 0;
 }
 
-.rd-app-content[data-sidebar-visible] {
-  @include media-breakpoint-up(sm) {
-    padding-left: $gl-spacing-scale-4;
-  }
-
-  @include media-breakpoint-down(sm) {
-    padding-top: $gl-spacing-scale-4;
-  }
-}
-
 .rd-app-sidebar {
   width: 320px;
   flex: none;
-  padding-left: 0 !important;
+  box-sizing: content-box;
+
+  @include media-breakpoint-up(sm) {
+    $drag-handle-width: 4px;
+    padding-right: calc($gl-spacing-scale-4 + $drag-handle-width / 2);
+    margin-right: calc($gl-spacing-scale-4 - $drag-handle-width / 2);
+  }
 
   @include media-breakpoint-down(sm) {
     flex: 1;
+    margin: 0;
+    // override .diff-tree-list, remove when fully switched to Rapid Diffs
     width: auto !important;
-    padding: 0 !important;
     position: static !important;
+    padding: 0 0 $gl-spacing-scale-4 !important;
+    min-height: auto !important;
   }
 }
 

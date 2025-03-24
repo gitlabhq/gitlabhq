@@ -9922,10 +9922,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#uploads_sharding_key' do
     it 'returns namespace_id' do
-      namespace = build_stubbed(:namespace)
-      project = build_stubbed(:project, namespace: namespace)
+      project = build_stubbed(:project)
 
-      expect(project.uploads_sharding_key).to eq(namespace_id: namespace.id)
+      expect(project.uploads_sharding_key).to eq(project_id: project.id)
     end
   end
 

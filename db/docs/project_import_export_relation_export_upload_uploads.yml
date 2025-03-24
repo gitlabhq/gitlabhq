@@ -1,0 +1,14 @@
+---
+table_name: project_import_export_relation_export_upload_uploads
+classes:
+- Projects::ImportExport::RelationExportUpload
+- Upload
+feature_categories:
+- importers
+description: Stores uploads for Projects::ImportExport::RelationExportUpload model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

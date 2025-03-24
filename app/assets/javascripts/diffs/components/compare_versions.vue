@@ -1,38 +1,28 @@
 <script>
-import {
-  GlTooltipDirective,
-  GlIcon,
-  GlLink,
-  GlButtonGroup,
-  GlButton,
-  GlSprintf,
-  GlAnimatedSidebarIcon,
-} from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLink, GlButtonGroup, GlButton, GlSprintf } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { mapActions as mapPiniaActions, mapState as mapPiniaState } from 'pinia';
 import { __ } from '~/locale';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import {
   keysFor,
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
-  MR_TOGGLE_FILE_BROWSER,
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
-import { useFileBrowser } from '~/diffs/stores/file_browser';
+import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 
 export default {
   components: {
+    FileBrowserToggle,
     CompareDropdownLayout,
     GlIcon,
     GlLink,
     GlButtonGroup,
     GlButton,
     GlSprintf,
-    GlAnimatedSidebarIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -50,20 +40,6 @@ export default {
       'diffCompareDropdownSourceVersions',
     ]),
     ...mapState('diffs', ['commit', 'startVersion', 'latestVersionPath']),
-    ...mapPiniaState(useFileBrowser, ['fileBrowserVisible']),
-    toggleFileBrowserShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(MR_TOGGLE_FILE_BROWSER)[0];
-    },
-    toggleFileBrowserTitle() {
-      return this.fileBrowserVisible ? __('Hide file browser') : __('Show file browser');
-    },
-    toggleFileBrowserTooltip() {
-      const description = this.toggleFileBrowserTitle;
-      const key = this.toggleFileBrowserShortcutKey;
-      return shouldDisableShortcuts()
-        ? description
-        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
-    },
     hasSourceVersions() {
       return this.diffCompareDropdownSourceVersions.length > 0;
     },
@@ -116,7 +92,6 @@ export default {
     },
   },
   methods: {
-    ...mapPiniaActions(useFileBrowser, ['toggleFileBrowserVisibility']),
     ...mapActions('diffs', ['moveToNeighboringCommit']),
   },
 };
@@ -125,19 +100,7 @@ export default {
 <template>
   <div class="mr-version-controls">
     <div class="mr-version-menus-container gl-px-5 gl-pb-2 gl-pt-3">
-      <gl-button
-        v-if="toggleFileTreeVisible"
-        v-gl-tooltip.html="toggleFileBrowserTooltip"
-        variant="default"
-        class="js-toggle-tree-list btn-icon gl-mr-3"
-        data-testid="file-tree-button"
-        :aria-label="toggleFileBrowserTitle"
-        :aria-keyshortcuts="toggleFileBrowserShortcutKey"
-        :selected="fileBrowserVisible"
-        @click="toggleFileBrowserVisibility"
-      >
-        <gl-animated-sidebar-icon :is-on="fileBrowserVisible" />
-      </gl-button>
+      <file-browser-toggle v-if="toggleFileTreeVisible" />
       <div v-if="commit">
         {{ __('Viewing commit') }}
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>

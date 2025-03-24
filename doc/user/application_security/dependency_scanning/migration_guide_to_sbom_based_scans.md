@@ -7,7 +7,7 @@ title: Migrating to Dependency Scanning using SBOM
 
 {{< history >}}
 
-- The legacy [Dependency Scanning feature based on the Gemnasium analyzer](_index.md) was [deprecated](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) in GitLab 17.9 and planned for removal in 18.0.
+- The legacy [Dependency Scanning feature based on the Gemnasium analyzer](_index.md) was [deprecated](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) in GitLab 17.9 and planned for removal in 19.0.
 
 {{< /history >}}
 

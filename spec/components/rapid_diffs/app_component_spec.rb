@@ -33,6 +33,12 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(settings['data-update-user-endpoint']).to eq(update_user_endpoint)
   end
 
+  it "renders file browser toggle" do
+    render_component
+    container = page.find("[data-file-browser-toggle]")
+    expect(container).not_to be_nil
+  end
+
   it "renders sidebar" do
     render_component
     container = page.find("[data-file-browser]")
@@ -44,6 +50,19 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     render_component
     container = page.find("[data-file-browser]")
     expect(container[:style]).to include("width: 250px")
+  end
+
+  it "ignores invalid sidebar width" do
+    allow(vc_test_controller).to receive(:cookies).and_return({ mr_tree_list_width: 'foobar' })
+    render_component
+    container = page.find("[data-file-browser]")
+    expect(container[:style]).to be_empty
+  end
+
+  it "hides sidebar" do
+    allow(vc_test_controller).to receive(:cookies).and_return({ file_browser_visible: 'false' })
+    render_component
+    expect(page).to have_css('[data-file-browser]', visible: :hidden)
   end
 
   it "renders stream container" do

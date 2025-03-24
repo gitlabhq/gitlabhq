@@ -1,0 +1,12 @@
+---
+table_name: user_uploads
+classes:
+- Upload
+- User
+feature_categories:
+- user_profile
+description: Stores uploads for User model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_clusterwide

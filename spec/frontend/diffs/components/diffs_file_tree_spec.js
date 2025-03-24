@@ -1,24 +1,23 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { Mousetrap } from '~/lib/mousetrap';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, removeCookie, setCookie } from '~/lib/utils/common_utils';
 import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import store from '~/mr_notes/stores';
+import * as types from '~/diffs/store/mutation_types';
 
 describe('DiffsFileTree', () => {
   useLocalStorageSpy();
 
   let wrapper;
 
-  const createComponent = ({ visible = true, ...rest } = {}) => {
+  const createComponent = (propsData = {}) => {
     wrapper = shallowMount(DiffsFileTree, {
-      propsData: {
-        visible,
-        ...rest,
-      },
+      store,
+      propsData,
     });
   };
 
@@ -29,33 +28,16 @@ describe('DiffsFileTree', () => {
     expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
   });
 
-  describe('visibility', () => {
-    describe('when renderDiffFiles and showTreeList are true', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('tree list is visible', () => {
-        expect(wrapper.findComponent(TreeList).exists()).toBe(true);
-      });
-    });
-
-    describe('when renderDiffFiles and showTreeList are false', () => {
-      beforeEach(() => {
-        createComponent({ visible: false });
-      });
-
-      it('tree list is hidden', () => {
-        expect(wrapper.findComponent(TreeList).exists()).toBe(false);
-      });
-    });
-  });
-
-  it('toggles when "f" hotkey is pressed', async () => {
+  it('sets current file on click', () => {
+    const spy = jest.spyOn(store, 'commit');
+    const file = { fileHash: 'foo' };
     createComponent();
-    Mousetrap.trigger('f');
-    await nextTick();
-    expect(wrapper.emitted('toggled')).toStrictEqual([[]]);
+    wrapper.findComponent(TreeList).vm.$emit('clickFile', file);
+    expect(spy).toHaveBeenCalledWith(
+      `diffs/${types.SET_CURRENT_DIFF_FILE}`,
+      file.fileHash,
+      undefined,
+    );
   });
 
   describe('size', () => {

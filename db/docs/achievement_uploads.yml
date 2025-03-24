@@ -1,0 +1,14 @@
+---
+table_name: achievement_uploads
+classes:
+- Achievements::Achievement
+- Upload
+feature_categories:
+- user_profile
+description: Stores uploads for Achievements::Achievement model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

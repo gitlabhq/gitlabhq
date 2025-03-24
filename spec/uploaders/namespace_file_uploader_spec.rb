@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe NamespaceFileUploader do
-  let(:group) { build_stubbed(:group) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:group) { create(:group, organization: organization) }
   let(:uploader) { described_class.new(group) }
   let(:upload) { create(:upload, :namespace_upload, model: group) }
   let(:identifier) { %r{\h+/\S+} }

@@ -1154,7 +1154,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    ssh-keygen -t ed25519 -f signing_key.ssh
    ```
 
-1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
+1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/` and ensure the `git` user has permissions to read the file.
 1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['git']['signing_key']`:
 
    ```ruby

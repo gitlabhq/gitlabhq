@@ -1,4 +1,3 @@
-import { GlAnimatedSidebarIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
@@ -9,6 +8,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import store from '~/mr_notes/stores';
+import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -89,12 +89,8 @@ describe('CompareVersions', () => {
       createWrapper({ createCommit: false });
     });
 
-    it('should render Tree List toggle button with correct attribute values', () => {
-      const treeListBtn = wrapper.find('.js-toggle-tree-list');
-
-      expect(treeListBtn.exists()).toBe(true);
-      expect(treeListBtn.attributes('aria-label')).toBe('Hide file browser');
-      expect(treeListBtn.findComponent(GlAnimatedSidebarIcon).exists()).toBe(true);
+    it('should render file browser toggle', () => {
+      expect(wrapper.findComponent(FileBrowserToggle).exists()).toBe(true);
     });
 
     it('should render comparison dropdowns with correct values', () => {
@@ -106,13 +102,6 @@ describe('CompareVersions', () => {
       expect(sourceDropdown.find('a p').html()).toContain('latest version');
       expect(targetDropdown.find('button').html()).toContain(targetBranchName);
     });
-  });
-
-  it('should not render Tree List toggle button when a prop is false', () => {
-    createWrapper({ props: { toggleFileTreeVisible: false } });
-    const treeListBtn = wrapper.find('.js-toggle-tree-list');
-
-    expect(treeListBtn.exists()).toBe(false);
   });
 
   describe('commit', () => {

@@ -752,7 +752,7 @@ class Namespace < ApplicationRecord
   end
 
   def uploads_sharding_key
-    { organization_id: organization_id }
+    { namespace_id: id }
   end
 
   def pipeline_variables_default_role
