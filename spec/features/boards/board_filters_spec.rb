@@ -151,7 +151,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
 
     describe 'filters by reaction emoji' do
       before do
-        set_filter('my-reaction')
+        set_filter('reaction')
       end
 
       it 'loads all the emojis when opened and submit one as filter', :aggregate_failures do

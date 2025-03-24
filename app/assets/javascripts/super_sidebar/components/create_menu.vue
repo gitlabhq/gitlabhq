@@ -11,7 +11,11 @@ import {
   TOP_NAV_INVITE_MEMBERS_COMPONENT,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
-import { WORK_ITEM_TYPE_ENUM_EPIC, CREATE_NEW_WORK_ITEM_MODAL } from '~/work_items/constants';
+import {
+  WORK_ITEM_TYPE_ENUM_EPIC,
+  CREATE_NEW_WORK_ITEM_MODAL,
+  CREATE_NEW_GROUP_WORK_ITEM_MODAL,
+} from '~/work_items/constants';
 import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
@@ -32,7 +36,7 @@ export default {
   i18n: {
     createNew: __('Create new…'),
   },
-  inject: ['isImpersonating'],
+  inject: ['isImpersonating', 'fullPath', 'workItemPlanningViewEnabled'],
   props: {
     groups: {
       type: Array,
@@ -42,6 +46,7 @@ export default {
   data() {
     return {
       dropdownOpen: false,
+      showCreateGroupWorkItemModal: false,
       showCreateWorkItemModal: false,
     };
   },
@@ -59,6 +64,16 @@ export default {
     },
     isCreateWorkItem(groupItem) {
       return groupItem.component === CREATE_NEW_WORK_ITEM_MODAL;
+    },
+    isCreateGroupWorkItem(groupItem) {
+      return groupItem.component === CREATE_NEW_GROUP_WORK_ITEM_MODAL;
+    },
+    handleCreateWorkItemClick() {
+      if (this.workItemPlanningViewEnabled) {
+        this.showCreateWorkItemModal = true;
+      } else {
+        this.showCreateGroupWorkItemModal = true;
+      }
     },
   },
   toggleId: 'create-menu-toggle',
@@ -95,20 +110,37 @@ export default {
           :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
         />
         <gl-disclosure-dropdown-item
+          v-else-if="isCreateGroupWorkItem(groupItem)"
+          :key="`${groupItem.text}-group-modal-trigger`"
+          :item="groupItem"
+          data-testid="new-group-work-item-trigger"
+          @action="showCreateGroupWorkItemModal = true"
+        />
+        <gl-disclosure-dropdown-item
           v-else-if="isCreateWorkItem(groupItem)"
           :key="`${groupItem.text}-modal-trigger`"
           :item="groupItem"
-          @action="showCreateWorkItemModal = true"
+          data-testid="new-work-item-trigger"
+          @action="handleCreateWorkItemClick"
         />
         <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
       </template>
     </gl-disclosure-dropdown-group>
     <create-work-item-modal
-      v-if="showCreateWorkItemModal"
+      v-if="showCreateGroupWorkItemModal"
       visible
       hide-button
       is-group
+      data-testid="new-group-work-item-modal"
       :work-item-type-name="$options.WORK_ITEM_TYPE_ENUM_EPIC"
+      @hideModal="showCreateGroupWorkItemModal = false"
+    />
+    <create-work-item-modal
+      v-if="showCreateWorkItemModal"
+      visible
+      hide-button
+      data-testid="new-work-item-modal"
+      :full-path="fullPath"
       @hideModal="showCreateWorkItemModal = false"
     />
   </gl-disclosure-dropdown>

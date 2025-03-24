@@ -9,7 +9,7 @@ import InviteMembersTrigger from '~/invite_members/components/invite_members_tri
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { createNewMenuGroups } from '../mock_data';
+import { createNewMenuGroups, createNewMenuProjects } from '../mock_data';
 
 describe('CreateMenu component', () => {
   let wrapper;
@@ -18,22 +18,23 @@ describe('CreateMenu component', () => {
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
   const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
-  const findCreateWorkItemModalTrigger = () =>
-    findGlDisclosureDropdownItems()
-      .filter((item) => item.props('item').text === 'New epic')
-      .at(0);
-  const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
+  const findCreateGroupWorkItemModalTrigger = () =>
+    wrapper.findByTestId('new-group-work-item-trigger');
+  const findCreateWorkItemModalTrigger = () => wrapper.findByTestId('new-work-item-trigger');
+  const findCreateGroupWorkItemModal = () => wrapper.findByTestId('new-group-work-item-modal');
+  const findCreateWorkItemModal = () => wrapper.findByTestId('new-work-item-modal');
 
-  const createWrapper = ({ provide = {} } = {}) => {
+  const createWrapper = ({ provide = {} } = {}, groups = createNewMenuGroups) => {
     wrapper = shallowMountExtended(CreateMenu, {
       provide: {
         isImpersonating: false,
         fullPath: 'full-path',
         isGroup: false,
+        workItemPlanningViewEnabled: true,
         ...provide,
       },
       propsData: {
-        groups: createNewMenuGroups,
+        groups,
       },
       stubs: {
         InviteMembersTrigger,
@@ -85,7 +86,42 @@ describe('CreateMenu component', () => {
       expect(findInviteMembersTrigger().exists()).toBe(true);
     });
 
+    describe('create new group work item modal', () => {
+      it('renders work item menu item correctly', () => {
+        expect(findCreateGroupWorkItemModalTrigger().exists()).toBe(true);
+      });
+
+      it('does not render the modal by default', () => {
+        expect(findCreateGroupWorkItemModal().exists()).toBe(false);
+      });
+
+      it('shows modal when clicking work item dropdown item', async () => {
+        findCreateGroupWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
+        expect(findCreateGroupWorkItemModal().exists()).toBe(true);
+        expect(findCreateGroupWorkItemModal().props('isGroup')).toBe(true);
+        expect(findCreateGroupWorkItemModal().props('visible')).toBe(true);
+        expect(findCreateGroupWorkItemModal().props('hideButton')).toBe(true);
+      });
+
+      it('hides modal when hideModal event is emitted', async () => {
+        findCreateGroupWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
+        expect(findCreateGroupWorkItemModal().exists()).toBe(true);
+
+        findCreateGroupWorkItemModal().vm.$emit('hideModal');
+        await nextTick();
+
+        expect(findCreateGroupWorkItemModal().exists()).toBe(false);
+      });
+    });
+
     describe('create new work item modal', () => {
+      beforeEach(() => {
+        createWrapper({}, createNewMenuProjects);
+      });
       it('renders work item menu item correctly', () => {
         expect(findCreateWorkItemModalTrigger().exists()).toBe(true);
       });
@@ -99,7 +135,7 @@ describe('CreateMenu component', () => {
         await nextTick();
 
         expect(findCreateWorkItemModal().exists()).toBe(true);
-        expect(findCreateWorkItemModal().props('isGroup')).toBe(true);
+        expect(findCreateWorkItemModal().props('isGroup')).toBe(false);
         expect(findCreateWorkItemModal().props('visible')).toBe(true);
         expect(findCreateWorkItemModal().props('hideButton')).toBe(true);
       });

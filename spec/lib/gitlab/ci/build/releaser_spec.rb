@@ -31,46 +31,153 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         }
       end
 
-      let(:result_script) do
-        'release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" ' \
-          '--tag-name "release-$CI_COMMIT_SHA" --tag-message "Annotated tag message" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" ' \
-          '--milestone "m1" --milestone "m2" --milestone "m3" --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\",\"filepath\":\"/pretty/asset/1\"}" ' \
-          '--assets-link "{\"name\":\"asset2\",\"url\":\"https://example.com/assets/2\"}"'
+      assets_link1 = '{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\",\"filepath\":\"/pretty/asset/1\"}'
+      assets_link2 = '{\"name\":\"asset2\",\"url\":\"https://example.com/assets/2\"}'
+      glab_assets_links = "--assets-links \"[#{assets_link1},#{assets_link2}]\""
+      release_cli_assets_links = "--assets-link \"#{assets_link1}\" --assets-link \"#{assets_link2}\""
+
+      release_cli_command = 'release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --tag-message "Annotated tag message" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3"'
+      result_for_release_cli_without_catalog_publish = "#{release_cli_command} #{release_cli_assets_links}"
+
+      glab_create_unix = 'glab -R $CI_PROJECT_PATH release create'
+      glab_create_windows = 'glab -R $env:CI_PROJECT_PATH release create'
+      glab_command = "\"release-$CI_COMMIT_SHA\" #{glab_assets_links} --milestone \"m1,m2,m3\" --name \"Release $CI_COMMIT_SHA\" --experimental-notes-text-or-file \"Created using the release-cli $EXTRA_DESCRIPTION\" --ref \"$CI_COMMIT_SHA\" --tag-message \"Annotated tag message\" --released-at \"2020-07-15T08:00:00Z\" --no-update --no-close-milestone"
+
+      warning_message = "Warning: release-cli will not be supported after 18.0. Please use glab version >= 1.53.0. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
+
+      unix_result_for_glab_or_release_cli_without_catalog_publish = <<~BASH
+      if command -v glab &> /dev/null; then
+        if [ "$(printf "%s\n%s" "1.53.0" "$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')" | sort -V | head -n1)" = "1.53.0" ]; then
+          #{described_class::GLAB_ENV_SET_UNIX}
+          #{described_class::GLAB_LOGIN_UNIX}
+          #{glab_create_unix} #{glab_command}
+        else
+          echo "#{warning_message}"
+
+          #{release_cli_command} #{release_cli_assets_links}
+        fi
+      else
+        echo "#{warning_message}"
+
+        #{release_cli_command} #{release_cli_assets_links}
+      fi
+      BASH
+      windows_result_for_glab_or_release_cli_without_catalog_publish = <<~POWERSHELL
+      if (Get-Command glab -ErrorAction SilentlyContinue) {
+        $glabVersion = (glab --version | Select-String -Pattern '\d+\.\d+\.\d+').Matches[0].Value
+
+        if ([version]"1.53.0" -le [version]$glabVersion) {
+          #{described_class::GLAB_ENV_SET_WINDOWS}
+          #{described_class::GLAB_LOGIN_WINDOWS}
+          #{glab_create_windows} #{glab_command}
+        }
+        else {
+          Write-Output "#{warning_message}"
+          #{release_cli_command} #{release_cli_assets_links}
+        }
+      }
+      else {
+        Write-Output "#{warning_message}"
+        #{release_cli_command} #{release_cli_assets_links}
+      }
+      POWERSHELL
+
+      context 'on different scenarios' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:cli_ff, :runner_platform, :result) do
+          false | 'irrelevant' | result_for_release_cli_without_catalog_publish
+          true  | 'linux'      | unix_result_for_glab_or_release_cli_without_catalog_publish
+          true  | 'windows'    | windows_result_for_glab_or_release_cli_without_catalog_publish
+        end
+
+        with_them do
+          let(:runner_manager) { build(:ci_runner_machine, platform: runner_platform) }
+
+          let(:job) do
+            build(:ci_build,
+              options: { release: config[:release] },
+              runner: runner_manager.runner, runner_manager: runner_manager)
+          end
+
+          before do
+            stub_feature_flags(ci_glab_for_release: cli_ff)
+          end
+
+          it { is_expected.to eq([result]) }
+        end
       end
 
-      it 'generates the script' do
-        expect(script).to eq([result_script])
-      end
-
-      context 'when the project is a catalog resource' do
+      context 'when project is a catalog resource' do
         let_it_be(:project) { create(:project, :catalog_resource_with_components) }
         let_it_be(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
         let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-        let(:job) { build(:ci_build, pipeline: pipeline, options: { release: config[:release] }) }
+        result_for_release_cli_with_catalog_publish = "#{result_for_release_cli_without_catalog_publish} --catalog-publish"
+        unix_result_for_glab_or_release_cli_with_catalog_publish = <<~BASH
+        if command -v glab &> /dev/null; then
+          if [ "$(printf "%s\n%s" "1.53.0" "$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')" | sort -V | head -n1)" = "1.53.0" ]; then
+            #{described_class::GLAB_ENV_SET_UNIX}
+            #{described_class::GLAB_LOGIN_UNIX}
+            #{glab_create_unix} #{glab_command} --publish-to-catalog
+          else
+            echo "#{warning_message}"
 
-        it 'generates glab scripts' do
-          expect(script).to eq([
-            "if ! command -v glab &> /dev/null; then\n  " \
-              "echo \"Error: glab command not found. Please install glab 1.53.0 or higher. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement\"\n  exit 1\nfi\n",
-            "if [ \"$(printf \"%s\n%s\" \"1.53.0\" \"$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')\" | sort -V | head -n1)\" = \"1.53.0\" ]; " \
-              "then\n  echo \"Validating glab version. OK\"\nelse\n  echo \"Error: Please use glab 1.53.0 or higher. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement\"\n  exit 1\nfi\n",
-            'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL',
-            'GITLAB_HOST=$CI_SERVER_URL glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA" ' \
-              '--assets-links "[{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\",\"filepath\":\"/pretty/asset/1\"},{\"name\":\"asset2\",\"url\":\"https://example.com/assets/2\"}]" ' \
-              '--milestone "m1,m2,m3" --name "Release $CI_COMMIT_SHA" --experimental-notes-text-or-file "Created using the release-cli $EXTRA_DESCRIPTION" ' \
-              '--ref "$CI_COMMIT_SHA" --tag-message "Annotated tag message" --released-at "2020-07-15T08:00:00Z" ' \
-              '--publish-to-catalog --no-update --no-close-milestone'
-          ])
-        end
+            #{release_cli_command} #{release_cli_assets_links} --catalog-publish
+          fi
+        else
+          echo "#{warning_message}"
 
-        context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
-          before do
-            stub_feature_flags(ci_release_cli_catalog_publish_option: false)
+          #{release_cli_command} #{release_cli_assets_links} --catalog-publish
+        fi
+        BASH
+        windows_result_for_glab_or_release_cli_with_catalog_publish = <<~POWERSHELL
+        if (Get-Command glab -ErrorAction SilentlyContinue) {
+          $glabVersion = (glab --version | Select-String -Pattern '\d+\.\d+\.\d+').Matches[0].Value
+
+          if ([version]"1.53.0" -le [version]$glabVersion) {
+            #{described_class::GLAB_ENV_SET_WINDOWS}
+            #{described_class::GLAB_LOGIN_WINDOWS}
+            #{glab_create_windows} #{glab_command} --publish-to-catalog
+          }
+          else {
+            Write-Output "#{warning_message}"
+            #{release_cli_command} #{release_cli_assets_links} --catalog-publish
+          }
+        }
+        else {
+          Write-Output "#{warning_message}"
+          #{release_cli_command} #{release_cli_assets_links} --catalog-publish
+        }
+        POWERSHELL
+
+        context 'on different scenarios' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:cli_ff, :catalog_publish_ff, :runner_platform, :result) do
+            false | false | 'irrelevant' | result_for_release_cli_without_catalog_publish
+            false | true  | 'irrelevant' | result_for_release_cli_with_catalog_publish
+            true  | false | 'linux'      | unix_result_for_glab_or_release_cli_without_catalog_publish
+            true  | true  | 'linux'      | unix_result_for_glab_or_release_cli_with_catalog_publish
+            true  | false | 'windows'    | windows_result_for_glab_or_release_cli_without_catalog_publish
+            true  | true  | 'windows'    | windows_result_for_glab_or_release_cli_with_catalog_publish
           end
 
-          it 'generates the release-cli script' do
-            expect(script).to eq([result_script])
+          with_them do
+            let(:runner_manager) { build(:ci_runner_machine, platform: runner_platform) }
+
+            let(:job) do
+              build(:ci_build, pipeline: pipeline,
+                options: { release: config[:release] },
+                runner: runner_manager.runner, runner_manager: runner_manager)
+            end
+
+            before do
+              stub_feature_flags(ci_glab_for_release: cli_ff)
+              stub_feature_flags(ci_release_cli_catalog_publish_option: catalog_publish_ff)
+            end
+
+            it { is_expected.to eq([result]) }
           end
         end
       end
@@ -99,14 +206,14 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       links = { links: [{ name: 'asset1', url: 'https://example.com/assets/1', link_type: 'other', filepath: '/pretty/asset/1' }] }
 
       where(:node_name, :node_value, :result) do
-        :name        | 'Release $CI_COMMIT_SHA'         | 'release-cli create --name "Release $CI_COMMIT_SHA"'
-        :description | 'Release-cli $EXTRA_DESCRIPTION' | 'release-cli create --description "Release-cli $EXTRA_DESCRIPTION"'
-        :tag_name    | 'release-$CI_COMMIT_SHA'         | 'release-cli create --tag-name "release-$CI_COMMIT_SHA"'
-        :tag_message | 'Annotated tag message'          | 'release-cli create --tag-message "Annotated tag message"'
-        :ref         | '$CI_COMMIT_SHA'                 | 'release-cli create --ref "$CI_COMMIT_SHA"'
-        :milestones  | %w[m1 m2 m3]                     | 'release-cli create --milestone "m1" --milestone "m2" --milestone "m3"'
-        :released_at | '2020-07-15T08:00:00Z'           | 'release-cli create --released-at "2020-07-15T08:00:00Z"'
-        :assets      | links                            | "release-cli create --assets-link #{links[:links][0].to_json.to_json}"
+        :name        | 'Release $CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "" --name "Release $CI_COMMIT_SHA"'
+        :description | 'Release-cli $EXTRA_DESCRIPTION' | 'glab -R $CI_PROJECT_PATH release create "" --experimental-notes-text-or-file "Release-cli $EXTRA_DESCRIPTION"'
+        :tag_name    | 'release-$CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA"'
+        :tag_message | 'Annotated tag message'          | 'glab -R $CI_PROJECT_PATH release create "" --tag-message "Annotated tag message"'
+        :ref         | '$CI_COMMIT_SHA'                 | 'glab -R $CI_PROJECT_PATH release create "" --ref "$CI_COMMIT_SHA"'
+        :milestones  | %w[m1 m2 m3]                     | 'glab -R $CI_PROJECT_PATH release create "" --milestone "m1,m2,m3"'
+        :released_at | '2020-07-15T08:00:00Z'           | 'glab -R $CI_PROJECT_PATH release create "" --released-at "2020-07-15T08:00:00Z"'
+        :assets      | links                            | "glab -R $CI_PROJECT_PATH release create \"\" --assets-links #{links[:links].to_json.to_json}"
       end
 
       with_them do
@@ -119,7 +226,38 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         end
 
         it 'generates the script' do
-          expect(script).to eq([result])
+          expect(script).to match([a_string_including(result)])
+        end
+      end
+
+      context 'when the FF ci_glab_for_release is disabled' do
+        before do
+          stub_feature_flags(ci_glab_for_release: false)
+        end
+
+        where(:node_name, :node_value, :result) do
+          :name        | 'Release $CI_COMMIT_SHA'         | 'release-cli create --name "Release $CI_COMMIT_SHA"'
+          :description | 'Release-cli $EXTRA_DESCRIPTION' | 'release-cli create --description "Release-cli $EXTRA_DESCRIPTION"'
+          :tag_name    | 'release-$CI_COMMIT_SHA'         | 'release-cli create --tag-name "release-$CI_COMMIT_SHA"'
+          :tag_message | 'Annotated tag message'          | 'release-cli create --tag-message "Annotated tag message"'
+          :ref         | '$CI_COMMIT_SHA'                 | 'release-cli create --ref "$CI_COMMIT_SHA"'
+          :milestones  | %w[m1 m2 m3]                     | 'release-cli create --milestone "m1" --milestone "m2" --milestone "m3"'
+          :released_at | '2020-07-15T08:00:00Z'           | 'release-cli create --released-at "2020-07-15T08:00:00Z"'
+          :assets      | links                            | "release-cli create --assets-link #{links[:links][0].to_json.to_json}"
+        end
+
+        with_them do
+          let(:config) do
+            {
+              release: {
+                node_name => node_value
+              }
+            }
+          end
+
+          it 'generates the script' do
+            expect(script).to eq([result])
+          end
         end
       end
     end

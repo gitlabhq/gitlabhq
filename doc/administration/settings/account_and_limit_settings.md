@@ -96,7 +96,7 @@ The default prefix is `glpat-` but administrators can change it.
 
 By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) and
 [pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom prefixes.
-Custom prefixes might cause an increase in false positives.
+Custom prefixes might cause an increase in false negatives.
 
 ### Set a prefix
 
@@ -147,6 +147,10 @@ To set a custom token prefix:
 1. Expand the **Account and limit** section.
 1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
+
+By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md), [client-side secret detection](../../user/application_security/secret_detection/client/_index.md) and
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes.
+Custom instance token prefixes might cause an increase in false negatives.
 
 ## Repository size limit
 

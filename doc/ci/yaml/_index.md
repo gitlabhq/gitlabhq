@@ -2247,6 +2247,9 @@ from. The specified jobs must all be in earlier stages. You can also set a job t
 When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
 and the job fetches all artifacts from those jobs.
 
+To fetch artifacts from a job in the same stage, you must use [`needs:artifacts`](#needsartifacts).
+You should not combine `dependencies` with `needs` in the same job.
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
@@ -2301,8 +2304,6 @@ the [stage](#stages) precedence.
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
   [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
-- To fetch artifacts from a job in the same stage, you must use [`needs:artifacts`](#needsartifacts).
-  You should not combine `dependencies` with `needs` in the same job.
 
 ### `environment`
 

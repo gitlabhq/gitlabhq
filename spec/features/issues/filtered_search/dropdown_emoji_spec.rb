@@ -23,10 +23,10 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
     end
 
     describe 'behavior' do
-      it 'does not contain My-Reaction in the list of suggestions' do
+      it 'does not contain My reaction in the list of suggestions' do
         click_filtered_search_bar
 
-        expect(page).not_to have_link 'My-Reaction'
+        expect(page).not_to have_link 'My reaction'
       end
     end
   end
@@ -40,14 +40,14 @@ RSpec.describe 'Dropdown emoji', :js, feature_category: :team_planning do
 
     describe 'behavior' do
       it 'loads all the emojis when opened' do
-        select_tokens 'My-Reaction', '='
+        select_tokens 'My reaction', '='
 
         # Expect None, Any, star, thumbsup, thumbsdown
         expect_suggestion_count 5
       end
 
       it 'shows the most populated emoji at top of dropdown' do
-        select_tokens 'My-Reaction', '='
+        select_tokens 'My reaction', '='
 
         # List items 1-3 are None, Any, divider
         expect(page).to have_css('.gl-filtered-search-suggestion-list li:nth-child(4)', text: award_emoji_star.name)

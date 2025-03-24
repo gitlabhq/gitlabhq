@@ -4,44 +4,35 @@ module Gitlab
   module Ci
     module Build
       class Releaser
-        CREATE_BASE_COMMAND = 'release-cli create'
-        CREATE_SINGLE_FLAGS = %i[name description tag_name tag_message ref released_at].freeze
-        CREATE_ARRAY_FLAGS = %i[milestones].freeze
+        include ::Gitlab::Utils::StrongMemoize
+
+        RELEASE_CLI_CREATE_BASE_COMMAND = 'release-cli create'
+        RELEASE_CLI_CREATE_SINGLE_FLAGS = %i[name description tag_name tag_message ref released_at].freeze
+        RELEASE_CLI_CREATE_ARRAY_FLAGS = %i[milestones].freeze
+        RELEASE_CLI_CATALOG_PUBLISH_FLAG = '--catalog-publish'
 
         # If these versions or error messages are updated, the documentation should be updated as well.
 
-        RELEASE_CLI_REQUIRED_VERSION = '0.22.0'
+        TROUBLESHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
         GLAB_REQUIRED_VERSION = '1.53.0'
-        TROUBLE_SHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
+        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 18.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
 
-        GLAB_COMMAND_CHECK_COMMAND = <<~BASH.freeze
-        if ! command -v glab &> /dev/null; then
-          echo "Error: glab command not found. Please install glab #{GLAB_REQUIRED_VERSION} or higher. Troubleshooting: #{TROUBLE_SHOOTING_URL}"
-          exit 1
-        fi
-        BASH
-
-        GLAB_VERSION_CHECK_COMMAND = <<~BASH.freeze
-        if [ "$(printf "%s\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
-          echo "Validating glab version. OK"
-        else
-          echo "Error: Please use glab #{GLAB_REQUIRED_VERSION} or higher. Troubleshooting: #{TROUBLE_SHOOTING_URL}"
-          exit 1
-        fi
-        BASH
-
-        GLAB_LOGIN_COMMAND = 'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL'
-        GLAB_MAIN_COMMAND = 'GITLAB_HOST=$CI_SERVER_URL glab -R $CI_PROJECT_PATH'
-        GLAB_CREATE_COMMAND = "#{GLAB_MAIN_COMMAND} release create".freeze
+        GLAB_ENV_SET_UNIX = 'export GITLAB_HOST=$CI_SERVER_URL'
+        GLAB_ENV_SET_WINDOWS = '$env:GITLAB_HOST = $env:CI_SERVER_URL'
+        GLAB_LOGIN_UNIX = 'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL'
+        GLAB_LOGIN_WINDOWS = 'glab auth login --job-token $env:CI_JOB_TOKEN --hostname $env:CI_SERVER_FQDN --api-protocol $env:CI_SERVER_PROTOCOL'
+        GLAB_CREATE_UNIX = 'glab -R $CI_PROJECT_PATH release create'
+        GLAB_CREATE_WINDOWS = 'glab -R $env:CI_PROJECT_PATH release create'
         GLAB_PUBLISH_TO_CATALOG_FLAG = '--publish-to-catalog' # enables publishing to the catalog after creating the release
         GLAB_NO_UPDATE_FLAG = '--no-update' # disables updating the release if it already exists
         GLAB_NO_CLOSE_MILESTONE_FLAG = '--no-close-milestone' # disables closing the milestone after creating the release
 
-        attr_reader :job, :config
+        attr_reader :job, :config, :runner_manager
 
         def initialize(job:)
           @job = job
           @config = job.options[:release]
+          @runner_manager = job.runner_manager
 
           Gitlab::AppJsonLogger.info(
             class: self.class.to_s,
@@ -53,30 +44,80 @@ module Gitlab
         end
 
         def script
-          if catalog_publish?
-            [
-              GLAB_COMMAND_CHECK_COMMAND,
-              GLAB_VERSION_CHECK_COMMAND,
-              GLAB_LOGIN_COMMAND,
-              glab_create_command_with_publish_to_catalog
-            ]
+          if use_glab_cli?
+            [script_with_glab_cli]
           else
-            [create_command]
+            [script_with_release_cli]
           end
         end
 
         private
 
-        def create_command
-          command = CREATE_BASE_COMMAND.dup
-          create_single_flags.each { |k, v| command.concat(" --#{k.to_s.dasherize} \"#{v}\"") }
-          create_array_commands.each { |k, v| v.each { |elem| command.concat(" --#{k.to_s.singularize.dasherize} \"#{elem}\"") } }
+        def script_with_glab_cli
+          if runner_manager&.platform == 'windows'
+            glab_windows_script
+          else
+            glab_unix_script
+          end
+        end
+
+        def glab_windows_script
+          <<~POWERSHELL
+          if (Get-Command glab -ErrorAction SilentlyContinue) {
+            $glabVersion = (glab --version | Select-String -Pattern '\d+\.\d+\.\d+').Matches[0].Value
+
+            if ([version]"#{GLAB_REQUIRED_VERSION}" -le [version]$glabVersion) {
+              #{GLAB_ENV_SET_WINDOWS}
+              #{GLAB_LOGIN_WINDOWS}
+              #{glab_create_command(GLAB_CREATE_WINDOWS)}
+            }
+            else {
+              Write-Output "#{GLAB_WARNING_MESSAGE}"
+              #{script_with_release_cli}
+            }
+          }
+          else {
+            Write-Output "#{GLAB_WARNING_MESSAGE}"
+            #{script_with_release_cli}
+          }
+          POWERSHELL
+        end
+
+        def glab_unix_script
+          <<~BASH
+          if command -v glab &> /dev/null; then
+            if [ "$(printf "%s\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
+              #{GLAB_ENV_SET_UNIX}
+              #{GLAB_LOGIN_UNIX}
+              #{glab_create_command(GLAB_CREATE_UNIX)}
+            else
+              echo "#{GLAB_WARNING_MESSAGE}"
+
+              #{script_with_release_cli}
+            fi
+          else
+            echo "#{GLAB_WARNING_MESSAGE}"
+
+            #{script_with_release_cli}
+          fi
+          BASH
+        end
+
+        def script_with_release_cli
+          command = RELEASE_CLI_CREATE_BASE_COMMAND.dup
+          config.slice(*RELEASE_CLI_CREATE_SINGLE_FLAGS).each { |k, v| command.concat(" --#{k.to_s.dasherize} \"#{v}\"") }
+          config.slice(*RELEASE_CLI_CREATE_ARRAY_FLAGS).each { |k, v| v.each { |elem| command.concat(" --#{k.to_s.singularize.dasherize} \"#{elem}\"") } }
           create_asset_links.each { |link| command.concat(" --assets-link #{stringified_json(link)}") }
+
+          if catalog_publish? && ci_release_cli_catalog_publish_option?
+            command.concat(" #{RELEASE_CLI_CATALOG_PUBLISH_FLAG}")
+          end
+
           command.freeze
         end
 
-        def glab_create_command_with_publish_to_catalog
-          command = GLAB_CREATE_COMMAND.dup
+        def glab_create_command(base_command)
+          command = base_command.dup
           command.concat(" \"#{config[:tag_name]}\"")
           command.concat(" --assets-links #{stringified_json(create_asset_links)}") if create_asset_links.present?
           command.concat(" --milestone \"#{config[:milestones].join(',')}\"") if config[:milestones].present?
@@ -90,16 +131,14 @@ module Gitlab
           command.concat(" --ref \"#{config[:ref]}\"") if config[:ref].present?
           command.concat(" --tag-message \"#{config[:tag_message]}\"") if config[:tag_message].present?
           command.concat(" --released-at \"#{config[:released_at]}\"") if config[:released_at].present?
-          command.concat(" #{GLAB_PUBLISH_TO_CATALOG_FLAG} #{GLAB_NO_UPDATE_FLAG} #{GLAB_NO_CLOSE_MILESTONE_FLAG}")
+
+          command.concat(" #{GLAB_NO_UPDATE_FLAG} #{GLAB_NO_CLOSE_MILESTONE_FLAG}")
+
+          if catalog_publish? && ci_release_cli_catalog_publish_option?
+            command.concat(" #{GLAB_PUBLISH_TO_CATALOG_FLAG}")
+          end
+
           command.freeze
-        end
-
-        def create_single_flags
-          config.slice(*CREATE_SINGLE_FLAGS)
-        end
-
-        def create_array_commands
-          config.slice(*CREATE_ARRAY_FLAGS)
         end
 
         def create_asset_links
@@ -111,10 +150,19 @@ module Gitlab
         end
 
         def catalog_publish?
-          return false if ::Feature.disabled?(:ci_release_cli_catalog_publish_option, job.project)
-
           job.project.catalog_resource
         end
+        strong_memoize_attr :catalog_publish?
+
+        def use_glab_cli?
+          ::Feature.enabled?(:ci_glab_for_release, job.project)
+        end
+        strong_memoize_attr :use_glab_cli?
+
+        def ci_release_cli_catalog_publish_option?
+          ::Feature.enabled?(:ci_release_cli_catalog_publish_option, job.project)
+        end
+        strong_memoize_attr :ci_release_cli_catalog_publish_option?
       end
     end
   end

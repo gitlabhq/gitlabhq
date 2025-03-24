@@ -1551,6 +1551,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_218433b4faa5() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_package_files"
+  WHERE "packages_package_files"."id" = NEW."package_file_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_219952df8fc4() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2791,6 +2807,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "pages_deployments"
   WHERE "pages_deployments"."id" = NEW."pages_deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_81b53b626109() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_package_files"
+  WHERE "packages_package_files"."id" = NEW."package_file_id";
 END IF;
 
 RETURN NEW;
@@ -18630,6 +18662,7 @@ CREATE TABLE packages_conan_file_metadata (
     recipe_revision_id bigint,
     package_revision_id bigint,
     package_reference_id bigint,
+    project_id bigint,
     CONSTRAINT check_conan_file_metadata_ref_null_for_recipe_files CHECK ((NOT ((conan_file_type = 1) AND (package_reference_id IS NOT NULL))))
 );
 
@@ -18728,6 +18761,7 @@ CREATE TABLE packages_debian_file_metadata (
     component text,
     architecture text,
     fields jsonb,
+    project_id bigint,
     CONSTRAINT check_2ebedda4b6 CHECK ((char_length(component) <= 255)),
     CONSTRAINT check_e6e1fffcca CHECK ((char_length(architecture) <= 255))
 );
@@ -35878,6 +35912,8 @@ CREATE INDEX index_packages_conan_file_metadata_on_package_reference_id ON packa
 
 CREATE INDEX index_packages_conan_file_metadata_on_package_revision_id ON packages_conan_file_metadata USING btree (package_revision_id);
 
+CREATE INDEX index_packages_conan_file_metadata_on_project_id ON packages_conan_file_metadata USING btree (project_id);
+
 CREATE INDEX index_packages_conan_file_metadata_on_recipe_revision_id ON packages_conan_file_metadata USING btree (recipe_revision_id);
 
 CREATE UNIQUE INDEX index_packages_conan_metadata_on_package_id_username_channel ON packages_conan_metadata USING btree (package_id, package_username, package_channel);
@@ -35893,6 +35929,8 @@ CREATE INDEX index_packages_conan_package_revisions_on_package_reference_id ON p
 CREATE INDEX index_packages_conan_package_revisions_on_project_id ON packages_conan_package_revisions USING btree (project_id);
 
 CREATE INDEX index_packages_conan_recipe_revisions_on_project_id ON packages_conan_recipe_revisions USING btree (project_id);
+
+CREATE INDEX index_packages_debian_file_metadata_on_project_id ON packages_debian_file_metadata USING btree (project_id);
 
 CREATE INDEX index_packages_debian_group_architectures_on_group_id ON packages_debian_group_architectures USING btree (group_id);
 
@@ -40766,6 +40804,8 @@ CREATE TRIGGER trigger_206cbe2dc1a2 BEFORE INSERT OR UPDATE ON packages_package_
 
 CREATE TRIGGER trigger_207005e8e995 BEFORE INSERT OR UPDATE ON operations_strategies FOR EACH ROW EXECUTE FUNCTION trigger_207005e8e995();
 
+CREATE TRIGGER trigger_218433b4faa5 BEFORE INSERT OR UPDATE ON packages_conan_file_metadata FOR EACH ROW EXECUTE FUNCTION trigger_218433b4faa5();
+
 CREATE TRIGGER trigger_219952df8fc4 BEFORE INSERT OR UPDATE ON merge_request_blocks FOR EACH ROW EXECUTE FUNCTION trigger_219952df8fc4();
 
 CREATE TRIGGER trigger_22262f5f16d8 BEFORE INSERT OR UPDATE ON issues FOR EACH ROW EXECUTE FUNCTION trigger_22262f5f16d8();
@@ -40923,6 +40963,8 @@ CREATE TRIGGER trigger_7fbecfcdf89a BEFORE UPDATE OF secret_push_protection_enab
 CREATE TRIGGER trigger_80578cfbdaf9 BEFORE INSERT OR UPDATE ON push_event_payloads FOR EACH ROW EXECUTE FUNCTION trigger_80578cfbdaf9();
 
 CREATE TRIGGER trigger_81b4c93e7133 BEFORE INSERT OR UPDATE ON pages_deployment_states FOR EACH ROW EXECUTE FUNCTION trigger_81b4c93e7133();
+
+CREATE TRIGGER trigger_81b53b626109 BEFORE INSERT OR UPDATE ON packages_debian_file_metadata FOR EACH ROW EXECUTE FUNCTION trigger_81b53b626109();
 
 CREATE TRIGGER trigger_8204480b3a2e BEFORE INSERT OR UPDATE ON incident_management_escalation_rules FOR EACH ROW EXECUTE FUNCTION trigger_8204480b3a2e();
 
@@ -41572,6 +41614,9 @@ ALTER TABLE ONLY bulk_import_trackers
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations
     ADD CONSTRAINT fk_2d3ebd0fbc FOREIGN KEY (stream_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY packages_conan_file_metadata
+    ADD CONSTRAINT fk_2e2815280f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_type_user_preferences
     ADD CONSTRAINT fk_2e37b4f066 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -41616,6 +41661,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY approvals
     ADD CONSTRAINT fk_310d714958 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_file_metadata
+    ADD CONSTRAINT fk_31440cf2d5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;

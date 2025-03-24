@@ -56,6 +56,22 @@ module Nav
         )
       end
 
+      if can?(current_user, :create_work_item, group) && ::Feature.enabled?(:work_item_planning_view, group)
+        menu_items.push(
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'new_group_work_item',
+            title: _('New work item'),
+            component: 'create_new_group_work_item_modal',
+            data: {
+              track_action: 'click_link_new_group_work_item',
+              track_label: 'plus_menu_dropdown',
+              track_property: 'navigation_top',
+              testid: 'new_group_work_item_button'
+            }
+          )
+        )
+      end
+
       menu_items.push(create_epic_menu_item(group))
 
       if can?(current_user, :admin_group_member, group)
@@ -73,19 +89,35 @@ module Nav
       merge_project = merge_request_source_project_for_project(project)
 
       if show_new_issue_link?(project)
-        menu_items.push(
-          ::Gitlab::Nav::TopNavMenuItem.build(
-            id: 'new_issue',
-            title: _('New issue'),
-            href: new_project_issue_path(project),
-            data: {
-              track_action: 'click_link_new_issue',
-              track_label: 'plus_menu_dropdown',
-              track_property: 'navigation_top',
-              testid: 'new_issue_link'
-            }
+        if ::Feature.enabled?(:work_item_planning_view, project.group)
+          menu_items.push(
+            ::Gitlab::Nav::TopNavMenuItem.build(
+              id: 'new_work_item',
+              title: _('New work item'),
+              component: 'create_new_work_item_modal',
+              data: {
+                track_action: 'click_link_new_work_item',
+                track_label: 'plus_menu_dropdown',
+                track_property: 'navigation_top',
+                testid: 'new_work_item_button'
+              }
+            )
           )
-        )
+        else
+          menu_items.push(
+            ::Gitlab::Nav::TopNavMenuItem.build(
+              id: 'new_issue',
+              title: _('New issue'),
+              href: new_project_issue_path(project),
+              data: {
+                track_action: 'click_link_new_issue',
+                track_label: 'plus_menu_dropdown',
+                track_property: 'navigation_top',
+                testid: 'new_issue_link'
+              }
+            )
+          )
+        end
       end
 
       if merge_project

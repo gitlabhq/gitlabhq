@@ -256,6 +256,7 @@ export const DEFAULT_EPIC_COLORS = '#1068bf';
 
 export const MAX_FREQUENT_PROJECTS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
+export const CREATE_NEW_GROUP_WORK_ITEM_MODAL = 'create_new_group_work_item_modal';
 export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
 
 export const WORK_ITEM_REFERENCE_CHAR = '#';

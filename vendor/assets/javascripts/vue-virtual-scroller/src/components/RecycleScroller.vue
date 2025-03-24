@@ -134,6 +134,7 @@ export default {
       totalSize: 0,
       ready: false,
       hoverKey: null,
+      rootSizings: {},
     }
   },
 
@@ -202,17 +203,22 @@ export default {
   },
 
   mounted () {
-    this.applyPageMode()
+    this.applyPageMode();
     this.$nextTick(() => {
       // In SSR mode, render the real number of visible items
       this.$_prerender = false
-      this.updateVisibleItems(true)
+      this.updateVisibleItems(true);
       this.ready = true
-    })
+      this.$nextTick(() => {
+        this.cacheSizings();
+      });
+    });
+    this.$el.addEventListener('scroll', this.cacheSizings, false);
   },
 
   beforeDestroy () {
-    this.removeListeners()
+    this.removeListeners();
+    this.$el.removeEventListener('scroll', this.cacheSizings, false);
   },
 
   methods: {
@@ -225,7 +231,7 @@ export default {
         // FIXME: replace with markRaw in Vue3
         // See https://gitlab.com/gitlab-org/gitlab/-/issues/395772
         __v_skip: true,
-        
+
         id: uid++,
         index,
         used: true,
@@ -257,8 +263,20 @@ export default {
     },
 
     handleResize () {
+      this.cacheSizings();
       this.$emit('resize')
       if (this.ready) this.updateVisibleItems(false)
+    },
+
+    cacheSizings() {
+      if (this.pageMode) return;
+      const target = this.$el;
+      this.rootSizings = {
+        scrollTop:    target.scrollTop,
+        scrollLeft:   target.scrollLeft,
+        clientWidth:  target.clientWidth,
+        clientHeight: target.clientHeight,
+      };
     },
 
     handleScroll (event) {
@@ -536,13 +554,13 @@ export default {
         }
       } else if (isVertical) {
         scrollState = {
-          start: el.scrollTop,
-          end: el.scrollTop + el.clientHeight,
+          start: this.rootSizings.scrollTop ?? el.scrollTop,
+          end: (this.rootSizings.scrollTop ?? el.scrollTop) + (this.rootSizings.clientHeight ?? el.clientHeight),
         }
       } else {
         scrollState = {
-          start: el.scrollLeft,
-          end: el.scrollLeft + el.clientWidth,
+          start: this.rootSizings.scrollLeft ?? el.scrollLeft,
+          end: (this.rootSizings.scrollLeft ?? el.scrollLeft) + (this.rootSizings.clientWidth ?? el.clientWidth),
         }
       }
 

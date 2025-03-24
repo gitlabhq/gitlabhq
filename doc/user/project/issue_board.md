@@ -573,7 +573,7 @@ You can filter by the following:
 - [Iteration](../group/iterations/_index.md)
 - Label
 - Milestone
-- My Reaction
+- My reaction
 - Release
 - Type (issue/incident)
 - [Weight](issues/issue_weight.md)

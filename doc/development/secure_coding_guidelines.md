@@ -1546,9 +1546,9 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 
 ### At rest
 
-- Credentials must be encrypted while at rest (database or file) with `encrypts`.
+- Credentials must be stored as salted hashes, at rest, where the plaintext value itself does not need to be retrieved.
   - When the intention is to only compare secrets, store only the salted hash of the secret instead of the encrypted value.
-- Salted hashes should be used to store any sensitive value where the plaintext value itself does not need to be retrieved.
+  - If the plain text value of the credentials needs to be retrieved, those credentials must be encrypted at rest (database or file) with [`encrypts`](#examples-5).
 - Never commit credentials to repositories.
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
@@ -1610,13 +1610,13 @@ class WebHookLog < ApplicationRecord
 end
 ```
 
-Using [the `TokenAuthenticatable` concern](token_authenticatable.md) to create a prefixed token:
+Using [the `TokenAuthenticatable` concern](token_authenticatable.md) to create a prefixed token **and** store the hashed value of the token, at rest:
 
 ```ruby
 class User
   FEED_TOKEN_PREFIX = 'glft-'
 
-  add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
+  add_authentication_token_field :feed_token, digest: true, format_with_prefix: :prefix_for_feed_token
 
   def prefix_for_feed_token
     FEED_TOKEN_PREFIX

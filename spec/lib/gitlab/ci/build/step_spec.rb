@@ -61,8 +61,18 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
     context 'with release' do
       let(:job) { create(:ci_build, :release_options) }
 
-      it 'returns the release-cli command line' do
-        expect(subject.script).to eq(["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"name\\\":\\\"asset1\\\",\\\"url\\\":\\\"https://example.com/assets/1\\\"}\""])
+      it 'returns glab command line' do
+        expect(subject.script).to match_array([a_string_including("glab -R $CI_PROJECT_PATH release create")])
+      end
+
+      context 'when the FF ci_glab_for_release is disabled' do
+        before do
+          stub_feature_flags(ci_glab_for_release: false)
+        end
+
+        it 'returns release-cli command line' do
+          expect(subject.script).to match_array([a_string_including("release-cli create --name")])
+        end
       end
     end
 
@@ -81,31 +91,30 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
       let(:pipeline) { create(:ci_pipeline, project: project) }
       let(:job) { create(:ci_build, :release_options, pipeline: pipeline) }
 
-      it 'returns glab scripts' do
-        expect(subject.script).to eq([
-          "if ! command -v glab &> /dev/null; then\n  " \
-            "echo \"Error: glab command not found. Please install glab 1.53.0 or higher. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement\"\n  exit 1\nfi\n",
-          "if [ \"$(printf \"%s\n%s\" \"1.53.0\" \"$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')\" | sort -V | head -n1)\" = \"1.53.0\" ]; " \
-            "then\n  echo \"Validating glab version. OK\"\nelse\n  echo \"Error: Please use glab 1.53.0 or higher. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement\"\n  exit 1\nfi\n",
-          'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL',
-          'GITLAB_HOST=$CI_SERVER_URL glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA" ' \
-            '--assets-links "[{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\"}]" ' \
-            '--name "Release $CI_COMMIT_SHA" --experimental-notes-text-or-file "Created using the release-cli $EXTRA_DESCRIPTION" ' \
-            '--ref "$CI_COMMIT_SHA" --publish-to-catalog --no-update --no-close-milestone'
-        ])
+      it 'returns glab scripts with catalog publish' do
+        expect(subject.script).to match_array([a_string_including("glab -R $CI_PROJECT_PATH release create")])
+        expect(subject.script).to match_array([a_string_including("--publish-to-catalog")])
+      end
+
+      context 'when the FF ci_glab_for_release is disabled' do
+        before do
+          stub_feature_flags(ci_glab_for_release: false)
+        end
+
+        it 'returns release-cli script with catalog publish' do
+          expect(subject.script).to match_array([a_string_including("release-cli create")])
+          expect(subject.script).to match_array([a_string_including("--catalog-publish")])
+        end
       end
 
       context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
         before do
-          stub_feature_flags(ci_release_cli_catalog_publish_option: false)
+          stub_feature_flags(ci_release_cli_catalog_publish_option: false, ci_glab_for_release: false)
         end
 
-        it 'returns the release-cli script' do
-          expect(subject.script).to eq([
-            "release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" " \
-              "--tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" " \
-              '--assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\"}"'
-          ])
+        it 'returns the release-cli script with catalog publish' do
+          expect(subject.script).to match_array([a_string_including("release-cli create")])
+          expect(subject.script).not_to match_array([a_string_including("--catalog-publish")])
         end
       end
     end

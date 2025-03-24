@@ -46,7 +46,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_API_GRAPHQL_URL`                            | Pre-pipeline | The GitLab API GraphQL root URL. Introduced in GitLab 15.11. |
 | `CI_BUILDS_DIR`                                 | Job-only     | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                              | Pre-pipeline | The author of the commit in `Name <email>` format. |
-| `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` for merge request pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
+| `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` for merge request pipelines, scheduled pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
 | `CI_COMMIT_BRANCH`                              | Pre-pipeline | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                             | Pre-pipeline | The full commit message. |

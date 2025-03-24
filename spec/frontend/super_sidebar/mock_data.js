@@ -13,7 +13,40 @@ export const createNewMenuGroups = [
         href: '/groups/new?parent_id=22#create-group-pane',
       },
       {
-        text: 'New epic',
+        text: 'New work item',
+        component: 'create_new_group_work_item_modal',
+      },
+      {
+        text: 'Invite members',
+        component: 'invite_members',
+      },
+    ],
+  },
+  {
+    name: 'GitLab',
+    items: [
+      {
+        text: 'New project/repository',
+        href: '/projects/new',
+      },
+      {
+        text: 'New group',
+        href: '/groups/new',
+      },
+      {
+        text: 'New snippet',
+        href: '/-/snippets/new',
+      },
+    ],
+  },
+];
+
+export const createNewMenuProjects = [
+  {
+    name: 'This project',
+    items: [
+      {
+        text: 'New work item',
         component: 'create_new_work_item_modal',
       },
       {

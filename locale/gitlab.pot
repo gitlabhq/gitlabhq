@@ -20130,6 +20130,9 @@ msgstr ""
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
 msgstr ""
 
+msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
+msgstr ""
+
 msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
 msgstr ""
 
@@ -38047,10 +38050,10 @@ msgstr ""
 msgid "My company or team"
 msgstr ""
 
-msgid "My topic"
+msgid "My reaction"
 msgstr ""
 
-msgid "My-Reaction"
+msgid "My topic"
 msgstr ""
 
 msgid "N/A"
@@ -38729,6 +38732,9 @@ msgid "New topic"
 msgstr ""
 
 msgid "New users set to external"
+msgstr ""
+
+msgid "New work item"
 msgstr ""
 
 msgid "New! Suggest changes directly"

@@ -36,7 +36,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links in the navigation bar' do
-            expect(page).to have_link('New issue')
+            expect(page).to have_button('New work item')
             expect(page).to have_link('New merge request')
             expect(page).to have_link('New snippet', href: new_project_snippet_path(project1))
           end
@@ -109,7 +109,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links in the navigation bar' do
-            expect(page).to have_link('New issue')
+            expect(page).to have_button('New work item')
             expect(page).to have_link('New merge request')
             expect(page).to have_link('New snippet', href: new_project_snippet_path(project2))
           end

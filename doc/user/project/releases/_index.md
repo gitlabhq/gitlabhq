@@ -513,10 +513,11 @@ This feature is built on top of Git tags, so virtually no extra data is needed b
 The way of using the [`release` keyword](../../../ci/yaml/_index.md#release) is planned to change.
 The `release-cli` tool is [being replaced](https://gitlab.com/groups/gitlab-org/-/epics/15437) by the [GitLab CLI tool](https://gitlab.com/gitlab-org/cli/).
 
-You must use GitLab CLI tool `v1.53.0` or higher, or you could receive one of these error messages:
+You must use GitLab CLI tool `v1.53.0` or higher, or you could receive one of these error messages or warnings:
 
 - `Error: glab command not found. Please install glab v1.53.0 or higher.`
 - `Error: Please use glab v1.53.0 or higher.`
+- `Warning: release-cli will not be supported after 18.0. Please use glab version >= 1.53.0.`
 
 There are two ways to have the GitLab CLI tool:
 

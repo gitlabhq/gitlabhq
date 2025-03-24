@@ -70,7 +70,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   describe '#super_sidebar_context' do
     include_context 'custom session'
 
-    let_it_be(:user) { build(:user) }
+    let(:user) { build(:user) }
     let_it_be(:group) { build(:group) }
     let_it_be(:group_with_id) { build_stubbed(:group) }
     let_it_be(:panel) { {} }
@@ -212,9 +212,11 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         work_items: {
           full_path: group_with_id.full_path,
           has_issuable_health_status_feature: "false",
+          has_issue_weights_feature: "false",
           issues_list_path: issues_group_path(group_with_id),
           labels_manage_path: group_labels_path(group_with_id),
-          can_admin_label: "true"
+          can_admin_label: "true",
+          work_item_planning_view_enabled: "true"
         }
       })
     end

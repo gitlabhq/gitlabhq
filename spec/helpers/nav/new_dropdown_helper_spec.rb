@@ -295,18 +295,43 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
             expected_menu_section(
               title: 'In this project',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
-                id: 'new_issue',
-                title: 'New issue',
-                href: "/#{project.path_with_namespace}/-/issues/new",
+                id: 'new_work_item',
+                title: 'New work item',
+                component: 'create_new_work_item_modal',
                 data: {
-                  track_action: 'click_link_new_issue',
+                  track_action: 'click_link_new_work_item',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  testid: 'new_issue_link'
+                  testid: 'new_work_item_button'
                 }
               )
             )
           )
+        end
+
+        context 'when work_item_planning_view is disabled' do
+          before do
+            stub_feature_flags(work_item_planning_view: false)
+          end
+
+          it 'shows new issue menu item' do
+            expect(view_model[:menu_sections]).to eq(
+              expected_menu_section(
+                title: 'In this project',
+                menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                  id: 'new_issue',
+                  title: 'New issue',
+                  href: "/#{project.path_with_namespace}/-/issues/new",
+                  data: {
+                    track_action: 'click_link_new_issue',
+                    track_label: 'plus_menu_dropdown',
+                    testid: 'new_issue_link',
+                    track_property: 'navigation_top'
+                  }
+                )
+              )
+            )
+          end
         end
       end
 
@@ -379,14 +404,14 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         project_section = expected_menu_section(
           title: 'In this project',
           menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
-            id: 'new_issue',
-            title: 'New issue',
-            href: "/#{project.path_with_namespace}/-/issues/new",
+            id: 'new_work_item',
+            title: 'New work item',
+            component: 'create_new_work_item_modal',
             data: {
-              track_action: 'click_link_new_issue',
+              track_action: 'click_link_new_work_item',
               track_label: 'plus_menu_dropdown',
               track_property: 'navigation_top',
-              testid: 'new_issue_link'
+              testid: 'new_work_item_button'
             }
           )
         )
@@ -396,6 +421,35 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         }
 
         expect(view_model).to eq(results)
+      end
+
+      context 'when work_item_planning_view is disabled' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it 'gives precedence to project over group' do
+          project_section = expected_menu_section(
+            title: 'In this project',
+            menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+              id: 'new_issue',
+              title: 'New issue',
+              href: "/#{project.path_with_namespace}/-/issues/new",
+              data: {
+                track_action: 'click_link_new_issue',
+                track_label: 'plus_menu_dropdown',
+                testid: 'new_issue_link',
+                track_property: 'navigation_top'
+              }
+            )
+          )
+          results = {
+            title: title,
+            menu_sections: project_section
+          }
+
+          expect(view_model).to eq(results)
+        end
       end
     end
 

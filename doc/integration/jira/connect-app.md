@@ -63,7 +63,7 @@ Prerequisites:
 
 To install the GitLab for Jira Cloud app:
 
-1. In Jira, on the top bar, select **Apps > Explore more apps** and search for `GitLab for Jira Cloud`.
+1. In Jira, in the sidebar, select **Apps > Explore more apps** and search for `GitLab for Jira Cloud`.
 1. Select **GitLab for Jira Cloud**, then select **Get it now**.
 
 Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
