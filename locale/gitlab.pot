@@ -16368,10 +16368,10 @@ msgstr ""
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"

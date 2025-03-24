@@ -21392,6 +21392,7 @@ CREATE TABLE protected_environment_approval_rules (
     group_inheritance_type smallint DEFAULT 0 NOT NULL,
     protected_environment_project_id bigint,
     protected_environment_group_id bigint,
+    CONSTRAINT check_e853acbde6 CHECK ((num_nonnulls(protected_environment_group_id, protected_environment_project_id) = 1)),
     CONSTRAINT chk_rails_bed75249bc CHECK ((((access_level IS NOT NULL) AND (group_id IS NULL) AND (user_id IS NULL)) OR ((user_id IS NOT NULL) AND (access_level IS NULL) AND (group_id IS NULL)) OR ((group_id IS NOT NULL) AND (user_id IS NULL) AND (access_level IS NULL)))),
     CONSTRAINT chk_rails_cfa90ae3b5 CHECK ((required_approvals > 0))
 );

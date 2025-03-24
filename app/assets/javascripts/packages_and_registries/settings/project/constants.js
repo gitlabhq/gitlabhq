@@ -28,7 +28,7 @@ export const TEXT_AREA_INVALID_FEEDBACK = s__(
 
 export const KEEP_HEADER_TEXT = s__('ContainerRegistry|Keep these tags');
 export const KEEP_INFO_TEXT = s__(
-  'ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept.',
+  'ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept.',
 );
 export const KEEP_N_LABEL = s__('ContainerRegistry|Keep the most recent:');
 export const NAME_REGEX_KEEP_LABEL = s__('ContainerRegistry|Keep tags matching:');
@@ -38,7 +38,7 @@ export const NAME_REGEX_KEEP_DESCRIPTION = s__(
 
 export const REMOVE_HEADER_TEXT = s__('ContainerRegistry|Remove these tags');
 export const REMOVE_INFO_TEXT = s__(
-  'ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them.',
+  'ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above.',
 );
 export const EXPIRATION_SCHEDULE_LABEL = s__('ContainerRegistry|Remove tags older than:');
 export const NAME_REGEX_LABEL = s__('ContainerRegistry|Remove tags matching:');
