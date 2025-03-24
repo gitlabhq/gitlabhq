@@ -25,7 +25,7 @@ describe('TodoItem', () => {
   const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
   const findTodoSnoozedTimestamp = () => wrapper.findComponent(TodoSnoozedTimestamp);
 
-  const createComponent = (props = {}, todosBulkActions = true) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(TodoItem, {
       propsData: {
         currentUserId: '1',
@@ -36,7 +36,6 @@ describe('TodoItem', () => {
       },
       provide: {
         currentTab: 0,
-        glFeatures: { todosBulkActions },
       },
     });
   };
@@ -124,11 +123,6 @@ describe('TodoItem', () => {
       await checkbox.vm.$emit('change', true);
 
       expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
-    });
-
-    it('does not render a checkbox with feature flag disabled', () => {
-      createComponent({}, false);
-      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
     });
   });
 

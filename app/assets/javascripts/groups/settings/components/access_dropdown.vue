@@ -64,6 +64,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    inherited: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -170,7 +175,9 @@ export default {
             includeParentSharedGroups: true,
             search: this.query,
           }),
-          this.showUsers ? getUsers(this.query) : Promise.resolve({ data: this.users }),
+          this.showUsers
+            ? getUsers(this.query, this.inherited)
+            : Promise.resolve({ data: this.users }),
         ])
           .then(([groupsResponse, usersResponse]) => {
             this.consolidateData(groupsResponse.data, usersResponse.data);

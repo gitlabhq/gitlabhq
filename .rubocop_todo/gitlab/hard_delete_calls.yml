@@ -11,7 +11,6 @@ Gitlab/HardDeleteCalls:
     - 'app/services/projects/mark_for_deletion_service.rb'
     - 'app/services/projects/overwrite_project_service.rb'
     - 'app/services/users/destroy_service.rb'
-    - 'app/workers/anti_abuse/banned_user_project_deletion_worker.rb'
     - 'app/workers/projects/inactive_projects_deletion_cron_worker.rb'
     - 'lib/api/groups.rb'
     - 'lib/api/projects.rb'

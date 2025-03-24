@@ -10732,6 +10732,9 @@ msgstr ""
 msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr ""
 
+msgid "Branches|default"
+msgstr ""
+
 msgid "Branches|diverged from upstream"
 msgstr ""
 
@@ -25090,9 +25093,6 @@ msgstr ""
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr ""
 
-msgid "Failed to update environment!"
-msgstr ""
-
 msgid "Failed to update framework"
 msgstr ""
 
@@ -26477,7 +26477,13 @@ msgstr ""
 msgid "Geo|Select groups to replicate"
 msgstr ""
 
+msgid "Geo|Select replicable type"
+msgstr ""
+
 msgid "Geo|Select shards to replicate"
+msgstr ""
+
+msgid "Geo|Selected replicable type"
 msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
@@ -42866,6 +42872,9 @@ msgstr ""
 msgid "Pipeline triggers"
 msgstr ""
 
+msgid "PipelineCharts|All branches"
+msgstr ""
+
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr ""
 
@@ -43196,7 +43205,7 @@ msgstr ""
 msgid "PipelineSource|API"
 msgstr ""
 
-msgid "PipelineSource|Any"
+msgid "PipelineSource|Any source"
 msgstr ""
 
 msgid "PipelineSource|Chat"
@@ -47838,9 +47847,6 @@ msgstr ""
 msgid "ProtectedEnvironments|Users"
 msgstr ""
 
-msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
-msgstr ""
-
 msgid "ProtectedEnvironment|Add new protected environment"
 msgstr ""
 
@@ -47917,9 +47923,6 @@ msgid "ProtectedEnvironment|Select environment tier"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select groups"
-msgstr ""
-
-msgid "ProtectedEnvironment|Unprotect"
 msgstr ""
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
@@ -57761,9 +57764,6 @@ msgstr ""
 msgid "Successfully updated %{last_updated_timeago}."
 msgstr ""
 
-msgid "Successfully updated the environment."
-msgstr ""
-
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr ""
 
@@ -61328,9 +61328,6 @@ msgstr ""
 msgid "Todos|Could not merge"
 msgstr ""
 
-msgid "Todos|Could not restore to-dos."
-msgstr ""
-
 msgid "Todos|Design"
 msgstr ""
 
@@ -61392,12 +61389,6 @@ msgid "Todos|Label priority"
 msgstr ""
 
 msgid "Todos|Leave feedback"
-msgstr ""
-
-msgid "Todos|Mark all as done"
-msgstr ""
-
-msgid "Todos|Mark all as done failed. Try again later."
 msgstr ""
 
 msgid "Todos|Mark as done"

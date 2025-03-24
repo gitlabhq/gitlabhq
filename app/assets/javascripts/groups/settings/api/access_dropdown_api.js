@@ -27,8 +27,8 @@ export const getSubGroups = (options = defaultOptions) => {
   });
 };
 
-export const getUsers = (query) => {
-  return getGroupMembers(gon.current_group_id, false, {
+export const getUsers = (query, inherited = false) => {
+  return getGroupMembers(gon.current_group_id, inherited, {
     query,
     per_page: 20,
   });

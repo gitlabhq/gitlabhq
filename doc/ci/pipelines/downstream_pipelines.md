@@ -24,6 +24,9 @@ that triggered them.
 You can sometimes use parent-child pipelines and multi-project pipelines for similar purposes,
 but there are [key differences](pipeline_architectures.md).
 
+A pipeline hierarchy can contain up to 1000 downstream pipelines by default.
+For more information about this limit and how to change it, see [Limit pipeline hierarchy size](../../administration/instance_limits.md#limit-pipeline-hierarchy-size).
+
 ## Parent-child pipelines
 
 A parent pipeline is a pipeline that triggers a downstream pipeline in the same project.

@@ -87,6 +87,7 @@ the related documentation.
 | Maximum registered runners                                                       | Free tier: `50` for each group and `50`for each project<br/>All paid tiers: `1000` for each group and `1000` for each project | See [Number of registered runners for each scope](../../administration/instance_limits.md#number-of-registered-runners-for-each-scope). |
 | Limit of dotenv variables                                                        | Free tier: `50`<br>Premium tier: `100`<br>Ultimate tier: `150`                                             | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables). |
 | Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` each minute                                                                                           | See [Maximum downstream pipeline trigger rate](../../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). |
+| Maximum number of downstream pipelines in a pipeline's hierarchy tree            | `1000`                                                                                                     | See [Limit pipeline hierarchy size](../../administration/instance_limits.md#limit-pipeline-hierarchy-size). |
 
 ## Container registry
 

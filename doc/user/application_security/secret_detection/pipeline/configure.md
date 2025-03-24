@@ -74,9 +74,9 @@ secret_detection:
     SECRETS_ANALYZER_VERSION: "4.5"
 ```
 
-### Enable full history scan
+### Enable historic scan
 
-To enable full history scan, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
+To enable a historic scan, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
 
 ### Run jobs in merge request pipelines
 

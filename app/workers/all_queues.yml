@@ -246,16 +246,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:anti_abuse_banned_user_project_deletion_cron
-  :worker_name: AntiAbuse::BannedUserProjectDeletionCronWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   :feature_category: :permissions
@@ -2795,17 +2785,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-  :queue_namespace:
-- :name: anti_abuse_banned_user_project_deletion
-  :worker_name: AntiAbuse::BannedUserProjectDeletionWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :cronjob_child
   :queue_namespace:
 - :name: anti_abuse_spam_abuse_events
   :worker_name: AntiAbuse::SpamAbuseEventsWorker

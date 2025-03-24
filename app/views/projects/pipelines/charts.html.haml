@@ -10,4 +10,5 @@
   coverage_chart_path: charts_project_graph_path(@project, @project.default_branch),
   test_runs_empty_state_image_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
   project_quality_summary_feedback_image_path: image_path('illustrations/chat-sm.svg'),
+  project_branch_count: @project.repository_exists? ? @project.repository.branch_count : 0,
   default_branch: @project.default_branch } }

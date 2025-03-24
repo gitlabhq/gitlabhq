@@ -39,8 +39,6 @@
   - 1
 - - anti_abuse_ban_duplicate_users
   - 1
-- - anti_abuse_banned_user_project_deletion
-  - 1
 - - anti_abuse_new_abuse_report
   - 1
 - - anti_abuse_spam_abuse_events

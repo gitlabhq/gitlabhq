@@ -11,7 +11,5 @@ class Dashboard::TodosController < Dashboard::ApplicationController
       'view_todo_list',
       user: current_user
     )
-
-    push_frontend_feature_flag(:todos_bulk_actions, current_user)
   end
 end

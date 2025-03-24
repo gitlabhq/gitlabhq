@@ -1,6 +1,5 @@
 <script>
 import { GlLink, GlIcon, GlFormCheckbox } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fallsBefore } from '~/lib/utils/datetime_utility';
 import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
@@ -23,7 +22,6 @@ export default {
     TodoItemActions,
     TodoItemTitleHiddenBySaml,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['currentTab'],
   props: {
     currentUserId: {
@@ -75,7 +73,6 @@ export default {
     :class="{ 'gl-bg-subtle': isDone }"
   >
     <gl-form-checkbox
-      v-if="glFeatures.todosBulkActions"
       class="gl-inline-block gl-pt-2"
       :aria-label="__('Select')"
       :checked="selected"

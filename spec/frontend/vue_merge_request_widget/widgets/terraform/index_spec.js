@@ -220,9 +220,21 @@ describe('Terraform extension', () => {
       delete: '0',
       job_name: 'Low Changes',
     };
+    const noChangesPlan = {
+      create: '0',
+      update: '0',
+      delete: '0',
+      job_name: 'No Changes',
+    };
 
     it('sorts reports by total changes in descending order', async () => {
-      const reports = [lowChangesPlan, highChangesPlan, failedPlan, mediumChangesPlan];
+      const reports = [
+        lowChangesPlan,
+        highChangesPlan,
+        failedPlan,
+        noChangesPlan,
+        mediumChangesPlan,
+      ];
 
       mockPollingApi(HTTP_STATUS_OK, reports, {});
       createComponent();
@@ -235,6 +247,7 @@ describe('Terraform extension', () => {
       expect(findListItem(1).text()).toContain('High Changes');
       expect(findListItem(2).text()).toContain('Medium Changes');
       expect(findListItem(3).text()).toContain('Low Changes');
+      expect(findListItem(4).text()).toContain('No Changes');
     });
   });
 });

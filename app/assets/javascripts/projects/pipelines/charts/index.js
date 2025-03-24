@@ -24,6 +24,7 @@ const mountPipelineChartsApp = (el) => {
   } = el.dataset;
 
   const shouldRenderDoraCharts = parseBoolean(el.dataset.shouldRenderDoraCharts);
+  const projectBranchCount = parseInt(el.dataset.projectBranchCount, 10);
   const shouldRenderQualitySummary = parseBoolean(el.dataset.shouldRenderQualitySummary);
   const contextId = convertToGraphQLId(TYPENAME_PROJECT, projectId);
 
@@ -41,6 +42,7 @@ const mountPipelineChartsApp = (el) => {
       shouldRenderQualitySummary,
       coverageChartPath,
       defaultBranch,
+      projectBranchCount,
       testRunsEmptyStateImagePath,
       projectQualitySummaryFeedbackImagePath,
       contextId,

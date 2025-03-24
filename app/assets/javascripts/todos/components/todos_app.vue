@@ -29,7 +29,6 @@ import getPendingTodosCount from './queries/get_pending_todos_count.query.graphq
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
-import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
 import TodosBulkBar from './todos_bulk_bar.vue';
 import TodosPagination from './todos_pagination.vue';
 
@@ -45,7 +44,6 @@ export default {
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
-    TodosMarkAllDoneButton,
     TodosBulkBar,
     TodosPagination,
   },
@@ -160,13 +158,7 @@ export default {
     showEmptyState() {
       return this.isOnFirstPage && !this.isLoading && this.todos.length === 0;
     },
-    showMarkAllAsDone() {
-      if (this.glFeatures.todosBulkActions) return false;
-
-      return this.currentTab === TABS_INDICES.pending && !this.showEmptyState;
-    },
     showSelectAll() {
-      if (!this.glFeatures.todosBulkActions) return false;
       if (this.isOnAllTab) return false;
 
       return !(this.showEmptyState || this.isLoadingWithSpinner);
@@ -378,12 +370,6 @@ export default {
       </gl-tabs>
 
       <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
-        <todos-mark-all-done-button
-          v-show="showMarkAllAsDone"
-          :filters="queryFilterValues"
-          @change="updateAllQueries"
-        />
-
         <gl-button
           id="todo-refresh-btn"
           v-gl-tooltip.hover

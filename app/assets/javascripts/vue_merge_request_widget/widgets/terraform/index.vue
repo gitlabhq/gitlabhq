@@ -85,6 +85,8 @@ export default {
         .then((res) => {
           const reports = Object.keys(res.data).map((key) => {
             const report = res.data[key];
+
+            const isValid = report.create && report.update && report.delete;
             const creates = Number(report.create);
             const updates = Number(report.update);
             const deletes = Number(report.delete);
@@ -93,7 +95,8 @@ export default {
             // didn't parse via the Number() calls above, we'll get
             // infinity here, indicating a failed report which we want
             // to sort to the top to maximise visibility.
-            const sortIndex = creates + updates + deletes || Number.POSITIVE_INFINITY;
+            const totalChanges = creates + updates + deletes;
+            const sortIndex = isValid ? totalChanges : Number.POSITIVE_INFINITY;
 
             // Replace the string versions of the create/update/delete
             // fields to avoid another case later
@@ -102,6 +105,7 @@ export default {
               create: creates,
               update: updates,
               delete: deletes,
+              isValid,
               sortIndex,
             };
           });
@@ -130,8 +134,6 @@ export default {
         });
     },
     createReportRow(report, iconName) {
-      const validPlanValues = report.create + report.update + report.delete >= 0;
-
       const actions = [];
 
       let title;
@@ -147,7 +149,7 @@ export default {
         actions.push(action);
       }
 
-      if (validPlanValues) {
+      if (report.isValid) {
         if (report.job_name) {
           title = sprintf(
             this.$options.i18n.namedReportGenerated,

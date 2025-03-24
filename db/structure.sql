@@ -13605,7 +13605,8 @@ CREATE TABLE description_versions (
     merge_request_id bigint,
     epic_id bigint,
     description text,
-    deleted_at timestamp with time zone
+    deleted_at timestamp with time zone,
+    namespace_id bigint NOT NULL
 );
 
 CREATE SEQUENCE description_versions_id_seq
@@ -28702,6 +28703,9 @@ ALTER TABLE ONLY instance_type_ci_runners
 
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
+
+ALTER TABLE description_versions
+    ADD CONSTRAINT check_76c1eb7122 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1)) NOT VALID;
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);

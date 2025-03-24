@@ -777,9 +777,6 @@ Gitlab.ee do
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
-  Settings.cron_jobs['banned_user_project_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['banned_user_project_deletion_cron_worker']['cron'] ||= '0 19 * * *'
-  Settings.cron_jobs['banned_user_project_deletion_cron_worker']['job_class'] = 'AntiAbuse::BannedUserProjectDeletionCronWorker'
   Settings.cron_jobs['geo_verification_cron_worker'] ||= {}
   Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'

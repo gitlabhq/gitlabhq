@@ -9,7 +9,6 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
-import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
 import TodosBulkBar from '~/todos/components/todos_bulk_bar.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
@@ -35,7 +34,6 @@ describe('TodosApp', () => {
   const createComponent = ({
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
-    featureFlags = { todosBulkActions: false },
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
@@ -43,9 +41,6 @@ describe('TodosApp', () => {
 
     wrapper = shallowMountExtended(TodosApp, {
       apolloProvider: mockApollo,
-      provide: {
-        glFeatures: featureFlags,
-      },
     });
   };
 
@@ -53,7 +48,6 @@ describe('TodosApp', () => {
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
-  const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
   const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
   const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
@@ -165,17 +159,6 @@ describe('TodosApp', () => {
       before: null,
     });
     expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
-  });
-
-  it('re-fetches the pending todos count when mark all done button is clicked', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
-
-    findMarkAllDoneButton().vm.$emit('change');
-
-    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
   });
 
   it('refreshes count and list', async () => {
@@ -346,9 +329,7 @@ describe('TodosApp', () => {
 
   describe('bulk selection', () => {
     beforeEach(async () => {
-      createComponent({
-        featureFlags: { todosBulkActions: true },
-      });
+      createComponent();
       await waitForPromises();
     });
 
@@ -358,15 +339,6 @@ describe('TodosApp', () => {
     const findBulkBar = () => wrapper.findComponent(TodosBulkBar);
 
     describe('select all checkbox', () => {
-      it('is not visible when bulk actions feature flag is disabled', async () => {
-        createComponent({
-          featureFlags: { todosBulkActions: false },
-        });
-        await waitForPromises();
-
-        expect(findSelectAllCheckbox().isVisible()).toBe(false);
-      });
-
       it('is not visible on "All" tab', async () => {
         findGlTabs().vm.$emit('input', 3); // All tab
         await nextTick();

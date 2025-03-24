@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Compliance
+title: Compliance features for users
 ---
 
 {{< details >}}
@@ -12,13 +12,7 @@ title: Compliance
 
 {{< /details >}}
 
-GitLab compliance features ensure your GitLab group meets common compliance standards, and are available at various pricing tiers. For more information about compliance management, see the compliance
-management [solutions page](https://about.gitlab.com/solutions/compliance/).
-
-The [security features](../../security/_index.md) in GitLab may also help you meet relevant compliance standards.
-
-For more information on all GitLab compliance features to ensure your GitLab instance meets common compliance standards, see
-[Compliance features](../../administration/compliance/compliance_features.md).
+GitLab compliance features for users ensure your GitLab groups and projects meets common compliance standards.
 
 ## Compliant workflow automation
 
@@ -78,3 +72,9 @@ These features can also help with compliance requirements:
 | [External Status Checks](../project/merge_requests/status_checks.md)                                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Interface with third-party systems you already use during development to ensure you remain compliant. |
 | [License approval policies](license_approval_policies.md)                                                                      | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Search dependencies for their licenses. This lets you determine if the licenses of your project's dependencies are compatible with your project's license. |
 | [Lock project membership to group](../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Group owners can prevent new members from being added to projects in a group. |
+
+## Related topics
+
+- [Software Compliance with GitLab](https://about.gitlab.com/solutions/compliance/)
+- [Secure GitLab](../../security/_index.md)
+- [Compliance features for administrators](../../administration/compliance/compliance_features.md)

@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Compliance features
+title: Compliance features for administrators
 ---
 
 {{< details >}}
@@ -12,13 +12,8 @@ title: Compliance features
 
 {{< /details >}}
 
-GitLab compliance features ensure your GitLab instance meets common compliance standards, and are available at various pricing tiers. For more information about compliance management, see the compliance
-management [solutions page](https://about.gitlab.com/solutions/compliance/).
-
-The [security features](../../security/_index.md) in GitLab may also help you meet relevant compliance standards.
-
-For more information on all GitLab compliance features to ensure your GitLab group meets common compliance standards, see
-[Compliance features](../../user/compliance/_index.md).
+GitLab compliance features for administrators ensure your GitLab instance meets common compliance standards. Many
+of the features are also available for groups and projects.
 
 ## Compliant workflow automation
 
@@ -80,3 +75,9 @@ These features can also help with compliance requirements:
 | [LDAP group sync filters](../auth/ldap/ldap_synchronization.md#group-sync)                                                         | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Gives more flexibility to synchronize with LDAP based on filters, meaning you can leverage LDAP attributes to map GitLab permissions. |
 | [Linux package installations support<br/>log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-forwarding) | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Forward your logs to a central system. |
 | [Restrict SSH Keys](../../security/ssh_keys_restrictions.md)                                                                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Control the technology and key length of SSH keys used to access GitLab. |
+
+## Related topics
+
+- [Software Compliance with GitLab](https://about.gitlab.com/solutions/compliance/)
+- [Secure GitLab](../../security/_index.md)
+- [Compliance features for users](../../user/compliance/_index.md)

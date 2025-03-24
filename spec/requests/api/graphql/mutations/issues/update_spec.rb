@@ -68,7 +68,7 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
 
     context 'setting labels' do
       before do
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(106)
       end
 
       let(:mutation) do

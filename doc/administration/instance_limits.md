@@ -516,6 +516,25 @@ Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
 
 Set the limit to `0` to disable it.
 
+### Limit pipeline hierarchy size
+
+A [pipeline hierarchy](../ci/pipelines/downstream_pipelines.md) can
+contain up to 1000 downstream pipelines by default. This limit is checked when creating new
+downstream pipelines. If a new downstream pipeline would cause the hierarchy to exceed this
+limit, the pipeline creation fails.
+
+Set the limit to `0` to disable it. Defaults to `1000` on GitLab Self-Managed.
+
+To set this limit to `2000` on your instance, run the following command in the GitLab Rails console:
+
+```ruby
+Plan.default.actual_limits.update!(pipeline_hierarchy_size: 2000)
+```
+
+You can also set this limit by using the GitLab UI in the [Admin area](../administration/settings/continuous_integration.md#set-cicd-limits).
+
+This limit is enabled on GitLab.com and cannot be changed.
+
 ### Number of CI/CD subscriptions to a project
 
 The total number of subscriptions can be limited per project. This limit is

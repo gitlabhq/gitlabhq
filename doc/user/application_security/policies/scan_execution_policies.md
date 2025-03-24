@@ -389,7 +389,7 @@ scan.
     mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current
     SHA. You can override this behavior by specifying CI/CD variables in the scan
     execution policy. For more information, see
-    [Full history pipeline secret detection](../secret_detection/pipeline/_index.md#full-history-pipeline-secret-detection).
+    [Full history pipeline secret detection](../secret_detection/pipeline/_index.md#historic-scan).
   - For `triggered` scan execution policies, secret detection works just like regular scan
     [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/_index.md#edit-the-gitlab-ciyml-file-manually).
 - Container scanning: A scan that is configured for the `pipeline` rule type ignores the agent

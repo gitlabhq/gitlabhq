@@ -944,7 +944,7 @@ Follow these guidelines for link text.
 
 #### Standard text
 
-As much as possible, use text that follows one of these patterns:
+Use text that follows one of these patterns:
 
 - `For more information, see [link text](link.md)`.
 - `To [DO THIS THING], see [link text](link.md)`
@@ -967,15 +967,21 @@ Do not use the following constructions:
 #### Descriptive text rather than `here`
 
 Use descriptive text for links, rather than words like `here` or `this page.`
+For the name of a topic or page, use lowercase.
+The text does not need to match the topic or page name exactly.
+Edit the text to be descriptive and fit the guidelines.
 
-For example, instead of:
+Do:
+
+- `For more information, see [merge requests](link.md)`.
+- `For more information, see [roles and permissions](link.md)`.
+- `For more information, see [how to configure common settings](link.md)`.
+
+Don't:
 
 - `For more information, see [this page](link.md).`
 - `For more information, go [here](link.md).`
-
-Use:
-
-- `For more information, see [merge requests](link.md)`.
+- `For more information, see [this documentation](link.md).`
 
 #### Links to issues
 

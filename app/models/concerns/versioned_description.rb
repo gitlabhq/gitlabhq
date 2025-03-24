@@ -22,10 +22,11 @@ module VersionedDescription
     unless description_versions.exists?
       description_versions.create!(
         description: description_before_last_save,
-        created_at: created_at
+        created_at: created_at,
+        preloaded_issuable: self
       )
     end
 
-    self.saved_description_version = description_versions.create!(description: description)
+    self.saved_description_version = description_versions.create!(description: description, preloaded_issuable: self)
   end
 end

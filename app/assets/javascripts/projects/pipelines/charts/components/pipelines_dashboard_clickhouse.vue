@@ -10,12 +10,14 @@ import {
   DATE_RANGE_LAST_180_DAYS,
 } from '../constants';
 import getPipelineAnalytics from '../graphql/queries/get_pipeline_analytics.query.graphql';
+
 import DashboardHeader from './dashboard_header.vue';
+import BranchCollapsibleListbox from './branch_collapsible_listbox.vue';
 import StatisticsList from './statistics_list.vue';
 import PipelineDurationChart from './pipeline_duration_chart.vue';
 import PipelineStatusChart from './pipeline_status_chart.vue';
 
-// CiPipelineCiSources values from GraphQL schema.
+// CiPipelineSources values from GraphQL schema.
 const SOURCE_ANY = 'ANY';
 const SOURCE_PUSH = 'PUSH';
 const SOURCE_WEB = 'WEB';
@@ -35,20 +37,30 @@ export default {
     GlCollapsibleListbox,
     GlFormGroup,
     DashboardHeader,
+    BranchCollapsibleListbox,
     StatisticsList,
     PipelineDurationChart,
     PipelineStatusChart,
   },
   inject: {
+    defaultBranch: {
+      type: String,
+      default: null,
+    },
     projectPath: {
       type: String,
       default: '',
+    },
+    projectBranchCount: {
+      type: Number,
+      default: 0,
     },
   },
   data() {
     return {
       source: SOURCE_ANY,
       dateRange: DATE_RANGE_LAST_WEEK,
+      branch: this.defaultBranch,
       pipelineAnalytics: {
         aggregate: {
           count: null,
@@ -91,6 +103,7 @@ export default {
       return {
         fullPath: this.projectPath,
         source: this.source === SOURCE_ANY ? null : this.source,
+        branch: this.branch,
         fromTime: getDateInPast(today, this.dateRange),
         toTime: today,
       };
@@ -107,7 +120,7 @@ export default {
     },
   },
   pipelineSources: [
-    { value: SOURCE_ANY, text: s__('PipelineSource|Any') },
+    { value: SOURCE_ANY, text: s__('PipelineSource|Any source') },
     { value: SOURCE_PUSH, text: s__('PipelineSource|Push') },
     { value: SOURCE_WEB, text: s__('PipelineSource|Web') },
     { value: SOURCE_TRIGGER, text: s__('PipelineSource|Trigger') },
@@ -148,9 +161,9 @@ export default {
     <dashboard-header>
       {{ s__('PipelineCharts|Pipelines') }}
     </dashboard-header>
-    <div class="gl-mb-4 gl-flex gl-gap-4 gl-bg-subtle gl-p-4 gl-pb-2">
+    <div class="gl-mb-4 gl-flex gl-flex-wrap gl-gap-4 gl-bg-subtle gl-p-4 gl-pb-2">
       <gl-form-group
-        class="gl-min-w-20"
+        class="gl-min-w-full sm:gl-min-w-20"
         :label="s__('PipelineCharts|Source')"
         label-for="pipeline-source"
       >
@@ -161,7 +174,21 @@ export default {
           :items="$options.pipelineSources"
         />
       </gl-form-group>
-      <gl-form-group class="gl-min-w-15" :label="__('Date range')" label-for="date-range">
+      <gl-form-group class="gl-min-w-full sm:gl-min-w-26" :label="__('Branch')" label-for="branch">
+        <branch-collapsible-listbox
+          id="branch"
+          v-model="branch"
+          block
+          :default-branch="defaultBranch"
+          :project-path="projectPath"
+          :project-branch-count="projectBranchCount"
+        />
+      </gl-form-group>
+      <gl-form-group
+        class="gl-min-w-full sm:gl-min-w-15"
+        :label="__('Date range')"
+        label-for="date-range"
+      >
         <gl-collapsible-listbox
           id="date-range"
           v-model="dateRange"

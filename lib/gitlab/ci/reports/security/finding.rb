@@ -205,7 +205,7 @@ module Gitlab
           def signature_hexes
             return [] unless @vulnerability_finding_signatures_enabled && signatures.present?
 
-            signatures.sort_by(&:priority).map(&:signature_hex).reverse
+            signatures.sort_by { |sig| -sig.priority }.map(&:signature_hex)
           end
         end
       end
