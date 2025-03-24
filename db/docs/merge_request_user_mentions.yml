@@ -8,14 +8,6 @@ description: Store user mentions for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_id
-        table: merge_requests
-        sharding_key: target_project_id
-        belongs_to: merge_request
-desired_sharding_key_migration_job_name: BackfillMergeRequestUserMentionsProjectId
 table_size: small
+sharding_key:
+  project_id: projects

@@ -5,6 +5,10 @@ module QA
     :skip_live_env,
     :requires_admin,
     product_group: :organizations,
+    quarantine: {
+      type: :investigating,
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438840'
+    },
     feature_flag: {
       name: [:ui_for_organizations, :allow_organization_creation],
       scope: :global

@@ -40,7 +40,7 @@ module Gitlab
         def attachment_url
           return unless has_attachment?
 
-          Rails.application.routes.url_helpers.file_project_job_artifacts_path(
+          Rails.application.routes.url_helpers.file_project_job_artifacts_url(
             job.project,
             job.id,
             attachment

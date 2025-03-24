@@ -17036,7 +17036,8 @@ CREATE TABLE merge_request_user_mentions (
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
     note_id bigint,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_0f5d7f30e4 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_user_mentions_id_seq

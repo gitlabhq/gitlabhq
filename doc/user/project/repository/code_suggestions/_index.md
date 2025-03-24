@@ -187,11 +187,12 @@ For more information, see the history.
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
+Prerequisites:
 
-GitLab recently refactored the Open Tabs internal logic for Duo Code Suggestions. Users who want to use Open Tabs must update their Editor Extensions version to 7.17.1 or later to restore functionality.
-
-{{< /alert >}}
+- JetBrains extension version 3.6.5 or later.
+- Neovim extension version 1.1.0 or later.
+- Visual Studio extension version 0.51.0 or later.
+- VS Code extension version 6.2.2 or later.
 
 If tab as context is on, Code Suggestions uses the files open in tabs in your IDE as context. These files give GitLab Duo more information about the standards and practices in your code project.
 

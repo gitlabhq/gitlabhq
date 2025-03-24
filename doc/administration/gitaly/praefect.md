@@ -37,7 +37,7 @@ Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar contai
 The minimum recommended configuration for a Gitaly Cluster requires:
 
 - 1 load balancer
-- 1 PostgreSQL server (PostgreSQL 11 or newer)
+- 1 PostgreSQL server (a [supported version](../../install/requirements.md#postgresql))
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
@@ -130,7 +130,7 @@ Before beginning, you should already have a working GitLab instance.
 
 Provision a PostgreSQL server. You should use the PostgreSQL that is shipped
 with the Linux package and use it to configure the PostgreSQL database. You can use an
-external PostgreSQL server (version 11 or newer) but you must set it up [manually](#manual-database-setup).
+external PostgreSQL server but you must set it up [manually](#manual-database-setup).
 
 Prepare all your new nodes by [installing GitLab](https://about.gitlab.com/install/). You need:
 
@@ -216,7 +216,7 @@ The following options are available:
   - Use one of the documented [PostgreSQL setups](../postgresql/_index.md).
   - Use your own third-party database setup. This requires [manual setup](#manual-database-setup).
 - For Geo instances, either:
-  - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
+  - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/16/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
     [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
@@ -237,7 +237,7 @@ fail as the database it's trying to use would either:
 To complete this section you need:
 
 - One Praefect node
-- One PostgreSQL node (version 11 or newer)
+- One PostgreSQL node
   - A PostgreSQL user with permissions to manage the database server
 
 In this section, we configure the PostgreSQL database. This can be used for both external
@@ -343,7 +343,7 @@ praefect['configuration'] = {
 ```
 
 When configured, this connection is automatically used for the
-[SQL LISTEN](https://www.postgresql.org/docs/11/sql-listen.html) feature and
+[SQL LISTEN](https://www.postgresql.org/docs/16/sql-listen.html) feature and
 allows Praefect to receive notifications from PostgreSQL for cache invalidation.
 
 Verify this feature is working by looking for the following log entry in the Praefect
@@ -382,7 +382,7 @@ praefect['configuration'] = {
 ```
 
 Praefect requires an additional connection to the PostgreSQL that supports the
-[LISTEN](https://www.postgresql.org/docs/11/sql-listen.html) feature. With PgBouncer
+[LISTEN](https://www.postgresql.org/docs/16/sql-listen.html) feature. With PgBouncer
 this feature is only available with `session` pool mode (`pool_mode = session`).
 It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 
