@@ -2,6 +2,8 @@
 
 module Resolvers
   class ContainerRepositoryTagsResolver < BaseResolver
+    include Gitlab::Graphql::Authorize::AuthorizeResource
+
     type Types::ContainerRegistry::ContainerRepositoryTagType.connection_type, null: true
 
     argument :sort, Types::ContainerRegistry::ContainerRepositoryTagsSortEnum,
@@ -95,7 +97,7 @@ module Resolvers
     def tags
       container_repository.tags
     rescue Faraday::Error
-      raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, "Can't connect to the container registry. If this error persists, please review the troubleshooting documentation."
+      raise_resource_not_available_error! "Can't connect to the container registry. If this error persists, please review the troubleshooting documentation."
     end
   end
 end

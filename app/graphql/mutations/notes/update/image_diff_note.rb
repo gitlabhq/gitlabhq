@@ -40,7 +40,7 @@ module Mutations
         def pre_update_checks!(note, _args)
           return if note.is_a?(DiffNote) && note.position.on_image?
 
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Resource is not an ImageDiffNote'
+          raise_resource_not_available_error! 'Resource is not an ImageDiffNote'
         end
 
         def note_params(note, args)

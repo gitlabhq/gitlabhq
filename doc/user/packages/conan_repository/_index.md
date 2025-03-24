@@ -37,7 +37,8 @@ Then you can run `conan` commands and publish your package to the
 package registry.
 
 For documentation of the specific API endpoints that the Conan package manager
-client uses, see the [Conan API documentation](../../../api/packages/conan.md).
+For information of the specific API endpoints used by the Conan package manager
+client, see [Conan v1 API](../../../api/packages/conan_v1.md) or [Conan v2 API](../../../api/packages/conan_v2.md).
 
 Learn how to [build a Conan package](../workflows/build_packages.md#conan).
 

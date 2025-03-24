@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 10:26\n"
+"PO-Revision-Date: 2025-03-24 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -321,11 +321,11 @@ msgstr[0] "%d個のレイヤ"
 
 msgid "%d line added"
 msgid_plural "%d lines added"
-msgstr[0] ""
+msgstr[0] "%d行追加されました"
 
 msgid "%d line removed"
 msgid_plural "%d lines removed"
-msgstr[0] ""
+msgstr[0] "%d行削除されました"
 
 msgid "%d merge request"
 msgid_plural "%d merge requests"
@@ -767,7 +767,7 @@ msgid "%{filePath} deleted"
 msgstr "%{filePath}が削除されました"
 
 msgid "%{filesChanged}, %{fileAdditions}, %{fileDeletions}"
-msgstr ""
+msgstr "%{filesChanged}, %{fileAdditions}, %{fileDeletions}"
 
 msgid "%{firstLabel} +%{labelCount} more"
 msgstr "%{firstLabel} +%{labelCount}以上"
@@ -922,7 +922,7 @@ msgid "%{labelStart}Project:%{labelEnd} %{project}"
 msgstr "%{labelStart}プロジェクト:%{labelEnd} %{project}"
 
 msgid "%{labelStart}Report type:%{labelEnd} %{reportType}"
-msgstr ""
+msgstr "%{labelStart}レポートタイプ:%{labelEnd} %{reportType}"
 
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr "%{labelStart}スキャナー:%{labelEnd} %{scanner}"
@@ -1018,7 +1018,7 @@ msgid "%{name} is scheduled for %{action}"
 msgstr "%{name}は%{action}の予定です"
 
 msgid "%{name} not checked"
-msgstr ""
+msgstr "%{name}チェック未完了"
 
 msgid "%{name}'s avatar"
 msgstr "%{name}のアバター"
@@ -1100,11 +1100,11 @@ msgid "%{project_path} is a project that you can use to add a README to your Git
 msgstr "%{project_path}は、GitLabプロファイルにREADMEを追加する際に使用するプロジェクトです。開始するには、公開プロジェクトを作成し、READMEとともにリポジトリを初期化します。%{help_link_start}詳細はこちら%{help_link_end}。"
 
 msgid "%{projectsCount}, %{subGroupsCount}"
-msgstr ""
+msgstr "%{projectsCount}、%{subGroupsCount}"
 
 msgid "%{project} has %{number} fork"
 msgid_plural "%{project} has %{number} forks"
-msgstr[0] ""
+msgstr[0] "%{project}には%{number}個のフォークがあります"
 
 msgid "%{project} has %{number} open issue"
 msgid_plural "%{project} has %{number} open issues"
@@ -1116,7 +1116,7 @@ msgstr[0] ""
 
 msgid "%{project} has %{number} star"
 msgid_plural "%{project} has %{number} stars"
-msgstr[0] ""
+msgstr[0] "%{project}には%{number}個のStar付きがあります"
 
 msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
 msgstr "%{redirect_link_start}ここをクリックして%{redirect_uri_val}にリダイレクトする%{redirect_link_end}"
@@ -2745,10 +2745,10 @@ msgid "AccessTokens|Add a %{type}"
 msgstr "%{type}を追加"
 
 msgid "AccessTokens|Add new token"
-msgstr ""
+msgstr "新しいトークンを追加"
 
 msgid "AccessTokens|An error occurred while creating the token."
-msgstr ""
+msgstr "トークンの作成中にエラーが発生しました。"
 
 msgid "AccessTokens|An error occurred while fetching the tokens."
 msgstr "トークンの取得中にエラーが発生しました。"
@@ -2799,7 +2799,7 @@ msgid "AccessTokens|Create %{type}"
 msgstr "%{type}を作成"
 
 msgid "AccessTokens|Create token"
-msgstr ""
+msgstr "トークンを作成"
 
 msgid "AccessTokens|Created"
 msgstr "作成済み"
@@ -2808,7 +2808,7 @@ msgid "AccessTokens|Created date"
 msgstr "作成日時"
 
 msgid "AccessTokens|Description"
-msgstr ""
+msgstr "説明"
 
 msgid "AccessTokens|Enable DPoP"
 msgstr "DPoPを有効にする"
@@ -2817,7 +2817,7 @@ msgid "AccessTokens|Expiration date"
 msgstr "有効期限"
 
 msgid "AccessTokens|Expiration date is required."
-msgstr ""
+msgstr "有効期限は必須です。"
 
 msgid "AccessTokens|Expired"
 msgstr "期限切れ"
@@ -2967,8 +2967,8 @@ msgstr "スコープによって、トークンに付与する権限レベルを
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Search or filter access tokens..."
-msgstr "アクセストークンの検索またはフィルタリング..."
+msgid "AccessTokens|Search or filter access tokens…"
+msgstr ""
 
 msgid "AccessTokens|Select a role"
 msgstr "ロールを選択"
@@ -3309,8 +3309,8 @@ msgstr "表を追加"
 msgid "Add a timeline event to incident"
 msgstr "インシデントにタイムラインイベントを追加"
 
-msgid "Add a title..."
-msgstr "タイトルを追加..."
+msgid "Add a title…"
+msgstr ""
 
 msgid "Add a to-do item"
 msgstr "To Doアイテムを追加"
@@ -6039,8 +6039,8 @@ msgstr "このグループのプロジェクトまたはサブグループがグ
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr "Opstrace統合を使用してプロジェクトがエラーをトラッキングできるようにします。"
 
-msgid "Almost there..."
-msgstr "登録完了まであと少しです"
+msgid "Almost there…"
+msgstr ""
 
 msgid "Already blocked"
 msgstr "ブロック済み"
@@ -8575,8 +8575,8 @@ msgstr "認証されたWebレート制限期間(秒単位)"
 msgid "Authenticated web requests"
 msgstr "認証されたWebリクエスト"
 
-msgid "Authenticating..."
-msgstr "認証中..."
+msgid "Authenticating…"
+msgstr ""
 
 msgid "Authentication"
 msgstr "認証"
@@ -11966,11 +11966,11 @@ msgstr "ブランチの可用性を確認しています…"
 msgid "Checking branch validity"
 msgstr "ブランチの有効性を確認しています"
 
-msgid "Checking branch validity..."
-msgstr "ブランチの有効性を確認しています..."
+msgid "Checking branch validity…"
+msgstr ""
 
-msgid "Checking group path availability..."
-msgstr "グループパスの可用性を確認中..."
+msgid "Checking group path availability…"
+msgstr ""
 
 msgid "Checking if merge request can be merged…"
 msgstr ""
@@ -11978,11 +11978,11 @@ msgstr ""
 msgid "Checking source validity"
 msgstr "ソースの有効性を確認しています"
 
-msgid "Checking source validity..."
-msgstr "ソースの有効性を確認しています..."
+msgid "Checking source validity…"
+msgstr ""
 
-msgid "Checking username availability..."
-msgstr "ユーザー名が利用可能か確認しています..."
+msgid "Checking username availability…"
+msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
 msgstr "国情報の読み込みに失敗しました。もう一度やり直してください。"
@@ -12020,8 +12020,8 @@ msgstr "子アイテムが正常に追加されました"
 msgid "Chinese language support using"
 msgstr "を使用した中国語のサポート"
 
-msgid "Choose File..."
-msgstr "ファイルを選択..."
+msgid "Choose File…"
+msgstr ""
 
 msgid "Choose a file"
 msgstr "ファイルを選択してください"
@@ -12032,11 +12032,11 @@ msgstr "プロジェクトを選択する"
 msgid "Choose a template"
 msgstr "テンプレートを選択してください"
 
-msgid "Choose a template..."
-msgstr "テンプレートを選択してください..."
+msgid "Choose a template…"
+msgstr ""
 
-msgid "Choose a type..."
-msgstr "タイプを選択してください..."
+msgid "Choose a type…"
+msgstr ""
 
 msgid "Choose an option"
 msgstr "オプションを選択"
@@ -12830,8 +12830,8 @@ msgstr "この %{quick_action_target} を閉じる。"
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr ""
 
-msgid "Closing %{issuableType}..."
-msgstr "%{issuableType}を閉じています..."
+msgid "Closing %{issuableType}…"
+msgstr ""
 
 msgid "Cloud Run"
 msgstr "Cloud Run"
@@ -13674,8 +13674,8 @@ msgstr ""
 msgid "ClusterIntegration|Invalid issue URL"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
-msgstr "Kubernetesクラスターを作成しています..."
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
+msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr "Kubernetesクラスター名"
@@ -15692,8 +15692,8 @@ msgstr "接続中"
 msgid "Connecting to terminal sync service"
 msgstr "ターミナル同期サービスに接続"
 
-msgid "Connecting..."
-msgstr "接続中..."
+msgid "Connecting…"
+msgstr ""
 
 msgid "Connection failure"
 msgstr "接続に失敗しました"
@@ -16151,11 +16151,11 @@ msgstr "タグの削除は正常にスケジュールされました。"
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr "タグの削除は正常にスケジュールされました。"
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
-msgstr "次の%{strongStart}いずれか%{strongEnd}のルールに一致するタグは、タグの削除で設定したルールに一致している場合でも、%{strongStart}保持%{strongEnd}されます。%{strongStart}最新%{strongEnd}のタグは常に保持されます。"
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
+msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
-msgstr "次のルールに一致するタグは、%{strongStart}削除されます%{strongEnd}。ただし、タグの保持で設定されたルールで保持するように指定されている場合は削除されません。"
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr "この正規表現パターンに一致する名前を持つタグは保持されます。%{linkStart}正規表現の例を表示します。%{linkEnd}"
@@ -17138,8 +17138,8 @@ msgstr "ブランチを作成"
 msgid "Create commit"
 msgstr "コミットを作成"
 
-msgid "Create commit..."
-msgstr "コミットの作成..."
+msgid "Create commit…"
+msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."
 msgstr "共通ファイルをより素早く作成し、形式を標準化します。"
@@ -17228,8 +17228,8 @@ msgstr "新しいラベルを作成"
 msgid "Create new project"
 msgstr "新しいプロジェクトの作成"
 
-msgid "Create new..."
-msgstr "新規作成..."
+msgid "Create new…"
+msgstr ""
 
 msgid "Create one"
 msgstr "作成する"
@@ -17633,8 +17633,8 @@ msgstr "SSHキー"
 msgid "CredentialsInventory|SSH keys"
 msgstr "SSHキー"
 
-msgid "CredentialsInventory|Search or filter credentials..."
-msgstr "認証情報の検索またはフィルタリング..."
+msgid "CredentialsInventory|Search or filter credentials…"
+msgstr ""
 
 msgid "CredentialsInventory|State"
 msgstr "ステータス"
@@ -18858,8 +18858,8 @@ msgstr "スキャナープロファイル"
 msgid "DastProfiles|Scanner profiles"
 msgstr "スキャナープロファイル"
 
-msgid "DastProfiles|Search..."
-msgstr "検索..."
+msgid "DastProfiles|Search…"
+msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr "DASTスキャンを実行するスキャナプロファイルを選択します"
@@ -19179,8 +19179,8 @@ msgstr "テキストファイルの検証"
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr "検証に失敗しました。もう一度やり直してください。"
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
-msgstr "検証を実施中です。お待ちください..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
+msgstr ""
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
 msgid_plural "DastSiteValidation|This will affect %d other profiles targeting the same URL."
@@ -19198,8 +19198,8 @@ msgstr "サイト検証"
 msgid "DastSiteValidation|Validated"
 msgstr "検証済み"
 
-msgid "DastSiteValidation|Validating..."
-msgstr "検証中..."
+msgid "DastSiteValidation|Validating…"
+msgstr ""
 
 msgid "DastSiteValidation|Validation failed"
 msgstr "検証に失敗しました"
@@ -19213,8 +19213,8 @@ msgstr "検証に成功しました。アクティブスキャンとパッシブ
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr "%{url}に対するアクティブなスキャンが実行できません。"
 
-msgid "Data is still calculating..."
-msgstr "データを計算中です..."
+msgid "Data is still calculating…"
+msgstr ""
 
 msgid "Data refresh"
 msgstr "データの更新"
@@ -19868,8 +19868,8 @@ msgstr "プロジェクト"
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
-msgid "Dependencies|Search or filter dependencies..."
-msgstr "依存関係を検索またはフィルター..."
+msgid "Dependencies|Search or filter dependencies…"
+msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr "%{linkStart}最新の成功した%{linkEnd}スキャンに基づくソフトウェア部品表(SBOM)"
@@ -20105,11 +20105,11 @@ msgstr "デプロイの進行状況が見つかりません。ポッドを表示
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr "静的なアセットとリソースを Google が管理する CDN にデプロイする"
 
-msgid "Deploy to..."
-msgstr "デプロイ先..."
-
 msgid "Deploy tokens"
 msgstr "デプロイトークン"
+
+msgid "Deploy to…"
+msgstr ""
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
 msgstr "ご使用の環境のデプロイの進行状況を確認するには、%{codeStart}$KUBE_NAMESPACE%{codeEnd}にデプロイしており、%{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd}と%{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}を付けていることを確認してください。"
@@ -23072,8 +23072,8 @@ msgstr "ポッドの削除"
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr "環境「%{environmentName}」を削除すると、元に戻せません。本当に削除しますか?"
 
-msgid "Environments|Deploy to..."
-msgstr "次にデプロイします..."
+msgid "Environments|Deploy to…"
+msgstr ""
 
 msgid "Environments|Deployment history"
 msgstr "デプロイ履歴"
@@ -24356,6 +24356,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr "外部 URL"
 
@@ -24364,6 +24367,9 @@ msgstr "外部 ユーザー:"
 
 msgid "External authorization denied access to this project"
 msgstr "外部認証により、このプロジェクトへのアクセスが拒否されました"
+
+msgid "External pull request event"
+msgstr ""
 
 msgid "External storage URL"
 msgstr "外部ストレージの URL"
@@ -25265,9 +25271,6 @@ msgstr "グループでフィルタリング"
 
 msgid "Filter results by project"
 msgstr "プロジェクトでフィルタリング"
-
-msgid "Filter results..."
-msgstr "結果をフィルタリング..."
 
 msgid "Filter results…"
 msgstr ""
@@ -36174,6 +36177,9 @@ msgstr "マージリクエストの依存関係"
 msgid "Merge request dependencies must be merged."
 msgstr "マージリクエストの依存関係はマージ済みである必要があります。"
 
+msgid "Merge request event"
+msgstr ""
+
 msgid "Merge request events"
 msgstr "マージリクエストのイベント"
 
@@ -40096,6 +40102,12 @@ msgstr "通話スケジュール"
 msgid "On-call schedules"
 msgstr "通話のスケジュール"
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr "オンデマンドスキャンはDevOpsサイクル外で実行され、プロジェクトの脆弱性を見つけます"
 
@@ -42056,6 +42068,9 @@ msgstr "パラメーター"
 
 msgid "Parent"
 msgstr "親"
+
+msgid "Parent pipeline"
+msgstr ""
 
 msgid "Parent removed successfully"
 msgstr "親を正常に消去しました"
@@ -44866,8 +44881,8 @@ msgstr "ユーザー名を変更"
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr "ユーザー名を変更すると、意図しない結果を生じる場合があります。"
 
-msgid "Profiles|Choose file..."
-msgstr "ファイルを選択..."
+msgid "Profiles|Choose file…"
+msgstr ""
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr "プロジェクト、リポジトリまたは組織情報なしで、公開プロファイルに非公開プロジェクトの投稿を表示することを選択します。"
@@ -48754,8 +48769,8 @@ msgstr "この %{quick_action_target} を再び開く"
 msgid "Reopened this %{quick_action_target}."
 msgstr "この %{quick_action_target} を再び開いた。"
 
-msgid "Reopening %{issuableType}..."
-msgstr "%{issuableType}を再開しています..."
+msgid "Reopening %{issuableType}…"
+msgstr ""
 
 msgid "Reopening…"
 msgstr ""
@@ -51619,6 +51634,9 @@ msgstr "スキャナープロファイルの削除に失敗しました"
 msgid "Scanner profile not found for given parameters"
 msgstr "指定パラメータのスキャナープロファイルが見つかりません"
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr "新しいパイプラインのスケジュールを作成"
 
@@ -52170,6 +52188,9 @@ msgid "Security dashboard"
 msgstr "セキュリティダッシュボード"
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -53622,6 +53643,9 @@ msgstr "最新"
 
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr "%{allowed}より多い"
+
+msgid "SecurityOrchestration|on every"
+msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr "コンプライアンスフレームワークを持つプロジェクト"
@@ -55360,6 +55384,9 @@ msgstr "一度に1つのファイルを表示"
 
 msgid "Show open epics"
 msgstr "オープンしているエピックを表示"
+
+msgid "Show or hide sidebar"
+msgstr ""
 
 msgid "Show password"
 msgstr "パスワードを表示"
@@ -60914,9 +60941,6 @@ msgstr ""
 msgid "Todos|Filter to-do items"
 msgstr "Todo事項のフィルタリング"
 
-msgid "Todos|First sent %{timeago}"
-msgstr ""
-
 msgid "Todos|For one hour"
 msgstr ""
 
@@ -60995,6 +61019,9 @@ msgstr "何も残っていません。おめでとうございます !"
 
 msgid "Todos|OKR checkin requested"
 msgstr "OKRチェックインリクエスト済み"
+
+msgid "Todos|Previously snoozed"
+msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"
 msgstr "現在、rawのテキスト検索はサポートされていません"
@@ -65260,6 +65287,9 @@ msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
+msgstr ""
+
+msgid "Web"
 msgstr ""
 
 msgid "Web IDE"

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 10:27\n"
+"PO-Revision-Date: 2025-03-24 10:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " de la %{start} până la %{end}"
@@ -3319,7 +3319,7 @@ msgstr ""
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Search or filter access tokens..."
+msgid "AccessTokens|Search or filter access tokens…"
 msgstr ""
 
 msgid "AccessTokens|Select a role"
@@ -3661,8 +3661,8 @@ msgstr "Adăugați un tabel"
 msgid "Add a timeline event to incident"
 msgstr "Adăugați un eveniment cronologic la incident"
 
-msgid "Add a title..."
-msgstr "Adăugați un titlu..."
+msgid "Add a title…"
+msgstr ""
 
 msgid "Add a to-do item"
 msgstr ""
@@ -6397,8 +6397,8 @@ msgstr "Permite proiectelor sau subgrupurilor din acest grup să suprascrie seta
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr "Permite proiectelor să urmărească erorile cu ajutorul unei integrări Opstrace."
 
-msgid "Almost there..."
-msgstr "Aproape acolo..."
+msgid "Almost there…"
+msgstr ""
 
 msgid "Already blocked"
 msgstr "Deja blocat"
@@ -8977,7 +8977,7 @@ msgstr "Perioada limită a ratei web autentificată (în secunde)"
 msgid "Authenticated web requests"
 msgstr "Solicitări web autentificate"
 
-msgid "Authenticating..."
+msgid "Authenticating…"
 msgstr ""
 
 msgid "Authentication"
@@ -12382,11 +12382,11 @@ msgstr ""
 msgid "Checking branch validity"
 msgstr ""
 
-msgid "Checking branch validity..."
+msgid "Checking branch validity…"
 msgstr ""
 
-msgid "Checking group path availability..."
-msgstr "Verificarea disponibilității căii grupului..."
+msgid "Checking group path availability…"
+msgstr ""
 
 msgid "Checking if merge request can be merged…"
 msgstr ""
@@ -12394,11 +12394,11 @@ msgstr ""
 msgid "Checking source validity"
 msgstr ""
 
-msgid "Checking source validity..."
+msgid "Checking source validity…"
 msgstr ""
 
-msgid "Checking username availability..."
-msgstr "Se verifică disponibilitatea numelui de utilizator..."
+msgid "Checking username availability…"
+msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
 msgstr "Nu s-a reușit încărcarea țărilor. Vă rugăm să încercați din nou."
@@ -12436,8 +12436,8 @@ msgstr ""
 msgid "Chinese language support using"
 msgstr "Suport pentru limba chineză folosind"
 
-msgid "Choose File..."
-msgstr "Alegeți fișierul..."
+msgid "Choose File…"
+msgstr ""
 
 msgid "Choose a file"
 msgstr "Alegeți un fișier"
@@ -12448,11 +12448,11 @@ msgstr ""
 msgid "Choose a template"
 msgstr "Alegeți un șablon"
 
-msgid "Choose a template..."
-msgstr "Alegeți un șablon…"
+msgid "Choose a template…"
+msgstr ""
 
-msgid "Choose a type..."
-msgstr "Alegeți un tip…"
+msgid "Choose a type…"
+msgstr ""
 
 msgid "Choose an option"
 msgstr ""
@@ -13252,7 +13252,7 @@ msgstr "Închideți această %{quick_action_target}."
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr ""
 
-msgid "Closing %{issuableType}..."
+msgid "Closing %{issuableType}…"
 msgstr ""
 
 msgid "Cloud Run"
@@ -14098,8 +14098,8 @@ msgstr ""
 msgid "ClusterIntegration|Invalid issue URL"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
-msgstr "Se creează clusterul Kubernetes..."
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
+msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr "Numele clusterului Kubernetes"
@@ -16120,8 +16120,8 @@ msgstr "Conectarea"
 msgid "Connecting to terminal sync service"
 msgstr "Se conectează la serviciul de sincronizare a terminalului"
 
-msgid "Connecting..."
-msgstr "Se conectează..."
+msgid "Connecting…"
+msgstr ""
 
 msgid "Connection failure"
 msgstr "Eșec de conectare"
@@ -16585,11 +16585,11 @@ msgstr "Etichetă marcată cu succes pentru ștergere."
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr "Etichete marcate cu succes pentru ștergere."
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
-msgstr "Etichetele care corespund acestor reguli sunt %{strongStart}înlăturate%{strongEnd}, cu excepția cazului în care o regulă de mai sus prevede păstrarea lor."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr "Etichetele cu nume care se potrivesc acestui model regex sunt păstrate. %{linkStart}Consultați exemple de regex.%{linkEnd}"
@@ -17572,8 +17572,8 @@ msgstr "Creați ramura"
 msgid "Create commit"
 msgstr "Creați un commit"
 
-msgid "Create commit..."
-msgstr "Se creează commit-ul..."
+msgid "Create commit…"
+msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."
 msgstr "Creați mai rapid fișiere comune și standardizați formatul acestora."
@@ -17662,8 +17662,8 @@ msgstr "Creați o nouă etichetă"
 msgid "Create new project"
 msgstr ""
 
-msgid "Create new..."
-msgstr "Creare de nou(ă)..."
+msgid "Create new…"
+msgstr ""
 
 msgid "Create one"
 msgstr "Creați unul"
@@ -18067,7 +18067,7 @@ msgstr "Chei SSH"
 msgid "CredentialsInventory|SSH keys"
 msgstr ""
 
-msgid "CredentialsInventory|Search or filter credentials..."
+msgid "CredentialsInventory|Search or filter credentials…"
 msgstr ""
 
 msgid "CredentialsInventory|State"
@@ -19300,7 +19300,7 @@ msgstr "Profil de scaner"
 msgid "DastProfiles|Scanner profiles"
 msgstr "Profiluri de scaner"
 
-msgid "DastProfiles|Search..."
+msgid "DastProfiles|Search…"
 msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
@@ -19621,8 +19621,8 @@ msgstr "Validarea fișierului text"
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr "Validarea a eșuat. Vă rugăm să încercați din nou."
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
-msgstr "Validarea este în curs. Vă rugăm să așteptați..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
+msgstr ""
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
 msgid_plural "DastSiteValidation|This will affect %d other profiles targeting the same URL."
@@ -19642,8 +19642,8 @@ msgstr "Validați site-ul"
 msgid "DastSiteValidation|Validated"
 msgstr "Validat"
 
-msgid "DastSiteValidation|Validating..."
-msgstr "Se validează..."
+msgid "DastSiteValidation|Validating…"
+msgstr ""
 
 msgid "DastSiteValidation|Validation failed"
 msgstr "Validarea a eșuat"
@@ -19657,8 +19657,8 @@ msgstr "Validarea a reușit. Atât scanările active, cât și cele pasive pot f
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr "Nu veți putea rula scanări active pe %{url}."
 
-msgid "Data is still calculating..."
-msgstr "Datele sunt încă în curs de calcul..."
+msgid "Data is still calculating…"
+msgstr ""
 
 msgid "Data refresh"
 msgstr "Reîmprospătarea datelor"
@@ -20326,7 +20326,7 @@ msgstr ""
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
-msgid "Dependencies|Search or filter dependencies..."
+msgid "Dependencies|Search or filter dependencies…"
 msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
@@ -20569,10 +20569,10 @@ msgstr "Progresul implementării nu a fost găsit. Pentru a vedea pod-urile, asi
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr "Distribuiți resurse și active statice pe CDN-ul administrat de Google"
 
-msgid "Deploy to..."
-msgstr "Distribuiți în ..."
-
 msgid "Deploy tokens"
+msgstr ""
+
+msgid "Deploy to…"
 msgstr ""
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
@@ -23566,8 +23566,8 @@ msgstr ""
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr "Ștergerea mediului „%{environmentName}” nu poate fi anulată. Doriți să-l ștergeți oricum?"
 
-msgid "Environments|Deploy to..."
-msgstr "Implementați în..."
+msgid "Environments|Deploy to…"
+msgstr ""
 
 msgid "Environments|Deployment history"
 msgstr ""
@@ -24856,6 +24856,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr "URL extern"
 
@@ -24864,6 +24867,9 @@ msgstr "Utilizator extern:"
 
 msgid "External authorization denied access to this project"
 msgstr "Autorizația externă a refuzat accesul la acest proiect"
+
+msgid "External pull request event"
+msgstr ""
 
 msgid "External storage URL"
 msgstr "URL-ul de stocare externă"
@@ -25773,9 +25779,6 @@ msgstr "Filtrați rezultatele după grup"
 
 msgid "Filter results by project"
 msgstr "Filtrați rezultatele după proiect"
-
-msgid "Filter results..."
-msgstr "Filtrarea rezultatelor..."
 
 msgid "Filter results…"
 msgstr ""
@@ -36760,6 +36763,9 @@ msgstr "Dependențele merge request-ului"
 msgid "Merge request dependencies must be merged."
 msgstr ""
 
+msgid "Merge request event"
+msgstr ""
+
 msgid "Merge request events"
 msgstr "Evenimente de merge request-uri"
 
@@ -40708,6 +40714,12 @@ msgstr "Program la apel"
 msgid "On-call schedules"
 msgstr "Programe de gardă"
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr "Scanările la cerere se execută în afara ciclului DevOps și găsesc vulnerabilități în proiectele dumneavoastră"
 
@@ -42678,6 +42690,9 @@ msgstr "Parametru"
 
 msgid "Parent"
 msgstr "Părinte"
+
+msgid "Parent pipeline"
+msgstr ""
 
 msgid "Parent removed successfully"
 msgstr ""
@@ -45490,8 +45505,8 @@ msgstr "Schimbați numele de utilizator"
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr "Schimbarea numelui de utilizator poate avea efecte secundare nedorite."
 
-msgid "Profiles|Choose file..."
-msgstr "Alegeți fișierul…"
+msgid "Profiles|Choose file…"
+msgstr ""
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr "Selectați afișarea contribuțiilor din proiectele private în profilul dvs. public, fără informații despre proiect, repozitorii sau organizație."
@@ -49390,7 +49405,7 @@ msgstr "Redeschideți acest / această %{quick_action_target}"
 msgid "Reopened this %{quick_action_target}."
 msgstr "S-a redeschis acest / această %{quick_action_target}."
 
-msgid "Reopening %{issuableType}..."
+msgid "Reopening %{issuableType}…"
 msgstr ""
 
 msgid "Reopening…"
@@ -52297,6 +52312,9 @@ msgstr "Profilul scanerului nu a putut fi șters"
 msgid "Scanner profile not found for given parameters"
 msgstr "Profilul scanerului nu a fost găsit pentru parametrii dați"
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr "Programați un nou pipeline"
 
@@ -52874,6 +52892,9 @@ msgid "Security dashboard"
 msgstr "Tabloul de bord de securitate"
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -54335,6 +54356,9 @@ msgid "SecurityOrchestration|latest"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|on every"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -56076,6 +56100,9 @@ msgstr "Afișați câte un fișier odată"
 
 msgid "Show open epics"
 msgstr "Afișați epicele deschise"
+
+msgid "Show or hide sidebar"
+msgstr ""
 
 msgid "Show password"
 msgstr ""
@@ -61708,9 +61735,6 @@ msgstr ""
 msgid "Todos|Filter to-do items"
 msgstr ""
 
-msgid "Todos|First sent %{timeago}"
-msgstr ""
-
 msgid "Todos|For one hour"
 msgstr ""
 
@@ -61790,6 +61814,9 @@ msgid "Todos|Nothing left to do. High five!"
 msgstr "Nu mai e nimic de făcut. Bate palma!"
 
 msgid "Todos|OKR checkin requested"
+msgstr ""
+
+msgid "Todos|Previously snoozed"
 msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"
@@ -66092,6 +66119,9 @@ msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
+msgstr ""
+
+msgid "Web"
 msgstr ""
 
 msgid "Web IDE"

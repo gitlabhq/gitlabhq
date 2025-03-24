@@ -1793,6 +1793,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_2e4861e8640c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_package_files"
+  WHERE "packages_package_files"."id" = NEW."package_file_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_30209d0fba3e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -19086,6 +19102,7 @@ CREATE TABLE packages_helm_file_metadata (
     package_file_id bigint NOT NULL,
     channel text NOT NULL,
     metadata jsonb,
+    project_id bigint,
     CONSTRAINT check_06e8d100af CHECK ((char_length(channel) <= 255))
 );
 
@@ -35974,6 +35991,8 @@ CREATE INDEX index_packages_helm_file_metadata_on_channel ON packages_helm_file_
 
 CREATE INDEX index_packages_helm_file_metadata_on_pf_id_and_channel ON packages_helm_file_metadata USING btree (package_file_id, channel);
 
+CREATE INDEX index_packages_helm_file_metadata_on_project_id ON packages_helm_file_metadata USING btree (project_id);
+
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_maven_metadata USING btree (package_id, path);
 
 CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata USING btree (path);
@@ -40834,6 +40853,8 @@ CREATE TRIGGER trigger_2cb7e7147818 BEFORE INSERT OR UPDATE ON wiki_page_meta_us
 
 CREATE TRIGGER trigger_2dafd0d13605 BEFORE INSERT OR UPDATE ON pages_domain_acme_orders FOR EACH ROW EXECUTE FUNCTION trigger_2dafd0d13605();
 
+CREATE TRIGGER trigger_2e4861e8640c BEFORE INSERT OR UPDATE ON packages_helm_file_metadata FOR EACH ROW EXECUTE FUNCTION trigger_2e4861e8640c();
+
 CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_alert_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_30209d0fba3e();
 
 CREATE TRIGGER trigger_309294c3b889 BEFORE INSERT OR UPDATE ON snippet_statistics FOR EACH ROW EXECUTE FUNCTION trigger_309294c3b889();
@@ -43014,6 +43035,9 @@ ALTER TABLE ONLY personal_access_tokens
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_daa8cee94c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_helm_file_metadata
+    ADD CONSTRAINT fk_dac49661f4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_failures
     ADD CONSTRAINT fk_dad28985ee FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

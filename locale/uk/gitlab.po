@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 10:27\n"
+"PO-Revision-Date: 2025-03-24 10:59\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} до %{end}"
@@ -3495,7 +3495,7 @@ msgstr ""
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Search or filter access tokens..."
+msgid "AccessTokens|Search or filter access tokens…"
 msgstr ""
 
 msgid "AccessTokens|Select a role"
@@ -3837,8 +3837,8 @@ msgstr "Додати таблицю"
 msgid "Add a timeline event to incident"
 msgstr "Додати подію часової шкали до інциденту"
 
-msgid "Add a title..."
-msgstr "Додати назву..."
+msgid "Add a title…"
+msgstr ""
 
 msgid "Add a to-do item"
 msgstr ""
@@ -6576,8 +6576,8 @@ msgstr "Дозволяє проєктам або підгрупам у цій г
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr "Дозволяє проєктам відстежувати помилки за допомогою Opstrace інтеграції."
 
-msgid "Almost there..."
-msgstr "Майже готово..."
+msgid "Almost there…"
+msgstr ""
 
 msgid "Already blocked"
 msgstr "Вже заблоковано"
@@ -9178,7 +9178,7 @@ msgstr "Період обмеження частоти веб в секунда�
 msgid "Authenticated web requests"
 msgstr "Аутентифіковані веб-запити"
 
-msgid "Authenticating..."
+msgid "Authenticating…"
 msgstr ""
 
 msgid "Authentication"
@@ -12590,11 +12590,11 @@ msgstr ""
 msgid "Checking branch validity"
 msgstr ""
 
-msgid "Checking branch validity..."
+msgid "Checking branch validity…"
 msgstr ""
 
-msgid "Checking group path availability..."
-msgstr "Перевірка доступності шляху для групи..."
+msgid "Checking group path availability…"
+msgstr ""
 
 msgid "Checking if merge request can be merged…"
 msgstr ""
@@ -12602,11 +12602,11 @@ msgstr ""
 msgid "Checking source validity"
 msgstr ""
 
-msgid "Checking source validity..."
+msgid "Checking source validity…"
 msgstr ""
 
-msgid "Checking username availability..."
-msgstr "Перевірка доступності імені користувача..."
+msgid "Checking username availability…"
+msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
 msgstr "Помилка при завантаженні країн. Будь ласка, спробуйте ще раз."
@@ -12644,8 +12644,8 @@ msgstr ""
 msgid "Chinese language support using"
 msgstr "Використання китайської мови"
 
-msgid "Choose File..."
-msgstr "Виберіть файл..."
+msgid "Choose File…"
+msgstr ""
 
 msgid "Choose a file"
 msgstr "Виберіть файл"
@@ -12656,11 +12656,11 @@ msgstr ""
 msgid "Choose a template"
 msgstr "Виберіть шаблон"
 
-msgid "Choose a template..."
-msgstr "Виберіть тему-шаблон..."
+msgid "Choose a template…"
+msgstr ""
 
-msgid "Choose a type..."
-msgstr "Виберіть тип..."
+msgid "Choose a type…"
+msgstr ""
 
 msgid "Choose an option"
 msgstr ""
@@ -13463,8 +13463,8 @@ msgstr "Закриває %{quick_action_target}."
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr ""
 
-msgid "Closing %{issuableType}..."
-msgstr "Закриття %{issuableType}..."
+msgid "Closing %{issuableType}…"
+msgstr ""
 
 msgid "Cloud Run"
 msgstr "Cloud Run"
@@ -14310,8 +14310,8 @@ msgstr ""
 msgid "ClusterIntegration|Invalid issue URL"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
-msgstr "Створюється кластер Kubernetes..."
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
+msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr "Ім’я Kubernetes-кластера"
@@ -16334,8 +16334,8 @@ msgstr "З'єднання"
 msgid "Connecting to terminal sync service"
 msgstr "З’єднання із сервісом синхронізації терміналу"
 
-msgid "Connecting..."
-msgstr "З'єднання..."
+msgid "Connecting…"
+msgstr ""
 
 msgid "Connection failure"
 msgstr "Помилка з’єднання"
@@ -16802,11 +16802,11 @@ msgstr "Тег успішно позначений для видалення."
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr "Теги успішно позначені для видалення."
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
-msgstr "Теги що відповідають %{strongStart}будь-якому%{strongEnd} з цих правил %{strongStart}залишаються%{strongEnd}, навіть якщо вони відповідають правилу усунення нижче. %{strongStart}останній%{strongEnd} з тегів завжди залишається."
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
+msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
-msgstr "Теги, які відповідають цим правилам, %{strongStart}видаляються%{strongEnd}, якщо вище правило не передбачає їх збереження."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr "Теги з іменами, які відповідають цьому шаблону регулярного виразу, зберігаються. %{linkStart}Перегляньте приклади регулярних виразів.%{linkEnd}"
@@ -17789,8 +17789,8 @@ msgstr "Створити гілку"
 msgid "Create commit"
 msgstr "Створити коміт"
 
-msgid "Create commit..."
-msgstr "Створити коміт..."
+msgid "Create commit…"
+msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."
 msgstr ""
@@ -17879,8 +17879,8 @@ msgstr "Створити нову мітку"
 msgid "Create new project"
 msgstr ""
 
-msgid "Create new..."
-msgstr "Створити новий..."
+msgid "Create new…"
+msgstr ""
 
 msgid "Create one"
 msgstr "Створити"
@@ -18284,7 +18284,7 @@ msgstr "Ключі SSH"
 msgid "CredentialsInventory|SSH keys"
 msgstr ""
 
-msgid "CredentialsInventory|Search or filter credentials..."
+msgid "CredentialsInventory|Search or filter credentials…"
 msgstr ""
 
 msgid "CredentialsInventory|State"
@@ -19521,7 +19521,7 @@ msgstr "Профіль сканера"
 msgid "DastProfiles|Scanner profiles"
 msgstr "Профілі сканера"
 
-msgid "DastProfiles|Search..."
+msgid "DastProfiles|Search…"
 msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
@@ -19842,8 +19842,8 @@ msgstr "Перевірка текстового файлу"
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr "Помилка перевірки. Будь ласка, спробуйте ще раз."
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
-msgstr "Перевірка триває. Будь ласка, зачекайте..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
+msgstr ""
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
 msgid_plural "DastSiteValidation|This will affect %d other profiles targeting the same URL."
@@ -19864,8 +19864,8 @@ msgstr ""
 msgid "DastSiteValidation|Validated"
 msgstr "Перевірена"
 
-msgid "DastSiteValidation|Validating..."
-msgstr "Перевірка..."
+msgid "DastSiteValidation|Validating…"
+msgstr ""
 
 msgid "DastSiteValidation|Validation failed"
 msgstr "Помилка перевірки"
@@ -19879,8 +19879,8 @@ msgstr ""
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr ""
 
-msgid "Data is still calculating..."
-msgstr "Дані все ще обчислюються..."
+msgid "Data is still calculating…"
+msgstr ""
 
 msgid "Data refresh"
 msgstr "Оновлення даних"
@@ -20555,7 +20555,7 @@ msgstr ""
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
-msgid "Dependencies|Search or filter dependencies..."
+msgid "Dependencies|Search or filter dependencies…"
 msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
@@ -20801,10 +20801,10 @@ msgstr "Хід розгортання не знайдено. Щоб побачи
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr "Розгорніть статичні активи та ресурси в CDN, що керується Google"
 
-msgid "Deploy to..."
-msgstr "Розгорнути на..."
-
 msgid "Deploy tokens"
+msgstr ""
+
+msgid "Deploy to…"
 msgstr ""
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
@@ -23813,8 +23813,8 @@ msgstr ""
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr "Видалення середовища '%{environmentName}' незворотнє. Ви все одно хочете його видалити?"
 
-msgid "Environments|Deploy to..."
-msgstr "Розгортати до..."
+msgid "Environments|Deploy to…"
+msgstr ""
 
 msgid "Environments|Deployment history"
 msgstr ""
@@ -25106,6 +25106,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr "Зовнішній URL"
 
@@ -25114,6 +25117,9 @@ msgstr "Зовнішній користувач:"
 
 msgid "External authorization denied access to this project"
 msgstr "Зовнішня авторизація заборонила доступ до цього проєкту"
+
+msgid "External pull request event"
+msgstr ""
 
 msgid "External storage URL"
 msgstr "URL-адреса зовнішнього сховища"
@@ -26027,9 +26033,6 @@ msgstr "Фільтрувати результати за групою"
 
 msgid "Filter results by project"
 msgstr "Фільтрувати результати за проєктом"
-
-msgid "Filter results..."
-msgstr "Фільтрувати результати..."
 
 msgid "Filter results…"
 msgstr ""
@@ -37053,6 +37056,9 @@ msgstr "Залежності запиту на злиття"
 msgid "Merge request dependencies must be merged."
 msgstr ""
 
+msgid "Merge request event"
+msgstr ""
+
 msgid "Merge request events"
 msgstr "Події запиту на злиття"
 
@@ -41014,6 +41020,12 @@ msgstr "Розклади дзвінків"
 msgid "On-call schedules"
 msgstr "Розклад по викликам"
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr ""
 
@@ -42989,6 +43001,9 @@ msgstr "Параметр"
 
 msgid "Parent"
 msgstr "Джерело"
+
+msgid "Parent pipeline"
+msgstr ""
 
 msgid "Parent removed successfully"
 msgstr ""
@@ -45802,8 +45817,8 @@ msgstr "Змінити ім'я користувача"
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr "Зміна імені користувача може мати небажані побічні ефекти."
 
-msgid "Profiles|Choose file..."
-msgstr "Вибрати файл..."
+msgid "Profiles|Choose file…"
+msgstr ""
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr "Виберіть для показу внесків до приватних репозиторіїв у вашому публічному профілі без інформації про проєкти, репозиторії або організації."
@@ -49708,7 +49723,7 @@ msgstr "Повторно відкрити %{quick_action_target}"
 msgid "Reopened this %{quick_action_target}."
 msgstr "Повторно відкрито %{quick_action_target}."
 
-msgid "Reopening %{issuableType}..."
+msgid "Reopening %{issuableType}…"
 msgstr ""
 
 msgid "Reopening…"
@@ -52636,6 +52651,9 @@ msgstr ""
 msgid "Scanner profile not found for given parameters"
 msgstr ""
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr "Розклад нового конвеєра"
 
@@ -53226,6 +53244,9 @@ msgid "Security dashboard"
 msgstr "Панель безпеки"
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -54692,6 +54713,9 @@ msgid "SecurityOrchestration|latest"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|on every"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -56433,6 +56457,9 @@ msgid "Show one file at a time"
 msgstr "Показувати по одному файлу за раз"
 
 msgid "Show open epics"
+msgstr ""
+
+msgid "Show or hide sidebar"
 msgstr ""
 
 msgid "Show password"
@@ -62105,9 +62132,6 @@ msgstr ""
 msgid "Todos|Filter to-do items"
 msgstr ""
 
-msgid "Todos|First sent %{timeago}"
-msgstr ""
-
 msgid "Todos|For one hour"
 msgstr ""
 
@@ -62188,6 +62212,9 @@ msgid "Todos|Nothing left to do. High five!"
 msgstr "Не залишилося роботи. Дай п'ять!"
 
 msgid "Todos|OKR checkin requested"
+msgstr ""
+
+msgid "Todos|Previously snoozed"
 msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"
@@ -66508,6 +66535,9 @@ msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
+msgstr ""
+
+msgid "Web"
 msgstr ""
 
 msgid "Web IDE"

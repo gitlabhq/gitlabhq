@@ -33,7 +33,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
-    let(:url) { "/projects/#{project.id}/packages/conan/v2/conans/search" }
+    let(:url_suffix) { "search" }
 
     it_behaves_like 'conan search endpoint'
 
@@ -124,5 +124,43 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse authorize endpoint'
     end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/latest' do
+    include_context 'for conan recipe endpoints'
+
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:url_suffix) { "#{recipe_path}/latest" }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it 'returns the latest revision' do
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      recipe_revision = package.conan_recipe_revisions.first
+
+      expect(json_response['revision']).to eq(recipe_revision.revision)
+      expect(json_response['time']).to eq(recipe_revision.created_at.iso8601(3))
+    end
+
+    context 'when package has no revisions' do
+      let_it_be(:package) { create(:conan_package, project: project, without_recipe_revisions: true) }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Revision Not Found')
+      end
+    end
+
+    it_behaves_like 'enforcing read_packages job token policy'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'conan FIPS mode'
+    it_behaves_like 'package not found'
+    it_behaves_like 'project not found by project id'
   end
 end

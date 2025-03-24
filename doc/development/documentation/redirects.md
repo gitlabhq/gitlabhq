@@ -57,7 +57,7 @@ To redirect a page to another page in the same repository:
 
      ```markdown
      ---
-     redirect_to: '../newpath/to/file/index.md'
+     redirect_to: '../newpath/to/file/_index.md'
      remove_date: 'YYYY-MM-DD'
      ---
 

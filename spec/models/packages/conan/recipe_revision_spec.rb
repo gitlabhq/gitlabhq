@@ -59,4 +59,15 @@ RSpec.describe Packages::Conan::RecipeRevision, type: :model, feature_category: 
       end
     end
   end
+
+  describe 'scopes' do
+    describe '.order_by_id_desc' do
+      let_it_be(:revision_1) { create(:conan_recipe_revision) }
+      let_it_be(:revision_2) { create(:conan_recipe_revision) }
+
+      subject { described_class.order_by_id_desc }
+
+      it { is_expected.to eq([revision_2, revision_1]) }
+    end
+  end
 end

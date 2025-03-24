@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-HK\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 10:25\n"
+"PO-Revision-Date: 2025-03-24 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -2967,7 +2967,7 @@ msgstr ""
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Search or filter access tokens..."
+msgid "AccessTokens|Search or filter access tokens…"
 msgstr ""
 
 msgid "AccessTokens|Select a role"
@@ -3309,7 +3309,7 @@ msgstr "新增表格"
 msgid "Add a timeline event to incident"
 msgstr ""
 
-msgid "Add a title..."
+msgid "Add a title…"
 msgstr ""
 
 msgid "Add a to-do item"
@@ -6039,7 +6039,7 @@ msgstr ""
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr ""
 
-msgid "Almost there..."
+msgid "Almost there…"
 msgstr ""
 
 msgid "Already blocked"
@@ -8575,7 +8575,7 @@ msgstr ""
 msgid "Authenticated web requests"
 msgstr ""
 
-msgid "Authenticating..."
+msgid "Authenticating…"
 msgstr ""
 
 msgid "Authentication"
@@ -11966,10 +11966,10 @@ msgstr ""
 msgid "Checking branch validity"
 msgstr ""
 
-msgid "Checking branch validity..."
+msgid "Checking branch validity…"
 msgstr ""
 
-msgid "Checking group path availability..."
+msgid "Checking group path availability…"
 msgstr ""
 
 msgid "Checking if merge request can be merged…"
@@ -11978,10 +11978,10 @@ msgstr ""
 msgid "Checking source validity"
 msgstr ""
 
-msgid "Checking source validity..."
+msgid "Checking source validity…"
 msgstr ""
 
-msgid "Checking username availability..."
+msgid "Checking username availability…"
 msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
@@ -12020,7 +12020,7 @@ msgstr ""
 msgid "Chinese language support using"
 msgstr ""
 
-msgid "Choose File..."
+msgid "Choose File…"
 msgstr ""
 
 msgid "Choose a file"
@@ -12032,10 +12032,10 @@ msgstr ""
 msgid "Choose a template"
 msgstr ""
 
-msgid "Choose a template..."
+msgid "Choose a template…"
 msgstr ""
 
-msgid "Choose a type..."
+msgid "Choose a type…"
 msgstr ""
 
 msgid "Choose an option"
@@ -12830,7 +12830,7 @@ msgstr ""
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr ""
 
-msgid "Closing %{issuableType}..."
+msgid "Closing %{issuableType}…"
 msgstr ""
 
 msgid "Cloud Run"
@@ -13674,7 +13674,7 @@ msgstr ""
 msgid "ClusterIntegration|Invalid issue URL"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
@@ -15692,7 +15692,7 @@ msgstr ""
 msgid "Connecting to terminal sync service"
 msgstr ""
 
-msgid "Connecting..."
+msgid "Connecting…"
 msgstr ""
 
 msgid "Connection failure"
@@ -16151,10 +16151,10 @@ msgstr ""
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
@@ -17138,7 +17138,7 @@ msgstr "建立分支"
 msgid "Create commit"
 msgstr ""
 
-msgid "Create commit..."
+msgid "Create commit…"
 msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."
@@ -17228,7 +17228,7 @@ msgstr "建立新標籤"
 msgid "Create new project"
 msgstr ""
 
-msgid "Create new..."
+msgid "Create new…"
 msgstr ""
 
 msgid "Create one"
@@ -17633,7 +17633,7 @@ msgstr ""
 msgid "CredentialsInventory|SSH keys"
 msgstr ""
 
-msgid "CredentialsInventory|Search or filter credentials..."
+msgid "CredentialsInventory|Search or filter credentials…"
 msgstr ""
 
 msgid "CredentialsInventory|State"
@@ -18858,7 +18858,7 @@ msgstr ""
 msgid "DastProfiles|Scanner profiles"
 msgstr ""
 
-msgid "DastProfiles|Search..."
+msgid "DastProfiles|Search…"
 msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
@@ -19179,7 +19179,7 @@ msgstr ""
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr ""
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
 msgstr ""
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
@@ -19198,7 +19198,7 @@ msgstr ""
 msgid "DastSiteValidation|Validated"
 msgstr ""
 
-msgid "DastSiteValidation|Validating..."
+msgid "DastSiteValidation|Validating…"
 msgstr ""
 
 msgid "DastSiteValidation|Validation failed"
@@ -19213,7 +19213,7 @@ msgstr ""
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr ""
 
-msgid "Data is still calculating..."
+msgid "Data is still calculating…"
 msgstr ""
 
 msgid "Data refresh"
@@ -19868,7 +19868,7 @@ msgstr ""
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
-msgid "Dependencies|Search or filter dependencies..."
+msgid "Dependencies|Search or filter dependencies…"
 msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
@@ -20105,10 +20105,10 @@ msgstr ""
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr ""
 
-msgid "Deploy to..."
+msgid "Deploy tokens"
 msgstr ""
 
-msgid "Deploy tokens"
+msgid "Deploy to…"
 msgstr ""
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
@@ -23072,7 +23072,7 @@ msgstr ""
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr ""
 
-msgid "Environments|Deploy to..."
+msgid "Environments|Deploy to…"
 msgstr ""
 
 msgid "Environments|Deployment history"
@@ -24356,6 +24356,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr ""
 
@@ -24363,6 +24366,9 @@ msgid "External User:"
 msgstr ""
 
 msgid "External authorization denied access to this project"
+msgstr ""
+
+msgid "External pull request event"
 msgstr ""
 
 msgid "External storage URL"
@@ -25264,9 +25270,6 @@ msgid "Filter results by group"
 msgstr ""
 
 msgid "Filter results by project"
-msgstr ""
-
-msgid "Filter results..."
 msgstr ""
 
 msgid "Filter results…"
@@ -36174,6 +36177,9 @@ msgstr ""
 msgid "Merge request dependencies must be merged."
 msgstr ""
 
+msgid "Merge request event"
+msgstr ""
+
 msgid "Merge request events"
 msgstr ""
 
@@ -40096,6 +40102,12 @@ msgstr ""
 msgid "On-call schedules"
 msgstr ""
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr ""
 
@@ -42055,6 +42067,9 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parent"
+msgstr ""
+
+msgid "Parent pipeline"
 msgstr ""
 
 msgid "Parent removed successfully"
@@ -44866,7 +44881,7 @@ msgstr ""
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr ""
 
-msgid "Profiles|Choose file..."
+msgid "Profiles|Choose file…"
 msgstr ""
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
@@ -48754,7 +48769,7 @@ msgstr ""
 msgid "Reopened this %{quick_action_target}."
 msgstr ""
 
-msgid "Reopening %{issuableType}..."
+msgid "Reopening %{issuableType}…"
 msgstr ""
 
 msgid "Reopening…"
@@ -51619,6 +51634,9 @@ msgstr ""
 msgid "Scanner profile not found for given parameters"
 msgstr ""
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr "新建流水線計劃"
 
@@ -52170,6 +52188,9 @@ msgid "Security dashboard"
 msgstr ""
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -53621,6 +53642,9 @@ msgid "SecurityOrchestration|latest"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|on every"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -55359,6 +55383,9 @@ msgid "Show one file at a time"
 msgstr ""
 
 msgid "Show open epics"
+msgstr ""
+
+msgid "Show or hide sidebar"
 msgstr ""
 
 msgid "Show password"
@@ -60914,9 +60941,6 @@ msgstr ""
 msgid "Todos|Filter to-do items"
 msgstr ""
 
-msgid "Todos|First sent %{timeago}"
-msgstr ""
-
 msgid "Todos|For one hour"
 msgstr ""
 
@@ -60994,6 +61018,9 @@ msgid "Todos|Nothing left to do. High five!"
 msgstr ""
 
 msgid "Todos|OKR checkin requested"
+msgstr ""
+
+msgid "Todos|Previously snoozed"
 msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"
@@ -65260,6 +65287,9 @@ msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
+msgstr ""
+
+msgid "Web"
 msgstr ""
 
 msgid "Web IDE"

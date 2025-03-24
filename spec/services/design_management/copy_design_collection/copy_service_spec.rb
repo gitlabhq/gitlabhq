@@ -221,12 +221,23 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
             expect { subject }.to change { target_repository.branch_names }.from([]).to([project.design_repository.root_ref])
           end
 
-          it 'does not create default branch when one exists' do
-            target_repository.create_if_not_exists
-            target_repository.create_file(user, '.meta', '.gitlab', branch_name: 'new-branch', message: 'message')
+          context 'when default branch exists and is different from source default branch' do
+            before do
+              target_repository.create_if_not_exists
+              target_repository.create_file(user, '.meta', '.gitlab', branch_name: 'new-branch', message: 'message')
+            end
 
-            expect { subject }.not_to change { target_repository.branch_names }
-            expect(target_repository.branch_names).to eq(['new-branch'])
+            include_examples 'service success'
+
+            it 'does not create default branch when one exists' do
+              expect { subject }.not_to change { target_repository.branch_names }
+              expect(target_repository.branch_names).to eq(['new-branch'])
+            end
+
+            it 'does not raise not found error' do
+              expect { subject }.not_to raise_error
+              expect(commits_on_master(limit: 99)).to include(*target_issue.design_versions.ordered.pluck(:sha))
+            end
           end
 
           it 'leaves the design collection in the correct copy state' do

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 10:25\n"
+"PO-Revision-Date: 2025-03-24 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -2967,7 +2967,7 @@ msgstr "范围设置授予令牌的权限级别。"
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Search or filter access tokens..."
+msgid "AccessTokens|Search or filter access tokens…"
 msgstr ""
 
 msgid "AccessTokens|Select a role"
@@ -3309,8 +3309,8 @@ msgstr "添加表格"
 msgid "Add a timeline event to incident"
 msgstr "添加时间线事件"
 
-msgid "Add a title..."
-msgstr "添加标题..."
+msgid "Add a title…"
+msgstr ""
 
 msgid "Add a to-do item"
 msgstr ""
@@ -6039,8 +6039,8 @@ msgstr "允许该组中的项目或子组覆盖全局设置。"
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr "允许项目使用 Opstrace 集成跟踪错误。"
 
-msgid "Almost there..."
-msgstr "即将完成..."
+msgid "Almost there…"
+msgstr ""
 
 msgid "Already blocked"
 msgstr "已被禁用"
@@ -8575,8 +8575,8 @@ msgstr "经过身份验证的 Web 速率限制期（以秒为单位）"
 msgid "Authenticated web requests"
 msgstr "经过身份验证的 Web 请求"
 
-msgid "Authenticating..."
-msgstr "验证中…"
+msgid "Authenticating…"
+msgstr ""
 
 msgid "Authentication"
 msgstr "认证方式"
@@ -11966,11 +11966,11 @@ msgstr "正在检查分支可用性…"
 msgid "Checking branch validity"
 msgstr "检查分支有效性"
 
-msgid "Checking branch validity..."
-msgstr "检查分支有效性..."
+msgid "Checking branch validity…"
+msgstr ""
 
-msgid "Checking group path availability..."
-msgstr "正在检查群组路径是否可用..."
+msgid "Checking group path availability…"
+msgstr ""
 
 msgid "Checking if merge request can be merged…"
 msgstr ""
@@ -11978,11 +11978,11 @@ msgstr ""
 msgid "Checking source validity"
 msgstr "检查源的有效性"
 
-msgid "Checking source validity..."
-msgstr "检查源的有效性..."
+msgid "Checking source validity…"
+msgstr ""
 
-msgid "Checking username availability..."
-msgstr "检查用户名是否可用..."
+msgid "Checking username availability…"
+msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
 msgstr "加载国家失败。请再试一次。"
@@ -12020,8 +12020,8 @@ msgstr "成功添加子项目"
 msgid "Chinese language support using"
 msgstr "中文支持使用"
 
-msgid "Choose File..."
-msgstr "选择文件 …"
+msgid "Choose File…"
+msgstr ""
 
 msgid "Choose a file"
 msgstr "选择一个文件"
@@ -12032,11 +12032,11 @@ msgstr "选择项目"
 msgid "Choose a template"
 msgstr "选择一个模板"
 
-msgid "Choose a template..."
-msgstr "选择模板..."
+msgid "Choose a template…"
+msgstr ""
 
-msgid "Choose a type..."
-msgstr "选择类型..."
+msgid "Choose a type…"
+msgstr ""
 
 msgid "Choose an option"
 msgstr "选择一个选项"
@@ -12830,8 +12830,8 @@ msgstr "关闭此%{quick_action_target}."
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr "关闭此 %{work_item_type}。标记为与 %{duplicate_param} 相关，并为其副本。"
 
-msgid "Closing %{issuableType}..."
-msgstr "正在关闭 %{issuableType}..."
+msgid "Closing %{issuableType}…"
+msgstr ""
 
 msgid "Cloud Run"
 msgstr "Cloud Run"
@@ -13674,8 +13674,8 @@ msgstr ""
 msgid "ClusterIntegration|Invalid issue URL"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
-msgstr "正在创建Kubernetes集群..."
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
+msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr "Kubernetes 集群名称"
@@ -15692,8 +15692,8 @@ msgstr "正在连接"
 msgid "Connecting to terminal sync service"
 msgstr "连接到终端同步服务"
 
-msgid "Connecting..."
-msgstr "正在连接..."
+msgid "Connecting…"
+msgstr ""
 
 msgid "Connection failure"
 msgstr "连接失败"
@@ -16151,11 +16151,11 @@ msgstr "标签已成功设置为待删除。"
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr "标签已成功设置为待删除。"
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
-msgstr "符合 %{strongStart}任何 %{strongEnd}这些规则的标签将被 %{strongStart}保留 %{strongEnd}，即使它们匹配以下删除规则。始终保留 %{strongStart}最新 %{strongEnd}的标签。"
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
+msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
-msgstr "匹配这些规则的标签将被%{strongStart}移除%{strongEnd}，除非以上任一规则要求保留它们。"
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr "符合此正则表达式的名称的标签将会被保留。 %{linkStart}查看正则表达式示例%{linkEnd}"
@@ -17138,8 +17138,8 @@ msgstr "创建分支"
 msgid "Create commit"
 msgstr "创建提交"
 
-msgid "Create commit..."
-msgstr "创建提交..."
+msgid "Create commit…"
+msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."
 msgstr "更快地创建共同文件并使其格式标准化。"
@@ -17228,8 +17228,8 @@ msgstr "创建新标记"
 msgid "Create new project"
 msgstr ""
 
-msgid "Create new..."
-msgstr "创建新的..."
+msgid "Create new…"
+msgstr ""
 
 msgid "Create one"
 msgstr "创建一个"
@@ -17633,8 +17633,8 @@ msgstr "SSH密钥"
 msgid "CredentialsInventory|SSH keys"
 msgstr "SSH keys"
 
-msgid "CredentialsInventory|Search or filter credentials..."
-msgstr "搜索或筛选凭据..."
+msgid "CredentialsInventory|Search or filter credentials…"
+msgstr ""
 
 msgid "CredentialsInventory|State"
 msgstr "状态"
@@ -18858,8 +18858,8 @@ msgstr "扫描器配置文件"
 msgid "DastProfiles|Scanner profiles"
 msgstr "扫描器配置文件"
 
-msgid "DastProfiles|Search..."
-msgstr "搜索..."
+msgid "DastProfiles|Search…"
+msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr "选择扫描器配置文件来运行 DAST 扫描"
@@ -19179,8 +19179,8 @@ msgstr "文本文件验证"
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr "验证失败。请再试一次。"
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
-msgstr "正在验证。请稍候..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
+msgstr ""
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
 msgid_plural "DastSiteValidation|This will affect %d other profiles targeting the same URL."
@@ -19198,8 +19198,8 @@ msgstr "验证站点"
 msgid "DastSiteValidation|Validated"
 msgstr "已验证"
 
-msgid "DastSiteValidation|Validating..."
-msgstr "正在验证..."
+msgid "DastSiteValidation|Validating…"
+msgstr ""
 
 msgid "DastSiteValidation|Validation failed"
 msgstr "验证失败"
@@ -19213,8 +19213,8 @@ msgstr "验证成功。可对目标站点进行主动扫描和被动扫描。"
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr "您将无法对%{url}运行主动扫描。"
 
-msgid "Data is still calculating..."
-msgstr "数据仍在计算中……"
+msgid "Data is still calculating…"
+msgstr ""
 
 msgid "Data refresh"
 msgstr "数据刷新"
@@ -19868,8 +19868,8 @@ msgstr "项目"
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr "报告导出正在进行中。报告生成后，将发送一封包含下载链接的电子邮件。"
 
-msgid "Dependencies|Search or filter dependencies..."
-msgstr "搜索或筛选依赖项..."
+msgid "Dependencies|Search or filter dependencies…"
+msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr "软件物料清单 (SBOM) 基于%{linkStart}最新成功%{linkEnd}的扫描"
@@ -20105,11 +20105,11 @@ msgstr "未找到部署进度。要查看pod，请确保您的环境符合%{link
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr "将静态资产和资源部署到 Google 托管的 CDN"
 
-msgid "Deploy to..."
-msgstr "部署到 ..."
-
 msgid "Deploy tokens"
 msgstr "部署令牌"
+
+msgid "Deploy to…"
+msgstr ""
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
 msgstr "要查看您的环境的部署进度，请确保您正在部署到 %{codeStart}$KUBE_NAMESPACE%{codeEnd} 并使用 %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} 和 %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd} 进行注释。"
@@ -23072,8 +23072,8 @@ msgstr "删除 pod"
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr "删除'%{environmentName}'环境无法撤消。您确定要删除它吗？"
 
-msgid "Environments|Deploy to..."
-msgstr "部署到..."
+msgid "Environments|Deploy to…"
+msgstr ""
 
 msgid "Environments|Deployment history"
 msgstr "部署历史"
@@ -24356,6 +24356,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr "外部URL"
 
@@ -24364,6 +24367,9 @@ msgstr "外部用户："
 
 msgid "External authorization denied access to this project"
 msgstr "外部授权拒绝访问此项目"
+
+msgid "External pull request event"
+msgstr ""
 
 msgid "External storage URL"
 msgstr "外部存储网址"
@@ -25265,9 +25271,6 @@ msgstr "按群组筛选结果"
 
 msgid "Filter results by project"
 msgstr "按项目筛选结果"
-
-msgid "Filter results..."
-msgstr "筛选结果..."
 
 msgid "Filter results…"
 msgstr ""
@@ -36174,6 +36177,9 @@ msgstr "合并请求依赖"
 msgid "Merge request dependencies must be merged."
 msgstr "合并请求依赖项必须合并。"
 
+msgid "Merge request event"
+msgstr ""
+
 msgid "Merge request events"
 msgstr "合并请求事件"
 
@@ -40096,6 +40102,12 @@ msgstr "待命计划"
 msgid "On-call schedules"
 msgstr "待命计划"
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr "按需扫描在 DevOps 周期之外运行，并在您的项目中发现漏洞"
 
@@ -42056,6 +42068,9 @@ msgstr "参数"
 
 msgid "Parent"
 msgstr "父级"
+
+msgid "Parent pipeline"
+msgstr ""
 
 msgid "Parent removed successfully"
 msgstr "父项已成功删除"
@@ -44866,8 +44881,8 @@ msgstr "更改用户名"
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr "更改您的用户名可能会产生意想不到的副作用。"
 
-msgid "Profiles|Choose file..."
-msgstr "选择文件..."
+msgid "Profiles|Choose file…"
+msgstr ""
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr "选择在您的公开个人资料上显示私有项目的贡献，无需任何项目、仓库或组织信息。"
@@ -48754,8 +48769,8 @@ msgstr "重新打开%{quick_action_target}"
 msgid "Reopened this %{quick_action_target}."
 msgstr "重新打开%{quick_action_target}。"
 
-msgid "Reopening %{issuableType}..."
-msgstr "正在重新打开 %{issuableType}..."
+msgid "Reopening %{issuableType}…"
+msgstr ""
 
 msgid "Reopening…"
 msgstr ""
@@ -51619,6 +51634,9 @@ msgstr "扫描工具配置文件删除失败"
 msgid "Scanner profile not found for given parameters"
 msgstr "找不到指定参数的扫描工具配置文件"
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr "新建流水线计划"
 
@@ -52170,6 +52188,9 @@ msgid "Security dashboard"
 msgstr "安全仪表盘"
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -53622,6 +53643,9 @@ msgstr "最新"
 
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr "超过 %{allowed}"
+
+msgid "SecurityOrchestration|on every"
+msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr "使用合规框架的项目"
@@ -55360,6 +55384,9 @@ msgstr "一次显示一个文件"
 
 msgid "Show open epics"
 msgstr "显示开放中的史诗"
+
+msgid "Show or hide sidebar"
+msgstr ""
 
 msgid "Show password"
 msgstr "显示密码"
@@ -60914,9 +60941,6 @@ msgstr "无法取消静音待办事项。请稍后再试。"
 msgid "Todos|Filter to-do items"
 msgstr ""
 
-msgid "Todos|First sent %{timeago}"
-msgstr "首次发送于 %{timeago}"
-
 msgid "Todos|For one hour"
 msgstr "一小时"
 
@@ -60995,6 +61019,9 @@ msgstr "没有需要做的事情。真棒！"
 
 msgid "Todos|OKR checkin requested"
 msgstr "OKR 检查已请求"
+
+msgid "Todos|Previously snoozed"
+msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"
 msgstr "当前不支持原始文本搜索"
@@ -65261,6 +65288,9 @@ msgstr "我们注意到 %{project_name} 的存储使用量异常高"
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
 msgstr "我们注意到 %{strong_start}%{project_name}%{strong_end} 的存储使用量异常高"
+
+msgid "Web"
+msgstr ""
 
 msgid "Web IDE"
 msgstr "Web IDE"

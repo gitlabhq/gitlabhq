@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 10:26\n"
+"PO-Revision-Date: 2025-03-24 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} bis %{end}"
@@ -3143,7 +3143,7 @@ msgstr "Geltungsbereiche legen die dem Token gewährten Berechtigungsstufen fest
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Search or filter access tokens..."
+msgid "AccessTokens|Search or filter access tokens…"
 msgstr ""
 
 msgid "AccessTokens|Select a role"
@@ -3485,8 +3485,8 @@ msgstr "Tabelle hinzufügen"
 msgid "Add a timeline event to incident"
 msgstr "Füge dem Vorfall ein Zeitleistenereignis hinzu"
 
-msgid "Add a title..."
-msgstr "Titel hinzufügen …"
+msgid "Add a title…"
+msgstr ""
 
 msgid "Add a to-do item"
 msgstr "Aufgabenelement hinzufügen"
@@ -6218,8 +6218,8 @@ msgstr "Projekten und Untergruppen in dieser Gruppe das Überschreiben von globa
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr "Ermöglicht Projekten, Fehler mithilfe einer Opstrace-Integration zu verfolgen."
 
-msgid "Almost there..."
-msgstr "Fast geschafft …"
+msgid "Almost there…"
+msgstr ""
 
 msgid "Already blocked"
 msgstr "Bereits blockiert"
@@ -8776,8 +8776,8 @@ msgstr "Authentifizierte Web-Zugriffsraten-Begrenzung in Sekunden"
 msgid "Authenticated web requests"
 msgstr "Authentifizierte Web-Anfragen"
 
-msgid "Authenticating..."
-msgstr "Authentifizieren …"
+msgid "Authenticating…"
+msgstr ""
 
 msgid "Authentication"
 msgstr "Authentifizierung"
@@ -12174,11 +12174,11 @@ msgstr "Überprüfe Verfügbarkeit des Branches…"
 msgid "Checking branch validity"
 msgstr "Überprüfe Gültigkeit des Branches"
 
-msgid "Checking branch validity..."
-msgstr "Überprüfe Gültigkeit des Branches..."
+msgid "Checking branch validity…"
+msgstr ""
 
-msgid "Checking group path availability..."
-msgstr "Gruppenpfadverfügbarkeit wird geprüft …"
+msgid "Checking group path availability…"
+msgstr ""
 
 msgid "Checking if merge request can be merged…"
 msgstr ""
@@ -12186,11 +12186,11 @@ msgstr ""
 msgid "Checking source validity"
 msgstr "Überprüfe Gültigkeit der Quelle"
 
-msgid "Checking source validity..."
-msgstr "Überprüfe Gültigkeit der Quelle..."
+msgid "Checking source validity…"
+msgstr ""
 
-msgid "Checking username availability..."
-msgstr "Überprüfe Verfügbarkeit des Benutzernamens..."
+msgid "Checking username availability…"
+msgstr ""
 
 msgid "Checkout|Failed to load countries. Please try again."
 msgstr "Länder konnten nicht geladen werden. Bitte versuche es erneut."
@@ -12228,8 +12228,8 @@ msgstr "Untergeordnete Elemente erfolgreich hinzugefügt"
 msgid "Chinese language support using"
 msgstr "Chinesische Sprachunterstützung mit"
 
-msgid "Choose File..."
-msgstr "Datei auswählen …"
+msgid "Choose File…"
+msgstr ""
 
 msgid "Choose a file"
 msgstr "Datei auswählen"
@@ -12240,11 +12240,11 @@ msgstr "Wähle ein Projekt"
 msgid "Choose a template"
 msgstr "Vorlage auswählen"
 
-msgid "Choose a template..."
-msgstr "Vorlage auswählen ..."
+msgid "Choose a template…"
+msgstr ""
 
-msgid "Choose a type..."
-msgstr "Typ auswählen..."
+msgid "Choose a type…"
+msgstr ""
 
 msgid "Choose an option"
 msgstr "Wähle eine Option"
@@ -13041,8 +13041,8 @@ msgstr "Schließt dieses %{quick_action_target}."
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr "Schließt dieses %{work_item_type}. Wird als verwandt mit und ein Duplikat von %{duplicate_param} markiert."
 
-msgid "Closing %{issuableType}..."
-msgstr "%{issuableType} wird geschlossen..."
+msgid "Closing %{issuableType}…"
+msgstr ""
 
 msgid "Cloud Run"
 msgstr "Cloud Run"
@@ -13886,8 +13886,8 @@ msgstr "Ungültiges Konfigurationsprojekt"
 msgid "ClusterIntegration|Invalid issue URL"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
-msgstr "Kubernetes Cluster wird erstellt..."
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
+msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr "Kubernetes-Clustername"
@@ -15906,8 +15906,8 @@ msgstr "Verbinden"
 msgid "Connecting to terminal sync service"
 msgstr "Verbinde zum Terminal-Sync-Service"
 
-msgid "Connecting..."
-msgstr "Verbinden..."
+msgid "Connecting…"
+msgstr ""
 
 msgid "Connection failure"
 msgstr "Verbindungsfehler"
@@ -16368,11 +16368,11 @@ msgstr "Tag erfolgreich zum Löschen markiert."
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr "Tags erfolgreich zum Löschen markiert."
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
-msgstr "Tags, die %{strongStart}irgendeiner%{strongEnd} dieser Regeln entsprechen, werden %{strongStart}beibehalten%{strongEnd}, auch wenn sie einer der folgenden Regeln zum Entfernen entsprechen. Das %{strongStart}neueste%{strongEnd} Tag wird immer beibehalten."
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
+msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
-msgstr "Tags, die diesen Regeln entsprechen, werden %{strongStart}entfernt%{strongEnd}, es sei denn, eine der obigen Regeln besagt, dass sie beibehalten werden sollen."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr "Tags mit Namen, die diesem Zeichenmuster entsprechen, werden beibehalten. %{linkStart}Regel Beispiel anzeigen.%{linkEnd}"
@@ -17355,8 +17355,8 @@ msgstr "Branch erstellen"
 msgid "Create commit"
 msgstr "Commit erstellen"
 
-msgid "Create commit..."
-msgstr "Commit erstellen …"
+msgid "Create commit…"
+msgstr ""
 
 msgid "Create common files more quickly, and standardize their format."
 msgstr "Erstelle schneller gemeinsame Dateien und standardisiere deren Format."
@@ -17445,8 +17445,8 @@ msgstr "Neues Label erstellen"
 msgid "Create new project"
 msgstr "Neues Projekt erstellen"
 
-msgid "Create new..."
-msgstr "Neu erstellen…"
+msgid "Create new…"
+msgstr ""
 
 msgid "Create one"
 msgstr "Erstellen"
@@ -17850,8 +17850,8 @@ msgstr "SSH-Schlüssel"
 msgid "CredentialsInventory|SSH keys"
 msgstr "SSH-Schlüssel"
 
-msgid "CredentialsInventory|Search or filter credentials..."
-msgstr "Zugangsdaten suchen oder filtern..."
+msgid "CredentialsInventory|Search or filter credentials…"
+msgstr ""
 
 msgid "CredentialsInventory|State"
 msgstr "Status"
@@ -19079,8 +19079,8 @@ msgstr "Scannerprofil"
 msgid "DastProfiles|Scanner profiles"
 msgstr "Scannerprofile"
 
-msgid "DastProfiles|Search..."
-msgstr "Suchen..."
+msgid "DastProfiles|Search…"
+msgstr ""
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr "Wähle ein Scannerprofil aus, um einen DAST-Scan auszuführen"
@@ -19400,8 +19400,8 @@ msgstr "Textdatei überprüfen"
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr "Die Überprüfung ist fehlgeschlagen. Bitte versuche es erneut."
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
-msgstr "Die Überprüfung ist im Gange. Bitte warten..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
+msgstr ""
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
 msgid_plural "DastSiteValidation|This will affect %d other profiles targeting the same URL."
@@ -19420,8 +19420,8 @@ msgstr "Website validieren"
 msgid "DastSiteValidation|Validated"
 msgstr "Validiert"
 
-msgid "DastSiteValidation|Validating..."
-msgstr "Validierung..."
+msgid "DastSiteValidation|Validating…"
+msgstr ""
 
 msgid "DastSiteValidation|Validation failed"
 msgstr "Validierung fehlgeschlagen"
@@ -19435,8 +19435,8 @@ msgstr "Überprüfung erfolgreich. Sowohl aktive als auch passive Scans können 
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr "Du kannst keine aktiven Scans auf %{url} ausführen."
 
-msgid "Data is still calculating..."
-msgstr "Daten werden noch berechnet..."
+msgid "Data is still calculating…"
+msgstr ""
 
 msgid "Data refresh"
 msgstr "Daten aktualisieren"
@@ -20097,8 +20097,8 @@ msgstr "Projekte"
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
-msgid "Dependencies|Search or filter dependencies..."
-msgstr "Abhängigkeiten suchen oder filtern …"
+msgid "Dependencies|Search or filter dependencies…"
+msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr "Software Bill of Materials (SBOM) basierend auf dem %{linkStart}letzten erfolgreichen%{linkEnd} Scan"
@@ -20337,11 +20337,11 @@ msgstr "Deploy Fortschritt nicht gefunden. Um Pods anzuzeigen, stelle sicher, da
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr "Stelle statische Assets und Ressourcen in einem von Google verwalteten CDN bereit"
 
-msgid "Deploy to..."
-msgstr "Bereitstellen auf..."
-
 msgid "Deploy tokens"
 msgstr "Bereitstellungstoken"
+
+msgid "Deploy to…"
+msgstr ""
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
 msgstr "Um den Fortschritt der Bereitstellung für deine Umgebung zu sehen, vergewissere dich, dass du sie auf %{codeStart}$KUBE_NAMESPACE%{codeEnd} bereitstellst und diese mit %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} und %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd} vermerkst."
@@ -23319,8 +23319,8 @@ msgstr "Pod löschen"
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr "Löschen der „%{environmentName}“ Umgebung kann nicht rückgängig gemacht werden. Willst du es wirklich löschen?"
 
-msgid "Environments|Deploy to..."
-msgstr "Bereitstellen für..."
+msgid "Environments|Deploy to…"
+msgstr ""
 
 msgid "Environments|Deployment history"
 msgstr "Bereitstellungsverlauf"
@@ -24606,6 +24606,9 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External URL"
 msgstr "Externe URL"
 
@@ -24614,6 +24617,9 @@ msgstr "Externe(r) Benutzer(in):"
 
 msgid "External authorization denied access to this project"
 msgstr "Externe Autorisierung verbietet den Zugriff auf dieses Projekt"
+
+msgid "External pull request event"
+msgstr ""
 
 msgid "External storage URL"
 msgstr "Externer Speicher URL"
@@ -25519,9 +25525,6 @@ msgstr "Filtere Ergebnisse nach Gruppe"
 
 msgid "Filter results by project"
 msgstr "Filtere Ergebnisse nach Projekt"
-
-msgid "Filter results..."
-msgstr "Ergebnisse filtern …"
 
 msgid "Filter results…"
 msgstr ""
@@ -36467,6 +36470,9 @@ msgstr "Merge Request-Abhängigkeiten"
 msgid "Merge request dependencies must be merged."
 msgstr "Merge Request-Abhängigkeiten müssen zusammengeführt werden."
 
+msgid "Merge request event"
+msgstr ""
+
 msgid "Merge request events"
 msgstr "Merge Request zu Ereignissen"
 
@@ -40402,6 +40408,12 @@ msgstr "Bereitschaftszeitpläne"
 msgid "On-call schedules"
 msgstr "Bereitschaftszeitpläne"
 
+msgid "On-demand DAST scan"
+msgstr ""
+
+msgid "On-demand DAST validation"
+msgstr ""
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr "Scans auf Anforderung werden außerhalb des DevOps-Zyklus ausgeführt und suchen nach Sicherheitslücken in deinen Projekten"
 
@@ -42367,6 +42379,9 @@ msgstr "Parameter"
 
 msgid "Parent"
 msgstr "Übergeordnet"
+
+msgid "Parent pipeline"
+msgstr ""
 
 msgid "Parent removed successfully"
 msgstr "Übergeordnetes Element erfolgreich entfernt"
@@ -45178,8 +45193,8 @@ msgstr "Benutzernamen ändern"
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr "Das Ändern deines Benutzernamens kann unerwünschte Nebeneffekte haben."
 
-msgid "Profiles|Choose file..."
-msgstr "Datei auswählen..."
+msgid "Profiles|Choose file…"
+msgstr ""
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr "Wähle aus, ob du Beiträge privater Projekte in deinem öffentlichen Profil ohne Informationen zu Projekt, Repository oder Organisation anzeigen möchtest."
@@ -49072,8 +49087,8 @@ msgstr "Öffnet diese(s) %{quick_action_target} erneut"
 msgid "Reopened this %{quick_action_target}."
 msgstr "Öffnete diese(s) %{quick_action_target} erneut."
 
-msgid "Reopening %{issuableType}..."
-msgstr "Wiedereröffnen von %{issuableType}..."
+msgid "Reopening %{issuableType}…"
+msgstr ""
 
 msgid "Reopening…"
 msgstr ""
@@ -51958,6 +51973,9 @@ msgstr "Löschen des Scannerprofils fehlgeschlagen"
 msgid "Scanner profile not found for given parameters"
 msgstr "Scannerprofil für angegebene Parameter nicht gefunden"
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule a new pipeline"
 msgstr "Plane eine neue Pipeline"
 
@@ -52522,6 +52540,9 @@ msgid "Security dashboard"
 msgstr "Sicherheits-Dashboard"
 
 msgid "Security inventory"
+msgstr ""
+
+msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -53979,6 +54000,9 @@ msgstr "neueste"
 
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr "mehr als %{allowed}"
+
+msgid "SecurityOrchestration|on every"
+msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr "Projekte mit Konformitäts-Frameworks"
@@ -55718,6 +55742,9 @@ msgstr "Eine Datei nach der anderen anzeigen"
 
 msgid "Show open epics"
 msgstr "Offene Epics anzeigen"
+
+msgid "Show or hide sidebar"
+msgstr ""
 
 msgid "Show password"
 msgstr "Passwort anzeigen"
@@ -61311,9 +61338,6 @@ msgstr "Deaktivieren der Aussetzung des Aufgabenelements fehlgeschlagen. Versuch
 msgid "Todos|Filter to-do items"
 msgstr "Aufgabenelemente filtern"
 
-msgid "Todos|First sent %{timeago}"
-msgstr "Zuerst gesendet: %{timeago}"
-
 msgid "Todos|For one hour"
 msgstr "Für eine Stunde"
 
@@ -61393,6 +61417,9 @@ msgstr "Nichts mehr zu tun. High five!"
 
 msgid "Todos|OKR checkin requested"
 msgstr "OKR-Check-in angefragt"
+
+msgid "Todos|Previously snoozed"
+msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"
 msgstr "Die Rohtextsuche wird derzeit nicht unterstützt"
@@ -65677,6 +65704,9 @@ msgstr "Wir haben eine ungewöhnlich hohe Speichernutzung in %{project_name} fes
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
 msgstr "Wir haben eine ungewöhnlich hohe Speichernutzung in %{strong_start}%{project_name}%{strong_end} festgestellt"
+
+msgid "Web"
+msgstr ""
 
 msgid "Web IDE"
 msgstr "Web-IDE"

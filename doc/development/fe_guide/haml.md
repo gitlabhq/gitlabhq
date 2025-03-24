@@ -50,7 +50,7 @@ For example:
         = f.label :lfs_enabled, class: 'custom-control-label' do
           %span
             = _('Allow projects within this group to use Git LFS')
-            = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
+            = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/_index.md')
           %p.help-text= _('This setting can be overridden in each project.')
   ```
 
@@ -68,7 +68,7 @@ For example:
       = f.gitlab_ui_checkbox_component :lfs_enabled, checkbox_options: { checked: @group.lfs_enabled? } do |c|
         - c.with_label do
           = _('Allow projects within this group to use Git LFS')
-          = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
+          = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/_index.md')
         - c.with_help_text do
           = _('This setting can be overridden in each project.')
   ```

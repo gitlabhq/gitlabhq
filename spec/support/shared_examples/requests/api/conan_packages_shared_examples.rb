@@ -797,7 +797,7 @@ RSpec.shared_examples 'recipe file download endpoint' do
   it_behaves_like 'an internal project with packages'
   it_behaves_like 'a private project with packages'
   it_behaves_like 'handling empty values for username and channel'
-  it_behaves_like 'package not found download'
+  it_behaves_like 'package not found'
 end
 
 RSpec.shared_examples 'package file download endpoint' do
@@ -806,7 +806,7 @@ RSpec.shared_examples 'package file download endpoint' do
   it_behaves_like 'an internal project with packages'
   it_behaves_like 'a private project with packages'
   it_behaves_like 'handling empty values for username and channel'
-  it_behaves_like 'package not found download'
+  it_behaves_like 'package not found'
 
   context 'tracking the conan_package.tgz download' do
     let(:package_file) { package.package_files.find_by(file_name: ::Packages::Conan::FileMetadatum::PACKAGE_BINARY) }
@@ -1209,7 +1209,7 @@ RSpec.shared_examples 'accept get request on private project with access to pack
   it_behaves_like 'returning response status', :ok
 end
 
-RSpec.shared_examples 'package not found download' do
+RSpec.shared_examples 'package not found' do
   context 'when package does not exist' do
     let(:recipe_path) { "missing/0.1.0/#{project.full_path.tr('/', '+')}/stable" }
 

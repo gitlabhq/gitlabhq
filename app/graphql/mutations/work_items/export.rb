@@ -47,7 +47,7 @@ module Mutations
 
         error = '`import_export_work_items_csv` feature flag is disabled.'
 
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, error
+        raise_resource_not_available_error! error
       end
     end
   end

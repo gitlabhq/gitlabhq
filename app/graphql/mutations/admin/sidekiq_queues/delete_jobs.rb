@@ -31,7 +31,7 @@ module Mutations
           description: 'Information about the status of the deletion request.'
 
         def ready?(**args)
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, ADMIN_MESSAGE unless current_user&.admin?
+          raise_resource_not_available_error! ADMIN_MESSAGE unless current_user&.admin?
 
           super
         end
@@ -47,7 +47,7 @@ module Mutations
             errors: ['No metadata provided']
           }
         rescue Gitlab::SidekiqQueue::InvalidQueueError
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, "Queue #{queue_name} not found"
+          raise_resource_not_available_error! "Queue #{queue_name} not found"
         end
       end
     end

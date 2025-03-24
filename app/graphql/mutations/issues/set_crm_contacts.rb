@@ -19,7 +19,7 @@ module Mutations
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
 
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?(project)
+        raise_resource_not_available_error! 'Feature disabled' unless feature_enabled?(project)
 
         contact_ids = contact_ids.compact.map do |contact_id|
           unless contact_id.respond_to?(:model_id)

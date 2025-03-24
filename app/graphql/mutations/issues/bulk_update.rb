@@ -54,7 +54,7 @@ module Mutations
 
       def ready?(**args)
         if Feature.disabled?(:bulk_update_issues_mutation)
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, '`bulk_update_issues_mutation` feature flag is disabled.'
+          raise_resource_not_available_error! '`bulk_update_issues_mutation` feature flag is disabled.'
         end
 
         if args[:ids].size > MAX_ISSUES

@@ -33,8 +33,9 @@ module Mutations
       def resolve(args)
         namespace = authorized_find!(id: args[:namespace_id])
 
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, '`achievements` feature flag is disabled.' \
-          if Feature.disabled?(:achievements, namespace)
+        if Feature.disabled?(:achievements, namespace)
+          raise_resource_not_available_error! '`achievements` feature flag is disabled.'
+        end
 
         result = ::Achievements::CreateService.new(namespace: namespace,
           current_user: current_user,

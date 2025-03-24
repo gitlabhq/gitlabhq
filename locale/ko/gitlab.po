@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-21 11:03\n"
+"PO-Revision-Date: 2025-03-24 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start}부터 %{end}까지"
@@ -2967,7 +2967,7 @@ msgstr "범위는 토큰에 부여된 권한 수준을 설정합니다."
 msgid "AccessTokens|Scopes set the permission levels granted to the token. %{linkStart}Learn more%{linkEnd}."
 msgstr "스코프는 토큰에 부여되는 권한 수준을 설정합니다. %{linkStart}자세히 알아보기%{linkEnd}."
 
-msgid "AccessTokens|Search or filter access tokens..."
+msgid "AccessTokens|Search or filter access tokens…"
 msgstr "액세스 토큰 검색 또는 필터링..."
 
 msgid "AccessTokens|Select a role"
@@ -3309,7 +3309,7 @@ msgstr "테이블 추가"
 msgid "Add a timeline event to incident"
 msgstr "인시던트에 타임라인 이벤트 추가"
 
-msgid "Add a title..."
+msgid "Add a title…"
 msgstr "제목 추가..."
 
 msgid "Add a to-do item"
@@ -6039,8 +6039,8 @@ msgstr "이 그룹의 프로젝트 또는 하위 그룹이 전역 설정을 오�
 msgid "Allows projects to track errors using an Opstrace integration."
 msgstr "프로젝트에서 Opstrace 통합을 사용하여 오류를 추적할 수 있습니다."
 
-msgid "Almost there..."
-msgstr "거의 다 됐습니다..."
+msgid "Almost there…"
+msgstr "거의 다 왔습니다…"
 
 msgid "Already blocked"
 msgstr "이미 차단됨"
@@ -8575,7 +8575,7 @@ msgstr "인증된 웹 속도 제한 기간(초)"
 msgid "Authenticated web requests"
 msgstr "인증된 웹 요청"
 
-msgid "Authenticating..."
+msgid "Authenticating…"
 msgstr "인증 중..."
 
 msgid "Authentication"
@@ -11631,7 +11631,7 @@ msgid "Cannot skip two factor authentication setup"
 msgstr "이중 인증 설정을 생략할 수 없습니다."
 
 msgid "Cannot update more than %{limit} organization data at once"
-msgstr ""
+msgstr "한 번에 %{limit} 개 이상의 조직 데이터를 업데이트할 수 없습니다."
 
 msgid "Cannot validate connection to host because the URL is empty."
 msgstr ""
@@ -11966,10 +11966,10 @@ msgstr "브랜치가 사용 가능한지 확인 중..."
 msgid "Checking branch validity"
 msgstr "브랜치 유효성 검사"
 
-msgid "Checking branch validity..."
+msgid "Checking branch validity…"
 msgstr "브랜치 유효성 검사..."
 
-msgid "Checking group path availability..."
+msgid "Checking group path availability…"
 msgstr "그룹 경로가 사용가능한지 확인 중..."
 
 msgid "Checking if merge request can be merged…"
@@ -11978,10 +11978,10 @@ msgstr "머지 리퀘스트를 병합할 수 있는지 확인하는 중…"
 msgid "Checking source validity"
 msgstr "소스 유효성 검사"
 
-msgid "Checking source validity..."
+msgid "Checking source validity…"
 msgstr "소스 유효성 검사..."
 
-msgid "Checking username availability..."
+msgid "Checking username availability…"
 msgstr "사용자명 사용 가능 여부 확인 중..."
 
 msgid "Checkout|Failed to load countries. Please try again."
@@ -12020,8 +12020,8 @@ msgstr "하위 항목이 성공적으로 추가되었습니다"
 msgid "Chinese language support using"
 msgstr "중국어 지원"
 
-msgid "Choose File..."
-msgstr "파일 선택..."
+msgid "Choose File…"
+msgstr "파일 선택…"
 
 msgid "Choose a file"
 msgstr "파일 선택"
@@ -12032,11 +12032,11 @@ msgstr "프로젝트 선택하세요"
 msgid "Choose a template"
 msgstr "템플릿 선택"
 
-msgid "Choose a template..."
+msgid "Choose a template…"
 msgstr "템플릿 선택..."
 
-msgid "Choose a type..."
-msgstr "유형을 선택..."
+msgid "Choose a type…"
+msgstr "유형 선택..."
 
 msgid "Choose an option"
 msgstr "옵션을 선택하세요"
@@ -12830,8 +12830,8 @@ msgstr "이 %{quick_action_target} 닫음."
 msgid "Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}."
 msgstr "이 %{work_item_type}을 닫습니다. %{duplicate_param}과 관련이 있으며 중복으로 마킹합니다."
 
-msgid "Closing %{issuableType}..."
-msgstr "닫는 중 %{issuableType}..."
+msgid "Closing %{issuableType}…"
+msgstr "%{issuableType} 닫는 중 ..."
 
 msgid "Cloud Run"
 msgstr "클라우드 런"
@@ -13408,7 +13408,7 @@ msgid "ClusterAgents|View all %{number} agents"
 msgstr "%{number} 에이전트 모두 보기"
 
 msgid "ClusterAgents|View all %{number} clusters"
-msgstr ""
+msgstr "%{number} 클러스터 모두 보기"
 
 msgid "ClusterAgents|We only support 100 agents on the UI."
 msgstr ""
@@ -13672,10 +13672,10 @@ msgid "ClusterIntegration|Invalid configuration project"
 msgstr ""
 
 msgid "ClusterIntegration|Invalid issue URL"
-msgstr ""
+msgstr "잘못된 이슈 URL"
 
-msgid "ClusterIntegration|Kubernetes cluster is being created..."
-msgstr ""
+msgid "ClusterIntegration|Kubernetes cluster is being created…"
+msgstr "Kubernetes 클러스터를 생성하는 중입니다..."
 
 msgid "ClusterIntegration|Kubernetes cluster name"
 msgstr "Kubernetes 클러스터 이름"
@@ -13714,16 +13714,16 @@ msgid "ClusterIntegration|Migrating cluster - initiated"
 msgstr ""
 
 msgid "ClusterIntegration|Migration issue"
-msgstr ""
+msgstr "마이그레이션 이슈"
 
 msgid "ClusterIntegration|Migration issue URL"
-msgstr ""
+msgstr "마이그레이션 이슈 URL"
 
 msgid "ClusterIntegration|Migration issue update - failed: \"%{error}\""
-msgstr ""
+msgstr "마이그레이션 이슈 업데이트 - 실패: \"%{error}\""
 
 msgid "ClusterIntegration|Migration issue updated successfully"
-msgstr ""
+msgstr "마이그레이션 이슈가 성공적으로 업데이트되었습니다."
 
 msgid "ClusterIntegration|Namespace per environment"
 msgstr "환경당 네임스페이스"
@@ -13732,7 +13732,7 @@ msgid "ClusterIntegration|New agent name"
 msgstr "새로운 에이전트 이름"
 
 msgid "ClusterIntegration|No migration found"
-msgstr ""
+msgstr "마이그레이션을 찾을 수 없음"
 
 msgid "ClusterIntegration|Node calculations use the Kubernetes Metrics API. Make sure your cluster has metrics installed"
 msgstr "노드 계산은 Kubernetes Metrics API를 사용합니다. 클러스터에 측정항목(metrics)이 설치되어 있는지 확인"
@@ -13777,7 +13777,7 @@ msgid "ClusterIntegration|Save changes"
 msgstr "변경 사항을 저장"
 
 msgid "ClusterIntegration|Save migration issue"
-msgstr ""
+msgstr "마이그레이션 이슈 저장"
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr "Kubernetes 클러스터의 세부 정보 보기 및 수정"
@@ -13918,7 +13918,7 @@ msgid "Code"
 msgstr "코드"
 
 msgid "Code Coverage in %%"
-msgstr ""
+msgstr "코드 커버리지 (%%)"
 
 msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
 msgstr "코드 커버리지: %{coveragePercentage}%{percentSymbol}"
@@ -15692,8 +15692,8 @@ msgstr "연결 중"
 msgid "Connecting to terminal sync service"
 msgstr "터미널 동기화 서비스에 연결중"
 
-msgid "Connecting..."
-msgstr "연결중..."
+msgid "Connecting…"
+msgstr "연결 중…"
 
 msgid "Connection failure"
 msgstr "연결 실패"
@@ -16151,11 +16151,11 @@ msgstr "태그가 성공적으로 삭제로 마킹 되었습니다."
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr "태그가 성공적으로 삭제로 마킹되었습니다."
 
-msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rules are %{strongStart}removed%{strongEnd}, unless they match %{strongStart}any%{strongEnd} keep rules above."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
-msgstr "이러한 규칙과 일치하는 태그는 위의 규칙이 태그를 유지하도록 지정하지 않는 한 %{strongStart}제거%{strongEnd}됩니다."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
 msgstr ""
@@ -17138,7 +17138,7 @@ msgstr "브랜치 생성"
 msgid "Create commit"
 msgstr "커밋 생성"
 
-msgid "Create commit..."
+msgid "Create commit…"
 msgstr "커밋 생성..."
 
 msgid "Create common files more quickly, and standardize their format."
@@ -17228,8 +17228,8 @@ msgstr "새 라벨 만들기"
 msgid "Create new project"
 msgstr "새 프로젝트 만들기"
 
-msgid "Create new..."
-msgstr "새로 만들기 ..."
+msgid "Create new…"
+msgstr "새로 만들기..."
 
 msgid "Create one"
 msgstr "하나 만들기"
@@ -17633,8 +17633,8 @@ msgstr "SSH 키"
 msgid "CredentialsInventory|SSH keys"
 msgstr "SSH 키"
 
-msgid "CredentialsInventory|Search or filter credentials..."
-msgstr "인증 검색 또는 필터링..."
+msgid "CredentialsInventory|Search or filter credentials…"
+msgstr ""
 
 msgid "CredentialsInventory|State"
 msgstr "상태"
@@ -18858,7 +18858,7 @@ msgstr "스캐너 프로필"
 msgid "DastProfiles|Scanner profiles"
 msgstr "스캐너 프로필"
 
-msgid "DastProfiles|Search..."
+msgid "DastProfiles|Search…"
 msgstr "검색 중..."
 
 msgid "DastProfiles|Select a scanner profile to run a DAST scan"
@@ -19179,7 +19179,7 @@ msgstr "텍스트 파일 유효성 검증"
 msgid "DastSiteValidation|The validation has failed. Please try again."
 msgstr "유효성 검증에 실패했습니다. 다시 시도해 주세요."
 
-msgid "DastSiteValidation|The validation is in progress. Please wait..."
+msgid "DastSiteValidation|The validation is in progress. Please wait…"
 msgstr "유효성 검증이 진행 중입니다. 기다려 주세요..."
 
 msgid "DastSiteValidation|This will affect %d other profile targeting the same URL."
@@ -19198,7 +19198,7 @@ msgstr "사이트 유효성 검증"
 msgid "DastSiteValidation|Validated"
 msgstr "검증됨"
 
-msgid "DastSiteValidation|Validating..."
+msgid "DastSiteValidation|Validating…"
 msgstr "유효성 검증중..."
 
 msgid "DastSiteValidation|Validation failed"
@@ -19213,7 +19213,7 @@ msgstr "유효성 검증에 성공했습니다. 대상 사이트에서 액티브
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr "%{url}에 대해 액티브 스캔를 실행할 수 없습니다."
 
-msgid "Data is still calculating..."
+msgid "Data is still calculating…"
 msgstr "데이터가 아직 계산중입니다..."
 
 msgid "Data refresh"
@@ -19868,7 +19868,7 @@ msgstr "프로젝트"
 msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
-msgid "Dependencies|Search or filter dependencies..."
+msgid "Dependencies|Search or filter dependencies…"
 msgstr "의존성 검색 또는 필터링..."
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
@@ -20105,11 +20105,11 @@ msgstr ""
 msgid "Deploy static assets and resources to Google managed CDN"
 msgstr ""
 
-msgid "Deploy to..."
-msgstr "배포 대상..."
-
 msgid "Deploy tokens"
 msgstr "배포 토큰"
+
+msgid "Deploy to…"
+msgstr "배포 대상..."
 
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
 msgstr ""
@@ -23072,8 +23072,8 @@ msgstr "Pod 삭제"
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
 msgstr "'%{environmentName}' 환경 삭제는 취소할 수 없습니다. 그래도 삭제하시겠습니까?"
 
-msgid "Environments|Deploy to..."
-msgstr "다음에 배포..."
+msgid "Environments|Deploy to…"
+msgstr "배포 대상..."
 
 msgid "Environments|Deployment history"
 msgstr "배포 이력"
@@ -24356,6 +24356,9 @@ msgstr "서비스 URL"
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr "Open VSX 확장 레지스트리 사용"
 
+msgid "External"
+msgstr "외부"
+
 msgid "External URL"
 msgstr "외부 URL"
 
@@ -24364,6 +24367,9 @@ msgstr ""
 
 msgid "External authorization denied access to this project"
 msgstr "외부 인증이 이 프로젝트에 대한 액세스를 거부했습니다."
+
+msgid "External pull request event"
+msgstr "외부 풀 리퀘스트 이벤트"
 
 msgid "External storage URL"
 msgstr "외부 스토리지 URL"
@@ -25264,9 +25270,6 @@ msgid "Filter results by group"
 msgstr ""
 
 msgid "Filter results by project"
-msgstr ""
-
-msgid "Filter results..."
 msgstr ""
 
 msgid "Filter results…"
@@ -34073,7 +34076,7 @@ msgid "Latest pipeline for the most recent commit on this ref"
 msgstr "이 참조에 대한 가장 최근 커밋에 대한 최신 파이프라인"
 
 msgid "Latest version"
-msgstr ""
+msgstr "최신 버전"
 
 msgid "Launch a ready-to-code development environment for your project."
 msgstr ""
@@ -36173,6 +36176,9 @@ msgstr "머지 리퀘스트 의존성"
 
 msgid "Merge request dependencies must be merged."
 msgstr "머지 리퀘스트 의존성을 병합해야 합니다."
+
+msgid "Merge request event"
+msgstr "머지 리퀘스트 이벤트"
 
 msgid "Merge request events"
 msgstr "머지 리퀘스트 이벤트"
@@ -40096,6 +40102,12 @@ msgstr "온콜(긴급) 일정"
 msgid "On-call schedules"
 msgstr "온콜(긴급) 일정"
 
+msgid "On-demand DAST scan"
+msgstr "주문형 DAST 스캔"
+
+msgid "On-demand DAST validation"
+msgstr "주문형 DAST 검증"
+
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr "온디맨드 스캔은 DevOps 사이클 외부에서 실행되어 프로젝트의 취약성을 찾습니다."
 
@@ -42056,6 +42068,9 @@ msgstr "매개변수"
 
 msgid "Parent"
 msgstr "상위"
+
+msgid "Parent pipeline"
+msgstr "상위 파이프라인"
 
 msgid "Parent removed successfully"
 msgstr "상위 항목이 성공적으로 삭제되었습니다."
@@ -44866,8 +44881,8 @@ msgstr "사용자명 변경"
 msgid "Profiles|Changing your username can have unintended side effects."
 msgstr "사용자명을 변경하면 의도치 않은 문제가 생길 수 있습니다."
 
-msgid "Profiles|Choose file..."
-msgstr "파일 선택.."
+msgid "Profiles|Choose file…"
+msgstr "파일 선택..."
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr "프로젝트, 리포지토리 또는 조직 정보 없이 공개 프로필에 비공개 프로젝트의 기여도를 표시하려면 선택합니다."
@@ -48754,7 +48769,7 @@ msgstr "%{quick_action_target} 다시 열기"
 msgid "Reopened this %{quick_action_target}."
 msgstr "이 %{quick_action_target}다시 열었습니다."
 
-msgid "Reopening %{issuableType}..."
+msgid "Reopening %{issuableType}…"
 msgstr "다시 열기 %{issuableType}..."
 
 msgid "Reopening…"
@@ -51619,6 +51634,9 @@ msgstr "스캐너 프로필을 삭제하지 못했습니다."
 msgid "Scanner profile not found for given parameters"
 msgstr ""
 
+msgid "Schedule"
+msgstr "일정"
+
 msgid "Schedule a new pipeline"
 msgstr "새로운 파이프라인 스케줄 잡기"
 
@@ -52172,6 +52190,9 @@ msgstr "보안 대시보드"
 msgid "Security inventory"
 msgstr "보안 인벤토리"
 
+msgid "Security orchestration policy"
+msgstr "보안 조율 정책"
+
 msgid "Security policy"
 msgstr "보안 정책"
 
@@ -52579,7 +52600,7 @@ msgid "SecurityOrchestration|%{strongStart}Run a DAST scan%{strongEnd} with Scan
 msgstr "%{strongStart} 파이프라인이 main 브랜치에 대해서 실행되는 경우 %{strongEnd}, Scan Profile A와 Site Profile A를 사용하여 %{strongStart}DAST scan을 실행%{strongEnd}합니다."
 
 msgid "SecurityOrchestration|%{strongStart}Run customized GitLab security templates%{strongEnd} across my projects."
-msgstr ""
+msgstr "내 프로젝트 전반에 걸쳐 %{strongStart}커스터마이징된 GitLab 보안 템플릿을 실행%{strongEnd}합니다."
 
 msgid "SecurityOrchestration|(%{groups})"
 msgstr "(%{groups})"
@@ -52588,7 +52609,7 @@ msgid "SecurityOrchestration|+%{numberOfAdditionalLabels} more"
 msgstr "+%{numberOfAdditionalLabels} 더 보기"
 
 msgid "SecurityOrchestration|, and %{count} more"
-msgstr ""
+msgstr ", 그리고 %{count}개 더"
 
 msgid "SecurityOrchestration|.yaml mode"
 msgstr ".yaml 모드"
@@ -52600,16 +52621,16 @@ msgid "SecurityOrchestration|A compliance framework is a label to identify that 
 msgstr "규정 준수 프레임워크는 프로젝트에 특정 규정 준수 요구 사항이 있음을 나타내는 라벨입니다. %{linkStart}자세히 알아보기%{linkEnd}."
 
 msgid "SecurityOrchestration|A consultant will show up in the bot comment and developers should ask them for help if needed."
-msgstr ""
+msgstr "컨설턴트는 봇 댓글에 표시되며, 개발자는 필요할 경우 그들에게 도움을 요청해야 합니다."
 
 msgid "SecurityOrchestration|Actions"
 msgstr "작업"
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
-msgstr ""
+msgstr "고유한 작업 이름을 보장하려면 숫자 접미사를 추가합니다."
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
-msgstr ""
+msgstr "작업 이름 접미사 추가 %{suffixEditor} %{suffixIcon}"
 
 msgid "SecurityOrchestration|Add new action"
 msgstr "새 작업 추가"
@@ -52621,19 +52642,19 @@ msgid "SecurityOrchestration|Add new rule"
 msgstr "새 규칙 추가"
 
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
-msgstr ""
+msgstr "다음 브랜치에는 @ 이후에 프로젝트 전체 경로를 추가하세요: %{branches}"
 
 msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr ""
+msgstr "다음 예외에 @ 뒤에 프로젝트 전체 경로를 추가하세요: %{exceptions}"
 
 msgid "SecurityOrchestration|Add protected branches"
-msgstr ""
+msgstr "보호된 브랜치 추가"
 
 msgid "SecurityOrchestration|Add regular branches"
-msgstr ""
+msgstr "일반 브랜치 추가"
 
 msgid "SecurityOrchestration|Additional configuration"
-msgstr ""
+msgstr "추가 구성"
 
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
 msgstr "경고를 해지하면 정보가 다시 표시되지 않습니다."
@@ -52645,10 +52666,10 @@ msgid "SecurityOrchestration|All projects in linked groups"
 msgstr "링크된 그룹의 모든 프로젝트"
 
 msgid "SecurityOrchestration|All projects in the group."
-msgstr ""
+msgstr "이 그룹의 모든 프로젝트."
 
 msgid "SecurityOrchestration|All projects in this group except:"
-msgstr ""
+msgstr "다음을 제외한 이 그룹의 모든 프로젝트:"
 
 msgid "SecurityOrchestration|All projects linked to security policy project."
 msgstr "보안 정책 프로젝트에 링크된 모든 프로젝트."
@@ -52666,10 +52687,10 @@ msgid "SecurityOrchestration|All types"
 msgstr "모든 유형"
 
 msgid "SecurityOrchestration|Allowed licenses"
-msgstr ""
+msgstr "허용된 라이선스"
 
 msgid "SecurityOrchestration|Allowlist details"
-msgstr ""
+msgstr "허용 리스트 상세정보"
 
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr "보안 정책 프로젝트를 할당하는 동안 오류가 발생했습니다."
@@ -52681,10 +52702,10 @@ msgid "SecurityOrchestration|An error occurred while fetching the scan result po
 msgstr "검색 결과 정책을 가져오는 동안 오류가 발생했습니다."
 
 msgid "SecurityOrchestration|And scans to be performed:"
-msgstr ""
+msgstr "그리고 수행할 스캐닝:"
 
 msgid "SecurityOrchestration|Any merge request"
-msgstr ""
+msgstr "모든 머지 리퀘스트"
 
 msgid "SecurityOrchestration|Apply this policy to %{projectScopeType} %{projectSelector}"
 msgstr "이 정책을 %{projectScopeType} %{projectSelector}에 적용합니다."
@@ -52759,7 +52780,7 @@ msgid "SecurityOrchestration|Configure policies to control whether individual us
 msgstr "개별 사용자나 서비스 계정이 %{linkStart}skip_ci%{linkEnd}를 사용하여 파이프라인을 생략할 수 있는지 여부를 제어하는 ​​정책을 구성합니다."
 
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
-msgstr ""
+msgstr "파이프라인 실행 파일에서 조건을 구성합니다. %{linkStart}파이프라인 실행은 무엇을 할 수 있나요?%{linkEnd}"
 
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
 msgstr "보다 강력한 취약성 규칙을 만들어 모든 프로젝트에 적용합니다."
@@ -52822,10 +52843,10 @@ msgid "SecurityOrchestration|Edge case settings"
 msgstr "에지 케이스 설정"
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
-msgstr ""
+msgstr "머지 리퀘스트 승인 정책 편집"
 
 msgid "SecurityOrchestration|Edit pipeline execution policy"
-msgstr ""
+msgstr "파이프라인 실행 정책 편집"
 
 msgid "SecurityOrchestration|Edit policy"
 msgstr "정책 편집"
@@ -52837,7 +52858,7 @@ msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr "스캔 실행 정책 편집"
 
 msgid "SecurityOrchestration|Edit vulnerability management policy"
-msgstr ""
+msgstr "취약점 관리 정책 편집"
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr "정책 이름 비워짐"
@@ -52846,10 +52867,10 @@ msgid "SecurityOrchestration|Enabled"
 msgstr "활성화됨"
 
 msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for all projects in this group."
-msgstr ""
+msgstr "이 그룹의 모든 프로젝트에 대해 %{linkStart}보안 정책%{linkEnd} 을 시행합니다."
 
 msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for this project."
-msgstr ""
+msgstr "이 프로젝트에 대해 %{linkStart}보안 정책%{linkEnd}을 시행합니다."
 
 msgid "SecurityOrchestration|Enforce policy on all groups, subgroups, and projects linked to the security policy project. %{linkStart}How does scoping work?%{linkEnd}"
 msgstr "보안 정책 프로젝트에 링크된 모든 그룹, 하위 그룹 및 프로젝트에 정책을 시행합니다. %{linkStart}범위 지정은 어떻게 작동하나요?%{linkEnd}"
@@ -52882,19 +52903,19 @@ msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr "클러스터 에이전트를 로드하지 못했습니다."
 
 msgid "SecurityOrchestration|Failed to load compliance frameworks"
-msgstr ""
+msgstr "규정 준수 프레임워크를 로드하지 못했습니다."
 
 msgid "SecurityOrchestration|Failed to load group projects"
-msgstr ""
+msgstr "그룹 프로젝트를 로드하지 못했습니다."
 
 msgid "SecurityOrchestration|Failed to load groups"
-msgstr ""
+msgstr "그룹을 로드하지 못했습니다."
 
 msgid "SecurityOrchestration|Failed to load images."
 msgstr "이미지를 로드하지 못했습니다."
 
 msgid "SecurityOrchestration|Failed to load projects"
-msgstr ""
+msgstr "프로젝트를 로드하지 못했습니다."
 
 msgid "SecurityOrchestration|Fallback behavior in case of policy failure"
 msgstr "정책 실패 시 대체(Fallback) 동작"
@@ -52906,7 +52927,7 @@ msgid "SecurityOrchestration|Fetching the scope information."
 msgstr "범위 정보를 가져오는 중입니다."
 
 msgid "SecurityOrchestration|Filter and search projects"
-msgstr ""
+msgstr "프로젝트 필터링 및 검색"
 
 msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply and bot message enabled. No additional approvals are required."
 msgstr "이 정책의 규칙과 일치하는 MR의 경우 프로젝트 승인 설정 오버라이드만 적용되고 봇 메시지가 활성화됩니다. 추가 승인은 필요하지 않습니다."
@@ -52915,7 +52936,7 @@ msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{
 msgstr "%{branches}%{commitType}%{branchExceptionsString}에 대한 머지 리퀘스트의 경우"
 
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
-msgstr ""
+msgstr "대규모 그룹의 경우 기존 머지 리퀘스트에 정책 변경 사항을 적용하는 데 상당한 지연이 있을 수 있습니다. 정책 변경은 일반적으로 새로 생성된 머지 리퀘스트에 거의 즉시 적용됩니다."
 
 msgid "SecurityOrchestration|Group ID: %{id}"
 msgstr "그룹 ID: %{id}"
@@ -52936,16 +52957,16 @@ msgid "SecurityOrchestration|How do I link a group to the policy?"
 msgstr "그룹을 정책에 링크하려면 어떻게 해야 하나요?"
 
 msgid "SecurityOrchestration|If %{scanners} of the default branch finds %{severity_level} vulnerabilities are no longer detected."
-msgstr ""
+msgstr "기본 브랜치의 %{scanners} 에서 %{severity_level} 취약점이 발견되면 더 이상 감지되지 않습니다."
 
 msgid "SecurityOrchestration|If any of the following occur:"
-msgstr ""
+msgstr "다음 중 하나가 발생하는 경우:"
 
 msgid "SecurityOrchestration|If any scanner finds a %{strongStart}newly detected critical vulnerability%{strongEnd} in an open %{strongStart}merge request%{strongEnd} targeting the main branch, then %{strongStart}require two approvals from any two members%{strongEnd} of the application security team."
 msgstr "스캐너가 메인 브랜치를 타겟으로 하는 오픈된 %{strongStart}머지 리퀘스트%{strongEnd}에서 %{strongStart}새로 감지된 심각한 취약점%{strongEnd}을 발견하면 애플리케이션 보안 팀의 %{strongStart}멤버 2명의 승인%{strongEnd}을 요구합니다."
 
 msgid "SecurityOrchestration|If any scanner finds a %{strongStart}vulnerability%{strongEnd} that was %{strongStart}previously detected but no longer found%{strongEnd} in a subsequent scan, then automatically %{strongStart}set the status to Resolved%{strongEnd}."
-msgstr ""
+msgstr "어떤 스캐너든 %{strongStart}취약성%{strongEnd}이 %{strongStart}이전에 발견되었으나 더 이상 발견되지 않는%{strongEnd} 경우, 자동으로 %{strongStart}해결됨으로 상태를 설정%{strongEnd}합니다."
 
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
 msgstr "각 파이프라인에서 %{boldStart}최대 1000개%{boldEnd}의 취약성이 %{italicStart}더 이상 감지되지 않는 경우%{italicEnd}, 상태가 %{italicStart}해결됨%{italicEnd}으로 설정되며, 모든 항목이 자동으로 해결될 때까지 계속됩니다."
@@ -52960,22 +52981,22 @@ msgid "SecurityOrchestration|Inherited from %{namespace}"
 msgstr "%{namespace}에서 상속됨"
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
-msgstr ""
+msgstr "잘못된 규정 준수 프레임워크 ID"
 
 msgid "SecurityOrchestration|Invalid branch type detected - rule will not be applied."
-msgstr ""
+msgstr "잘못된 브랜치 유형 감지 - 규칙이 적용되지 않습니다."
 
 msgid "SecurityOrchestration|Invalid policy"
-msgstr ""
+msgstr "잘못된 정책"
 
 msgid "SecurityOrchestration|Invalid policy type"
-msgstr ""
+msgstr "잘못된 정책 유형"
 
 msgid "SecurityOrchestration|Invalid syntax"
 msgstr "잘못된 구문"
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
-msgstr ""
+msgstr "%{agent}에 대해 최신 스캔 실행"
 
 msgid "SecurityOrchestration|License Scan"
 msgstr "라이센스 스캔"
@@ -53002,19 +53023,19 @@ msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 
 msgstr "머지 리퀘스트 승인 정책은 최대 5개의 승인자 작업을 허용합니다."
 
 msgid "SecurityOrchestration|Merge request approval policies can only be created by project owners."
-msgstr ""
+msgstr "머지 리퀘스트 승인 정책은 프로젝트 소유자만 만들 수 있습니다."
 
 msgid "SecurityOrchestration|Merge request approval policy"
 msgstr "머지 리퀘스트 승인 정책"
 
 msgid "SecurityOrchestration|Merge request approval policy syntax changes"
-msgstr ""
+msgstr "머지 리퀘스트 승인 정책 구문 변경"
 
 msgid "SecurityOrchestration|Never"
 msgstr "절대 안함"
 
 msgid "SecurityOrchestration|New merge request approval policy"
-msgstr ""
+msgstr "새 머지 리퀘스트 승인 정책"
 
 msgid "SecurityOrchestration|New pipeline execution policy"
 msgstr "새 파이프라인 실행 정책"
@@ -53023,16 +53044,16 @@ msgid "SecurityOrchestration|New policy"
 msgstr "새 정책"
 
 msgid "SecurityOrchestration|New scan execution policy"
-msgstr ""
+msgstr "새 검색 실행 정책"
 
 msgid "SecurityOrchestration|New vulnerability management policy"
-msgstr ""
+msgstr "새 취약점 관리 정책"
 
 msgid "SecurityOrchestration|No actions defined - policy will not run."
 msgstr "정의된 동작이 없습니다 - 정책이 실행되지 않습니다"
 
 msgid "SecurityOrchestration|No compliance frameworks"
-msgstr ""
+msgstr "규정 준수 프레임워크 없음"
 
 msgid "SecurityOrchestration|No description"
 msgstr "설명 없음"
@@ -53047,10 +53068,10 @@ msgid "SecurityOrchestration|No policies found"
 msgstr "정책을 찾을 수 없음"
 
 msgid "SecurityOrchestration|No policies in the security policy project will be enforced until the invalid policies are fixed."
-msgstr ""
+msgstr "잘못된 정책이 수정될 때까지 보안 정책 프로젝트의 정책이 시행되지 않습니다."
 
 msgid "SecurityOrchestration|No rules defined - policy will not run."
-msgstr ""
+msgstr "정의된 규칙 없음 - 정책이 실행되지 않습니다."
 
 msgid "SecurityOrchestration|No scope"
 msgstr "범위 없음"
@@ -53081,7 +53102,7 @@ msgid "SecurityOrchestration|Only overriding settings and bot message will take 
 msgstr "오버라이드 설정 및 봇 메시지에만 적용됩니다."
 
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
-msgstr ""
+msgstr "소유자만 보안 정책 프로젝트를 업데이트할 수 있습니다."
 
 msgid "SecurityOrchestration|Open policy actions dropdown"
 msgstr "정책 동작 드롭다운을 열기"
@@ -53108,16 +53129,16 @@ msgid "SecurityOrchestration|Policy Type"
 msgstr "정책 유형"
 
 msgid "SecurityOrchestration|Policy cannot be enabled for non-existing branches (%{branches})"
-msgstr ""
+msgstr "존재하지 않는 브랜치(%{branches})에 대해 정책을 사용하도록 설정할 수 없습니다"
 
 msgid "SecurityOrchestration|Policy cannot be enabled without branch information"
-msgstr ""
+msgstr "브랜치 정보가 없으면 정책을 사용할 수 없습니다."
 
 msgid "SecurityOrchestration|Policy changes may take some time to be applied."
-msgstr ""
+msgstr "책 변경 사항을 적용하는 데 다소 시간이 걸릴 수 있습니다."
 
 msgid "SecurityOrchestration|Policy contains %{linkStart}deprecated syntax%{linkEnd} (%{deprecatedProperties})."
-msgstr ""
+msgstr "정책에 %{linkStart}더 이상 사용되지 않는 구문%{linkEnd} (%{deprecatedProperties})이 포함되어 있습니다."
 
 msgid "SecurityOrchestration|Policy definition"
 msgstr "정책 정의"
@@ -53165,10 +53186,10 @@ msgid "SecurityOrchestration|Required approvals exceed eligible approvers."
 msgstr "승인 요구가 적정한 승인자 수를 초과합니다."
 
 msgid "SecurityOrchestration|Requires no approvals if any of the following occur:"
-msgstr ""
+msgstr "다음 중 하나라도 발생하면 승인이 필요하지 않습니다:"
 
 msgid "SecurityOrchestration|Resolve the following vulnerabilities that are no longer detected on the default branch:"
-msgstr ""
+msgstr "기본 브랜치에서 더 이상 감지되지 않는 다음 취약점을 해결합니다."
 
 msgid "SecurityOrchestration|Resolved"
 msgstr "해결됨"
@@ -53180,16 +53201,16 @@ msgid "SecurityOrchestration|Rule mode"
 msgstr "규칙 모드"
 
 msgid "SecurityOrchestration|Rule mode is unavailable for this policy. In some cases, we cannot parse the YAML file back into the rules editor."
-msgstr ""
+msgstr "이 정책에는 규칙 모드를 사용할 수 없습니다. 경우에 따라 YAML 파일을 다시 규칙 편집기로 구문 분석할 수 없습니다."
 
 msgid "SecurityOrchestration|Rules"
 msgstr "규칙"
 
 msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} with the following options:"
-msgstr ""
+msgstr "다음 옵션을 사용하여 %{scannerStart}%{scanner}%{scannerEnd} 실행:"
 
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
-msgstr ""
+msgstr "다음 옵션을 사용하여 %{scannerStart}%{scanner}%{scannerEnd} 스캔을 실행합니다."
 
 msgid "SecurityOrchestration|Save changes"
 msgstr "변경사항 저장"
@@ -53201,16 +53222,16 @@ msgid "SecurityOrchestration|Scan execution"
 msgstr "스캔 실행"
 
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
-msgstr ""
+msgstr "스캔 실행 정책은 프로젝트 소유자만 만들 수 있습니다."
 
 msgid "SecurityOrchestration|Scan execution policies using `custom` scan action have been detected. Policies using this action will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to remove the deprecated action. Learn more about the %{linkStart}pipeline execution policy%{linkEnd}."
 msgstr "커스텀 `custom` 스캔 작업을 사용하는 스캔 실행 정책이 감지되었습니다. 이 작업을 사용하는 정책은 GitLab 18.0(2025년 5월 10일) 이후에는 작동하지 않습니다. 이러한 정책을 편집하여 더 이상 사용되지 않는 작업을 제거해야 합니다. %{linkStart}파이프라인 실행 정책%{linkEnd}에 대해 자세히 알아보세요."
 
 msgid "SecurityOrchestration|Scan execution policy"
-msgstr ""
+msgstr "스캔 실행 정책"
 
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
-msgstr ""
+msgstr "스캔은 러너에 태그가 없기 때문에 실행할 러너를 자동으로 선택합니다. 설정%{linkEnd}에서 %{linkStart}태그를 생성할 수 있습니다."
 
 msgid "SecurityOrchestration|Schedule a new"
 msgstr "새로 예약하기"
@@ -53234,7 +53255,7 @@ msgid "SecurityOrchestration|Security policy overwrites this setting"
 msgstr "보안 정책이 이 설정을 덮어씁니다."
 
 msgid "SecurityOrchestration|Security policy project was linked successfully"
-msgstr ""
+msgstr "보안 정책 프로젝트가 성공적으로 링크되었습니다."
 
 msgid "SecurityOrchestration|Security policy project will be unlinked soon"
 msgstr "보안 정책 프로젝트가 곧 링크 해제됩니다"
@@ -53264,7 +53285,7 @@ msgid "SecurityOrchestration|Select suffix"
 msgstr "접미사 선택"
 
 msgid "SecurityOrchestration|Send a bot message when the conditions match."
-msgstr ""
+msgstr "조건이 일치하면 봇 메시지를 보냅니다."
 
 msgid "SecurityOrchestration|Send bot message"
 msgstr "봇 메시지 보내기"
@@ -53273,10 +53294,10 @@ msgid "SecurityOrchestration|Several merge request approval policy criteria have
 msgstr "여러 머지 리퀘스트 승인 정책 기준이 더 이상 사용되지 않습니다. 이러한 기준을 사용하는 정책은 GitLab 18.0(2025년 5월 10일) 이후에는 작동하지 않습니다. 더 이상 사용되지 않는 기준을 대체하거나 제거하려면 이러한 정책을 편집해야 합니다."
 
 msgid "SecurityOrchestration|Severity is %{severity}."
-msgstr ""
+msgstr "심각도 %{severity}."
 
 msgid "SecurityOrchestration|Show all included projects"
-msgstr ""
+msgstr "포함된 모든 프로젝트 표시"
 
 msgid "SecurityOrchestration|Show more projects"
 msgstr "더 많은 프로젝트 표시"
@@ -53285,10 +53306,10 @@ msgid "SecurityOrchestration|Show only linked security policy projects"
 msgstr "링크된 보안 정책 프로젝트만 표시"
 
 msgid "SecurityOrchestration|Some settings may be affected by policy %{policyName} based on its rules."
-msgstr ""
+msgstr "일부 설정은 규칙에 따라 %{policyName} 정책의 영향을 받을 수 있습니다."
 
 msgid "SecurityOrchestration|Some settings may be affected by the following policies based on their rules:"
-msgstr ""
+msgstr "일부 설정은 규칙에 따라 다음 정책의 영향을 받을 수 있습니다:"
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch groups"
 msgstr "문제가 발생하여 그룹을 가져올 수 없습니다."
@@ -53297,7 +53318,7 @@ msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
 msgstr "정책을 가져올 수 없는 문제가 발생했습니다."
 
 msgid "SecurityOrchestration|Sorry, your filter produced no results."
-msgstr ""
+msgstr "죄송합니다. 필터에 결과가 없습니다."
 
 msgid "SecurityOrchestration|Source"
 msgstr "원본"
@@ -53312,7 +53333,7 @@ msgid "SecurityOrchestration|Summary"
 msgstr "요약"
 
 msgid "SecurityOrchestration|Summary of syntax changes:"
-msgstr ""
+msgstr "구문 변경 사항 요약:"
 
 msgid "SecurityOrchestration|The compliance pipeline will continue to override the new pipeline execution policy until it is removed from the compliance framework configuration."
 msgstr "규정 준수 파이프라인은 규정 준수 프레임워크 구성에서 제거될 때까지 새 파이프라인 실행 정책을 계속 오버라이드 합니다."
@@ -53321,25 +53342,25 @@ msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot ed
 msgstr "현재 YAML 구문이 잘못되어 규칙 모드에서 작업을 편집할 수 없습니다. 문제를 해결하려면 YAML 모드로 전환하고 구문을 수정하세요."
 
 msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the conditions in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
-msgstr ""
+msgstr "현재 YAML 구문이 잘못되어 규칙 모드에서 조건을 편집할 수 없습니다. 문제를 해결하려면 YAML 모드로 전환하고 구문을 수정하세요."
 
 msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the rules in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
-msgstr ""
+msgstr "현재 YAML 구문이 잘못되어 규칙 모드에서 규칙을 편집할 수 없습니다. 문제를 해결하려면 YAML 모드로 전환하고 구문을 수정하세요."
 
 msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the settings in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
-msgstr ""
+msgstr "현재 YAML 구문이 잘못되어 규칙 모드에서 설정을 수정할 수 없습니다. 문제를 해결하려면 YAML 모드로 전환하고 구문을 수정하세요."
 
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
-msgstr ""
+msgstr "다음 브랜치가 이 개발 프로젝트에 없습니다: %{branches}. 이 정책을 업데이트하기 전에 모든 보호된 브랜치를 검토하여 값이 정확한지 확인하십시오."
 
 msgid "SecurityOrchestration|Then automatically set the status of these vulnerabilities to %{type}."
-msgstr ""
+msgstr "그런 다음 이러한 취약점의 상태를 자동으로 %{type} 으로 설정합니다."
 
 msgid "SecurityOrchestration|There are no exception branches yet."
-msgstr ""
+msgstr "아직 예외 브랜치가 없습니다."
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
-msgstr ""
+msgstr "새 보안 정책을 만드는 동안 문제가 발생했습니다."
 
 msgid "SecurityOrchestration|This %{namespaceType} does not contain any security policies."
 msgstr "이 %{namespaceType} 에는 보안 정책이 포함되어 있지 않습니다."
@@ -53348,7 +53369,7 @@ msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security p
 msgstr "이 %{namespaceType}은 보안 정책 프로젝트에 링크되어 있지 않습니다. 기존 프로젝트에 링크하거나 새 정책을 만들어 보안 정책 프로젝트로 사용할 수 있는 새 프로젝트를 만드세요. 도움말은 %{linkStart}정책%{linkEnd}을 참조하세요."
 
 msgid "SecurityOrchestration|This applies to following compliance frameworks:"
-msgstr ""
+msgstr "이는 다음 규정 준수 프레임워크에 적용됩니다:"
 
 msgid "SecurityOrchestration|This group"
 msgstr "이 그룹"
@@ -53360,7 +53381,7 @@ msgid "SecurityOrchestration|This is a project-level policy"
 msgstr "프로젝트 수준 정책입니다."
 
 msgid "SecurityOrchestration|This merge request approval policy targets the default branch, but the default branch is not protected in this project. To set up this policy, the default branch must be protected."
-msgstr ""
+msgstr "이 머지 리퀘스트 승인 정책은 기본 브랜치를 대상으로 하지만, 기본 브랜치는 이 프로젝트에서 보호되지 않습니다. 이 정책을 설정하려면 기본 브랜치를 보호해야 합니다."
 
 msgid "SecurityOrchestration|This merge request migrates compliance pipeline `%{path}` to a pipeline execution policy scoped to framework [%{framework}](%{link})."
 msgstr "이 머지 리퀘스트는 규정 준수 파이프라인 `%{path}`를 프레임워크 [%{framework}](%{link})로 범위가 지정된 파이프라인 실행 정책으로 마이그레이션합니다."
@@ -53369,7 +53390,7 @@ msgid "SecurityOrchestration|This policy doesn't contain any actions or override
 msgstr "이 정책에는 이 포함되어 있지 않거나 프로젝트 승인 설정을 오버라이드 하지 않습니다. 빈 정책은 생성할 수 없습니다."
 
 msgid "SecurityOrchestration|This policy is applied to current project."
-msgstr ""
+msgstr "이 정책은 현재 프로젝트에 적용됩니다."
 
 msgid "SecurityOrchestration|This policy is inherited"
 msgstr "이 정책은 상속된 것입니다."
@@ -53414,19 +53435,19 @@ msgid "SecurityOrchestration|Update via merge request"
 msgstr "머지 리퀘스트를 통해 업데이트"
 
 msgid "SecurityOrchestration|Use a merge request approval policy to create rules that %{strongStart}check%{strongEnd} for %{strongStart}security vulnerabilities%{strongEnd} and %{strongStart}license compliance%{strongEnd} before %{strongStart}merging a merge request%{strongEnd}."
-msgstr ""
+msgstr "머지 리퀘스트 승인 정책을 사용하여 %{strongStart}머지 리퀘스트 머지%{strongEnd}하기 전에 %{strongStart}보안 취약성%{strongEnd}과 %{strongStart}라이선스 준수%{strongEnd}를 %{strongStart}확인%{strongEnd}하는 규칙을 만듭니다."
 
 msgid "SecurityOrchestration|Use a pipeline execution policy to %{strongStart}enforce a custom CI/CD configuration%{strongEnd} to run in project pipelines."
-msgstr ""
+msgstr "파이프라인 실행 정책을 사용하여 프로젝트 파이프라인에서 %{strongStart}실행할 커스텀 CI/CD 구성을 적용%{strongEnd}합니다."
 
 msgid "SecurityOrchestration|Use a scan execution policy to create rules which %{strongStart}enforce security scans%{strongEnd} for %{strongStart}particular branches%{strongEnd} at %{strongStart}certain times%{strongEnd}. Supported types are SAST, SAST IaC, DAST, Secret detection, Container scanning, and Dependency scanning."
-msgstr ""
+msgstr "스캔 실행 정책을 사용하여 %{strongStart}특정 시간%{strongEnd}에 %{strongStart}특정 브랜치%{strongEnd} 대한 %{strongStart}보안 스캔을 시행%{strongEnd}하는 규칙을 만듭니다. 지원되는 유형은 SAST, SAST IaC, DAST, 비밀 탐지, 컨테이너 스캐닝 및 종속성 스캐닝입니다."
 
 msgid "SecurityOrchestration|Use default mode for scoping"
-msgstr ""
+msgstr "범위 지정(scoping)에 기본 모드 사용"
 
 msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
-msgstr ""
+msgstr "%{schemaStart}path-to-package@package-version%{schemaEnd} 형식을 사용합니다. 여러 패키지의 경우 경로를 쉼표로 구분합니다. 예: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
 
 msgid "SecurityOrchestration|Users can skip pipelines"
 msgstr "사용자는 파이프라인을 생략할 수 있습니다"
@@ -53435,40 +53456,40 @@ msgid "SecurityOrchestration|Users can't skip pipelines"
 msgstr "사용자는 파이프라인을 생략할 수 없습니다."
 
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
-msgstr ""
+msgstr "브랜치 이름을 검증하는 중입니다. 시간이 걸릴 수 있습니다."
 
 msgid "SecurityOrchestration|View policy project"
 msgstr "정책 프로젝트 보기"
 
 msgid "SecurityOrchestration|Vulnerabilities %{vulnerabilityStates}."
-msgstr ""
+msgstr "취약점 %{vulnerabilityStates}."
 
 msgid "SecurityOrchestration|Vulnerabilities are %{vulnerabilityStates}."
-msgstr ""
+msgstr "취약점은 %{vulnerabilityStates}입니다."
 
 msgid "SecurityOrchestration|Vulnerability age is greater than %{vulnerabilityAge}."
 msgstr "취약점 기간이 %{vulnerabilityAge} 보다 오래됨."
 
 msgid "SecurityOrchestration|Vulnerability age is less than %{vulnerabilityAge}."
-msgstr ""
+msgstr "취약점 기간이 %{vulnerabilityAge}미만입니다."
 
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"
 msgstr "취약성 기간에는 이전에 존재하던 취약성 상태(감지, 확인, 해결 또는 해지)가 필요합니다."
 
 msgid "SecurityOrchestration|Vulnerability management"
-msgstr ""
+msgstr "취약점 관리"
 
 msgid "SecurityOrchestration|Vulnerability management policy"
-msgstr ""
+msgstr "취약점 관리 정책"
 
 msgid "SecurityOrchestration|Warn in merge request"
-msgstr ""
+msgstr "머지 리퀘스트에서 경고"
 
 msgid "SecurityOrchestration|Warn users with a bot comment and contact the following users as security consultants for support: %{approvers}"
-msgstr ""
+msgstr "봇 댓글로 사용자에게 경고하고 보안 컨설턴트로서 지원을 위해 다음 사용자에게 연락하세요: %{approvers}"
 
 msgid "SecurityOrchestration|What does an example message look like?"
-msgstr ""
+msgstr "예제 메시지는 어떤 모양입니까?"
 
 msgid "SecurityOrchestration|What is linked group?"
 msgstr "링크된 그룹이란 무엇인가요?"
@@ -53477,16 +53498,16 @@ msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulner
 msgstr "열린 머지 리퀘스트에서 %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} 인 경우 %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"
 
 msgid "SecurityOrchestration|When license scanner finds any license except %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
-msgstr ""
+msgstr "라이선스 스캐너가 열린 머지 리퀘스트에서 %{licenses}%{detection} 제외한 모든 라이선스를 찾은 경우 %{targeting}%{branches}%{branchExceptionsString}"
 
 msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
-msgstr ""
+msgstr "라이선스 스캐너가 열린 머지 리퀘스트에서 %{licenses}%{detection} 과 일치하는 라이선스를 찾은 경우 %{targeting}%{branches}%{branchExceptionsString}"
 
 msgid "SecurityOrchestration|Who is a consultant?"
-msgstr ""
+msgstr "컨설턴트는 누구인가요?"
 
 msgid "SecurityOrchestration|With the %{template} security job template"
-msgstr ""
+msgstr "%{template} 보안 작업 템플릿 사용"
 
 msgid "SecurityOrchestration|With the following customized CI variables:"
 msgstr "다음 커스터마이징된 CI 변수:"
@@ -53498,40 +53519,40 @@ msgid "SecurityOrchestration|Yaml"
 msgstr "Yaml"
 
 msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} %{instance}."
-msgstr ""
+msgstr "이미 최대값 %{maximumAllowed} %{policyType} %{instance}을 보유하고 있습니다."
 
 msgid "SecurityOrchestration|You can add a maximum of %{rulesCount} %{rules}."
-msgstr ""
+msgstr "최대 %{rulesCount}개 중 %{rules}개를 추가할 수 있습니다."
 
 msgid "SecurityOrchestration|You can select this option only once."
 msgstr "이 옵션은 한 번만 선택할 수 있습니다."
 
 msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
-msgstr ""
+msgstr "기본 브랜치의 보호는 하나 이상의 %{security_policies_link_start}보안 정책%{security_policies_link_end}에 의해 강제되고 있어 변경할 수 없습니다. %{learn_more_link_start}자세히 알아보기%{learn_more_link_end}."
 
 msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
-msgstr ""
+msgstr "이 브랜치에 대한 보호는 하나 이상의 %{security_policies_link_start}보안 정책%{security_policies_link_end}에 의해 시행되기 때문에 보호를 해제할 수 없습니다. %{learn_more_link_start}자세히 알아보기%{learn_more_link_end}."
 
 msgid "SecurityOrchestration|You don't have any security policies yet"
-msgstr ""
+msgstr "아직 보안 정책이 없습니다."
 
 msgid "SecurityOrchestration|You must edit the policy and replace the deprecated syntax (%{deprecatedProperties}). For details on its replacement, see the %{linkStart}policy documentation%{linkEnd}."
-msgstr ""
+msgstr "정책을 편집하고 더 이상 사용되지 않는 구문(%{deprecatedProperties})을 교체해야 합니다. 교체에 대한 자세한 내용은 %{linkStart}정책 설명서%{linkEnd}를 참조하세요."
 
 msgid "SecurityOrchestration|You must select one or more compliance frameworks to which this policy should apply."
 msgstr "이 정책을 적용해야 하는 규정 준수 프레임워크를 하나 이상 선택해야 합니다."
 
 msgid "SecurityOrchestration|You must select one or more groups from this policy."
-msgstr ""
+msgstr "이 정책에서 하나 이상의 그룹을 선택해야 합니다."
 
 msgid "SecurityOrchestration|You must select one or more projects to be excluded from this policy."
-msgstr ""
+msgstr "이 정책에서 제외할 프로젝트를 하나 이상 선택해야 합니다."
 
 msgid "SecurityOrchestration|You must select one or more projects to which this policy should apply."
-msgstr ""
+msgstr "이 정책을 적용해야 하는 프로젝트를 하나 이상 선택해야 합니다."
 
 msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. Policies are disabled when added."
-msgstr ""
+msgstr "허용되는 정책 최대 한도인 %{max} %{type} 에 도달했습니다. 정책을 추가하면 비활성화됩니다."
 
 msgid "SecurityOrchestration|a license scanner found license violations"
 msgstr "라이선스 스캐너가 라이선스 위반을 발견했습니다."
@@ -53540,10 +53561,10 @@ msgid "SecurityOrchestration|a merge request has been opened against a protected
 msgstr "보호된 브랜치에 대해 머지 리퀘스트가 열렸습니다."
 
 msgid "SecurityOrchestration|a security policy has been violated"
-msgstr ""
+msgstr "보안 정책이 위반되었습니다."
 
 msgid "SecurityOrchestration|a security scanner found vulnerabilities matching the criteria"
-msgstr ""
+msgstr "보안 스캐너가 기준과 일치하는 취약점을 발견했습니다."
 
 msgid "SecurityOrchestration|all namespaces"
 msgstr "모든 네임스페이스"
@@ -53576,7 +53597,7 @@ msgid "SecurityOrchestration|are not false positives"
 msgstr "거짓 양성이 아닙니다."
 
 msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
-msgstr ""
+msgstr "다음 시간에: %{cadenceSelector}, %{start}부터 시작하여 %{duration} 동안 실행되며, 시간대는 %{timezoneSelector}입니다."
 
 msgid "SecurityOrchestration|branch"
 msgstr "브랜치"
@@ -53588,13 +53609,13 @@ msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{branchExce
 msgstr "이름이 %{agents} %{cadence}%{branchExceptionsString}인 에이전트에 의해"
 
 msgid "SecurityOrchestration|compliance frameworks"
-msgstr ""
+msgstr "규정 준수 프레임워크"
 
 msgid "SecurityOrchestration|default"
 msgstr "기본값"
 
 msgid "SecurityOrchestration|except for:"
-msgstr ""
+msgstr "예외:"
 
 msgid "SecurityOrchestration|except groups"
 msgstr "제외 그룹"
@@ -53603,25 +53624,28 @@ msgid "SecurityOrchestration|except projects"
 msgstr "제외 프로젝트"
 
 msgid "SecurityOrchestration|exceptions: %{exceptions}"
-msgstr ""
+msgstr "예외: %{exceptions}"
 
 msgid "SecurityOrchestration|group level branch input"
 msgstr "그룹 수준 브랜치 입력"
 
 msgid "SecurityOrchestration|group level branch selector"
-msgstr ""
+msgstr "그룹 수준 브랜치 선택기"
 
 msgid "SecurityOrchestration|have a fix available"
-msgstr ""
+msgstr "사용 가능한 수정 사항 있음"
 
 msgid "SecurityOrchestration|have no fix available"
-msgstr ""
+msgstr "사용 가능한 수정 사항 없음"
 
 msgid "SecurityOrchestration|latest"
 msgstr "최신"
 
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr "%{allowed} 이상"
+
+msgid "SecurityOrchestration|on every"
+msgstr "모든"
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr "규정 준수 프레임워크를 사용하는 프로젝트"
@@ -53636,7 +53660,7 @@ msgid "SecurityOrchestration|specific projects"
 msgstr "특정 프로젝트"
 
 msgid "SecurityOrchestration|targeting %{branchTypeText}"
-msgstr ""
+msgstr "타겟팅 %{branchTypeText}"
 
 msgid "SecurityOrchestration|the %{branches}"
 msgstr "이 %{branches}"
@@ -53657,13 +53681,13 @@ msgid "SecurityOrchestration|the default branch"
 msgstr "기본 브랜치"
 
 msgid "SecurityOrchestration|type: scan_result_policy is replaced with %{linkStart}type: approval_policy%{linkEnd}"
-msgstr ""
+msgstr "type: scan_result_policy는 %{linkStart}type: approval_policy%{linkEnd}로 대체됩니다."
 
 msgid "SecurityOrchestration|with %{exceptionType}"
-msgstr ""
+msgstr "%{exceptionType} 를 적용"
 
 msgid "SecurityOrchestration|with %{exceptionType} on %{branchSelector}"
-msgstr ""
+msgstr "%{branchSelector}상의 %{exceptionType}"
 
 msgid "SecurityOrchestration|without exceptions"
 msgstr "예외 없음"
@@ -55360,6 +55384,9 @@ msgstr "한 번에 하나의 파일 표시"
 
 msgid "Show open epics"
 msgstr ""
+
+msgid "Show or hide sidebar"
+msgstr "사이드바 표시 또는 숨김"
 
 msgid "Show password"
 msgstr ""
@@ -60914,9 +60941,6 @@ msgstr "할 일을 미루기 취소를 하지 못했습니다. 나중에 다시 
 msgid "Todos|Filter to-do items"
 msgstr "할 일 항목 필터링"
 
-msgid "Todos|First sent %{timeago}"
-msgstr "처음 %{timeago}에 보냄"
-
 msgid "Todos|For one hour"
 msgstr "한시간 동안"
 
@@ -60995,6 +61019,9 @@ msgstr "더 이상 할 일이 없습니다. 하이 파이브!"
 
 msgid "Todos|OKR checkin requested"
 msgstr "OKR 체크인 요청됨"
+
+msgid "Todos|Previously snoozed"
+msgstr "이전에 미루기 됨"
 
 msgid "Todos|Raw text search is not currently supported"
 msgstr "원시 텍스트 검색은 현재 지원되지 않습니다."
@@ -65262,6 +65289,9 @@ msgstr "%{project_name}에서 비정상적으로 높은 스토리지 사용량�
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
 msgstr "%{strong_start}%{project_name}%{strong_end}에서 비정상적으로 높은 스토리지 사용량이 감지되었습니다."
 
+msgid "Web"
+msgstr ""
+
 msgid "Web IDE"
 msgstr "웹 IDE"
 
@@ -66123,7 +66153,7 @@ msgid "Work items"
 msgstr "작업 항목"
 
 msgid "WorkItemCustomFields|Failed to load custom fields."
-msgstr ""
+msgstr "사용자 정의 필드를 불러오지 못했습니다."
 
 msgid "WorkItemCustomFields|Options could not be loaded for field: %{dropdownLabel}. Please try again."
 msgstr "옵션은 필드로 로딩될 수 없습니다. : %{dropdownLabel} 다시 시도해 보세요."

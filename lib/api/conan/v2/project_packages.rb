@@ -35,6 +35,31 @@ module API
                 check_username_channel
               end
 
+              namespace 'latest' do
+                desc 'Get the latest revision' do
+                  detail 'This feature was introduced in GitLab 17.11'
+                  success code: 200, model: ::API::Entities::Packages::Conan::RecipeRevision
+                  failure [
+                    { code: 400, message: 'Bad Request' },
+                    { code: 401, message: 'Unauthorized' },
+                    { code: 403, message: 'Forbidden' },
+                    { code: 404, message: 'Not Found' }
+                  ]
+                  tags %w[conan_packages]
+                end
+                route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                route_setting :authorization, job_token_policies: :read_packages,
+                  allow_public_access_for_enabled_project_features: :package_registry
+                get urgency: :low do
+                  not_found!('Package') unless package
+
+                  revision = package.conan_recipe_revisions.order_by_id_desc.first
+
+                  not_found!('Revision') unless revision.present?
+
+                  present revision, with: ::API::Entities::Packages::Conan::RecipeRevision
+                end
+              end
               namespace 'revisions' do
                 params do
                   requires :recipe_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_v2,

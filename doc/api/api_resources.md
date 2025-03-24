@@ -26,10 +26,10 @@ Use the REST API to:
 
 The REST API resources are organized into:
 
-- [Project endpoints](#project-resources)
-- [Group endpoints](#group-resources)
-- [Standalone endpoints](#standalone-resources)
-- [Template endpoints](#template-resources)
+- [Project resources](#project-resources)
+- [Group resources](#group-resources)
+- [Standalone resources](#standalone-resources)
+- [Template resources](#template-resources)
 
 ## Project resources
 
@@ -46,7 +46,8 @@ The following API resources are available in the project context:
 | [Container repository protection rules](container_repository_protection_rules.md)  | `/projects/:id/registry/protection/repository/rules` |
 | [Custom attributes](custom_attributes.md)                                      | `/projects/:id/custom_attributes` (also available for groups and users) |
 | [Composer distributions](packages/composer.md)                                 | `/projects/:id/packages/composer` (also available for groups) |
-| [Conan distributions](packages/conan.md)                                       | `/projects/:id/packages/conan` (also available standalone) |
+| [Conan v1 distributions](packages/conan_v1.md)                                       | `/projects/:id/packages/conan` (also available standalone) |
+| [Conan v2 distributions](packages/conan_v2.md)                                       | `/projects/:id/packages/conan` (also available standalone) |
 | [Debian distributions](packages/debian_project_distributions.md)               | `/projects/:id/debian_distributions` (also available for groups) |
 | [Debian packages](packages/debian.md)                                          | `/projects/:id/packages/debian` (also available for groups) |
 | [Dependencies](dependencies.md)                                                | `/projects/:id/dependencies` |

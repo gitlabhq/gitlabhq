@@ -743,75 +743,26 @@ RSpec.shared_examples 'work items crm contacts' do
 end
 
 RSpec.shared_examples 'work items progress' do
-  let(:progress_wrapper) { '[data-testid="work-item-progress-wrapper"]' }
-  let(:form_selector) { '[data-testid="work-item-progress"]' }
-  let(:input_selector) { '[data-testid="work-item-progress-input"]' }
-
-  it 'successfully sets the progress' do
-    within(progress_wrapper) do
+  it 'successfully sets the progress, and prevents setting invalid values', :aggregate_failures do
+    within_testid('work-item-progress') do
       click_button 'Edit'
-    end
+      fill_in('Progress', with: '30')
+      send_keys(:enter)
 
-    find(input_selector).fill_in(with: '30')
-    send_keys(:tab) # Simulate blur
+      expect(page).to have_content '30%'
 
-    wait_for_requests
-
-    expect(find(progress_wrapper)).to have_content "30%"
-    expect(work_item.reload.progress.progress).to eq 30
-  end
-
-  it 'prevents typing values outside min and max range', :aggregate_failures do
-    page_body = page.find('body')
-
-    within(progress_wrapper) do
       click_button 'Edit'
-    end
+      fill_in('Progress', with: '101')
+      click_button 'Apply'
 
-    page.within(form_selector) do
-      progress_input = find(input_selector)
-      progress_input.native.send_keys('101')
-    end
+      expect(page).to have_content '30%'
 
-    page_body.click
-    expect(find(progress_wrapper)).to have_content "0%"
-  end
-
-  it 'prevent typing special characters `+`, `-`, and `e`', :aggregate_failures do
-    page_body = page.find('body')
-
-    within(progress_wrapper) do
       click_button 'Edit'
+      fill_in('Progress', with: 'e')
+      click_button 'Apply'
+
+      expect(page).to have_content '30%'
     end
-
-    page.within(form_selector) do
-      find(input_selector).native.send_keys('+')
-    end
-
-    page_body.click
-    expect(find(progress_wrapper)).to have_content "0%"
-
-    within(progress_wrapper) do
-      click_button 'Edit'
-    end
-
-    page.within(form_selector) do
-      find(input_selector).native.send_keys('-')
-    end
-
-    page_body.click
-    expect(find(progress_wrapper)).to have_content "0%"
-
-    within(progress_wrapper) do
-      click_button 'Edit'
-    end
-
-    page.within(form_selector) do
-      find(input_selector).native.send_keys('e')
-    end
-
-    page_body.click
-    expect(find(progress_wrapper)).to have_content "0%"
   end
 end
 

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
@@ -9,6 +9,7 @@ import TodoSnoozedTimestamp from '~/todos/components/todo_snoozed_timestamp.vue'
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
 import { useFakeDate } from 'helpers/fake_date';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { SAML_HIDDEN_TODO, MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
 describe('TodoItem', () => {
@@ -68,6 +69,21 @@ describe('TodoItem', () => {
   it('renders TodoItemActions component', () => {
     createComponent();
     expect(wrapper.findComponent(TodoItemActions).exists()).toBe(true);
+  });
+
+  describe('should track', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('on click', () => {
+      createComponent();
+      const { trackEventSpy, triggerEvent } = bindInternalEventDocument(wrapper.element);
+
+      triggerEvent(wrapper.findComponent(GlLink).element);
+      expect(trackEventSpy).toHaveBeenCalledWith('follow_todo_link', {
+        label: 'MERGEREQUEST',
+        property: 'review_requested',
+      });
+    });
   });
 
   describe('state based style', () => {

@@ -39,8 +39,11 @@ module Mutations
 
         def authorize_discussion!(discussion)
           unless Ability.allowed?(current_user, :read_note, discussion, scope: :user)
-            raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-              "The discussion does not exist or you don't have permission to perform this action"
+            error_msg = <<~ERR.squish
+              The discussion does not exist or you don't have permission to perform this action
+            ERR
+
+            raise_resource_not_available_error! error_msg
           end
         end
       end

@@ -6,11 +6,12 @@ FactoryBot.define do
     sequence(:name) { |n| "package-#{n}" }
     version { '1.0.0' }
 
-    conan_metadatum
+    conan_metadatum { association(:conan_metadatum, package: instance) }
 
     transient do
       without_package_files { false }
       without_recipe_revisions { false }
+      without_package_references { false }
     end
 
     conan_recipe_revisions do
@@ -20,6 +21,8 @@ FactoryBot.define do
     end
 
     conan_package_references do
+      next [] if without_package_references
+
       [association(:conan_package_reference, package: instance, recipe_revision: instance.conan_recipe_revisions.first)]
     end
 
@@ -37,10 +40,13 @@ FactoryBot.define do
           create :conan_package_file, file, package: package,
             conan_recipe_revision: package.conan_recipe_revisions.first
         end
-        package_file_traits.each do |file|
-          create :conan_package_file, file, package: package,
-            conan_package_reference: package.conan_package_references.first,
-            conan_recipe_revision: package.conan_recipe_revisions.first
+
+        unless evaluator.without_package_references
+          package_file_traits.each do |file|
+            create :conan_package_file, file, package: package,
+              conan_package_reference: package.conan_package_references.first,
+              conan_recipe_revision: package.conan_recipe_revisions.first
+          end
         end
       end
     end

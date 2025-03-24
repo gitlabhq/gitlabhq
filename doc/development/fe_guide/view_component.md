@@ -170,7 +170,7 @@ For example:
     = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
   - c.with_help_text do
     = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-    = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
+    = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 ```
 
 For the full list of options, see its
@@ -270,7 +270,7 @@ Many of the settings pages use a layout where the title and description are on t
   - c.with_title { _('Naming, visibility') }
   - c.with_description do
     = _('Update your group name, description, avatar, and visibility.')
-    = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+    = link_to _('Learn more about groups.'), help_page_path('user/group/_index.md')
   - c.with_body do
     .form-group.gl-form-group
       = f.label :name, _('New group name')

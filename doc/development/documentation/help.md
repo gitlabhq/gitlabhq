@@ -108,7 +108,7 @@ is inside `_()` so it can be translated:
   the rest of the page layout:
 
   ```haml
-  = render Pajamas::ButtonComponent.new(href: help_page_path('user/group/import/index.md'), target: '_blank') do
+  = render Pajamas::ButtonComponent.new(href: help_page_path('user/group/import/_index.md'), target: '_blank') do
       = _('Learn more')
   ```
 
