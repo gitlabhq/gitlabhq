@@ -53,18 +53,18 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/markdown.html
+  documentation_link: https://docs.gitlab.com/user/markdown/
   image_url: https://about.gitlab.com/images/17_10/enhanced_markdown_experience.png
   published_at: 2025-03-20
   release: 17.10
 - name: New visualization of DevOps performance with DORA metrics across projects
   description: |
-    We are excited to introduce the **Projects by DORA metric** panel, a new addition to the [Value Streams Dashboard](https://www.youtube.com/watch?v=EA9Sbks27g4). This table lists all projects in the top-level group, with breakdown into the [four DORA metrics](https://about.gitlab.com/solutions/value-stream-management/dora/#overview). Managers can use this table to identify high, medium, and low-performing projects. This information can also help make data-driven decisions, allocate resources effectively, and focus on initiatives that enhance software delivery speed, stability, and reliability. The [DORA metrics](https://docs.gitlab.com/ee/user/analytics/dora_metrics.html) are available out-of-the-box in GitLab, and now together with the [**DORA Performers score** panel](https://about.gitlab.com/blog/2024/01/18/inside-dora-performers-score-in-gitlab-value-streams-dashboard/) executives have a complete view into their organization's DevOps health top to bottom.
+    We are excited to introduce the **Projects by DORA metric** panel, a new addition to the [Value Streams Dashboard](https://www.youtube.com/watch?v=EA9Sbks27g4). This table lists all projects in the top-level group, with breakdown into the [four DORA metrics](https://about.gitlab.com/solutions/value-stream-management/dora/#overview). Managers can use this table to identify high, medium, and low-performing projects. This information can also help make data-driven decisions, allocate resources effectively, and focus on initiatives that enhance software delivery speed, stability, and reliability. The [DORA metrics](https://docs.gitlab.com/user/analytics/dora_metrics/) are available out-of-the-box in GitLab, and now together with the [**DORA Performers score** panel](https://about.gitlab.com/blog/2024/01/18/inside-dora-performers-score-in-gitlab-value-streams-dashboard/) executives have a complete view into their organization's DevOps health top to bottom.
   stage: plan
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#projects-by-dora-categories
+  documentation_link: https://docs.gitlab.com/user/analytics/value_streams_dashboard/#projects-by-dora-metric
   image_url: https://about.gitlab.com/images/17_10/17.7_vsd_dora_table2.png
   published_at: 2025-03-20
   release: 17.10

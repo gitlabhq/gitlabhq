@@ -47,8 +47,6 @@ module UsageDataHelpers
     projects_asana_active
     projects_jenkins_active
     projects_jira_active
-    projects_slack_active
-    projects_slack_slash_commands_active
     projects_custom_issue_tracker_active
     projects_mattermost_active
     projects_prometheus_active

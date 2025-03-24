@@ -226,7 +226,6 @@ export default {
       <gl-form-group class="gl-mb-3" :label="$options.i18n.areaLabel">
         <markdown-field
           :can-attach-file="false"
-          :add-spacing-classes="false"
           :show-comment-tool-bar="false"
           :textarea-value="timelineText"
           :restricted-tool-bar-items="$options.restrictedToolBarItems"

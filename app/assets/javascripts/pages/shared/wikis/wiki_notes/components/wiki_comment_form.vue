@@ -274,7 +274,6 @@ export default {
                 :autofocus="replyOrEdit"
                 :render-markdown-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
-                :add-spacing-classes="false"
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"

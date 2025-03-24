@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { updateText } from '~/lib/utils/text_markdown';
 import EditorModeSwitcher from './editor_mode_switcher.vue';
 
 export default {
@@ -39,20 +38,6 @@ export default {
   computed: {
     showEditorModeSwitcher() {
       return this.showContentEditorSwitcher;
-    },
-  },
-  methods: {
-    insertIntoTextarea(...lines) {
-      const text = lines.join('\n');
-      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
-      if (textArea && !textArea.value) {
-        updateText({
-          textArea,
-          tag: text,
-          cursorOffset: 0,
-          wrap: false,
-        });
-      }
     },
   },
 };

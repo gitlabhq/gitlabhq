@@ -26,7 +26,6 @@ export default {
   <div class="form-group">
     <label for="snippet-description">{{ s__('Snippets|Description (optional)') }}</label>
     <markdown-field
-      :add-spacing-classes="false"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :textarea-value="value"

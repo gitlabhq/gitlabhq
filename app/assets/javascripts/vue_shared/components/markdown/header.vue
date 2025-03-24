@@ -132,18 +132,6 @@ export default {
         ? this.newCommentTemplatePaths
         : this.newCommentTemplatePathsProp;
     },
-    mdTable() {
-      const header = s__('MarkdownEditor|header');
-      const divider = '-'.repeat(header.length);
-      const cell = ' '.repeat(header.length);
-
-      return [
-        `| ${header} | ${header} |`,
-        `| ${divider} | ${divider} |`,
-        `| ${cell} | ${cell} |`,
-        `| ${cell} | ${cell} |`,
-      ].join('\n');
-    },
     mdSuggestion() {
       const codeblockChars = repeatCodeBackticks(this.lineContent);
 

@@ -68,6 +68,10 @@ Follow the instructions that match your situation:
 
 ### Before you start
 
+- All database connection values are placeholders. You must create, verify your ability to
+  connect to, and manage a new PostgreSQL database for the registry before completing any step.
+  - See the full [database configuration](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#database).
+  - See [epic 17005](https://gitlab.com/groups/gitlab-org/-/epics/17005) for progress towards automatic registry database provisioning and management.
 - After you enable the database, you must continue to use it. The database is
   now the source of the registry metadata, disabling it after this point
   causes the registry to lose visibility on all images written to it while
@@ -90,15 +94,15 @@ To enable the database:
    ```ruby
    registry['database'] = {
      'enabled' => false,
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -109,15 +113,15 @@ To enable the database:
    ```ruby
    registry['database'] = {
      'enabled' => true,
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -161,15 +165,15 @@ and your registry contains a relatively small amount of data.
    ```ruby
    registry['database'] = {
      'enabled' => false, # Must be false!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -183,7 +187,7 @@ and your registry contains a relatively small amount of data.
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => {
@@ -209,21 +213,21 @@ and your registry contains a relatively small amount of data.
    ```ruby
    registry['database'] = {
      'enabled' => true, # Must be enabled now!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
 
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => {
@@ -270,15 +274,15 @@ If you must halt the operation, you have to restart this step.
    ```ruby
    registry['database'] = {
      'enabled' => false, # Must be false!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -314,7 +318,7 @@ Allow enough time for downtime while step two is being executed.
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => {
@@ -339,21 +343,21 @@ Allow enough time for downtime while step two is being executed.
    ```ruby
    registry['database'] = {
      'enabled' => true, # Must be set to true!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
 
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => { # This section can be removed.
@@ -719,15 +723,15 @@ You must truncate the table manually on your PostgreSQL instance:
    ```ruby
    registry['database'] = {
      'enabled' => false,
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 

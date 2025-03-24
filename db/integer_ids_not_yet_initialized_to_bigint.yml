@@ -420,17 +420,6 @@ merge_request_user_mentions:
 - mentioned_projects_ids
 - mentioned_users_ids
 - merge_request_id
-merge_requests:
-- assignee_id
-- author_id
-- id
-- last_edited_by_id
-- latest_merge_request_diff_id
-- merge_user_id
-- milestone_id
-- source_project_id
-- target_project_id
-- updated_by_id
 merge_requests_closing_issues:
 - id
 - issue_id

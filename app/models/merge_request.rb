@@ -26,6 +26,19 @@ class MergeRequest < ApplicationRecord
   include Todoable
   include Spammable
 
+  ignore_columns %i[
+    latest_merge_request_diff_id_convert_to_bigint
+    assignee_id_convert_to_bigint
+    author_id_convert_to_bigint
+    id_convert_to_bigint
+    last_edited_by_id_convert_to_bigint
+    merge_user_id_convert_to_bigint
+    milestone_id_convert_to_bigint
+    source_project_id_convert_to_bigint
+    target_project_id_convert_to_bigint
+    updated_by_id_convert_to_bigint
+  ], remove_with: '18.3', remove_after: '2025-07-17'
+
   extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha

@@ -43252,9 +43252,6 @@ ALTER TABLE ONLY observability_metrics_issues_connections
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_f25d0fbfae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ci_pipeline_variables
-    ADD CONSTRAINT fk_f29c5f4380_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE ONLY bulk_import_export_batches
     ADD CONSTRAINT fk_f2ab0c5303 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

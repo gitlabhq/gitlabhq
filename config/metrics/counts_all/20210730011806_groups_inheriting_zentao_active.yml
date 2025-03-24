@@ -10,6 +10,9 @@ milestone: "14.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338178
 time_frame: all
 data_source: database
+instrumentation_class: ActiveGroupsInheritingIntegrationsMetric
+options:
+  type: zentao
 data_category: operational
 tiers:
 - free

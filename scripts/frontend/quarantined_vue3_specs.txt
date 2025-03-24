@@ -17,7 +17,6 @@ ee/spec/frontend/analytics/merge_request_analytics/components/throughput_table_s
 ee/spec/frontend/approvals/components/security_configuration/unconfigured_security_rules_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
-ee/spec/frontend/audit_events/components/audit_events_filter_spec.js
 ee/spec/frontend/boards/components/board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/board_form_spec.js
 ee/spec/frontend/boards/components/board_list_spec.js

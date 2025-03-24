@@ -213,6 +213,7 @@ export default {
       this.saveDraft();
       this.autosizeTextarea();
     },
+    // eslint-disable-next-line vue/no-unused-properties -- append() is part of the component's public API.
     append(value) {
       if (!value) {
         this.focus();
@@ -224,6 +225,7 @@ export default {
         this.focus();
       });
     },
+    // eslint-disable-next-line vue/no-unused-properties -- setTemplate() is part of the component's public API.
     setTemplate(template, force = false) {
       if (!this.markdown || force) {
         this.setValue(template);
@@ -319,6 +321,7 @@ export default {
       if (!this.autosaveKey || key !== this.autosaveKey) return;
       clearDraft(this.autosaveKey);
     },
+    // eslint-disable-next-line vue/no-unused-properties -- togglePreview() is part of the component's public API.
     togglePreview(value) {
       if (this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
         this.$refs.markdownField.previewMarkdown = value;
@@ -393,7 +396,6 @@ export default {
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
-      :remove-border="true"
       @enableContentEditor="onEditingModeChange('contentEditor')"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >

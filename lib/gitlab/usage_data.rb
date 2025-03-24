@@ -35,6 +35,15 @@ module Gitlab
 
     MIGRATED_INTEGRATIONS = %w[
       pivotaltracker
+      slack
+      slack_slash_commands
+      squash_tm
+      teamcity
+      telegram
+      unify_circuit
+      webex_teams
+      youtrack
+      zentao
     ].freeze
 
     class << self

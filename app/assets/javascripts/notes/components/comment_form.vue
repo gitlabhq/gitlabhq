@@ -405,7 +405,6 @@ export default {
                 :value="note"
                 :render-markdown-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
-                :add-spacing-classes="false"
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
                 :disabled="shouldDisableField"
