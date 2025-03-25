@@ -5,6 +5,10 @@ module Gitlab
     module Parsers
       module Terraform
         class Tfplan
+          RESOURCE_COUNT_INTEGER_LIMIT = 999_999
+          RESOURCE_COUNT_STRING_LIMIT = /^[0-9]{1,6}$/
+
+          InvalidResourceCountError = Class.new(StandardError)
           TfplanParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
 
           def parse!(json_data, terraform_reports, artifact:)
@@ -19,6 +23,8 @@ module Gitlab
             end
           rescue JSON::ParserError
             terraform_reports.add_plan(job_id, invalid_tfplan(:invalid_json_format, job_details))
+          rescue InvalidResourceCountError
+            terraform_reports.add_plan(job_id, invalid_tfplan(:invalid_resource_count, job_details))
           rescue StandardError
             details = job_details || {}
             plan_name = job_id || 'failed_tf_plan'
@@ -45,10 +51,20 @@ module Gitlab
 
           def valid_tfplan(plan_data, job_details)
             job_details.merge(
-              'create' => plan_data['create'].to_i,
-              'delete' => plan_data['delete'].to_i,
-              'update' => plan_data['update'].to_i
+              'create' => sanitize_resource_count(plan_data['create']),
+              'delete' => sanitize_resource_count(plan_data['delete']),
+              'update' => sanitize_resource_count(plan_data['update'])
             )
+          end
+
+          def sanitize_resource_count(value)
+            if value.is_a?(Numeric)
+              [value, RESOURCE_COUNT_INTEGER_LIMIT].min
+            elsif value.is_a?(String) && value.match(RESOURCE_COUNT_STRING_LIMIT)
+              value.to_i
+            else
+              raise InvalidResourceCountError
+            end
           end
         end
       end

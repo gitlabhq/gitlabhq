@@ -17,7 +17,8 @@ module Enums
           # 24 was previously used by the deprecated `user_blocked`
           project_deleted: 25,
           filtered_by_rules: 26,
-          filtered_by_workflow_rules: 27
+          filtered_by_workflow_rules: 27,
+          composite_identity_forbidden: 28
         }
       end
 
