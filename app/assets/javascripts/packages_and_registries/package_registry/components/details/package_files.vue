@@ -466,10 +466,11 @@ export default {
           >
             <gl-disclosure-dropdown-item
               data-testid="delete-file"
+              variant="danger"
               @action="handleFileDelete([item])"
             >
               <template #list-item>
-                <span class="gl-text-red-500">{{ $options.i18n.deleteFile }}</span>
+                {{ $options.i18n.deleteFile }}
               </template>
             </gl-disclosure-dropdown-item>
           </gl-disclosure-dropdown>

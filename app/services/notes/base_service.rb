@@ -20,6 +20,8 @@ module Notes
         track_internal_event('create_snippet_note', project: project, user: current_user)
       when 'MergeRequest'
         track_internal_event('create_merge_request_note', project: project, user: current_user)
+      when 'WikiPage::Meta'
+        track_internal_event('create_wiki_page_note', project: project, user: current_user)
       end
     end
   end

@@ -20,7 +20,7 @@ See some of these settings on the [instance configuration page](https://gitlab.c
 ## Account and limit settings
 
 GitLab.com has the following account limits enabled. If a setting is not listed,
-the default value [is the same as for self-managed instances](../../administration/settings/account_and_limit_settings.md):
+the default value [is the same as for GitLab Self-Managed instances](../../administration/settings/account_and_limit_settings.md):
 
 | Setting                                                                                                                                                                                                            | GitLab.com default |
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
@@ -91,7 +91,7 @@ the related documentation.
 
 ## Container registry
 
-| Setting                                | GitLab.com                       | Default (self-managed) |
+| Setting                                | GitLab.com                       | Default (GitLab Self-Managed) |
 |:---------------------------------------|:---------------------------------|------------------------|
 | Domain name                            | `registry.gitlab.com`            |                        |
 | IP address                             | `35.227.35.254`                  |                        |
@@ -155,7 +155,7 @@ For administrator documentation, see [limit RPC concurrency](../../administratio
 ## GitLab Pages
 
 Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
-[defaults for self-managed instances](../../administration/pages/_index.md):
+[defaults for GitLab Self-Managed instances](../../administration/pages/_index.md):
 
 | Setting                                           | GitLab.com             |
 |:--------------------------------------------------|:-----------------------|

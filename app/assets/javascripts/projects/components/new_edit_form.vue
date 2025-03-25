@@ -121,7 +121,7 @@ export default {
       }
 
       return {
-        class: 'gl-text-red-500',
+        class: 'gl-text-danger',
         text: this.$options.i18n.charactersOverLimit(Math.abs(remainingCharacters)),
       };
     },

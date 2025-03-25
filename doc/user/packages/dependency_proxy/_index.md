@@ -194,7 +194,7 @@ You can also use [custom CI/CD variables](../../../ci/variables/_index.md#for-a-
 
 - Support for Docker Hub credentials [added](https://gitlab.com/gitlab-org/gitlab/-/issues/331741) in GitLab 17.10.
 - UI support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/521954) in GitLab 17.11.
- 
+
 {{< /history >}}
 
 By default, the Dependency Proxy does not use credentials when pulling images from Docker Hub.
@@ -458,7 +458,7 @@ see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
 {{< alert type="note" >}}
 
 This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
-For self managed instances that are 16.2 or earlier, you can update your instance to 16.3
+For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
 or use the workaround documented below.
 
 {{< /alert >}}

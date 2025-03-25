@@ -60,7 +60,7 @@ Running any application in production is complex, and the same applies for GitLa
 
 You must have a working knowledge of running and maintaining applications in production if you decide to go down this route. If you aren't in this position, our [Professional Services](https://about.gitlab.com/services/#implementation-services) team offers implementation services. Those who want a more managed solution long term, can explore our other offerings such as [GitLab SaaS](../../subscriptions/gitlab_com/_index.md) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md).
 
-If you are considering using the Self Managed approach, we encourage you to read through this page in full, specifically the following sections:
+If you are considering using the GitLab Self-Managed approach, we encourage you to read through this page in full, specifically the following sections:
 
 - [Deciding which architecture to use](#deciding-which-architecture-to-start-with)
 - [Large monorepos](#large-monorepos)

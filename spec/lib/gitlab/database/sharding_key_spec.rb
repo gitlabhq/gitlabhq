@@ -9,7 +9,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
       'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end

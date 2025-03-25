@@ -22,7 +22,7 @@ Automatic responses can:
 
 GitLab supports automatic response for the following types of secrets:
 
-| Secret type | Action taken | Supported on GitLab.com | Supported in self-managed |
+| Secret type | Action taken | Supported on GitLab.com | Supported in GitLab Self-Managed |
 | ----- | --- | --- | --- |
 | GitLab [personal access tokens](../../profile/personal_access_tokens.md) | Immediately revoke token, send email to owner | ✅ | ✅ [15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) |
 | Amazon Web Services (AWS) [IAM access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) | Notify AWS | ✅ | ⚙ |

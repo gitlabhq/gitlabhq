@@ -7,7 +7,9 @@ feature_categories:
 description: Temporary table for partitioning the main merge_request_diff_commits
   table
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143869
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182794
 milestone: '16.10'
+removed_in_milestone: '17.11'
 gitlab_schema: gitlab_main_cell
 desired_sharding_key:
   project_id:

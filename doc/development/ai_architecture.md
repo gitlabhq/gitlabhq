@@ -68,7 +68,7 @@ AIGW -down-> Models : prompts
 
 ## SaaS-based AI abstraction layer
 
-GitLab operates a cloud-hosted AI architecture. We will allow access to it for licensed self managed instances using the AI-gateway. See [the design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) for details.
+GitLab operates a cloud-hosted AI architecture. We will allow access to it for licensed GitLab Self-Managed instances using the AI-gateway. See [the design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) for details.
 
 There are two primary reasons for this: the best AI models are cloud-based as they often depend on specialized hardware designed for this purpose, and operating self-managed infrastructure capable of AI at-scale and with appropriate performance is a significant undertaking. We are actively [tracking self-managed customers interested in AI](https://gitlab.com/gitlab-org/gitlab/-/issues/409183).
 

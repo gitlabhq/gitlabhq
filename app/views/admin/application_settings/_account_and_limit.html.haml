@@ -60,7 +60,7 @@
         .form-group
           = f.label :deactivate_dormant_users_period, _('Days of inactivity before deactivation'), class: 'label-light'
           = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: 90, required: true
-          #application_setting_deactivate_dormant_users_period_error.form-text.gl-text-red-500.gl-hidden
+          #application_setting_deactivate_dormant_users_period_error.form-text.gl-text-danger.gl-hidden
             = _('Please enter a value of 90 days or more')
           .form-text.gl-text-subtle
             = _('Must be 90 days or more.')

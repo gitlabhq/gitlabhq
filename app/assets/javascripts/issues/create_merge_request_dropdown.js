@@ -497,7 +497,7 @@ export default class CreateMergeRequestDropdown {
   removeMessage(target) {
     const { input, message } = this.getTargetData(target);
     const inputClasses = ['gl-field-error-outline', 'gl-field-success-outline'];
-    const messageClasses = ['gl-text-subtle', 'gl-text-red-500', 'gl-text-success'];
+    const messageClasses = ['gl-text-subtle', 'gl-text-danger', 'gl-text-success'];
 
     inputClasses.forEach((cssClass) => input.classList.remove(cssClass));
     messageClasses.forEach((cssClass) => message.classList.remove(cssClass));
@@ -541,7 +541,7 @@ export default class CreateMergeRequestDropdown {
 
     this.removeMessage(target);
     input.classList.add('gl-field-error-outline');
-    message.classList.add('gl-text-red-500');
+    message.classList.add('gl-text-danger');
     message.textContent = text;
     message.style.display = 'inline-block';
   }

@@ -10,12 +10,6 @@
   grid-template-columns: auto minmax(0, 1fr) #{$gl-spacing-scale-7};
 }
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-dark .timeline-event-icon {
-  background-color: $gray-950;
-  color: $gl-text-secondary;
-}
-
 .create-timeline-event,
 .edit-timeline-event,
 .timeline-event {
@@ -41,16 +35,11 @@
   &::before,
   &::after {
     content: '';
-    border-left: 2px solid $gray-50;
+    @apply gl-border-l-subtle gl-border-l-2 gl-border-l-solid;
     position: absolute;
     left: 20px;
     height: calc(100% + #{$gl-spacing-scale-5});
     top: -#{$gl-spacing-scale-5};
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      border-color: var(--gray-50);
-    }
   }
 
   &:first-child::before {
@@ -89,11 +78,6 @@
       // Border spans the whole container minus icon width and grid gap
       width: calc(100% - $gl-spacing-scale-8 - $gl-spacing-scale-5);
       bottom: $gl-spacing-scale-3;
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      .gl-dark & {
-        border-color: var(--gray-50);
-      }
     }
   }
 }
@@ -109,7 +93,7 @@
 }
 
 .timeline-event-note .md p {
-  color: var(--gray-700);
+  @apply gl-text-subtle;
 }
 
 .timeline-event-note-date {

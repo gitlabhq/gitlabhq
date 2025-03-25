@@ -852,6 +852,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['job_class'] ||= 'Search::Elastic::MetricsUpdateCronWorker'
+  Settings.cron_jobs['search_elastic_migration_cleanup_cron_worker'] ||= {}
+  Settings.cron_jobs['search_elastic_migration_cleanup_cron_worker']['cron'] ||= '0 0 * * 1-5'
+  Settings.cron_jobs['search_elastic_migration_cleanup_cron_worker']['job_class'] ||= 'Search::Elastic::MigrationCleanupCronWorker'
   Settings.cron_jobs['search_zoekt_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_zoekt_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_zoekt_metrics_update_cron_worker']['job_class'] ||= 'Search::Zoekt::MetricsUpdateCronWorker'

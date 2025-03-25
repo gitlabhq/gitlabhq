@@ -146,9 +146,9 @@ security issues:
 
 ## Self managed installation options
 
-For self managed installations, you can choose to run most of the GitLab security scanners even when [not connected to the internet](offline_deployments/_index.md).
+For GitLab Self-Managed instances, you can choose to run most of the GitLab security scanners even when [not connected to the internet](offline_deployments/_index.md).
 
-Self managed installations can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/_index.md).
+GitLab Self-Managed instances can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/_index.md).
 
 ## Security report validation
 

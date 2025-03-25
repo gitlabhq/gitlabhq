@@ -35903,7 +35903,7 @@ msgstr ""
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role?"
+msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
 msgid "MemberRole|Base role"
@@ -35951,10 +35951,10 @@ msgstr ""
 msgid "MemberRole|Default roles"
 msgstr ""
 
-msgid "MemberRole|Delete custom role?"
+msgid "MemberRole|Delete role"
 msgstr ""
 
-msgid "MemberRole|Delete role"
+msgid "MemberRole|Delete role?"
 msgstr ""
 
 msgid "MemberRole|Description"

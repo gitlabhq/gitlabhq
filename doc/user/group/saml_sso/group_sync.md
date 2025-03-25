@@ -287,7 +287,7 @@ To configure for a GitLab.com group:
 1. Optional. If using Azure AD for US Government or Azure AD China, enter the appropriate **Login API endpoint** and **Graph API endpoint**. The default values work for most organizations.
 1. Select **Save changes**.
 
-To configure for self-managed:
+To configure for GitLab Self-Managed:
 
 1. Configure [SAML SSO for the instance](../../../integration/saml.md).
 1. On the left sidebar, at the bottom, select **Admin**.

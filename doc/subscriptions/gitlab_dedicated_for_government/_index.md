@@ -123,7 +123,7 @@ GitLab may conduct [unscheduled maintenance](../../administration/dedicated/main
 
 ### Application
 
-GitLab Dedicated for Government comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [unsupported features](#unavailable-features) listed below.
+GitLab Dedicated for Government comes with the GitLab Self-Managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [unsupported features](#unavailable-features) listed below.
 
 ## Unavailable features
 

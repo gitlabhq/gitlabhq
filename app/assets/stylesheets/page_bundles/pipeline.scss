@@ -224,7 +224,7 @@
 }
 
 .ci-job-item-failed {
-  @apply gl-bg-red-50;
+  @apply gl-bg-feedback-danger;
 
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-dark & {

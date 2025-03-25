@@ -101,7 +101,7 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
        - If a service can be accessed for free, the token will include all available scopes for that service.
        - For Duo Chat, the **JWT** would include the `documentation_search` and `duo_chat` scopes.
    - On GitLab Self-Managed, it will always return `::CloudConnector::ServiceAccessToken` **JWT** token.
-     - Provided parameters such as user, namespace or extra claims would be ignored for Self managed instances.
+     - Provided parameters such as user, namespace or extra claims would be ignored for GitLab Self-Managed instances.
        Refer to [this section](#the-new-feature-is-introduced-through-the-existing-backend-service) to see how custom claims are handled for GitLab Self-Managed instances.
 
    The **backend service** (AI gateway) must validate this token and any scopes it carries when receiving the request.
@@ -155,7 +155,7 @@ To decide if the service is available or visible to the end user, we need to:
     # Returns true if at least one add-on that is bundled with the service is purchased.
     #
     # - For provided namespace, it will check if add-on is purchased for the provided group/project or its ancestors.
-    # - For SM, it would ignore namespace as AddOns are not purchased per namespace for self managed customers.
+    # - For SM, it would ignore namespace as AddOns are not purchased per namespace for GitLab Self-Managed customers.
     CloudConnector::AvailableServices.find_by_name(:new_feature).purchased?(namespace)
   ```
 

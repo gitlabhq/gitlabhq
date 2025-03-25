@@ -511,7 +511,7 @@ export default {
       </div>
       <div
         v-if="!areWorkItemsToAddWithinLimit"
-        class="gl-mb-2 gl-text-red-500"
+        class="gl-mb-2 gl-text-danger"
         data-testid="work-items-limit-error"
       >
         {{ s__('WorkItem|Only 10 items can be added at a time.') }}

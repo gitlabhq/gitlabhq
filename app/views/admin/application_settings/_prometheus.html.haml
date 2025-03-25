@@ -11,7 +11,7 @@
       .form-text.gl-text-subtle.gl-pl-6
         - unless Gitlab::Metrics.metrics_folder_present?
           - icon_link = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/gitlab_metrics.md', anchor: 'metrics-shared-directory'), target: '_blank', rel: 'noopener noreferrer'
-          = s_('AdminSettings|%{strongStart}WARNING:%{strongEnd} Environment variable %{environment_variable} does not exist or is not pointing to a valid directory. %{icon_link}').html_safe % { strongStart: '<strong class="gl-text-red-500">'.html_safe, strongEnd: '</strong>'.html_safe, environment_variable: '<code>prometheus_multiproc_dir</code>'.html_safe, icon_link: icon_link }
+          = s_('AdminSettings|%{strongStart}WARNING:%{strongEnd} Environment variable %{environment_variable} does not exist or is not pointing to a valid directory. %{icon_link}').html_safe % { strongStart: '<strong class="gl-text-danger">'.html_safe, strongEnd: '</strong>'.html_safe, environment_variable: '<code>prometheus_multiproc_dir</code>'.html_safe, icon_link: icon_link }
     .form-group
       = f.label :metrics_method_call_threshold, _('Method call threshold (ms)'), class: 'label-bold'
       = f.number_field :metrics_method_call_threshold, class: 'form-control gl-form-input'

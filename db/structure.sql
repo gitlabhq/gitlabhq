@@ -16881,20 +16881,6 @@ CREATE TABLE merge_request_diff_commits (
     committer_id bigint
 );
 
-CREATE TABLE merge_request_diff_commits_b5377a7a34 (
-    authored_date timestamp without time zone,
-    committed_date timestamp without time zone,
-    sha bytea NOT NULL,
-    message text,
-    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
-    commit_author_id bigint,
-    committer_id bigint,
-    merge_request_diff_id bigint NOT NULL,
-    relative_order integer NOT NULL,
-    project_id bigint
-)
-PARTITION BY RANGE (merge_request_diff_id);
-
 CREATE TABLE merge_request_diff_details (
     merge_request_diff_id bigint NOT NULL,
     verification_retry_at timestamp with time zone,
@@ -29621,9 +29607,6 @@ ALTER TABLE ONLY merge_request_context_commits
 
 ALTER TABLE ONLY merge_request_diff_commit_users
     ADD CONSTRAINT merge_request_diff_commit_users_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY merge_request_diff_commits_b5377a7a34
-    ADD CONSTRAINT merge_request_diff_commits_b5377a7a34_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
 
 ALTER TABLE ONLY merge_request_diff_commits
     ADD CONSTRAINT merge_request_diff_commits_pkey PRIMARY KEY (merge_request_diff_id, relative_order);

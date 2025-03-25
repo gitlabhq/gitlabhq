@@ -49,7 +49,7 @@ To generate a SAML Response:
 1. For GitLab.com Groups:
    - Go to the GitLab single sign-on URL for the group.
    - Select **Authorize** or attempt to sign
-1. For Self Managed Instance:
+1. For GitLab Self-Managed instance:
    - Go to the instance home page
    - Click on the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
@@ -404,7 +404,7 @@ For more information, see the documentation on [additional configuration for SAM
 
 In troubleshooting, any authenticated user can use the API to verify the `NameID` GitLab already has linked to their user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
 
-For self-managed, administrators can use the [users API](../../../api/users.md) to see the same information.
+For GitLab Self-Managed, administrators can use the [users API](../../../api/users.md) to see the same information.
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
@@ -412,7 +412,7 @@ This can then be compared to the `NameID` being sent by the identity provider by
 
 ### Stuck in a login "loop"
 
-Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance URL (for self-managed) has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
+Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance URL (for GitLab Self-Managed) has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
 
 For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
 

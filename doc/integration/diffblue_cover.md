@@ -88,7 +88,7 @@ Here we'll create a merge request pipeline for the project that will download th
 When performing subsequent code changes to a project, the merge request pipeline will run Diffblue Cover but will only update the associated tests.
 The resulting diff can then be analyzed to check the new behavior, catch regressions, and spot any unplanned behavioral changes to the code.
 
-![Code Change Diff](img/diffblue_cover_diff_v16_8.png)
+![Merge request diff showing code changes with test additions in green and removals in red.](img/diffblue_cover_diff_v16_8.png)
 
 ## Next steps
 

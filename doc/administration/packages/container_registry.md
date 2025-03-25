@@ -597,7 +597,6 @@ The Azure storage driver integrates with Microsoft Azure Blob Storage.
 {{< alert type="warning" >}}
 
 The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
 
 Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
 

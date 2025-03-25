@@ -763,6 +763,19 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
         it_behaves_like 'internal event not tracked'
       end
+
+      context 'wiki page note' do
+        let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page) }
+        let(:opts) { { note: 'reply', noteable_type: 'WikiPage::Meta', noteable_id: wiki_page_meta.id, project: wiki_page_meta.project } }
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_wiki_page_note' }
+          let(:category) { described_class.name }
+          let(:project) { wiki_page_meta.project }
+
+          subject(:track_event) { described_class.new(wiki_page_meta.project, user, opts).execute }
+        end
+      end
     end
   end
 end

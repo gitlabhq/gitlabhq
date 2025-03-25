@@ -16,7 +16,7 @@ This page describes where the AI gateway is deployed, and answers questions abou
 
 ## Region support
 
-For self-managed and Dedicated customers, the ability to choose the region is planned for future implementation. Currently, the process for region selection is managed internally by GitLab.
+For GitLab Self-Managed and Dedicated customers, the ability to choose the region is planned for future implementation. Currently, the process for region selection is managed internally by GitLab.
 
 Runway, is currently not available to external customers. GitLab is working on expanding support to include GitLab Self-Managed instances in the future (Epic: [Expand Platform Engineering to more runtimes](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1330)).
 

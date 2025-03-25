@@ -735,12 +735,30 @@ class Namespace < ApplicationRecord
     !!namespace_settings&.allow_runner_registration_token?
   end
 
+  def pages_access_control_trie(namespaces = self_and_descendants)
+    strong_memoize_with(:pages_access_control_trie, namespaces) do
+      traversal_ids = namespaces.joins(:namespace_settings).where(namespace_settings: { force_pages_access_control: true }).map(&:traversal_ids)
+
+      Namespaces::Traversal::TrieNode.build(traversal_ids)
+    end
+  end
+
+  def pages_access_control_forced_by_self_or_ancestor?
+    pages_access_control_trie(self_and_ancestors)&.covered?(traversal_ids)
+  end
+
+  def pages_access_control_forced_by_ancestor?
+    pages_access_control_trie(ancestors)&.covered?(traversal_ids)
+  end
+
   def all_projects_with_pages
     all_projects.with_pages_deployed.includes(
       :route,
       :project_setting,
       :project_feature,
-      :active_pages_deployments)
+      :active_pages_deployments,
+      :namespace
+    )
   end
 
   def web_url(only_path: nil)

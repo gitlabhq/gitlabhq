@@ -78,7 +78,7 @@ describe('NewEditForm', () => {
       });
 
       it('renders the character counter correctly', () => {
-        expect(findDescriptionCharacterCounter().classes()).toStrictEqual(['gl-text-red-500']);
+        expect(findDescriptionCharacterCounter().classes()).toStrictEqual(['gl-text-danger']);
         expect(findDescriptionCharacterCounter().text()).toBe('5 characters over limit');
       });
     });

@@ -69,4 +69,4 @@ SSH host keys are not available on this system. Please use ssh-keyscan command o
 To resolve this error:
 
 - On Helm chart (Kubernetes) deployments, update the `values.yaml` to set [`sshHostKeys.mount`](https://docs.gitlab.com/charts/charts/gitlab/webservice/) to `true` under the `webservice` section.
-- On GitLab Self-Managed installations, check the `/etc/ssh` directory for the host keys.
+- On GitLab Self-Managed instances, check the `/etc/ssh` directory for the host keys.

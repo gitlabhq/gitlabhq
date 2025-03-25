@@ -164,11 +164,12 @@ export default {
           placement="bottom-end"
           no-caret
         >
-          <gl-disclosure-dropdown-item v-gl-modal-directive="$options.confirmClearCacheModal">
+          <gl-disclosure-dropdown-item
+            v-gl-modal-directive="$options.confirmClearCacheModal"
+            variant="danger"
+          >
             <template #list-item>
-              <span class="gl-text-red-500">
-                {{ $options.i18n.clearCache }}
-              </span>
+              {{ $options.i18n.clearCache }}
             </template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown>

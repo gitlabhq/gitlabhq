@@ -153,7 +153,7 @@ Prerequisites:
 You can't remove a custom role from a group if there are members assigned that role. See [unassign a custom role from a group or project member](#unassign-a-custom-role-from-a-group-or-project-member).
 
 1. On the left sidebar:
-   - For self-managed, at the bottom, select **Admin**.
+   - For GitLab Self-Managed, at the bottom, select **Admin**.
    - For SaaS, select **Search or go to** and find your group.
 1. Select **Settings > Roles and permissions**.
 1. Select **Custom Roles**.

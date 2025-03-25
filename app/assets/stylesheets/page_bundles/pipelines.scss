@@ -17,13 +17,6 @@
   .pipeline-tags .label-container {
     white-space: normal;
   }
-
-  .dark-mode-override {
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      background-color: $white;
-    }
-  }
 }
 
 // Pipeline mini graph

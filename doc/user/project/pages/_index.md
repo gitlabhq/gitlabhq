@@ -115,7 +115,7 @@ and adapt for your own needs:
 - [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/).
 - [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
 
-## Administer GitLab Pages for self-managed instances
+## Administer GitLab Pages for GitLab Self-Managed instances
 
 If you are running a GitLab Self-Managed instance,
 [follow the administration steps](../../../administration/pages/_index.md) to configure Pages.

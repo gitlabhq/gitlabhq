@@ -158,7 +158,7 @@ export const AGENT_STATUSES = {
   inactive: {
     name: s__('ClusterAgents|Not connected'),
     icon: 'status-alert',
-    class: 'gl-text-red-500',
+    class: 'gl-text-danger',
     tooltip: {
       title: s__('ClusterAgents|Agent might not be connected to GitLab'),
       body: sprintf(

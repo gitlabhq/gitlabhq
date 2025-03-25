@@ -33,7 +33,7 @@ You can also copy GitLab projects by using a GitLab file export, which is a supp
 
 {{< history >}}
 
-- All importers default to disabled for GitLab Self-Managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
+- All importers default to disabled for GitLab Self-Managed instances. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
 
 {{< /history >}}
 

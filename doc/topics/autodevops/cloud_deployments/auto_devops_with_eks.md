@@ -131,7 +131,7 @@ Follow these steps to configure the base domain and other settings required for 
 ## Enable Auto DevOps and run the pipeline
 
 While Auto DevOps is enabled by default, Auto DevOps can be disabled for
-the entire instance (for self-managed instances) and for individual groups. Complete
+the entire instance (for GitLab Self-Managed instances) and for individual groups. Complete
 these steps to enable Auto DevOps if it's disabled:
 
 1. On the left sidebar, select **Search or go to** and find the application project.

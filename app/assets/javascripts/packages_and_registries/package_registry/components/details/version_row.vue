@@ -59,7 +59,7 @@ export default {
     },
     errorPackageStyle() {
       return {
-        'gl-text-red-500': this.errorStatusRow,
+        'gl-text-danger': this.errorStatusRow,
         'gl-font-normal': this.errorStatusRow,
       };
     },
@@ -118,7 +118,7 @@ export default {
       </div>
     </template>
     <template #left-secondary>
-      <div v-if="errorStatusRow" class="gl-text-red-500">
+      <div v-if="errorStatusRow" class="gl-text-danger">
         <gl-icon
           v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
           name="warning"

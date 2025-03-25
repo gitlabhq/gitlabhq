@@ -1,7 +1,6 @@
 - return unless Gitlab.config.pages.access_control
 - forced_by_instance = ::Gitlab::CurrentSettings.current_application_settings.force_pages_access_control
-- forced_by_parent = ::Gitlab::Pages.access_control_is_forced?(group.parent)
-- return if forced_by_instance || forced_by_parent
+- return if forced_by_instance || group.pages_access_control_forced_by_ancestor?
 
 %h5= s_('GitLabPages|Pages access control')
 .form-group.gl-mb-3

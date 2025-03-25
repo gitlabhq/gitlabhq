@@ -143,7 +143,7 @@ The [Product Analytics group's dashboard](https://gitlab.com/gitlab-org/analytic
 
 ## Data availability
 
-For GitLab there is an essential difference in analytics setup between GitLab.com and self-managed or GitLab Dedicated instances.
+For GitLab there is an essential difference in analytics setup between GitLab.com and GitLab Self-Managed or GitLab Dedicated instances.
 
 ### Self-Managed and Dedicated
 

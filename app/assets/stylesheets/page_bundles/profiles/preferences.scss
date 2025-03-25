@@ -41,18 +41,11 @@
     }
 
     &.ui-gray {
-      background-color: $gray-900;
-      @apply gl-border;
+      @apply gl-bg-neutral-900;
     }
 
     &.ui-neutral {
-      background-color: $gray-50;
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      .gl-dark & {
-        background-color: $gray-950;
-        @apply gl-border;
-      }
+      @apply gl-bg-subtle gl-border;
     }
   }
 }

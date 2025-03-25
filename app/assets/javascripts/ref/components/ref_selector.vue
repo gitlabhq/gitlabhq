@@ -294,7 +294,7 @@ export default {
           v-for="errorMessage in errors"
           :key="errorMessage"
           data-testid="red-selector-error-list"
-          class="gl-mx-4 gl-my-3 gl-flex gl-items-start gl-text-red-500"
+          class="gl-mx-4 gl-my-3 gl-flex gl-items-start gl-text-danger"
         >
           <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-shrink-0" />
           <span>{{ errorMessage }}</span>

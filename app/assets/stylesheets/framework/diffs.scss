@@ -407,13 +407,8 @@ $diff-file-header: 41px;
 }
 
 .code .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
-  --highlight-border-color: #{$blue-300};
-  background-color: $blue-50;
-
-  .gl-dark & {
-    --highlight-border-color: #{$blue-600};
-    background-color: $blue-900;
-  }
+  --highlight-border-color: #{$gl-color-blue-300};
+  background-color: $gl-color-blue-50;
 }
 
 .diff-table.code,

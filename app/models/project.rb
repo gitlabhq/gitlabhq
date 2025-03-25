@@ -2289,11 +2289,20 @@ class Project < ApplicationRecord
   end
 
   def public_pages?
-    !!project_feature&.public_pages?
+    !private_pages?
   end
 
   def private_pages?
-    !!project_feature&.private_pages?
+    return false unless Gitlab.config.pages.access_control
+
+    pages_access_control_forced_by_ancestor? ||
+      !!project_feature&.private_pages?
+  end
+
+  def pages_access_control_forced_by_ancestor?
+    return true if ::Gitlab::Pages.access_control_is_forced?
+
+    namespace.pages_access_control_forced_by_self_or_ancestor?
   end
 
   def operations_enabled?

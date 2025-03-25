@@ -71,7 +71,7 @@ export default {
         <div class="gl-flex gl-flex-row gl-items-center">
           <gl-avatar
             :alt="template.name"
-            class="dark-mode-override gl-mr-5 gl-bg-white"
+            class="gl-mr-5 gl-bg-default"
             :class="{ 'gl-p-2': template.isPng }"
             :style="logoStyle(template)"
             :shape="$options.AVATAR_SHAPE_OPTION_RECT"

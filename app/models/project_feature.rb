@@ -151,10 +151,12 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
+  # This method checks whether access control is enabled on project level,
+  # to include the access setting from ancestors, use project.public_pages?
   def public_pages?
     return true unless Gitlab.config.pages.access_control
 
-    return false if ::Gitlab::Pages.access_control_is_forced?(project.group)
+    return false if ::Gitlab::Pages.access_control_is_forced?
 
     pages_access_level == PUBLIC || (pages_access_level == ENABLED && project.public?)
   end

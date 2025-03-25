@@ -26,7 +26,7 @@
 
   %td{ data: { label: s_('Profiles|Expires'), testid: 'expires' } }
     - if key.expired?
-      %span.gl-text-red-500
+      %span.gl-text-danger
         = s_('Profiles|Expired')
         = key.expires_at.to_date
     - elsif key.expires_at

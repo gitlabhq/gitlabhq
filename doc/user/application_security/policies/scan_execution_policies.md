@@ -232,7 +232,7 @@ uses [cron syntax](../../../topics/cron/_index.md), but with some restrictions:
 Consider the following when choosing a value for the `cadence` field:
 
 - Timing is based on UTC for GitLab SaaS and on the GitLab host's system time for GitLab
-  self-managed. When testing new policies, it may appear pipelines are not running properly when in
+  Self-Managed. When testing new policies, it may appear pipelines are not running properly when in
   fact they are scheduled in your server's time zone.
 - A scheduled pipeline starts around the time mentioned in the policy, when the resources become
   available to create it. In other words, the pipeline may not begin precisely at the timing
