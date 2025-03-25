@@ -246,7 +246,7 @@ GEM
       nkf
       rexml
     RedCloth (4.3.4)
-    acme-client (2.0.20)
+    acme-client (2.0.21)
       base64 (~> 0.2.0)
       faraday (>= 1.0, < 3.0.0)
       faraday-retry (>= 1.0, < 3.0.0)
@@ -966,9 +966,6 @@ GEM
       grape
       rack
     graphlyte (1.0.0)
-    graphql-client (0.23.0)
-      activesupport (>= 3.0)
-      graphql (>= 1.13.0)
     graphql-docs (5.0.0)
       commonmarker (~> 0.23, >= 0.23.6)
       escape_utils (~> 1.2)
@@ -1601,7 +1598,7 @@ GEM
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.12.0)
+    rdoc (6.13.0)
       psych (>= 4.0.0)
     re2 (2.15.0)
       mini_portile2 (~> 2.8.7)

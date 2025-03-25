@@ -311,12 +311,17 @@ Previous discussions include:
 - <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36076>
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/198046>
 
+Individual groups may [choose to have an opinion](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#coding-standards-for-remote-development-domain) on consistency of quoting styles within the [bounded contexts](../software_design.md#bounded-contexts) they own, but these decisions only apply to code within that context.
+
 ### Type safety
 
 Now that we've upgraded to Ruby 3, we have more options available
 to enforce [type safety](https://en.wikipedia.org/wiki/Type_safety).
 
 Some of these options are supported as part of the Ruby syntax and do not require the use of specific type safety tools like [Sorbet](https://sorbet.org/) or [RBS](https://github.com/ruby/rbs). However, we might consider these tools in the future as well.
+
+For now, we can use [YARD annotations](../code_comments.md#class-and-method-documentation) to define types.
+IDEs such as RubyMine provide support for YARD when showing type-based inspection errors.
 
 For more information, see [Type safety](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#type-safety) in the `remote_development` domain README.
 

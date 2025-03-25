@@ -63,7 +63,7 @@ describe('DiscussionCounter component', () => {
 
     it.each`
       blocksMerge | color
-      ${true}     | ${'gl-bg-orange-50'}
+      ${true}     | ${'gl-bg-feedback-warning'}
       ${false}    | ${'gl-bg-strong'}
     `(
       'changes background color to $color if blocksMerge is $blocksMerge',

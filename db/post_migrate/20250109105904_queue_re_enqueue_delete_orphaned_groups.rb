@@ -10,22 +10,12 @@ class QueueReEnqueueDeleteOrphanedGroups < Gitlab::Database::Migration[2.2]
   SUB_BATCH_SIZE = 100
 
   def up
-    return unless Gitlab.com_except_jh? && !Gitlab.staging?
-
-    # Clear previous background migration execution from QueueRequeueDeleteOrphanedGroups
-    delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :namespaces,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because this migration will be re-queued to attempt fixing
+    # records missed by the previous run or resurface the error logs.
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :namespaces, :id, [])
+    # no-op because this migration will be re-queued to attempt fixing
+    # records missed by the previous run or resurface the error logs.
   end
 end

@@ -124,7 +124,7 @@ export default {
     <div
       class="gl-flex gl-min-h-7 gl-items-center gl-rounded-base gl-pl-4"
       :class="{
-        'gl-bg-orange-50': blocksMerge && !allResolved,
+        'gl-bg-feedback-warning': blocksMerge && !allResolved,
         'gl-bg-strong': !blocksMerge || allResolved,
         'gl-mr-3': !isNotificationsTodosButtons,
         'gl-mr-5': isNotificationsTodosButtons,
