@@ -68,7 +68,7 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
-import WorkItemDueDates from './work_item_due_dates.vue';
+import WorkItemDates from './work_item_dates.vue';
 
 export default {
   components: {
@@ -91,7 +91,7 @@ export default {
     WorkItemProjectsListbox,
     TitleSuggestions,
     WorkItemParent,
-    WorkItemDueDates,
+    WorkItemDates,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
@@ -946,7 +946,7 @@ export default {
               :work-item-type="selectedWorkItemTypeName"
               @error="$emit('error', $event)"
             />
-            <work-item-due-dates
+            <work-item-dates
               v-if="workItemStartAndDueDate"
               class="work-item-attributes-item"
               :can-update="canUpdate"

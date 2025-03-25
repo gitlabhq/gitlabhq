@@ -127,7 +127,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         expect(page).to have_selector('.board', count: 3)
       end
 
-      it 'infinite scrolls list' do
+      it 'infinite scrolls list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/525518' do
         # Use small height to avoid automatic loading via GlIntersectionObserver
         page.driver.browser.manage.window.resize_to(400, 400)
 

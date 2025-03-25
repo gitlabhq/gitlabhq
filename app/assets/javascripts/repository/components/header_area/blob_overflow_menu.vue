@@ -11,7 +11,7 @@ import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_b
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BlobDefaultActionsGroup from './blob_default_actions_group.vue';
 import BlobDeleteFileGroup from './blob_delete_file_group.vue';
-import PermalinkDropdownItem from './permalink_dropdown_item.vue';
+import BlobRepositoryActionsGroup from './blob_repository_actions_group.vue';
 
 export const i18n = {
   dropdownLabel: __('File actions'),
@@ -23,7 +23,7 @@ export default {
   name: 'CEBlobOverflowMenu',
   i18n,
   components: {
-    PermalinkDropdownItem,
+    BlobRepositoryActionsGroup,
     GlDisclosureDropdown,
     BlobDefaultActionsGroup,
     BlobButtonGroup,
@@ -154,7 +154,7 @@ export default {
     class="gl-mr-0"
     category="tertiary"
   >
-    <permalink-dropdown-item :permalink-path="blobInfo.permalinkPath" />
+    <blob-repository-actions-group :permalink-path="blobInfo.permalinkPath" />
     <blob-button-group
       v-if="isLoggedIn && !blobInfo.archived"
       :current-ref="currentRef"

@@ -83,12 +83,12 @@ export default {
   methods: {
     findVersionId,
     routeToVersion(versionId) {
-      const { show } = queryToObject(window.location.search);
       this.$router.push({
         path: this.$route.path,
         query: {
+          // Retain any existing page params and only append/override `version`.
+          ...queryToObject(window.location.search),
           version: this.findVersionId(versionId),
-          ...(show && { show }),
         },
       });
     },

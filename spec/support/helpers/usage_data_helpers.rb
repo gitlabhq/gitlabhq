@@ -44,7 +44,6 @@ module UsageDataHelpers
     pool_repositories
     projects
     projects_imported_from_github
-    projects_asana_active
     projects_jenkins_active
     projects_jira_active
     projects_custom_issue_tracker_active

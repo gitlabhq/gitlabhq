@@ -12,7 +12,7 @@ const LINK_TAG_PATTERN = '[{text}](url)';
 const STRIKETHROUGH_TAG_PATTERN = '~~';
 const QUOTE_TAG_PATTERN = '> ';
 
-const ALLOWED_UNDO_TAGS = [
+const EMPHASIS_TAGS = [
   BOLD_TAG_PATTERN,
   INLINE_CODE_TAG_PATTERN,
   ITALIC_TAG_PATTERN,
@@ -40,6 +40,34 @@ let compositioningNoteText = false;
 
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
+}
+
+/**
+ * Expands the textArea selection to surrounding tags so that the undo functionality works
+ * also when selecting text inside emphasis tags.
+ *
+ * @param {HTMLTextAreaElement} textArea - The relevant text area
+ * @param {String} tag - The Markdown tag we want to enter (Example: `- [ ] ` for lists)
+ * @returns {String | undefined} - The new selection or undefined if no changes to selection
+ */
+function selectSurroundingTags(textArea, tag) {
+  if (!textArea || !tag || !EMPHASIS_TAGS.includes(tag)) {
+    return;
+  }
+  const currentSelection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
+  if (currentSelection.startsWith(tag) && currentSelection.endsWith(tag)) {
+    return; // The tag is already part of the selection
+  }
+
+  const start = Math.max(textArea.selectionStart - tag.length, 0);
+  const end = Math.min(textArea.selectionEnd + tag.length, textArea.value.length);
+  const surroundingSelection = textArea.value.substring(start, end);
+  if (surroundingSelection.startsWith(tag) && surroundingSelection.endsWith(tag)) {
+    textArea.selectionStart = start;
+    textArea.selectionEnd = end;
+  }
+
+  return textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
 }
 
 function addBlockTags(blockTag, selected) {
@@ -349,6 +377,8 @@ function moveCursor({
  *    we want to remove the tag from the line.
  * 4. `removeTagFromLine` in a multiline selection, this is a function that  removes
  *    the tag from the line.
+ * 5. `shouldPreserveTextAreaSelection` boolean indicating if the selected text should be kept
+ *    selected instead of moving the cursor at the end.
  *
  * @param {Object} options
  * @param {string} selected - the selected bit of the text area which is to be replaced
@@ -365,6 +395,7 @@ function prepareInsertMarkdownText({ selected, tag, selectedSplit }) {
       shouldUseSelectedWithoutTags: QUOTE_LINE_PATTERN.test(selected),
       removeTagFromLine: (line) => line.replace(QUOTE_LINE_PATTERN, ''),
       shouldRemoveTagFromLine: () => shouldRemoveQuote,
+      shouldPreserveTextAreaSelection: EMPHASIS_TAGS.includes(tag) && selected.length > 0,
     };
   }
 
@@ -374,9 +405,10 @@ function prepareInsertMarkdownText({ selected, tag, selectedSplit }) {
       selected.length >= tag.length * 2 &&
       selected.startsWith(tag) &&
       selected.endsWith(tag) &&
-      ALLOWED_UNDO_TAGS.includes(tag),
+      EMPHASIS_TAGS.includes(tag),
     removeTagFromLine: (line) => line.replace(tag, ''),
     shouldRemoveTagFromLine: (line) => line.indexOf(tag) === 0,
+    shouldPreserveTextAreaSelection: EMPHASIS_TAGS.includes(tag) && selected.length > 0,
   };
 }
 
@@ -417,9 +449,14 @@ export function insertMarkdownText({
     return;
   }
 
+  selected = selectSurroundingTags(textArea, tag) ?? selected;
+
   let removedLastNewLine = false;
   let removedFirstNewLine = false;
   let currentLineEmpty = false;
+  const selectedLength = selected.length;
+  const { selectionStart: textAreaSelectionStart, selectionEnd: textAreaSelectionEnd } =
+    textArea || {};
   let editorSelectionStart;
   let editorSelectionEnd;
   let lastNewLine;
@@ -490,6 +527,7 @@ export function insertMarkdownText({
     removeTagFromLine,
     shouldRemoveTagFromLine,
     getSelectedWithoutTags,
+    shouldPreserveTextAreaSelection,
   } = prepareInsertMarkdownText({ selected, tag, selectedSplit });
 
   const getSelectedWithTags = () => `${startChar}${tag}${selected}${wrap ? tag : ''}`;
@@ -536,17 +574,22 @@ export function insertMarkdownText({
     insertText(textArea, textToUpdate);
   }
 
-  moveCursor({
-    textArea,
-    tag: tag.replace(textPlaceholder, selected),
-    cursorOffset,
-    positionBetweenTags: wrap && selected.length === 0,
-    removedLastNewLine,
-    select,
-    editor,
-    editorSelectionStart,
-    editorSelectionEnd,
-  });
+  if (shouldPreserveTextAreaSelection) {
+    const offset = textToUpdate.length - selectedLength;
+    textArea.setSelectionRange(textAreaSelectionStart, textAreaSelectionEnd + offset);
+  } else {
+    moveCursor({
+      textArea,
+      tag: tag.replace(textPlaceholder, selected),
+      cursorOffset,
+      positionBetweenTags: wrap && selected.length === 0,
+      removedLastNewLine,
+      select,
+      editor,
+      editorSelectionStart,
+      editorSelectionEnd,
+    });
+  }
 }
 
 export function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {

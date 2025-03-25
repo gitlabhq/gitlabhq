@@ -17,6 +17,7 @@ class SemgrepResultProcessor
 
   MESSAGE_SCG_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding, which is a potential violation of [GitLab's secure coding guidelines](https://docs.gitlab.com/development/secure_coding_guidelines/).".freeze
   MESSAGE_S1_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding. This MR potentially reintroduces code from a past S1 issue.".freeze
+  MESSAGE_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding.".freeze
 
   MESSAGE_FOOTER = <<~FOOTER
 
@@ -142,7 +143,7 @@ class SemgrepResultProcessor
                elsif check_id&.start_with?("builds.sast-custom-rules.s1")
                  "\n#{MESSAGE_S1_PING_APPSEC}"
                else
-                 ""
+                 "\n#{MESSAGE_PING_APPSEC}"
                end
 
       message_from_bot = "#{message_header}\n#{message}#{suffix}\n#{MESSAGE_FOOTER}"

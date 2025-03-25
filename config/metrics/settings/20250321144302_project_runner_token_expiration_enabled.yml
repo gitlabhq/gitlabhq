@@ -1,0 +1,18 @@
+---
+key_path: settings.project_runner_token_expiration_enabled
+description: >
+  Tracks whether an expiration interval is defined for project runner authentication tokens
+product_group: runner
+value_type: boolean
+status: active
+milestone: "17.11"
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185544'
+time_frame: none
+data_source: system
+instrumentation_class: ProjectRunnerTokenExpirationEnabledMetric
+data_category: optional
+performance_indicator_type: []
+tiers:
+  - free
+  - premium
+  - ultimate

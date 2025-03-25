@@ -16454,6 +16454,28 @@ CREATE SEQUENCE labels_id_seq
 
 ALTER SEQUENCE labels_id_seq OWNED BY labels.id;
 
+CREATE TABLE ldap_admin_role_links (
+    id bigint NOT NULL,
+    member_role_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    provider text NOT NULL,
+    cn text,
+    filter text,
+    CONSTRAINT check_7f4c5b8292 CHECK ((char_length(filter) <= 255)),
+    CONSTRAINT check_db3fe65cb5 CHECK ((char_length(cn) <= 255)),
+    CONSTRAINT check_f2efc15b43 CHECK ((char_length(provider) <= 255))
+);
+
+CREATE SEQUENCE ldap_admin_role_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ldap_admin_role_links_id_seq OWNED BY ldap_admin_role_links.id;
+
 CREATE TABLE ldap_group_links (
     id bigint NOT NULL,
     cn character varying,
@@ -26989,6 +27011,8 @@ ALTER TABLE ONLY label_priorities ALTER COLUMN id SET DEFAULT nextval('label_pri
 
 ALTER TABLE ONLY labels ALTER COLUMN id SET DEFAULT nextval('labels_id_seq'::regclass);
 
+ALTER TABLE ONLY ldap_admin_role_links ALTER COLUMN id SET DEFAULT nextval('ldap_admin_role_links_id_seq'::regclass);
+
 ALTER TABLE ONLY ldap_group_links ALTER COLUMN id SET DEFAULT nextval('ldap_group_links_id_seq'::regclass);
 
 ALTER TABLE ONLY lfs_file_locks ALTER COLUMN id SET DEFAULT nextval('lfs_file_locks_id_seq'::regclass);
@@ -29544,6 +29568,9 @@ ALTER TABLE ONLY label_priorities
 
 ALTER TABLE ONLY labels
     ADD CONSTRAINT labels_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ldap_admin_role_links
+    ADD CONSTRAINT ldap_admin_role_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ldap_group_links
     ADD CONSTRAINT ldap_group_links_pkey PRIMARY KEY (id);
@@ -35195,6 +35222,8 @@ CREATE INDEX index_labels_on_title_varchar ON labels USING btree (title varchar_
 CREATE INDEX index_labels_on_type_and_project_id ON labels USING btree (type, project_id);
 
 CREATE INDEX index_last_usages_on_last_used_date ON catalog_resource_component_last_usages USING btree (last_used_date);
+
+CREATE INDEX index_ldap_admin_role_links_on_member_role_id ON ldap_admin_role_links USING btree (member_role_id);
 
 CREATE INDEX index_ldap_group_links_on_member_role_id ON ldap_group_links USING btree (member_role_id);
 
@@ -42044,9 +42073,6 @@ ALTER TABLE ONLY dast_profile_schedules
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_61fbf6ca48 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY group_wiki_repository_states
-    ADD CONSTRAINT fk_621768bf3d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -44078,6 +44104,9 @@ ALTER TABLE ONLY ci_running_builds
 ALTER TABLE ONLY merge_request_approval_metrics
     ADD CONSTRAINT fk_rails_5cb1ca73f8 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ldap_admin_role_links
+    ADD CONSTRAINT fk_rails_5d208a83e7 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE CASCADE;
+
 ALTER TABLE p_ci_stages
     ADD CONSTRAINT fk_rails_5d4d96d44b_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -45001,9 +45030,6 @@ ALTER TABLE ONLY cluster_agent_tokens
 
 ALTER TABLE ONLY requirements_management_test_reports
     ADD CONSTRAINT fk_rails_d1e8b498bf FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY pool_repositories
-    ADD CONSTRAINT fk_rails_d2711daad4 FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY design_management_repository_states
     ADD CONSTRAINT fk_rails_d2a258cc5a FOREIGN KEY (design_management_repository_id) REFERENCES design_management_repositories(id) ON DELETE CASCADE;

@@ -128,6 +128,26 @@ Examples:
      --tokenizer <path-to-model>/Mixtral-8x7B-Instruct-v0.1
    ```
 
+#### Disable request logging to reduce latency
+
+When running vLLM in production, you can significantly reduce latency by using the `--disable-log-requests` flag to disable request logging.
+
+{{< alert type="note" >}}
+
+Use this flag only when you do not need detailed request logging.
+
+{{< /alert >}}
+
+Disabling request logging minimizes the overhead introduced by verbose logs, especially under high load, and can help improve performance levels.
+
+```shell
+vllm serve <path-to-model>/<model-version> \
+--served_model_name <choose-a-name-for-the-model>  \
+--disable-log-requests
+```
+
+This change has been observed to notably improve response times in internal benchmarks.
+
 ## For cloud-hosted model deployments
 
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).

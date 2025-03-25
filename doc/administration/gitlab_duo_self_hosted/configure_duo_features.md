@@ -43,6 +43,12 @@ To configure your GitLab instance to access the available self-hosted models in 
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
 
+{{< alert type="note" >}}
+
+If your AI gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+
+{{< /alert >}}
+
 ## Configure the self-hosted model
 
 Prerequisites:
@@ -144,7 +150,7 @@ When configuring GitLab Duo Chat sub-features, if you do not select a specific s
 
 To disable a feature, you must explicitly select **Disabled** when configuring a feature or sub-feature.
 
-- Not choosing a model for a sub-feature is insufficient. 
+- Not choosing a model for a sub-feature is insufficient.
 - For Chat sub-features, not selecting a model causes that sub-feature to [fall back to using the model configured for **General Chat**](#gitlab-duo-chat-sub-feature-fall-back-configuration).
 
 To disable a GitLab Duo feature or sub-feature:

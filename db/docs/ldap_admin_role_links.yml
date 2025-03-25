@@ -1,0 +1,11 @@
+---
+table_name: ldap_admin_role_links
+classes:
+  - Authz::LdapAdminRoleLink
+feature_categories:
+  - permissions
+description: Stores mapping between LDAP server and admin member roles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184606
+milestone: '17.11'
+gitlab_schema: gitlab_main_clusterwide
+table_size: small

@@ -11,6 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
   include ResetOnColumnErrors
   include HasCheckConstraints
   include IgnorableColumns
+  include PopulatesShardingKey
 
   self.abstract_class = true
 

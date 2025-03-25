@@ -112,12 +112,8 @@ module Gitlab
       params = { search: query, use_minimum_char_limit: false }
 
       if current_user && filters[:autocomplete]
-        if Feature.enabled?(:users_search_scoped_to_authorized_namespaces_basic_search, current_user)
-          params[:by_membership] = true
-        elsif Feature.enabled?(:users_search_scoped_to_authorized_namespaces_basic_search_by_ids, current_user)
-          params[:group_member_source_ids] = current_user_authorized_group_ids
-          params[:project_member_source_ids] = current_user_authorized_project_ids
-        end
+        params[:group_member_source_ids] = current_user_authorized_group_ids
+        params[:project_member_source_ids] = current_user_authorized_project_ids
       end
 
       UsersFinder.new(current_user, params).execute

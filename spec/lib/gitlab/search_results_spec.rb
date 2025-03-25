@@ -456,23 +456,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
           end
         end
 
-        context 'when users_search_scoped_to_authorized_namespaces_basic_search is enabled' do
-          before do
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search: true)
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search_by_ids: false)
-          end
-
-          include_examples 'returns users'
-        end
-
-        context 'when users_search_scoped_to_authorized_namespaces_basic_search_by_ids is enabled' do
-          before do
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search_by_ids: true)
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search: false)
-          end
-
-          include_examples 'returns users'
-        end
+        include_examples 'returns users'
       end
     end
   end

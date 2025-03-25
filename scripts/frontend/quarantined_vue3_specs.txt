@@ -1,6 +1,5 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
-ee/spec/frontend/admin/application_settings/general/components/license_dropzone_spec.js
 ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec.js
 ee/spec/frontend/ai/settings/components/duo_experiment_beta_features_form_spec.js
@@ -61,7 +60,6 @@ ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
-ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_graphql/details_section_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js

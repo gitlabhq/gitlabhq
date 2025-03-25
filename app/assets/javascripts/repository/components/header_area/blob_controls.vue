@@ -27,6 +27,7 @@ import {
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
 } from '~/repository/utils/fork_suggestion_utils';
+import { showBlameButton, isUsingLfs } from '~/repository/utils/storage_info_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
@@ -150,20 +151,11 @@ export default {
     userPermissions() {
       return this.project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
     },
-    storageInfo() {
-      const { storedExternally, externalStorage } = this.blobInfo;
-      return {
-        isExternallyStored: storedExternally,
-        storageType: externalStorage,
-        isLfs: storedExternally && externalStorage === 'lfs',
-      };
-    },
     showBlameButton() {
-      const { isExternallyStored, isLfs } = this.storageInfo;
-      return !isExternallyStored && !isLfs;
+      return showBlameButton(this.blobInfo);
     },
     isUsingLfs() {
-      return this.storageInfo.isLfs;
+      return isUsingLfs(this.blobInfo);
     },
     isBinaryFileType() {
       return (
@@ -269,7 +261,10 @@ export default {
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
       data-testid="find"
-      :class="$options.buttonClassList"
+      :class="[
+        $options.buttonClassList,
+        { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
+      ]"
       @click="handleFindFile"
     >
       {{ $options.i18n.findFile }}
@@ -278,7 +273,10 @@ export default {
       v-if="showBlameButton"
       data-testid="blame"
       :href="blobInfo.blamePath"
-      :class="$options.buttonClassList"
+      :class="[
+        $options.buttonClassList,
+        { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
+      ]"
       class="js-blob-blame-link"
     >
       {{ $options.i18n.blame }}

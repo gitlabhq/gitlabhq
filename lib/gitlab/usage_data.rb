@@ -34,6 +34,16 @@ module Gitlab
     ].freeze
 
     MIGRATED_INTEGRATIONS = %w[
+      amazon_q
+      apple_app_store
+      asana
+      assembla
+      bamboo
+      beyond_identity
+      bugzilla
+      buildkite
+      campfire
+      clickup
       pivotaltracker
       slack
       slack_slash_commands

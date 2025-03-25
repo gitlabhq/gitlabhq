@@ -281,6 +281,18 @@ describe('Blob controls component', () => {
       await createComponent({ glFeatures: { blobOverflowMenu: true } });
     });
 
+    describe('Find file button', () => {
+      it('does not render on mobile layout', () => {
+        expect(findFindButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+      });
+    });
+
+    describe('Blame button', () => {
+      it('does not render on mobile layout', () => {
+        expect(findBlameButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+      });
+    });
+
     describe('WebIdeLink component', () => {
       it('renders the WebIdeLink component with the correct props', () => {
         expect(findWebIdeLink().props()).toMatchObject({

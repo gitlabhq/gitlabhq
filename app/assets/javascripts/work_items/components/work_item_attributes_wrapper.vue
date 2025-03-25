@@ -32,7 +32,7 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
-import WorkItemDueDates from './work_item_due_dates.vue';
+import WorkItemDates from './work_item_dates.vue';
 
 export default {
   ListType,
@@ -44,7 +44,7 @@ export default {
     WorkItemParent,
     WorkItemTimeTracking,
     WorkItemCrmContacts,
-    WorkItemDueDates,
+    WorkItemDates,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -249,7 +249,7 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-due-dates
+    <work-item-dates
       v-if="workItemStartAndDueDate"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"

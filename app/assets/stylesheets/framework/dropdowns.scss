@@ -706,7 +706,7 @@
   width: $gl-spacing-scale-5;
   height: $gl-spacing-scale-3;
   border-radius: $border-radius-base;
-  border: 1px solid var(--white, $white);
+  border: 1px solid var(--gl-dropdown-background-color);
 }
 
 .git-revision-dropdown {

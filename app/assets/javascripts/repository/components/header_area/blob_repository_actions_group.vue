@@ -2,12 +2,20 @@
 import Vue from 'vue';
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlToast } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
+import Shortcuts from '~/behaviors/shortcuts/shortcuts';
+import {
+  keysFor,
+  PROJECT_FILES_GO_TO_PERMALINK,
+  START_SEARCH_PROJECT_FILE,
+} from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+import { InternalEvents } from '~/tracking';
+import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { lineState } from '~/blob/state';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
+import { showBlameButton } from '~/repository/utils/storage_info_utils';
 
 Vue.use(GlToast);
 
@@ -16,6 +24,7 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
   },
+  inject: ['blobInfo'],
   props: {
     permalinkPath: {
       type: String,
@@ -23,6 +32,9 @@ export default {
     },
   },
   computed: {
+    findFileShortcutKey() {
+      return keysFor(START_SEARCH_PROJECT_FILE)[0];
+    },
     permalinkShortcutKey() {
       return keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0];
     },
@@ -38,6 +50,18 @@ export default {
       }
       return baseAbsolutePath;
     },
+    blameItem() {
+      return {
+        text: __('Blame'),
+        href: this.blobInfo.blamePath,
+        extraAttrs: {
+          'data-testid': 'blame',
+        },
+      };
+    },
+    showBlameButton() {
+      return showBlameButton(this.blobInfo);
+    },
   },
   mounted() {
     Mousetrap.bind(keysFor(PROJECT_FILES_GO_TO_PERMALINK), this.triggerCopyPermalink);
@@ -46,6 +70,10 @@ export default {
     Mousetrap.unbind(keysFor(PROJECT_FILES_GO_TO_PERMALINK));
   },
   methods: {
+    handleFindFile() {
+      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
+      Shortcuts.focusSearchFile();
+    },
     triggerCopyPermalink() {
       const buttonElement = this.$refs.copyPermalinkButton.$el;
       buttonElement.click();
@@ -60,6 +88,27 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-group>
+    <gl-disclosure-dropdown-item
+      :aria-keyshortcuts="findFileShortcutKey"
+      data-testid="find"
+      class="sm:gl-hidden"
+      @action="handleFindFile"
+    >
+      <template #list-item>
+        <span class="gl-flex gl-items-center gl-justify-between">
+          <span>{{ __('Find file') }}</span>
+          <kbd v-if="findFileShortcutKey && !shortcutsDisabled" class="flat">{{
+            findFileShortcutKey
+          }}</kbd>
+        </span>
+      </template>
+    </gl-disclosure-dropdown-item>
+    <gl-disclosure-dropdown-item
+      v-if="showBlameButton"
+      :item="blameItem"
+      class="js-blob-blame-link sm:gl-hidden"
+      data-testid="blame-dropdown-item"
+    />
     <gl-disclosure-dropdown-item
       ref="copyPermalinkButton"
       :aria-keyshortcuts="permalinkShortcutKey"

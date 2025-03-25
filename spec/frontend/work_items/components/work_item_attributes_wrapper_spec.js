@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import WorkItemDueDates from '~/work_items/components/work_item_due_dates.vue';
+import WorkItemDates from '~/work_items/components/work_item_dates.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
@@ -54,7 +54,7 @@ describe('WorkItemAttributesWrapper component', () => {
     .mockResolvedValue(allowedParentTypesEmptyResponse);
 
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDates);
+  const findWorkItemDates = () => wrapper.findComponent(WorkItemDates);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
@@ -138,20 +138,20 @@ describe('WorkItemAttributesWrapper component', () => {
       ${'when widget is returned from API'}     | ${true}            | ${true}
       ${'when widget is not returned from API'} | ${false}           | ${false}
     `('$description', ({ datesWidgetPresent, exists }) => {
-      it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, () => {
+      it(`${datesWidgetPresent ? 'renders' : 'does not render'} dates component`, () => {
         const response = workItemResponseFactory({ datesWidgetPresent });
         createComponent({ workItem: response.data.workItem });
 
-        expect(findWorkItemDueDate().exists()).toBe(exists);
+        expect(findWorkItemDates().exists()).toBe(exists);
       });
     });
 
-    it('renders WorkItemDueDate', async () => {
+    it('renders WorkItemDates', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findWorkItemDueDate().exists()).toBe(true);
+      expect(findWorkItemDates().exists()).toBe(true);
     });
   });
 

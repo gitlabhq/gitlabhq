@@ -128,7 +128,8 @@ However, the query matches all possible variations of the string (for example, `
 
 {{< history >}}
 
-- Showing only users from authorized projects and groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442091) in GitLab 17.10 [with flags](../../administration/feature_flags.md) named `users_search_scoped_to_authorized_namespaces_advanced_search` and `users_search_scoped_to_authorized_namespaces_basic_search`. Disabled by default.
+- Showing only users from authorized projects and groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442091) in GitLab 17.10 [with flags](../../administration/feature_flags.md) named `users_search_scoped_to_authorized_namespaces_advanced_search`, `users_search_scoped_to_authorized_namespaces_basic_search`, and `users_search_scoped_to_authorized_namespaces_basic_search_by_ids`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185577) in GitLab 17.11. Feature flags `users_search_scoped_to_authorized_namespaces_advanced_search`, `users_search_scoped_to_authorized_namespaces_basic_search`, and `users_search_scoped_to_authorized_namespaces_basic_search_by_ids` removed.
 
 {{< /history >}}
 

@@ -656,32 +656,121 @@ describe('init markdown', () => {
             });
 
             expect(textArea.value).toEqual(text);
-            expect(textArea.selectionStart).toBe(text.length);
           },
         );
       });
 
-      it.each([{ prefix: '> ' }, { prefix: '  >' }, { prefix: '>' }])(
-        "removes quote tag from selection with prefix '$prefix'",
-        ({ prefix }) => {
-          const tag = '> ';
-          const initialValue = `${prefix}${text}`;
-          textArea.value = initialValue;
-          textArea.setSelectionRange(0, initialValue.length);
+      describe('preserves selection', () => {
+        it.each([{ tag: '**' }, { tag: '_' }, { tag: '~~' }, { tag: '`' }])(
+          "when removing '$tag' with selection containing the tag",
+          ({ tag }) => {
+            const initialValue = `${tag}${text}${tag}`;
+            textArea.value = initialValue;
+            textArea.setSelectionRange(0, initialValue.length);
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: initialValue,
+              wrap: true,
+            });
+
+            expect(textArea.value).toEqual(text);
+            expect(textArea.selectionStart).toBe(0);
+            expect(textArea.selectionEnd).toBe(text.length);
+          },
+        );
+
+        it.each([{ tag: '**' }, { tag: '_' }, { tag: '~~' }])(
+          "when removing '$tag' with selection inside the tag",
+          ({ tag }) => {
+            const initialValue = `${tag}${text}${tag}`;
+            textArea.value = initialValue;
+            textArea.setSelectionRange(tag.length, initialValue.length - tag.length);
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: text,
+              wrap: true,
+            });
+
+            expect(textArea.value).toEqual(text);
+            expect(textArea.selectionStart).toBe(0);
+            expect(textArea.selectionEnd).toBe(text.length);
+          },
+        );
+
+        it.each([{ tag: '**' }, { tag: '_' }, { tag: '~~' }, { tag: '`' }])(
+          "with created tags when adding '$tag'",
+          ({ tag }) => {
+            textArea.value = text;
+            textArea.setSelectionRange(0, text.length);
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: text,
+              wrap: true,
+            });
+
+            const expectedValue = `${tag}${text}${tag}`;
+            expect(textArea.value).toEqual(expectedValue);
+            expect(textArea.selectionStart).toBe(0);
+            expect(textArea.selectionEnd).toBe(expectedValue.length);
+          },
+        );
+      });
+
+      describe('removes selection and moves cursor to end of selection', () => {
+        it.each([{ prefix: '> ' }, { prefix: '  >' }, { prefix: '>' }])(
+          "when removing selection with prefix '$prefix'",
+          ({ prefix }) => {
+            const tag = '> ';
+            const initialValue = `${prefix}${text}`;
+            textArea.value = initialValue;
+            textArea.setSelectionRange(0, initialValue.length);
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: initialValue,
+              wrap: false,
+            });
+
+            expect(textArea.value).toEqual(text);
+            expect(textArea.selectionStart).toBe(text.length);
+            expect(textArea.selectionEnd).toBe(text.length);
+          },
+        );
+
+        it.each([{ tag: '> ' }])("when adding '$tag'", ({ tag }) => {
+          textArea.value = text;
+          textArea.setSelectionRange(0, text.length);
 
           insertMarkdownText({
             textArea,
             text: textArea.value,
             tag,
             blockTag: null,
-            selected: initialValue,
+            selected: text,
             wrap: false,
           });
 
-          expect(textArea.value).toEqual(text);
-          expect(textArea.selectionStart).toBe(text.length);
-        },
-      );
+          const expectedValue = `${tag}${text}`;
+          expect(textArea.value).toEqual(expectedValue);
+          expect(textArea.selectionStart).toBe(expectedValue.length);
+          expect(textArea.selectionEnd).toBe(expectedValue.length);
+        });
+      });
 
       it('replaces the placeholder in the tag', () => {
         insertMarkdownText({

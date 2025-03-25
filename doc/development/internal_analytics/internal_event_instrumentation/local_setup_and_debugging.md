@@ -114,7 +114,7 @@ By default, GitLab Self-Managed instances do not collect event data through Snow
    gdk restart
    ```
 
-1. You can now see all events being sent by your local instance in the [Snowplow Micro UI](http://localhost:9091/micro/ui) and can filter for specific events.
+1. You can now see all events being sent by your local instance in the Snowplow Micro UI and can filter for specific events. Snowplow Micro UI can be found under the `/micro/ui` path, for example `http://localhost:9092/micro/ui`.
 
 ### Introduction to Snowplow Micro UI and API
 
