@@ -17916,6 +17916,29 @@ The edge type for [`PipelineTrigger`](#pipelinetrigger).
 | <a id="pipelinetriggeredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelinetriggeredgenode"></a>`node` | [`PipelineTrigger`](#pipelinetrigger) | The item at the end of the edge. |
 
+#### `ProjectComplianceControlStatusTypeConnection`
+
+The connection type for [`ProjectComplianceControlStatusType`](#projectcompliancecontrolstatustype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancecontrolstatustypeconnectionedges"></a>`edges` | [`[ProjectComplianceControlStatusTypeEdge]`](#projectcompliancecontrolstatustypeedge) | A list of edges. |
+| <a id="projectcompliancecontrolstatustypeconnectionnodes"></a>`nodes` | [`[ProjectComplianceControlStatusType]`](#projectcompliancecontrolstatustype) | A list of nodes. |
+| <a id="projectcompliancecontrolstatustypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectComplianceControlStatusTypeEdge`
+
+The edge type for [`ProjectComplianceControlStatusType`](#projectcompliancecontrolstatustype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancecontrolstatustypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectcompliancecontrolstatustypeedgenode"></a>`node` | [`ProjectComplianceControlStatusType`](#projectcompliancecontrolstatustype) | The item at the end of the edge. |
+
 #### `ProjectComplianceRequirementStatusConnection`
 
 The connection type for [`ProjectComplianceRequirementStatus`](#projectcompliancerequirementstatus).
@@ -34610,6 +34633,27 @@ Returns [`CommitReferences`](#commitreferences).
 | ---- | ---- | ----------- |
 | <a id="projectcommitreferencescommitsha"></a>`commitSha` | [`String!`](#string) | Project commit SHA identifier. For example, `287774414568010855642518513f085491644061`. |
 
+##### `Project.complianceControlStatus`
+
+Compliance control statuses for a project.
+
+{{< details >}}
+**Introduced** in GitLab 17.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`ProjectComplianceControlStatusTypeConnection`](#projectcompliancecontrolstatustypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancecontrolstatusfilters"></a>`filters` | [`ProjectComplianceControlStatusInput`](#projectcompliancecontrolstatusinput) | Filters applied when retrieving compliance control statuses for the project. |
+
 ##### `Project.complianceStandardsAdherence`
 
 Compliance standards adherence for the project.
@@ -36404,6 +36448,19 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectcicdsettingpipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String!`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
 | <a id="projectcicdsettingpushrepositoryforjobtokenallowed"></a>`pushRepositoryForJobTokenAllowed` | [`Boolean`](#boolean) | Indicates the ability to push to the original project repository using a job token. |
+
+### `ProjectComplianceControlStatusType`
+
+Compliance control status for a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancecontrolstatustypecompliancerequirementscontrol"></a>`complianceRequirementsControl` | [`ComplianceRequirementsControl!`](#compliancerequirementscontrol) | Control of the compliance status. |
+| <a id="projectcompliancecontrolstatustypeid"></a>`id` | [`ID!`](#id) | Compliance control status ID. |
+| <a id="projectcompliancecontrolstatustypestatus"></a>`status` | [`ProjectComplianceControlStatus!`](#projectcompliancecontrolstatus) | Compliance status of the project for the control. |
+| <a id="projectcompliancecontrolstatustypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the control status was last updated. |
 
 ### `ProjectComplianceRequirementStatus`
 
@@ -43861,6 +43918,16 @@ Values for the archived argument.
 | <a id="projectarchivedinclude"></a>`INCLUDE` | Include archvied projects. |
 | <a id="projectarchivedonly"></a>`ONLY` | Only archived projects. |
 
+### `ProjectComplianceControlStatus`
+
+Compliance status of the project control.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectcompliancecontrolstatusfail"></a>`FAIL` | Fail. |
+| <a id="projectcompliancecontrolstatuspass"></a>`PASS` | Pass. |
+| <a id="projectcompliancecontrolstatuspending"></a>`PENDING` | Pending. |
+
 ### `ProjectFeatureAccessLevel`
 
 Access level of a project feature.
@@ -48104,6 +48171,14 @@ Attributes for the pipeline schedule variable.
 | <a id="pipelineschedulevariableinputkey"></a>`key` | [`String!`](#string) | Name of the variable. |
 | <a id="pipelineschedulevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
 | <a id="pipelineschedulevariableinputvariabletype"></a>`variableType` | [`CiVariableType!`](#civariabletype) | Type of the variable. |
+
+### `ProjectComplianceControlStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancecontrolstatusinputcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Compliance requirement id of the statuses. |
 
 ### `PushAccessLevelInput`
 

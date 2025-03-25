@@ -164,7 +164,7 @@ for more information about database migrations.
 #### The removed column is referenced by a database view
 
 When a column is referenced by a database view, it behaves as if the column had a constraint attached to it
-so the view needs to be updated first before dropping he column:
+so the view needs to be updated first before dropping the column:
 
 1. Recreate the view excluding the column
 1. Drop the column from the original table
@@ -812,8 +812,8 @@ migrations.
 
 There are currently two situations where views are used:
 
-- To expose Postgres internal metrics
--To expose limited read-only data for the Unified Backup CLI
+- To [expose Postgres internal metrics](virtual_tables.md)
+- To expose limited read-only data for the Unified Backup CLI
 
 ### Postgres internal metrics
 

@@ -57,7 +57,6 @@ ee/spec/frontend/related_items_tree/components/tree_root_spec.js
 ee/spec/frontend/requirements/components/requirement_item_spec.js
 ee/spec/frontend/requirements/components/requirements_root_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
-ee/spec/frontend/roles_and_permissions/components/create_member_role_spec.js
 ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js

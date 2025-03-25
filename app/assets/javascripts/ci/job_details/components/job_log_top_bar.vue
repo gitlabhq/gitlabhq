@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick, GlSprintf } from '@gitlab/ui';
 import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { s__, sprintf } from '~/locale';
+import { s__, n__, sprintf } from '~/locale';
 import { compactJobLog } from '~/ci/job_details/utils';
 
 export default {
@@ -169,10 +169,17 @@ export default {
         if (logLine) {
           setTimeout(() => scrollToElement(logLine));
 
-          const message = sprintf(s__('Job|%{searchLength} results found for %{searchTerm}'), {
-            searchLength: this.searchResults.length,
-            searchTerm: this.searchTerm,
-          });
+          const message = sprintf(
+            n__(
+              'Job|%{searchLength} result found for %{searchTerm}',
+              'Job|%{searchLength} results found for %{searchTerm}',
+              this.searchResults.length,
+            ),
+            {
+              searchLength: this.searchResults.length,
+              searchTerm: this.searchTerm,
+            },
+          );
 
           this.$toast.show(message);
         } else {

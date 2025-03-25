@@ -1,4 +1,4 @@
-import { __, n__, sprintf } from '~/locale';
+import { __, n__, s__, sprintf } from '~/locale';
 import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
 
 const INTERVALS = {
@@ -109,3 +109,19 @@ export const CLEAR_AUTOSAVE_ENTRY_EVENT = 'markdown_clear_autosave_entry';
 export const CONTENT_EDITOR_READY_EVENT = 'content_editor_ready';
 export const CONTENT_EDITOR_PASTE = 'content_editor_paste';
 export const MARKDOWN_EDITOR_READY_EVENT = 'markdown_editor_ready';
+
+export const SEVERITY_LEVEL_CRITICAL = 'critical';
+export const SEVERITY_LEVEL_HIGH = 'high';
+export const SEVERITY_LEVEL_UNKNOWN = 'unknown';
+export const SEVERITY_LEVEL_MEDIUM = 'medium';
+export const SEVERITY_LEVEL_LOW = 'low';
+export const SEVERITY_LEVEL_INFO = 'info';
+
+export const SEVERITY_LEVELS = {
+  [SEVERITY_LEVEL_CRITICAL]: s__('severity|Critical'),
+  [SEVERITY_LEVEL_HIGH]: s__('severity|High'),
+  [SEVERITY_LEVEL_MEDIUM]: s__('severity|Medium'),
+  [SEVERITY_LEVEL_LOW]: s__('severity|Low'),
+  [SEVERITY_LEVEL_INFO]: s__('severity|Info'),
+  [SEVERITY_LEVEL_UNKNOWN]: s__('severity|Unknown'),
+};

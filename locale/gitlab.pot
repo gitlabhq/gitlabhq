@@ -33529,8 +33529,10 @@ msgstr ""
 msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr ""
 
-msgid "Job|%{searchLength} results found for %{searchTerm}"
-msgstr ""
+msgid "Job|%{searchLength} result found for %{searchTerm}"
+msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
@@ -35924,6 +35926,9 @@ msgstr ""
 msgid "MemberRole|Could not update role."
 msgstr ""
 
+msgid "MemberRole|Create member role"
+msgstr ""
+
 msgid "MemberRole|Create role"
 msgstr ""
 
@@ -35964,6 +35969,9 @@ msgid "MemberRole|Direct users assigned"
 msgstr ""
 
 msgid "MemberRole|Dismiss Planner role promotion"
+msgstr ""
+
+msgid "MemberRole|Edit member role"
 msgstr ""
 
 msgid "MemberRole|Edit role"
@@ -43211,19 +43219,25 @@ msgstr ""
 msgid "PipelineSource|Chat"
 msgstr ""
 
+msgid "PipelineSource|Container Registry Push"
+msgstr ""
+
+msgid "PipelineSource|Duo Workflow"
+msgstr ""
+
 msgid "PipelineSource|External"
 msgstr ""
 
 msgid "PipelineSource|External Pull Request"
 msgstr ""
 
-msgid "PipelineSource|External event"
+msgid "PipelineSource|External Pull Request Event"
 msgstr ""
 
 msgid "PipelineSource|Merge Request"
 msgstr ""
 
-msgid "PipelineSource|Merge request"
+msgid "PipelineSource|Merge Request Event"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -43238,10 +43252,16 @@ msgstr ""
 msgid "PipelineSource|Pipeline"
 msgstr ""
 
+msgid "PipelineSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "PipelineSource|Push"
 msgstr ""
 
 msgid "PipelineSource|Schedule"
+msgstr ""
+
+msgid "PipelineSource|Security Orchestration Policy"
 msgstr ""
 
 msgid "PipelineSource|Trigger"
@@ -52909,6 +52929,9 @@ msgid "SecurityInventory|Security inventory"
 msgstr ""
 
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
+msgstr ""
+
+msgid "SecurityInventory|View vulnerability report"
 msgstr ""
 
 msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
