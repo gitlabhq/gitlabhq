@@ -105,6 +105,14 @@ To manually configure a GitLab OpenTofu Report artifact:
 
    ![merge request Terraform widget](img/terraform_plan_widget_v13_2.png)
 
+   {{< alert type="note" >}}
+
+   The maximum number of changes reported by the widget is 999,999 for
+   each action. This limitation is only for display purposes, plans that
+   change a higher number of resources can be applied as intended.
+
+   {{< /alert >}}
+
 1. In the widget, select **View Full Log** to go to the
    plan output present in the pipeline logs:
 

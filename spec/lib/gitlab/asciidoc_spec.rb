@@ -994,14 +994,18 @@ module Gitlab
         end
       end
 
-      it 'times out when rendering takes too long' do
-        expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
+      it 'times out and tracks the error' do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           instance_of(Timeout::Error),
           project_id: context[:project].id, class_name: described_class.name.demodulize
         ).and_call_original
 
-        expect(render('<b>ascii</b>', context)).to eq '<b>ascii</b>'
+        expect(render('ascii', context)).to eq Banzai::Filter::SanitizationFilter::COMPLEX_MARKDOWN_MESSAGE
+      end
+
+      it 'sanitizes HTML from the returned input' do
+        input = "<b>ascii</b> <script>alert('xss')</script>"
+        expect(render(input, context)).to eq Banzai::Filter::SanitizationFilter::COMPLEX_MARKDOWN_MESSAGE
       end
     end
 

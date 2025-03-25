@@ -83,16 +83,17 @@ module Gitlab
 
       Gitlab::Plantuml.configure
 
-      Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) do
-        html = ::Asciidoctor.convert(input, asciidoc_opts)
-        html = Banzai.render(html, context)
-        html.html_safe
-      end
-    rescue Timeout::Error => e
-      class_name = name.demodulize
-      Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
+      html = begin
+        Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) { ::Asciidoctor.convert(input, asciidoc_opts) }
+      rescue Timeout::Error => e
+        class_name = name.demodulize
+        Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
 
-      input
+        Banzai::Filter::SanitizationFilter::COMPLEX_MARKDOWN_MESSAGE
+      end
+
+      html = Banzai.render(html, context)
+      html.html_safe
     end
   end
 end
