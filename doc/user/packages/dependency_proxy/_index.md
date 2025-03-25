@@ -109,7 +109,7 @@ Users accessing the dependency proxy for container images with a personal access
 have at least the Guest role for the group they pull images from.
 
 The dependency proxy for container images follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
-issuing the client a JWT to use for the pull requests. The JWT issued as a result of authenticating
+issuing the client a JWT to use for the pulls. The JWT issued as a result of authenticating
 expires after some time. When the token expires, most Docker clients store your credentials and
 automatically request a new token without further action.
 
@@ -314,10 +314,9 @@ For information on reducing your storage use on the dependency proxy for contain
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch how to [use the dependency proxy to help avoid Docker Hub rate limits](https://youtu.be/Nc4nUo7Pq08).
 
-In November 2020, Docker introduced
-[rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).
+Docker Hub enforces [rate limits on pulls](https://docs.docker.com/docker-hub/usage/pulls/).
 If your GitLab [CI/CD configuration](../../../ci/_index.md) uses
-an image from Docker Hub, each time a job runs, it may count as a pull request.
+an image from Docker Hub, each time a job runs, it may count as a pull.
 To help get around this limit, you can pull your image from the dependency proxy cache instead.
 
 When you pull an image (by using a command like `docker pull` or, in a `.gitlab-ci.yml`
@@ -349,7 +348,7 @@ has become stale, only then is a new image pulled.
 For example, if your pipeline pulls `node:latest` every five
 minutes, the dependency proxy caches the entire image and only updates it if
 `node:latest` changes. So instead of having 360 requests for the image in six hours
-(which exceeds the Docker Hub rate limit), you only have one pull request, unless
+(which exceeds the Docker Hub rate limit), you only have one pull, unless
 the manifest changed during that time.
 
 ### Check your Docker Hub rate limit

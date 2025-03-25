@@ -211,6 +211,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false`. |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
+| `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
 
 #### Use Amazon instance profiles
 
@@ -227,6 +228,8 @@ Prerequisites:
   [instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html).
 - If GitLab is [configured to use an internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP
   address must be added to the `no_proxy` list.
+- For IMDS v2 access, ensure the [hop limit](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) is sufficient. If GitLab
+  is running in a container, you may need to raise the limit from 1 to 2.
 
 To set up an instance profile:
 
@@ -1366,6 +1369,13 @@ In some situations, it may be helpful to test object storage settings using the 
 1. Start a [Rails console](operations/rails_console.md).
 1. Set up the object storage connection, using the same parameters you set up in `/etc/gitlab/gitlab.rb`, in the following example format:
 
+   Example connection using the existing uploads configuration:
+
+   ```ruby
+   settings = Gitlab.config.uploads.object_store.connection.deep_symbolize_keys
+   connection = Fog::Storage.new(settings)
+   ```
+
    Example connection using access keys:
 
    ```ruby
@@ -1399,3 +1409,44 @@ In some situations, it may be helpful to test object storage settings using the 
    pp f
    pp dir.files.head('test.txt')
    ```
+
+#### Enable additional debugging
+
+You can also enable additional debugging to see the HTTP requests. You
+should do it in the [Rails Console](operations/rails_console.md) to avoid leaking credentials in
+log files. The following shows how to enable request debugging for
+different providers:
+
+{{< tabs >}}
+
+{{< tab title="Amazon S3" >}}
+
+Set the `EXCON_DEBUG` environment variable:
+
+```ruby
+ENV['EXCON_DEBUG'] = "1"
+```
+
+{{< /tab >}}
+
+{{< tab title="Google Cloud Storage" >}}
+
+Configure the logger to log to `STDOUT`:
+
+```ruby
+Google::Apis.logger = Logger::new(STDOUT)
+```
+
+{{< /tab >}}
+
+{{< tab title="Azure Blob Storage" >}}
+
+Set the `DEBUG` environment variable:
+
+```ruby
+ENV['DEBUG'] = "1"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}

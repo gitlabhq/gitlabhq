@@ -64,10 +64,6 @@ module TreeHelper
       "A fork of this project has been created that you can make changes in, so you can submit a merge request.")
   end
 
-  def edit_in_new_fork_notice_action(action)
-    edit_in_new_fork_notice + (_(" Try to %{action} this file again.") % { action: action })
-  end
-
   def path_breadcrumbs(max_links = 6)
     if @path.present?
       part_path = ""

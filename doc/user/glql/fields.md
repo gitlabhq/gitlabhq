@@ -1081,7 +1081,7 @@ This page lists fields available to use as filters when querying issues or work 
 - List all merge requests reviewed by current user and `@johndoe`
 
   ```plaintext
-  type = MergeRequest and reviwer = (currentUser(), @johndoe)
+  type = MergeRequest and reviewer = (currentUser(), @johndoe)
   ```
 
 ## State

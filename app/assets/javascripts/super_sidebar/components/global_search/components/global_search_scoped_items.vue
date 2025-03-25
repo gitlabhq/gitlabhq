@@ -1,10 +1,8 @@
 <script>
 import { GlIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { InternalEvents } from '~/tracking';
-import { s__, sprintf } from '~/locale';
-import { truncate } from '~/lib/utils/text_utility';
 import {
   EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
   EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
@@ -17,7 +15,6 @@ import {
   SCOPE_SEARCH_GROUP,
   SCOPE_SEARCH_PROJECT,
 } from '../command_palette/constants';
-import { SCOPE_TOKEN_MAX_LENGTH } from '../constants';
 import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 
 const trackingMixin = InternalEvents.mixin();
@@ -34,7 +31,6 @@ export default {
     OVERLAY_SEARCH,
   },
   computed: {
-    ...mapState(['search']),
     ...mapGetters(['scopedSearchGroup']),
     group() {
       return {
@@ -51,15 +47,6 @@ export default {
     },
   },
   methods: {
-    titleLabel(item) {
-      return sprintf(s__('GlobalSearch|in %{scope}'), {
-        search: this.search,
-        scope: item.scope || item.description,
-      });
-    },
-    getTruncatedScope(scope) {
-      return truncate(scope, SCOPE_TOKEN_MAX_LENGTH);
-    },
     trackingTypes({ text }) {
       switch (text) {
         case this.$options.SCOPE_SEARCH_ALL: {

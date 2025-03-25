@@ -55,7 +55,6 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
-      breakpoint: null,
     };
   },
   computed: {

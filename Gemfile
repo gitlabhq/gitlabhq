@@ -95,7 +95,8 @@ gem 'doorkeeper', '~> 5.8', '>= 5.8.1', feature_category: :system_access
 gem 'doorkeeper-openid_connect', '~> 1.8.10', feature_category: :system_access
 gem 'doorkeeper-device_authorization_grant', '~> 1.0.0', feature_category: :system_access
 gem 'rexml', '~> 3.4.0', feature_category: :shared
-gem 'ruby-saml', '~> 1.18.0', path: 'vendor/gems/ruby-saml', feature_category: :system_access
+gem 'ruby-saml', '~> 1.18', feature_category: :system_access
+gem 'omniauth-saml', '~> 2.2.1', feature_category: :system_access
 gem 'omniauth', '~> 2.1.0', feature_category: :system_access
 gem 'omniauth-auth0', '~> 3.1', feature_category: :system_access
 gem 'omniauth-azure-activedirectory-v2', '~> 2.0', feature_category: :system_access
@@ -105,7 +106,6 @@ gem 'omniauth-github', '2.0.1', feature_category: :system_access
 gem 'omniauth-gitlab', '~> 4.0.0', path: 'vendor/gems/omniauth-gitlab', feature_category: :system_access
 gem 'omniauth-google-oauth2', '~> 1.1', feature_category: :system_access
 gem 'omniauth-oauth2-generic', '~> 0.2.2', feature_category: :system_access
-gem 'omniauth-saml', '~> 2.2.1', feature_category: :system_access
 gem 'omniauth-shibboleth-redux', '~> 2.0', require: 'omniauth-shibboleth', feature_category: :system_access
 # See vendor/gems/omniauth_crowd/README.md
 gem 'omniauth_crowd', '~> 2.4.0', path: 'vendor/gems/omniauth_crowd', feature_category: :system_access

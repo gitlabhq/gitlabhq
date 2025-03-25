@@ -676,4 +676,36 @@ RSpec.describe AuthHelper, feature_category: :system_access do
       end
     end
   end
+
+  describe '#certificate_fingerprint_algorithm' do
+    let_it_be(:sha1_fingerprint_upper) { "DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4" }
+    let_it_be(:sha1_fingerprint_lower) { "dd:80:b1:fa:a9:a7:8d:9d:41:7e:09:10:d8:6f:7d:0a:7e:58:4c:c4" }
+    let_it_be(:sha256_fingerprint_upper) do
+      "73:2D:28:C2:D2:D0:34:9F:F8:9A:9C:74:23:BF:0A:CB:66:75:78:9B:01:4D:1F:7D:60:8F:AD:47:A2:30:D7:4A"
+    end
+
+    let_it_be(:sha256_fingerprint_mixed) do
+      "73:2d:28:c2:d2:d0:34:9F:F8:9a:9c:74:23:BF:0a:cb:66:75:78:9b:01:4D:1F:7D:60:8f:ad:47:a2:30:d7:4a"
+    end
+
+    it 'detects SHA1 fingerprint with upper case characters' do
+      expect(helper.certificate_fingerprint_algorithm(sha1_fingerprint_upper))
+        .to eq('http://www.w3.org/2000/09/xmldsig#sha1')
+    end
+
+    it 'detects SHA1 fingerprint with lower case characters' do
+      expect(helper.certificate_fingerprint_algorithm(sha1_fingerprint_lower))
+        .to eq('http://www.w3.org/2000/09/xmldsig#sha1')
+    end
+
+    it 'detects SHA256 fingerprint with upper case characters' do
+      expect(helper.certificate_fingerprint_algorithm(sha256_fingerprint_upper))
+        .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+    end
+
+    it 'detects SHA256 fingerprint with mixed case characters' do
+      expect(helper.certificate_fingerprint_algorithm(sha256_fingerprint_mixed))
+        .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
+    end
+  end
 end

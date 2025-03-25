@@ -619,7 +619,7 @@ This process only applies to the images used in versions of GitLab matching the 
 - the `MAJOR` image tag (e.g.: `4`)
 - the `latest` image tag
 
-The implementation of the rebuild process may vary [depending on the project](../../user/application_security/_index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
+The implementation of the rebuild process may vary [depending on the project](../../user/application_security/detect/vulnerability_scanner_maintenance.md), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
 
 ## Adding new language support to GitLab Advanced SAST (GLAS)
 

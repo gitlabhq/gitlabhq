@@ -161,37 +161,36 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
-    describe('filteredRecentSearches', () => {
-      it('returns array of recent searches filtering out any string type (unsupported) items', async () => {
-        mockServiceResults([{ foo: 'bar' }, 'foo']);
+    describe('GlFilteredSearch history items', () => {
+      it('returns array of recent searches filtering out any deprecated plain strings', async () => {
+        const newSearchFormat = [{ type: FILTERED_SEARCH_TERM, value: { data: 'foo' } }];
+        const oldSearchFormat = 'bar';
+        mockServiceResults([newSearchFormat, oldSearchFormat]);
         createComponent();
-        await nextTick();
+        await waitForPromises();
 
-        expect(wrapper.vm.filteredRecentSearches).toHaveLength(1);
-        expect(wrapper.vm.filteredRecentSearches[0]).toEqual({ foo: 'bar' });
+        expect(findGlFilteredSearch().props('historyItems')).toEqual([newSearchFormat]);
       });
 
-      it('returns array of recent searches sanitizing any duplicate token values', async () => {
+      it('returns array of recent searches removing any duplicate searches', async () => {
         mockServiceResults([
+          [tokenValueAuthor, tokenValueMilestone],
           [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, tokenValueLabel],
           [tokenValueAuthor, tokenValueMilestone],
         ]);
         createComponent();
-        await nextTick();
+        await waitForPromises();
 
-        expect(wrapper.vm.filteredRecentSearches).toHaveLength(2);
-        expect(uniqueTokens).toHaveBeenCalled();
+        expect(findGlFilteredSearch().props('historyItems')).toEqual([
+          [tokenValueAuthor, tokenValueMilestone],
+          [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, tokenValueLabel],
+        ]);
       });
 
-      it('returns undefined when recentSearchesStorageKey prop is not set on component', async () => {
-        createComponent();
-        wrapper.setProps({
-          recentSearchesStorageKey: '',
-        });
+      it('returns no searches when recentSearchesStorageKey prop is not set on component', () => {
+        createComponent({ propsData: { recentSearchesStorageKey: '' } });
 
-        await nextTick();
-
-        expect(wrapper.vm.filteredRecentSearches).not.toBeDefined();
+        expect(findGlFilteredSearch().props('historyItems')).toBeNull();
       });
     });
   });
@@ -309,7 +308,7 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     describe('handleFilterSubmit', () => {
-      const mockFilters = [tokenValueAuthor, 'foo'];
+      const mockFilters = [tokenValueAuthor];
 
       beforeEach(async () => {
         createComponent({ propsData: { initialFilterValue: mockFilters } });
@@ -371,7 +370,10 @@ describe('FilteredSearchBarRoot', () => {
 
       expect(glFilteredSearchEl.props('placeholder')).toBe('Filter requirements');
       expect(glFilteredSearchEl.props('availableTokens')).toEqual(mockAvailableTokens);
-      expect(glFilteredSearchEl.props('historyItems')).toEqual(mockHistoryItems);
+      expect(glFilteredSearchEl.props('historyItems')).toEqual([
+        [tokenValueAuthor, tokenValueLabel, tokenValueMilestone],
+        [tokenValueAuthor],
+      ]);
     });
 
     it('renders unchecked checkbox when `showCheckbox` prop is true', () => {
@@ -391,7 +393,7 @@ describe('FilteredSearchBarRoot', () => {
       await waitForPromises();
 
       expect(findGlDisclosureDropdownItems().at(0).text()).toBe(
-        'Author := @rootLabel := ~bugMilestone := %v1.0"duo"',
+        'Author := @rootLabel := ~bugMilestone := %v1.0',
       );
     });
 

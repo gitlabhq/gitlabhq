@@ -22,6 +22,7 @@ import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cac
 import { findWidget } from '~/issues/list/utils';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   getDisplayReference,
@@ -167,6 +168,11 @@ export default {
       default: null,
     },
     shouldDiscardDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isModal: {
       type: Boolean,
       required: false,
       default: false,
@@ -529,6 +535,7 @@ export default {
 
     this.setNumberOfDiscussionsResolved();
     addShortcutsExtension(ShortcutsWorkItems);
+    new ZenMode(); // eslint-disable-line no-new
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -837,6 +844,7 @@ export default {
               :description="description"
               :full-path="fullPath"
               :show-buttons-below-field="false"
+              :hide-fullscreen-markdown-button="isModal"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type-name="selectedWorkItemTypeName"

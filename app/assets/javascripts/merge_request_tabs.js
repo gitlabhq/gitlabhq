@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
-import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
+import { parseUrlPathname, visitUrl, getParameterByName } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
@@ -221,6 +221,8 @@ export default class MergeRequestTabs {
     this.diffsClass = null;
     this.commitsLoaded = false;
     this.isFixedLayoutPreferred = this.contentWrapper.classList.contains('container-limited');
+    this.isRapidDiffs = getParameterByName('rapid_diffs') === 'true';
+    this.rapidDiffsApp = null;
     this.eventHub = createEventHub();
     this.loadedPages = { [action]: true };
 
@@ -357,7 +359,7 @@ export default class MergeRequestTabs {
             in practice, this only occurs when comparing commits in
             the new merge request form page.
           */
-          this.loadDiff({ endpoint: href, strip: true });
+          this.startDiffs({ endpoint: href, strip: true });
         }
         // this.hideSidebar();
         this.expandViewContainer();
@@ -528,7 +530,22 @@ export default class MergeRequestTabs {
     this.mergeRequestPipelinesTable = mountPipelines();
   }
 
-  // load the diff tab content from the backend
+  // Initialize the Changes tab
+  async startDiffs(options = {}) {
+    if (this.isRapidDiffs) {
+      if (!this.rapidDiffsApp) {
+        const { createRapidDiffsApp } = await import('~/rapid_diffs/app');
+
+        this.rapidDiffsApp = createRapidDiffsApp();
+
+        this.rapidDiffsApp.reloadDiffs();
+        this.rapidDiffsApp.init();
+      }
+    } else {
+      this.loadDiff(options);
+    }
+  }
+  // load the legacy diff tab content from the backend
   loadDiff({ endpoint, strip = true }) {
     if (this.diffsLoaded) {
       document.dispatchEvent(new CustomEvent('scroll'));

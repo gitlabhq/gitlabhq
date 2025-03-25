@@ -57,6 +57,7 @@
         = render "projects/merge_requests/commits"
       #diffs.diffs.tab-pane{ class: "!gl-m-0" }
         -# This tab is always loaded via AJAX
+        = yield
       - if @pipelines.any?
         #pipelines.pipelines.tab-pane
           = render 'projects/merge_requests/pipelines', endpoint: url_for(safe_params.merge(action: 'pipelines', format: :json)), disable_initialization: true

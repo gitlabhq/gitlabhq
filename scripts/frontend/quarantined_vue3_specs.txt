@@ -10,7 +10,6 @@ ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_
 ee/spec/frontend/analytics/dashboards/ai_impact/components/metric_table_spec.js
 ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_app_spec.js
 ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_spec.js
-ee/spec/frontend/analytics/merge_request_analytics/components/filter_bar_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/throughput_chart_spec.js
 ee/spec/frontend/approvals/components/security_configuration/unconfigured_security_rules_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js

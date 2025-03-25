@@ -118,3 +118,72 @@ export const TOKENS = [
     unique: true,
   },
 ];
+
+export const STATISTICS_CONFIG = [
+  {
+    title: s__('AccessTokens|Active tokens'),
+    tooltipTitle: s__('AccessTokens|Filter for active tokens'),
+    filters: [
+      {
+        type: 'state',
+        value: {
+          data: 'active',
+          operator: '=',
+        },
+      },
+    ],
+  },
+  {
+    title: s__('AccessTokens|Tokens expiring in 2 weeks'),
+    tooltipTitle: s__('AccessTokens|Filter for tokens expiring in 2 weeks'),
+    filters: [
+      {
+        type: 'state',
+        value: {
+          data: 'active',
+          operator: '=',
+        },
+      },
+      {
+        type: 'expires',
+        value: {
+          data: 'DATE_HOLDER',
+          operator: '<',
+        },
+      },
+    ],
+  },
+  {
+    title: s__('AccessTokens|Revoked tokens'),
+    tooltipTitle: s__('AccessTokens|Filter for revoked tokens'),
+    filters: [
+      {
+        type: 'revoked',
+        value: {
+          data: 'true',
+          operator: '=',
+        },
+      },
+    ],
+  },
+  {
+    title: s__('AccessTokens|Expired tokens'),
+    tooltipTitle: s__('AccessTokens|Filter for expired tokens'),
+    filters: [
+      {
+        type: 'revoked',
+        value: {
+          data: 'false',
+          operator: '=',
+        },
+      },
+      {
+        type: 'state',
+        value: {
+          data: 'inactive',
+          operator: '=',
+        },
+      },
+    ],
+  },
+];

@@ -155,7 +155,9 @@ export default {
           // Only include non-string history items (discard items from legacy search)
           if (typeof item !== 'string') {
             const sanitizedItem = uniqueTokens(item);
-            const itemString = JSON.stringify(sanitizedItem);
+            const itemString = sanitizedItem
+              .map((token) => `${token.type}${token.value.operator}${token.value.data}`)
+              .join('');
             // Only include items which aren't already part of history
             if (!knownItems.includes(itemString)) {
               historyItems.push(sanitizedItem);

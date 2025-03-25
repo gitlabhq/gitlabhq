@@ -40,32 +40,6 @@ Concerning data privacy in the domain of security scanners, GitLab processes the
 
 Our scanners access the internet only to download the latest sets of signatures, rules, and patches. If you prefer the scanners do not access the internet, consider using an [offline environment](offline_deployments/_index.md).
 
-## Vulnerability scanner maintenance
-
-The following vulnerability scanners and their databases are regularly updated:
-
-| Secure scanning tool                                            | Vulnerabilities database updates |
-|:----------------------------------------------------------------|:---------------------------------|
-| [Container Scanning](container_scanning/_index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/_index.md#vulnerabilities-database). |
-| [Dependency Scanning](dependency_scanning/_index.md)          | Relies on the [GitLab Advisory Database](gitlab_advisory_database/_index.md) which is updated on a daily basis using data from the National Vulnerability Database (NVD) and the GitHub Advisory Database. |
-| [Dynamic Application Security Testing (DAST)](dast/_index.md) | [DAST](dast/browser/_index.md) analyzer is updated on a periodic basis. |
-| [Secret Detection](secret_detection/pipeline/_index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/_index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/configure.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
-| [Static Application Security Testing (SAST)](sast/_index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/_index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
-
-In versions of GitLab that use the same major version of the analyzer, you do not have to update
-them to benefit from the latest vulnerabilities definitions. The security tools are released as
-Docker images. The vendored job definitions that enable them use major release tags according to
-[semantic versioning](https://semver.org/). Each new release of the tools overrides these tags.
-Although in a major analyzer version you automatically get the latest versions of the scanning
-tools, there are some [known issues](https://gitlab.com/gitlab-org/gitlab/-/issues/9725) with this
-approach.
-
-{{< alert type="note" >}}
-
-To get the most updated vulnerability information on existing vulnerabilities you may need to re-run the default branch's pipeline.
-
-{{< /alert >}}
-
 ## Security scanning
 
 For security scans that run in a CI/CD pipeline, the results are determined by:

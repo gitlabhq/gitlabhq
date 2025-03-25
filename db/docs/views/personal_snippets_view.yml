@@ -1,0 +1,10 @@
+---
+view_name: personal_snippets_view
+classes: []
+feature_categories:
+  - backup_restore
+description: Personal snippet references and its repository metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179451
+milestone: '17.11'
+gitlab_schema: gitlab_main
+table_size: small

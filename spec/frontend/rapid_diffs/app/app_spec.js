@@ -60,4 +60,10 @@ describe('Rapid Diffs App', () => {
     app.streamRemainingDiffs();
     expect(useDiffsList().streamRemainingDiffs).toHaveBeenCalledWith('/stream');
   });
+
+  it('reloads diff files', () => {
+    createApp();
+    app.reloadDiffs();
+    expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload');
+  });
 });

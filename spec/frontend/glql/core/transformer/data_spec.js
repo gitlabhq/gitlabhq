@@ -1,4 +1,3 @@
-import { identity } from 'lodash';
 import { transform } from '~/glql/core/transformer/data';
 import * as functions from '~/glql/core/transformer/functions';
 
@@ -60,10 +59,6 @@ const MOCK_WORK_ITEMS_WITHOUT_WIDGETS = {
 };
 
 describe('GLQL Data Transformer', () => {
-  beforeEach(() => {
-    window.structuredClone = identity;
-  });
-
   describe('transform', () => {
     it.each`
       sourceType         | mockQuery

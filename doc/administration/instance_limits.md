@@ -846,7 +846,13 @@ ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
 
 ### Maximum size and depth of CI/CD configuration YAML files
 
-The default maximum size of a single CI/CD configuration YAML file is 1 megabyte and the
+{{< history >}}
+
+- Default value for `max_yaml_size_bytes` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160826) in GitLab 17.3.
+
+{{< /history >}}
+
+The default maximum size of a single CI/CD configuration YAML file is 2 megabytes and the
 default depth is 100.
 
 You can change these limits in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -854,7 +860,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 - To update the maximum YAML size, update `max_yaml_size_bytes` with the new value in megabytes:
 
   ```ruby
-  ApplicationSetting.update(max_yaml_size_bytes: 2.megabytes)
+  ApplicationSetting.update(max_yaml_size_bytes: 4.megabytes)
   ```
 
   The `max_yaml_size_bytes` value is not directly tied to the size of the YAML file,
@@ -868,15 +874,20 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 
 ### Maximum size of the entire CI/CD configuration
 
+{{< history >}}
+
+- Default value for `max_yaml_size_bytes` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160826) in GitLab 17.3.
+- Default value for `ci_max_total_yaml_size_bytes` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160826) in GitLab 17.3.
+
+{{< /history >}}
+
 The maximum amount of memory, in bytes, that can be allocated for the full pipeline configuration,
 with all included YAML configuration files.
 
-For new GitLab Self-Managed instances, the default is `157286400` bytes (150 MB).
+The default value is calculated by multiplying [`max_yaml_size_bytes`](#maximum-size-and-depth-of-cicd-configuration-yaml-files) (default 2 MB) with [`ci_max_includes`](../api/settings.md#available-settings) (default 150):
 
-For existing instances that upgrade to GitLab 16.3 or later, the default is calculated
-by multiplying [`max_yaml_size_bytes` (default 1 MB)](#maximum-size-and-depth-of-cicd-configuration-yaml-files)
-with [`ci_max_includes` (default 150)](../api/settings.md#available-settings).
-If both limits are unmodified, the default is set to 1 MB x 150 = `157286400` bytes (150 MB).
+- In GitLab 17.2 and earlier: 1 MB × 150 = `157286400` bytes (150 MB).
+- In GitLab 17.3 and later: 2 MB × 150 = `314572800` bytes (314.6 MB).
 
 You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
 To update the maximum memory that can be allocated for the CI/CD configuration,

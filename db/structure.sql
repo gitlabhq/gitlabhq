@@ -19666,6 +19666,60 @@ CREATE SEQUENCE personal_access_tokens_id_seq
 
 ALTER SEQUENCE personal_access_tokens_id_seq OWNED BY personal_access_tokens.id;
 
+CREATE TABLE shards (
+    id bigint NOT NULL,
+    name character varying NOT NULL
+);
+
+CREATE TABLE snippet_repositories (
+    snippet_id bigint NOT NULL,
+    shard_id bigint NOT NULL,
+    disk_path character varying(80) NOT NULL,
+    verification_retry_count smallint,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    verification_checksum bytea,
+    verification_failure text,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_started_at timestamp with time zone,
+    snippet_project_id bigint,
+    snippet_organization_id bigint,
+    CONSTRAINT snippet_repositories_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE TABLE snippets (
+    id bigint NOT NULL,
+    title character varying,
+    content text,
+    author_id bigint NOT NULL,
+    project_id bigint,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    file_name character varying,
+    type character varying,
+    visibility_level integer DEFAULT 0 NOT NULL,
+    title_html text,
+    content_html text,
+    cached_markdown_version integer,
+    description text,
+    description_html text,
+    encrypted_secret_token character varying(255),
+    encrypted_secret_token_iv character varying(255),
+    secret boolean DEFAULT false NOT NULL,
+    repository_read_only boolean DEFAULT false NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
+    organization_id bigint,
+    CONSTRAINT check_82c1d40fab CHECK ((num_nonnulls(organization_id, project_id) = 1))
+);
+
+CREATE VIEW personal_snippets_view AS
+ SELECT sn.id,
+    sh.name AS repository_storage,
+    sr.disk_path
+   FROM ((snippets sn
+     JOIN snippet_repositories sr ON (((sn.id = sr.snippet_id) AND ((sn.type)::text = 'PersonalSnippet'::text))))
+     JOIN shards sh ON ((sr.shard_id = sh.id)));
+
 CREATE TABLE pipl_users (
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22657,11 +22711,6 @@ CREATE TABLE service_desk_settings (
     CONSTRAINT check_57a79552e1 CHECK ((char_length(custom_email) <= 255))
 );
 
-CREATE TABLE shards (
-    id bigint NOT NULL,
-    name character varying NOT NULL
-);
-
 CREATE SEQUENCE shards_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -22741,22 +22790,6 @@ CREATE SEQUENCE smartcard_identities_id_seq
     CACHE 1;
 
 ALTER SEQUENCE smartcard_identities_id_seq OWNED BY smartcard_identities.id;
-
-CREATE TABLE snippet_repositories (
-    snippet_id bigint NOT NULL,
-    shard_id bigint NOT NULL,
-    disk_path character varying(80) NOT NULL,
-    verification_retry_count smallint,
-    verification_retry_at timestamp with time zone,
-    verified_at timestamp with time zone,
-    verification_checksum bytea,
-    verification_failure text,
-    verification_state smallint DEFAULT 0 NOT NULL,
-    verification_started_at timestamp with time zone,
-    snippet_project_id bigint,
-    snippet_organization_id bigint,
-    CONSTRAINT snippet_repositories_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
-);
 
 CREATE TABLE snippet_repository_states (
     id bigint NOT NULL,
@@ -22854,31 +22887,6 @@ CREATE SEQUENCE snippet_user_mentions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE snippet_user_mentions_id_seq OWNED BY snippet_user_mentions.id;
-
-CREATE TABLE snippets (
-    id bigint NOT NULL,
-    title character varying,
-    content text,
-    author_id bigint NOT NULL,
-    project_id bigint,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    file_name character varying,
-    type character varying,
-    visibility_level integer DEFAULT 0 NOT NULL,
-    title_html text,
-    content_html text,
-    cached_markdown_version integer,
-    description text,
-    description_html text,
-    encrypted_secret_token character varying(255),
-    encrypted_secret_token_iv character varying(255),
-    secret boolean DEFAULT false NOT NULL,
-    repository_read_only boolean DEFAULT false NOT NULL,
-    imported_from smallint DEFAULT 0 NOT NULL,
-    organization_id bigint,
-    CONSTRAINT check_82c1d40fab CHECK ((num_nonnulls(organization_id, project_id) = 1))
-);
 
 CREATE SEQUENCE snippets_id_seq
     START WITH 1

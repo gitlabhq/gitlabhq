@@ -728,7 +728,7 @@ Prerequisites:
    registry.gitlab.com/security-products/secrets:6
    ```
 
-   The pipeline secret detection analyzer's image is [periodically updated](../../_index.md#vulnerability-scanner-maintenance)
+   The pipeline secret detection analyzer's image is [periodically updated](../../detect/vulnerability_scanner_maintenance.md)
    so you should periodically update the local copy.
 
 1. Set the CI/CD variable `SECURE_ANALYZERS_PREFIX` to the local Docker container registry.

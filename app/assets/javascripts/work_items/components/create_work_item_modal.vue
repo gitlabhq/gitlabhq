@@ -321,6 +321,7 @@ export default {
         :work-item-type-name="workItemTypeName"
         :related-item="relatedItem"
         :should-discard-draft="shouldDiscardDraft"
+        :is-modal="true"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"

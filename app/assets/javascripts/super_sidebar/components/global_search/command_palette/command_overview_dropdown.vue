@@ -33,9 +33,11 @@ export default {
     emitHidden() {
       this.$emit('hidden');
     },
+    // eslint-disable-next-line vue/no-unused-properties -- open() is part of the component's public API.
     open() {
       this.$refs.commandsDropdown.open();
     },
+    // eslint-disable-next-line vue/no-unused-properties -- close() is part of the component's public API.
     close() {
       this.$refs.commandsDropdown.close();
     },

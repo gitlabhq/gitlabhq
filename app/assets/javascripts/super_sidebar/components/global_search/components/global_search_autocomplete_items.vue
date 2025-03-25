@@ -70,7 +70,7 @@ export default {
   mixins: [trackingMixin],
   computed: {
     ...mapState(['search', 'loading', 'autocompleteError']),
-    ...mapGetters(['autocompleteGroupedSearchOptions', 'scopedSearchOptions']),
+    ...mapGetters(['autocompleteGroupedSearchOptions']),
     groups() {
       return this.autocompleteGroupedSearchOptions.map((group) => {
         return {

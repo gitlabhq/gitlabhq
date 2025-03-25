@@ -11,6 +11,7 @@ GitLab can check your application for security vulnerabilities and that it meets
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Set up dependency scanning](dependency_scanning.md) | Learn how to detect vulnerabilities in an application's dependencies. | {{< icon name="star" >}} |
+| [Generate a software bill of materials with GitLab package registry](../user/packages/package_registry/tutorial_generate_sbom.md) | Learn how to generate an SBOM across all projects in a group. | {{< icon name="star" >}} |
 | [Export Dependency List in SBOM format](export_sbom.md) | Learn how to export an application's dependencies to the CycloneDX SBOM format. | {{< icon name="star" >}} |
 | [Create a compliance pipeline](compliance_pipeline/_index.md) | Learn how to create compliance pipelines for your groups. | {{< icon name="star" >}} |
 | [Set up a merge request approval policy](scan_result_policy/_index.md) | Learn how to configure a merge request approval policy that takes action based on scan results. | {{< icon name="star" >}} |

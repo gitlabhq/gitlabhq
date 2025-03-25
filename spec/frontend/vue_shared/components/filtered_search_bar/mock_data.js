@@ -407,8 +407,9 @@ export const tokenValuePlain = {
 };
 
 export const mockHistoryItems = [
-  [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, 'duo'],
-  [tokenValueAuthor, 'si'],
+  [tokenValueAuthor, tokenValueLabel, tokenValueMilestone],
+  [tokenValueAuthor],
+  'duo',
 ];
 
 export const mockSortOptions = [

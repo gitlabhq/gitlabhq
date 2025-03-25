@@ -1,0 +1,5 @@
+- add_page_specific_style 'page_bundles/merge_request_rapid_diffs'
+
+= render "page" do
+  - args = { diffs_slice: nil, reload_stream_url: project_new_merge_request_diffs_stream_path(@project, merge_request: { source_branch: @merge_request.source_branch, target_branch: @merge_request.target_branch }), stream_url: project_new_merge_request_diffs_stream_path(@project, merge_request: { source_branch: @merge_request.source_branch, target_branch: @merge_request.target_branch }), show_whitespace: @show_whitespace_default, diff_view: diff_view, update_user_endpoint: expose_path(api_v4_user_preferences_path), metadata_endpoint: nil, preload: false }
+  = render ::RapidDiffs::AppComponent.new(**args)

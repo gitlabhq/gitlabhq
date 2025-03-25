@@ -44,6 +44,13 @@ class RapidDiffsFacade {
     return useDiffsList(pinia).streamRemainingDiffs(streamContainer.dataset.diffsStreamUrl);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  reloadDiffs() {
+    const { reloadStreamUrl } = document.querySelector('[data-rapid-diffs]').dataset;
+
+    return useDiffsList(pinia).reloadDiffs(reloadStreamUrl);
+  }
+
   #registerCustomElements() {
     customElements.define('diff-file', this.DiffFileImplementation);
     customElements.define('diff-file-mounted', DiffFileMounted);

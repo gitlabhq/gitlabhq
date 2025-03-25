@@ -182,6 +182,51 @@ To set up OneLogin as your identity provider:
 
 For more information, see the [OneLogin configuration example](example_saml_config.md#onelogin).
 
+### Keycloak
+
+To set up Keycloak as your identity provider:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > SAML SSO**.
+1. Note the information on this page.
+1. Follow the instructions to [create a SAML client in Keycloack](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
+
+The following GitLab settings correspond to the Keycloak fields.
+
+   | GitLab setting                           | Keycloak field                          |
+   |:-----------------------------------------|:------------------------------------------------|
+   | **Identifier**                           | **Client ID**                                   |
+   | **Assertion consumer service URL**       | **Valid redirect URIs**                         |
+   | **Assertion consumer service URL**       | **Assertion Consumer Service POST Binding URL** |
+   | **GitLab single sign-on URL**            | **Home URL**                                    |
+
+1. Configure your GitLab client in Keycloak.
+   1. In Keycloak, go to **Clients** and select your GitLab client configuration.
+   1. On the **Settings** tab, in the **SAML capabilities** section:
+      1. Set the **Name ID format** to `persistent`.
+      1. Turn on **Force name ID format**.
+      1. Turn on **Force POST binding**.
+      1. Turn on **Include AuthnStatement**.
+   1. In the **Signature and Encryption** section, turn on **Sign documents**.
+   1. On the **Keys** tab, make sure all sections are disabled.
+   1. On the **Client scopes** tab:
+      1. Select the client scope for GitLab.
+      1. Select the `email` AttributeStatement.
+      1. Set the **User Attribute** field to `email`.
+      1. Select **Save**.
+1. Retrieve client information from Keycloak.
+   1. In the **Action** dropdown list, select **Download adapter config**.
+   1. In the **Download adapter config** dialog, select **mod-auth-mellon** from the dropdown list.
+   1. Select **Download**.
+   1. Extract the downloaded archive and open `idp-metadata.xml`.
+   1. Retrieve the identity provider single sign-on URL.
+      1. Locate the `<md:SingleSignOnService>` tag.
+      1. Note the value of the `Location` attribute.
+   1. Retrieve the certificate fingerprint.
+      1. Note the value of the `<ds:X509Certificate>` tag.
+      1. Convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3).
+      1. [Calculate the fingerprint](../../group/saml_sso/troubleshooting.md#calculate-the-fingerprint).
+
 ### Configure assertions
 
 {{< alert type="note" >}}

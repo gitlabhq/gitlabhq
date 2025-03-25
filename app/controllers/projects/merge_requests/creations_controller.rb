@@ -9,7 +9,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!
-  before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
+  before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path, :rapid_diffs]
   before_action :build_merge_request, except: [:create]
 
   urgency :low, [
@@ -17,6 +17,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     :create,
     :pipelines,
     :diffs,
+    :rapid_diffs,
     :branch_from,
     :branch_to
   ]
@@ -59,6 +60,14 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       .new(project: @project, current_user: current_user)
       .represent(@pipelines)
     }
+  end
+
+  def rapid_diffs
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+
+    @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
+
+    define_new_vars
   end
 
   def diffs

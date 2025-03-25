@@ -18,6 +18,8 @@ module AuthHelper
   ].freeze
   LDAP_PROVIDER = /\Aldap/
   POPULAR_PROVIDERS = %w[google_oauth2 github].freeze
+  SHA1_CHAR_PAIR_COUNT = 20
+  SHA256_CHAR_PAIR_COUNT = 32
 
   delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'
 
@@ -266,6 +268,17 @@ module AuthHelper
       path: codes_profile_two_factor_auth_path,
       password_required: password_required.to_s,
       variant: 'default' }
+  end
+
+  def certificate_fingerprint_algorithm(fingerprint)
+    case fingerprint.scan(/[0-9a-f]{2}/i).length
+    when SHA1_CHAR_PAIR_COUNT
+      # v2.x will change to RubySaml::XML::SHA1
+      XMLSecurity::Document::SHA1
+    when SHA256_CHAR_PAIR_COUNT
+      # v2.x will change to RubySaml::XML::SHA256
+      XMLSecurity::Document::SHA256
+    end
   end
 
   extend self

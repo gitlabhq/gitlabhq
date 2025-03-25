@@ -1,1 +1,1 @@
-window.structuredClone = (item) => ({ ...item });
+window.structuredClone = (item) => JSON.parse(JSON.stringify(item));

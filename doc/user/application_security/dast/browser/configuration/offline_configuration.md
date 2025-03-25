@@ -44,7 +44,7 @@ For DAST, import the following default DAST analyzer image from `registry.gitlab
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed.
-These scanners are [periodically updated](../../../_index.md#vulnerability-scanner-maintenance)
+These scanners are [periodically updated](../../../detect/vulnerability_scanner_maintenance.md)
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on

@@ -4,6 +4,8 @@ import htmlMergeRequestsWithTaskList from 'test_fixtures/merge_requests/merge_re
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
 import { stubPerformanceWebAPI } from 'helpers/performance';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs, { getActionFromHref } from '~/merge_request_tabs';
 import Diff from '~/diff';
@@ -12,6 +14,13 @@ import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),
+}));
+
+const mockCreateRapidDiffsApp = jest
+  .fn()
+  .mockReturnValue({ reloadDiffs: jest.fn(), init: jest.fn() });
+jest.mock('~/rapid_diffs/app', () => ({
+  createRapidDiffsApp: mockCreateRapidDiffsApp,
 }));
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -48,6 +57,15 @@ describe('MergeRequestTabs', () => {
 
   afterEach(() => {
     document.body.innerHTML = '';
+  });
+
+  describe('constructor', () => {
+    it('infers "Rapid Diffs" mode from the URL parameter', () => {
+      setWindowLocation('https://example.com?rapid_diffs=true');
+      const tabs = new MergeRequestTabs();
+
+      expect(tabs.isRapidDiffs).toBe(true);
+    });
   });
 
   describe('clickTab', () => {
@@ -428,6 +446,45 @@ describe('MergeRequestTabs', () => {
 
         expect(window.scrollTo).not.toHaveBeenCalled();
       });
+    });
+
+    describe('switching to the diffs tab', () => {
+      beforeEach(() => {
+        setWindowLocation('https://example.com');
+        mockCreateRapidDiffsApp.mockClear();
+      });
+
+      it.each`
+        rdEnabled | rdExists | isConstructed
+        ${true}   | ${false} | ${true}
+        ${true}   | ${true}  | ${false}
+        ${false}  | ${false} | ${false}
+      `(
+        'creates the Rapid Diffs app only when on the diffs page that does not already have the app initialized ($rdExists), and where the feature is enabled in the search parameters ($rdEnabled)',
+        async ({ rdEnabled, rdExists, isConstructed }) => {
+          if (rdEnabled) {
+            setWindowLocation('https://example.com?rapid_diffs=true');
+          }
+
+          testContext.class = new MergeRequestTabs({ stubLocation });
+
+          if (rdExists) {
+            testContext.class.rapidDiffsApp = 'non-falsey';
+          }
+
+          testContext.class.tabShown('diffs', 'not-a-vue-page');
+
+          await waitForPromises();
+
+          if (isConstructed) {
+            expect(mockCreateRapidDiffsApp).toHaveBeenCalledTimes(1);
+            expect(testContext.class.rapidDiffsApp).toEqual(expect.any(Object));
+          } else {
+            expect(mockCreateRapidDiffsApp).not.toHaveBeenCalled();
+            expect(testContext.class.rapidDiffsApp).toBe(rdExists ? 'non-falsey' : null);
+          }
+        },
+      );
     });
   });
 

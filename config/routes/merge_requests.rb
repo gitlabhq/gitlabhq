@@ -79,6 +79,8 @@ scope path: 'merge_requests', controller: 'merge_requests/creations' do
   post '', action: :create, as: nil
 
   scope path: 'new', as: :new_merge_request do
+    get '', action: :new, to: 'merge_requests/creations#rapid_diffs', defaults: { tab: 'commits' },
+      constraints: ->(params) { params[:rapid_diffs] == 'true' }
     get '', action: :new
 
     scope constraints: ->(req) { req.format == :json }, as: :json do
@@ -88,7 +90,11 @@ scope path: 'merge_requests', controller: 'merge_requests/creations' do
     end
 
     scope action: :new do
+      get :diffs, to: 'merge_requests/creations#rapid_diffs', defaults: { tab: 'diffs' },
+        constraints: ->(params) { params[:rapid_diffs] == 'true' }
       get :diffs, defaults: { tab: 'diffs' }
+      get :pipelines, to: 'merge_requests/creations#rapid_diffs', defaults: { tab: 'pipelines' },
+        constraints: ->(params) { params[:rapid_diffs] == 'true' }
       get :pipelines, defaults: { tab: 'pipelines' }
     end
 

@@ -153,9 +153,6 @@ export default {
             count: this.searchOptions.length,
           });
     },
-    searchBarItem() {
-      return this.searchOptions?.[0];
-    },
     commandPaletteQuery() {
       if (this.isCommandMode) {
         return this.searchText?.trim().substring(1);

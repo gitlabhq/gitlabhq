@@ -1180,7 +1180,7 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
    The process for importing Docker images into a local offline Docker registry depends on
    **your network security policy**. Consult your IT staff to find an accepted and approved
    process by which external resources can be imported or temporarily accessed.
-   These scanners are [periodically updated](../_index.md#vulnerability-scanner-maintenance)
+   These scanners are [periodically updated](../detect/vulnerability_scanner_maintenance.md)
    with new definitions, and you may want to download them regularly.
 
 1. Configure GitLab CI/CD to use the local analyzers.

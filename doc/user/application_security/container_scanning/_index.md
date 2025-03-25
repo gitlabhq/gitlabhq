@@ -554,7 +554,7 @@ registry.gitlab.com/security-products/container-scanning/trivy:7
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Consult your IT staff to find an accepted and approved
 process by which you can import or temporarily access external resources. These scanners
-are [periodically updated](../_index.md#vulnerability-scanner-maintenance),
+are [periodically updated](../detect/vulnerability_scanner_maintenance.md),
 and you may be able to make occasional updates on your own.
 
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
@@ -802,7 +802,7 @@ In addition to the sources provided by these scanners, GitLab maintains the foll
 In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is merged in to augment the data from the external sources. In the GitLab Premium and Free tiers, the data from the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community) is merged in to augment the data from the external sources. This augmentation currently only applies to the analyzer images for the Trivy scanner.
 
 Database update information for other analyzers is available in the
-[maintenance table](../_index.md#vulnerability-scanner-maintenance).
+[maintenance table](../detect/vulnerability_scanner_maintenance.md).
 
 ## Solutions for vulnerabilities (auto-remediation)
 

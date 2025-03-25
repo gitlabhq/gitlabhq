@@ -4,3 +4,15 @@
 .rd-app {
   --rd-diff-file-sticky-top-padding: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
 }
+
+.js-merge-request-new-submit .merge-request-tabs-holder{
+  /*
+    If the settings menu displays upward on the create new/submit page,
+      it needs to be in front of the tab bar.
+    It's not clear that the previously-set z-index (250) has any effect
+      as of today (2025-03-12), but for now it feels safest to isolate
+      this change to just Rapid Diffs.
+  */
+  z-index: unset;
+}
+

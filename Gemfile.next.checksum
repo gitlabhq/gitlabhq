@@ -646,6 +646,7 @@
 {"name":"ruby-lsp-rspec","version":"0.1.22","platform":"ruby","checksum":"e982edf5cd6ec1530c3f5fa7e423624ad00532ebeff7fc94e02c7516a9b759c0"},
 {"name":"ruby-magic","version":"0.6.0","platform":"ruby","checksum":"7b2138877b7d23aff812c95564eba6473b74b815ef85beb0eb792e729a2b6101"},
 {"name":"ruby-progressbar","version":"1.11.0","platform":"ruby","checksum":"cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a"},
+{"name":"ruby-saml","version":"1.18.0","platform":"ruby","checksum":"de342a55925fd5ce6114d0802651c324428c0fec26e7fe52bf3a7cfa54dbfa6d"},
 {"name":"ruby-statistics","version":"4.1.0","platform":"ruby","checksum":"7d697abd5dc4e6141d21ecb4165482807564f11bbe154cf1c60a2677b507f2a9"},
 {"name":"ruby2_keywords","version":"0.0.5","platform":"ruby","checksum":"ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef"},
 {"name":"rubyntlm","version":"0.6.3","platform":"ruby","checksum":"5b321456dba3130351f7451f8669f1afa83a0d26fd63cdec285b7b88e667102d"},
