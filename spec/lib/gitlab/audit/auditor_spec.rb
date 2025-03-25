@@ -28,6 +28,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
     before do
       allow(Gitlab::Audit::Type::Definition).to receive(:defined?).and_call_original
       allow(Gitlab::Audit::Type::Definition).to receive(:defined?).with(name).and_return(true)
+      stub_feature_flags(stream_audit_events_from_new_tables: false)
     end
 
     context 'when yaml definition is not defined' do

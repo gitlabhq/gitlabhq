@@ -21165,6 +21165,17 @@ CREATE TABLE project_settings (
     CONSTRAINT check_f9df7bcee2 CHECK ((char_length(cube_api_base_url) <= 512))
 );
 
+CREATE VIEW project_snippets_routes_view AS
+ SELECT sn.id,
+    sh.name AS repository_storage,
+    sr.disk_path,
+    r.path AS path_with_namespace,
+    r.name AS name_with_namespace
+   FROM (((snippets sn
+     JOIN snippet_repositories sr ON (((sn.id = sr.snippet_id) AND ((sn.type)::text = 'ProjectSnippet'::text))))
+     JOIN shards sh ON ((sr.shard_id = sh.id)))
+     JOIN routes r ON (((r.source_id = sn.project_id) AND ((r.source_type)::text = 'Project'::text))));
+
 CREATE TABLE project_states (
     id bigint NOT NULL,
     verification_started_at timestamp with time zone,
@@ -44380,9 +44391,6 @@ ALTER TABLE ONLY terraform_states
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_rails_7a7a2a92de FOREIGN KEY (software_license_id) REFERENCES software_licenses(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_repositories
-    ADD CONSTRAINT fk_rails_7a810d4121 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_scopes
     ADD CONSTRAINT fk_rails_7a9358853b FOREIGN KEY (strategy_id) REFERENCES operations_strategies(id) ON DELETE CASCADE;

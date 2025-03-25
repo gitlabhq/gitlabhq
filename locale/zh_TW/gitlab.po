@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-24 10:56\n"
+"PO-Revision-Date: 2025-03-25 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -6180,7 +6180,7 @@ msgstr ""
 msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
 msgstr ""
 
-msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
+msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services. Amazon Q Developer processes data across all US Regions and makes cross-region API calls when your requests require it."
 msgstr ""
 
 msgid "AmazonQ|I'm generating a fix for this review finding. I'll update this comment when I'm done."
@@ -10525,6 +10525,9 @@ msgstr "您將永久刪除 %{branchName} 分支。"
 msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr "您將永久刪除受保護的 %{branchName} 分支 。"
 
+msgid "Branches|default"
+msgstr ""
+
 msgid "Branches|diverged from upstream"
 msgstr "與上游存在差異"
 
@@ -14804,6 +14807,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Add a GitLab control"
 msgstr ""
 
+msgid "ComplianceFrameworks|Add an external control"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr "添加框架"
 
@@ -14855,9 +14861,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Controls (optional)"
 msgstr ""
 
-msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
-msgstr ""
-
 msgid "ComplianceFrameworks|Create framework"
 msgstr ""
 
@@ -14900,13 +14903,22 @@ msgstr ""
 msgid "ComplianceFrameworks|External"
 msgstr ""
 
+msgid "ComplianceFrameworks|External URL"
+msgstr ""
+
 msgid "ComplianceFrameworks|External control"
+msgstr ""
+
+msgid "ComplianceFrameworks|GitLab controls are pre-defined rules that are configured for GitLab resources. External environmental controls use the API to check the status and details of an external environment."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}policy management page%{linkEnd} to scope policies for this framework."
+msgstr ""
+
+msgid "ComplianceFrameworks|HMAC shared secret"
 msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
@@ -14955,6 +14967,9 @@ msgid "ComplianceFrameworks|Project name"
 msgstr ""
 
 msgid "ComplianceFrameworks|Projects"
+msgstr ""
+
+msgid "ComplianceFrameworks|Provide a shared secret to be used when sending a request for an external check to authenticate request using HMAC."
 msgstr ""
 
 msgid "ComplianceFrameworks|Remove control"
@@ -15016,6 +15031,9 @@ msgstr ""
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
 msgstr "要取消此策略和框架的鏈結，請編輯策略的範圍。"
+
+msgid "ComplianceFrameworks|URL to external system."
+msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr "無法保存此合規性框架，請重試"
@@ -19900,6 +19918,9 @@ msgstr "擷取群組的套件管理器時發生錯誤，請稍後再試。"
 
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
 msgstr "取得此群組的專案時發生錯誤。請稍後再試。"
+
+msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
+msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
 msgstr "這個群組超過了最大的 600 個子群組的數量，我們無法準確地過濾或搜索這個最大數量以上的依賴清單，要查看或過濾這些資訊的子集，請前往子群組的依賴清單。"
@@ -24820,9 +24841,6 @@ msgstr ""
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr ""
 
-msgid "Failed to update environment!"
-msgstr "更新環境失敗！"
-
 msgid "Failed to update framework"
 msgstr "更新架構失敗"
 
@@ -26202,8 +26220,14 @@ msgstr "次要站點"
 msgid "Geo|Select groups to replicate"
 msgstr "選擇要複製的群組"
 
+msgid "Geo|Select replicable type"
+msgstr ""
+
 msgid "Geo|Select shards to replicate"
 msgstr "選擇要複製的碎片"
+
+msgid "Geo|Selected replicable type"
+msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
 msgstr "選擇性 (%{syncLabel})"
@@ -33232,8 +33256,9 @@ msgstr "對於從 %{source} 到 %{target} 的 %{mrId} 的 %{boldStart}流水線%
 msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr ""
 
-msgid "Job|%{searchLength} results found for %{searchTerm}"
-msgstr "依據 %{searchTerm} 找到 %{searchLength} 個結果"
+msgid "Job|%{searchLength} result found for %{searchTerm}"
+msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
+msgstr[0] ""
 
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr "您確定要刪除此作業日誌和產物嗎？"
@@ -34053,6 +34078,9 @@ msgstr "最後使用"
 
 msgid "Last used %{last_used_at} ago"
 msgstr "最後使用 %{last_used_at} 之前"
+
+msgid "Last used date"
+msgstr ""
 
 msgid "Last week"
 msgstr "上星期"
@@ -35592,7 +35620,7 @@ msgstr ""
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role?"
+msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
 msgid "MemberRole|Base role"
@@ -35612,6 +35640,9 @@ msgstr "無法取得可用權限。"
 
 msgid "MemberRole|Could not update role."
 msgstr "無法更新角色。"
+
+msgid "MemberRole|Create member role"
+msgstr ""
 
 msgid "MemberRole|Create role"
 msgstr "建立角色"
@@ -35640,11 +35671,11 @@ msgstr ""
 msgid "MemberRole|Default roles"
 msgstr ""
 
-msgid "MemberRole|Delete custom role?"
-msgstr "刪除自訂角色？"
-
 msgid "MemberRole|Delete role"
 msgstr "刪除角色"
+
+msgid "MemberRole|Delete role?"
+msgstr ""
 
 msgid "MemberRole|Description"
 msgstr "描述"
@@ -35653,6 +35684,9 @@ msgid "MemberRole|Direct users assigned"
 msgstr ""
 
 msgid "MemberRole|Dismiss Planner role promotion"
+msgstr ""
+
+msgid "MemberRole|Edit member role"
 msgstr ""
 
 msgid "MemberRole|Edit role"
@@ -37750,11 +37784,11 @@ msgstr "我最棒的團隊"
 msgid "My company or team"
 msgstr "我的公司或團隊"
 
+msgid "My reaction"
+msgstr ""
+
 msgid "My topic"
 msgstr "我的主題"
-
-msgid "My-Reaction"
-msgstr "我的反應"
 
 msgid "N/A"
 msgstr ""
@@ -38430,6 +38464,9 @@ msgstr "新增主題"
 
 msgid "New users set to external"
 msgstr "新使用者設定為外部"
+
+msgid "New work item"
+msgstr ""
 
 msgid "New! Suggest changes directly"
 msgstr "新特性！直接建議變更內容"
@@ -42534,6 +42571,9 @@ msgstr "流水線觸發令牌"
 msgid "Pipeline triggers"
 msgstr "流水線觸發器"
 
+msgid "PipelineCharts|All branches"
+msgstr ""
+
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr "取回分析資料時發生錯誤"
 
@@ -42864,11 +42904,17 @@ msgstr "您已超出計劃的最大流水線排程數，若要建立新計劃，
 msgid "PipelineSource|API"
 msgstr "API"
 
-msgid "PipelineSource|Any"
+msgid "PipelineSource|Any source"
 msgstr ""
 
 msgid "PipelineSource|Chat"
 msgstr "Chat"
+
+msgid "PipelineSource|Container Registry Push"
+msgstr ""
+
+msgid "PipelineSource|Duo Workflow"
+msgstr ""
 
 msgid "PipelineSource|External"
 msgstr "外部"
@@ -42876,13 +42922,13 @@ msgstr "外部"
 msgid "PipelineSource|External Pull Request"
 msgstr "外部提取要求"
 
-msgid "PipelineSource|External event"
+msgid "PipelineSource|External Pull Request Event"
 msgstr ""
 
 msgid "PipelineSource|Merge Request"
 msgstr "合併請求"
 
-msgid "PipelineSource|Merge request"
+msgid "PipelineSource|Merge Request Event"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -42897,11 +42943,17 @@ msgstr "上級流水線"
 msgid "PipelineSource|Pipeline"
 msgstr "流水線"
 
+msgid "PipelineSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "PipelineSource|Push"
 msgstr "推送"
 
 msgid "PipelineSource|Schedule"
 msgstr "排程"
+
+msgid "PipelineSource|Security Orchestration Policy"
+msgstr ""
 
 msgid "PipelineSource|Trigger"
 msgstr "觸發器"
@@ -43035,8 +43087,9 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr "使用 GitLab CI 實現 \"Hello world\""
 
-msgid "Pipelines|%{counterLabel} more downstream pipelines"
-msgstr "%{counterLabel} 更多下游pipelines"
+msgid "Pipelines|%{counterLabel} more downstream pipeline"
+msgid_plural "Pipelines|%{counterLabel} more downstream pipelines"
+msgstr[0] ""
 
 msgid "Pipelines|Access GitLab University"
 msgstr ""
@@ -47500,9 +47553,6 @@ msgstr "取消保護"
 msgid "ProtectedEnvironments|Users"
 msgstr "使用者"
 
-msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
-msgstr "%{environment_name} 將對開發人員可寫入，確定繼續嗎？"
-
 msgid "ProtectedEnvironment|Add new protected environment"
 msgstr "新增受保護的環境"
 
@@ -47580,9 +47630,6 @@ msgstr ""
 
 msgid "ProtectedEnvironment|Select groups"
 msgstr "選擇群組"
-
-msgid "ProtectedEnvironment|Unprotect"
-msgstr "取消保護"
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
 msgstr "擁有至少開發人員角色的使用者可以對未受保護的環境進行寫入操作，你確定要取消保護 %{environment_name} 嗎？"
@@ -52531,6 +52578,9 @@ msgstr ""
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
 msgstr ""
 
+msgid "SecurityInventory|View vulnerability report"
+msgstr ""
+
 msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
 msgstr ""
 
@@ -57377,9 +57427,6 @@ msgstr "成功取消信任"
 msgid "Successfully updated %{last_updated_timeago}."
 msgstr "已成功更新於%{last_updated_timeago}."
 
-msgid "Successfully updated the environment."
-msgstr "已成功更新環境。"
-
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr "可以一鍵立刻套用的建議程式碼變更功能。試試看！"
 
@@ -60908,9 +60955,6 @@ msgstr ""
 msgid "Todos|Could not merge"
 msgstr "無法合併"
 
-msgid "Todos|Could not restore to-dos."
-msgstr ""
-
 msgid "Todos|Design"
 msgstr "設計"
 
@@ -60972,12 +61016,6 @@ msgid "Todos|Label priority"
 msgstr ""
 
 msgid "Todos|Leave feedback"
-msgstr ""
-
-msgid "Todos|Mark all as done"
-msgstr "標示為全部完成"
-
-msgid "Todos|Mark all as done failed. Try again later."
 msgstr ""
 
 msgid "Todos|Mark as done"

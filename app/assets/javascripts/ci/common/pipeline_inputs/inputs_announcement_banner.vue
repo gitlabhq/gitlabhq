@@ -20,7 +20,7 @@ export default {
         class="gl-mb-4 gl-mt-2"
         :title="s__('Pipelines|Pipeline inputs now available!')"
         variant="introduction"
-        :button-text="__('Learn more')"
+        :button-text="s__('Pipelines|Start using inputs')"
         :button-link="$options.inputDocLink"
         @close="dismiss"
       >

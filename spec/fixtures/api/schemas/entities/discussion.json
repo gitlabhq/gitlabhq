@@ -182,6 +182,12 @@
           "path": {
             "type": "string"
           },
+          "amazon_q_quick_actions_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "commands_changes": {
             "type": "object",
             "additionalProperties": true

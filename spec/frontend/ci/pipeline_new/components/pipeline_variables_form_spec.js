@@ -114,6 +114,9 @@ describe('PipelineVariablesForm', () => {
 
       it('displays the inputs adoption banner', () => {
         expect(findInputsAdoptionBanner().exists()).toBe(true);
+        expect(findInputsAdoptionBanner().props('featureName')).toBe(
+          'pipeline_new_inputs_adoption_banner',
+        );
       });
     });
   });

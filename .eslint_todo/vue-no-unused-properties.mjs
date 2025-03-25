@@ -558,7 +558,6 @@ export default {
     'ee/app/assets/javascripts/vulnerabilities/components/vulnerability_details.vue',
     'ee/app/assets/javascripts/vulnerabilities/components/vulnerability_training.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
-    'ee/app/assets/javascripts/work_items/components/work_item_color.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_multi_select.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_single_select.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_text.vue',

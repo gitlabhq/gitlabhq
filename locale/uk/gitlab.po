@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-24 10:59\n"
+"PO-Revision-Date: 2025-03-25 10:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} до %{end}"
@@ -6717,7 +6717,7 @@ msgstr ""
 msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
 msgstr ""
 
-msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
+msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services. Amazon Q Developer processes data across all US Regions and makes cross-region API calls when your requests require it."
 msgstr ""
 
 msgid "AmazonQ|I'm generating a fix for this review finding. I'll update this comment when I'm done."
@@ -11146,6 +11146,9 @@ msgstr "Ви збираєтесь назавжди видалити гілку %
 msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr "Ви збираєтесь назавжди видалити захищену гілку %{branchName}."
 
+msgid "Branches|default"
+msgstr ""
+
 msgid "Branches|diverged from upstream"
 msgstr "розходиться з upstream"
 
@@ -15446,6 +15449,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Add a GitLab control"
 msgstr ""
 
+msgid "ComplianceFrameworks|Add an external control"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr "Додати фреймворк"
 
@@ -15497,9 +15503,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Controls (optional)"
 msgstr ""
 
-msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
-msgstr ""
-
 msgid "ComplianceFrameworks|Create framework"
 msgstr ""
 
@@ -15542,13 +15545,22 @@ msgstr ""
 msgid "ComplianceFrameworks|External"
 msgstr ""
 
+msgid "ComplianceFrameworks|External URL"
+msgstr ""
+
 msgid "ComplianceFrameworks|External control"
+msgstr ""
+
+msgid "ComplianceFrameworks|GitLab controls are pre-defined rules that are configured for GitLab resources. External environmental controls use the API to check the status and details of an external environment."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}policy management page%{linkEnd} to scope policies for this framework."
+msgstr ""
+
+msgid "ComplianceFrameworks|HMAC shared secret"
 msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
@@ -15597,6 +15609,9 @@ msgid "ComplianceFrameworks|Project name"
 msgstr ""
 
 msgid "ComplianceFrameworks|Projects"
+msgstr ""
+
+msgid "ComplianceFrameworks|Provide a shared secret to be used when sending a request for an external check to authenticate request using HMAC."
 msgstr ""
 
 msgid "ComplianceFrameworks|Remove control"
@@ -15657,6 +15672,9 @@ msgid "ComplianceFrameworks|To link this policy and framework, edit the policy's
 msgstr ""
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
+msgstr ""
+
+msgid "ComplianceFrameworks|URL to external system."
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
@@ -20586,6 +20604,9 @@ msgid "Dependencies|There was an error fetching the package managers for this gr
 msgstr ""
 
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
+msgstr ""
+
+msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
 msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
@@ -25576,9 +25597,6 @@ msgstr ""
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr ""
 
-msgid "Failed to update environment!"
-msgstr "Не вдалося оновити середовище!"
-
 msgid "Failed to update framework"
 msgstr "Не вдалося оновити фреймворк"
 
@@ -26973,8 +26991,14 @@ msgstr ""
 msgid "Geo|Select groups to replicate"
 msgstr "Виберіть групи для реплікації"
 
+msgid "Geo|Select replicable type"
+msgstr ""
+
 msgid "Geo|Select shards to replicate"
 msgstr "Виберіть сегменти для реплікації"
+
+msgid "Geo|Selected replicable type"
+msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
 msgstr ""
@@ -34051,8 +34075,12 @@ msgstr "Завдання%{boldStart}Конвеєр%{boldEnd} %{id} для %{mrId
 msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr ""
 
-msgid "Job|%{searchLength} results found for %{searchTerm}"
-msgstr "%{searchLength} результатів знайдено для %{searchTerm}"
+msgid "Job|%{searchLength} result found for %{searchTerm}"
+msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
@@ -34880,6 +34908,9 @@ msgid "Last used"
 msgstr "Востаннє використано"
 
 msgid "Last used %{last_used_at} ago"
+msgstr ""
+
+msgid "Last used date"
 msgstr ""
 
 msgid "Last week"
@@ -36453,7 +36484,7 @@ msgstr ""
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role?"
+msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
 msgid "MemberRole|Base role"
@@ -36472,6 +36503,9 @@ msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
 msgid "MemberRole|Could not update role."
+msgstr ""
+
+msgid "MemberRole|Create member role"
 msgstr ""
 
 msgid "MemberRole|Create role"
@@ -36501,10 +36535,10 @@ msgstr ""
 msgid "MemberRole|Default roles"
 msgstr ""
 
-msgid "MemberRole|Delete custom role?"
+msgid "MemberRole|Delete role"
 msgstr ""
 
-msgid "MemberRole|Delete role"
+msgid "MemberRole|Delete role?"
 msgstr ""
 
 msgid "MemberRole|Description"
@@ -36514,6 +36548,9 @@ msgid "MemberRole|Direct users assigned"
 msgstr ""
 
 msgid "MemberRole|Dismiss Planner role promotion"
+msgstr ""
+
+msgid "MemberRole|Edit member role"
 msgstr ""
 
 msgid "MemberRole|Edit role"
@@ -38641,11 +38678,11 @@ msgstr ""
 msgid "My company or team"
 msgstr "Моя компанія або команда"
 
+msgid "My reaction"
+msgstr ""
+
 msgid "My topic"
 msgstr "Моя тема"
-
-msgid "My-Reaction"
-msgstr ""
 
 msgid "N/A"
 msgstr ""
@@ -39330,6 +39367,9 @@ msgstr "Нова тема"
 
 msgid "New users set to external"
 msgstr "Нові користувачі є \"зовнішні по замовчанню\""
+
+msgid "New work item"
+msgstr ""
 
 msgid "New! Suggest changes directly"
 msgstr "Новинка! Пропонуйте зміни безпосередньо"
@@ -43467,6 +43507,9 @@ msgstr "Токени запуску конвеєра"
 msgid "Pipeline triggers"
 msgstr "Тригери конвеєру"
 
+msgid "PipelineCharts|All branches"
+msgstr ""
+
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr ""
 
@@ -43797,11 +43840,17 @@ msgstr ""
 msgid "PipelineSource|API"
 msgstr "API"
 
-msgid "PipelineSource|Any"
+msgid "PipelineSource|Any source"
 msgstr ""
 
 msgid "PipelineSource|Chat"
 msgstr "Чат"
+
+msgid "PipelineSource|Container Registry Push"
+msgstr ""
+
+msgid "PipelineSource|Duo Workflow"
+msgstr ""
 
 msgid "PipelineSource|External"
 msgstr "Зовнішній"
@@ -43809,13 +43858,13 @@ msgstr "Зовнішній"
 msgid "PipelineSource|External Pull Request"
 msgstr ""
 
-msgid "PipelineSource|External event"
+msgid "PipelineSource|External Pull Request Event"
 msgstr ""
 
 msgid "PipelineSource|Merge Request"
 msgstr "Запит на злиття"
 
-msgid "PipelineSource|Merge request"
+msgid "PipelineSource|Merge Request Event"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -43830,11 +43879,17 @@ msgstr "Батьківський конвеєр"
 msgid "PipelineSource|Pipeline"
 msgstr "Конвеєр"
 
+msgid "PipelineSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "PipelineSource|Push"
 msgstr ""
 
 msgid "PipelineSource|Schedule"
 msgstr "Розклад"
+
+msgid "PipelineSource|Security Orchestration Policy"
+msgstr ""
 
 msgid "PipelineSource|Trigger"
 msgstr "Тригер"
@@ -43968,8 +44023,12 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr "\"Hello world\" з GitLab CI"
 
-msgid "Pipelines|%{counterLabel} more downstream pipelines"
-msgstr ""
+msgid "Pipelines|%{counterLabel} more downstream pipeline"
+msgid_plural "Pipelines|%{counterLabel} more downstream pipelines"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 msgid "Pipelines|Access GitLab University"
 msgstr ""
@@ -48445,9 +48504,6 @@ msgstr ""
 msgid "ProtectedEnvironments|Users"
 msgstr "Користувачі"
 
-msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
-msgstr "%{environment_name} буде досупне для запису для розробників. Ви впевнені?"
-
 msgid "ProtectedEnvironment|Add new protected environment"
 msgstr "Додати нове захищене середовище"
 
@@ -48525,9 +48581,6 @@ msgstr ""
 
 msgid "ProtectedEnvironment|Select groups"
 msgstr "Виберіть групи"
-
-msgid "ProtectedEnvironment|Unprotect"
-msgstr "Зняти захист"
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
 msgstr ""
@@ -53593,6 +53646,9 @@ msgstr ""
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
 msgstr ""
 
+msgid "SecurityInventory|View vulnerability report"
+msgstr ""
+
 msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
 msgstr ""
 
@@ -58460,9 +58516,6 @@ msgstr ""
 msgid "Successfully updated %{last_updated_timeago}."
 msgstr ""
 
-msgid "Successfully updated the environment."
-msgstr ""
-
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr ""
 
@@ -62099,9 +62152,6 @@ msgstr ""
 msgid "Todos|Could not merge"
 msgstr "Не вдалося об'єднати"
 
-msgid "Todos|Could not restore to-dos."
-msgstr ""
-
 msgid "Todos|Design"
 msgstr "Дизайн"
 
@@ -62163,12 +62213,6 @@ msgid "Todos|Label priority"
 msgstr ""
 
 msgid "Todos|Leave feedback"
-msgstr ""
-
-msgid "Todos|Mark all as done"
-msgstr "Позначити все як виконане"
-
-msgid "Todos|Mark all as done failed. Try again later."
 msgstr ""
 
 msgid "Todos|Mark as done"

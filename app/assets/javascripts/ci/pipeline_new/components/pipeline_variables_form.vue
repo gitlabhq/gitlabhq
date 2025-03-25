@@ -34,6 +34,7 @@ export default {
   learnMorePath: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
+  userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
   components: {
     GlIcon,
     GlButton,
@@ -290,7 +291,10 @@ export default {
     <h4>{{ s__('Pipeline|Variables') }}</h4>
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
     <div v-else>
-      <inputs-adoption-banner v-if="isPipelineInputsFeatureAvailable" />
+      <inputs-adoption-banner
+        v-if="isPipelineInputsFeatureAvailable"
+        :feature-name="$options.userCalloutsFeatureName"
+      />
       <gl-form-group class="gl-mb-0">
         <div
           v-for="(variable, index) in variables"

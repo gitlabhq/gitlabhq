@@ -35,7 +35,7 @@ module QA
           push.branch_name = branch
           push.merge_request_push_options = {
             create: true,
-            merge_when_pipeline_succeeds: true,
+            auto_merge: true,
             title: title
           }
         end
@@ -78,7 +78,7 @@ module QA
           push.branch_name = branch
           push.merge_request_push_options = {
             create: true,
-            merge_when_pipeline_succeeds: true,
+            auto_merge: true,
             title: title
           }
         end
@@ -86,7 +86,7 @@ module QA
         merge_request = project.merge_request_with_title(title)
 
         expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
-        expect(merge_request[:merge_when_pipeline_succeeds]).to be true
+        expect(merge_request[:auto_merge]).to be true
 
         mr = nil
         begin

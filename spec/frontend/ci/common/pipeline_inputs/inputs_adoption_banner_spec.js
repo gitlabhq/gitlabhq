@@ -1,21 +1,37 @@
-import { nextTick } from 'vue';
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 
-describe('InputsAdoptionBanner', () => {
+describe('InputsAdoptionAlert', () => {
   let wrapper;
+  let userCalloutDismissSpy;
 
   const defaultProvide = {
     canViewPipelineEditor: true,
     pipelineEditorPath: '/root/project/-/ci/editor',
   };
 
-  const createComponent = ({ mountFn = shallowMount, provide = {} } = {}) => {
+  const createComponent = ({
+    mountFn = shallowMount,
+    provide = {},
+    shouldShowCallout = true,
+  } = {}) => {
+    userCalloutDismissSpy = jest.fn();
+
     wrapper = mountFn(InputsAdoptionBanner, {
+      propsData: {
+        featureName: 'feature_name',
+      },
       provide: {
         ...defaultProvide,
         ...provide,
+      },
+      stubs: {
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          dismiss: userCalloutDismissSpy,
+          shouldShowCallout,
+        }),
       },
     });
   };
@@ -40,15 +56,6 @@ describe('InputsAdoptionBanner', () => {
           secondaryButtonLink: '/help/ci/yaml/inputs',
           secondaryButtonText: 'Learn more',
         });
-      });
-
-      it('dismisses the alert when dismiss event is emitted', async () => {
-        expect(findAlert().exists()).toBe(true);
-
-        findAlert().vm.$emit('dismiss');
-        await nextTick();
-
-        expect(findAlert().exists()).toBe(false);
       });
     });
 
@@ -76,6 +83,24 @@ describe('InputsAdoptionBanner', () => {
         const alertText = findAlert().text();
 
         expect(alertText).not.toContain('Go to the pipeline editor');
+      });
+    });
+
+    describe('dismissing the alert', () => {
+      it('calls the dismiss callback', () => {
+        createComponent();
+        findAlert().vm.$emit('dismiss');
+
+        expect(userCalloutDismissSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('when the alert has been dismissed', () => {
+      it('does not show the alert', () => {
+        createComponent({
+          shouldShowCallout: false,
+        });
+        expect(findAlert().exists()).toBe(false);
       });
     });
   });

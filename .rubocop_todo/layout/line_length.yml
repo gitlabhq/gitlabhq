@@ -2370,7 +2370,6 @@ Layout/LineLength:
     - 'qa/qa/specs/features/ee/browser_ui/2_plan/multiple_assignees_for_issues/four_assignees_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/2_plan/multiple_assignees_for_issues/more_than_four_assignees_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/merge_request/default_merge_request_template_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/code_owners_with_protected_branch_and_squashed_commits_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/merge_with_code_owner_in_root_group_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/merge_with_code_owner_in_subgroup_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/pull_mirroring_over_http_spec.rb'

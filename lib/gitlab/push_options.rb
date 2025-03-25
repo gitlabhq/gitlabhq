@@ -11,6 +11,7 @@ module Gitlab
           :draft,
           :label,
           :merge_when_pipeline_succeeds,
+          :auto_merge,
           :milestone,
           :remove_source_branch,
           :squash,

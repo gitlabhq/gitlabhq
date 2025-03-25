@@ -12,6 +12,8 @@ import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_ba
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
 
 export default {
+  name: 'PipelineVariablesFormGroup',
+  userCalloutsFeatureName: 'pipeline_schedules_inputs_adoption_banner',
   components: {
     GlButton,
     GlCollapsibleListbox,
@@ -126,7 +128,11 @@ export default {
       class="gl-mb-0"
       :label="s__('Pipeline|Variables')"
     >
-      <inputs-adoption-banner v-if="isPipelineInputsFeatureAvailable" class="gl-mt-0" />
+      <inputs-adoption-banner
+        v-if="isPipelineInputsFeatureAvailable"
+        class="gl-mt-0"
+        :feature-name="$options.userCalloutsFeatureName"
+      />
       <div v-for="(variable, index) in variables" :key="`var-${index}`">
         <div
           v-if="!variable.destroy"

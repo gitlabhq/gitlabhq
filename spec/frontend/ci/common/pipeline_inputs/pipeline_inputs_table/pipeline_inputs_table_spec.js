@@ -2,6 +2,7 @@ import { GlIcon, GlTableLite } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table/pipeline_inputs_table.vue';
 import DynamicValueRenderer from '~/ci/common/pipeline_inputs/pipeline_inputs_table/dynamic_value_renderer.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 
 describe('PipelineInputsTable', () => {
@@ -33,6 +34,7 @@ describe('PipelineInputsTable', () => {
   const findDescriptionCells = () => wrapper.findAllByTestId('input-description-cell');
   const findDynamicValueRenderer = () => wrapper.findComponent(DynamicValueRenderer);
   const findDynamicValueRenderers = () => wrapper.findAllComponents(DynamicValueRenderer);
+  const findHelpIcon = () => wrapper.findComponent(HelpIcon);
   const findRows = () => wrapper.findAllByTestId('input-row');
   const findRequiredAsterisk = () => wrapper.findByTestId('required-asterisk');
   const findMarkdown = () => wrapper.findComponent(Markdown);
@@ -74,6 +76,29 @@ describe('PipelineInputsTable', () => {
 
       // The second input in defaultProps has an empty description
       expect(findDescriptionCells().at(1).findComponent(GlIcon).exists()).toBe(true);
+    });
+  });
+
+  describe('type column', () => {
+    it('renders an info icon if the type is ARRAY', () => {
+      createComponent({
+        props: {
+          inputs: [{ name: 'input1', description: '', type: 'ARRAY', default: [] }],
+        },
+      });
+
+      expect(findHelpIcon().exists()).toBe(true);
+      expect(findHelpIcon().attributes('title')).toBe('Array values must be in JSON format.');
+    });
+
+    it('does not render an info icon if the type is not ARRAY', () => {
+      createComponent({
+        props: {
+          inputs: [{ name: 'input1', description: '', type: 'STRING', default: 'value1' }],
+        },
+      });
+
+      expect(findHelpIcon().exists()).toBe(false);
     });
   });
 

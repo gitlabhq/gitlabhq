@@ -1,16 +1,22 @@
 <script>
-import { GlIcon, GlTableLite } from '@gitlab/ui';
+import { GlIcon, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import DynamicValueRenderer from './dynamic_value_renderer.vue';
 
 export default {
   name: 'PipelineInputsTable',
+  ARRAY_TYPE: 'ARRAY',
   components: {
     DynamicValueRenderer,
     GlIcon,
     GlTableLite,
+    HelpIcon,
     Markdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   fields: [
     {
@@ -47,6 +53,9 @@ export default {
     hasDescription(description) {
       return description?.length;
     },
+    isArrayType(type) {
+      return type === this.$options.ARRAY_TYPE;
+    },
   },
 };
 </script>
@@ -70,6 +79,16 @@ export default {
       <template #cell(description)="{ item }">
         <markdown v-if="hasDescription(item.description)" :markdown="item.description" />
         <gl-icon v-else name="dash" :size="12" />
+      </template>
+      <template #cell(type)="{ item }">
+        <span
+          >{{ item.type }}
+          <help-icon
+            v-if="isArrayType(item.type)"
+            v-gl-tooltip.hover
+            :title="s__('Pipelines|Array values must be in JSON format.')"
+          />
+        </span>
       </template>
       <template #cell(default)="{ item }">
         <dynamic-value-renderer :item="item" @update="handleValueUpdated" />

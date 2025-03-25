@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-24 10:57\n"
+"PO-Revision-Date: 2025-03-25 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -1108,11 +1108,11 @@ msgstr[0] "%{project}には%{number}個のフォークがあります"
 
 msgid "%{project} has %{number} open issue"
 msgid_plural "%{project} has %{number} open issues"
-msgstr[0] ""
+msgstr[0] "%{project}には%{number}件のオープンイシューがあります"
 
 msgid "%{project} has %{number} open merge request"
 msgid_plural "%{project} has %{number} open merge requests"
-msgstr[0] ""
+msgstr[0] "%{project}には%{number}件のオープンのマージリクエストがあります"
 
 msgid "%{project} has %{number} star"
 msgid_plural "%{project} has %{number} stars"
@@ -1481,7 +1481,7 @@ msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_
 msgstr "%{code_tag_start}v*%{code_tag_end}や%{code_tag_start}*-リリース%{wildcards_link_start}のような%{code_tag_end}ワイルドカード%{wildcards_link_end}をサポートしています。"
 
 msgid "'%{group_name}' has been scheduled for deletion and will be deleted on %{date}."
-msgstr ""
+msgstr "「%{group_name}」は%{date}に削除されます。"
 
 msgid "'%{group_name}' has been scheduled for removal on %{removal_time}."
 msgstr "「%{group_name}」は%{removal_time} に削除される予定です。"
@@ -1505,7 +1505,7 @@ msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr "'%{value}'の非アクティブ日数は90以上でなければなりません"
 
 msgid "'ConfluenceService|Your GitLab wiki is still available at %{link_start}%{wiki_url}%{link_end}. To re-enable the link to the GitLab wiki, disable this integration."
-msgstr ""
+msgstr "GitLab Wikiには%{link_start}%{wiki_url}%{link_end}からアクセスできます。GitLab Wikiへのリンクを再び有効にするには、このインテグレーションを無効にしてください。"
 
 msgid "'allow: %{allow}' must be a string"
 msgstr "'allow: %{allow}' は文字列でなければなりません"
@@ -1630,7 +1630,7 @@ msgid "+%{count} more"
 msgstr "さらに%{count}個"
 
 msgid "+%{count} new"
-msgstr ""
+msgstr "+%{count} new"
 
 msgid "+%{more_assignees_count}"
 msgstr "+%{more_assignees_count}"
@@ -1716,7 +1716,7 @@ msgid "/"
 msgstr "/"
 
 msgid "/ %{maxCount}"
-msgstr ""
+msgstr "/ %{maxCount}"
 
 msgid "/day"
 msgstr "/day"
@@ -6180,8 +6180,8 @@ msgstr "GitLab Duo with Amazon Qの切断が完了しました"
 msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
 msgstr "GitLab Duo with Amazon Qが利用可能になりました！🎉"
 
-msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
-msgstr "「変更を保存」を選択すると、GitLabがAmazon Q用のサービスアカウントを作成し、その認証情報をAWSに送信することを理解しています。Amazon Q デベロッパー機能のGitLab Duo with Amazon Qの一部としての使用は、%{helpStart}AWSカスタマーアグリーメント%{helpEnd}またはAWSとの間でかわされたAWSサービス使用に関するその他の書面による規約によって管理されます。"
+msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services. Amazon Q Developer processes data across all US Regions and makes cross-region API calls when your requests require it."
+msgstr ""
 
 msgid "AmazonQ|I'm generating a fix for this review finding. I'll update this comment when I'm done."
 msgstr "このレビュー検出結果に対する修正を生成しています。完了次第、このコメントを更新します。"
@@ -6367,7 +6367,7 @@ msgid "An error occurred creating the new branch."
 msgstr "新しいブランチの作成中にエラーが発生しました。"
 
 msgid "An error occurred deleting the group. Please refresh the page to try again."
-msgstr ""
+msgstr "グループの削除中にエラーが発生しました。ページを更新して、もう一度やり直してください。"
 
 msgid "An error occurred editing the blob"
 msgstr "blob の編集中にエラーが発生しました。"
@@ -6827,7 +6827,7 @@ msgid "Analytics settings"
 msgstr "分析設定"
 
 msgid "AnalyticsDashboards|Failed to load namespace metadata."
-msgstr ""
+msgstr "ネームスペースのメタデータの読み込みに失敗しました。"
 
 msgid "Analytics| Last updated: %{recordedAt}"
 msgstr "最終更新日: %{recordedAt}"
@@ -7014,7 +7014,7 @@ msgid "Analytics|Invalid visualization configuration"
 msgstr "無効な可視化設定"
 
 msgid "Analytics|Last updated: %{recordedAt}"
-msgstr ""
+msgstr "最終更新日: %{recordedAt}"
 
 msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr "%{docsLinkStart}AIインパクト分析%{docsLinkEnd}および%{subscriptionLinkStart}GitLab Duoシート%{subscriptionLinkEnd}の詳細を確認してください。"
@@ -7104,7 +7104,7 @@ msgid "Analytics|Usage breakdown"
 msgstr "使用状況の内訳"
 
 msgid "Analytics|Usage data is a cumulative count and is updated monthly."
-msgstr ""
+msgstr "使用状況データは累積値であり、毎月更新されます。"
 
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr "サポートされている分析レポートにClickHouseを使用します。%{link_start}ClickHouseが設定されている%{link_end}場合に使用できます。"
@@ -10524,6 +10524,9 @@ msgstr "ブランチ%{branchName}を永久に削除しようとしています�
 
 msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr "保護ブランチ%{branchName}を完全に削除しようとしています。"
+
+msgid "Branches|default"
+msgstr ""
 
 msgid "Branches|diverged from upstream"
 msgstr "upstreamから分岐"
@@ -14804,6 +14807,9 @@ msgstr "アクション"
 msgid "ComplianceFrameworks|Add a GitLab control"
 msgstr ""
 
+msgid "ComplianceFrameworks|Add an external control"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr "フレームワークを追加"
 
@@ -14855,9 +14861,6 @@ msgstr "コントロール"
 msgid "ComplianceFrameworks|Controls (optional)"
 msgstr ""
 
-msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
-msgstr "コントロールとは、GitLabリソースに設定された事前定義のルールです。"
-
 msgid "ComplianceFrameworks|Create framework"
 msgstr "フレームワークの作成"
 
@@ -14900,7 +14903,13 @@ msgstr "コンプライアンス要件コントロールのデータ取得中に
 msgid "ComplianceFrameworks|External"
 msgstr ""
 
+msgid "ComplianceFrameworks|External URL"
+msgstr ""
+
 msgid "ComplianceFrameworks|External control"
+msgstr ""
+
+msgid "ComplianceFrameworks|GitLab controls are pre-defined rules that are configured for GitLab resources. External environmental controls use the API to check the status and details of an external environment."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
@@ -14908,6 +14917,9 @@ msgstr "このフレームワークにプロジェクトを適用するには、
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}policy management page%{linkEnd} to scope policies for this framework."
 msgstr "このフレームワークのポリシーの範囲を設定するには、%{linkStart}ポリシー管理ページ%{linkEnd}に移動します。"
+
+msgid "ComplianceFrameworks|HMAC shared secret"
+msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
 msgstr "無効な形式"
@@ -14956,6 +14968,9 @@ msgstr "プロジェクト名"
 
 msgid "ComplianceFrameworks|Projects"
 msgstr "プロジェクト"
+
+msgid "ComplianceFrameworks|Provide a shared secret to be used when sending a request for an external check to authenticate request using HMAC."
+msgstr ""
 
 msgid "ComplianceFrameworks|Remove control"
 msgstr "コントロールの削除"
@@ -15016,6 +15031,9 @@ msgstr "このポリシーとフレームワークをリンクするには、ポ
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
 msgstr "このポリシーとフレームワークのリンクを解除するには、ポリシーのスコープを編集してください。"
+
+msgid "ComplianceFrameworks|URL to external system."
+msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr "このコンプライアンスフレームワークを保存できません。もう一度やり直してください"
@@ -19900,6 +19918,9 @@ msgstr "このグループのパッケージマネージャーの取得中にエ
 
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
 msgstr "このグループのプロジェクトの取得中にエラーが発生しました。後でもう一度やり直してください。"
+
+msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
+msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
 msgstr "このグループは最大サブグループ数600を超えています。この最大値をうわまわる依存関係リストを正確にフィルタリングまたは検索することはできません。この情報のサブセットを表示またはフィルタするには、サブグループの依存関係リストに移動します。"
@@ -24820,9 +24841,6 @@ msgstr "コンプライアンス要件の更新に失敗しました"
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr ""
 
-msgid "Failed to update environment!"
-msgstr "環境の更新に失敗しました。"
-
 msgid "Failed to update framework"
 msgstr "フレームワークの更新に失敗しました"
 
@@ -26202,8 +26220,14 @@ msgstr "セカンダリサイト"
 msgid "Geo|Select groups to replicate"
 msgstr "複製するグループを選択"
 
+msgid "Geo|Select replicable type"
+msgstr ""
+
 msgid "Geo|Select shards to replicate"
 msgstr "複製するシャードを選択"
+
+msgid "Geo|Selected replicable type"
+msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
 msgstr "選択的 (%{syncLabel})"
@@ -33232,8 +33256,9 @@ msgstr "%{source}から%{target}への%{mrId}用の%{boldStart}パイプライ�
 msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr "%{rawLinkStart}raw%{rawLinkEnd}または%{fullLinkStart}完全なログ%{fullLinkEnd}を表示します。"
 
-msgid "Job|%{searchLength} results found for %{searchTerm}"
-msgstr "%{searchTerm}に対して見つかった%{searchLength}件の結果"
+msgid "Job|%{searchLength} result found for %{searchTerm}"
+msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
+msgstr[0] ""
 
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr "本当にこのジョブのログとアーティファクトを削除しますか?"
@@ -34053,6 +34078,9 @@ msgstr "前回使用した日"
 
 msgid "Last used %{last_used_at} ago"
 msgstr "前回%{last_used_at}に使用しました"
+
+msgid "Last used date"
+msgstr ""
 
 msgid "Last week"
 msgstr "先週"
@@ -35592,8 +35620,8 @@ msgstr ""
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role?"
-msgstr "本当にこのカスタムロールを削除しますか？"
+msgid "MemberRole|Are you sure you want to delete this role?"
+msgstr ""
 
 msgid "MemberRole|Base role"
 msgstr "基本のロール"
@@ -35612,6 +35640,9 @@ msgstr "利用可能な権限を取得できませんでした。"
 
 msgid "MemberRole|Could not update role."
 msgstr "ロールを更新できませんでした。"
+
+msgid "MemberRole|Create member role"
+msgstr ""
 
 msgid "MemberRole|Create role"
 msgstr "ロールを作成する"
@@ -35640,11 +35671,11 @@ msgstr "デフォルト"
 msgid "MemberRole|Default roles"
 msgstr "デフォルトロール"
 
-msgid "MemberRole|Delete custom role?"
-msgstr "カスタムロールを削除しますか?"
-
 msgid "MemberRole|Delete role"
 msgstr "ロールを削除"
+
+msgid "MemberRole|Delete role?"
+msgstr ""
 
 msgid "MemberRole|Description"
 msgstr "説明"
@@ -35654,6 +35685,9 @@ msgstr "アサインされたダイレクトユーザー"
 
 msgid "MemberRole|Dismiss Planner role promotion"
 msgstr "プランナーロールプロモーションを却下"
+
+msgid "MemberRole|Edit member role"
+msgstr ""
 
 msgid "MemberRole|Edit role"
 msgstr "ロールを編集"
@@ -37750,11 +37784,11 @@ msgstr "マイグループ"
 msgid "My company or team"
 msgstr "自分の会社やチーム"
 
+msgid "My reaction"
+msgstr ""
+
 msgid "My topic"
 msgstr "マイトピック"
-
-msgid "My-Reaction"
-msgstr "自分のリアクション"
 
 msgid "N/A"
 msgstr ""
@@ -38430,6 +38464,9 @@ msgstr "新規トピック"
 
 msgid "New users set to external"
 msgstr "新規ユーザーを外部ユーザーに設定"
+
+msgid "New work item"
+msgstr ""
 
 msgid "New! Suggest changes directly"
 msgstr "新機能! 変更を直接提案"
@@ -42534,6 +42571,9 @@ msgstr "パイプライントリガートークン"
 msgid "Pipeline triggers"
 msgstr "パイプラインのトリガー"
 
+msgid "PipelineCharts|All branches"
+msgstr ""
+
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr "分析データの取得時にエラーが発生しました"
 
@@ -42864,11 +42904,17 @@ msgstr "現在のプランのパイプラインスケジュールの最大数を
 msgid "PipelineSource|API"
 msgstr "API"
 
-msgid "PipelineSource|Any"
+msgid "PipelineSource|Any source"
 msgstr ""
 
 msgid "PipelineSource|Chat"
 msgstr "チャット"
+
+msgid "PipelineSource|Container Registry Push"
+msgstr ""
+
+msgid "PipelineSource|Duo Workflow"
+msgstr ""
 
 msgid "PipelineSource|External"
 msgstr "外部"
@@ -42876,13 +42922,13 @@ msgstr "外部"
 msgid "PipelineSource|External Pull Request"
 msgstr "外部のプルリクエスト"
 
-msgid "PipelineSource|External event"
+msgid "PipelineSource|External Pull Request Event"
 msgstr ""
 
 msgid "PipelineSource|Merge Request"
 msgstr "マージリクエスト"
 
-msgid "PipelineSource|Merge request"
+msgid "PipelineSource|Merge Request Event"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -42897,11 +42943,17 @@ msgstr "親パイプライン"
 msgid "PipelineSource|Pipeline"
 msgstr "パイプライン"
 
+msgid "PipelineSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "PipelineSource|Push"
 msgstr "プッシュ"
 
 msgid "PipelineSource|Schedule"
 msgstr "スケジュール"
+
+msgid "PipelineSource|Security Orchestration Policy"
+msgstr ""
 
 msgid "PipelineSource|Trigger"
 msgstr "トリガー"
@@ -43035,8 +43087,9 @@ msgstr "このリストでは100件のジョブしか表示できません。す
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr "GitLabCIで\"Hello world\""
 
-msgid "Pipelines|%{counterLabel} more downstream pipelines"
-msgstr "%{counterLabel}件のダウンストリームパイプライン"
+msgid "Pipelines|%{counterLabel} more downstream pipeline"
+msgid_plural "Pipelines|%{counterLabel} more downstream pipelines"
+msgstr[0] ""
 
 msgid "Pipelines|Access GitLab University"
 msgstr "GitLab Universityへのアクセス"
@@ -47500,9 +47553,6 @@ msgstr "保護の解除"
 msgid "ProtectedEnvironments|Users"
 msgstr "ユーザー"
 
-msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
-msgstr "%{environment_name}はデベロッパー権限のユーザーが書き込み可能になります。本当によろしいですか ?"
-
 msgid "ProtectedEnvironment|Add new protected environment"
 msgstr "新しい保護環境の追加"
 
@@ -47580,9 +47630,6 @@ msgstr "環境ティアを選択"
 
 msgid "ProtectedEnvironment|Select groups"
 msgstr "グループの選択"
-
-msgid "ProtectedEnvironment|Unprotect"
-msgstr "保護を解除"
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
 msgstr "デベロッパー以上のロールを持つユーザーは、保護されていない環境に書き込むことができます。本当に%{environment_name}の保護を解除しますか?"
@@ -49627,7 +49674,7 @@ msgid "Role promotions"
 msgstr "ロールの昇格"
 
 msgid "Roles"
-msgstr ""
+msgstr "ロール"
 
 msgid "Roles and permissions"
 msgstr "ロールと権限"
@@ -52529,6 +52576,9 @@ msgid "SecurityInventory|Security inventory"
 msgstr ""
 
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
+msgstr ""
+
+msgid "SecurityInventory|View vulnerability report"
 msgstr ""
 
 msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
@@ -57377,9 +57427,6 @@ msgstr "信頼が正常に解除されました"
 msgid "Successfully updated %{last_updated_timeago}."
 msgstr "%{last_updated_timeago}を正常に更新しました。"
 
-msgid "Successfully updated the environment."
-msgstr "環境を正しく更新できました。"
-
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr "コード変更を提案しましょう。ワンクリックですぐに適用されます。"
 
@@ -59863,7 +59910,7 @@ msgid "This issue cannot be made public because it belongs to a confidential epi
 msgstr "このイシューは非公開のエピックに属しているため公開できません。"
 
 msgid "This issue is confidential and should only be visible to team members with at least the Planner role."
-msgstr "このイシューは非公開で、少なくともプランナーロールを持つチームメンバーのみに表示されます。"
+msgstr "イシューを非公開にし、プランナー以上のロールを持つチームメンバーにのみ表示します。"
 
 msgid "This issue is currently blocked by the following issues:"
 msgstr "このイシューは現在、次のイシューによってブロックされています。:"
@@ -60908,9 +60955,6 @@ msgstr ""
 msgid "Todos|Could not merge"
 msgstr "マージできませんでした"
 
-msgid "Todos|Could not restore to-dos."
-msgstr "Todoが復元できません。"
-
 msgid "Todos|Design"
 msgstr "デザイン"
 
@@ -60973,12 +61017,6 @@ msgstr "ラベルの優先度"
 
 msgid "Todos|Leave feedback"
 msgstr "フィードバックを送信"
-
-msgid "Todos|Mark all as done"
-msgstr "すべてを完了としてマーク"
-
-msgid "Todos|Mark all as done failed. Try again later."
-msgstr "すべてを完了としてマークすることができませんでした。しばらくしてもう一度やり直してください。"
 
 msgid "Todos|Mark as done"
 msgstr "完了としてマーク"

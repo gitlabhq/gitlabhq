@@ -1,17 +1,7 @@
-import {
-  GlForm,
-  GlFormSelect,
-  GlFormInput,
-  GlToggle,
-  GlFormTextarea,
-  GlTab,
-  GlLink,
-  GlModal,
-} from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { GlForm, GlFormInput, GlToggle, GlFormTextarea, GlTab, GlLink, GlModal } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
@@ -40,7 +30,6 @@ describe('AlertsSettingsForm', () => {
   });
 
   const createComponent = async ({
-    mountFn = mount,
     props = {},
     multiIntegrations = true,
     currentIntegration = null,
@@ -59,30 +48,28 @@ describe('AlertsSettingsForm', () => {
       mockResolvers,
     );
 
-    wrapper = extendedWrapper(
-      mountFn(AlertsSettingsForm, {
-        apolloProvider,
-        propsData: {
-          loading: false,
-          canAddIntegration: true,
-          ...props,
+    wrapper = mountExtended(AlertsSettingsForm, {
+      apolloProvider,
+      propsData: {
+        loading: false,
+        canAddIntegration: true,
+        ...props,
+      },
+      provide: {
+        multiIntegrations,
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
         },
-        provide: {
-          multiIntegrations,
-        },
-        mocks: {
-          $toast: {
-            show: mockToastShow,
-          },
-        },
-      }),
-    );
+      },
+    });
 
     await waitForPromises();
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findSelect = () => wrapper.findComponent(GlFormSelect);
+  const findSelect = () => wrapper.find('select');
   const findFormFields = () => wrapper.findAllComponents(GlFormInput);
   const findFormToggle = () => wrapper.findComponent(GlToggle);
   const findSamplePayloadSection = () => wrapper.findByTestId('sample-payload-section');
@@ -131,9 +118,9 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
-      await createComponent({ mountFn: shallowMount, props: { canAddIntegration: false } });
+      await createComponent({ props: { canAddIntegration: false } });
 
-      expect(findSelect().attributes('disabled')).toBeDefined();
+      expect(findSelect().attributes('disabled')).toBe('disabled');
       expect(findMultiSupportText().exists()).toBe(true);
     });
 

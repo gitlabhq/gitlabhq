@@ -204,7 +204,6 @@ The following metrics are available:
 | `gitlab_rack_attack_throttle_limit` | Gauge | 17.6 | Reports the maximum number of requests that a client can make before Rack Attack throttles them. | `event_name` |
 | `gitlab_rack_attack_throttle_period_seconds` | Gauge | 17.6 | Reports the duration over which requests for a client are counted before Rack Attack throttles them. | `event_name` |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio` | Histogram | 17.6 | Utilization ratio of a throttle in GitLab Application Rate Limiter. | `throttle_key`, `peek`, `feature_category` |
-| `search_zoekt_task_processing_queue_size` | Gauge | 17.9 | Number of tasks waiting to be processed by Zoekt. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184641) in GitLab 17.10 and planned for removal in 18.0. Use `gitlab-exporter` instead. | `node_name` |
 | `gitlab_dependency_path_cte_real_duration_seconds` | Histogram | 17.10 |  Duration in seconds spent resolving the ancestor dependency paths for a given component. | |
 | `dependency_path_cte_paths_found` | Counter | 17.10 |  Counts the number of ancestor dependency paths found for a given dependency. | `max_depth_reached`, `cyclic` |
 

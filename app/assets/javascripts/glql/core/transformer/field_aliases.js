@@ -1,3 +1,5 @@
+import { glqlWorkItemsFeatureFlagEnabled } from '../../utils/feature_flags';
+
 const fieldAliases = {
   assignee: 'assignees',
   closed: 'closedAt',
@@ -14,7 +16,7 @@ const fieldAliases = {
   approver: 'approvedBy',
 };
 
-if (gon.features?.glqlWorkItems) {
+if (glqlWorkItemsFeatureFlagEnabled()) {
   Object.assign(fieldAliases, {
     epic: 'parent',
     start: 'startDate',

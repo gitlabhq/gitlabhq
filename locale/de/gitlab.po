@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-24 10:57\n"
+"PO-Revision-Date: 2025-03-25 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} bis %{end}"
@@ -6359,8 +6359,8 @@ msgstr ""
 msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
 msgstr "GitLab Duo mit Amazon Q ist einsatzbereit! 🎉"
 
-msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
-msgstr "Ich verstehe, dass GitLab durch Auswahl von „Änderungen speichern“ ein Dienstkonto für Amazon Q erstellt und die dazugehörigen Zugangsdaten an AWS sendet. Die Nutzung der Funktionen von Amazon Q Developer im Rahmen von GitLab Duo mit Amazon Q unterliegt der %{helpStart}AWS Kundenvereinbarung%{helpEnd} oder einer anderen schriftlichen Vereinbarung zwischen dir und AWS, die deine Nutzung von AWS-Diensten regelt."
+msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services. Amazon Q Developer processes data across all US Regions and makes cross-region API calls when your requests require it."
+msgstr ""
 
 msgid "AmazonQ|I'm generating a fix for this review finding. I'll update this comment when I'm done."
 msgstr "Ich generiere eine Korrektur für dieses Review-Ergebnis. Ich werde diesen Kommentar aktualisieren, wenn ich fertig bin."
@@ -10732,6 +10732,9 @@ msgstr "Du bist dabei, den Branch %{branchName} dauerhaft zu löschen."
 msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr "Du bist im Begriff, den geschützten Branch %{branchName} dauerhaft zu löschen."
 
+msgid "Branches|default"
+msgstr ""
+
 msgid "Branches|diverged from upstream"
 msgstr "weicht vom Upstream ab"
 
@@ -15018,6 +15021,9 @@ msgstr "Aktion"
 msgid "ComplianceFrameworks|Add a GitLab control"
 msgstr ""
 
+msgid "ComplianceFrameworks|Add an external control"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr "Framework hinzufügen"
 
@@ -15069,9 +15075,6 @@ msgstr "Kontrollen"
 msgid "ComplianceFrameworks|Controls (optional)"
 msgstr "Kontrollen (optional)"
 
-msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
-msgstr "Kontrollen sind vordefinierte Regeln, die für GitLab-Ressourcen konfiguriert sind."
-
 msgid "ComplianceFrameworks|Create framework"
 msgstr "Framework erstellen"
 
@@ -15114,7 +15117,13 @@ msgstr "Fehler beim Abrufen von Kontrolldaten zu Konformitätsanforderungen. Bit
 msgid "ComplianceFrameworks|External"
 msgstr ""
 
+msgid "ComplianceFrameworks|External URL"
+msgstr ""
+
 msgid "ComplianceFrameworks|External control"
+msgstr ""
+
+msgid "ComplianceFrameworks|GitLab controls are pre-defined rules that are configured for GitLab resources. External environmental controls use the API to check the status and details of an external environment."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
@@ -15122,6 +15131,9 @@ msgstr "Navigiere zur %{linkStart}Projektseite im Konformitäts-Center%{linkEnd}
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}policy management page%{linkEnd} to scope policies for this framework."
 msgstr "Navigiere zur %{linkStart}Richtlinienverwaltungsseite%{linkEnd}, um Richtlinien für dieses Framework festzulegen."
+
+msgid "ComplianceFrameworks|HMAC shared secret"
+msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
 msgstr "Ungültiges Format"
@@ -15170,6 +15182,9 @@ msgstr "Projektname"
 
 msgid "ComplianceFrameworks|Projects"
 msgstr "Projekte"
+
+msgid "ComplianceFrameworks|Provide a shared secret to be used when sending a request for an external check to authenticate request using HMAC."
+msgstr ""
 
 msgid "ComplianceFrameworks|Remove control"
 msgstr "Kontrolle entfernen"
@@ -15230,6 +15245,9 @@ msgstr "Bearbeite den Geltungsbereich der Richtlinie, um diese Richtlinie und da
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
 msgstr "Bearbeite den Geltungsbereich der Richtlinie, um diese Richtlinie und das Framework wieder zu trennen."
+
+msgid "ComplianceFrameworks|URL to external system."
+msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr "Dieses Compliance-Framework kann nicht gespeichert werden. Bitte versuche es erneut"
@@ -20129,6 +20147,9 @@ msgstr "Beim Abrufen der Paketmanager für diese Gruppe ist ein Fehler aufgetret
 
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
 msgstr "Beim Abrufen der Projekte für diese Gruppe ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+
+msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
+msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
 msgstr "Diese Gruppe überschreitet die maximale Anzahl von 600 Untergruppen. Wir können die Abhängigkeitsliste oberhalb dieses Maximums nicht genau filtern oder durchsuchen. Um eine Teilmenge dieser Informationen anzuzeigen oder zu filtern, wechsle zur Abhängigkeitsliste einer Untergruppe."
@@ -25072,9 +25093,6 @@ msgstr "Aktualisierung der Konformitätsanforderung fehlgeschlagen"
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr "Aktualisierung der Kontrolle zur Konformitätsanforderung fehlgeschlagen. Fehler: %{error_message}"
 
-msgid "Failed to update environment!"
-msgstr "Umgebung konnte nicht aktualisiert werden!"
-
 msgid "Failed to update framework"
 msgstr "Framework konnte nicht aktualisiert werden"
 
@@ -26459,8 +26477,14 @@ msgstr "Sekundärer Standort"
 msgid "Geo|Select groups to replicate"
 msgstr "Wähle zu replizierende Gruppen"
 
+msgid "Geo|Select replicable type"
+msgstr ""
+
 msgid "Geo|Select shards to replicate"
 msgstr "Wähle zu replizierende Fragmente"
+
+msgid "Geo|Selected replicable type"
+msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
 msgstr "Selektiv (%{syncLabel})"
@@ -33505,8 +33529,10 @@ msgstr "%{boldStart}Pipeline%{boldEnd} %{id} für %{mrId} mit %{source} in %{tar
 msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr "%{rawLinkStart}Rohdaten%{rawLinkEnd} oder %{fullLinkStart}vollständiges Protokoll anzeigen%{fullLinkEnd}."
 
-msgid "Job|%{searchLength} results found for %{searchTerm}"
-msgstr "%{searchLength} Ergebnisse gefunden für %{searchTerm}"
+msgid "Job|%{searchLength} result found for %{searchTerm}"
+msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr "Möchtest du dieses Jobprotokoll und die Artefakte wirklich löschen?"
@@ -34329,6 +34355,9 @@ msgstr "Zuletzt verwendet"
 
 msgid "Last used %{last_used_at} ago"
 msgstr "Zuletzt verwendet vor %{last_used_at}"
+
+msgid "Last used date"
+msgstr ""
 
 msgid "Last week"
 msgstr "Letzte Woche"
@@ -35879,8 +35908,8 @@ msgstr ""
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role?"
-msgstr "Möchtest du diese benutzerdefinierte Rolle wirklich löschen?"
+msgid "MemberRole|Are you sure you want to delete this role?"
+msgstr ""
 
 msgid "MemberRole|Base role"
 msgstr "Basisrolle"
@@ -35899,6 +35928,9 @@ msgstr "Verfügbare Berechtigungen konnten nicht abgerufen werden."
 
 msgid "MemberRole|Could not update role."
 msgstr "Rolle konnte nicht aktualisiert werden."
+
+msgid "MemberRole|Create member role"
+msgstr ""
 
 msgid "MemberRole|Create role"
 msgstr "Rolle erstellen"
@@ -35927,11 +35959,11 @@ msgstr "Standard"
 msgid "MemberRole|Default roles"
 msgstr "Standardrollen"
 
-msgid "MemberRole|Delete custom role?"
-msgstr "Benutzerdefinierte Rolle löschen?"
-
 msgid "MemberRole|Delete role"
 msgstr "Rolle löschen"
+
+msgid "MemberRole|Delete role?"
+msgstr ""
 
 msgid "MemberRole|Description"
 msgstr "Beschreibung"
@@ -35941,6 +35973,9 @@ msgstr "Direkte Benutzer(innen) zugewiesen"
 
 msgid "MemberRole|Dismiss Planner role promotion"
 msgstr "Promotion zur Rolle „Planer(in)“ verwerfen"
+
+msgid "MemberRole|Edit member role"
+msgstr ""
 
 msgid "MemberRole|Edit role"
 msgstr "Rolle bearbeiten"
@@ -38047,11 +38082,11 @@ msgstr "Meine großartige Gruppe"
 msgid "My company or team"
 msgstr "Mein Unternehmen oder mein Team"
 
+msgid "My reaction"
+msgstr ""
+
 msgid "My topic"
 msgstr "Mein Thema"
-
-msgid "My-Reaction"
-msgstr "Meine Reaktion"
 
 msgid "N/A"
 msgstr ""
@@ -38730,6 +38765,9 @@ msgstr "Neues Thema"
 
 msgid "New users set to external"
 msgstr "Neue Benutzer(innen) auf extern gesetzt"
+
+msgid "New work item"
+msgstr ""
 
 msgid "New! Suggest changes directly"
 msgstr "Neu! Änderungen direkt vorschlagen"
@@ -42845,6 +42883,9 @@ msgstr "Pipeline-Trigger-Token"
 msgid "Pipeline triggers"
 msgstr "Pipeline-Trigger"
 
+msgid "PipelineCharts|All branches"
+msgstr ""
+
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr "Beim Abrufen der Analysedaten ist ein Fehler aufgetreten"
 
@@ -43175,11 +43216,17 @@ msgstr "Du hast die maximale Anzahl an Pipeline-Zeitplänen für deinen Tarif ü
 msgid "PipelineSource|API"
 msgstr "API"
 
-msgid "PipelineSource|Any"
+msgid "PipelineSource|Any source"
 msgstr ""
 
 msgid "PipelineSource|Chat"
 msgstr "Chat"
+
+msgid "PipelineSource|Container Registry Push"
+msgstr ""
+
+msgid "PipelineSource|Duo Workflow"
+msgstr ""
 
 msgid "PipelineSource|External"
 msgstr "Extern"
@@ -43187,13 +43234,13 @@ msgstr "Extern"
 msgid "PipelineSource|External Pull Request"
 msgstr "Externer Pull Request"
 
-msgid "PipelineSource|External event"
+msgid "PipelineSource|External Pull Request Event"
 msgstr ""
 
 msgid "PipelineSource|Merge Request"
 msgstr "Merge Request"
 
-msgid "PipelineSource|Merge request"
+msgid "PipelineSource|Merge Request Event"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -43208,11 +43255,17 @@ msgstr "Übergeordnete Pipeline"
 msgid "PipelineSource|Pipeline"
 msgstr "Pipeline"
 
+msgid "PipelineSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "PipelineSource|Push"
 msgstr "Push"
 
 msgid "PipelineSource|Schedule"
 msgstr "Zeitplan"
+
+msgid "PipelineSource|Security Orchestration Policy"
+msgstr ""
 
 msgid "PipelineSource|Trigger"
 msgstr "Trigger"
@@ -43346,8 +43399,10 @@ msgstr "Die Liste kann nur 100 Jobs anzeigen. %{linkStart}Gehe zur Detailseite 
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr "„Hello World“ mit GitLab CI"
 
-msgid "Pipelines|%{counterLabel} more downstream pipelines"
-msgstr "%{counterLabel} weitere Downstream-Pipelines"
+msgid "Pipelines|%{counterLabel} more downstream pipeline"
+msgid_plural "Pipelines|%{counterLabel} more downstream pipelines"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Pipelines|Access GitLab University"
 msgstr "Zugriff auf GitLab University"
@@ -47815,9 +47870,6 @@ msgstr "Schutz entfernen"
 msgid "ProtectedEnvironments|Users"
 msgstr "Benutzer(innen)"
 
-msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
-msgstr "%{environment_name} wird für Entwickler(innen) änderbar sein. Bist du sicher?"
-
 msgid "ProtectedEnvironment|Add new protected environment"
 msgstr "Neue geschützte Umgebung hinzufügen"
 
@@ -47895,9 +47947,6 @@ msgstr "Umgebungsstufe auswählen"
 
 msgid "ProtectedEnvironment|Select groups"
 msgstr "Gruppen auswählen"
-
-msgid "ProtectedEnvironment|Unprotect"
-msgstr "Schutz aufheben"
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
 msgstr "Benutzer(innen) mit mindestens der Rolle „Entwickler“ können in ungeschützte Umgebungen schreiben. Möchtest du den Schutz von %{environment_name} wirklich aufheben?"
@@ -52885,6 +52934,9 @@ msgstr ""
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
 msgstr ""
 
+msgid "SecurityInventory|View vulnerability report"
+msgstr ""
+
 msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
 msgstr ""
 
@@ -57738,9 +57790,6 @@ msgstr "Erfolgreich als nicht vertrauenswürdig eingestuft"
 msgid "Successfully updated %{last_updated_timeago}."
 msgstr "%{last_updated_timeago} erfolgreich aktualisiert."
 
-msgid "Successfully updated the environment."
-msgstr "Die Umgebung wurde erfolgreich aktualisiert."
-
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr "Schlage Codeänderungen vor, die mit einem Klick angewendet werden können. Probiere es aus!"
 
@@ -61305,9 +61354,6 @@ msgstr "Alle löschen"
 msgid "Todos|Could not merge"
 msgstr "Konnte nicht zusammengeführt werden"
 
-msgid "Todos|Could not restore to-dos."
-msgstr "Aufgaben konnten nicht wiederhergestellt werden."
-
 msgid "Todos|Design"
 msgstr "Gestaltung&nbsp;"
 
@@ -61370,12 +61416,6 @@ msgstr "Priorität des Labels"
 
 msgid "Todos|Leave feedback"
 msgstr "Feedback hinterlassen"
-
-msgid "Todos|Mark all as done"
-msgstr "Alle als erledigt markieren"
-
-msgid "Todos|Mark all as done failed. Try again later."
-msgstr "Alle als erledigt markieren ist fehlgeschlagen. Versuche es später erneut."
 
 msgid "Todos|Mark as done"
 msgstr "Als erledigt markieren"

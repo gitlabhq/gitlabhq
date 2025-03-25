@@ -101,7 +101,9 @@ module Users
       # EE-only
       pipl_compliance_alert: 98,
       new_merge_request_dashboard_welcome: 99,
-      pipeline_inputs_announcement_banner: 100
+      pipeline_inputs_announcement_banner: 100,
+      pipeline_new_inputs_adoption_banner: 101,
+      pipeline_schedules_inputs_adoption_banner: 102
     }
 
     validates :feature_name,

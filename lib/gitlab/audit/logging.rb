@@ -4,22 +4,21 @@ module Gitlab
   module Audit
     module Logging
       ENTITY_TYPE_TO_CLASS = {
-        'User' => AuditEvents::UserAuditEvent,
-        'Project' => AuditEvents::ProjectAuditEvent,
-        'Group' => AuditEvents::GroupAuditEvent,
-        'Gitlab::Audit::InstanceScope' => AuditEvents::InstanceAuditEvent
+        'User' => ::AuditEvents::UserAuditEvent,
+        'Project' => ::AuditEvents::ProjectAuditEvent,
+        'Group' => ::AuditEvents::GroupAuditEvent,
+        'Gitlab::Audit::InstanceScope' => ::AuditEvents::InstanceAuditEvent
       }.freeze
 
       def log_to_new_tables(events, audit_operation)
-        return if events.blank?
+        return [] if events.blank?
 
-        events.group_by(&:entity_type).each do |entity_type, entity_events|
+        events.group_by(&:entity_type).flat_map do |entity_type, entity_events|
           log_events(entity_type, entity_events)
         end
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: audit_operation)
-
-        nil
+        []
       end
 
       private
@@ -27,11 +26,11 @@ module Gitlab
       def log_events(entity_type, entity_events)
         event_class = ENTITY_TYPE_TO_CLASS[entity_type.to_s]
         if entity_events.one?
-          event_class.create!(build_event_attributes(entity_events.first))
+          [event_class.create!(build_event_attributes(entity_events.first))]
         else
-          entity_events.map { |event| event_class.new(build_event_attributes(event)) }.then do |events|
-            event_class.bulk_insert!(events)
-          end
+          new_events = entity_events.map { |event| event_class.new(build_event_attributes(event)) }
+          event_ids = event_class.bulk_insert!(new_events, returns: :ids)
+          event_class.id_in(event_ids)
         end
       end
 

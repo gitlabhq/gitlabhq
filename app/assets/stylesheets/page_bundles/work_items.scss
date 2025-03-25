@@ -105,20 +105,6 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-field-value {
-  .work-item-overview & {
-    max-width: 65%;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  &.gl-form-select {
-    &:hover,
-    &:focus {
-      box-shadow: $work-item-field-inset-shadow;
-    }
-  }
-}
-
 // There is no props to set the font weight class in GlToggle
 // Here, we are overriding the font weight
 .work-item-dropdown-toggle {

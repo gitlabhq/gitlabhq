@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-24 10:57\n"
+"PO-Revision-Date: 2025-03-25 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " Dal giorno %{start} al giorno %{end}"
@@ -6359,8 +6359,8 @@ msgstr "GitLab Duo con Amazon Q è stato disconnesso correttamente"
 msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
 msgstr "GitLab Duo con Amazon Q è pronto! 🎉"
 
-msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
-msgstr "Ho compreso che selezionando Salva modifiche, GitLab crea un account di servizio per Amazon Q e invia le sue credenziali ad AWS. L'uso delle funzionalità di Amazon Q Developer come parte di GitLab Duo con Amazon Q è regolato dal %{helpStart}Contratto Clienti AWS%{helpEnd} o da un altro accordo scritto tra te e AWS che regola l'uso dei servizi AWS."
+msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services. Amazon Q Developer processes data across all US Regions and makes cross-region API calls when your requests require it."
+msgstr ""
 
 msgid "AmazonQ|I'm generating a fix for this review finding. I'll update this comment when I'm done."
 msgstr "Sto generando una correzione per questo risultato di revisione. Aggiornerò questo commento quando avrò finito."
@@ -10732,6 +10732,9 @@ msgstr ""
 msgid "Branches|You're about to permanently delete the protected branch %{branchName}."
 msgstr ""
 
+msgid "Branches|default"
+msgstr ""
+
 msgid "Branches|diverged from upstream"
 msgstr ""
 
@@ -15018,6 +15021,9 @@ msgstr "Azione"
 msgid "ComplianceFrameworks|Add a GitLab control"
 msgstr ""
 
+msgid "ComplianceFrameworks|Add an external control"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
@@ -15069,9 +15075,6 @@ msgstr "Controlli"
 msgid "ComplianceFrameworks|Controls (optional)"
 msgstr "Controlli (opzionali)"
 
-msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
-msgstr "I controlli sono regole predefinite e configurate per le risorse di GitLab."
-
 msgid "ComplianceFrameworks|Create framework"
 msgstr "Crea framework"
 
@@ -15114,7 +15117,13 @@ msgstr "Errore durante il recupero dei dati relativi ai controlli dei requisiti 
 msgid "ComplianceFrameworks|External"
 msgstr "Esterni"
 
+msgid "ComplianceFrameworks|External URL"
+msgstr ""
+
 msgid "ComplianceFrameworks|External control"
+msgstr ""
+
+msgid "ComplianceFrameworks|GitLab controls are pre-defined rules that are configured for GitLab resources. External environmental controls use the API to check the status and details of an external environment."
 msgstr ""
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
@@ -15122,6 +15131,9 @@ msgstr "Vai al/alla %{linkStart}centro di conformità/pagina del progetto%{linkE
 
 msgid "ComplianceFrameworks|Go to the %{linkStart}policy management page%{linkEnd} to scope policies for this framework."
 msgstr "Vai alla %{linkStart}pagina di gestione delle policy%{linkEnd} per definire l'ambito delle policy per questo framework."
+
+msgid "ComplianceFrameworks|HMAC shared secret"
+msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
 msgstr "Formato non valido"
@@ -15170,6 +15182,9 @@ msgstr "Nome del progetto"
 
 msgid "ComplianceFrameworks|Projects"
 msgstr "Progetti"
+
+msgid "ComplianceFrameworks|Provide a shared secret to be used when sending a request for an external check to authenticate request using HMAC."
+msgstr ""
 
 msgid "ComplianceFrameworks|Remove control"
 msgstr "Rimuovi controllo"
@@ -15230,6 +15245,9 @@ msgstr "Per collegare questa policy e questo framework, modifica l'ambito della 
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
 msgstr "Per annullare il collegamento di questo criterio e questo framework, modifica l'ambito del criterio."
+
+msgid "ComplianceFrameworks|URL to external system."
+msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr "Impossibile salvare questo framework di conformità. Riprova"
@@ -20129,6 +20147,9 @@ msgstr "Si è verificato un errore durante il recupero dei gestori di pacchetti 
 
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
 msgstr "Si è verificato un errore durante il recupero dei progetti per questo gruppo. Riprova più tardi."
+
+msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
+msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
 msgstr "Questo gruppo supera il numero massimo di 600 sottogruppi. Non è possibile filtrare o cercare accuratamente l'elenco delle dipendenze quando questo numero viene superato. Per visualizzare o filtrare un sottoinsieme di queste informazioni, vai all'elenco delle dipendenze di un sottogruppo."
@@ -25072,9 +25093,6 @@ msgstr "Impossibile aggiornare il requisito di conformità"
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr "Impossibile aggiornare il controllo dei requisiti di conformità. Errore: %{error_message}"
 
-msgid "Failed to update environment!"
-msgstr "Impossibile aggiornare l'ambiente."
-
 msgid "Failed to update framework"
 msgstr ""
 
@@ -26459,8 +26477,14 @@ msgstr ""
 msgid "Geo|Select groups to replicate"
 msgstr "Seleziona gruppi da replicare"
 
+msgid "Geo|Select replicable type"
+msgstr ""
+
 msgid "Geo|Select shards to replicate"
 msgstr "Seleziona partizioni da replicare"
+
+msgid "Geo|Selected replicable type"
+msgstr ""
 
 msgid "Geo|Selective (%{syncLabel})"
 msgstr ""
@@ -33505,8 +33529,10 @@ msgstr "%{boldStart}Pipeline%{boldEnd} %{id} per %{mrId} con %{source} in %{targ
 msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr "%{rawLinkStart}Visualizza log non elaborato%{rawLinkEnd} o %{fullLinkStart}completo%{fullLinkEnd}."
 
-msgid "Job|%{searchLength} results found for %{searchTerm}"
-msgstr "%{searchLength} risultati trovati per %{searchTerm}"
+msgid "Job|%{searchLength} result found for %{searchTerm}"
+msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr "Vuoi cancellare questo log dei job e gli artefatti?"
@@ -34329,6 +34355,9 @@ msgstr ""
 
 msgid "Last used %{last_used_at} ago"
 msgstr "Ultimo utilizzo %{last_used_at} fa"
+
+msgid "Last used date"
+msgstr ""
 
 msgid "Last week"
 msgstr "Settimana scorsa"
@@ -35879,8 +35908,8 @@ msgstr "Aggiunto da %{role}"
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role?"
-msgstr "Eliminare questo ruolo personalizzato?"
+msgid "MemberRole|Are you sure you want to delete this role?"
+msgstr ""
 
 msgid "MemberRole|Base role"
 msgstr "Ruolo di base"
@@ -35899,6 +35928,9 @@ msgstr "Impossibile recuperare le autorizzazioni disponibili."
 
 msgid "MemberRole|Could not update role."
 msgstr "Impossibile aggiornare il ruolo."
+
+msgid "MemberRole|Create member role"
+msgstr ""
 
 msgid "MemberRole|Create role"
 msgstr "Crea ruolo"
@@ -35927,11 +35959,11 @@ msgstr "Predefinito"
 msgid "MemberRole|Default roles"
 msgstr "Ruoli predefiniti"
 
-msgid "MemberRole|Delete custom role?"
-msgstr "Eliminare il ruolo personalizzato?"
-
 msgid "MemberRole|Delete role"
 msgstr "Elimina ruolo"
+
+msgid "MemberRole|Delete role?"
+msgstr ""
 
 msgid "MemberRole|Description"
 msgstr "Descrizione"
@@ -35941,6 +35973,9 @@ msgstr "Utenti diretti assegnati"
 
 msgid "MemberRole|Dismiss Planner role promotion"
 msgstr "Ignora la promozione a ruolo di Pianificatore"
+
+msgid "MemberRole|Edit member role"
+msgstr ""
 
 msgid "MemberRole|Edit role"
 msgstr "Modifica ruolo"
@@ -38047,11 +38082,11 @@ msgstr "Il mio fantastico gruppo"
 msgid "My company or team"
 msgstr "La mia azienda o il mio team"
 
+msgid "My reaction"
+msgstr ""
+
 msgid "My topic"
 msgstr "Il mio argomento"
-
-msgid "My-Reaction"
-msgstr "La mia reazione"
 
 msgid "N/A"
 msgstr "N/D"
@@ -38730,6 +38765,9 @@ msgstr "Nuovo argomento"
 
 msgid "New users set to external"
 msgstr "Nuovi utenti impostati su esterni"
+
+msgid "New work item"
+msgstr ""
 
 msgid "New! Suggest changes directly"
 msgstr "Novità! Suggerisci direttamente le modifiche"
@@ -42845,6 +42883,9 @@ msgstr "Token trigger della pipeline"
 msgid "Pipeline triggers"
 msgstr ""
 
+msgid "PipelineCharts|All branches"
+msgstr ""
+
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr "Si è verificato un errore durante il recupero dei dati di analisi"
 
@@ -43175,11 +43216,17 @@ msgstr "Hai superato il numero massimo di pianificazioni delle pipeline per il p
 msgid "PipelineSource|API"
 msgstr "API"
 
-msgid "PipelineSource|Any"
+msgid "PipelineSource|Any source"
 msgstr ""
 
 msgid "PipelineSource|Chat"
 msgstr "Chat"
+
+msgid "PipelineSource|Container Registry Push"
+msgstr ""
+
+msgid "PipelineSource|Duo Workflow"
+msgstr ""
 
 msgid "PipelineSource|External"
 msgstr "Esterna"
@@ -43187,13 +43234,13 @@ msgstr "Esterna"
 msgid "PipelineSource|External Pull Request"
 msgstr "Richiesta di pull esterno"
 
-msgid "PipelineSource|External event"
+msgid "PipelineSource|External Pull Request Event"
 msgstr ""
 
 msgid "PipelineSource|Merge Request"
 msgstr "Richiesta di merge"
 
-msgid "PipelineSource|Merge request"
+msgid "PipelineSource|Merge Request Event"
 msgstr ""
 
 msgid "PipelineSource|On-Demand DAST Scan"
@@ -43208,11 +43255,17 @@ msgstr "Pipeline principale"
 msgid "PipelineSource|Pipeline"
 msgstr "Pipeline"
 
+msgid "PipelineSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "PipelineSource|Push"
 msgstr "Push"
 
 msgid "PipelineSource|Schedule"
 msgstr "Programma"
+
+msgid "PipelineSource|Security Orchestration Policy"
+msgstr ""
 
 msgid "PipelineSource|Trigger"
 msgstr "Trigger"
@@ -43346,8 +43399,10 @@ msgstr "L'elenco può visualizzare solo 100 job. Per visualizzarli tutti, %{link
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
-msgid "Pipelines|%{counterLabel} more downstream pipelines"
-msgstr "Altre %{counterLabel} pipeline downstream"
+msgid "Pipelines|%{counterLabel} more downstream pipeline"
+msgid_plural "Pipelines|%{counterLabel} more downstream pipelines"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Pipelines|Access GitLab University"
 msgstr "Accedi a GitLab University"
@@ -47815,9 +47870,6 @@ msgstr "Rimuovi protezione"
 msgid "ProtectedEnvironments|Users"
 msgstr "Utenti"
 
-msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
-msgstr ""
-
 msgid "ProtectedEnvironment|Add new protected environment"
 msgstr "Aggiungi un nuovo ambiente protetto"
 
@@ -47895,9 +47947,6 @@ msgstr "Seleziona livello dell'ambiente"
 
 msgid "ProtectedEnvironment|Select groups"
 msgstr "Seleziona gruppi"
-
-msgid "ProtectedEnvironment|Unprotect"
-msgstr ""
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"
 msgstr "Gli utenti con almeno il ruolo di sviluppatore possono scrivere in ambienti non protetti. Vuoi rimuovere la protezione da %{environment_name}?"
@@ -52885,6 +52934,9 @@ msgstr "Inventario di sicurezza"
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
 msgstr "Visualizza la copertura di sicurezza e le vulnerabilità per tutti i progetti in questo gruppo. I dati vengono aggiornati e potrebbero mostrare un ritardo fino a 24 ore."
 
+msgid "SecurityInventory|View vulnerability report"
+msgstr ""
+
 msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
 msgstr ""
 
@@ -57738,9 +57790,6 @@ msgstr "Utente ritenuto non attendibile"
 msgid "Successfully updated %{last_updated_timeago}."
 msgstr "Aggiornamento effettuato correttamente %{last_updated_timeago}."
 
-msgid "Successfully updated the environment."
-msgstr "L'ambiente è stato aggiornato correttamente."
-
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"
 msgstr "Suggerisci modifiche al codice che possano essere applicate immediatamente con un semplice clic. Fai una prova!"
 
@@ -61305,9 +61354,6 @@ msgstr "Cancella tutto"
 msgid "Todos|Could not merge"
 msgstr "Impossibile unire"
 
-msgid "Todos|Could not restore to-dos."
-msgstr "Impossibile ripristinare le attività da svolgere."
-
 msgid "Todos|Design"
 msgstr "Grafica"
 
@@ -61370,12 +61416,6 @@ msgstr "Priorità dell'etichetta"
 
 msgid "Todos|Leave feedback"
 msgstr "Lascia un feedback"
-
-msgid "Todos|Mark all as done"
-msgstr "Segna tutto come fatto"
-
-msgid "Todos|Mark all as done failed. Try again later."
-msgstr "Contrassegna tutto come completato non riuscito. Riprova più tardi."
 
 msgid "Todos|Mark as done"
 msgstr "Contrassegna come completato"

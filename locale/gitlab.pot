@@ -6302,6 +6302,9 @@ msgstr ""
 msgid "AmazonQ|Amazon Q will be turned off for all groups, subgroups, and projects, even if they have previously enabled it."
 msgstr ""
 
+msgid "AmazonQ|An error occurred. Please try again later."
+msgstr ""
+
 msgid "AmazonQ|An unexpected error occurred while disconnecting Amazon Q. Please see the browser console log for more details."
 msgstr ""
 
@@ -6312,6 +6315,9 @@ msgid "AmazonQ|Apply changes to this merge request based on the comments (Beta)"
 msgstr ""
 
 msgid "AmazonQ|Are you sure? Removing the ARN will disconnect Amazon Q from GitLab and all related features will stop working."
+msgstr ""
+
+msgid "AmazonQ|Ask GitLab Duo with Amazon Q to suggest a solution for this issue"
 msgstr ""
 
 msgid "AmazonQ|Audience"
@@ -6465,6 +6471,9 @@ msgid "AmazonQ|Sorry, I'm not able to complete the request at this moment. Pleas
 msgstr ""
 
 msgid "AmazonQ|Status"
+msgstr ""
+
+msgid "AmazonQ|Suggest a fix"
 msgstr ""
 
 msgid "AmazonQ|This field is required"
@@ -26195,6 +26204,9 @@ msgstr ""
 msgid "Geo|%{label} should be between 1-999"
 msgstr ""
 
+msgid "Geo|%{noBoldStart}Next sync retry:%{noBoldEnd} Retry #%{retryCount} scheduled %{timeAgo}"
+msgstr ""
+
 msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
@@ -26297,6 +26309,9 @@ msgstr ""
 msgid "Geo|Edit your search and try again."
 msgstr ""
 
+msgid "Geo|Error: %{message}"
+msgstr ""
+
 msgid "Geo|Errors:"
 msgstr ""
 
@@ -26369,6 +26384,9 @@ msgstr ""
 msgid "Geo|Last event ID processed"
 msgstr ""
 
+msgid "Geo|Last synced: %{timeAgo}"
+msgstr ""
+
 msgid "Geo|Last time verified"
 msgstr ""
 
@@ -26385,6 +26403,9 @@ msgid "Geo|Make everyone on your team more productive regardless of their locati
 msgstr ""
 
 msgid "Geo|Minimum interval in days"
+msgstr ""
+
+msgid "Geo|Missing on Primary!"
 msgstr ""
 
 msgid "Geo|Model record: %{modelRecordId}"
@@ -26424,6 +26445,9 @@ msgid "Geo|Object Storage replication"
 msgstr ""
 
 msgid "Geo|Offline"
+msgstr ""
+
+msgid "Geo|Pending"
 msgstr ""
 
 msgid "Geo|Primary"
@@ -26472,6 +26496,9 @@ msgid "Geo|Replicating"
 msgstr ""
 
 msgid "Geo|Replication Details"
+msgstr ""
+
+msgid "Geo|Replication information"
 msgstr ""
 
 msgid "Geo|Replication slot WAL"
@@ -26550,6 +26577,12 @@ msgid "Geo|Site name should be between 1 and 255 characters"
 msgstr ""
 
 msgid "Geo|Site's status was updated %{timeAgo}."
+msgstr ""
+
+msgid "Geo|Started"
+msgstr ""
+
+msgid "Geo|Status: %{badge}"
 msgstr ""
 
 msgid "Geo|Storage config"
@@ -43467,6 +43500,9 @@ msgstr ""
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
+msgid "Pipelines|Array values must be in JSON format."
+msgstr ""
+
 msgid "Pipelines|Auto DevOps"
 msgstr ""
 
@@ -43642,6 +43678,9 @@ msgid "Pipelines|Scheduled"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
+msgstr ""
+
+msgid "Pipelines|Start using inputs"
 msgstr ""
 
 msgid "Pipelines|Start with a migration plan"
@@ -44274,6 +44313,9 @@ msgstr ""
 msgid "Please provide a name."
 msgstr ""
 
+msgid "Please provide a shared secret."
+msgstr ""
+
 msgid "Please provide a valid URL."
 msgstr ""
 
@@ -44302,9 +44344,6 @@ msgid "Please select a Jira project"
 msgstr ""
 
 msgid "Please select a valid target branch"
-msgstr ""
-
-msgid "Please select a valid target branch."
 msgstr ""
 
 msgid "Please select and add a member"
@@ -52776,6 +52815,9 @@ msgstr ""
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."
 msgstr ""
 
+msgid "SecurityConfiguration|This project does not contain any archived vulnerabilities yet."
+msgstr ""
+
 msgid "SecurityConfiguration|Toggle Container Scanning for Registry"
 msgstr ""
 
@@ -54761,6 +54803,9 @@ msgid "Select a target type"
 msgstr ""
 
 msgid "Select a template repository"
+msgstr ""
+
+msgid "Select a valid target branch."
 msgstr ""
 
 msgid "Select action"
@@ -57217,6 +57262,12 @@ msgstr ""
 msgid "StatusChecks|API to check"
 msgstr ""
 
+msgid "StatusChecks|Edit secret"
+msgstr ""
+
+msgid "StatusChecks|Enter a new value to overwrite the current secret."
+msgstr ""
+
 msgid "StatusChecks|Examples: QA, Security, Performance."
 msgstr ""
 
@@ -57242,6 +57293,9 @@ msgid "StatusCheck|%{failed} failed"
 msgstr ""
 
 msgid "StatusCheck|%{pending} pending"
+msgstr ""
+
+msgid "StatusCheck|A secret is currently configured for this status check."
 msgstr ""
 
 msgid "StatusCheck|API to check"
@@ -57271,9 +57325,6 @@ msgstr ""
 msgid "StatusCheck|Examples: QA, Security."
 msgstr ""
 
-msgid "StatusCheck|External API is already in use by another status check."
-msgstr ""
-
 msgid "StatusCheck|External API is already in use."
 msgstr ""
 
@@ -57283,7 +57334,7 @@ msgstr ""
 msgid "StatusCheck|HMAC Shared Secret"
 msgstr ""
 
-msgid "StatusCheck|Invoke an external API as part of the pipeline process."
+msgid "StatusCheck|Invoke an external API as part of the pipeline."
 msgstr ""
 
 msgid "StatusCheck|Name already exists."
@@ -57298,7 +57349,7 @@ msgstr ""
 msgid "StatusCheck|Please provide a valid URL."
 msgstr ""
 
-msgid "StatusCheck|Provide a shared secret to be used when sending a request for a status check to authenticate request using HMAC."
+msgid "StatusCheck|Provide a shared secret. This secret is used to authenticate requests for a status check using HMAC."
 msgstr ""
 
 msgid "StatusCheck|Service name"
@@ -57325,7 +57376,7 @@ msgstr ""
 msgid "StatusCheck|Target branch"
 msgstr ""
 
-msgid "StatusCheck|There is currently a secret configured for this status check."
+msgid "StatusCheck|The specified external API is already in use by another status check."
 msgstr ""
 
 msgid "StatusCheck|URL parameters are hidden for security reasons. For details of URL parameters, see the configuration for the status check service."

@@ -52,7 +52,7 @@ describe('ESLint Script', () => {
 
       expect(process.exitCode).toBe(0);
       // Should not show any messages on success
-      expect(console.log).toHaveBeenCalledTimes(1);
+      expect(console.log).toHaveBeenCalledTimes(0);
     });
 
     it('sets process.exitCode to non-zero when eslint fails', () => {
@@ -63,7 +63,7 @@ describe('ESLint Script', () => {
 
       expect(process.exitCode).toBe(1);
       // Should show info messages on failure
-      expect(console.log).toHaveBeenCalledTimes(2);
+      expect(console.log).toHaveBeenCalledTimes(1);
     });
 
     it('shows GraphQL schema message in console when eslint fails', () => {
@@ -72,16 +72,6 @@ describe('ESLint Script', () => {
       mockChildProcess.emit('close', 2);
 
       expect(console.log).toHaveBeenCalledWith(expect.stringContaining('GraphQL schema dump'));
-    });
-
-    it('shows circular dependency message in console', () => {
-      runEslint();
-
-      mockChildProcess.emit('close', 0);
-
-      expect(console.log).toHaveBeenCalledWith(
-        expect.stringContaining('Circular dependency check'),
-      );
     });
 
     it('passes all CLI arguments to eslint', () => {

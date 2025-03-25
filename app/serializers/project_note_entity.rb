@@ -25,3 +25,5 @@ class ProjectNoteEntity < NoteEntity
     delete_attachment_project_note_path(note.project, note)
   end
 end
+
+ProjectNoteEntity.prepend_mod_with('ProjectNoteEntity')

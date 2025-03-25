@@ -490,6 +490,10 @@ project_authorizations:
   - table: users
     column: user_id
     on_delete: async_delete
+project_repositories:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 project_security_exclusions:
   - table: projects
     column: project_id

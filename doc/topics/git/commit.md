@@ -138,7 +138,8 @@ Git push options can perform actions for merge requests while pushing changes:
 | `merge_request.create`                       | Create a new merge request for the pushed branch. |
 | `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch, such as: `git push -o merge_request.target=branch_name`. |
 | `merge_request.target_project=<project>`     | Set the target of the merge request to a particular upstream project, such as: `git push -o merge_request.target_project=path/to/project`. Introduced in [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132475). |
-| `merge_request.merge_when_pipeline_succeeds` | Set the merge request to [merge when its pipeline succeeds](../../user/project/merge_requests/auto_merge.md). |
+| `merge_request.merge_when_pipeline_succeeds` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185368) in GitLab 17.11 favor of the `auto_merge` option. |
+| `merge_request.auto_merge` | Set the merge request to [auto merge](../../user/project/merge_requests/auto_merge.md). |
 | `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged. |
 | `merge_request.squash`                       | Set the merge request to squash all commits into a single commit on merge. Introduced in [GitLab 17.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158778). |
 | `merge_request.title="<title>"`              | Set the title of the merge request. For example: `git push -o merge_request.title="The title I want"`. |
@@ -182,7 +183,7 @@ multiple `-o` (or `--push-option`) flags. This command creates a
 new merge request, targets a branch (`my-target-branch`), and sets auto-merge:
 
 ```shell
-git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.merge_when_pipeline_succeeds
+git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.auto_merge
 ```
 
 ### Create Git aliases for pushing
@@ -192,12 +193,12 @@ you use the same push options frequently, create Git aliases for them.
 Git aliases are command-line shortcuts for longer Git commands.
 
 To create and use a Git alias for the
-[merge when pipeline succeeds Git push option](#push-options-for-merge-requests):
+[auto merge Git push option](#push-options-for-merge-requests):
 
 1. In your terminal window, run this command:
 
    ```shell
-   git config --global alias.mwps "push -o merge_request.create -o merge_request.target=main -o merge_request.merge_when_pipeline_succeeds"
+   git config --global alias.mwps "push -o merge_request.create -o merge_request.target=main -o merge_request.auto_merge"
    ```
 
 1. To use the alias to push a local branch that targets the default branch (`main`)

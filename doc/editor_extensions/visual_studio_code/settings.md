@@ -79,7 +79,7 @@ This extension also integrates with some commands provided by VS Code:
 ## Extension settings
 
 To learn how to change settings in VS Code, see the VS Code documentation for
-[User and Workspace Settings](https://code.visualstudio.com/docs/getstarted/settings).
+[User and Workspace Settings](https://code.visualstudio.com/docs/configure/settings).
 
 If you use self-signed certificates to connect to your GitLab instance, read the community-contributed
 [settings for self-signed certificates](troubleshooting.md#configure-self-signed-certificates).

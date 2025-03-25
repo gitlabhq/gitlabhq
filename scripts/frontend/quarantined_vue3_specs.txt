@@ -79,7 +79,6 @@ spec/frontend/admin/abuse_reports/components/abuse_reports_filtered_search_bar_s
 spec/frontend/admin/broadcast_messages/components/base_spec.js
 spec/frontend/admin/signup_restrictions/components/signup_checkbox_spec.js
 spec/frontend/alert_management/components/alert_management_table_spec.js
-spec/frontend/alerts_settings/components/alerts_settings_form_spec.js
 spec/frontend/analytics/shared/components/date_ranges_dropdown_spec.js
 spec/frontend/boards/board_list_spec.js
 spec/frontend/boards/components/board_content_sidebar_spec.js

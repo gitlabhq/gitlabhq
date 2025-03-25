@@ -20,6 +20,8 @@ export default {
     Suggestions,
     DuoCodeReviewFeedback: () =>
       import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    AmazonQFixButton: () =>
+      import('ee_component/merge_requests/components/amazon_q/amazon_q_fix_button.vue'),
   },
   directives: {
     SafeHtml,
@@ -237,6 +239,7 @@ export default {
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />
+    <amazon-q-fix-button :note="note" class="gl-mt-3" />
     <!-- eslint-disable vue/no-mutating-props -->
     <textarea
       v-if="canEdit"
