@@ -1,6 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/inputs_table_skeleton_loader.vue';
+import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 
 describe('InputsTableSkeletonLoader', () => {
   let wrapper;

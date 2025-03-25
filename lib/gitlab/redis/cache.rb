@@ -6,6 +6,8 @@ module Gitlab
       CACHE_NAMESPACE = 'cache:gitlab'
 
       class << self
+        # Configuration options for Rails.cache, not Gitlab::Redis::Cache
+        #
         # Full list of options:
         # https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html#method-c-new
         # pool argument event not documented in the link above is handled by RedisCacheStore see:

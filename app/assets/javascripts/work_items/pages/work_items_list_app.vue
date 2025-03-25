@@ -98,7 +98,7 @@ const LabelToken = () =>
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
-const LocalBoard = () => import('./local_board.vue');
+const LocalBoard = () => import('./local_board/local_board.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,

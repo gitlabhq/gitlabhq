@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { getSkeletonRectProps } from './utils';
+import { getSkeletonRectProps } from '../utils';
 
 export default {
   name: 'InputsTableSkeletonLoader',

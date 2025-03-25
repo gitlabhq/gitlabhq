@@ -793,6 +793,14 @@ There are two processes that automatically lock tables:
 - The `Database::MonitorLockedTablesWorker` locks tables if needed.
   This can be disabled by the `lock_tables_in_monitoring` feature flag.
 
+`Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables` compares the list of tables before and after each database migration runs. Then
+it locks the newly added tables on the relevant database. This does not
+cover all cases. Because some migrations need
+to re-create the tables within the same transactional migration. For example: To convert standard unpartitioned tables into partitioned tables.
+See [this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184636).
+Such migrations leave the re-created tables unlocked. But the daily cron job of `Database::MonitorLockedTablesWorker` takes care of
+alerting about this on Slack, and then automatically locks these tables for writes.
+
 ### Manually lock tables
 
 If you need to manually lock a table, use a database migration.

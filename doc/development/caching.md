@@ -194,6 +194,12 @@ This is well-documentation in the [Rails guides](https://guides.rubyonrails.org/
 This sets the Time To Live (TTL) for the cache entry, and is the single most useful
 (and most commonly used) cache option. This is supported in most Rails caching helpers.
 
+The TTL, if not set with `expires_in`,
+[defaults to 8 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/a3e435da6e9f7c98dc05eccb1caa03c1aed5a2a8/lib/gitlab/redis/cache.rb#L26).
+Consider using an 8 hour TTL for general caching, as this matches a workday and would mean that a user would generally only have one cache-miss per day for the same content.
+
+When writing large amounts of data, consider using a shorter expiry to decrease its impact on the memory usage.
+
 ##### `race_condition_ttl`
 
 This option prevents multiple uncached hits for a key at the same time.
@@ -202,6 +208,12 @@ then sets the new cache value.
 
 Used when a cache key is under very heavy load to prevent multiple simultaneous
 writes, but should be set to a low value, such as 10 seconds.
+
+#### Rails cache behavior on GitLab
+
+`Rails.cache` uses Redis as the store.
+GitLab instances, like GitLab.com, can configure Redis for [key eviction](https://redis.io/docs/latest/develop/reference/eviction/).
+See the [Redis development guide](../development/redis.md#caching).
 
 ### When to use HTTP caching
 

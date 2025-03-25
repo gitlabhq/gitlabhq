@@ -3,8 +3,8 @@ import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import InputsTableSkeletonLoader from './inputs_table_skeleton_loader.vue';
-import PipelineInputsTable from './pipeline_inputs_table.vue';
+import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skeleton_loader.vue';
+import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
 
 export default {

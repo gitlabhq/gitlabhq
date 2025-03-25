@@ -9,7 +9,7 @@ title: Redis development guidelines
 
 GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 
-- Caching (mostly via `Rails.cache`).
+- [Caching](#caching) (mostly via `Rails.cache`).
 - As a job processing queue with [Sidekiq](sidekiq/_index.md).
 - To manage the shared application state.
 - To store CI trace chunks.
@@ -231,7 +231,24 @@ and make sure that the fix for them works as expected.
 
 - [Database query recorder](database/query_recorder.md)
 
-## Utility classes
+## Caching
+
+The Redis instance used by `Rails.cache` can be
+[configured with a key eviction policy](https://docs.gitlab.com/omnibus/settings/redis/#setting-the-redis-cache-instance-as-an-lru),
+generally LRU, where the "least recently used" cache items are evicted (deleted) when a memory limit is reached.
+
+See GitLab.com's
+[key eviction configuration](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/blob/f7c1494f5546b12fe12352590590b8a883aa6388/roles/gprd-base-db-redis-cluster-cache.json#L54)
+for its Redis instance used by `Rails.cache`, `redis-cluster-cache`. This Redis instance should not reach its
+[max memory limit](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/blob/f7c1494f5546b12fe12352590590b8a883aa6388/roles/gprd-base-db-redis-cluster-cache.json#L54)
+because key eviction at maxmemory comes at the cost of latency while eviction is taking place, see [this issue](https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/1601) for details. See [current memory usage for `redis-cluster-cache`](https://dashboards.gitlab.net/goto/1BcjmqhNR?orgId=1).
+
+As data in this cache can disappear earlier than its set expiration time,
+use `Rails.cache` for data that is truly cache-like and ephemeral.
+
+For data that should be reliably persisted in Redis rather than cached, you can use [`Gitlab::Redis::SharedState`](#gitlabrediscachesharedstatequeues).
+
+### Utility classes
 
 We have some extra classes to help with specific use cases. These are
 mostly for fine-grained control of Redis usage, so they wouldn't be used
@@ -250,7 +267,7 @@ following is true:
 1. We want to manipulate data on a non-cache Redis instance.
 1. `Rails.cache` does not support the operations we want to perform.
 
-### `Gitlab::Redis::{Cache,SharedState,Queues}`
+#### `Gitlab::Redis::{Cache,SharedState,Queues}`
 
 These classes wrap the Redis instances (using
 [`Gitlab::Redis::Wrapper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/wrapper.rb))
@@ -266,13 +283,27 @@ Gitlab::Redis::SharedState.with { |redis| redis.get(key) }
 Gitlab::Redis::Cache.with { |redis| redis.sismember(key, value) }
 ```
 
-### `Gitlab::Redis::Boolean`
+`Gitlab::Redis::Cache` [shares the same Redis instance](https://gitlab.com/gitlab-org/gitlab/-/blob/fbcb99a6edec13a4d26010ce927b705f13db1ef8/config/initializers/7_redis.rb#L18)
+as `Rails.cache`, and so has a key eviction policy if one [is configured](#caching). Use this class for data
+that is truly cache-like and could be regenerated if absent.
+
+Ensure you **always** set a TTL for keys when using this class
+as it does not set a default TTL, unlike `Rails.cache` whose default TTL
+[is 8 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/a3e435da6e9f7c98dc05eccb1caa03c1aed5a2a8/lib/gitlab/redis/cache.rb#L26). Consider using an 8 hour TTL for general caching, this matches a workday and would mean that a user would generally only have one cache-miss per day for the same content.
+
+When you anticipate adding a large workload to the cache or are in doubt about its production impact, please reach out to [`#g_durability`](https://gitlab.enterprise.slack.com/archives/C07U8G0LHEH).
+
+`Gitlab::Redis::SharedState` [will not be configured with a key eviction policy](https://docs.gitlab.com/omnibus/settings/redis/#setting-the-redis-cache-instance-as-an-lru).
+Use this class for data that cannot be regenerated and is expected to be persisted until its set expiration time.
+It also does not set a default TTL for keys, so a TTL should nearly always be set for keys when using this class.
+
+#### `Gitlab::Redis::Boolean`
 
 In Redis, every value is a string.
 [`Gitlab::Redis::Boolean`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/boolean.rb)
 makes sure that booleans are encoded and decoded consistently.
 
-### `Gitlab::Redis::HLL`
+#### `Gitlab::Redis::HLL`
 
 The Redis [`PFCOUNT`](https://redis.io/docs/latest/commands/pfcount/),
 [`PFADD`](https://redis.io/docs/latest/commands/pfadd/), and
@@ -284,7 +315,7 @@ see [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis).
 [`Gitlab::Redis::HLL`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/hll.rb)
 provides a convenient interface for adding and counting values in HyperLogLogs.
 
-### `Gitlab::SetCache`
+#### `Gitlab::SetCache`
 
 For cases where we need to efficiently check the whether an item is in a group
 of items, we can use a Redis set.

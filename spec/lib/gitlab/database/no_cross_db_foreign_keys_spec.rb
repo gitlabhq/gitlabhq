@@ -10,7 +10,7 @@ RSpec.describe 'cross-database foreign keys' do
   # The issue corresponding to the loose foreign key conversion
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
-    [
+    keys = [
       'zoekt_indices.zoekt_enabled_namespace_id',
       'zoekt_repositories.project_id',
       'zoekt_replicas.zoekt_enabled_namespace_id',
@@ -19,7 +19,6 @@ RSpec.describe 'cross-database foreign keys' do
       'ci_cost_settings.runner_id',                              # The fk_rails_6a70651f75 FK needs to be dropped
       'ci_runner_taggings.tag_id',                               # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
       'ci_runner_taggings_instance_type.tag_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
-      'ci_job_artifact_states.partition_id',
       'ci_secure_file_states.ci_secure_file_id',
       'dependency_proxy_blob_states.dependency_proxy_blob_id',
       'dependency_proxy_blob_states.group_id',
@@ -36,6 +35,14 @@ RSpec.describe 'cross-database foreign keys' do
       'snippet_repositories.snippet_project_id',
       'upload_states.upload_id'
     ]
+
+    keys << if ::Gitlab.next_rails?
+              'ci_job_artifact_states.partition_id.job_artifact_id'
+            else
+              'ci_job_artifact_states.partition_id'
+            end
+
+    keys
   end
 
   def foreign_keys_for(table_name)
@@ -58,7 +65,7 @@ RSpec.describe 'cross-database foreign keys' do
       foreign_keys_for(table).each do |fk|
         next unless is_cross_db?(fk)
 
-        column = "#{fk.from_table}.#{fk.column}"
+        column = "#{fk.from_table}.#{Array.wrap(fk.column).join('.')}"
         allowlist.delete(column)
 
         expect(allowed_cross_database_foreign_keys).to include(column), "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html ."
@@ -76,7 +83,9 @@ RSpec.describe 'cross-database foreign keys' do
       table, _ = entry.split('.')
 
       all_foreign_keys_for_table = foreign_keys_for(table)
-      fk_entry = all_foreign_keys_for_table.find { |fk| "#{fk.from_table}.#{fk.column}" == entry }
+      fk_entry = all_foreign_keys_for_table.find do |fk|
+        "#{fk.from_table}.#{Array.wrap(fk.column).join('.')}" == entry
+      end
 
       expect(fk_entry).to be_present,
         "`#{entry}` is no longer a foreign key. " \

@@ -496,7 +496,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Vulnerabilities::Statistics::AdjustmentWorker' => 3,
         'VulnerabilityExports::ExportDeletionWorker' => 3,
         'VulnerabilityExports::ExportWorker' => 3,
-        'VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker' => 0,
         'VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker' => 0,
         'WaitForClusterCreationWorker' => 3,
         'WebHookWorker' => 4,

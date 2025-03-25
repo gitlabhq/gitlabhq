@@ -3934,6 +3934,20 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_dd7cb7bd6c9e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  row_data JSONB;
+BEGIN
+  row_data := to_jsonb(NEW);
+  IF row_data ? 'semver_patch_convert_to_bigint' THEN
+    NEW."semver_patch_convert_to_bigint" := NEW."semver_patch";
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_de59b81d3044() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -19467,6 +19481,7 @@ CREATE TABLE packages_terraform_module_metadata (
     semver_minor integer,
     semver_patch integer,
     semver_prerelease text,
+    semver_patch_convert_to_bigint bigint,
     CONSTRAINT check_46aa6c883a CHECK ((char_length(semver_prerelease) <= 255)),
     CONSTRAINT chk_rails_49f7b485ae CHECK ((char_length((fields)::text) <= 10485760))
 );
@@ -41146,6 +41161,8 @@ CREATE TRIGGER trigger_dbdd61a66a91 BEFORE INSERT OR UPDATE ON agent_activity_ev
 CREATE TRIGGER trigger_dbe374a57cbb BEFORE INSERT OR UPDATE ON status_page_published_incidents FOR EACH ROW EXECUTE FUNCTION trigger_dbe374a57cbb();
 
 CREATE TRIGGER trigger_dc13168b8025 BEFORE INSERT OR UPDATE ON vulnerability_flags FOR EACH ROW EXECUTE FUNCTION trigger_dc13168b8025();
+
+CREATE TRIGGER trigger_dd7cb7bd6c9e BEFORE INSERT OR UPDATE ON packages_terraform_module_metadata FOR EACH ROW EXECUTE FUNCTION trigger_dd7cb7bd6c9e();
 
 CREATE TRIGGER trigger_de59b81d3044 BEFORE INSERT OR UPDATE ON bulk_import_export_batches FOR EACH ROW EXECUTE FUNCTION trigger_de59b81d3044();
 

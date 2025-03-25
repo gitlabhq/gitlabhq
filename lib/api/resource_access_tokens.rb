@@ -51,9 +51,7 @@ module API
 
           token = find_token(resource, params[:token_id])
 
-          if token.nil?
-            next not_found!("Could not find #{source_type} access token with token_id: #{params[:token_id]}")
-          end
+          next not_found!("#{source_type} Access Token") if token.nil?
 
           resource.members.load
           present token, with: Entities::ResourceAccessToken, resource: resource
@@ -76,9 +74,7 @@ module API
           resource = find_source(source_type, params[:id])
           token = find_token(resource, params[:token_id])
 
-          if token.nil?
-            next not_found!("Could not find #{source_type} access token with token_id: #{params[:token_id]}")
-          end
+          next not_found!("#{source_type} Access Token") if token.nil?
 
           service = ::ResourceAccessTokens::RevokeService.new(
             current_user,

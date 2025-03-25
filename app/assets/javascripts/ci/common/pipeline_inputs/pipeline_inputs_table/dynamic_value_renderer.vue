@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlFormInput, GlTooltipDirective } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { __ } from '~/locale';
 import validation, { initForm } from '~/vue_shared/directives/validation';
 
@@ -9,7 +9,7 @@ import validation, { initForm } from '~/vue_shared/directives/validation';
  * This component dynamically renders the appropriate input field based on the data type.
  * It supports multiple input types:
  * - Boolean: Rendered as a dropdown with true/false options
- * - Array: Rendered as a text input field unless options are included
+ * - Array: Rendered as a text area input field unless options are included
  * - Number: Rendered as a number input field unless options are included
  * - String/Others: Rendered as a text input field unless options are included
  *
@@ -25,9 +25,18 @@ const INPUT_TYPES = {
 };
 
 const feedbackMap = {
-  valueMissing: {
-    isInvalid: (el) => el.validity?.valueMissing,
-    message: __('This is mandatory and must be defined.'),
+  arrayFormatMismatch: {
+    isInvalid: (el) => {
+      if (el.dataset.jsonArray !== 'true' || !el.value) return false;
+
+      try {
+        const parsed = JSON.parse(el.value);
+        return !Array.isArray(parsed);
+      } catch {
+        return true;
+      }
+    },
+    message: __('The value must be a valid JSON array format: [1,2,3] or [{"key": "value"}]'),
   },
   numberTypeMismatch: {
     isInvalid: (el) => {
@@ -43,6 +52,10 @@ const feedbackMap = {
     isInvalid: (el) => el.validity?.patternMismatch,
     message: __('The value must match the defined regular expression.'),
   },
+  valueMissing: {
+    isInvalid: (el) => el.validity?.valueMissing,
+    message: __('This is required and must be defined.'),
+  },
 };
 
 export default {
@@ -50,9 +63,9 @@ export default {
   components: {
     GlCollapsibleListbox,
     GlFormInput,
+    GlFormTextarea,
   },
   directives: {
-    GlTooltip: GlTooltipDirective,
     validation: validation(feedbackMap),
   },
   props: {
@@ -99,27 +112,39 @@ export default {
       }
       return this.item.options?.map((option) => ({ value: option, text: option })) || [];
     },
+    hasArrayFormatError() {
+      const field = this.form.fields[this.item.name];
+      return this.isArrayType && field?.feedback === feedbackMap.arrayFormatMismatch.message;
+    },
     hasValidationFeedback() {
       return Boolean(this.validationFeedback);
     },
     headerText() {
       return this.item.type === INPUT_TYPES.BOOLEAN ? __('Value') : __('Options');
     },
-    invalidTooltipTitle() {
-      const field = this.form.fields[this.item.name];
-
-      if (this.item.regex && field?.feedback === feedbackMap.regexMismatch.message) {
-        return `${__('Pattern')}: ${this.item.regex}`;
-      }
-
-      return '';
+    isArrayType() {
+      return this.item.type === INPUT_TYPES.ARRAY && Boolean(!this.item.options?.length);
     },
     isDropdown() {
       return this.item.type === INPUT_TYPES.BOOLEAN || Boolean(this.item.options?.length);
     },
     validationFeedback() {
       const field = this.form.fields[this.item.name];
-      return field?.feedback || '';
+      const feedback = field?.feedback || '';
+
+      return feedback === feedbackMap.regexMismatch.message && this.item.regex
+        ? `${feedback} ${__('Pattern')}: ${this.item.regex}`
+        : feedback;
+    },
+    validationState() {
+      // Override validation state for array format errors
+      // This handles cases where checkValidity() returns true but our custom array validation fails
+      if (this.hasArrayFormatError) {
+        return false;
+      }
+
+      const field = this.form.fields[this.item.name];
+      return field?.state;
     },
   },
   methods: {
@@ -153,6 +178,7 @@ export default {
 
 <template>
   <div>
+    <!-- Dropdown for booleans or any type with options -->
     <gl-collapsible-listbox
       v-if="isDropdown"
       v-model="inputValue"
@@ -161,26 +187,40 @@ export default {
       :header-text="headerText"
       :items="dropdownOptions"
     />
-    <template v-else>
-      <gl-form-input
-        v-model="inputValue"
-        v-validation:[form.showValidation]
-        :aria-label="item.name"
-        :data-field-type="item.type"
-        :name="item.name"
-        :pattern="item.regex"
-        :required="item.required"
-        :state="form.fields[item.name].state"
-        data-testid="value-input"
-      />
-      <div
-        v-if="hasValidationFeedback"
-        v-gl-tooltip="invalidTooltipTitle"
-        class="gl-mt-4 gl-text-danger"
-        data-testid="validation-feedback"
-      >
-        {{ validationFeedback }}
-      </div>
-    </template>
+
+    <!-- Textarea for arrays without options -->
+    <gl-form-textarea
+      v-else-if="isArrayType"
+      v-model="inputValue"
+      v-validation:[form.showValidation]
+      :aria-label="item.name"
+      :data-json-array="'true'"
+      :name="item.name"
+      :required="item.required"
+      :state="validationState"
+      rows="3"
+    />
+
+    <!-- Regular input for strings and numbers without options -->
+    <gl-form-input
+      v-else
+      v-model="inputValue"
+      v-validation:[form.showValidation]
+      :aria-label="item.name"
+      :data-field-type="item.type"
+      :name="item.name"
+      :pattern="item.regex"
+      :required="item.required"
+      :state="validationState"
+    />
+
+    <!-- Validation feedback -->
+    <div
+      v-if="hasValidationFeedback"
+      class="gl-mt-4 gl-text-danger"
+      data-testid="validation-feedback"
+    >
+      {{ validationFeedback }}
+    </div>
   </div>
 </template>

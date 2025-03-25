@@ -342,7 +342,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             get_token
 
             expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to include("Could not find #{source_type} access token with token_id: #{token_id}")
+            expect(json_response["message"]).to eq("404 #{source_type} Access Token Not Found")
           end
         end
 
@@ -353,7 +353,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             get_token
 
             expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to include("Could not find #{source_type} access token with token_id: #{token_id}")
+            expect(json_response["message"]).to eq("404 #{source_type} Access Token Not Found")
           end
         end
       end
@@ -416,7 +416,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             delete_token
 
             expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to include("Could not find #{source_type} access token with token_id: #{token_id}")
+            expect(json_response["message"]).to eq("404 #{source_type} Access Token Not Found")
           end
         end
 
@@ -427,7 +427,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             delete_token
 
             expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to include("Could not find #{source_type} access token with token_id: #{token_id}")
+            expect(json_response["message"]).to eq("404 #{source_type} Access Token Not Found")
           end
         end
       end

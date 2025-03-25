@@ -63,8 +63,8 @@ export default {
   },
   computed: {
     wrapperClasses() {
-      if (this.status === STATUS_MERGED) return 'gl-bg-blue-50';
-      if (this.status === STATUS_CLOSED) return 'gl-bg-red-50';
+      if (this.status === STATUS_MERGED) return 'gl-bg-feedback-info';
+      if (this.status === STATUS_CLOSED) return 'gl-bg-feedback-danger';
       return null;
     },
     hasActionsSlot() {

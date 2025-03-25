@@ -72,6 +72,7 @@ function parseDatasetToProps(data) {
     shouldUpgradeSlack,
     customizeJiraIssueEnabled,
     amazonQReady,
+    amazonQAutoReviewEnabled,
   } = parseBooleanInData(booleanAttributes);
 
   return {
@@ -119,6 +120,7 @@ function parseDatasetToProps(data) {
       amazonQInstanceUid,
       amazonQAwsProviderUrl,
       amazonQAwsAudience,
+      amazonQAutoReviewEnabled,
     },
     learnMorePath,
     aboutPricingUrl,

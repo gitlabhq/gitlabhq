@@ -8,7 +8,7 @@ title: GitLab Duo add-on seat management with LDAP
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab Self-Managed
 
 {{< /details >}}
 

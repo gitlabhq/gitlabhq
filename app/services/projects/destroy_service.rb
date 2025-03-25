@@ -317,6 +317,7 @@ module Projects
 
     def remove_registry_tags
       return true unless Gitlab.config.registry.enabled
+      return false if protected_by_tag_protection_rules?
       return false unless remove_legacy_registry_tags
 
       results = []
@@ -325,6 +326,20 @@ module Projects
       end
 
       results.all?
+    end
+
+    def protected_by_tag_protection_rules?
+      return false if Feature.disabled?(:container_registry_protected_tags, project)
+      return false if current_user.can_admin_all_resources?
+
+      return false unless project.has_container_registry_protected_tag_rules?(
+        action: 'delete',
+        access_level: current_user.max_member_access_for_project(project.id)
+      )
+
+      return false unless project.has_container_registry_tags?
+
+      true
     end
 
     ##

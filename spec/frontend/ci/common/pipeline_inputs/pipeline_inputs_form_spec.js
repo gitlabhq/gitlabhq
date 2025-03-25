@@ -6,9 +6,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/inputs_table_skeleton_loader.vue';
+import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
-import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table.vue';
+import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from '~/ci/common/pipeline_inputs/graphql/queries/pipeline_creation_inputs.query.graphql';
 /** mock data to be replaced with fixtures - https://gitlab.com/gitlab-org/gitlab/-/issues/525243 */
 import {

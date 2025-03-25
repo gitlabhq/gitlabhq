@@ -6,13 +6,15 @@ import {
   getGroupOptions,
   getPoolNameForGrouping,
   groupBy,
-} from 'ee_else_ce/work_items/pages/object_pools';
+} from 'ee_else_ce/work_items/pages/local_board/object_pools';
+import BoardCard from './board_card.vue';
 
 export default {
   name: 'LocalBoard',
   components: {
     GlButton,
     GlFormSelect,
+    BoardCard,
   },
   props: {
     workItemListData: {
@@ -77,20 +79,43 @@ export default {
         {{ s__('WorkItem|Back') }}
       </gl-button>
     </div>
-    <div class="gl-mt-6 gl-flex gl-w-full gl-flex-nowrap gl-overflow-x-scroll">
-      <div v-for="(group, index) in groups" :key="index" class="gl-mx-4 gl-w-1/5">
-        <p>{{ group.title }}</p>
-        <ul class="gl-list-none gl-p-0">
-          <li v-if="group.items.length === 0" class="p-2 gl-rounded gl-bg-strong gl-p-0">
-            <p>
-              {{ s__('WorkItem|No items') }}
-            </p>
-          </li>
-          <li v-for="id in group.items" :key="id" class="p-2 gl-rounded my-2 gl-bg-strong gl-p-0">
-            <a :href="items[id].webUrl">{{ items[id].reference }}</a>
-            <p>{{ items[id].title }}</p>
-          </li>
-        </ul>
+    <div class="gl-flex gl-h-[calc(100vh-60px-48px)] gl-min-h-0 gl-grow gl-flex-col">
+      <div
+        class="gl-min-h-0 gl-w-full gl-grow gl-overflow-x-auto gl-whitespace-nowrap gl-py-5 gl-pl-0 gl-pr-5 xl:gl-pl-3 xl:gl-pr-6"
+      >
+        <div
+          v-for="(group, index) in groups"
+          :key="index"
+          class="gl-inline-flex gl-h-full gl-align-top"
+        >
+          <div
+            class="gl-relative gl-inline-block gl-h-full gl-w-[400px] gl-whitespace-normal gl-px-3 gl-align-top"
+          >
+            <div
+              class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-strong dark:gl-bg-subtle"
+            >
+              <header class="gl-relative">
+                <h3 class="gl-m-0 gl-flex gl-h-9 gl-items-center gl-px-3 gl-text-base">
+                  <span class="gl-grow gl-truncate gl-p-1">
+                    {{ group.title }}
+                  </span>
+                </h3>
+              </header>
+              <div class="gl-relative gl-flex gl-h-full gl-min-h-0 gl-flex-col">
+                <ul
+                  class="gl-mb-0 gl-h-full gl-w-full gl-list-none gl-overflow-x-hidden gl-p-3 gl-pt-2"
+                >
+                  <li v-if="group.items.length === 0" class="p-2 gl-rounded gl-bg-strong gl-p-0">
+                    <p>
+                      {{ s__('WorkItem|No items') }}
+                    </p>
+                  </li>
+                  <board-card v-for="id in group.items" :key="id" :item="items[id]" />
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

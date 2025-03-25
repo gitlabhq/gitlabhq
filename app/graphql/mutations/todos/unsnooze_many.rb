@@ -5,6 +5,10 @@ module Mutations
     class UnsnoozeMany < BaseMany
       graphql_name 'TodoUnsnoozeMany'
 
+      field :todos, [::Types::TodoType],
+        null: false,
+        description: 'Unsnoozed to-do items.'
+
       private
 
       def process_todos(todos)

@@ -18,6 +18,7 @@ title: Protected packages API
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151741) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180063) `minimum_access_level_for_delete` attribute in GitLab 17.11 [with a flag](../administration/feature_flags.md) named `packages_protected_packages_delete`. Disabled by default.
 
 {{< /history >}}
 
@@ -62,6 +63,7 @@ Example response:
   "project_id": 7,
   "package_name_pattern": "@flightjs/flight-package-0",
   "package_type": "npm",
+  "minimum_access_level_for_delete": "owner",
   "minimum_access_level_for_push": "maintainer"
  },
  {
@@ -69,6 +71,7 @@ Example response:
   "project_id": 7,
   "package_name_pattern": "@flightjs/flight-package-1",
   "package_type": "npm",
+  "minimum_access_level_for_delete": "owner",
   "minimum_access_level_for_push": "maintainer"
  }
 ]
@@ -89,7 +92,8 @@ Supported attributes:
 | `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_name_pattern`                | string          | Yes      | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | Yes      | Package type protected by the protection rule. For example `npm`. |
-| `minimum_access_level_for_push`       | string          | Yes      | Minimum GitLab access level able to push a package. Must be at least `maintainer`. For example `maintainer`, `owner` or `admin`. |
+| `minimum_access_level_for_delete`     | string          | Yes      | Minimum GitLab access level required to delete a package. Valid values include `null`, `owner` or `admin`. If the value is `null`, the default minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push` is not set. Behind a feature flag named `packages_protected_packages_delete`. Disabled by default. |
+| `minimum_access_level_for_push`       | string          | Yes      | Minimum GitLab access level required to push a package. Valid values include `null`, `maintainer`, `owner` or `admin`. If the value is `null`, the default minimum access level is `developer`. Must be provided when `minimum_access_level_for_delete` is not set. |
 
 If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the created package protection rule.
 
@@ -112,6 +116,7 @@ curl --request POST \
   --data '{
        "package_name_pattern": "package-name-pattern-*",
        "package_type": "npm",
+       "minimum_access_level_for_delete": "owner",
        "minimum_access_level_for_push": "maintainer"
     }'
 ```
@@ -132,7 +137,8 @@ Supported attributes:
 | `package_protection_rule_id`          | integer         | Yes      | ID of the package protection rule to be updated. |
 | `package_name_pattern`                | string          | No       | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | No       | Package type protected by the protection rule. For example `npm`. |
-| `minimum_access_level_for_push`       | string          | No       | Minimum GitLab access level able to push a package. Must be at least `maintainer`. For example `maintainer`, `owner` or `admin`. |
+| `minimum_access_level_for_delete`     | string          | No       | Minimum GitLab access level required to delete a package. Valid values include `null`, `owner` or `admin`. If the value is `null`, the default minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push` is not set. Behind a feature flag named `packages_protected_packages_delete`. Disabled by default. |
+| `minimum_access_level_for_push`       | string          | No       | Minimum GitLab access level required to push a package. Valid values include `null`, `maintainer`, `owner` or `admin`. If the value is `null`, the default minimum access level is `developer`. Must be provided when `minimum_access_level_for_delete` is not set. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the updated package protection rule.
 

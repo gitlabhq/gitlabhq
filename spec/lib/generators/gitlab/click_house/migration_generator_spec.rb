@@ -1,12 +1,22 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails/generators/testing/behaviour'
 require 'generators/gitlab/click_house/migration_generator'
 require 'fileutils'
 
+if ::Gitlab.next_rails?
+  require 'rails/generators/testing/behavior'
+else
+  require 'rails/generators/testing/behaviour'
+end
+
 RSpec.describe Gitlab::ClickHouse::MigrationGenerator, feature_category: :database do
-  include Rails::Generators::Testing::Behaviour
+  if ::Gitlab.next_rails?
+    include Rails::Generators::Testing::Behavior
+  else
+    include Rails::Generators::Testing::Behaviour
+  end
+
   include FileUtils
 
   let(:migration_name) { "CreateProjects" }

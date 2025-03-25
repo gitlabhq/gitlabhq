@@ -6290,6 +6290,9 @@ msgstr ""
 msgid "AmazonQ|Audience"
 msgstr ""
 
+msgid "AmazonQ|Automatic code reviews can only be enabled when Amazon Q is set to \"On by default\""
+msgstr ""
+
 msgid "AmazonQ|Availability"
 msgstr ""
 
@@ -6330,6 +6333,9 @@ msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr ""
 
 msgid "AmazonQ|Delete the IAM role."
+msgstr ""
+
+msgid "AmazonQ|Enable automatic code reviews"
 msgstr ""
 
 msgid "AmazonQ|Enter the IAM role's ARN."
@@ -59499,6 +59505,9 @@ msgstr ""
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr ""
 
+msgid "The value must be a valid JSON array format: [1,2,3] or [{\"key\": \"value\"}]"
+msgstr ""
+
 msgid "The value must contain only numbers."
 msgstr ""
 
@@ -60255,10 +60264,10 @@ msgstr ""
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr ""
 
-msgid "This is mandatory and must be defined."
+msgid "This is really just a warning"
 msgstr ""
 
-msgid "This is really just a warning"
+msgid "This is required and must be defined."
 msgstr ""
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."

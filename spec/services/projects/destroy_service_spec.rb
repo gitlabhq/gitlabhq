@@ -102,7 +102,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         context 'with different pipeline sources' do
           before do
             # We're creating many pipelines
-            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(477)
+            allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(479)
 
             external_pull_request = create(:external_pull_request, project: project)
             create(:ci_pipeline, project: project, source: :external_pull_request_event, external_pull_request: external_pull_request)
@@ -511,6 +511,69 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         expect(Projects::ContainerRepository::DestroyService).not_to receive(:new)
 
         destroy_project(project, user)
+      end
+    end
+
+    describe 'tag protection rules handling' do
+      let_it_be_with_refind(:project) { create(:project, :repository, namespace: user.namespace) }
+
+      subject { destroy_project(project, user) }
+
+      context 'when there are tag protection rules' do
+        before_all do
+          create(:container_registry_protection_tag_rule,
+            project: project,
+            tag_name_pattern: 'xyz',
+            minimum_access_level_for_delete: Gitlab::Access::ADMIN
+          )
+
+          project.add_owner(user)
+          project.container_repositories << create(:container_repository)
+        end
+
+        context 'when there are registry tags' do
+          before do
+            stub_container_registry_tags(repository: project.full_path, tags: ['tag'])
+            allow_any_instance_of(described_class)
+              .to receive(:remove_legacy_registry_tags).and_return(true)
+          end
+
+          context 'when the feature container_registry_protected_tags is disabled' do
+            before do
+              stub_feature_flags(container_registry_protected_tags: false)
+            end
+
+            it { is_expected.to be true }
+          end
+
+          context 'when the current user is an admin', :enable_admin_mode do
+            let(:user) { build_stubbed(:admin) }
+
+            it { is_expected.to be true }
+          end
+
+          context 'when the current user role meets the minimum access level for delete' do
+            before_all do
+              project.container_registry_protection_tag_rules.first.update!(
+                minimum_access_level_for_delete: Gitlab::Access::OWNER
+              )
+            end
+
+            it { is_expected.to be true }
+          end
+
+          context 'when the current user role does not meet the minimum access level for delete' do
+            it { is_expected.to be false }
+          end
+        end
+
+        context 'when there are no registry tags' do
+          it { is_expected.to be true }
+        end
+      end
+
+      context 'when there are no tag protection rules' do
+        it { is_expected.to be true }
       end
     end
   end

@@ -35,6 +35,7 @@ export const getReactions = (widgets) => {
 const transformItem = (input) => {
   return {
     id: input.id,
+    iid: input.iid,
     title: input.title,
     state: input.state,
     type: input.workItemType,

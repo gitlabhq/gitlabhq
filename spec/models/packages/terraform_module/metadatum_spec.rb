@@ -95,6 +95,19 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
           end
         end
       end
+
+      context 'for semver_patch_convert_to_bigint' do
+        let(:metadatum) { create(:terraform_module_metadatum, semver: '1.2.3') }
+
+        subject do
+          metadatum.connection.execute(<<~SQL)
+            SELECT semver_patch_convert_to_bigint FROM packages_terraform_module_metadata WHERE package_id = #{metadatum.package_id}
+          SQL
+          .first['semver_patch_convert_to_bigint']
+        end
+
+        it { is_expected.to eq(metadatum.semver_patch) }
+      end
     end
 
     context 'when the parent project is destroyed' do

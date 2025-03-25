@@ -1,7 +1,7 @@
 import { GlIcon, GlTableLite } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table.vue';
-import DynamicValueRenderer from '~/ci/common/pipeline_inputs/dynamic_value_renderer.vue';
+import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table/pipeline_inputs_table.vue';
+import DynamicValueRenderer from '~/ci/common/pipeline_inputs/pipeline_inputs_table/dynamic_value_renderer.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 
 describe('PipelineInputsTable', () => {

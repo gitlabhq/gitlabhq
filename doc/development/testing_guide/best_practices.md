@@ -1199,7 +1199,8 @@ In most specs, the Rails cache is actually an in-memory store. This is replaced
 between specs, so calls to `Rails.cache.read` and `Rails.cache.write` are safe.
 However, if a spec makes direct Redis calls, it should mark itself with the
 `:clean_gitlab_redis_cache`, `:clean_gitlab_redis_shared_state` or
-`:clean_gitlab_redis_queues` traits as appropriate.
+`:clean_gitlab_redis_queues` traits depending on
+[which Redis instance](../../development/redis.md#gitlabrediscachesharedstatequeues) is being used.
 
 #### Background jobs / Sidekiq
 

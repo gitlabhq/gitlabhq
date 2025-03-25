@@ -5267,7 +5267,7 @@ job:
 
 {{< /history >}}
 
-Use `secrets:token` to explicitly select a token to use when authenticating with Vault by referencing the token's CI/CD variable.
+Use `secrets:token` to explicitly select a token to use when authenticating with the external secrets provider by referencing the token's CI/CD variable.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -5292,7 +5292,9 @@ job:
 
 **Additional details**:
 
-- When the `token` keyword is not set, the first ID token is used to authenticate.
+- When the `token` keyword is not set and there is only one token defined, the defined token will automatically be used.
+- If there is more than one token defined, you should specify which token to use by setting the `token` keyword.
+  If you do not specify which token to use, it is not possible to predict which token is used each time the job runs.
 
 ### `services`
 
