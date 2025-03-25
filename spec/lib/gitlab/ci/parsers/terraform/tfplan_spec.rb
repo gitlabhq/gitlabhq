@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan do
+RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan, feature_category: :infrastructure_as_code do
   describe '#parse!' do
     let(:artifact) { create(:ci_job_artifact, :terraform) }
 
@@ -85,11 +85,31 @@ RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan do
           )
         end
       end
+
+      context 'when resource count is invalid' do
+        it 'reports an :invalid_resource_count error' do
+          plan = { create: 1, update: 2, delete: 'not-a-count' }.to_json
+
+          expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
+
+          reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[job_id job_name job_path tf_report_error])
+          end
+
+          expect(reports.plans).to match(
+            a_hash_including(
+              artifact.job.id.to_s => a_hash_including(
+                'tf_report_error' => :invalid_resource_count
+              )
+            )
+          )
+        end
+      end
     end
 
     context 'when data is valid' do
       it 'parses JSON and returns a report' do
-        plan = '{ "create": 0, "update": 1, "delete": 0 }'
+        plan = { create: 0, update: '1', delete: 0 }.to_json
 
         expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
 
@@ -124,6 +144,27 @@ RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan do
               'create' => 0,
               'update' => 1,
               'delete' => 0,
+              'job_name' => artifact.job.name
+            )
+          )
+        )
+      end
+
+      it 'prevents resource counts larger than the maximum' do
+        plan = { create: 111_111_111, update: 222_222_222, delete: 333_333_333 }.to_json
+
+        expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
+
+        reports.plans.each do |key, hash_value|
+          expect(hash_value.keys).to match_array(%w[create delete job_id job_name job_path update])
+        end
+
+        expect(reports.plans).to match(
+          a_hash_including(
+            artifact.job.id.to_s => a_hash_including(
+              'create' => 999999,
+              'update' => 999999,
+              'delete' => 999999,
               'job_name' => artifact.job.name
             )
           )
