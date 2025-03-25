@@ -56,7 +56,7 @@ function initializeSort(sort) {
   let sorting = DEFAULT_SORT;
 
   const sortOption = SORT_OPTIONS.find((item) => [item.sort.desc, item.sort.asc].includes(sort));
-  if (sort && sortOption) {
+  if (sortOption) {
     sorting = {
       value: sortOption.value,
       isAsc: sortOption.sort.asc === sort,

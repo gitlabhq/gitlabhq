@@ -501,6 +501,9 @@ projects:
   - table: users
     column: creator_id
     on_delete: async_nullify
+  - table: pool_repositories
+    column: pool_repository_id
+    on_delete: async_nullify
 projects_visits:
   - table: projects
     column: entity_id

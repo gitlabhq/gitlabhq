@@ -38,7 +38,9 @@ class DescriptionVersion < ApplicationRecord
   end
 
   def ensure_namespace_id
-    self.namespace_id ||= parent_namespace_id
+    return if namespace_id && namespace_id > 0
+
+    self.namespace_id = parent_namespace_id
   end
 
   def exactly_one_issuable

@@ -15,14 +15,6 @@ export const DEFAULT_SORT = { value: 'expires', isAsc: true };
 
 export const SORT_OPTIONS = [
   {
-    text: __('Name'),
-    value: 'name',
-    sort: {
-      asc: 'name_asc',
-      desc: 'name_desc',
-    },
-  },
-  {
     text: __('Created date'),
     value: 'created',
     sort: {
@@ -34,7 +26,24 @@ export const SORT_OPTIONS = [
     text: __('Expiration date'),
     value: 'expires',
     sort: {
-      asc: 'expires_at_asc_id_desc',
+      asc: 'expires_asc',
+      desc: 'expires_desc',
+    },
+  },
+  {
+    text: __('Last used date'),
+    value: 'last_used',
+    sort: {
+      asc: 'last_used_asc',
+      desc: 'last_used_desc',
+    },
+  },
+  {
+    text: __('Name'),
+    value: 'name',
+    sort: {
+      asc: 'name_asc',
+      desc: 'name_desc',
     },
   },
 ];

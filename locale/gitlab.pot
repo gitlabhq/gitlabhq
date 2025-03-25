@@ -34356,6 +34356,9 @@ msgstr ""
 msgid "Last used %{last_used_at} ago"
 msgstr ""
 
+msgid "Last used date"
+msgstr ""
+
 msgid "Last week"
 msgstr ""
 

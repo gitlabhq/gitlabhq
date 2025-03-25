@@ -84,9 +84,9 @@ tests = [
   {
     explanation: 'tests.yml map to related tooling specs',
     changed_file: 'tests.yml',
-    expected: [
-      'spec/tooling/lib/tooling/find_tests_spec.rb',
-      'spec/tooling/lib/tooling/predictive_tests_spec.rb'
+    expected: %w[
+      spec/tooling/lib/tooling/find_tests_spec.rb
+      spec/tooling/lib/tooling/predictive_tests_spec.rb
     ]
   },
 
@@ -205,18 +205,18 @@ tests = [
   {
     explanation: 'Spec for FOSS model',
     changed_file: 'app/models/uploads/base.rb',
-    expected: [
-      'spec/models/every_model_spec.rb',
-      'spec/lib/gitlab/import_export/model_configuration_spec.rb'
+    expected: %w[
+      spec/models/every_model_spec.rb
+      spec/lib/gitlab/import_export/model_configuration_spec.rb
     ]
   },
 
   {
     explanation: 'Spec for EE model',
     changed_file: 'ee/app/models/geo/base_registry.rb',
-    expected: [
-      'spec/models/every_model_spec.rb',
-      'spec/lib/gitlab/import_export/model_configuration_spec.rb'
+    expected: %w[
+      spec/models/every_model_spec.rb
+      spec/lib/gitlab/import_export/model_configuration_spec.rb
     ]
   },
 
@@ -594,6 +594,15 @@ tests = [
     changed_file: 'ee/app/graphql/types/remote_development/workspace_variable_input_type_enum.rb',
     expected: %w[
       ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb
+    ]
+  },
+  {
+    explanation: 'Map Remote Development GraphQL type specs',
+    changed_file: 'ee/app/graphql/types/remote_development/namespace_cluster_agent_mapping_type.rb',
+    expected: [
+      'ee/spec/graphql/types/remote_development/namespace_cluster_agent_mapping_type_spec.rb',
+      'ee/spec/requests/api/graphql/mutations/remote_development/' \
+        'namespace_cluster_agent_mapping_operations/create_spec.rb'
     ]
   },
   ## END Remote development GraphQL types

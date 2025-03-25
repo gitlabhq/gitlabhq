@@ -531,7 +531,7 @@ The following Elasticsearch settings are available:
 | `Username`                                                 | The `username` of your Elasticsearch instance. |
 | `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards and replicas per index`    | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
-| `Limit the amount of namespace and project data to index` | When you enable this setting, you can specify namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this setting but do not specify any namespace or project, [only project records are indexed](#all-project-records-are-indexed). For more information, see [Limit the amount of namespace and project data to index](#limit-the-amount-of-namespace-and-project-data-to-index). |
+| `Limit the amount of namespace and project data to index` | When you enable this setting, you can specify namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this setting but do not specify any namespace or project, only project records are indexed. For more information, see [Limit the amount of namespace and project data to index](#limit-the-amount-of-namespace-and-project-data-to-index). |
 | `Use AWS OpenSearch Service with IAM credentials` | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | `AWS Region`                                          | The AWS region in which your OpenSearch Service is located. |
 | `AWS Access Key`                                      | The AWS access key. |
@@ -556,38 +556,55 @@ in your Sidekiq logs. For more information, see
 
 ### Limit the amount of namespace and project data to index
 
-When you select the **Limit the amount of namespace and project data to index**
-checkbox, you can specify namespaces and projects to index. If the namespace is a group,
-any subgroups and projects belonging to those subgroups are also indexed.
-
-Advanced search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search does not provide a code or commit scope. This is possible only in the scope of an indexed namespace. There is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
-
-If you do not specify any namespace or project, [only project records are indexed](#all-project-records-are-indexed).
-
-{{< alert type="warning" >}}
-
-If you have already indexed your instance, you must regenerate the index to delete all existing data
-for filtering to work correctly. To do this, run the Rake tasks `gitlab:elastic:recreate_index` and
-`gitlab:elastic:clear_index_status`. Afterwards, removing a namespace or a project from the list deletes the data
-from the Elasticsearch index as expected.
-
-{{< /alert >}}
-
-#### All project records are indexed
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
+- Indexing all project records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
 
 {{< /history >}}
 
-When you select the **Limit the amount of namespace and project data to index** checkbox:
+When you select the **Limit the amount of namespace and project data to index** checkbox,
+you can specify namespaces and projects to index.
+If the namespace is a group, any subgroups and projects in these subgroups are also indexed.
 
-- All project records are indexed.
-- Associated data (issues, merge requests, or code) is not indexed.
+When you enable this setting:
 
-If you do not specify any namespace or project, only project records are indexed.
+- Namespaces or projects must be specified for full indexing.
+- Project records (metadata like project names and descriptions) are always indexed for all projects.
+- [Associated data](#advanced-search-index-scopes) is indexed only for the namespaces and projects you specify.
+
+{{< alert type="warning" >}}
+
+If you do not specify any namespace or project after you enable this setting,
+only project records are indexed and no associated data can be searched.
+
+{{< /alert >}}
+
+#### Indexed namespaces
+
+{{< history >}}
+
+- Global search for limited indexing [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a flag](../../administration/feature_flags.md) named `advanced_global_search_for_limited_indexing`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/244276) in GitLab 14.2.
+
+{{< /history >}}
+
+When you index all namespaces, you can use advanced search for global code and commit search.
+When you index only some namespaces:
+
+- Global search does not include a code or commit search scope.
+- Code and commit searches are available only in a single indexed namespace.
+- A single code or commit search is not possible across multiple indexed namespaces.
+- Cross-project search is available in an indexed namespace.
+
+For example, if you index two separate groups, you must run separate code searches on each group individually.
+
+{{< alert type="warning" >}}
+
+If you've already indexed your instance, you must [reindex the instance](#index-the-instance)
+to delete all existing data for filtering to work correctly.
+
+{{< /alert >}}
 
 ## Enable custom language analyzers
 

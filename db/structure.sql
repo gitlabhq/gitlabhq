@@ -40734,6 +40734,8 @@ CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines RE
 
 CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER pool_repositories_loose_fk_trigger AFTER DELETE ON pool_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER prevent_delete_of_default_organization_before_destroy BEFORE DELETE ON organizations FOR EACH ROW EXECUTE FUNCTION prevent_delete_of_default_organization();
 
 CREATE TRIGGER project_type_ci_runner_machines_loose_fk_trigger AFTER DELETE ON project_type_ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runner_machines');
@@ -42107,9 +42109,6 @@ ALTER TABLE ONLY organization_cluster_agent_mappings
 
 ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
     ADD CONSTRAINT fk_6e0be28087 FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY projects
-    ADD CONSTRAINT fk_6e5c14658a FOREIGN KEY (pool_repository_id) REFERENCES pool_repositories(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY terraform_state_versions
     ADD CONSTRAINT fk_6e81384d7f FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

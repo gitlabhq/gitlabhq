@@ -33,7 +33,6 @@ RSpec.describe 'cross-database foreign keys' do
       'pages_deployment_states.project_id',
       'pool_repositories.source_project_id',
       'project_repositories.project_id',
-      'projects.pool_repository_id',
       'snippet_repositories.snippet_id',
       'snippet_repositories.snippet_organization_id',
       'snippet_repositories.snippet_project_id',

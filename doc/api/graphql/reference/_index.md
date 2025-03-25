@@ -8427,6 +8427,7 @@ Input type: `NamespaceCreateRemoteDevelopmentClusterAgentMappingInput`
 | ---- | ---- | ----------- |
 | <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 
 ### `Mutation.namespaceDeleteRemoteDevelopmentClusterAgentMapping`
 
@@ -32684,6 +32685,21 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecicdsettingallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean`](#boolean) | Indicates if stale runners directly belonging to the namespace should be periodically pruned. |
 | <a id="namespacecicdsettingnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace the CI/CD settings belong to. |
 
+### `NamespaceClusterAgentMapping`
+
+Represents a namespace-cluster-agent mapping.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | Global ID of the cluster agent. |
+| <a id="namespaceclusteragentmappingcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the namespace-cluster-agent mapping was created. |
+| <a id="namespaceclusteragentmappingcreatorid"></a>`creatorId` | [`UserID!`](#userid) | Global ID of the creator. |
+| <a id="namespaceclusteragentmappingid"></a>`id` | [`RemoteDevelopmentNamespaceClusterAgentMappingID!`](#remotedevelopmentnamespaceclusteragentmappingid) | Global ID of the namespace-cluster-agent mapping. |
+| <a id="namespaceclusteragentmappingnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
+| <a id="namespaceclusteragentmappingupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the namespace-cluster-agent mapping was last updated. |
+
 ### `NamespaceCommitEmail`
 
 #### Fields
@@ -46010,6 +46026,12 @@ An example `ReleaseID` is: `"gid://gitlab/Release/1"`.
 A `ReleasesLinkID` is a global ID. It is encoded as a string.
 
 An example `ReleasesLinkID` is: `"gid://gitlab/Releases::Link/1"`.
+
+### `RemoteDevelopmentNamespaceClusterAgentMappingID`
+
+A `RemoteDevelopmentNamespaceClusterAgentMappingID` is a global ID. It is encoded as a string.
+
+An example `RemoteDevelopmentNamespaceClusterAgentMappingID` is: `"gid://gitlab/RemoteDevelopment::NamespaceClusterAgentMapping/1"`.
 
 ### `RemoteDevelopmentWorkspaceID`
 

@@ -45,6 +45,20 @@ RSpec.describe DescriptionVersion do
 
         expect(version.namespace_id).to eq(issue.namespace.id)
       end
+
+      context 'when namespace_id is 0' do
+        before do
+          version.namespace_id = 0
+        end
+
+        it 'sets the namespace id from the issue namespace id' do
+          expect(version.namespace_id).to eq(0)
+
+          version.valid?
+
+          expect(version.namespace_id).to eq(issue.namespace.id)
+        end
+      end
     end
 
     context 'when version belongs to a group issue' do

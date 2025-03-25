@@ -181,6 +181,11 @@ mapping:
     test:
       - 'ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb'
 
+  - source: 'ee/app/graphql/types/remote_development/namespace_cluster_agent_mapping_type\.rb'
+    test:
+      - 'ee/spec/graphql/types/remote_development/namespace_cluster_agent_mapping_type_spec.rb'
+      - 'ee/spec/requests/api/graphql/mutations/remote_development/namespace_cluster_agent_mapping_operations/create_spec.rb'
+
   ## END Remote development GraphQL types
 
   # Usage metric schema changes should trigger validations for all metrics and tooling
