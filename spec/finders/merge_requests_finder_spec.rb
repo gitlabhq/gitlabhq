@@ -57,6 +57,40 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           end
         end
 
+        context 'filters by author or assignee' do
+          let_it_be(:merge_request6) do
+            create(
+              :merge_request, :simple, :unique_branches, assignees: [user], reviewers: [create(:user)],
+              source_project: project1, target_project: project1
+            )
+          end
+
+          let_it_be(:merge_request7) do
+            create(
+              :merge_request, :simple, :unique_branches, assignees: [user], reviewers: [create(:user)],
+              source_project: project1, target_project: project1
+            )
+          end
+
+          let(:params) { { author_id: user.id, include_assigned: true } }
+
+          it 'returns merge requests the user is an author or an assignee of' do
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5, merge_request6, merge_request7)
+          end
+
+          context 'with review_state' do
+            let(:params) { { author_id: user.id, include_assigned: true, review_state: 'requested_changes' } }
+
+            before_all do
+              merge_request7.merge_request_reviewers.update_all(state: :requested_changes)
+            end
+
+            it 'returns merge requests the user is an author or an assignee of and reviewers with requested_changes' do
+              expect(merge_requests).to contain_exactly(merge_request7)
+            end
+          end
+        end
+
         context 'with nonexistent author ID and MR term using CTE for search' do
           let(:params) { { author_id: 'does-not-exist', search: 'git', attempt_group_search_optimizations: true } }
 

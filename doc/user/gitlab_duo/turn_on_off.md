@@ -326,7 +326,7 @@ To turn on GitLab Duo experiment and beta features for an instance:
 
 To enable GitLab Duo beta and experimental features for GitLab versions
 where GitLab Duo Chat is not yet generally available, see the
-[GitLab Duo Chat documentation](../gitlab_duo_chat/turn_on_off.md#for-self-managed).
+[GitLab Duo Chat documentation](../gitlab_duo_chat/turn_on_off.md#for-gitlab-self-managed).
 
 {{< /tab >}}
 

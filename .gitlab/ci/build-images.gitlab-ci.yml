@@ -11,7 +11,7 @@
   retry: 2
 
 # This image is used by:
-# - The `e2e:test-on-omnibus` child pipeline test stage jobs
+# - The `e2e:test-on-omnibus-ee` child pipeline test stage jobs
 # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:

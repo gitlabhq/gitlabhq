@@ -159,6 +159,14 @@ variables have higher precedence over `.gitlab-ci.yml` variables.
 
 {{< /alert >}}
 
+## External CI/CD secrets
+
+As part of <https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/46>, in February 2024, we
+started to dogfood [the usage of GCP Secret Manager](../../ci/secrets/gcp_secret_manager.md) to
+[store the `ADD_JH_FILES_TOKEN` CI variable](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144228).
+
+As part of this, [the `qual-ci-secret-mgmt-e78c9b95` GCP project was created](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/99#note_1605141484).
+
 ## Common job definitions
 
 Most of the jobs [extend from a few CI definitions](../../ci/yaml/_index.md#extends)

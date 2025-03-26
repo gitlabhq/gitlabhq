@@ -123,6 +123,7 @@ Example response:
 - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
 - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
 - [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10  [with a flag](../../administration/feature_flags.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
+- [GitLab sessions added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -134,7 +135,7 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-Revokes or resets a given token based on the token type. This endpoint supports the following token types:
+Revokes, resets or deletes a given token based on the token type. This endpoint supports the following token types:
 
 | Token type                                                                                   | Supported action   |
 |----------------------------------------------------------------------------------------------|--------------------|
@@ -150,6 +151,7 @@ Revokes or resets a given token based on the token type. This endpoint supports 
 | [OAuth application secrets](../../integration/oauth_provider.md)                             | Reset              |
 | [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)                | Reset              |
 | [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)      | Reset              |
+| [GitLab session cookies](../../user/profile/active_sessions.md)                              | Delete             |
 
 ```plaintext
 DELETE /api/v4/admin/token

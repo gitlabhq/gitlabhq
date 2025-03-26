@@ -306,7 +306,6 @@ RSpec/BeEq:
     - 'ee/spec/requests/api/ci/runner_spec.rb'
     - 'ee/spec/requests/api/epic_boards_spec.rb'
     - 'ee/spec/requests/api/epics_spec.rb'
-    - 'ee/spec/requests/api/graphql/ai/feature_settings/update_spec.rb'
     - 'ee/spec/requests/api/graphql/ai/self_hosted_models/delete_spec.rb'
     - 'ee/spec/requests/api/graphql/ai/self_hosted_models/update_spec.rb'
     - 'ee/spec/requests/api/graphql/analytics/value_stream_analytics_spec.rb'

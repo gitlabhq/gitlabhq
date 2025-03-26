@@ -3334,7 +3334,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           it 'returns success message' do
             _, _, message = service.execute(content, task_work_item)
 
-            expect(message).to eq(_('Parent set successfully'))
+            expect(message).to eq(_('Parent item set successfully.'))
           end
 
           it 'sets correct update params' do
@@ -3466,7 +3466,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it 'returns correct explanation' do
           _, explanations = service.explain(content, work_item)
-          translated_string = _("Remove %{parent_to_reference} as this item's parent.")
+          translated_string = _("Remove %{parent_to_reference} as this item's parent item.")
           formatted_message = format(translated_string, parent_to_reference: parent.to_reference(work_item).to_s)
 
           expect(explanations)
@@ -3477,7 +3477,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, updates, message = service.execute(content, work_item)
 
           expect(updates).to eq(remove_parent: true)
-          expect(message).to eq(_('Parent removed successfully'))
+          expect(message).to eq(_('Parent item removed successfully.'))
         end
       end
     end
@@ -4122,7 +4122,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       shared_examples 'command is available' do
         it 'explanation contains correct message' do
           _, explanations = service.explain(command, work_item)
-          translated_string = _("Change item's parent to %{parent_ref}.")
+          translated_string = _("Set %{parent_ref} as this item's parent item.")
           formatted_message = format(translated_string, parent_ref: parent_ref.to_s)
 
           expect(explanations).to contain_exactly(formatted_message)

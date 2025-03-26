@@ -6,6 +6,11 @@ module Resolvers
     accept_assignee
     accept_reviewer
 
+    argument :include_assigned, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: "Include merge requests the user is assigned to."
+
     def user_role
       :author
     end

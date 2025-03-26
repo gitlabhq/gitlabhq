@@ -18713,7 +18713,6 @@ CREATE TABLE packages_conan_file_metadata (
     package_file_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    conan_package_reference character varying(255),
     conan_file_type smallint NOT NULL,
     recipe_revision_id bigint,
     package_revision_id bigint,
@@ -38103,8 +38102,6 @@ CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_
 CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
-
-CREATE INDEX tmp_index_packages_conan_file_metadata_on_id_for_migration ON packages_conan_file_metadata USING btree (id) WHERE ((package_reference_id IS NULL) AND (conan_package_reference IS NOT NULL));
 
 CREATE INDEX tmp_index_pats_on_notification_columns_and_expires_at ON personal_access_tokens USING btree (id) WHERE ((expire_notification_delivered IS TRUE) AND (seven_days_notification_sent_at IS NULL) AND (expires_at IS NOT NULL));
 

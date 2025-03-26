@@ -167,5 +167,11 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
         expect(change).not_to be_valid
       end
     end
+
+    it 'is not valid if changed_files is empty' do
+      change = create_change
+      change.changed_files = []
+      expect(change).not_to be_valid
+    end
   end
 end

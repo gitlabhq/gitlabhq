@@ -523,6 +523,16 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :author_or_assignee, ->(user, review_states = nil) do
+    authored = where(author_id: user)
+    authored = authored.review_states(review_states) if review_states
+
+    assigned = joins(:merge_request_assignees).where(merge_request_assignees: { user_id: user })
+    assigned = assigned.review_states(review_states) if review_states
+
+    from("(#{from_union([authored, assigned], remove_duplicates: true).to_sql}) merge_requests")
+  end
+
   scope :without_hidden, -> {
     if Feature.enabled?(:hide_merge_requests_from_banned_users)
       where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))

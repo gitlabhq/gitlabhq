@@ -63,7 +63,7 @@ This is the recommended approach to test Prometheus-based Service Ping.
 To verify your change, build a new Omnibus image from your code branch using CI/CD, download the image,
 and run a local container instance:
 
-1. From your merge request, select the `qa` stage, then trigger the `e2e:test-on-omnibus` job. This job triggers an Omnibus
+1. From your merge request, select the `qa` stage, then trigger the `e2e:test-on-omnibus-ee` job. This job triggers an Omnibus
    build in a [downstream pipeline of the `omnibus-gitlab-mirror` project](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/pipelines).
 1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
 1. Open the job logs and locate the full container name including the version. It takes the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.

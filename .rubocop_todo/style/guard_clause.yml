@@ -479,7 +479,6 @@ Style/GuardClause:
     - 'rubocop/routes_under_scope.rb'
     - 'scripts/lint_templates_bash.rb'
     - 'scripts/setup/find-jh-branch.rb'
-    - 'scripts/trigger-build.rb'
     - 'spec/features/issuables/issuable_list_spec.rb'
     - 'spec/lib/gitlab/database/migrations/background_migration_helpers_spec.rb'
     - 'spec/services/issues/relative_position_rebalancing_service_spec.rb'

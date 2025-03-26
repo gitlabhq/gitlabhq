@@ -676,10 +676,56 @@ class Project < ApplicationRecord
   scope :sorted_by_storage_size_asc, -> { order_by_storage_size(:asc) }
   scope :sorted_by_storage_size_desc, -> { order_by_storage_size(:desc) }
   scope :order_by_storage_size, ->(direction) do
+    order_by_project_statistics('project_statistics_storage_size', :storage_size, direction)
+  end
+
+  scope :sorted_by_repository_size_asc, -> { order_by_repository_size(:asc) }
+  scope :sorted_by_repository_size_desc, -> { order_by_repository_size(:desc) }
+  scope :order_by_repository_size, ->(direction) do
+    order_by_project_statistics('project_statistics_repository_size', :repository_size, direction)
+  end
+
+  scope :sorted_by_snippets_size_asc, -> { order_by_snippet_size(:asc) }
+  scope :sorted_by_snippets_size_desc, -> { order_by_snippet_size(:desc) }
+  scope :order_by_snippet_size, ->(direction) do
+    order_by_project_statistics('project_statistics_snippets_size', :snippets_size, direction)
+  end
+
+  scope :sorted_by_build_artifacts_size_asc, -> { order_by_build_artifacts_size(:asc) }
+  scope :sorted_by_build_artifacts_size_desc, -> { order_by_build_artifacts_size(:desc) }
+  scope :order_by_build_artifacts_size, ->(direction) do
+    order_by_project_statistics('project_statistics_build_artifacts_size', :build_artifacts_size, direction)
+  end
+
+  scope :sorted_by_lfs_objects_size_asc, -> { order_by_lfs_objects_size(:asc) }
+  scope :sorted_by_lfs_objects_size_desc, -> { order_by_lfs_objects_size(:desc) }
+  scope :order_by_lfs_objects_size, ->(direction) do
+    order_by_project_statistics('project_statistics_lfs_objects_size', :lfs_objects_size, direction)
+  end
+
+  scope :sorted_by_packages_size_asc, -> { order_by_packages_size(:asc) }
+  scope :sorted_by_packages_size_desc, -> { order_by_packages_size(:desc) }
+  scope :order_by_packages_size, ->(direction) do
+    order_by_project_statistics('project_statistics_packages_size', :packages_size, direction)
+  end
+
+  scope :sorted_by_wiki_size_asc, -> { order_by_wiki_size(:asc) }
+  scope :sorted_by_wiki_size_desc, -> { order_by_wiki_size(:desc) }
+  scope :order_by_wiki_size, ->(direction) do
+    order_by_project_statistics('project_statistics_wiki_size', :wiki_size, direction)
+  end
+
+  scope :sorted_by_container_registry_size_asc, -> { order_by_container_registry_size(:asc) }
+  scope :sorted_by_container_registry_size_desc, -> { order_by_container_registry_size(:desc) }
+  scope :order_by_container_registry_size, ->(direction) do
+    order_by_project_statistics('project_statistics_container_registry_size', :container_registry_size, direction)
+  end
+
+  scope :order_by_project_statistics, ->(attribute_name, attribute_column, direction) do
     build_keyset_order_on_joined_column(
       scope: joins(:statistics),
-      attribute_name: 'project_statistics_storage_size',
-      column: ::ProjectStatistics.arel_table[:storage_size],
+      attribute_name: attribute_name,
+      column: ::ProjectStatistics.arel_table[attribute_column],
       direction: direction,
       nullable: :nulls_first
     )
@@ -1063,28 +1109,36 @@ class Project < ApplicationRecord
       Gitlab::VisibilityLevel.options
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity -- stick to existing implementation for sort params:
     def sort_by_attribute(method)
       case method.to_s
-      when 'storage_size_asc'
-        sorted_by_storage_size_asc
-      when 'storage_size_desc'
-        sorted_by_storage_size_desc
-      when 'latest_activity_desc'
-        sorted_by_updated_desc
-      when 'latest_activity_asc'
-        sorted_by_updated_asc
-      when 'path_asc'
-        sorted_by_path_asc
-      when 'path_desc'
-        sorted_by_path_desc
-      when 'stars_desc'
-        sorted_by_stars_desc
-      when 'stars_asc'
-        sorted_by_stars_asc
+      when 'storage_size_desc' then sorted_by_storage_size_desc
+      when 'storage_size_asc' then sorted_by_storage_size_asc
+      when 'repository_size_desc' then sorted_by_repository_size_desc
+      when 'repository_size_asc' then sorted_by_repository_size_asc
+      when 'snippets_size_desc'then sorted_by_snippets_size_desc
+      when 'snippets_size_asc'then sorted_by_snippets_size_asc
+      when 'build_artifacts_size_desc' then sorted_by_build_artifacts_size_desc
+      when 'build_artifacts_size_asc'then sorted_by_build_artifacts_size_asc
+      when 'lfs_objects_size_desc'then sorted_by_lfs_objects_size_desc
+      when 'lfs_objects_size_asc' then sorted_by_lfs_objects_size_asc
+      when 'packages_size_desc' then sorted_by_packages_size_desc
+      when 'packages_size_asc' then sorted_by_packages_size_asc
+      when 'wiki_size_desc' then sorted_by_wiki_size_desc
+      when 'wiki_size_asc'then sorted_by_wiki_size_asc
+      when 'container_registry_size_desc' then sorted_by_container_registry_size_desc
+      when 'container_registry_size_asc' then sorted_by_container_registry_size_asc
+      when 'latest_activity_desc' then sorted_by_updated_desc
+      when 'latest_activity_asc' then sorted_by_updated_asc
+      when 'path_desc'then sorted_by_path_desc
+      when 'path_asc' then sorted_by_path_asc
+      when 'stars_desc' then sorted_by_stars_desc
+      when 'stars_asc' then sorted_by_stars_asc
       else
         order_by(method)
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def reference_pattern
       %r{

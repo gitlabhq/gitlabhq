@@ -531,7 +531,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/requests/lfs_http_spec.rb'
     - 'spec/rubocop/cop/migration/complex_indexes_require_name_spec.rb'
     - 'spec/rubocop/cop/migration/refer_to_index_by_name_spec.rb'
-    - 'spec/scripts/trigger-build_spec.rb'
     - 'spec/serializers/impersonation_access_token_entity_spec.rb'
     - 'spec/serializers/impersonation_access_token_serializer_spec.rb'
     - 'spec/services/ci/create_pipeline_service/artifacts_spec.rb'

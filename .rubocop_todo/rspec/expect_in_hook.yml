@@ -333,7 +333,6 @@ RSpec/ExpectInHook:
     - 'spec/services/merge_requests/mergeability/check_open_status_service_spec.rb'
     - 'spec/services/merge_requests/mergeability/run_checks_service_spec.rb'
     - 'spec/services/merge_requests/mergeability_check_service_spec.rb'
-    - 'spec/services/merge_requests/squash_service_spec.rb'
     - 'spec/services/merge_requests/update_service_spec.rb'
     - 'spec/services/notes/quick_actions_service_spec.rb'
     - 'spec/services/notification_recipients/builder/default_spec.rb'

@@ -31,12 +31,12 @@ module Gitlab
           @execution_message[:promote_to] = update_type(type_name, :promote_to)
         end
 
-        desc { _('Change parent') }
+        desc { _('Set parent item') }
         explanation do |parent_param|
-          format(_("Change item's parent to %{parent_ref}."), parent_ref: parent_param)
+          format(_("Set %{parent_ref} as this item's parent item."), parent_ref: parent_param)
         end
         types WorkItem, Issue
-        params 'Parent #iid, reference or URL'
+        params 'Parent item\'s #IID, reference, or URL'
         condition do
           quick_action_target.supports_parent? && can_admin_set_relation?
         end
@@ -51,10 +51,10 @@ module Gitlab
           end
         end
 
-        desc { _('Remove parent') }
+        desc { _('Remove parent item') }
         explanation do
           format(
-            _("Remove %{parent_ref} as this item's parent."),
+            _("Remove %{parent_ref} as this item's parent item."),
             parent_ref: work_item_parent.to_reference(quick_action_target)
           )
         end
@@ -70,19 +70,19 @@ module Gitlab
           format(_("Add %{child_ref} as a child item."), child_ref: child_param)
         end
         types WorkItem
-        params 'Children #iids, references or URLs'
+        params 'Child items\' #IIDs, references, or URLs'
         condition { supports_children? && can_admin_link? }
         command :add_child do |child_param|
           @updates[:add_child] = extract_work_items(child_param)
           @execution_message[:add_child] = success_msg[:add_child]
         end
 
-        desc { _('Remove child') }
+        desc { _('Remove child item') }
         explanation do |child_param|
           format(_("Remove %{child_ref} as a child item."), child_ref: child_param)
         end
         types WorkItem
-        params 'Child #iid, reference or URL'
+        params 'Child item\'s #IID, reference, or URL'
         condition { has_children? && can_admin_link? }
         command :remove_child do |child_param|
           @updates[:remove_child] = extract_work_items(child_param).first
@@ -163,10 +163,10 @@ module Gitlab
         {
           type: _('Type changed successfully.'),
           promote_to: _("Promoted successfully."),
-          set_parent: _('Parent set successfully'),
-          remove_parent: _('Parent removed successfully'),
-          add_child: _('Child items added successfully'),
-          remove_child: _('Child item removed successfully')
+          set_parent: _('Parent item set successfully.'),
+          remove_parent: _('Parent item removed successfully.'),
+          add_child: _('Child items added successfully.'),
+          remove_child: _('Child item removed successfully.')
         }
       end
 

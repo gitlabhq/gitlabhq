@@ -56,7 +56,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       visit project_runners_path(project)
 
       within_testid 'assigned_project_runners' do
-        click_on 'Remove runner'
+        click_on 'Delete runner'
       end
 
       expect(page).not_to have_content(project_runner.display_name)

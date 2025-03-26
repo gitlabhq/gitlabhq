@@ -194,6 +194,20 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    agent_configs_to_remove.delete_all
    ```
 
+## Issues to be aware of when upgrading from 17.4
+
+- Background job migration failure when upgrading from 17.4 to 17.5
+
+  When upgrading from 17.4 to 17.5, you can see an error in Sidekiq jobs related to a removed background data migration. The error message looks like this; `uninitialized constant Gitlab::BackgroundMigration::SetProjectVulnerabilityCount`.
+
+  This error will disappear on its own eventually but you can also execute the following script on Rails console to stop seeing the error;
+
+  ```ruby
+  Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(
+    :gitlab_main, 'SetProjectVulnerabilityCount', :project_settings, :project_id, []
+  ).delete_all
+  ```
+
 ## Issues to be aware of when upgrading from 17.5
 
 - Migration failures when upgrading from GitLab 17.5.

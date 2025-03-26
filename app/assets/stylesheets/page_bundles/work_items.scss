@@ -1,4 +1,5 @@
 @import 'mixins_and_variables_and_functions';
+@import 'issues_show';
 
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
 $work-item-overview-right-sidebar-width: px-to-rem(290px);

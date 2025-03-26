@@ -149,13 +149,13 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
         end
 
         context 'with an unknown session' do
-          let(:session_id) { '_gitlab_session=unknown' }
+          let(:session_id) { 'unknown' }
 
           it_behaves_like 'returning response status', :not_found
         end
 
         context 'with an empty session' do
-          let(:plaintext) { "_gitlab_session=" }
+          let(:session_id) { '' }
 
           it_behaves_like 'returning response status', :not_found
         end
@@ -257,6 +257,40 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             delete_token
             expect(response.body).to include('Some error')
           end
+        end
+      end
+
+      context 'with _gitlab_session' do
+        let(:session_id) { 'session_id' }
+        let(:plaintext) { "_gitlab_session=#{session_id}" }
+
+        context 'with a valid session in ActiveSession' do
+          before do
+            rack_session = Rack::Session::SessionId.new(session_id)
+            allow(ActiveSession).to receive(:sessions_from_ids)
+              .with([rack_session.private_id]).and_return([{ 'warden.user.user.key' => [[user.id],
+                user.authenticatable_salt] }])
+          end
+
+          it 'deletes the session' do
+            delete_token
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+
+          it_behaves_like 'delete_successful_interval_event_tracking'
+        end
+
+        context 'with an unknown session' do
+          let(:session_id) { 'unknown' }
+
+          it_behaves_like 'returning response status', :not_found
+        end
+
+        context 'with an empty session' do
+          let(:plaintext) { "_gitlab_session=" }
+
+          it_behaves_like 'returning response status', :not_found
         end
       end
 

@@ -198,7 +198,7 @@ End-to-end tests should pass with a feature flag enabled before it is enabled on
 There are two ways to confirm that end-to-end tests pass:
 
 - If a merge request adds or edits a [feature flag definition file](../../../feature_flags/_index.md#feature-flag-definition-and-validation),
-  two `e2e:test-on-omnibus` jobs (`ee:instance-parallel` and `ee:instance-parallel-ff-inverse`) are included automatically in the merge request pipeline.
+  two `e2e:test-on-omnibus-ee` jobs (`ee:instance-parallel` and `ee:instance-parallel-ff-inverse`) are included automatically in the merge request pipeline.
   One job runs the application with default feature flag state and another sets it to inverse value. The jobs execute the same suite of tests to confirm that they pass with the feature flag either enabled or disabled.
 - In some cases, if end-to-end test jobs didn't trigger automatically, or if it has run the tests with the default feature flag values (which might not be desired),
   you can create a Draft MR that enables the feature flag to ensure that all E2E tests pass with the feature flag enabled and disabled.
@@ -217,7 +217,7 @@ If enabling the feature flag results in E2E test failures, you can browse the ar
 ### Test execution during feature development
 
 If an end-to-end test enables a feature flag, the end-to-end test suite can be used to test changes in a merge request
-by running the `e2e:test-on-omnibus` job in the merge request pipeline. If the feature flag and relevant changes have already been merged, you can confirm that the tests
+by running the `e2e:test-on-omnibus-ee` job in the merge request pipeline. If the feature flag and relevant changes have already been merged, you can confirm that the tests
 pass on the default branch. The end-to-end tests run on the default branch every two hours, and the results are posted to a
 [Test Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amain).
 

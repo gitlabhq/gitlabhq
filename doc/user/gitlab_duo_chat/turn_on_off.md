@@ -16,16 +16,21 @@ In GitLab 16.11 and later, GitLab Duo Chat is:
 
 If you [turn on or turn off GitLab Duo](../gitlab_duo/turn_on_off.md), you turn on or turn off Duo Chat as well.
 
-## For self-managed
+## For GitLab Self-Managed
 
-To enable GitLab Duo Chat on a GitLab Self-Managed instance,
-you must have the following prerequisites.
+To use GitLab Duo Chat on a GitLab Self-Managed instance, do one of the following:
+
+- Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by GitLab (default option).
+- [Use GitLab Duo Self-Hosted to self-host the AI gateway, with a supported self-hosted LLM](../../administration/gitlab_duo_self_hosted/_index.md#set-up-a-gitlab-duo-self-hosted-infrastructure).
 
 Prerequisites:
 
 - GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
-- You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/). To make sure GitLab Duo Chat works immediately, administrators can
+- For subscriptions:
+  - If you are using GitLab AI vendor models and the cloud-based AI gateway, you
+  must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/). To make sure GitLab Duo Chat works immediately, administrators can
   [manually synchronize your subscription](#manually-synchronize-your-subscription).
+  - If you are using GitLab Duo Self-Hosted, you must have an Ultimate subscription with the GitLab Duo Enterprise add-on.
 - You must have [enabled network connectivity](../gitlab_duo/setup.md).
 - [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
 - All of the users in your instance must have the latest version of their IDE extension.

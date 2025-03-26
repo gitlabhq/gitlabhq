@@ -11985,9 +11985,6 @@ msgstr ""
 msgid "Change item type"
 msgstr ""
 
-msgid "Change item's parent to %{parent_ref}."
-msgstr ""
-
 msgid "Change label"
 msgstr ""
 
@@ -11995,9 +11992,6 @@ msgid "Change made by"
 msgstr ""
 
 msgid "Change milestone"
-msgstr ""
-
-msgid "Change parent"
 msgstr ""
 
 msgid "Change path"
@@ -12279,10 +12273,10 @@ msgstr ""
 msgid "Child issues and epics"
 msgstr ""
 
-msgid "Child item removed successfully"
+msgid "Child item removed successfully."
 msgstr ""
 
-msgid "Child items added successfully"
+msgid "Child items added successfully."
 msgstr ""
 
 msgid "Chinese language support using"
@@ -14427,6 +14421,9 @@ msgid "CodeownersValidation|Contains %d syntax error."
 msgid_plural "CodeownersValidation|Contains %d syntax errors."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "CodeownersValidation|Contains owners which are not accessible within the project"
+msgstr ""
 
 msgid "CodeownersValidation|Contains owners without permission to approve merge requests"
 msgstr ""
@@ -42517,13 +42514,13 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
+msgid "Parent item removed successfully."
+msgstr ""
+
+msgid "Parent item set successfully."
+msgstr ""
+
 msgid "Parent pipeline"
-msgstr ""
-
-msgid "Parent removed successfully"
-msgstr ""
-
-msgid "Parent set successfully"
 msgstr ""
 
 msgid "Parse error: Expected `%{expected}`, but got `%{got}`."
@@ -48909,7 +48906,7 @@ msgstr ""
 msgid "Remove %{namespace}"
 msgstr ""
 
-msgid "Remove %{parent_ref} as this item's parent."
+msgid "Remove %{parent_ref} as this item's parent item."
 msgstr ""
 
 msgid "Remove Zoom meeting"
@@ -48960,10 +48957,10 @@ msgstr ""
 msgid "Remove change request"
 msgstr ""
 
-msgid "Remove child"
+msgid "Remove child epic from an epic"
 msgstr ""
 
-msgid "Remove child epic from an epic"
+msgid "Remove child item"
 msgstr ""
 
 msgid "Remove customer relation contacts"
@@ -49047,10 +49044,10 @@ msgstr ""
 msgid "Remove number"
 msgstr ""
 
-msgid "Remove parent"
+msgid "Remove parent epic from an epic"
 msgstr ""
 
-msgid "Remove parent epic from an epic"
+msgid "Remove parent item"
 msgstr ""
 
 msgid "Remove priority"
@@ -49060,9 +49057,6 @@ msgid "Remove reference"
 msgstr ""
 
 msgid "Remove reviewer"
-msgstr ""
-
-msgid "Remove runner"
 msgstr ""
 
 msgid "Remove search filter"
@@ -55459,6 +55453,9 @@ msgstr ""
 msgid "Set %{epic_ref} as the parent epic."
 msgstr ""
 
+msgid "Set %{parent_ref} as this item's parent item."
+msgstr ""
+
 msgid "Set a default description template to be used for new issues. %{link_start}What are description templates?%{link_end}"
 msgstr ""
 
@@ -55493,6 +55490,9 @@ msgid "Set milestone"
 msgstr ""
 
 msgid "Set parent epic to an epic"
+msgstr ""
+
+msgid "Set parent item"
 msgstr ""
 
 msgid "Set per-user rate limits for imports and exports of projects and groups."
@@ -65092,6 +65092,9 @@ msgid "Violates security policy"
 msgstr ""
 
 msgid "Violation"
+msgstr ""
+
+msgid "VirtualRegistry|Virtual registries"
 msgstr ""
 
 msgid "Visibility"

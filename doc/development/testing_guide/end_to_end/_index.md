@@ -33,7 +33,7 @@ We run scheduled pipelines each night to test staging. You can find these pipeli
 
 #### Using the test-on-omnibus job
 
-It is possible to run end-to-end tests for a merge request by triggering the `e2e:test-on-omnibus` manual action in the `qa` stage (not available for forks).
+It is possible to run end-to-end tests for a merge request by triggering the `e2e:test-on-omnibus-ee` manual action in the `qa` stage (not available for forks).
 
 **This runs end-to-end tests against a custom EE (with an Ultimate license) Docker image built from your merge request's changes.**
 
@@ -185,13 +185,13 @@ Provisioning of all components is performed by the [`engineering-productivity-in
 
 Use these environment variables to configure metrics export:
 
-| Variable                 | Required | Information                                                                                                                                                         |
-| ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `QA_INFLUXDB_URL`        | `true`   | Should be set to `https://influxdb.quality.gitlab.net`. No default value.                                                                                           |
-| `QA_INFLUXDB_TOKEN`      | `true`   | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value.                                    |
-| `QA_RUN_TYPE`            | `false`  | Arbitrary name for test execution, like `e2e:test-on-omnibus`. Automatically inferred from the project name for live environment test executions. No default value. |
-| `QA_EXPORT_TEST_METRICS` | `false`  | Flag to enable or disable metrics export to InfluxDB. Defaults to `false`.                                                                                          |
-| `QA_SAVE_TEST_METRICS`   | `false`  | Flag to enable or disable saving metrics as JSON file. Defaults to `false`.                                                                                         |
+| Variable                 | Required | Information                                                                                                                                                            |
+| ------------------------ | -------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `QA_INFLUXDB_URL`        | `true`   | Should be set to `https://influxdb.quality.gitlab.net`. No default value.                                                                                              |
+| `QA_INFLUXDB_TOKEN`      | `true`   | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value.                                       |
+| `QA_RUN_TYPE`            | `false`  | Arbitrary name for test execution, like `e2e:test-on-omnibus-ee`. Automatically inferred from the project name for live environment test executions. No default value. |
+| `QA_EXPORT_TEST_METRICS` | `false`  | Flag to enable or disable metrics export to InfluxDB. Defaults to `false`.                                                                                             |
+| `QA_SAVE_TEST_METRICS`   | `false`  | Flag to enable or disable saving metrics as JSON file. Defaults to `false`.                                                                                            |
 
 ## How do you run the tests?
 

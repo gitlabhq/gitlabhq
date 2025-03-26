@@ -33,6 +33,7 @@
 .rd-diff-file-title {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   // extra spacing to avoid accidental file collapse clicks
   padding: $gl-spacing-scale-3;
@@ -59,6 +60,8 @@
 .rd-diff-file-info {
   position: relative;
   display: flex;
+  align-self: flex-start;
+  align-items: center;
   // extra spacing to avoid accidental file collapse clicks
   padding: $gl-spacing-scale-3;
   margin: -$gl-spacing-scale-3;
@@ -71,6 +74,7 @@
   display: flex;
   align-items: center;
   margin-left: auto;
+  white-space: nowrap;
 }
 
 .rd-lines-added {

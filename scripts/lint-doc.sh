@@ -119,6 +119,23 @@ then
   ((ERRORCODE++))
 fi
 
+# Images in documentation must contain a milestone number in
+# the name.
+VERSIONLESS_IMAGES=$(find doc -name "*.png" | grep -Ev '_v[0-9][0-9]?_.+\.png$')
+
+# shellcheck disable=2059
+printf "${COLOR_GREEN}INFO: Checking for images without a milestone in the name...${COLOR_RESET}\n"
+if [ -n "${VERSIONLESS_IMAGES}" ]
+then
+  # shellcheck disable=2059
+  printf "${COLOR_RED}ERROR: Image names must include a milestone!\n" >&2
+  printf "${COLOR_RESET}Append a milestone to the image filename\n\n" >&2
+  printf "  in the format '_vXX_Y'. For example, 'sample_image_v18_5.png'.\n" >&2
+  printf "${COLOR_RED}${VERSIONLESS_IMAGES}${COLOR_RESET}\n\n"
+  printf "For help, see https://docs.gitlab.com/development/documentation/styleguide/#image-requirements\n"
+  ((ERRORCODE++))
+fi
+
 FIND_UPPERCASE_FILES=$(find doc -type f -name "*[[:upper:]]*.md")
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for file names containing an uppercase letter...${COLOR_RESET}\n"

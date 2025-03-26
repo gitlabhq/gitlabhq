@@ -20,12 +20,12 @@ RSpec.describe Authn::Tokens::GitlabSession, feature_category: :system_access do
 
     it_behaves_like 'finding the valid revocable'
 
-    describe '#revoke!' do
-      it 'does not support revocation yet' do
-        expect do
-          token.revoke!(user)
-        end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError,
-          'Revocation not supported for this token type')
+    describe '#revoke!', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'deletes the session' do
+        expect(ActiveSession).to receive(:destroy_session).with(valid_revocable, rack_session.private_id)
+        expect(token.revoke!(admin)).to be_success
       end
     end
   end

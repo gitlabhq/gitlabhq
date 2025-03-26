@@ -2311,12 +2311,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project2) { create(:project, star_count: 1) }
     let_it_be(:project3) { create(:project, last_activity_at: 2.minutes.ago) }
 
-    before_all do
-      create(:project_statistics, project: project1, repository_size: 1)
-      create(:project_statistics, project: project2, repository_size: 3)
-      create(:project_statistics, project: project3, repository_size: 2)
-    end
-
     it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)
 
@@ -2347,16 +2341,54 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(projects).to eq([project1, project2, project3].sort_by(&:path).reverse)
     end
 
-    it 'reorders the input relation by storage size asc' do
-      projects = described_class.sort_by_attribute(:storage_size_asc)
+    context 'with project_statistics' do
+      describe '.sort_by_attribute with project_statistics' do
+        def create_project_statistics_with_size(project, size)
+          create(:project_statistics,
+            project: project,
+            repository_size: size,
+            snippets_size: size,
+            build_artifacts_size: size,
+            lfs_objects_size: size,
+            packages_size: size,
+            wiki_size: size,
+            container_registry_size: size).project
+        end
 
-      expect(projects).to eq([project1, project3, project2])
-    end
+        let_it_be(:project4) { create(:project) }
 
-    it 'reorders the input relation by storage size desc' do
-      projects = described_class.sort_by_attribute(:storage_size_desc)
+        before_all do
+          create_project_statistics_with_size(project1, 1)
+          create_project_statistics_with_size(project2, 3)
+          create_project_statistics_with_size(project3, 2)
+          create_project_statistics_with_size(project4, 2)
+        end
 
-      expect(projects).to eq([project2, project3, project1])
+        where(:ascending, :descending) do
+          :storage_size_asc | :storage_size_desc
+          :repository_size_asc | :repository_size_desc
+          :snippets_size_asc | :snippets_size_desc
+          :build_artifacts_size_asc | :build_artifacts_size_desc
+          :lfs_objects_size_asc | :lfs_objects_size_desc
+          :packages_size_asc | :packages_size_desc
+          :wiki_size_asc | :wiki_size_desc
+          :container_registry_size_asc | :container_registry_size_desc
+        end
+
+        with_them do
+          context 'ascending' do
+            it 'sorts by attribute ascending first and id descending second' do
+              expect(described_class.sort_by_attribute(ascending)).to eq([project1, project4, project3, project2])
+            end
+          end
+
+          context 'descending' do
+            it 'sorts by attribute descending first and id descending second' do
+              expect(described_class.sort_by_attribute(descending)).to eq([project2, project4, project3, project1])
+            end
+          end
+        end
+      end
     end
   end
 

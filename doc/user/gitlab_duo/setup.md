@@ -8,7 +8,6 @@ title: Configure GitLab Duo on a GitLab Self-Managed instance
 {{< details >}}
 
 - Offering: GitLab Self-Managed, GitLab Dedicated
-- Tier: Premium, Ultimate
 
 {{< /details >}}
 

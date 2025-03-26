@@ -19,10 +19,10 @@
           - else
             = link_button_to nil, resume_project_runner_path(@project, runner), method: :post, title: s_('Runners|Resume accepting jobs'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', container: 'body' }, icon: 'play'
           - if runner.belongs_to_one_project?
-            = link_button_to _('Remove runner'), project_runner_path(@project, runner), aria: { label: _('Remove') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger
+            = link_button_to s_('Runners|Delete runner'), project_runner_path(@project, runner), aria: { label: s_('Runners|Delete runner') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
           - else
             - runner_project = @project.runner_projects.find_by_runner_id(runner)
-            = link_button_to _('Disable for this project'), project_runner_project_path(@project, runner_project), aria: { label: _('Disable') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger
+            = link_button_to _('Disable for this project'), project_runner_project_path(@project, runner_project), aria: { label: _('Disable for this project') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
         - elsif runner.project_type?
           = form_for [@project, @project.runner_projects.new] do |f|
             = f.hidden_field :runner_id, value: runner.id

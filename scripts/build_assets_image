@@ -5,7 +5,7 @@ set -e
 # This script builds an image that contains assets, that's then used by:
 # - The `CNG` downstream pipelines (triggered from `gitlab-org/gitlab` via the `review-build-cng` job):
 #   https://gitlab.com/gitlab-org/gitlab/-/blob/c34e0834b01cd45c1f69a01b5e38dd6bc505f903/.gitlab/ci/review-apps/main.gitlab-ci.yml#L69.
-# - The `omnibus-gitlab` downstream pipelines (triggered from `gitlab-org/gitlab` via the `e2e:test-on-omnibus` job):
+# - The `omnibus-gitlab` downstream pipelines (triggered from `gitlab-org/gitlab` via the `e2e:test-on-omnibus-ee` job):
 #   https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130.
 # - The `gitlab-org/charts/gitlab` `master` pipelines via `gitlab-org/build/CNG`,
 #   which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:master`

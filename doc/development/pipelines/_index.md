@@ -281,7 +281,7 @@ To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
-- The `e2e:test-on-omnibus` job.
+- The `e2e:test-on-omnibus-ee` job.
 - The `rspec:undercoverage` job.
 - The entire [review apps process](../testing_guide/review_apps.md).
 

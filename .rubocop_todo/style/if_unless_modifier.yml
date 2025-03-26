@@ -580,7 +580,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/legacy_github_import/client.rb'
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
     - 'lib/gitlab/legacy_github_import/project_creator.rb'
-    - 'lib/gitlab/lograge/custom_options.rb'
     - 'lib/gitlab/mail_room.rb'
     - 'lib/gitlab/mail_room/authenticator.rb'
     - 'lib/gitlab/manifest_import/manifest.rb'

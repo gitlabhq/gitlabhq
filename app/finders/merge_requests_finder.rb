@@ -109,6 +109,12 @@ class MergeRequestsFinder < IssuableFinder
     items.group(grouping_columns) # rubocop:disable CodeReuse/ActiveRecord
   end
 
+  def by_author(items)
+    MergeRequests::AuthorFilter.new(
+      params: params
+    ).filter(items)
+  end
+
   def by_commit(items)
     return items unless params[:commit_sha].presence
 

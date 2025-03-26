@@ -59,7 +59,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/services/sbom/ingestion/ingest_reports_service_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/base_spec.rb'
     - 'ee/spec/services/security/findings/dismiss_service_spec.rb'
-    - 'ee/spec/services/security/scan_result_policies/update_license_approvals_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/findings/find_or_create_from_security_finding_service_spec.rb'
     - 'ee/spec/support/shared_contexts/google_cloud_platform/artifact_registry/services_shared_contexts.rb'
     - 'ee/spec/support/shared_contexts/google_cloud_platform/compute/services_shared_contexts.rb'
