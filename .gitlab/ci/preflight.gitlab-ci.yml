@@ -67,7 +67,7 @@ ruby_syntax:
     matrix:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
   script:
-    - run_timed_command "fail_on_warnings scripts/lint/check_ruby_syntax.rb"
+    - fail_on_warnings scripts/lint/check_ruby_syntax.rb
 
 no-ee-check:
   extends:

@@ -7,7 +7,14 @@ module BundlerChecksum::Command
     def execute
       definition = Bundler.definition
       definition.validate_runtime!
-      definition.resolve_only_locally!
+
+      # Workaround for https://github.com/rubygems/rubygems/pull/8148, which
+      # changed in Bundler 2.6.0
+      if definition.respond_to?(:check!)
+        definition.check!
+      else
+        definition.resolve_only_locally!
+      end
 
       errors = lint_specs(definition.specs.sort_by(&:name))
       show_errors(errors)

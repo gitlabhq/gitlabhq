@@ -99,7 +99,8 @@ export default {
   },
   methods: {
     onSelect(branch) {
-      this.$emit(this.$options.model.event, branch);
+      const allBranchesSelected = branch === '';
+      this.$emit(this.$options.model.event, allBranchesSelected ? null : branch);
     },
     onSearch(newSearchTerm) {
       this.searchTerm = newSearchTerm.trim();

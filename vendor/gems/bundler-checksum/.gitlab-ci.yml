@@ -6,7 +6,7 @@ include:
 
 rspec:
   variables:
-    BUNDLER_LATEST: "2.5.15"
+    BUNDLER_LATEST: "2.6.6"
   # Note, needed to copy the matrix definition because
   # There’s a known issue when using !reference tags with the parallel:matrix keyword.
   # https://docs.gitlab.com/ee/ci/debugging.html#config-should-be-an-array-of-hashes-error-message

@@ -130,7 +130,7 @@ export default {
         <gl-link
           v-tooltip-on-truncate
           :href="itemContent.webUrl"
-          class="gl-truncate gl-font-semibold gl-text-gray-900 hover:gl-text-gray-900 hover:gl-underline"
+          class="gl-truncate gl-font-semibold gl-text-default hover:gl-text-default hover:gl-underline"
           :class="{ 'gl-text-subtle': isMRClosed }"
         >
           {{ itemContent.title }}

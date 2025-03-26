@@ -22,7 +22,7 @@ update-static-analysis-cache:
     # Silence cop offenses for rules with "grace period".
     # This will notify Slack if offenses were silenced.
     # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
-    - run_timed_command "fail_on_warnings bundle exec rake rubocop:check:graceful"
+    - fail_on_warnings bundle exec rake rubocop:check:graceful
 
 static-analysis:
   extends:
@@ -82,7 +82,7 @@ eslint:
     - |
       function eslint_script() {
         yarn_install_script
-        run_timed_command "yarn run lint:eslint:all --format gitlab"
+        yarn run lint:eslint:all --format gitlab
       }
 
       run_with_custom_exit_code eslint_script
@@ -102,7 +102,7 @@ eslint-docs:
     - |
       function eslint_docs_script() {
         yarn_install_script
-        run_timed_command "scripts/frontend/lint_docs_links.mjs"
+        scripts/frontend/lint_docs_links.mjs
       }
 
       run_with_custom_exit_code eslint_docs_script
@@ -113,7 +113,7 @@ haml-lint:
     - .ruby-cache
     - .static-analysis:rules:haml-lint
   script:
-    - run_timed_command "bundle exec haml-lint --parallel app/views"
+    - bundle exec haml-lint --parallel app/views
   artifacts:
     expire_in: 31d
     when: always
@@ -125,7 +125,7 @@ haml-lint ee:
     - "haml-lint"
     - .static-analysis:rules:haml-lint-ee
   script:
-    - run_timed_command "bundle exec haml-lint --parallel ee/app/views"
+    - bundle exec haml-lint --parallel ee/app/views
 
 rubocop:
   extends:
@@ -145,12 +145,12 @@ rubocop:
         # We won't notify Slack if offenses were silenced to avoid frequent messages.
         # Job `update-static-analysis-cache` takes care of Slack notifications every 2 hours.
         unset CI_SLACK_WEBHOOK_URL
-        run_timed_command "fail_on_warnings bundle exec rake rubocop:check:graceful"
+        fail_on_warnings bundle exec rake rubocop:check:graceful
       else
         select_existing_files < "${RSPEC_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
-          run_timed_command "fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
+          fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})
         else
           echoinfo "Nothing interesting changed for RuboCop. Skipping."
         fi
@@ -211,7 +211,7 @@ feature-flags-usage:
   script:
     # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
     # the cache would prevent these files from being created.
-    - run_timed_command "fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false"
+    - fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false
   artifacts:
     expire_in: 31d
     when: always
@@ -226,7 +226,7 @@ ensure-application-settings-have-definition-file:
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
-    - run_timed_command "scripts/cells/ci-ensure-application-settings-have-definition-file.rb"
+    - scripts/cells/ci-ensure-application-settings-have-definition-file.rb
 
 semgrep-appsec-custom-rules:
   stage: lint

@@ -23,7 +23,7 @@ setup-test-env:
       function setup_test_env() {
         echo $CI_MERGE_REQUEST_APPROVED
         source scripts/gitlab_component_helpers.sh
-        run_timed_command "download_and_extract_gitlab_workhorse_package" || true
+        download_and_extract_gitlab_workhorse_package || true
         section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
         select_gitlab_workhorse_essentials
         section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
@@ -571,7 +571,7 @@ rspec:coverage:
     - job: rspec:artifact-collector ee remainder
       optional: true
   script:
-    - run_with_custom_exit_code run_timed_command "bundle exec scripts/merge-simplecov"
+    - run_with_custom_exit_code bundle exec scripts/merge-simplecov
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
@@ -607,7 +607,7 @@ rspec:undercoverage:
     - git diff ${UNDERCOVERAGE_COMPARE} --stat
     - echo "Undercoverage comparing with ${UNDERCOVERAGE_COMPARE}."
     - if [ -f scripts/undercoverage ]; then
-        run_timed_command "bundle exec scripts/undercoverage ${UNDERCOVERAGE_COMPARE}";
+        bundle exec scripts/undercoverage ${UNDERCOVERAGE_COMPARE};
       fi;
 
 rspec:feature-flags:
@@ -623,9 +623,9 @@ rspec:feature-flags:
     - source scripts/utils.sh
   script:
     - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
-        run_timed_command "scripts/feature_flags/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
+        scripts/feature_flags/used-feature-flags || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
       else
-        run_timed_command "scripts/feature_flags/used-feature-flags";
+        scripts/feature_flags/used-feature-flags;
       fi
 
 rspec:flaky-tests-report:

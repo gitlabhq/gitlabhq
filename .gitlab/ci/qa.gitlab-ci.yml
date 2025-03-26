@@ -112,10 +112,10 @@ qa:metadata-lint:
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
   script:
-    - run_timed_command "bundle exec bin/qa Test::Instance::All http://localhost:3000 --test-metadata-only"
+    - bundle exec bin/qa Test::Instance::All http://localhost:3000 --test-metadata-only
     - cd ..
-    - run_timed_command "./scripts/qa/testcases-check qa/tmp/test-metadata.json"
-    - run_timed_command "./scripts/qa/quarantine-check qa/tmp/test-metadata.json"
+    - ./scripts/qa/testcases-check qa/tmp/test-metadata.json
+    - ./scripts/qa/quarantine-check qa/tmp/test-metadata.json
   artifacts:
     expire_in: 31d
     when: always

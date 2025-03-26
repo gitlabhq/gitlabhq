@@ -104,7 +104,8 @@ function bundle_install_script() {
   echo "${BUNDLE_WITHOUT}"
   bundle config
 
-  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
+  # Call `eval` explicitly to run the shell functions stored inside BUNDLE_INSTALL_FLAGS
+  eval "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
 
   if [[ $(bundle info pg) ]]; then
     # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
@@ -113,7 +114,7 @@ function bundle_install_script() {
     # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
     # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
     # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
-    run_timed_command "bundle pristine pg"
+    bundle pristine pg
   fi
 
   section_end "bundle-install"
@@ -221,20 +222,20 @@ function setup_db() {
 }
 
 function install_gitlab_gem() {
-  run_timed_command "gem install httparty --no-document --version 0.20.0"
-  run_timed_command "gem install gitlab --no-document --version 4.19.0"
+  gem install httparty --no-document --version 0.20.0
+  gem install gitlab --no-document --version 4.19.0
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.3.1"
+  gem install test_file_finder --no-document --version 0.3.1
 }
 
 function install_activesupport_gem() {
-  run_timed_command "gem install activesupport --no-document --version 7.0.8.4"
+  gem install activesupport --no-document --version 7.0.8.4
 }
 
 function install_junit_merge_gem() {
-  run_timed_command "gem install junit_merge --no-document --version 0.1.2"
+  gem install junit_merge --no-document --version 0.1.2
 }
 
 function select_existing_files() {

@@ -23,7 +23,7 @@ include:
     - source ./scripts/rspec_helpers.sh
     # Only install knapsack after bundle install! Otherwise oddly some native
     # gems could not be found under some circumstance. No idea why, hours wasted.
-    - run_timed_command "gem install knapsack --no-document"
+    - gem install knapsack --no-document
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn"  # Do not use 'bundle exec' here
     - export RSPEC_SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests-${CI_JOB_ID}.txt"
     - export RSPEC_RETRIED_TESTS_REPORT_PATH="rspec/retried_tests-${CI_JOB_ID}.txt"

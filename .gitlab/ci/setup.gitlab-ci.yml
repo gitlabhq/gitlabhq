@@ -15,7 +15,7 @@ cache gems:
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:bundle-package[collapsed=true]\r\e[0KPackaging gems"
     - bundle config set cache_all true
-    - run_timed_command "bundle package --all-platforms"
+    - bundle package --all-platforms
     - echo -e "\e[0Ksection_end:`date +%s`:bundle-package\r\e[0K"
   artifacts:
     paths:

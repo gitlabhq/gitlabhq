@@ -52,7 +52,7 @@ update-tests-metadata:
     - |
       function update_metadata() {
         test -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
-        run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
+        retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
         update_tests_metadata
         update_tests_mapping
       }

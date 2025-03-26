@@ -20,7 +20,7 @@ build-qa-image:
   stage: build-images
   needs: []
   script:
-    - run_timed_command "scripts/build_qa_image"
+    - scripts/build_qa_image
 
 build-qa-image as-if-foss:
   extends:
@@ -55,7 +55,7 @@ build-gdk-image:
     - job: retag-gdk-image
       optional: true
   script:
-    - run_with_custom_exit_code run_timed_command "scripts/build_gdk_image"
+    - run_with_custom_exit_code scripts/build_gdk_image
 
 # NOTE: release-tools verifies the presence on this job for a commit that is
 # candidate to an auto-deploy package. This job name can't be changed without
@@ -68,7 +68,7 @@ build-assets-image:
   needs: ["compile-production-assets"]
   script:
     - skopeo login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - run_timed_command "scripts/build_assets_image"
+    - scripts/build_assets_image
   artifacts:
     expire_in: 7 days
     paths:

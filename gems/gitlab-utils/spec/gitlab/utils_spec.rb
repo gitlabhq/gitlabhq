@@ -645,37 +645,130 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
   end
 
   describe '.deep_sort_hash' do
-    it 'recursively sorts a hash' do
+    it 'is an alias for .deep_sort_hashes' do
+      expect(JSON.generate(described_class.deep_sort_hash({ b: 2, a: 1 })))
+        .to eq(JSON.generate({ a: 1, b: 2 }))
+    end
+  end
+
+  describe '.deep_sort_hashes' do
+    it 'recursively sorts a hash with symbol keys' do
       hash = {
         z: "record-z",
         e: { y: "nested-record-y", a: "nested-record-a", b: "nested-record-b" },
         c: {
-          m: {
-            p: "doubly-nested-record-p",
-            o: "doubly-nested-record-o"
-          },
-          k: {
-            v: "doubly-nested-record-v",
-            u: "doubly-nested-record-u"
-          }
+          m: { p: "doubly-nested-record-p", o: "doubly-nested-record-o" },
+          k: { v: "doubly-nested-record-v", u: "doubly-nested-record-u" }
         }
       }
-      expect(JSON.generate(described_class.deep_sort_hash(hash))).to eq(JSON.generate({
+      expect(JSON.generate(described_class.deep_sort_hashes(hash))).to eq(JSON.generate({
         c: {
-          k: {
-            u: "doubly-nested-record-u",
-            v: "doubly-nested-record-v"
-          },
-          m: {
-            o: "doubly-nested-record-o",
-            p: "doubly-nested-record-p"
-          }
+          k: { u: "doubly-nested-record-u", v: "doubly-nested-record-v" },
+          m: { o: "doubly-nested-record-o", p: "doubly-nested-record-p" }
 
         },
-        e: { a: "nested-record-a", b: "nested-record-b",
-             y: "nested-record-y" },
+        e: { a: "nested-record-a", b: "nested-record-b", y: "nested-record-y" },
         z: "record-z"
       }))
+    end
+
+    it 'recursively sorts a hash with mixed string and symbol keys' do
+      hash = {
+        z: "record-z",
+        'e' => { y: "nested-record-y", 'a' => "nested-record-a", 'b' => "nested-record-b" },
+        c: {
+          'm' => { p: "doubly-nested-record-p", 'o' => "doubly-nested-record-o" },
+          k: { 'v' => "doubly-nested-record-v", u: "doubly-nested-record-u" }
+        }
+      }
+      expect(JSON.generate(described_class.deep_sort_hashes(hash))).to eq(JSON.generate({
+        c: {
+          k: { u: "doubly-nested-record-u", 'v' => "doubly-nested-record-v" },
+          'm' => { 'o' => "doubly-nested-record-o", p: "doubly-nested-record-p" }
+        },
+        'e' => { 'a' => "nested-record-a", 'b' => "nested-record-b", y: "nested-record-y" },
+        z: "record-z"
+      }))
+    end
+
+    it 'recursively sorts a hash with nested hashes/arrays and mixed string/symbol keys' do
+      item = {
+        z: "record-z",
+        'e' => [
+          {
+            y: "nested-record-y",
+            'b' => "nested-record-b",
+            c: [{ 'z' => "this should remain the first element in the c: array" }, "a"]
+          },
+          "This non-Array/non-Hash object should remain the second element in the 'e' array",
+          { 'a' => "this should remain the third element in the 'e' array" }
+        ],
+        c: {
+          'm' => { p: "doubly-nested-record-p", 'o' => "doubly-nested-record-o" },
+          k: { 'v' => "doubly-nested-record-v", u: "doubly-nested-record-u" }
+        }
+      }
+      expect(JSON.generate(described_class.deep_sort_hashes(item))).to eq(JSON.generate({
+        c: {
+          k: { u: "doubly-nested-record-u", 'v' => "doubly-nested-record-v" },
+          'm' => { 'o' => "doubly-nested-record-o", p: "doubly-nested-record-p" }
+        },
+        'e' => [
+          {
+            'b' => "nested-record-b",
+            c: [{ 'z' => "this should remain the first element in the c: array" }, "a"],
+            y: "nested-record-y"
+          },
+          "This non-Array/non-Hash object should remain the second element in the 'e' array",
+          { 'a' => "this should remain the third element in the 'e' array" }
+        ],
+        z: "record-z"
+      }))
+    end
+
+    it 'recursively sorts an array with deeply nested hashes/arrays and mixed string/symbol keys' do
+      item = [
+        {
+          z: "record-z",
+          'e' => [
+            {
+              y: "nested-record-y",
+              'b' => "nested-record-b",
+              c: [{ 'z' => "this should remain the first element in the c: array" }, "a"]
+            },
+            "This non-Array/non-Hash object should remain the second element in the 'e' array",
+            { 'a' => "this should remain the third element in the 'e' array" }
+          ],
+          c: {
+            'm' => { p: "doubly-nested-record-p", 'o' => "doubly-nested-record-o" },
+            k: { 'v' => "doubly-nested-record-v", u: "doubly-nested-record-u" }
+          }
+        },
+        { "bb" => "bb", aa: "aa" },
+        { v: [[{ r: 2, q: 1 }, { t: 4, s: 3 }]] }
+      ]
+      actual = JSON.generate({ a: described_class.deep_sort_hashes(item) })
+      expected = JSON.generate({ a: [
+        {
+          c: {
+            k: { u: "doubly-nested-record-u", 'v' => "doubly-nested-record-v" },
+            'm' => { 'o' => "doubly-nested-record-o", p: "doubly-nested-record-p" }
+          },
+          'e' => [
+            {
+              'b' => "nested-record-b",
+              c: [{ 'z' => "this should remain the first element in the c: array" }, "a"],
+              y: "nested-record-y"
+            },
+            "This non-Array/non-Hash object should remain the second element in the 'e' array",
+            { 'a' => "this should remain the third element in the 'e' array" }
+          ],
+          z: "record-z"
+        },
+        { aa: "aa", "bb" => "bb" },
+        { v: [[{ q: 1, r: 2 }, { s: 3, t: 4 }]] }
+      ] })
+      expect(actual).to eq(expected)
     end
   end
 end

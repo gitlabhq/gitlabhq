@@ -139,7 +139,7 @@ function run_task() {
   local ruby_cmd="${1}"
   local toolbox_pod=$(get_pod "toolbox")
 
-  run_timed_command "kubectl exec --namespace \"${namespace}\" \"${toolbox_pod}\" -- gitlab-rails runner \"${ruby_cmd}\""
+  kubectl exec --namespace "${namespace}" "${toolbox_pod}" -- gitlab-rails runner "${ruby_cmd}"
 }
 
 function disable_sign_ups() {

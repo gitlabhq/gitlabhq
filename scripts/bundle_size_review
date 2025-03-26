@@ -35,7 +35,7 @@ mkdir -p bundle-size-review
 
 # Running webpack
 export WEBPACK_REPORT="true"
-run_timed_command "yarn run webpack-prod > bundle-size-review/webpack-output.log"
+yarn run webpack-prod > bundle-size-review/webpack-output.log
 
 # Copy results from stats plugin
 cp webpack-report/index.html bundle-size-review/bundle-report.html
@@ -50,7 +50,7 @@ fi
 yarn global add https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics.git
 
 # Create smaller analysis.json
-run_timed_command "webpack-entry-point-analyser --from-file ./webpack-report/stats.json --json ./bundle-size-review/analysis.json --sha ${COMMIT_SHA}"
+webpack-entry-point-analyser --from-file ./webpack-report/stats.json --json ./bundle-size-review/analysis.json --sha ${COMMIT_SHA}
 rm -rf webpack-report
 
 if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
@@ -59,10 +59,10 @@ if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
 fi
 
 # Run comparison
-run_timed_command "webpack-compare-reports --job ${CI_JOB_ID} --to-file ./bundle-size-review/analysis.json --html ./bundle-size-review/comparison.html --markdown ./bundle-size-review/comparison.md"
+webpack-compare-reports --job ${CI_JOB_ID} --to-file ./bundle-size-review/analysis.json --html ./bundle-size-review/comparison.html --markdown ./bundle-size-review/comparison.md
 
 # Execute danger
 danger_id=$(echo -n "${DANGER_GITLAB_API_TOKEN}" | md5sum | awk '{print $1}' | cut -c5-10)
-run_timed_command "bundle exec danger --dangerfile=danger/Dangerfile-bundle_size --fail-on-errors=true --verbose --danger_id=bundle-size-review-${danger_id}"
+bundle exec danger --dangerfile=danger/Dangerfile-bundle_size --fail-on-errors=true --verbose --danger_id=bundle-size-review-${danger_id}
 
 exit "0"

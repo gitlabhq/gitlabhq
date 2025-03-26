@@ -11,7 +11,9 @@ db:setup pg16:
     - .rails:rules:setup-test-env
   script:
     - source scripts/utils.sh
-    - run_with_custom_exit_code run_timed_command "pg_dumpall -h postgres -U postgres > pg_dumpall.sql"
+    # We need bash -c, otherwise, the pg_dumpall.sql file would
+    # also contain the output from run_with_custom_exit_code.
+    - run_with_custom_exit_code bash -c "pg_dumpall -h postgres -U postgres > pg_dumpall.sql"
   artifacts:
     paths:
       - pg_dumpall.sql
@@ -140,8 +142,8 @@ db:check-schema:
   script:
     - |
       function db_check_schema() {
-        run_timed_command "bundle exec rake db:drop db:create db:migrate"
-        run_timed_command "scripts/validate_migration_timestamps"
+        bundle exec rake db:drop db:create db:migrate
+        scripts/validate_migration_timestamps
       }
 
       run_with_custom_exit_code db_check_schema

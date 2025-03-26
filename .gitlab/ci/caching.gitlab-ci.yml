@@ -13,10 +13,10 @@ cache-workhorse:
       function cache_workhorse() {
         source scripts/gitlab_component_helpers.sh
         gitlab_workhorse_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
-        run_timed_command "scripts/setup-test-env"
-        run_timed_command "select_gitlab_workhorse_essentials"
-        run_timed_command "create_gitlab_workhorse_package"
-        run_timed_command "upload_gitlab_workhorse_package"
+        scripts/setup-test-env
+        select_gitlab_workhorse_essentials
+        create_gitlab_workhorse_package
+        upload_gitlab_workhorse_package
       }
 
       run_with_custom_exit_code cache_workhorse
@@ -46,8 +46,8 @@ cache-workhorse:
         gitlab_assets_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
         assets_compile_script
         echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
-        run_timed_command "create_gitlab_assets_package"
-        run_timed_command "upload_gitlab_assets_package"
+        create_gitlab_assets_package
+        upload_gitlab_assets_package
       }
 
       run_with_custom_exit_code cache_assets

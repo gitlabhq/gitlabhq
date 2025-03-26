@@ -102,12 +102,14 @@ describe('Pipeline editor branch switcher', () => {
         ]);
       });
 
-      describe('when a branch is selected', () => {
-        beforeEach(() => {
-          findGlCollapsibleListbox().vm.$emit('select', 'feature-branch');
+      describe('when selected', () => {
+        it('updates model to "All branches"', () => {
+          findGlCollapsibleListbox().vm.$emit('select', '');
+          expect(wrapper.emitted('select')[0]).toEqual([null]);
         });
 
-        it('updates model', () => {
+        it('updates model to a branch', () => {
+          findGlCollapsibleListbox().vm.$emit('select', 'feature-branch');
           expect(wrapper.emitted('select')[0]).toEqual(['feature-branch']);
         });
       });

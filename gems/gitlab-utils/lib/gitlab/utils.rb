@@ -314,12 +314,29 @@ module Gitlab
       end
     end
 
-    # Use this method to recursively sort a hash on its keys
-    def deep_sort_hash(hash)
-      hash.keys.sort.each_with_object({}) do |key, sorted_hash|
-        value = hash[key]
-        sorted_hash[key] = value.is_a?(Hash) ? deep_sort_hash(value) : value
+    # @param [Array, Hash] item - An Array or a Hash
+    # @return [Array, Hash]
+    #
+    # Use this method to recursively sort any nested Hashes of a collection (an Array or Hash), with
+    # the sort order based on the keys of the nested Hashes.
+    #
+    # - deeply nested Arrays are supported. For example: `[[[{b: 2, a: 1}]]]` will sort the nested Hash.
+    # - The order of any nested Arrays is preserved. For example: `[1, {b: 2, a: 1}, 3]` will sort the
+    #   nested Hash, but preserve the order of the Array.
+    # - Any non-Array/non-Hash items are returned as-is without further recursion.
+    def deep_sort_hashes(item)
+      case item
+      when Hash
+        item.keys.sort_by(&:to_s).each_with_object({}) do |key, sorted_hash|
+          value = item[key]
+          sorted_hash[key] = value.is_a?(Hash) || value.is_a?(Array) ? deep_sort_hashes(value) : value
+        end
+      when Array
+        item.map { |element| deep_sort_hashes(element) }
+      else
+        item
       end
     end
+    alias_method :deep_sort_hash, :deep_sort_hashes
   end
 end
