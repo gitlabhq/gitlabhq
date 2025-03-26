@@ -20259,6 +20259,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="addonusergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="addonusergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="addonusergroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `AddOnUser.organizations`
 
@@ -21285,6 +21286,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="autocompletedusergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="autocompletedusergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="autocompletedusergroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `AutocompletedUser.mergeRequestInteraction`
 
@@ -24101,6 +24103,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="currentusergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="currentusergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="currentusergroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `CurrentUser.organizations`
 
@@ -30418,6 +30421,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneegroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestassigneegroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestassigneegroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestAssignee.organizations`
 
@@ -30836,6 +30840,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorgroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestauthorgroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestauthorgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestAuthor.organizations`
 
@@ -31305,6 +31310,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantgroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestparticipantgroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestparticipantgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestParticipant.organizations`
 
@@ -31742,6 +31748,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestreviewergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestreviewergroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestReviewer.organizations`
 
@@ -39053,6 +39060,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercoregroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="usercoregroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="usercoregroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `UserCore.organizations`
 
@@ -42832,6 +42840,14 @@ Values for sorting releases belonging to a group.
 | ----- | ----------- |
 | <a id="groupreleasesortreleased_at_asc"></a>`RELEASED_AT_ASC` | Released at by ascending order. |
 | <a id="groupreleasesortreleased_at_desc"></a>`RELEASED_AT_DESC` | Released at by descending order. |
+
+### `GroupSort`
+
+Values for sorting groups.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="groupsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
 
 ### `GroupingEnum`
 
@@ -47264,6 +47280,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="usergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="usergroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ###### `User.organizations`
 

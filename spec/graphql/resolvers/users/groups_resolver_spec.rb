@@ -82,6 +82,19 @@ RSpec.describe Resolvers::Users::GroupsResolver do
           )
         end
       end
+
+      context 'when sort is provided' do
+        let(:group_arguments) { { search: 'maintainer', sort: :similarity } }
+
+        it 'returns expected groups in consistent order' do
+          is_expected.to eq(
+            [
+              public_maintainer_group,
+              private_maintainer_group
+            ]
+          )
+        end
+      end
     end
 
     context 'when resolver object is different from current user' do

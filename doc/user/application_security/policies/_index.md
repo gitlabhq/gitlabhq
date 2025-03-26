@@ -44,8 +44,9 @@ The following policy types are available:
 A security policy project is a special type of project used only to contain policies. The
 policies are stored in the `.gitlab/security-policies/policy.yml` YAML file.
 
-To enforce the policies contained in an security policy project you link it to a project, subgroup,
-group, or multiples of each. A security policy project can contain multiple policies but they are
+To enforce the policies contained in a security policy project, link the security policy
+project to the projects, subgroups, or groups you want to enforce the policies on.
+A security policy project can contain multiple policies but they are
 enforced together. A security policy project enforced on a group or subgroup applies to everything
 below in the hierarchy, including all subgroups and their projects.
 

@@ -22,30 +22,32 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     context 'when changing access level of owner' do
-      let_it_be(:organization_user) { create(:organization_owner) }
+      let_it_be(:owner) { create(:organization_owner) }
 
       context 'when user is the last owner' do
         context 'when assigning lower access level' do
           it 'raises validation error' do
-            error_message = _('Validation failed: You cannot change the access of the last owner from the organization')
+            error_message = _(
+              'Validation failed: You cannot change the access of the last owner from the organization'
+            )
 
-            expect { organization_user.update!(access_level: 'default') }
+            expect { owner.update!(access_level: 'default') }
               .to raise_error(ActiveRecord::RecordInvalid, error_message)
           end
         end
 
         context 'when assigning access to same level' do
           it 'does not raise validation error' do
-            expect { organization_user.update!(access_level: 'owner') }.not_to raise_error
+            expect { owner.update!(access_level: 'owner') }.not_to raise_error
           end
         end
       end
 
       context 'when organization has multiple owners' do
-        let_it_be(:other_owner) { create(:organization_owner, organization: organization_user.organization) }
+        let_it_be(:other_owner) { create(:organization_owner, organization: owner.organization) }
 
         it 'does not raise validation error' do
-          expect { organization_user.update!(access_level: 'default') }.not_to raise_error
+          expect { owner.update!(access_level: 'default') }.not_to raise_error
         end
       end
     end
@@ -170,7 +172,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         end
       end
 
-      context 'when creating as an owner' do
+      context 'when creating as an admin' do
         let(:user_is_admin) { true }
 
         it 'creates record with correct attributes' do
@@ -209,12 +211,80 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
   end
 
-  describe '.default_organization_access_level' do
-    let(:user_is_admin) { true }
+  describe '.update_default_organization_record_for' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+    let_it_be(:user) { create(:user, :without_default_org) }
+    let_it_be(:user_id) { user.id }
+    let(:user_is_admin) { false }
 
+    subject(:update_default_organization_record) do
+      described_class.update_default_organization_record_for(user_id, user_is_admin: user_is_admin)
+    end
+
+    context 'when record does not exist yet' do
+      it 'creates record with correct attributes' do
+        expect { update_default_organization_record }.to change { described_class.count }.by(1)
+        expect(default_organization.user?(user)).to be(true)
+      end
+    end
+
+    context 'when entry already exists' do
+      let_it_be(:organization_user) { create(:organization_user, user: user, organization: default_organization) }
+
+      it 'does not create or update existing record' do
+        expect { update_default_organization_record }.not_to change { described_class.count }
+      end
+
+      context 'when access_level changes' do
+        let(:user_is_admin) { true }
+
+        it 'changes access_level on the existing record' do
+          expect(default_organization.owner?(user)).to be(false)
+
+          expect { update_default_organization_record }.not_to change { described_class.count }
+
+          expect(default_organization.owner?(user)).to be(true)
+        end
+      end
+    end
+
+    context 'when creating with invalid user_id' do
+      let(:user_id) { nil }
+
+      it 'does not add a new record' do
+        expect { update_default_organization_record }.not_to change { described_class.count }
+      end
+    end
+
+    context 'when organization is not found' do
+      before do
+        stub_const("Organizations::Organization::DEFAULT_ORGANIZATION_ID", non_existing_record_id)
+      end
+
+      it 'does not raise validation error' do
+        expect { update_default_organization_record }.not_to raise_error
+      end
+    end
+
+    context 'when another error occurs' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:save!).and_raise(ActiveRecord::RecordInvalid.new(instance))
+        end
+      end
+
+      it 'raise error' do
+        expect { update_default_organization_record }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
+
+  describe '.default_organization_access_level' do
     subject { described_class.default_organization_access_level(user_is_admin: user_is_admin) }
 
     context 'when user is admin' do
+      let(:user_is_admin) { true }
+
       it { is_expected.to eq(:owner) }
     end
 

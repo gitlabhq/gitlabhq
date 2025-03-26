@@ -1,5 +1,12 @@
 <script>
-import { GlIcon, GlLink, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlLink,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/directives/tooltip_on_truncate';
 import toast from '~/vue_shared/plugins/global_toast';
 
@@ -11,6 +18,7 @@ export default {
     GlDisclosureDropdownItem,
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     TooltipOnTruncate,
   },
   props: {
@@ -31,6 +39,9 @@ export default {
     branchComparePath() {
       return this.itemContent?.comparePath;
     },
+    iconTooltip() {
+      return __('Branch');
+    },
   },
   methods: {
     copyToClipboard(text, message) {
@@ -49,8 +60,14 @@ export default {
 
 <template>
   <div class="gl-flex gl-w-full gl-justify-between">
-    <div class="flex-xl-nowrap gl-flex gl-w-19/20 gl-flex-wrap gl-items-center gl-gap-2">
-      <gl-icon name="branch" variant="default" class="gl-shrink-0" />
+    <div class="flex-xl-nowrap gl-flex gl-w-19/20 gl-flex-wrap gl-items-center gl-gap-3">
+      <gl-icon
+        v-gl-tooltip
+        :title="iconTooltip"
+        name="branch"
+        variant="default"
+        class="gl-shrink-0"
+      />
       <gl-link
         v-tooltip-on-truncate
         :href="branchComparePath"

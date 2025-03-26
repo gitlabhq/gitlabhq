@@ -1,0 +1,9 @@
+---
+name: web_ide_multi_domain
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520263
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185623
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/526529
+milestone: '17.11'
+group: group::remote development
+type: gitlab_com_derisk
+default_enabled: false

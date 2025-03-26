@@ -44,7 +44,17 @@ module Gitlab
       buildkite
       campfire
       clickup
+      mattermost
+      mattermost_slash_commands
+      microsoft_teams
+      packagist
+      phorge
+      pipelines_email
       pivotaltracker
+      prometheus
+      pumble
+      pushover
+      redmine
       slack
       slack_slash_commands
       squash_tm

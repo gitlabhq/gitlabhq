@@ -97,10 +97,9 @@ export default {
       <gl-card
         v-for="(file, index) in blobSearch.files"
         :key="projectPathAndFilePath(file)"
-        class="file-result-holder file-holder gl-my-5"
+        class="gl-my-5"
         :header-class="{
           '!gl-border-b-0': !hasCode(file),
-          'file-title': true,
         }"
         body-class="gl-p-0"
       >

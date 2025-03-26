@@ -47,8 +47,6 @@ module UsageDataHelpers
     projects_jenkins_active
     projects_jira_active
     projects_custom_issue_tracker_active
-    projects_mattermost_active
-    projects_prometheus_active
     projects_with_repositories_enabled
     projects_with_error_tracking_enabled
     projects_with_enabled_alert_integrations

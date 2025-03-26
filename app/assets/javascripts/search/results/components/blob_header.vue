@@ -72,7 +72,8 @@ export default {
       const regex = new RegExp(`(${this.query.search})`, 'g');
       return this.filePath.replace(
         regex,
-        (match, p1) => `<span class="highlight_word ${this.systemMatchCodeTheme}">${p1}</span>`,
+        (match, p1) =>
+          `<span class="highlight-search-term ${this.systemMatchCodeTheme}">${p1}</span>`,
       );
     },
     systemMatchCodeTheme() {
@@ -94,7 +95,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-header-content gl-flex gl-items-center gl-leading-1">
+  <div class="gl-flex gl-items-center gl-leading-1">
     <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
 
     <gl-link

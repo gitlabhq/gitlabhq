@@ -13,7 +13,7 @@ import {
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import TooltipOnTruncate from '~/vue_shared/directives/tooltip_on_truncate';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 
@@ -99,6 +99,9 @@ export default {
     isMergedOrClosed() {
       return this.isMRClosed || this.isMRMerged;
     },
+    iconTooltip() {
+      return __('Merge request');
+    },
   },
   methods: {
     copyToClipboard(text, message) {
@@ -121,6 +124,8 @@ export default {
     >
       <div class="item-title gl-flex gl-min-w-0 gl-items-center gl-gap-3">
         <gl-icon
+          v-gl-tooltip
+          :title="iconTooltip"
           name="merge-request"
           :size="16"
           variant="default"

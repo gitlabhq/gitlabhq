@@ -62,9 +62,11 @@ export default {
       :aria-label="__('Decrease')"
       @click="decrementScale"
     />
-    <span data-testid="scale-value" class="gl-border-t gl-border-b gl-bg-white gl-p-3 gl-text-sm">{{
-      scaleLabel
-    }}</span>
+    <span
+      data-testid="scale-value"
+      class="gl-border-t gl-border-b gl-bg-overlap gl-p-3 gl-text-sm"
+      >{{ scaleLabel }}</span
+    >
     <gl-button
       icon="plus"
       :disabled="disableIncrease"

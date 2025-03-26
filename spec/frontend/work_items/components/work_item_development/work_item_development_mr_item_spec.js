@@ -64,4 +64,10 @@ describe('WorkItemDevelopmentMRItem', () => {
     expect(findMRTitle().classes()).toContain('gl-text-subtle');
     expect(findMRIcon().attributes('class')).toContain('gl-fill-icon-subtle');
   });
+
+  it('has icon tooltip', () => {
+    createComponent();
+
+    expect(findMRIcon().attributes('title')).toBe('Merge request');
+  });
 });

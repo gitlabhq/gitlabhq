@@ -24,6 +24,7 @@ class IdeController < ApplicationController
 
   def index
     @fork_info = fork_info(project, params[:branch])
+    push_frontend_feature_flag(:web_ide_multi_domain, @project.group)
 
     render layout: helpers.use_new_web_ide? ? 'fullscreen' : 'application'
   end

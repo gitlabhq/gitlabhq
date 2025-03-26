@@ -177,6 +177,13 @@ e2e:test-on-omnibus-ee:
     QA_RUN_TYPE: e2e-test-on-omnibus
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
     PIPELINE_NAME: E2E Omnibus GitLab EE
+  trigger:
+    strategy: depend
+    include:
+      - artifact: $DYNAMIC_PIPELINE_YML
+        job: e2e-test-pipeline-generate
+        inputs:
+          pipeline-type: internal
 
 e2e:test-on-omnibus-ce:
   extends:

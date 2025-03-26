@@ -459,14 +459,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       count_data = subject[:counts]
 
       expect(count_data[:projects]).to eq(4)
-      expect(count_data[:projects_prometheus_active]).to eq(1)
       expect(count_data[:projects_jenkins_active]).to eq(1)
       expect(count_data[:projects_jira_active]).to eq(4)
       expect(count_data[:projects_custom_issue_tracker_active]).to eq(1)
-      expect(count_data[:projects_mattermost_active]).to eq(1)
-      expect(count_data[:groups_mattermost_active]).to eq(1)
-      expect(count_data[:instances_mattermost_active]).to eq(1)
-      expect(count_data[:projects_inheriting_mattermost_active]).to eq(1)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)

@@ -29,6 +29,44 @@ RSpec.shared_examples Integrations::Base::Harbor do
     it { is_expected.to allow_value('https://demo.goharbor.io').for(:url) }
   end
 
+  describe '#project_name' do
+    let(:active) { true }
+
+    subject(:integration) { build(:harbor_integration, active: active) }
+
+    it { is_expected.to validate_presence_of(:project_name) }
+    it { is_expected.to allow_values('project-1', 'my_project', '0123456789').for(:project_name) }
+
+    it 'does not allow invalid values' do
+      is_expected.not_to allow_values(nil, 'https://', '../../project', 'project%2F@', '\r\t project')
+        .for(:project_name)
+    end
+
+    it 'validates the length' do
+      is_expected.to validate_length_of(:project_name)
+        .is_at_most(described_class::MAX_PROJECT_NAME_LENGTH)
+    end
+
+    context 'when integration is not active' do
+      let(:active) { false }
+
+      it { is_expected.not_to validate_presence_of(:project_name) }
+      it { is_expected.to allow_values(nil).for(:project_name) }
+
+      context 'with length validation' do
+        before do
+          integration.project_name = subject.project_name * (described_class::MAX_PROJECT_NAME_LENGTH + 1)
+        end
+
+        it 'does not validate the length' do
+          integration.valid?
+
+          expect(integration.errors[:project_name]).to be_empty
+        end
+      end
+    end
+  end
+
   describe 'hostname' do
     it 'returns the host of the integration url' do
       expect(harbor_integration.hostname).to eq('demo.goharbor.io')

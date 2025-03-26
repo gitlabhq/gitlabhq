@@ -10,6 +10,7 @@
 #   params:
 #     permissions: string (see Types::Groups::UserPermissionsEnum)
 #     search: string used for search on path and group name
+#     sort: string (see Types::Namespaces::GroupSortEnum)
 #
 # Initially created to filter user groups and descendants where the user can create projects
 module Groups
@@ -56,6 +57,14 @@ module Groups
 
     def permission_scope_import_projects?
       params[:permission_scope] == :import_projects
+    end
+
+    def sort(items)
+      if params[:sort] == :similarity && params[:search].present?
+        return items.sorted_by_similarity_desc(params[:search])
+      end
+
+      super
     end
   end
 end

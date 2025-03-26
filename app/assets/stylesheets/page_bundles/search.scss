@@ -33,16 +33,14 @@ $black-divider: #666;
 }
 
 .results {
-  .file-header-content {
-    .dark.highlight_word {
-      background-color: $dark-highlight-bg !important;
-      color: $dark-highlight-color !important;
-    }
+  .dark.highlight_search_term {
+    background-color: $dark-highlight-bg !important;
+    color: $dark-highlight-color !important;
+  }
 
-    .white.highlight_word {
-      background-color: $white-highlight !important;
-      color: $dark-highlight-color !important;
-    }
+  .white.highlight_search_term {
+    background-color: $white-highlight !important;
+    color: $dark-highlight-color !important;
   }
 
   .multimatch-divider-dark {

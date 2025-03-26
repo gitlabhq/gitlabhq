@@ -52,6 +52,19 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
           is_expected.to match(keyword_search_expected_groups)
         end
       end
+
+      context 'when sorting results by similarity' do
+        let(:search_arguments) { { search: 'maintainer', sort: :similarity } }
+
+        it 'sorts the results' do
+          is_expected.to eq(
+            [
+              public_maintainer_group,
+              private_maintainer_group
+            ]
+          )
+        end
+      end
     end
 
     it 'returns all groups where the user is a direct member' do

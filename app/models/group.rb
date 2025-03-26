@@ -298,6 +298,36 @@ class Group < Namespace
     end
   end
 
+  # .sorted_by_similarity_desc can generate poorly performing queries.
+  # Only apply this scope in combination with other filters, ideally on sets of
+  # less than 100,000 records.
+  scope :sorted_by_similarity_desc, ->(search) do
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["path"], multiplier: 1 },
+        { column: arel_table["name"], multiplier: 0.7 }
+      ])
+
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'similarity',
+          column_expression: order_expression,
+          order_expression: order_expression.desc,
+          order_direction: :desc,
+          add_to_projections: true
+        ),
+        # Tie-breaker for if two results have the same similarity score.
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Namespace.arel_table['id'].asc
+        )
+      ])
+
+    order.apply_cursor_conditions(reorder(order))
+  end
+
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
   scope :in_organization, ->(organization) { where(organization: organization) }

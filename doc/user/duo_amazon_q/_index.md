@@ -71,6 +71,7 @@ Amazon Q can analyze Java 8 or 11 code and determine the necessary Java changes 
 Prerequisites:
 
 - You must [have a runner and a CI/CD pipeline configured for your project](../../ci/_index.md).
+- Your `pom.xml` file must have a [source and target](https://maven.apache.org/plugins/maven-compiler-plugin/examples/set-compiler-source-and-target.html).
 
 To upgrade Java:
 

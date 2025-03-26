@@ -161,3 +161,16 @@ This change has been observed to notably improve response times in internal benc
    Provides access to OpenAI's powerful models, enabling developers to integrate advanced AI capabilities into their applications with robust security and scalable infrastructure.
    - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
    - [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+
+## Use multiple models and platforms
+
+With GitLab Duo Self-Hosted, you can use multiple models and platforms in the same GitLab instance.
+
+For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock or self-hosted models served with vLLM.
+
+This setup gives you flexibility to choose the best model and platform for each use case. Models must be supported and served through a compatible platform.
+
+For more information on setting up different providers, see:
+
+- [Configure GitLab Duo Self-Hosted features](configure_duo_features.md)
+- [Supported GitLab Duo Self-Hosted models and hardware requirements](supported_models_and_hardware_requirements.md)

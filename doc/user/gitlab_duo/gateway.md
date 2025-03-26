@@ -24,7 +24,7 @@ Runway, is currently not available to external customers. GitLab is working on e
 
 For GitLab.com customers, it's important to note that the current routing mechanism is based on the location of the GitLab instance, not the user's location. As GitLab.com is currently single-homed in `us-east1`, requests to the AI gateway are routed to us-east4 in almost all cases. This means that the routing may not always result in the absolute nearest deployment for every user.
 
-GitLab is working on an initiative to bypass the monolith when communicating with the AI gateway (Epic: [Let the client (IDE) request Code Suggestions](https://gitlab.com/groups/gitlab-org/-/epics/13252)). This effort aims to improve routing efficiency and potentially allow for more user-location-based routing in the future.
+The IDE communicates directly with the AI gateway by default, bypassing the GitLab monolith. This direct connection improves routing efficiency. To change this, you can [configure direct and indirect connections](../project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
 
 ### Automatic routing
 

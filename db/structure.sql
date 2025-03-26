@@ -20527,7 +20527,8 @@ CREATE TABLE project_ci_cd_settings (
     pipeline_variables_minimum_override_role smallint DEFAULT 3 NOT NULL,
     push_repository_for_job_token_allowed boolean DEFAULT false NOT NULL,
     id_token_sub_claim_components character varying[] DEFAULT '{project_path,ref_type,ref}'::character varying[] NOT NULL,
-    delete_pipelines_in_seconds integer
+    delete_pipelines_in_seconds integer,
+    allow_composite_identities_to_run_pipelines boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -25692,6 +25693,8 @@ CREATE TABLE workspaces_agent_configs (
     image_pull_secrets jsonb DEFAULT '[]'::jsonb NOT NULL,
     max_active_hours_before_stop smallint DEFAULT 36 NOT NULL,
     max_stopped_hours_before_termination smallint DEFAULT 744 NOT NULL,
+    shared_namespace text DEFAULT ''::text NOT NULL,
+    CONSTRAINT check_2de67a7a76 CHECK ((char_length(shared_namespace) <= 63)),
     CONSTRAINT check_557e75a230 CHECK ((max_stopped_hours_before_termination > 0)),
     CONSTRAINT check_58759a890a CHECK ((char_length(dns_zone) <= 256)),
     CONSTRAINT check_6d7baef494 CHECK (((max_active_hours_before_stop + max_stopped_hours_before_termination) <= 8760)),

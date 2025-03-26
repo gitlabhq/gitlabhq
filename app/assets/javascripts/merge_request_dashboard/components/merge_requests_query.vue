@@ -138,6 +138,8 @@ export default {
       }
     },
     async loadMore() {
+      this.loading = true;
+
       await this.$apollo.queries.mergeRequests.fetchMore({
         variables: {
           ...this.variables,

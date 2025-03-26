@@ -23,6 +23,7 @@ describe('WorkItemDevelopmentBranchItem', () => {
     createComponent();
     expect(findIcon().exists()).toBe(true);
     expect(findIcon().props('name')).toBe('branch');
+    expect(findIcon().attributes('title')).toBe('Branch');
     expect(findLink().attributes('href')).toBe(branchNode.comparePath);
     expect(findLink().text()).toBe(branchNode.name);
   });

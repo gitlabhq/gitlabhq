@@ -41,13 +41,17 @@ The tests in
 look for page content problems that Vale and markdownlint cannot test for.
 The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 
-- Curl (`curl`) commands must use long-form options (`--header`) instead of short options, like `-h`.
-- Documentation pages must contain front matter indicating ownership of the page.
+- Curl (`curl`) commands [must use long-form options (`--header`)](../restful_api_styleguide.md#curl-commands)
+  instead of short options, like `-h`.
+- Documentation pages [must contain front matter](../metadata.md#stage-and-group-metadata)
+  indicating ownership of the page.
 - `CHANGELOG.md` must not contain duplicate versions.
-- No files in the `doc/` directory may be executable.
-- Use `_index.md` instead of `README.md`.
-- Directories and filenames must use underscores instead of dashes.
-- Directories and filenames must be in lower case.
+- Files in the `doc/` directory must not be executable.
+- [Filenames and directories must](../site_architecture/folder_structure.md#work-with-directories-and-files):
+  - Use `_index.md` instead of `README.md`
+  - Use underscores instead of dashes.
+  - Be lower case.
+- Image filenames must [specify the version they were added in](../styleguide/_index.md#image-requirements).
 - Mermaid charts must render without errors.
 
 ### Mermaid chart linting

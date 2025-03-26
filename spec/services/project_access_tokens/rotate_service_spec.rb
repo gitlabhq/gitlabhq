@@ -3,8 +3,8 @@
 require 'spec_helper'
 RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_access do
   describe '#execute' do
-    let_it_be_with_reload(:token) { create(:personal_access_token) }
-    let_it_be(:current_user) { create(:user) }
+    let(:token) { create(:resource_access_token, resource: project) }
+    let(:current_user) { create(:user) }
     let(:project) { create(:project, group: create(:group)) }
     let(:error_message) { 'Not eligible to rotate token with access level higher than the user' }
 
@@ -182,6 +182,52 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
               expect(response).to be_error
               expect(response.message).to eq(error_message)
             end
+          end
+        end
+      end
+    end
+
+    context 'for token external status inheritance from current_user' do
+      context 'when current user is maintainer' do
+        before do
+          project.add_maintainer(current_user)
+        end
+
+        context 'when current_user is external and token is not external' do
+          before do
+            current_user.update!(external: true)
+          end
+
+          it 'rotates token and token inherits current_user external status', :aggregate_failures do
+            expect(current_user.external).to be(true)
+            expect(token.user.external).to be(false)
+
+            expect(response).to be_success
+
+            new_token = response.payload[:personal_access_token]
+            expect(new_token.user).to eq(token.user)
+
+            expect(current_user.external).to be(true)
+            expect(new_token.user.external).to be(true)
+          end
+        end
+
+        context 'when current_user is not external and token is external' do
+          before do
+            token.user.update!(external: true)
+          end
+
+          it 'rotates token and token inherits current_user external status', :aggregate_failures do
+            expect(current_user.external).to be(false)
+            expect(token.user.external).to be(true)
+
+            expect(response).to be_success
+
+            new_token = response.payload[:personal_access_token]
+            expect(new_token.user).to eq(token.user)
+
+            expect(current_user.external).to be(false)
+            expect(new_token.user.external).to be(false)
           end
         end
       end

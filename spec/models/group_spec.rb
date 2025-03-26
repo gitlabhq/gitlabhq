@@ -1498,6 +1498,29 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.sorted_by_similarity_desc' do
+      # Exact match to the search term
+      let_it_be(:first) { create(:group, path: 'similar-b', name: 'similar-b') }
+      # Not similar at all
+      let_it_be(:last) { create(:group, path: 'different-path-a', name: 'different-name-a') }
+
+      # The two middle terms have the same distance from the search term
+      let_it_be(:middle) { create(:group, path: 'similar-a', name: 'similar-a') }
+      let_it_be(:middle_two) { create(:group, path: 'similar-c', name: 'similar-c') }
+
+      let(:search_term) { 'similar-b' }
+
+      subject(:ids) do
+        described_class.where(id: [middle_two.id, middle.id, last.id, first.id])
+                       .sorted_by_similarity_desc(search_term)
+                       .pluck(:id)
+      end
+
+      it 'sorts groups based on path, name, and description similarity, ties broken by ID' do
+        expect(ids).to eq([first.id, middle.id, middle_two.id, last.id])
+      end
+    end
+
     describe '.in_organization' do
       let_it_be(:org1) { create(:organization) }
       let_it_be(:org2) { create(:organization) }

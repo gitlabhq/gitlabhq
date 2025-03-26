@@ -549,6 +549,7 @@ class Project < ApplicationRecord
   end
 
   with_options to: :ci_cd_settings, allow_nil: true do
+    delegate :allow_composite_identities_to_run_pipelines, :allow_composite_identities_to_run_pipelines=
     delegate :group_runners_enabled, :group_runners_enabled=
     delegate :keep_latest_artifact, :keep_latest_artifact=
     delegate :restrict_user_defined_variables, :restrict_user_defined_variables=

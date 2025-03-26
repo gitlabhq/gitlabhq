@@ -75,7 +75,7 @@ export default {
 
 <template>
   <header
-    class="js-design-header gl-border-b gl-flex gl-max-w-full gl-flex-col gl-justify-between gl-bg-white gl-py-4 gl-pl-5 md:gl-flex-row md:gl-items-center"
+    class="js-design-header gl-border-b gl-flex gl-max-w-full gl-flex-col gl-justify-between gl-bg-overlap gl-py-4 gl-pl-5 md:gl-flex-row md:gl-items-center"
   >
     <div class="gl-mb-3 gl-flex gl-flex-row gl-items-center gl-overflow-hidden md:gl-mb-0">
       <div class="gl-mr-3 gl-flex gl-overflow-hidden">

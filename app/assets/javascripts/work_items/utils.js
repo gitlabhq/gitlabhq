@@ -124,64 +124,102 @@ const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemType
   return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&${typeId}`;
 };
 
-export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup = false }) => ({
-  labels: autocompleteSourcesPath({
-    autocompleteType: 'labels',
-    fullPath,
-    iid,
-    isGroup,
-    workItemTypeId,
-  }),
-  members: autocompleteSourcesPath({
-    autocompleteType: 'members',
-    fullPath,
-    iid,
-    isGroup,
-    workItemTypeId,
-  }),
-  commands: autocompleteSourcesPath({
-    autocompleteType: 'commands',
-    fullPath,
-    iid,
-    isGroup,
-    workItemTypeId,
-  }),
-  issues: autocompleteSourcesPath({
-    autocompleteType: 'issues',
-    fullPath,
-    iid,
-    isGroup,
-    workItemTypeId,
-  }),
-  mergeRequests: autocompleteSourcesPath({
-    autocompleteType: 'merge_requests',
-    fullPath,
-    iid,
-    isGroup,
-    workItemTypeId,
-  }),
-  epics: autocompleteSourcesPath({
-    autocompleteType: 'epics',
-    fullPath,
-    iid,
-    workItemTypeId,
-    isGroup,
-  }),
-  milestones: autocompleteSourcesPath({
-    autocompleteType: 'milestones',
-    fullPath,
-    iid,
-    workItemTypeId,
-    isGroup,
-  }),
-  iterations: autocompleteSourcesPath({
-    autocompleteType: 'iterations',
-    fullPath,
-    iid,
-    workItemTypeId,
-    isGroup,
-  }),
-});
+export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup = false }) => {
+  const sources = {
+    labels: autocompleteSourcesPath({
+      autocompleteType: 'labels',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    members: autocompleteSourcesPath({
+      autocompleteType: 'members',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    commands: autocompleteSourcesPath({
+      autocompleteType: 'commands',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    issues: autocompleteSourcesPath({
+      autocompleteType: 'issues',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    mergeRequests: autocompleteSourcesPath({
+      autocompleteType: 'merge_requests',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    epics: autocompleteSourcesPath({
+      autocompleteType: 'epics',
+      fullPath,
+      iid,
+      workItemTypeId,
+      isGroup,
+    }),
+    milestones: autocompleteSourcesPath({
+      autocompleteType: 'milestones',
+      fullPath,
+      iid,
+      workItemTypeId,
+      isGroup,
+    }),
+    iterations: autocompleteSourcesPath({
+      autocompleteType: 'iterations',
+      fullPath,
+      iid,
+      workItemTypeId,
+      isGroup,
+    }),
+    vulnerabilities: autocompleteSourcesPath({
+      autocompleteType: 'vulnerabilities',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    wikis: autocompleteSourcesPath({
+      autocompleteType: 'wikis',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+  };
+
+  // contacts and snippets are only available in project scope
+  const projectOnlySources = {
+    contacts: autocompleteSourcesPath({
+      autocompleteType: 'contacts',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+    snippets: autocompleteSourcesPath({
+      autocompleteType: 'snippets',
+      fullPath,
+      iid,
+      isGroup,
+      workItemTypeId,
+    }),
+  };
+
+  if (isGroup) return sources;
+
+  return { ...sources, ...projectOnlySources };
+};
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
   const domain = gon.relative_url_root || '';

@@ -64,9 +64,7 @@ module QA
 
           updated_pipeline_definitions(pipeline_types).each do |type, yaml|
             file_name = generated_yml_file_name(type)
-            # mark pipeline as gitlab project pipeline due to issue with variables not working with 'include' keyword
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/378717
-            File.write(file_name, yaml.gsub("$GITLAB_PROJECT_PIPELINE", '"true"'))
+            File.write(file_name, yaml)
             logger.info("Pipeline definition file created: '#{file_name}'")
           end
         end
