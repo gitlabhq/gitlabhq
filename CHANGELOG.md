@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.3 (2025-03-26)
+
+### Fixed (2 changes)
+
+- [Reorder runners backfill migrations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/75f2ae1a6f0716fe70a8ab48fa300e7448fc02aa)
+- [Update dependency gitlab-mail_room to v0.0.27](https://gitlab.com/gitlab-org/security/gitlab/-/commit/153fab2966eb8b9266bfe6625fbebee936b1ce50)
+
+### Security (7 changes)
+
+- [Sync organization user access when admin status changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/21b924368fccad62c8329c243e086f5fcfa824aa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4847))
+- [Prevent XSS via merge error on the merge request page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2574af89065d099ec8148f8ac22a02739fa27f2a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4880))
+- [Inherit current_user external status while rotating project/group token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/254f27669b281314fef74c3830b4a812f64708d4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4866))
+- [Add validations for the project_name of Harbor integration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eefe5150b0b9681a564757197c8ce2668088e32b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4857))
+- [Sanitize returned input on asciidoc Timeout](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6041ddbe1808506e5194ef89190f3e44c47badd1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4842))
+- [Add CI/CD project setting `allow_composite_identities_to_run_pipelines`](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4922213de1af01d53c68ecca81524c472fa7fa06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4875))
+- [Add limit to resource counts in tfplan merge request report](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bfec8bb2981359dca26092f8ee79abe569465f4a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4871))
+
 ## 17.9.2 (2025-03-11)
 
 ### Fixed (3 changes)
