@@ -209,8 +209,13 @@ export default {
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
       );
     },
+    showManageStorageDocsLink() {
+      return this.mr.mergeError?.includes(__('Your namespace storage is full'));
+    },
     mergeError() {
       let { mergeError } = this.mr;
+
+      if (this.showManageStorageDocsLink) return mergeError;
 
       if (mergeError && mergeError.slice(-1) === '.') {
         mergeError = mergeError.slice(0, -1);
@@ -546,7 +551,7 @@ export default {
           data-testid="merge-error"
           class="mr-widget-section gl-rounded-b-none gl-border-b-section"
         >
-          <span v-safe-html="mergeError"></span>
+          <span>{{ mergeError }}</span>
         </mr-widget-alert-message>
         <mr-widget-alert-message
           v-if="showMergePipelineForkWarning"

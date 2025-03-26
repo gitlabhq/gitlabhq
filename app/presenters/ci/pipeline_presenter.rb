@@ -19,7 +19,9 @@ module Ci
         deployments_limit_exceeded: 'The pipeline deployments limit was exceeded.',
         project_deleted: 'The project associated with this pipeline was deleted.',
         filtered_by_rules: Ci::Pipeline.rules_failure_message,
-        filtered_by_workflow_rules: Ci::Pipeline.workflow_rules_failure_message }
+        filtered_by_workflow_rules: Ci::Pipeline.workflow_rules_failure_message,
+        composite_identity_forbidden: 'This pipeline did not run because the code should be reviewed by a non-AI ' \
+          'user first. Verify that all changes in this merge request are safe before running a new pipeline.' }
     end
 
     presents ::Ci::Pipeline, as: :pipeline

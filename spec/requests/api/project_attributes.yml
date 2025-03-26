@@ -102,6 +102,7 @@ ci_cd_settings:
     - push_repository_for_job_token_allowed
     - id_token_sub_claim_components
     - delete_pipelines_in_seconds
+    - allow_composite_identities_to_run_pipelines
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed

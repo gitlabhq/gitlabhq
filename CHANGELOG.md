@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.1 (2025-03-26)
+
+### Security (7 changes)
+
+- [Sync organization user access when admin status changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49c7f443c828187785f8714509933a1228e00c89) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4882))
+- [Prevent XSS via merge error on the merge request page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8410e21aa289a55ce8e65258af5bcc2c3073e1f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4881))
+- [Inherit current_user external status while rotating project/group token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c9a33f8331d54a8925006c5dce8738203328e759) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4865))
+- [Add validations for the project_name of Harbor integration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8fdb151d20d24d9f51dac9efa0aba92d6a31ce97) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4864))
+- [Sanitize returned input on asciidoc Timeout](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e32acea8a77d03b3403a097e2284e173885884b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4863))
+- [Add CI/CD project setting `allow_composite_identities_to_run_pipelines`](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5cfde6ed6799bb16350aab55218b0904ccb7b053) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4876))
+- [Add limit to resource counts in tfplan merge request report](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0ec13496f360b7d600cf604995d8f90276bef0c9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4870))
+
 ## 17.10.0 (2025-03-19)
 
 ### Added (150 changes)
