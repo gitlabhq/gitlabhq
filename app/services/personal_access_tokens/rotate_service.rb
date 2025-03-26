@@ -44,6 +44,7 @@ module PersonalAccessTokens
 
       if new_token.persisted?
         update_bot_membership(target_user, new_token.expires_at)
+        update_project_bot_to_inherit_current_user_external_status
 
         return success_response(new_token)
       end
@@ -71,6 +72,13 @@ module PersonalAccessTokens
       end
 
       target_user.members.update(expires_at: expires_at)
+    end
+
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509324
+    def update_project_bot_to_inherit_current_user_external_status
+      return unless target_user.project_bot?
+
+      target_user.update(external: current_user.external?)
     end
 
     def expires_at

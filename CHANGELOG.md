@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.6 (2025-03-26)
+
+### Fixed (1 change)
+
+- [Reorder runners backfill migrations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e822c803d82ba9ebb681f8885836dd2c1a0f25a3)
+
+### Security (8 changes)
+
+- [Sync organization user access when admin status changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96c20dece9a6a1aa096d09207a6585caf32d5f1a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4848))
+- [Prevent XSS via merge error on the merge request page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b01080ce203d3c28b37c88937819e126d6e688bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4879))
+- [Inherit current_user external status while rotating project/group token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c5642c3379d72fc8906026113da4af1f76728ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4868))
+- [Add validations for the project_name of Harbor integration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af608cad419e11ceeb0ec49997367c456f4178e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4859))
+- [Sanitize returned input on asciidoc Timeout](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc7d8607c3b448b6ba98f0c205679ca051f9f903) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4843))
+- [Add CI/CD project setting `allow_composite_identities_to_run_pipelines`](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80d1a17d232460b6b5b80af89df631857c399eba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4877))
+- [Add limit to resource counts in tfplan merge request report](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2dbaabebbcc1c6106ec695f2c1e1c793aab4e4a2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4872))
+- [Fix a typo in sitemap_controller_spec](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eebde7538b3c48f030172d72e9ebf8c4a361fca4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4861))
+
 ## 17.8.5 (2025-03-11)
 
 ### Security (8 changes)

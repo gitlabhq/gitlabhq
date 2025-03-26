@@ -3,7 +3,8 @@ user_args = {
   name:     'Administrator',
   username: 'root',
   admin:    true,
-  organization_id: Organizations::Organization.default_organization.id
+  organization_id: Organizations::Organization.default_organization.id,
+  organization_access_level: :owner
 }
 
 if ENV['GITLAB_ROOT_PASSWORD'].blank?
@@ -20,8 +21,6 @@ response = Users::CreateService.new(transient_admin, user_args.merge!(skip_confi
 
 if response.success?
   user = response.payload[:user]
-
-  Organizations::Organization.default_organization.add_owner(user)
 
   puts Rainbow("Administrator account created:").green
   puts

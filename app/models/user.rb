@@ -403,6 +403,7 @@ class User < ApplicationRecord
   after_commit(on: :update) do
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
+  after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
 
   after_create_commit :create_default_organization_user
 
@@ -2722,6 +2723,10 @@ class User < ApplicationRecord
     return if notification_email.blank? || temp_oauth_email?
 
     errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email_or_default)
+  end
+
+  def update_default_organization_user
+    Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
   end
 
   def public_email_verified

@@ -6,7 +6,7 @@ Gitlab::Seeder.quiet do
     return
   end
 
-  User.create!(
+  admin = User.create!(
     name: 'Administrator',
     email: "gitlab_admin_#{SecureRandom.hex(3)}@example.com",
     username: 'root',
@@ -17,6 +17,8 @@ Gitlab::Seeder.quiet do
   ) do |user|
     user.assign_personal_namespace(Organizations::Organization.default_organization)
   end
+
+  Organizations::Organization.default_organization.add_owner(admin)
 
   print '.'
 end
