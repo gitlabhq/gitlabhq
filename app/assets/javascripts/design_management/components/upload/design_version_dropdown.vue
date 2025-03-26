@@ -76,6 +76,7 @@ export default {
 <template>
   <gl-collapsible-listbox
     is-check-centered
+    class="gl-z-1"
     :items="allVersionsList"
     :toggle-text="dropdownText"
     :selected="designsVersion"

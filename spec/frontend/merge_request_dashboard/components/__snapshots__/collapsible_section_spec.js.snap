@@ -11,6 +11,15 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
     <div
       class="gl-flex gl-flex-col gl-grow gl-self-center"
     >
+      <button
+        aria-hidden="true"
+        class="gl-border-none gl-h-0 gl-m-0 gl-p-0 gl-z-0"
+        tabindex="-1"
+      >
+        <span
+          class="gl-absolute gl-inset-0"
+        />
+      </button>
       <h2
         class="gl-font-bold gl-gap-3 gl-inline-flex gl-items-center gl-leading-normal gl-m-0 gl-text-base"
         data-testid="crud-title"
@@ -28,7 +37,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
       </h2>
     </div>
     <div
-      class="gl-flex gl-gap-3 gl-items-center"
+      class="gl-flex gl-gap-3 gl-items-center gl-z-1"
       data-testid="crud-actions"
     >
       <gl-button-stub
@@ -41,7 +50,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         variant="link"
       />
       <div
-        class="gl-absolute gl-border-l gl-border-l-section gl-h-6 gl-pl-3 gl-right-5 gl-top-4"
+        class="gl-absolute gl-border-l gl-border-l-section gl-h-6 gl-pl-3 gl-pointer-events-none gl-right-5 gl-top-4"
       >
         <gl-button-stub
           aria-controls=""
@@ -49,7 +58,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           aria-label="Collapse"
           buttontextclasses=""
           category="tertiary"
-          class="-gl-mr-2 gl-self-start"
+          class="-gl-mr-2 gl-pointer-events-auto gl-self-start"
           data-testid="crud-collapse-toggle"
           icon="chevron-lg-up"
           size="small"

@@ -416,8 +416,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/initializers/mail_encoding_patch_spec.rb'
     - 'spec/lib/constraints/admin_constrainer_spec.rb'
     - 'spec/lib/gitlab/analytics/date_filler_spec.rb'
-    - 'spec/lib/gitlab/background_migration/legacy_upload_mover_spec.rb'
-    - 'spec/lib/gitlab/background_migration/legacy_uploads_migrator_spec.rb'
     - 'spec/lib/gitlab/class_attributes_spec.rb'
     - 'spec/lib/gitlab/cleanup/remote_uploads_spec.rb'
     - 'spec/lib/gitlab/conan_token_spec.rb'

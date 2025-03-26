@@ -193,6 +193,15 @@ export default {
       ]"
     >
       <div class="gl-flex gl-grow gl-flex-col gl-self-center">
+        <button
+          v-if="isCollapsible"
+          tabindex="-1"
+          aria-hidden="true"
+          class="gl-z-0 gl-m-0 gl-h-0 gl-border-none gl-p-0"
+          @click="toggleCollapse"
+        >
+          <span class="gl-absolute gl-inset-0"></span>
+        </button>
         <h2
           class="gl-m-0 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
           :class="titleClass"
@@ -200,7 +209,7 @@ export default {
         >
           <gl-link
             v-if="anchorId"
-            class="anchor gl-absolute gl-no-underline"
+            class="anchor gl-absolute gl-z-1 gl-no-underline"
             :href="`#${anchorId}`"
             :aria-labelledby="anchorId"
           />
@@ -229,7 +238,7 @@ export default {
           <template v-else>{{ description }}</template>
         </p>
       </div>
-      <div class="gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">
+      <div class="gl-z-1 gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">
         <slot name="actions" :show-form="showForm"></slot>
         <gl-button
           v-if="toggleText && !isFormUsedAndVisible"
@@ -241,7 +250,7 @@ export default {
         >
         <div
           v-if="isCollapsible"
-          class="gl-border-l gl-absolute gl-right-5 gl-top-4 gl-h-6 gl-border-l-section gl-pl-3"
+          class="gl-border-l gl-pointer-events-none gl-absolute gl-right-5 gl-top-4 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button
             v-gl-tooltip
@@ -252,7 +261,7 @@ export default {
             :aria-label="toggleLabel"
             :aria-expanded="ariaExpandedAttr"
             :aria-controls="anchorId"
-            class="-gl-mr-2 gl-self-start"
+            class="gl-pointer-events-auto -gl-mr-2 gl-self-start"
             data-testid="crud-collapse-toggle"
             @click="toggleCollapse"
           />

@@ -1610,7 +1610,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/background_migration/backfill_topics_title_spec.rb'
     - 'spec/lib/gitlab/background_migration/delete_orphans_approval_merge_request_rules2_spec.rb'
     - 'spec/lib/gitlab/background_migration/delete_orphans_approval_project_rules2_spec.rb'
-    - 'spec/lib/gitlab/background_migration/legacy_uploads_migrator_spec.rb'
     - 'spec/lib/gitlab/background_migration/mailers/unconfirm_mailer_spec.rb'
     - 'spec/lib/gitlab/background_migration/redis/backfill_project_pipeline_status_ttl_spec.rb'
     - 'spec/lib/gitlab/background_task_spec.rb'

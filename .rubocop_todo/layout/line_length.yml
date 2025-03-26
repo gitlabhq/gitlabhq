@@ -2993,7 +2993,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/background_migration/batching_strategies/primary_key_batching_strategy_spec.rb'
     - 'spec/lib/gitlab/background_migration/copy_column_using_background_migration_job_spec.rb'
     - 'spec/lib/gitlab/background_migration/job_coordinator_spec.rb'
-    - 'spec/lib/gitlab/background_migration/legacy_upload_mover_spec.rb'
     - 'spec/lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url_spec.rb'
     - 'spec/lib/gitlab/cache/ci/project_pipeline_status_spec.rb'
     - 'spec/lib/gitlab/chat/output_spec.rb'

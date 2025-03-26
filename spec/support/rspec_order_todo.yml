@@ -4245,8 +4245,6 @@
 - './spec/lib/gitlab/background_migration/disable_legacy_open_source_license_for_inactive_public_projects_spec.rb'
 - './spec/lib/gitlab/background_migration/disable_legacy_open_source_license_for_one_member_no_repo_projects_spec.rb'
 - './spec/lib/gitlab/background_migration/job_coordinator_spec.rb'
-- './spec/lib/gitlab/background_migration/legacy_upload_mover_spec.rb'
-- './spec/lib/gitlab/background_migration/legacy_uploads_migrator_spec.rb'
 - './spec/lib/gitlab/background_migration/mailers/unconfirm_mailer_spec.rb'
 - './spec/lib/gitlab/background_migration/populate_operation_visibility_permissions_from_operations_spec.rb'
 - './spec/lib/gitlab/background_migration/set_correct_vulnerability_state_spec.rb'

@@ -105,7 +105,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/auth/ldap/person_spec.rb'
     - 'spec/lib/gitlab/auth/saml/auth_hash_spec.rb'
     - 'spec/lib/gitlab/background_migration/disable_legacy_open_source_license_for_inactive_public_projects_spec.rb'
-    - 'spec/lib/gitlab/background_migration/legacy_uploads_migrator_spec.rb'
     - 'spec/lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url_spec.rb'
     - 'spec/lib/gitlab/checks/matching_merge_request_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/file/artifact_spec.rb'

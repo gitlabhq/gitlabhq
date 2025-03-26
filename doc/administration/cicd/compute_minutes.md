@@ -20,9 +20,9 @@ title: Compute minutes administration
 {{< /history >}}
 
 Administrators can limit the amount of time that projects can use to run jobs on
-[instance runners](../../ci/runners/runners_scope.md#instance-runners) each month. This limit
+[instance runners](../../ci/runners/runners_scope.md) each month. This limit
 is tracked with a [compute minutes quota](../../ci/pipelines/compute_minutes.md).
-[Project runners](../../ci/runners/runners_scope.md#project-runners) are not subject to the compute quota.
+Group and project runners are not subject to the compute quota.
 
 On GitLab Self-Managed:
 
@@ -33,13 +33,15 @@ On GitLab Self-Managed:
   - `0` for public projects, so they do not consume compute minutes.
   - `1` for internal and private projects.
 
+On GitLab.com:
+
+- To learn about the quotas and cost factors applied, see [compute minutes](../../ci/pipelines/compute_minutes.md).
+- To manage compute minutes as a GitLab team member, see [compute minutes administration for GitLab.com](dot_com_compute_minutes.md).
+
 [Trigger jobs](../../ci/yaml/_index.md#trigger) do not execute on runners, so they do not
 consume compute minutes, even when using [`strategy:depend`](../../ci/yaml/_index.md#triggerstrategy)
 to wait for the [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
-
-GitLab.com administrators can add a namespace to the [reduced cost factor](../../ci/pipelines/compute_minutes.md#reduce-compute-quota-usage)
-with the `ci_minimal_cost_factor_for_gitlab_namespaces` [feature flag](../feature_flags.md).
 
 ## Set the compute quota for all namespaces
 

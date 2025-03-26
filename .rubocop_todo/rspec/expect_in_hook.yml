@@ -130,7 +130,6 @@ RSpec/ExpectInHook:
     - 'spec/lib/gitlab/alert_management/fingerprint_spec.rb'
     - 'spec/lib/gitlab/auth/request_authenticator_spec.rb'
     - 'spec/lib/gitlab/auth_spec.rb'
-    - 'spec/lib/gitlab/background_migration/legacy_upload_mover_spec.rb'
     - 'spec/lib/gitlab/cache/ci/project_pipeline_status_spec.rb'
     - 'spec/lib/gitlab/checks/changes_access_spec.rb'
     - 'spec/lib/gitlab/checks/matching_merge_request_spec.rb'

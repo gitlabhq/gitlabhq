@@ -13,8 +13,6 @@ Migration/BatchedMigrationBaseClass:
     - 'lib/gitlab/background_migration/create_security_setting.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
-    - 'lib/gitlab/background_migration/legacy_upload_mover.rb'
-    - 'lib/gitlab/background_migration/legacy_uploads_migrator.rb'
     - 'lib/gitlab/background_migration/mailers/unconfirm_mailer.rb'
     - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
     - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress.rb'
