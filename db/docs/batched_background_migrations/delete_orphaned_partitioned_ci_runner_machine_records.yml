@@ -3,6 +3,7 @@ migration_job_name: DeleteOrphanedPartitionedCiRunnerMachineRecords
 description: >-
   Removes ci_runner_machines_687967fa8a records that don't have a matching ci_runners_e59bb2812d record.
   This can happen because there was a period in time where a FK didn't exist.
+  Deleted in 17.11 since this can collide with 20250307080000_replace_ci_runners_machines_with_partitioned_table
 feature_category: fleet_visibility
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172422
 milestone: '17.8'
