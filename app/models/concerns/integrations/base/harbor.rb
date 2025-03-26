@@ -7,6 +7,11 @@ module Integrations
     module Harbor
       extend ActiveSupport::Concern
 
+      # These are the similar limits, defined in the Harbor project
+      # https://github.com/goharbor/harbor/blob/caaad5279812298a0947d11052d7772a65dcb859/src/pkg/project/manager.go#L59-61
+      MAX_PROJECT_NAME_LENGTH = 255
+      PROJECT_NAME_REGEXP = %r{\A[a-z0-9]+(?:[._-][a-z0-9]+)*\z}
+
       class_methods do
         def title
           'Harbor'
@@ -40,7 +45,8 @@ module Integrations
           public_url: true,
           presence: true,
           addressable_url: { allow_localhost: false, allow_local_network: false }, if: :activated?
-        validates :project_name, presence: true, if: :activated?
+        validates :project_name, presence: true, length: { maximum: MAX_PROJECT_NAME_LENGTH }, if: :activated?
+        validates :project_name, format: { with: PROJECT_NAME_REGEXP }, allow_blank: true
         validates :username, presence: true, if: :activated?
         validates :password, format: { with: ::Ci::Maskable::REGEX }, if: :activated?
 

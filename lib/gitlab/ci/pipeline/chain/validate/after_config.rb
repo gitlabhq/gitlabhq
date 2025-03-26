@@ -8,7 +8,16 @@ module Gitlab
           class AfterConfig < Chain::Base
             include Chain::Helpers
 
-            def perform!; end
+            ERROR_MESSAGE = 'This pipeline did not run because the code should be reviewed by a non-AI user first. ' \
+              'Please verify this change is okay before running a new pipeline.'
+
+            def perform!
+              if !@pipeline.project.allow_composite_identities_to_run_pipelines &&
+                  current_user.has_composite_identity?
+
+                error(ERROR_MESSAGE, failure_reason: :composite_identity_forbidden)
+              end
+            end
 
             def break?
               @pipeline.errors.any?

@@ -166,6 +166,7 @@ describe('MrWidgetOptions', () => {
   const findMergePipelineForkAlert = () => wrapper.findByTestId('merge-pipeline-fork-warning');
   const findSuggestPipeline = () => wrapper.findComponent(WidgetSuggestPipeline);
   const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
+  const findMergeError = () => wrapper.findByTestId('merge-error');
 
   beforeEach(() => {
     gon.features = {};
@@ -763,7 +764,19 @@ describe('MrWidgetOptions', () => {
 
       await waitForPromises();
 
-      expect(wrapper.findByTestId('merge-error').exists()).toBe(show);
+      expect(findMergeError().exists()).toBe(show);
+    });
+
+    it('prevents XSS attacks by rendering merge error as plain text', async () => {
+      const maliciousError = '<div class="xss"><script>alert("XSS")</script></div>';
+      createComponent();
+
+      await waitForPromises();
+      eventHub.$emit('FailedToMerge', maliciousError);
+      await nextTick();
+
+      expect(findMergeError().text()).toContain(maliciousError);
+      expect(findMergeError().element.querySelector('.xss')).toBe(null);
     });
   });
 
