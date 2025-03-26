@@ -400,6 +400,7 @@ module ApplicationSettingsHelper
       :restricted_visibility_levels,
       :rsa_key_restriction,
       :session_expire_delay,
+      :session_expire_from_init,
       :shared_runners_enabled,
       :shared_runners_text,
       :sign_in_restrictions,

@@ -11,7 +11,7 @@ import {
 import { mapActions, mapState } from 'vuex';
 import { InternalEvents } from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import { SORT_DIRECTION_UI } from '~/search/sort/constants';
 import {
   MR_FILTER_OPTIONS,
@@ -63,7 +63,10 @@ export default {
         return __('All activity');
       }
       if (length > 1) {
-        return `%{strongStart}${firstSelected.text}%{strongEnd} +${length - 1} more`;
+        return sprintf(__('%{strongStart}%{firstSelected}%{strongEnd} +%{length} more'), {
+          firstSelected: firstSelected.text,
+          length: length - 1,
+        });
       }
 
       return firstSelected.text;

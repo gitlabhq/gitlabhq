@@ -93,7 +93,6 @@ module ReleasesHelper
     commit = project.repository.commit(@release.tag)
 
     deployments.map do |deployment|
-      user = deployment.deployable&.user
       environment = deployment.environment
 
       {
@@ -114,18 +113,23 @@ module ReleasesHelper
           title: commit.title
         },
 
-        triggerer: if user
-                     {
-                       name: user.name,
-                       web_url: user_url(user),
-                       avatar_url: user.avatar_url
-                     }
-                   end,
+        triggerer: triggerer_data(deployment),
 
         created_at: deployment.created_at,
         finished_at: deployment.finished_at
       }
     end
+  end
+
+  def triggerer_data(deployment)
+    user = deployment.deployable&.user
+    return unless user
+
+    {
+      name: user.name,
+      web_url: user_url(user),
+      avatar_url: user.avatar_url
+    }
   end
 end
 

@@ -700,7 +700,8 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
-    root_moved_permanently_redirection: [:boolean, { default: false }]
+    root_moved_permanently_redirection: [:boolean, { default: false }],
+    session_expire_from_init: [:boolean, { default: false }]
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 

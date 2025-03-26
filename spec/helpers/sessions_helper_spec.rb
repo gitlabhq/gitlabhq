@@ -100,6 +100,22 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
 
       it { is_expected.to be true }
+
+      context 'and session_expire_from_init is enabled' do
+        before do
+          stub_application_setting(session_expire_from_init: true)
+        end
+
+        it { is_expected.to be false }
+
+        context 'and session_expire_from_init FF is disabled' do
+          before do
+            stub_feature_flags(session_expire_from_init: false)
+          end
+
+          it { is_expected.to be false }
+        end
+      end
     end
 
     context 'when application setting is disabled' do

@@ -190,7 +190,6 @@ spec/frontend/sidebar/components/incidents/escalation_status_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
-spec/frontend/sidebar/components/todo_toggle/sidebar_todo_widget_spec.js
 spec/frontend/snippets/components/snippet_description_edit_spec.js
 spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js

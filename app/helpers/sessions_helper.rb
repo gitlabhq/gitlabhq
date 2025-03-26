@@ -13,7 +13,11 @@ module SessionsHelper
   end
 
   def remember_me_enabled?
-    Gitlab::CurrentSettings.remember_me_enabled?
+    Gitlab::CurrentSettings.remember_me_enabled? &&
+      (
+        Feature.enabled?(:session_expire_from_init, :instance) &&
+          !Gitlab::CurrentSettings.session_expire_from_init
+      )
   end
 
   def unconfirmed_verification_email?(user)

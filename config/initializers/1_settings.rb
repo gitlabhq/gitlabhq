@@ -231,6 +231,7 @@ Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['graphql_timeout'] ||= 30
 Settings.gitlab['max_attachment_size'] ||= 100
 Settings.gitlab['session_expire_delay'] ||= 10080
+Settings.gitlab['session_expire_from_init'] ||= false
 Settings.gitlab['unauthenticated_session_expire_delay'] ||= 2.hours.to_i
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?

@@ -139,7 +139,7 @@ components:
     attributes:
       gl/inject-editor: true
     container:
-      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:20250303043223-golang-1.23-docker-27.5.1@sha256:98f36ddf5d7ac53d95a270f5791ab7f50132a4cc87676e22f4f632678d8e15e1"
+      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:20250321073701-golang-1.23-node-23.9-yarn-1.22-ruby-3.4.2-rust-1.85-docker-27.5.1@sha256:a059826e65f0bc0ee2f3fdfd62f16a108c5b99b24b4656734cd6b8f4631389ad"
 ```
 
 A GitLab default devfile might not be suitable for all development environments configurations.

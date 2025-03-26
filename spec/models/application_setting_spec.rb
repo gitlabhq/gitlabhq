@@ -77,7 +77,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it do
       expect(setting.sign_in_restrictions).to eq({
         'disable_password_authentication_for_users_with_sso_identities' => false,
-        'root_moved_permanently_redirection' => false
+        'root_moved_permanently_redirection' => false,
+        'session_expire_from_init' => false
       })
     end
   end

@@ -26,6 +26,7 @@ describe('Sidebar Todo Widget', () => {
     todosQueryHandler = jest.fn().mockResolvedValue(noTodosResponse),
     provide = {},
     propsData = {},
+    stubs = {},
     apolloProvider = createMockApollo([[epicTodoQuery, todosQueryHandler]]),
   } = {}) => {
     wrapper = shallowMount(SidebarTodoWidget, {
@@ -42,6 +43,7 @@ describe('Sidebar Todo Widget', () => {
         issuableType: 'epic',
         ...propsData,
       },
+      stubs,
     });
   };
 
@@ -92,13 +94,13 @@ describe('Sidebar Todo Widget', () => {
     beforeEach(() => {
       createComponent({
         todosQueryHandler: jest.fn().mockResolvedValue(noTodosResponse),
+        stubs: { GlAnimatedTodoIcon },
       });
       return waitForPromises();
     });
 
     it('shows add todo icon', () => {
       expect(wrapper.findComponent(GlAnimatedTodoIcon).exists()).toBe(true);
-
       expect(wrapper.findComponent(GlAnimatedTodoIcon).props('isOn')).toBe(false);
     });
 
@@ -109,6 +111,7 @@ describe('Sidebar Todo Widget', () => {
     it('when user has a to-do item', async () => {
       createComponent({
         todosQueryHandler: jest.fn().mockResolvedValue(todosResponse),
+        stubs: { GlAnimatedTodoIcon },
       });
 
       await waitForPromises();
@@ -181,7 +184,7 @@ describe('Sidebar Todo Widget', () => {
         },
       });
 
-      await nextTick();
+      await waitForPromises();
 
       expect(subscriptionHandler).toHaveBeenCalled();
       expect(findTodoButton().props('isTodo')).toBe(true);

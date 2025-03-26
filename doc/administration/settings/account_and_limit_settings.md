@@ -238,6 +238,35 @@ If [Remember me](#turn-remember-me-on-or-off) is enabled, users' sessions can re
 
 For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
 
+### Set sessions to expire from creation date
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 17.11 with a [flag](../feature_flags.md) named `session_expire_from_init`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of session expiry from creation dates is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+By default, sessions expire a set amount of time after the session becomes inactive. Instead, you can configure sessions to expire a set amount of time after the session is created.
+
+When the session duration is met, the session ends and the user is signed out even if:
+
+- The user is still actively using the session.
+- The user selected [remember me](#turn-remember-me-on-or-off) during sign in.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Select the **Expire session from creation date** checkbox.
+
+After a session ends, a window prompts the user to sign in again.
+
 ### Turn **Remember me** on or off
 
 {{< history >}}

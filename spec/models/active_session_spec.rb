@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :system_access do
+  include SessionHelpers
+
   let(:lookup_key) { described_class.lookup_key_name(user.id) }
   let(:user) do
     create(:user).tap do |user|
@@ -283,6 +285,83 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
           created_at: eq(created_at),
           updated_at: eq(updated_at)
         )
+      end
+    end
+
+    context 'when session_expire_from_init is set' do
+      before do
+        stub_application_setting(session_expire_from_init: true, session_expire_delay: 10080)
+      end
+
+      it 'sets a new redis entry with the same ttl' do
+        described_class.set(user, request)
+        key = described_class.key_name(user.id, rack_session.private_id)
+
+        # Sanity check for default ttl
+        expect(get_ttl(key)).to be_within(10).of(Settings.gitlab['session_expire_delay'] * 60)
+
+        # Mock passage of time
+        expire(key, 4.days.to_i)
+
+        # passage of time with no additional session access should have no effect
+        expect(get_ttl(key)).to be_within(20).of(4.days.to_i)
+
+        described_class.set(user, request)
+
+        # ensure active session reset did not modify ttl
+        expect(get_ttl(key)).to be_within(20).of(4.days.to_i)
+      end
+
+      context 'and session_expire_from_init FF is disabled' do
+        before do
+          stub_feature_flags(session_expire_from_init: false)
+        end
+
+        it 'updates ttl using session max lifetime' do
+          described_class.set(user, request)
+          key = described_class.key_name(user.id, rack_session.private_id)
+
+          # Sanity check for default ttl
+          expect(get_ttl(key)).to be_within(10).of(Settings.gitlab['session_expire_delay'] * 60)
+
+          # Mock passage of time
+          expire(key, 4.days.to_i)
+
+          # Manual expiration setting should be respected by redis
+          expect(get_ttl(key)).to be_within(10).of(4.days.to_i)
+
+          # recreate session, should reset ttl to setting_expire_session_delay * 60
+          described_class.set(user, request)
+
+          # ensure active session reset did not modify ttl
+          expect(get_ttl(key)).to be_within(10).of(Settings.gitlab['session_expire_delay'] * 60)
+        end
+      end
+    end
+
+    context 'when session expire from init is disabled' do
+      before do
+        stub_application_setting(session_expire_from_init: false, session_expire_delay: 10080)
+      end
+
+      it 'restarts session duration' do
+        described_class.set(user, request)
+        key = described_class.key_name(user.id, rack_session.private_id)
+
+        # Sanity check for default ttl
+        expect(get_ttl(key)).to be_within(10).of(Settings.gitlab['session_expire_delay'] * 60)
+
+        # Mock passage of time
+        expire(key, 4.days.to_i)
+
+        # Manual expiration setting should be respected by redis
+        expect(get_ttl(key)).to be_within(10).of(4.days.to_i)
+
+        # recreate session, should reset ttl to setting_expire_session_delay * 60
+        described_class.set(user, request)
+
+        # ensure active session reset did not modify ttl
+        expect(get_ttl(key)).to be_within(10).of(Settings.gitlab['session_expire_delay'] * 60)
       end
     end
   end

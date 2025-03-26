@@ -429,7 +429,7 @@ Verify whether the underlying tool has:
 #### Dockerfile
 
 The `Dockerfile` should use an unprivileged user with the name `GitLab`.
-This is necessary is to provide compatibility with Red Hat OpenShift instances,
+This is necessary to provide compatibility with Red Hat OpenShift instances,
 which don't allow containers to run as an admin (root) user.
 There are certain limitations to keep in mind when running a container as an unprivileged user,
 such as the fact that any files that need to be written on the Docker filesystem will require the appropriate permissions for the `GitLab` user.

@@ -46,11 +46,9 @@ export default {
   },
   mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   provide: {
-    editorAiActions() {
-      return window.gon?.licensed_features?.generateDescription
-        ? [generateDescriptionAction()]
-        : [];
-    },
+    editorAiActions: window.gon?.licensed_features?.generateDescription
+      ? [generateDescriptionAction()]
+      : [],
   },
   inject: ['isGroup'],
   props: {

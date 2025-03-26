@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 492
+- Number of attributes: 493
 - Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 298 (61.0%)
+- Number of attributes documented: 298 (60.0%)
 - Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 492 (100.0%)
-- Number of attributes with `clusterwide: true` set: 123 (25.0%)
+- Number of attributes with `clusterwide` set: 493 (100.0%)
+- Number of attributes with `clusterwide: true` set: 124 (25.0%)
 
 ## Individual columns
 
