@@ -16,14 +16,13 @@ import {
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
-import { TYPENAME_USER } from '~/graphql_shared/constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN, TYPE_ISSUE } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
+import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS,
@@ -32,13 +31,16 @@ import {
   TOKEN_TYPE_CLOSED,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CREATED,
+  TOKEN_TYPE_DUE_DATE,
   TOKEN_TYPE_GROUP,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
-  TOKEN_TYPE_TYPE,
   TOKEN_TYPE_STATE,
+  TOKEN_TYPE_SUBSCRIBED,
+  TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_UPDATED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
@@ -47,8 +49,8 @@ import getWorkItemStateCountsQuery from '~/work_items/graphql/list/get_work_item
 import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
-  STATE_CLOSED,
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  STATE_CLOSED,
   WORK_ITEM_TYPE_ENUM_EPIC,
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
@@ -295,39 +297,24 @@ describeSkipVue3(skipReason, () => {
   });
 
   describe('tokens', () => {
-    const mockCurrentUser = {
-      id: 1,
-      name: 'Administrator',
-      username: 'root',
-      avatar_url: 'avatar/url',
-    };
-    const preloadedUsers = [
-      { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
-    ];
-
-    beforeEach(() => {
-      window.gon = {
-        current_user_id: mockCurrentUser.id,
-        current_user_fullname: mockCurrentUser.name,
-        current_username: mockCurrentUser.username,
-        current_user_avatar_url: mockCurrentUser.avatar_url,
-      };
-    });
-
-    it('renders all tokens', async () => {
+    it('renders tokens', async () => {
       mountComponent();
       await waitForPromises();
+      const tokens = findIssuableList()
+        .props('searchTokens')
+        .map((token) => token.type);
 
-      expect(findIssuableList().props('searchTokens')).toMatchObject([
-        { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
-        { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
-        { type: TOKEN_TYPE_CONFIDENTIAL },
-        { type: TOKEN_TYPE_GROUP },
-        { type: TOKEN_TYPE_LABEL },
-        { type: TOKEN_TYPE_MILESTONE },
-        { type: TOKEN_TYPE_MY_REACTION },
-        { type: TOKEN_TYPE_SEARCH_WITHIN },
-        { type: TOKEN_TYPE_TYPE },
+      expect(tokens).toEqual([
+        TOKEN_TYPE_ASSIGNEE,
+        TOKEN_TYPE_AUTHOR,
+        TOKEN_TYPE_CONFIDENTIAL,
+        TOKEN_TYPE_GROUP,
+        TOKEN_TYPE_LABEL,
+        TOKEN_TYPE_MILESTONE,
+        TOKEN_TYPE_MY_REACTION,
+        TOKEN_TYPE_SEARCH_WITHIN,
+        TOKEN_TYPE_SUBSCRIBED,
+        TOKEN_TYPE_TYPE,
       ]);
     });
 
@@ -335,57 +322,68 @@ describeSkipVue3(skipReason, () => {
       it('renders all tokens except "Type"', async () => {
         mountComponent({ provide: { workItemType: 'EPIC' } });
         await waitForPromises();
+        const tokens = findIssuableList()
+          .props('searchTokens')
+          .map((token) => token.type);
 
-        expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
-          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
-          { type: TOKEN_TYPE_CONFIDENTIAL },
-          { type: TOKEN_TYPE_GROUP },
-          { type: TOKEN_TYPE_LABEL },
-          { type: TOKEN_TYPE_MILESTONE },
-          { type: TOKEN_TYPE_MY_REACTION },
-          { type: TOKEN_TYPE_SEARCH_WITHIN },
+        expect(tokens).not.toContain(TOKEN_TYPE_TYPE);
+      });
+    });
+
+    describe('when hasIssueDateFilterFeature is available', () => {
+      it('renders date-related tokens too', async () => {
+        mountComponent({ provide: { hasIssueDateFilterFeature: true } });
+        await waitForPromises();
+        const tokens = findIssuableList()
+          .props('searchTokens')
+          .map((token) => token.type);
+
+        expect(tokens).toEqual([
+          TOKEN_TYPE_ASSIGNEE,
+          TOKEN_TYPE_AUTHOR,
+          TOKEN_TYPE_CLOSED,
+          TOKEN_TYPE_CONFIDENTIAL,
+          TOKEN_TYPE_CREATED,
+          TOKEN_TYPE_DUE_DATE,
+          TOKEN_TYPE_GROUP,
+          TOKEN_TYPE_LABEL,
+          TOKEN_TYPE_MILESTONE,
+          TOKEN_TYPE_MY_REACTION,
+          TOKEN_TYPE_SEARCH_WITHIN,
+          TOKEN_TYPE_SUBSCRIBED,
+          TOKEN_TYPE_TYPE,
+          TOKEN_TYPE_UPDATED,
         ]);
       });
     });
-  });
 
-  describe('custom field tokens', () => {
-    it('combines eeSearchTokens with default search tokens', async () => {
-      const customToken = {
-        type: `custom`,
-        title: 'Custom Field',
-        token: () => {},
-      };
+    describe('custom field tokens', () => {
+      it('combines eeSearchTokens with default search tokens', async () => {
+        const customToken = {
+          type: `custom`,
+          title: 'Custom Field',
+          token: () => {},
+        };
+        mountComponent({ props: { eeSearchTokens: [customToken] } });
+        await waitForPromises();
+        const tokens = findIssuableList()
+          .props('searchTokens')
+          .map((token) => token.type);
 
-      mountComponent({
-        props: {
-          eeSearchTokens: [customToken],
-        },
+        expect(tokens).toEqual([
+          TOKEN_TYPE_ASSIGNEE,
+          TOKEN_TYPE_AUTHOR,
+          TOKEN_TYPE_CONFIDENTIAL,
+          customToken.type,
+          TOKEN_TYPE_GROUP,
+          TOKEN_TYPE_LABEL,
+          TOKEN_TYPE_MILESTONE,
+          TOKEN_TYPE_MY_REACTION,
+          TOKEN_TYPE_SEARCH_WITHIN,
+          TOKEN_TYPE_SUBSCRIBED,
+          TOKEN_TYPE_TYPE,
+        ]);
       });
-
-      await waitForPromises();
-
-      const searchTokens = findIssuableList().props('searchTokens');
-
-      expect(searchTokens).toContainEqual(
-        expect.objectContaining({
-          type: customToken.type,
-          title: customToken.title,
-        }),
-      );
-
-      // Other tokens are still included
-      expect(searchTokens).toContainEqual(
-        expect.objectContaining({
-          type: TOKEN_TYPE_ASSIGNEE,
-        }),
-      );
-      expect(searchTokens).toContainEqual(
-        expect.objectContaining({
-          type: TOKEN_TYPE_LABEL,
-        }),
-      );
     });
   });
 

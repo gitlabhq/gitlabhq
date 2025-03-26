@@ -19,6 +19,7 @@ import {
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_DUE_DATE,
   TOKEN_TYPE_EPIC,
   TOKEN_TYPE_GROUP,
   TOKEN_TYPE_HEALTH,
@@ -32,6 +33,7 @@ import {
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_UPDATED,
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_CREATED,
@@ -515,6 +517,34 @@ export const filtersMap = {
       },
       [OPERATOR_BEFORE]: {
         [NORMAL_FILTER]: 'closed_before',
+      },
+    },
+  },
+  [TOKEN_TYPE_DUE_DATE]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'dueBefore',
+      [ALTERNATIVE_FILTER]: 'dueAfter',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_AFTER]: {
+        [ALTERNATIVE_FILTER]: 'due_after',
+      },
+      [OPERATOR_BEFORE]: {
+        [NORMAL_FILTER]: 'due_before',
+      },
+    },
+  },
+  [TOKEN_TYPE_UPDATED]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'updatedBefore',
+      [ALTERNATIVE_FILTER]: 'updatedAfter',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_AFTER]: {
+        [ALTERNATIVE_FILTER]: 'updated_after',
+      },
+      [OPERATOR_BEFORE]: {
+        [NORMAL_FILTER]: 'updated_before',
       },
     },
   },

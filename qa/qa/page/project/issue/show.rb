@@ -74,6 +74,11 @@ module QA
             has_no_element?('delete-issue-button')
           end
 
+          def has_issue_title?(title)
+            wait_for_requests
+            find_element('issue-title').text.include?(title)
+          end
+
           def delete_issue
             has_delete_issue_button?
 

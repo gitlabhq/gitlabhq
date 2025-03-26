@@ -100,6 +100,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
       expect(json_response['require_personal_access_token_expiry']).to eq(true)
+      expect(json_response['organization_cluster_agent_authorization_enabled']).to eq(false)
     end
   end
 
@@ -191,6 +192,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             max_export_size: 6,
             max_decompressed_archive_size: 20000,
             max_terraform_state_size_bytes: 1_000,
+            organization_cluster_agent_authorization_enabled: true,
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
             wiki_page_max_content_bytes: 12345,
@@ -285,6 +287,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['max_export_size']).to eq(6)
         expect(json_response['max_decompressed_archive_size']).to eq(20000)
         expect(json_response['max_terraform_state_size_bytes']).to eq(1_000)
+        expect(json_response['organization_cluster_agent_authorization_enabled']).to eq(true)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w[github bitbucket])
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)

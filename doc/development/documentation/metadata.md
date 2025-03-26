@@ -7,7 +7,7 @@ title: Metadata
 
 Each documentation Markdown page contains YAML front matter.
 All values in the metadata are treated as strings and are used for the
-docs website only.
+documentation website only.
 
 ## Stage and group metadata
 
@@ -69,7 +69,7 @@ The `title` metadata:
 
 The `description` tag:
 
-- Is used to populate text on the docs home page.
+- Is used to populate text on the documentation home page.
 - Is shown in social media previews.
 - Can be used in search result snippets.
 
@@ -145,7 +145,7 @@ When you update the `codeowners.rake` file:
   CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
   ```
 
-  - To assign different writers within a group to docs in different directories, use the `path` parameter to specify a directory:
+  - To assign different writers in a group to documentation in different directories, use the `path` parameter to specify a directory:
 
     ```ruby
     CodeOwnerRule.new('Group Name', ->(path) { path.start_with?('/doc/user') ? '@writer1' : '@writer2' }),

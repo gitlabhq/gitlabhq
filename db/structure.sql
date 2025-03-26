@@ -7640,6 +7640,22 @@ CREATE SEQUENCE agent_group_authorizations_id_seq
 
 ALTER SEQUENCE agent_group_authorizations_id_seq OWNED BY agent_group_authorizations.id;
 
+CREATE TABLE agent_organization_authorizations (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    config jsonb NOT NULL
+);
+
+CREATE SEQUENCE agent_organization_authorizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE agent_organization_authorizations_id_seq OWNED BY agent_organization_authorizations.id;
+
 CREATE TABLE agent_project_authorizations (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -24566,7 +24582,8 @@ CREATE TABLE vulnerability_exports (
     format smallint DEFAULT 0 NOT NULL,
     group_id bigint,
     organization_id bigint NOT NULL,
-    expires_at timestamp with time zone
+    expires_at timestamp with time zone,
+    send_email boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_exports_id_seq
@@ -26402,6 +26419,8 @@ ALTER TABLE ONLY activity_pub_releases_subscriptions ALTER COLUMN id SET DEFAULT
 ALTER TABLE ONLY agent_activity_events ALTER COLUMN id SET DEFAULT nextval('agent_activity_events_id_seq'::regclass);
 
 ALTER TABLE ONLY agent_group_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_group_authorizations_id_seq'::regclass);
+
+ALTER TABLE ONLY agent_organization_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_organization_authorizations_id_seq'::regclass);
 
 ALTER TABLE ONLY agent_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_project_authorizations_id_seq'::regclass);
 
@@ -28369,6 +28388,9 @@ ALTER TABLE ONLY agent_activity_events
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT agent_group_authorizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY agent_organization_authorizations
+    ADD CONSTRAINT agent_organization_authorizations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT agent_project_authorizations_pkey PRIMARY KEY (id);
@@ -33224,6 +33246,10 @@ CREATE INDEX index_agent_activity_events_on_user_id ON agent_activity_events USI
 CREATE UNIQUE INDEX index_agent_group_authorizations_on_agent_id_and_group_id ON agent_group_authorizations USING btree (agent_id, group_id);
 
 CREATE INDEX index_agent_group_authorizations_on_group_id ON agent_group_authorizations USING btree (group_id);
+
+CREATE UNIQUE INDEX index_agent_organization_authorizations_on_agent_id ON agent_organization_authorizations USING btree (agent_id);
+
+CREATE INDEX index_agent_organization_authorizations_on_organization_id ON agent_organization_authorizations USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_agent_project_authorizations_on_agent_id_and_project_id ON agent_project_authorizations USING btree (agent_id, project_id);
 
@@ -41929,6 +41955,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 ALTER TABLE ONLY incident_management_issuable_escalation_statuses
     ADD CONSTRAINT fk_4a05518b10 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY agent_organization_authorizations
+    ADD CONSTRAINT fk_4a86e6225d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY catalog_resource_component_last_usages
     ADD CONSTRAINT fk_4adc9539c0 FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
 
@@ -44112,6 +44141,9 @@ ALTER TABLE ONLY ci_secure_file_states
 
 ALTER TABLE ONLY approval_merge_request_rules_groups
     ADD CONSTRAINT fk_rails_5b2ecf6139 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY agent_organization_authorizations
+    ADD CONSTRAINT fk_rails_5b380e3d6b FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespace_limits
     ADD CONSTRAINT fk_rails_5b3f2bc334 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

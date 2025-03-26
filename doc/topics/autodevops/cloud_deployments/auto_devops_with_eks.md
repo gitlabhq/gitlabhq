@@ -46,7 +46,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 {{< alert type="warning" >}}
 
-Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
+Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
 
 {{< /alert >}}
 

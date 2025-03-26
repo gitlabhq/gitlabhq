@@ -23363,6 +23363,7 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkcompliancerequirements"></a>`complianceRequirements` | [`ComplianceRequirementConnection`](#compliancerequirementconnection) | Compliance requirements of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkdefault"></a>`default` | [`Boolean`](#boolean) | Default compliance framework for the group. |
 | <a id="complianceframeworkdescription"></a>`description` | [`String!`](#string) | Description of the compliance framework. |
+| <a id="complianceframeworkeditpath"></a>`editPath` | [`String!`](#string) | Web UI path to edit the compliance framework. |
 | <a id="complianceframeworkid"></a>`id` | [`ID!`](#id) | Compliance framework ID. |
 | <a id="complianceframeworkname"></a>`name` | [`String!`](#string) | Name of the compliance framework. |
 | <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.4. Use pipeline execution policies instead. |
@@ -47559,6 +47560,10 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aidescriptioncomposerinputdescription"></a>`description` | [`String!`](#string) | Current description. |
 | <a id="aidescriptioncomposerinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+| <a id="aidescriptioncomposerinputsourcebranch"></a>`sourceBranch` | [`String`](#string) | Source branch of the changes. |
+| <a id="aidescriptioncomposerinputsourceprojectid"></a>`sourceProjectId` | [`ID`](#id) | ID of the project where the changes are from. |
+| <a id="aidescriptioncomposerinputtargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of where the changes will be merged into. |
+| <a id="aidescriptioncomposerinputtitle"></a>`title` | [`String!`](#string) | Current merge request title. |
 | <a id="aidescriptioncomposerinputuserprompt"></a>`userPrompt` | [`String!`](#string) | Prompt from user. |
 
 ### `AiExplainVulnerabilityInput`

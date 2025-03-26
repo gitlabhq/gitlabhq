@@ -1,5 +1,5 @@
 <script>
-import { GlFilteredSearchToken, GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -10,12 +10,12 @@ import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_wit
 import {
   convertToApiParams,
   convertToSearchQuery,
+  convertToUrlParams,
   deriveSortKey,
   getDefaultWorkItemTypes,
+  getFilterTokens,
   getInitialPageParams,
   getTypeTokenOptions,
-  getFilterTokens,
-  convertToUrlParams,
 } from 'ee_else_ce/issues/list/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -33,8 +33,8 @@ import {
   PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
   PARAM_PAGE_BEFORE,
-  PARAM_STATE,
   PARAM_SORT,
+  PARAM_STATE,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -44,33 +44,39 @@ import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __, s__ } from '~/locale';
 import {
   OPERATOR_IS,
+  OPERATORS_AFTER_BEFORE,
   OPERATORS_IS,
   OPERATORS_IS_NOT_OR,
-  OPERATORS_AFTER_BEFORE,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CLOSED,
   TOKEN_TITLE_CONFIDENTIAL,
   TOKEN_TITLE_CREATED,
+  TOKEN_TITLE_DUE_DATE,
   TOKEN_TITLE_GROUP,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_SEARCH_WITHIN,
-  TOKEN_TITLE_TYPE,
   TOKEN_TITLE_STATE,
+  TOKEN_TITLE_SUBSCRIBED,
+  TOKEN_TITLE_TYPE,
+  TOKEN_TITLE_UPDATED,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CLOSED,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CREATED,
+  TOKEN_TYPE_DUE_DATE,
   TOKEN_TYPE_GROUP,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
-  TOKEN_TYPE_TYPE,
   TOKEN_TYPE_STATE,
+  TOKEN_TYPE_SUBSCRIBED,
+  TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_UPDATED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
@@ -79,11 +85,11 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
+  DETAIL_VIEW_QUERY_PARAM_NAME,
   STATE_CLOSED,
   STATE_OPEN,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
-  DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
 import getWorkItemStateCountsQuery from '../graphql/list/get_work_item_state_counts.query.graphql';
@@ -406,6 +412,27 @@ export default {
           fetchEmojis: this.fetchEmojis,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-my_reaction`,
         });
+
+        tokens.push({
+          type: TOKEN_TYPE_SUBSCRIBED,
+          title: TOKEN_TITLE_SUBSCRIBED,
+          icon: 'notifications',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              icon: 'notifications',
+              value: 'EXPLICITLY_SUBSCRIBED',
+              title: __('Explicitly subscribed'),
+            },
+            {
+              icon: 'notifications-off',
+              value: 'EXPLICITLY_UNSUBSCRIBED',
+              title: __('Explicitly unsubscribed'),
+            },
+          ],
+        });
       }
 
       if (!this.withTabs) {
@@ -437,6 +464,24 @@ export default {
         tokens.push({
           type: TOKEN_TYPE_CREATED,
           title: TOKEN_TITLE_CREATED,
+          icon: 'history',
+          unique: true,
+          token: DateToken,
+          operators: OPERATORS_AFTER_BEFORE,
+        });
+
+        tokens.push({
+          type: TOKEN_TYPE_DUE_DATE,
+          title: TOKEN_TITLE_DUE_DATE,
+          icon: 'calendar',
+          unique: true,
+          token: DateToken,
+          operators: OPERATORS_AFTER_BEFORE,
+        });
+
+        tokens.push({
+          type: TOKEN_TYPE_UPDATED,
+          title: TOKEN_TITLE_UPDATED,
           icon: 'history',
           unique: true,
           token: DateToken,

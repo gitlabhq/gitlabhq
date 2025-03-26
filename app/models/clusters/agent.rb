@@ -22,6 +22,8 @@ module Clusters
     has_many :ci_access_project_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization'
     has_many :ci_access_authorized_projects, class_name: '::Project', through: :ci_access_project_authorizations, source: :project
 
+    has_many :ci_access_organization_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization'
+
     has_many :user_access_group_authorizations, class_name: 'Clusters::Agents::Authorizations::UserAccess::GroupAuthorization'
     has_many :user_access_authorized_groups, class_name: '::Group', through: :user_access_group_authorizations, source: :group
 

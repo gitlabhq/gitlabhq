@@ -367,6 +367,7 @@ module ApplicationSettingsHelper
       :minimum_password_length,
       :mirror_available,
       :notify_on_unknown_sign_in,
+      :organization_cluster_agent_authorization_enabled,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,

@@ -162,7 +162,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `GITLAB_USER_ID`                                | Pipeline     | The numeric ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                             | Pipeline     | The unique username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
 | `GITLAB_USER_NAME`                              | Pipeline     | The display name (user-defined **Full name** in the profile settings) of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
-| `KUBECONFIG`                                    | Pipeline     | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent). |
+| `KUBECONFIG`                                    | Pipeline     | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access). |
 | `TRIGGER_PAYLOAD`                               | Pipeline     | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/_index.md#access-webhook-payload). |
 
 ## Predefined variables for merge request pipelines

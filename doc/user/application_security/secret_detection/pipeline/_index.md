@@ -213,6 +213,18 @@ For more information, see:
 - [Report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 - [Example report file](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/qa/expect/secrets/gl-secret-detection-report.json)
 
+## Remediate a leaked secret
+
+When a secret is detected, you should rotate it immediately. GitLab attempts to
+[automatically revoke](../automatic_response.md) some types of leaked secrets. For those that are not
+automatically revoked, you must do so manually.
+
+[Purging a secret from the repository's history](../../../project/repository/repository_size.md#purge-files-from-repository-history)
+does not fully address the leak. The original secret remains in any existing forks or
+clones of the repository.
+
+For instructions on how to respond to a leaked secret, select the vulnerability in the vulnerability report.
+
 ## FIPS-enabled images
 
 {{< history >}}
@@ -323,17 +335,5 @@ before_script:
 ```
 
 For more information about this issue, see [issue 465974](https://gitlab.com/gitlab-org/gitlab/-/issues/465974).
-
-## Warnings
-
-### Responding to a leaked secret
-
-When a secret is detected, you should rotate it immediately. GitLab attempts to
-[automatically revoke](../automatic_response.md) some types of leaked secrets. For those that are not
-automatically revoked, you must do so manually.
-
-[Purging a secret from the repository's history](../../../project/repository/repository_size.md#purge-files-from-repository-history)
-does not fully address the leak. The original secret remains in any existing forks or
-clones of the repository.
 
 <!-- markdownlint-enable MD025 -->

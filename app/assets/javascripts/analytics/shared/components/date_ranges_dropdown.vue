@@ -8,7 +8,7 @@ import {
   DEFAULT_DROPDOWN_DATE_RANGES,
   NUMBER_OF_DAYS_SELECTED,
 } from '~/analytics/shared/constants';
-import { __ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'DateRangesDropdown',
@@ -116,12 +116,13 @@ export default {
     },
   },
   customDateRangeItem: {
-    text: __('Custom'),
+    text: s__('Analytics|Custom'),
     value: DATE_RANGE_CUSTOM_VALUE,
   },
   i18n: {
     daysSelected: NUMBER_OF_DAYS_SELECTED,
-    label: __('Date range'),
+    label: s__('Analytics|Date range'),
+    ariaLabel: (selected) => sprintf(s__('Analytics|Date range %{selected}'), { selected }),
   },
 };
 </script>
@@ -138,7 +139,7 @@ export default {
         <gl-button
           v-gl-tooltip="$options.i18n.label"
           data-testid="selected-date-range"
-          :aria-label="`${$options.i18n.label} ${selectedValue}`"
+          :aria-label="$options.i18n.ariaLabel(selectedValue)"
           :title="$options.i18n.label"
           button-text-classes="gl-mr-[-4px]"
           >{{ $options.i18n.label }}

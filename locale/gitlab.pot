@@ -7138,6 +7138,9 @@ msgstr ""
 msgid "Analytics|Created by GitLab"
 msgstr ""
 
+msgid "Analytics|Custom"
+msgstr ""
+
 msgid "Analytics|Custom dashboards"
 msgstr ""
 
@@ -7169,6 +7172,12 @@ msgid "Analytics|Data explorer"
 msgstr ""
 
 msgid "Analytics|Data table"
+msgstr ""
+
+msgid "Analytics|Date range"
+msgstr ""
+
+msgid "Analytics|Date range %{selected}"
 msgstr ""
 
 msgid "Analytics|Dates and times are displayed in the UTC timezone."
@@ -13362,6 +13371,9 @@ msgstr ""
 msgid "ClusterAgents|Allow configuring agents in receptive mode."
 msgstr ""
 
+msgid "ClusterAgents|Allow configuring agents to be authorized for the entire instance."
+msgstr ""
+
 msgid "ClusterAgents|An error occurred while loading your agent"
 msgstr ""
 
@@ -13465,6 +13477,9 @@ msgid "ClusterAgents|Deprecated"
 msgstr ""
 
 msgid "ClusterAgents|Description"
+msgstr ""
+
+msgid "ClusterAgents|Enable instance level authorization"
 msgstr ""
 
 msgid "ClusterAgents|Enable receptive mode"
@@ -16555,6 +16570,12 @@ msgid "Content could not be displayed: %{reason}. Options to address this: %{opt
 msgstr ""
 
 msgid "Content parsed with %{link}."
+msgstr ""
+
+msgid "ContentEditor|Text style"
+msgstr ""
+
+msgid "ContentEditor|Text style %{active}"
 msgstr ""
 
 msgid "ContentEditor|You have to provide a renderMarkdown function or a custom serializer"
@@ -56849,6 +56870,9 @@ msgstr ""
 msgid "SortOptions|Sort by"
 msgstr ""
 
+msgid "SortOptions|Sort by %{selected}"
+msgstr ""
+
 msgid "SortOptions|Sort direction"
 msgstr ""
 
@@ -58909,9 +58933,6 @@ msgid "Text added to the body of all email messages. %{character_limit} characte
 msgstr ""
 
 msgid "Text added to the body of user deactivation email messages. 1000 character limit."
-msgstr ""
-
-msgid "Text style"
 msgstr ""
 
 msgid "TextEditor|Plain text editor"

@@ -31,7 +31,7 @@ When developers deploy applications, GitLab creates the resources based on the e
 Prerequisites:
 
 - You must have a configured [GitLab agent for Kubernetes](install/_index.md).
-- You have [authorized the agent](ci_cd_workflow.md#authorize-the-agent) to access relevant projects or groups.
+- You have [authorized the agent](ci_cd_workflow.md#authorize-agent-access) to access relevant projects or groups.
 - (Optional) You have configured [agent impersonation](ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation) to prevent privilege escalations. The default environment template assumes you have configured [`ci_job` impersonation](ci_cd_workflow.md#impersonate-the-cicd-job-that-accesses-the-cluster).
 
 ### Turn on Kubernetes resource management

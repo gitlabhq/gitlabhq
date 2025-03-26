@@ -9,19 +9,24 @@ query getWorkItemStateCounts(
   $assigneeWildcardId: AssigneeWildcardId
   $assigneeUsernames: [String!]
   $authorUsername: String
+  $closedAfter: Time
+  $closedBefore: Time
   $confidential: Boolean
+  $createdAfter: Time
+  $createdBefore: Time
+  $dueAfter: Time
+  $dueBefore: Time
   $labelName: [String!]
   $milestoneTitle: [String!]
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
+  $subscribed: SubscriptionStatus
   $types: [IssueType!]
+  $updatedAfter: Time
+  $updatedBefore: Time
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
-  $createdAfter: Time
-  $createdBefore: Time
-  $closedAfter: Time
-  $closedBefore: Time
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
@@ -34,19 +39,24 @@ query getWorkItemStateCounts(
       assigneeUsernames: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
       authorUsername: $authorUsername
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
       confidential: $confidential
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      dueBefore: $dueBefore
+      dueAfter: $dueAfter
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
+      subscribed: $subscribed
       types: $types
+      updatedAfter: $updatedAfter
+      updatedBefore: $updatedBefore
       in: $in
       not: $not
       or: $or
-      createdAfter: $createdAfter
-      createdBefore: $createdBefore
-      closedAfter: $closedAfter
-      closedBefore: $closedBefore
     ) {
       all
       closed
@@ -62,19 +72,24 @@ query getWorkItemStateCounts(
       assigneeUsernames: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
       authorUsername: $authorUsername
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
       confidential: $confidential
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      dueBefore: $dueBefore
+      dueAfter: $dueAfter
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
+      subscribed: $subscribed
       types: $types
+      updatedAfter: $updatedAfter
+      updatedBefore: $updatedBefore
       in: $in
       not: $not
       or: $or
-      createdAfter: $createdAfter
-      createdBefore: $createdBefore
-      closedAfter: $closedAfter
-      closedBefore: $closedBefore
     ) {
       all
       closed

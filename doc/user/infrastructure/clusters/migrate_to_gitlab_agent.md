@@ -60,7 +60,7 @@ The cluster discovery API does not work for personal namespaces.
 To migrate generic deployments:
 
 1. Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
-1. Follow the CI/CD workflow to [authorize the agent to access](../../clusters/agent/ci_cd_workflow.md#authorize-the-agent) groups and projects, or to [secure access with impersonation].(../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
+1. Follow the CI/CD workflow to [authorize the agent to access](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access) groups and projects, or to [secure access with impersonation](../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and turn off the cluster.
@@ -87,7 +87,7 @@ With GitLab-managed Kubernetes resources, you can:
 Prerequisites:
 
 - Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
-- [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-the-agent) to access relevant projects or groups.
+- [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access) to access relevant projects or groups.
 - Check the status of the **Namespace per environment** checkbox in your certificate-based cluster integration page.
 
 To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
@@ -171,7 +171,7 @@ In your Auto DevOps project, you can use the GitLab agent to connect with your K
 Prerequisites
 
 - Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
-- [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-the-agent) to access relevant projects or groups.
+- [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access) to access relevant projects or groups.
 
 To migrate from Auto DevOps:
 

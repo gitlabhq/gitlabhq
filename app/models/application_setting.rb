@@ -843,6 +843,11 @@ class ApplicationSetting < ApplicationRecord
     }
   end
 
+  jsonb_accessor :cluster_agents,
+    organization_cluster_agent_authorization_enabled: [:boolean, { default: false }]
+
+  validates :cluster_agents, json_schema: { filename: 'application_setting_cluster_agents' }
+
   attr_encrypted :external_auth_client_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_auth_client_key_pass, encryption_options_base_32_aes_256_gcm
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm

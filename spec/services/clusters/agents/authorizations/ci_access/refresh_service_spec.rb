@@ -20,6 +20,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
     let(:config) do
       {
         ci_access: {
+          instance: { default_namespace: 'new-namespace' },
           groups: [
             { id: added_group.full_path, default_namespace: 'default' },
             # Uppercase path verifies case-insensitive matching.
@@ -45,6 +46,8 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
 
       agent.ci_access_project_authorizations.create!(project: removed_project, config: default_config)
       agent.ci_access_project_authorizations.create!(project: modified_project, config: default_config)
+
+      agent.ci_access_organization_authorizations.create!(config: default_config, organization: project.organization)
     end
 
     shared_examples 'removing authorization' do
@@ -151,6 +154,44 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
 
       include_examples 'removing authorization' do
         let(:authorizations) { agent.ci_access_authorized_projects }
+      end
+    end
+
+    describe 'organization authorization' do
+      before do
+        stub_application_setting(organization_cluster_agent_authorization_enabled: setting_enabled)
+      end
+
+      context 'when the organization authorization application setting is enabled' do
+        let(:setting_enabled) { true }
+
+        it 'refreshes authorizations for the agent' do
+          expect(subject).to be_truthy
+          expect(agent.ci_access_organization_authorizations.count).to eq(1)
+
+          authorization = agent.ci_access_organization_authorizations.first
+          expect(authorization.organization).to eq(project.organization)
+          expect(authorization.config).to eq({ 'default_namespace' => 'new-namespace' })
+        end
+
+        context 'when removing authorization' do
+          let(:config) { {} }
+
+          it 'removes all authorizations' do
+            expect(subject).to be_truthy
+            expect(agent.ci_access_organization_authorizations).to be_empty
+          end
+        end
+      end
+
+      context 'when the organization authorization application setting is disabled' do
+        let(:setting_enabled) { false }
+
+        it 'does not refresh authorizations for the agent' do
+          authorization = agent.ci_access_organization_authorizations.first
+          expect(authorization.organization).to eq(project.organization)
+          expect(authorization.config).to eq({ 'default_namespace' => 'default' })
+        end
       end
     end
   end

@@ -147,6 +147,7 @@ module ApplicationSettingImplementation
         members_delete_limit: 60,
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
+        organization_cluster_agent_authorization_enabled: false,
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
