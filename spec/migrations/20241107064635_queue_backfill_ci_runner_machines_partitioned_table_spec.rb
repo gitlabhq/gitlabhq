@@ -14,14 +14,7 @@ RSpec.describe QueueBackfillCiRunnerMachinesPartitionedTable, migration: :gitlab
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          table_name: :ci_runner_machines,
-          column_name: :id,
-          interval: described_class::BATCH_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE,
-          job_arguments: ['ci_runner_machines_687967fa8a']
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end
