@@ -76,4 +76,53 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
       expect(result).to eq(query_response)
     end
   end
+
+  describe '#fetch_postgres_table_size' do
+    let(:table_name) { '_test_table' }
+    let(:query) do
+      <<~SQL
+        SELECT
+          identifier,
+          schema_name,
+          table_name,
+          total_size,
+          table_size,
+          index_size,
+          size_in_bytes,
+          CASE
+            WHEN size_in_bytes < 10 * 1024^3 THEN 'small'
+            WHEN size_in_bytes < 50 * 1024^3 THEN 'medium'
+            WHEN size_in_bytes < 100 * 1024^3 THEN 'large'
+            ELSE 'over_limit'
+          END AS classification
+        FROM postgres_table_sizes
+        WHERE table_name = $1::text
+      SQL
+    end
+
+    let(:query_response) { double }
+
+    subject(:result) { described_class.new.fetch_postgres_table_size(table_name) }
+
+    it 'fetches table size data from Postgres AI' do
+      expect(pg_client).to receive(:exec_params).with(query, [table_name]).and_return(query_response)
+      expect(result).to eq(query_response)
+    end
+  end
+
+  describe '#table_has_data?' do
+    let(:table_name) { "test_table" }
+    let(:table_name_quoted) { "\"table_name\"" }
+    let(:query) { "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)" }
+
+    let(:query_response) { double }
+
+    subject(:result) { described_class.new.table_has_data?(table_name) }
+
+    it 'fetches if the table contains any data from Postgres AI' do
+      expect(pg_client).to receive(:exec_params).with(query).and_return(query_response)
+      expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
+      expect(result).to eq(query_response)
+    end
+  end
 end

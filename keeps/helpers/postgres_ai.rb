@@ -31,6 +31,36 @@ module Keeps
         pg_client.exec_params(query)
       end
 
+      def fetch_postgres_table_size(table_name)
+        query = <<~SQL
+          SELECT
+            identifier,
+            schema_name,
+            table_name,
+            total_size,
+            table_size,
+            index_size,
+            size_in_bytes,
+            CASE
+              WHEN size_in_bytes < 10 * 1024^3 THEN 'small'
+              WHEN size_in_bytes < 50 * 1024^3 THEN 'medium'
+              WHEN size_in_bytes < 100 * 1024^3 THEN 'large'
+              ELSE 'over_limit'
+            END AS classification
+          FROM postgres_table_sizes
+          WHERE table_name = $1::text
+        SQL
+
+        pg_client.exec_params(query, [table_name])
+      end
+
+      def table_has_data?(table_name)
+        table_name_quoted = pg_client.quote_ident(table_name)
+        query = "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)"
+
+        pg_client.exec_params(query)
+      end
+
       private
 
       def connection_string

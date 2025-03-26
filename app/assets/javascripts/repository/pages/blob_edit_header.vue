@@ -65,9 +65,14 @@ export default {
       window.onbeforeunload = null;
     },
     openModal() {
+      const filePath = this.editor.filepathFormMediator?.$filenameInput?.val();
+      if (!filePath) {
+        this.editor.filepathFormMediator?.toggleValidationError(true);
+        return;
+      }
       this.error = null;
       this.fileContent = this.editor.getFileContent();
-      this.filePath = this.editor.filepathFormMediator?.$filenameInput?.val();
+      this.filePath = filePath;
       this.$refs[this.updateModalId].show();
     },
     handleError(message) {

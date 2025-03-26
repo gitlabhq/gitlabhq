@@ -15231,6 +15231,9 @@ msgstr ""
 msgid "ComplianceFrameworks|No frameworks found. Create a framework in top-level group %{linkStart}namespace%{linkEnd} to assign it to a project."
 msgstr ""
 
+msgid "ComplianceFrameworks|Note: This report was truncated to adhere to filesize limits of %{size}."
+msgstr ""
+
 msgid "ComplianceFrameworks|Optional"
 msgstr ""
 
@@ -44292,6 +44295,9 @@ msgstr ""
 msgid "Please enter a valid URL format, ex: http://www.example.com/home"
 msgstr ""
 
+msgid "Please enter a valid file name."
+msgstr ""
+
 msgid "Please enter a valid hex (#RRGGBB or #RGB) color value"
 msgstr ""
 
@@ -54299,9 +54305,6 @@ msgstr ""
 msgid "SecurityReports|Attach to new issue"
 msgstr ""
 
-msgid "SecurityReports|Auto-resolve vulnerabilities that are no longer detected"
-msgstr ""
-
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 
@@ -54432,9 +54435,6 @@ msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo (AI)"
-msgstr ""
-
-msgid "SecurityReports|Go to policies"
 msgstr ""
 
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
@@ -54668,9 +54668,6 @@ msgid "SecurityReports|This project is reaching the maximum number of vulnerabil
 msgstr ""
 
 msgid "SecurityReports|This selection is required."
-msgstr ""
-
-msgid "SecurityReports|To automatically resolve vulnerabilities when they are no longer detected by automated scanning, use the new auto-resolve option in your vulnerability management policies. From the %{boldStart}Policies%{boldEnd} page, configure a policy by applying the %{boldStart}Auto-resolve%{boldEnd} option and make sure the policy is linked to the appropriate projects. You can also configure the policy to auto-resolve only the vulnerabilities of a specific severity or from specific security scanners. See the %{linkStart}release post%{linkEnd} for details."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"

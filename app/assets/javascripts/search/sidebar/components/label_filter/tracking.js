@@ -4,7 +4,7 @@ export const TRACKING_CATEGORY = 'Language filters';
 export const TRACKING_LABEL_FILTER = 'Label Key';
 
 export const TRACKING_LABEL_DROPDOWN = 'Dropdown';
-export const TRACKING_LABEL_CHECKBOX = 'Label Checkbox';
+export const TRACKING_LABEL_CHECKBOX = 'LabelCheckbox';
 
 export const TRACKING_ACTION_SELECT = 'search:agreggations:label:select';
 export const TRACKING_ACTION_SHOW = 'search:agreggations:label:show';

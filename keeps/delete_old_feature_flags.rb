@@ -21,7 +21,8 @@ module Keeps
   #   -k Keeps::DeleteOldFeatureFlags
   # ```
   class DeleteOldFeatureFlags < ::Gitlab::Housekeeper::Keep
-    CUTOFF_MILESTONE_OLD = 12
+    CUTOFF_MILESTONE_FOR_DISABLED_FLAG = 12
+    CUTOFF_MILESTONE_FOR_ENABLED_FLAG = 4
     Error = Class.new(StandardError)
     GREP_IGNORE = [
       'locale/',
@@ -48,21 +49,6 @@ module Keeps
         return false
       end
 
-      unless milestones_helper.before_cuttoff?(milestone: feature_flag.milestone, milestones_ago: CUTOFF_MILESTONE_OLD)
-        @logger.puts "#{feature_flag.name} cannot be removed as it is after the cutoff."
-        return false
-      end
-
-      unless matches_filter_identifiers?(identifiers)
-        @logger.puts "#{feature_flag.name} cannot be removed as it is not matching passed filter."
-        return false
-      end
-
-      if feature_flag.default_enabled
-        @logger.puts "#{feature_flag.name} is default enabled moving to remove directly."
-        return true
-      end
-
       if feature_flag_rollout_issue_url(feature_flag) == "(missing URL)"
         @logger.puts "#{feature_flag.name} cannot be removed as it is not having a rollout issue."
         return false
@@ -70,6 +56,22 @@ module Keeps
 
       if latest_feature_flag_status.nil?
         @logger.puts "#{feature_flag.name} cannot be removed as we cannot get the status from the rollout issue."
+        return false
+      end
+
+      cutoff = if latest_feature_flag_status == :disabled
+                 CUTOFF_MILESTONE_FOR_DISABLED_FLAG
+               else
+                 CUTOFF_MILESTONE_FOR_ENABLED_FLAG
+               end
+
+      unless milestones_helper.before_cuttoff?(milestone: feature_flag.milestone, milestones_ago: cutoff)
+        @logger.puts "#{feature_flag.name} cannot be removed as it is after the cutoff."
+        return false
+      end
+
+      unless matches_filter_identifiers?(identifiers)
+        @logger.puts "#{feature_flag.name} cannot be removed as it is not matching passed filter."
         return false
       end
 
@@ -84,7 +86,7 @@ module Keeps
     # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
     def build_description(feature_flag, latest_feature_flag_status)
       <<~MARKDOWN
-      This feature flag was introduced in #{feature_flag.milestone}, which is more than #{CUTOFF_MILESTONE_OLD} milestones ago.
+      This feature flag was introduced in #{feature_flag.milestone}, which is more than #{latest_feature_flag_status == :enabled ? CUTOFF_MILESTONE_FOR_ENABLED_FLAG : CUTOFF_MILESTONE_FOR_DISABLED_FLAG} milestones ago.
 
       As part of our process we want to ensure [feature flags don't stay too long in the codebase](https://docs.gitlab.com/ee/development/feature_flags/#types-of-feature-flags).
 
@@ -108,7 +110,7 @@ module Keeps
       ## TODO for the reviewers before merging this MR
       - [ ] See the status of the rollout by checking #{feature_flag_rollout_issue_url(feature_flag)}, #{format(FEATURE_FLAG_LOG_ISSUES_URL, feature_flag_name: feature_flag.name)}
       - [ ] Verify the feature flag status via chatops by running `/chatops run feature get #{feature_flag.name}`.
-      - [ ] [Search for references to `#{feature_flag.name.split('_').map(&:capitalize).join}` in frontnd part of code](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{feature_flag.name.split('_').map(&:capitalize).join}&regex=false)
+      - [ ] [Search for references to `#{feature_flag.name.split('_').map(&:capitalize).join}` in frontend part of code](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{feature_flag.name.split('_').map(&:capitalize).join}&regex=false)
       - [ ] [Search for references to `#{feature_flag.name}` in code](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{feature_flag.name}&regex=false)
       - [ ] Check if we need to remove any Gem or other related code by looking at the changes in #{feature_flag.introduced_by_url}
       MARKDOWN
@@ -182,6 +184,7 @@ module Keeps
 
         unless ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(file)
           @logger.puts "#{feature_flag.name} aborting because autocorrect failed for file #{file}"
+          change.changed_files << file # Adding file so debugging becomes easier.
           change.abort!
           return change
         end

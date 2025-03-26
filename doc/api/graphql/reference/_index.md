@@ -40583,6 +40583,7 @@ Represents CRM contacts widget.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcrmcontactscontacts"></a>`contacts` | [`CustomerRelationsContactConnection`](#customerrelationscontactconnection) | Collection of CRM contacts associated with the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetcrmcontactscontactsavailable"></a>`contactsAvailable` | [`Boolean!`](#boolean) | Indicates whether contacts are available to be associated with the work item. |
 | <a id="workitemwidgetcrmcontactstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetCurrentUserTodos`

@@ -17,6 +17,15 @@ module Types
           null: true,
           description: 'Collection of CRM contacts associated with the work item.',
           method: :customer_relations_contacts
+
+        field :contacts_available,
+          GraphQL::Types::Boolean,
+          null: false,
+          description: 'Indicates whether contacts are available to be associated with the work item.'
+
+        def contacts_available
+          object.work_item.namespace.crm_group&.contacts&.exists? || false
+        end
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

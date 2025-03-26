@@ -23,7 +23,10 @@ describe('BlobEditHeader', () => {
 
   const mockEditor = {
     getFileContent: jest.fn().mockReturnValue(content),
-    filepathFormMediator: { $filenameInput: { val: jest.fn().mockReturnValue('.gitignore') } },
+    filepathFormMediator: {
+      $filenameInput: { val: jest.fn().mockReturnValue('.gitignore') },
+      toggleValidationError: jest.fn(),
+    },
   };
 
   const createWrapper = ({ action = 'update' } = {}) => {
@@ -202,6 +205,17 @@ describe('BlobEditHeader', () => {
       const putData = JSON.parse(mock.history.post[0].data);
       expect(putData.content).toBe(content);
       expect(visitUrlSpy).toHaveBeenCalledWith('/new/file');
+    });
+  });
+
+  describe('validation', () => {
+    it('toggles validation error when filename is empty', () => {
+      mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue(null);
+      wrapper = createWrapper();
+
+      findCommitChangesButton().vm.$emit('click');
+
+      expect(mockEditor.filepathFormMediator.toggleValidationError).toHaveBeenCalledWith(true);
     });
   });
 });

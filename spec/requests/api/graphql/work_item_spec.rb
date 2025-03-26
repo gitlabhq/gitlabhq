@@ -1547,6 +1547,64 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
+    describe 'contacts widget' do
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetCrmContacts {
+              contactsAvailable
+              contacts {
+                nodes {
+                  firstName
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      context 'when no contacts are available' do
+        it 'returns expected data' do
+          expect(work_item_data).to include(
+            'widgets' => array_including(
+              hash_including(
+                'type' => 'CRM_CONTACTS',
+                'contactsAvailable' => false,
+                'contacts' => {
+                  'nodes' => be_empty
+                }
+              )
+            )
+          )
+        end
+      end
+
+      context 'when contacts are available' do
+        let_it_be(:contact) { create(:contact, group: work_item.project.group) }
+        let_it_be(:issue_contact) { create(:issue_customer_relations_contact, issue: work_item, contact: contact) }
+
+        it 'returns expected data' do
+          expect(work_item_data).to include(
+            'widgets' => array_including(
+              hash_including(
+                'type' => 'CRM_CONTACTS',
+                'contactsAvailable' => true,
+                'contacts' => {
+                  'nodes' => containing_exactly(
+                    hash_including(
+                      'firstName' => contact.first_name
+                    )
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
+    end
+
     context 'when an Issue Global ID is provided' do
       let(:global_id) { Issue.find(work_item.id).to_gid.to_s }
 

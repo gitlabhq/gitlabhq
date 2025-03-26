@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'helpers/reviewer_roulette'
+require_relative './helpers/postgres_ai'
 
 module Keeps
   # This is an implementation of ::Gitlab::Housekeeper::Keep.
@@ -36,22 +37,33 @@ module Keeps
 
     def table_sizes
       table_sizes = {}
-      active_connection = Gitlab::Database::SharedModel.connection
 
       database_entries.each do |entry|
         connection = Gitlab::Database.schemas_to_base_models[entry.gitlab_schema]&.first&.connection
         next unless connection
-        next unless Gitlab::Database.db_config_name(connection) == Gitlab::Database.db_config_name(active_connection)
+        next unless table_has_data?(entry.table_name)
 
-        table_size = Gitlab::Database::PostgresTableSize.by_table_name(entry.table_name)
-        next unless table_size
+        table_classification = fetch_table_classification(entry.table_name)
+        next unless table_classification
 
-        table_sizes[table_size.table_name] = table_size.size_classification
+        table_sizes[entry.table_name] = table_classification
       end
 
       table_sizes
     end
     strong_memoize_attr :table_sizes
+
+    def table_has_data?(table_name)
+      result = postgres_ai.table_has_data?(table_name)
+
+      Gitlab::Utils.to_boolean(result.first.fetch('exists'))
+    end
+
+    def fetch_table_classification(table_name)
+      result = postgres_ai.fetch_postgres_table_size(table_name)
+
+      result.first.fetch('classification')
+    end
 
     def database_entries
       @database_entries ||= Gitlab::Database::Dictionary.entries
@@ -63,6 +75,7 @@ module Keeps
       database_entries.each do |entry|
         next unless entry.table_size != table_sizes[entry.table_name]
         next if table_sizes[entry.table_name].nil?
+        next if entry.gitlab_schema == 'gitlab_internal'
 
         tables_to_update[entry.table_name] = table_sizes[entry.table_name]
       end
@@ -171,6 +184,10 @@ module Keeps
 
     def roulette
       @roulette ||= Keeps::Helpers::ReviewerRoulette.new
+    end
+
+    def postgres_ai
+      @postgres_ai ||= Keeps::Helpers::PostgresAi.new
     end
   end
 end

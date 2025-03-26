@@ -42,7 +42,12 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     allow(keep).to receive(:can_remove_ff?).and_return(true)
 
     allow(milestones_helper)
-      .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone, milestones_ago: 12)
+      .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+        milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
+      .and_return(true)
+    allow(milestones_helper)
+      .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+        milestones_ago: described_class::CUTOFF_MILESTONE_FOR_DISABLED_FLAG)
       .and_return(true)
   end
 
@@ -92,15 +97,29 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
     end
 
-    context 'when milestone is after cutoff' do
+    context 'when milestone is after cutoff for enabled flags' do
       before do
         allow(milestones_helper)
-          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone, milestones_ago: 12)
+          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+            milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
           .and_return(false)
       end
 
-      it 'returns false' do
+      it 'returns false for enabled flag' do
         expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+      end
+    end
+
+    context 'when milestone is after cutoff for disabled flags' do
+      before do
+        allow(milestones_helper)
+          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+            milestones_ago: described_class::CUTOFF_MILESTONE_FOR_DISABLED_FLAG)
+          .and_return(false)
+      end
+
+      it 'returns false for disabled flag' do
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :disabled)).to be false
       end
     end
 
@@ -154,9 +173,25 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
     end
 
-    context 'when all conditions are met' do
+    context 'when all conditions are met for enabled flags' do
       it 'returns true' do
+        allow(milestones_helper)
+          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+            milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
+          .and_return(true)
+
         expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+      end
+    end
+
+    context 'when all conditions are met for disabled flags' do
+      it 'returns true' do
+        allow(milestones_helper)
+          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+            milestones_ago: described_class::CUTOFF_MILESTONE_FOR_DISABLED_FLAG)
+          .and_return(true)
+
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :disabled)).to be true
       end
     end
   end

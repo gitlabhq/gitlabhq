@@ -1,5 +1,8 @@
 - action = current_action?(:edit, :update) ? 'edit' : 'create'
 - is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(local_assigns[:path])
+- error_partial = capture do
+  .js-filepath-error.gl-text-danger.gl-font-regular.gl-hidden
+    = _("Please enter a valid file name.")
 
 .file-holder.file.gl-mb-3
   .js-file-title.file-title.gl-flex.gl-items-center.gl-rounded-t-base{ data: { current_action: action } }
@@ -14,10 +17,12 @@
     - if current_action?(:edit, :update)
       - input_options = { label: _('File path'), id: 'file_path', name: 'file_path', value: params[:file_path] || @path, class: 'new-file-path js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
+      = error_partial
 
     - if current_action?(:new, :create)
       - input_options = { label: _('File name'), id: 'file_name', name: 'file_name', value: params[:file_name] || '', required: true, placeholder: "Filename", testid: 'file-name-field', class: 'new-file-name js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
+      = error_partial
 
     .file-buttons.gl-flex.gl-items-center.gl-justify-end
       - if is_markdown
