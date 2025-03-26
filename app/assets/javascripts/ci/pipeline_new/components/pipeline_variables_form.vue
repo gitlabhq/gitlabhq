@@ -127,6 +127,9 @@ export default {
     removeButtonCategory() {
       return this.isMobile ? 'secondary' : 'tertiary';
     },
+    removeButtonSize() {
+      return this.isMobile ? 'medium' : 'small';
+    },
     variables() {
       return this.form[this.refParam]?.variables ?? [];
     },
@@ -340,9 +343,9 @@ export default {
             <template v-if="variables.length > 1">
               <gl-button
                 v-if="canRemove(index)"
-                size="small"
                 class="gl-shrink-0"
                 data-testid="remove-ci-variable-row"
+                :size="removeButtonSize"
                 :category="removeButtonCategory"
                 :aria-label="s__('CiVariables|Remove variable')"
                 @click="removeVariable(index)"

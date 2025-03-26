@@ -361,25 +361,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'with project namespaces' do
-        shared_examples 'creates project namespace' do
-          it 'automatically creates a project namespace' do
-            project = build(:project, path: 'hopefully-valid-path1')
-            project.save!
+        it 'automatically creates a project namespace' do
+          project = build(:project, path: 'hopefully-valid-path1')
+          project.save!
 
-            expect(project).to be_persisted
-            expect(project.project_namespace).to be_persisted
-            expect(project.project_namespace).to be_in_sync_with_project(project)
-            expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
-          end
+          expect(project).to be_persisted
+          expect(project.project_namespace).to be_persisted
+          expect(project.project_namespace).to be_in_sync_with_project(project)
+          expect(project.reload.project_namespace.traversal_ids).to match_array([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
         end
-
-        it_behaves_like 'creates project namespace'
       end
     end
 
     context 'updating a project' do
       let_it_be(:project_namespace) { create(:project_namespace) }
-      let_it_be(:project) { project_namespace.project }
+      let_it_be(:project, reload: true) { project_namespace.project }
 
       context 'when project has an associated project namespace' do
         # when FF is disabled creating a project does not create a project_namespace, so we create one
@@ -396,19 +392,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
 
-        context 'when same project is being updated in 2 instances' do
-          it 'syncs only changed attributes' do
-            project1 = described_class.last
-            project2 = described_class.last
+        it 'syncs changed attributes' do
+          project.update!(name: "New project name", path: "new_project_path")
 
-            project_name = project1.name
-            project_path = project1.path
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+        end
 
-            project1.update!(name: project_name + "-1")
-            project2.update!(path: project_path + "-1")
+        # Regression test for edge-case introduced by 0a71dc3f33e809198d522d3cf2a28781aeac5809
+        it 'syncs organization_id even when it is the only change' do
+          new_org = create(:organization)
 
-            expect(project.reload.project_namespace).to be_in_sync_with_project(project)
-          end
+          project.parent.update_column(:organization_id, new_org.id)
+          project.update!(organization_id: new_org.id)
+
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
       end
     end
@@ -10031,22 +10028,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     subject { project.job_token_policies_enabled? }
 
-    where(:flag_enabled, :setting_enabled, :result) do
-      true  | true  | true
-      true  | false | true
-      false | true  | true
-      false | false | false
-    end
+    where(:setting_enabled) { [true, false] }
 
     before do
       project.clear_memoization(:job_token_policies_enabled?)
-      stub_feature_flags(add_policies_to_ci_job_token: flag_enabled)
       allow(project).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
         :job_token_policies_enabled?).and_return(setting_enabled)
     end
 
     with_them do
-      it { is_expected.to eq(result) }
+      it { is_expected.to eq(setting_enabled) }
     end
   end
 

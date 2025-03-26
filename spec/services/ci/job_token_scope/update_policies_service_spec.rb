@@ -12,6 +12,10 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
     described_class.new(project, current_user).execute(target, default_permissions, policies)
   end
 
+  before do
+    allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+  end
+
   describe '#execute' do
     shared_examples 'when user is not logged in' do
       let(:current_user) { nil }

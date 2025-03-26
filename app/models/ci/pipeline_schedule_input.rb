@@ -10,7 +10,6 @@ module Ci
     before_validation :assign_project_id, on: :create
 
     validates :name, presence: true, length: { maximum: 255 }, uniqueness: { scope: :pipeline_schedule_id }
-    validates :value, presence: true
 
     # We validate the size of the serialized value because encryption is expensive.
     # The maximum permitted size is equivalent to the maximum size permitted for an interpolated input value.

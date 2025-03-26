@@ -651,6 +651,11 @@ rspec:merge-auto-explain-logs:
   needs: !reference ["rspec:coverage", "needs"]
   script:
     - scripts/merge-auto-explain-logs
+    - |
+      if [[ -f "$RSPEC_AUTO_EXPLAIN_LOG_PATH" && "$CI_COMMIT_REF_NAME" == "$CI_DEFAULT_BRANCH" ]]; then
+        source scripts/gitlab_component_helpers.sh
+        create_and_upload_auto_explain_package
+      fi
   artifacts:
     name: auto-explain-logs
     expire_in: 31d
@@ -929,6 +934,31 @@ rspec-ee system pg16 single-db-sec-connection:
     - .rspec-ee-system-parallel
     - .rails:rules:single-db-sec-connection-ee
 
+# Integration tests with Elasticsearch and PG production versions
+# These run on merge requests which meet certain conditions and the nightly pipeline
+rspec-ee unit pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rspec-ee-unit-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+rspec-ee integration pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rspec-ee-integration-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+
+rspec-ee system pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
+
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 
@@ -1108,8 +1138,8 @@ rspec-ee system pg15:
     - .rspec-ee-system-parallel
 
 # PG16
-# Integration tests with Elastic Search and the actual PG production version (PG16)
-# https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/534
+# Integration tests with supported Elasticsearch and OpenSearch versions
+# and the actual PG production version (PG16)
 rspec-ee unit pg16 opensearch1:
   extends:
     - .rspec-ee-base-pg16-opensearch1
@@ -1146,23 +1176,7 @@ rspec-ee system pg16 opensearch2:
     - .rspec-ee-system-parallel
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-rspec-ee unit pg16 es8:
-  extends:
-    - .rspec-ee-base-pg16-es8
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg16 es8:
-  extends:
-    - .rspec-ee-base-pg16-es8
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg16 es8:
-  extends:
-    - .rspec-ee-base-pg16-es8
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-system-parallel
+# Production version tests for ES and PG in nightly pipeline are defined in the previous section
 
 # PG17
 # Note: PG17 brought us close to the limit of nightly jobs, with 1946 out of 2000.

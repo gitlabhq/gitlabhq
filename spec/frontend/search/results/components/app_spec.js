@@ -10,6 +10,7 @@ import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql
 import GlobalSearchResultsApp from '~/search/results/components/app.vue';
 import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue';
 import StatusBar from '~/search/results/components/status_bar.vue';
+import EmptyResult from '~/search/results/components/result_empty.vue';
 import mutations from '~/search/store/mutations';
 import {
   MOCK_QUERY,
@@ -58,6 +59,7 @@ describe('GlobalSearchResultsApp', () => {
   };
 
   const findZoektBlobResults = () => wrapper.findComponent(ZoektBlobResults);
+  const findEmptyResult = () => wrapper.findComponent(EmptyResult);
   const findStatusBar = () => wrapper.findComponent(StatusBar);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
@@ -108,9 +110,14 @@ describe('GlobalSearchResultsApp', () => {
       await waitForPromises();
     });
 
-    it(`renders component properly`, async () => {
+    it(`Renders empty state`, async () => {
       await waitForPromises();
-      expect(findZoektBlobResults().props('hasResults')).toBe(false);
+      expect(findZoektBlobResults().exists()).toBe(false);
+      expect(findEmptyResult().exists()).toBe(true);
+    });
+
+    it('Renders status bar', () => {
+      expect(findStatusBar().exists()).toBe(true);
     });
   });
 

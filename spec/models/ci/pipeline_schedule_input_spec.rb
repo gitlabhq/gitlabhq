@@ -41,7 +41,15 @@ RSpec.describe Ci::PipelineScheduleInput, feature_category: :continuous_integrat
     end
 
     describe 'value' do
-      it { is_expected.to validate_presence_of(:value) }
+      it 'allows falsey values' do
+        input.value = false
+
+        expect(input).to be_valid
+
+        input.value = ''
+
+        expect(input).to be_valid
+      end
 
       context 'when the serialized length of the value is less than the maximum permitted size' do
         it 'is valid' do

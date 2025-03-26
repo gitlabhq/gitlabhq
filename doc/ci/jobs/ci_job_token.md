@@ -144,14 +144,6 @@ You can also add a group or project to the allowlist [with the API](../../api/gr
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 You can populate a project's allowlist using the data from the [job token authentication log](#job-token-authentication-log)
 with the UI or a Rake task.
 

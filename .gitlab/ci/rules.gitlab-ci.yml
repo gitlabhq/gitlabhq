@@ -108,6 +108,9 @@
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
+.if-merge-request-labels-run-search-tests: &if-merge-request-labels-run-search-tests
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-search-tests/'
+
 .if-merge-request-labels-run-observability-e2e-tests-main-branch: &if-merge-request-labels-run-observability-e2e-tests-main-branch
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-main-branch/'
 
@@ -797,11 +800,14 @@
 
 .rails:rules:run-search-tests:
   rules:
-    - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
-    - <<: *if-merge-request-labels-group-global-search
-      changes: *search-backend-patterns
+    - <<: *if-merge-request-labels-run-search-tests
+      changes: *ci-patterns
     - <<: *if-merge-request-labels-group-global-search
       changes: *ci-patterns
+    - <<: *if-merge-request-labels-run-search-tests
+      changes: *search-backend-patterns
+    - <<: *if-merge-request-labels-group-global-search
+      changes: *search-backend-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:

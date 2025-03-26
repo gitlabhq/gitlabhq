@@ -11,6 +11,10 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
   let(:service) { described_class.new(project, current_user) }
 
   shared_examples 'adds group' do |_context|
+    before do
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+
     it 'adds the group to the scope', :aggregate_failures do
       expect { result }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
 

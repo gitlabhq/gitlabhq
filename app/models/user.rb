@@ -2815,7 +2815,7 @@ class User < ApplicationRecord
   end
 
   def email_allowed_by_restrictions
-    return if placeholder? || import_user?
+    return if placeholder? || import_user? || security_policy_bot?
 
     error = validate_admin_signup_restrictions(email)
 

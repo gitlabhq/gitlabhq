@@ -11,6 +11,10 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
   let(:allowlist) { described_class.new(source_project, direction: direction) }
   let(:direction) { :outbound }
 
+  before do
+    allow(source_project).to receive(:job_token_policies_enabled?).and_return(true)
+  end
+
   describe '#projects' do
     subject(:projects) { allowlist.projects }
 

@@ -1629,11 +1629,12 @@ in the cluster back the request in GitLab.
 
 ## Development tips
 
-- [Kibana](advanced_search/tips.md#kibana)
-- [Viewing index status](advanced_search/tips.md#viewing-index-status)
 - [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
-- [Testing migrations](advanced_search/tips.md#testing-migrations)
 - [Index data](advanced_search/tips.md#index-data)
+- [Kibana](advanced_search/tips.md#kibana)
+- [Running tests with Elasticsearch](advanced_search/tips.md#testing)
+- [Testing migrations](advanced_search/tips.md#advanced-search-migrations)
+- [Viewing index status](advanced_search/tips.md#viewing-index-status)
 
 ## Troubleshooting
 

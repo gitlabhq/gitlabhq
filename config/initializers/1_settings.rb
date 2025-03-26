@@ -886,6 +886,9 @@ Gitlab.ee do
   Settings.cron_jobs['vulnerability_statistics_schedule_worker'] ||= {}
   Settings.cron_jobs['vulnerability_statistics_schedule_worker']['cron'] ||= '15 1,20 * * *'
   Settings.cron_jobs['vulnerability_statistics_schedule_worker']['job_class'] = 'Vulnerabilities::Statistics::ScheduleWorker'
+  Settings.cron_jobs['vulnerability_namespace_statistics_schedule_worker'] ||= {}
+  Settings.cron_jobs['vulnerability_namespace_statistics_schedule_worker']['cron'] ||= '0 8 * * 0'
+  Settings.cron_jobs['vulnerability_namespace_statistics_schedule_worker']['job_class'] = 'Vulnerabilities::NamespaceStatistics::ScheduleWorker'
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker'] ||= {}
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['cron'] ||= '15 3 * * *'
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['job_class'] = 'Vulnerabilities::HistoricalStatistics::DeletionWorker'

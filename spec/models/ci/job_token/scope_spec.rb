@@ -237,6 +237,10 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     let_it_be(:allowed_policy) { ::Ci::JobToken::Policies::POLICIES.first }
     let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
 
+    before do
+      allow(accessed_project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+
     shared_examples 'capturing job token policies' do
       it 'captures job token policies' do
         expect(::Ci::JobToken::Authorization).to receive(:capture_job_token_policies).with(policies)

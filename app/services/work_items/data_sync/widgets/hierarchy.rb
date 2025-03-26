@@ -17,12 +17,14 @@ module WorkItems
           handle_children
         end
 
-        # Nothing to delete for children as we relink existing child links
-        # to the new parent in `relink_children_to_target_work_item`
         def post_move_cleanup
-          return unless work_item.parent_link.present?
+          # Cleanup children linked to moved item when that is an issue because we are currently creating those
+          # child items in the destination namespace anyway. If we decide to relink child items for Issue WIT
+          # then we should not be deleting them here.
+          work_item.child_links.each { |child_link| child_link.work_item.destroy! } if work_item.work_item_type.issue?
 
-          work_item.parent_link.destroy!
+          # cleanup parent link
+          work_item.parent_link&.destroy!
         end
 
         private
@@ -40,13 +42,13 @@ module WorkItems
         end
 
         def handle_children
+          # We only support moving child items for the issue work item type for now
+          return move_children if work_item.work_item_type.issue?
+
           # Relink child items to the new work item first. This will be used for any work item type other than issue.
-          # For issue work item type we will relink child items, but then also actually move the child items(tasks) to
+          # For issue work item type we actually move the child items(tasks) to
           # the destination namespace. This is to keep feature parity with existing move functionality on issue.
           relink_children_to_target_work_item
-
-          # We only support moving child items for the issue work item type for now
-          move_children if work_item.work_item_type.issue?
         end
 
         def relink_children_to_target_work_item
@@ -67,13 +69,9 @@ module WorkItems
         end
 
         def move_children
-          # Reload as the child_links association was just changed by relinking child items
-          # in `relink_children_to_target_work_item`
-          target_work_item.reset
-
           # We iterate over "new work item" child links now, because we have relinked child items from moved work item
           # to the new work item in `relink_children_to_target_work_item`.
-          target_work_item.child_links.each do |link|
+          work_item.child_links.each do |link|
             # This is going to be moved to an async worker. This is planned as a follow-up up iteration for a bunch of
             # other work item association data. The async implementation for move will be tracked in:
             # https://gitlab.com/groups/gitlab-org/-/epics/15934

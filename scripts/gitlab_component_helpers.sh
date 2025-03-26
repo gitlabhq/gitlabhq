@@ -224,3 +224,13 @@ function fixtures_directory_exists() {
 function upload_fixtures_package() {
   upload_package "${FIXTURES_PACKAGE}" "${FIXTURES_PACKAGE_URL}"
 }
+
+# Dump auto-explain logs
+export AUTO_EXPLAIN_PACKAGE="auto-explain-logs.tar.gz"
+export AUTO_EXPLAIN_PATH="${RSPEC_AUTO_EXPLAIN_LOG_PATH}"
+export AUTO_EXPLAIN_PACKAGE_URL="${API_PACKAGES_BASE_URL}/auto-explain-logs/master/${AUTO_EXPLAIN_PACKAGE}"
+
+function create_and_upload_auto_explain_package() {
+  create_package "${AUTO_EXPLAIN_PACKAGE}" "${AUTO_EXPLAIN_PATH}"
+  upload_package "${AUTO_EXPLAIN_PACKAGE}" "${AUTO_EXPLAIN_PACKAGE_URL}"
+}

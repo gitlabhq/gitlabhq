@@ -8,6 +8,7 @@ import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT } from '~/search/sidebar/constants/index'
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
+import EmptyResult from './result_empty.vue';
 import StatusBar from './status_bar.vue';
 
 import ZoektBlobResults from './zoekt_blob_results.vue';
@@ -24,6 +25,7 @@ export default {
     ZoektBlobResults,
     StatusBar,
     GlAlert,
+    EmptyResult,
   },
   data() {
     return {
@@ -96,12 +98,14 @@ export default {
       {{ $options.i18n.blobDataFetchError }}
     </gl-alert>
     <section v-else-if="isBlobScope && isZoektSearch">
-      <status-bar :blob-search="blobSearch" :has-results="hasResults" :is-loading="isLoading" />
+      <status-bar v-if="!isLoading && !hasError" :blob-search="blobSearch" />
       <zoekt-blob-results
+        v-if="hasResults"
         :blob-search="blobSearch"
         :has-results="hasResults"
         :is-loading="isLoading"
       />
+      <empty-result v-if="!hasResults && !isLoading" />
     </section>
   </div>
 </template>

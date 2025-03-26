@@ -28,23 +28,23 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The Web IDE is an advanced editor with commit staging.
-You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
-For a more basic implementation, see [Web Editor](../repository/web_editor.md).
+The Web IDE is an advanced editor with commit staging where you can make changes to multiple
+files directly from the GitLab UI. It provides a more robust editing experience compared to the
+[Web Editor](../repository/web_editor.md).
 
 Support for [GitLab Flavored Markdown](../../markdown.md) preview in the Web IDE is proposed in
 [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
 
 ## Open the Web IDE
 
-To open the Web IDE:
+You can access the Web IDE through several methods.
+
+### With a keyboard shortcut
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 ### From a file or directory
-
-To open the Web IDE from a file or directory:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your file or directory.
@@ -52,57 +52,35 @@ To open the Web IDE from a file or directory:
 
 ### From a merge request
 
-To open the Web IDE from a merge request:
-
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your merge request.
 1. In the upper right, select **Code > Open in Web IDE**.
 
-The Web IDE opens new and modified files in separate tabs and displays changes side by side.
+The Web IDE opens new and modified files in separate tabs, and displays changes side by side.
 To reduce load time, only 10 files with the most lines changed open automatically.
 
 The left **Explorer** sidebar adds a merge request icon ({{< icon name="merge-request" >}}) next to new or modified files.
 To view changes to a file, right-click the file and select **Compare with merge request base**.
 
-## Open a file
+## Manage files
+
+You can use the Web IDE to open, edit, and upload multiple files.
+
+### Open a file
 
 To open a file by name in the Web IDE:
 
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
 1. In the search box, enter the filename.
 
-## Search open files
+### Search open files
 
 To search across open files in the Web IDE:
 
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>F</kbd>.
 1. In the search box, enter your search term.
 
-## View a list of modified files
-
-To view a list of files you modified in the Web IDE:
-
-- On the left activity bar, select **Source Control**, or
-  press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
-
-Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
-For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
-
-## Restore uncommitted changes
-
-You do not have to manually save any file you edit in the Web IDE.
-The Web IDE stages the files you modify, so you can [commit the changes](#commit-changes).
-Uncommitted changes are saved in your browser's local storage, and persist
-even if you close the browser tab or refresh the Web IDE.
-
-If your uncommitted changes are not available, you can restore the changes from local history.
-To restore uncommitted changes in the Web IDE:
-
-1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
-1. In the search box, enter `Local History: Find Entry to Restore`.
-1. Select the file that contains the uncommitted changes.
-
-## Upload a file
+### Upload a file
 
 To upload a file in the Web IDE:
 
@@ -120,7 +98,36 @@ To upload a file in the Web IDE:
 You can upload multiple files at once.
 The files are uploaded and automatically added to the repository.
 
-## Switch branches
+### Restore uncommitted changes
+
+You do not have to manually save any file you edit in the Web IDE.
+The Web IDE stages the files you modify, so you can [commit the changes](#commit-changes).
+Uncommitted changes are saved in your browser's local storage. They persist
+even if you close the browser tab or refresh the Web IDE.
+
+If your uncommitted changes are not available, you can restore the changes from local history.
+To restore uncommitted changes in the Web IDE:
+
+1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
+1. In the search box, enter `Local History: Find Entry to Restore`.
+1. Select the file that contains the uncommitted changes.
+
+## Use source control
+
+You can use source control to view modified files, create and switch branches,
+commit changes, and create merge requests.
+
+### View modified files
+
+To view a list of files you modified in the Web IDE:
+
+- On the left activity bar, select **Source Control**, or
+  press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+
+Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
+For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
+
+### Switch branches
 
 The Web IDE uses the current branch by default.
 To switch branches in the Web IDE:
@@ -128,7 +135,7 @@ To switch branches in the Web IDE:
 1. On the bottom status bar, on the left, select the current branch name.
 1. Enter or select an existing branch.
 
-## Create a branch
+### Create a branch
 
 To create a branch from the current branch in the Web IDE:
 
@@ -138,7 +145,7 @@ To create a branch from the current branch in the Web IDE:
 
 If you do not have write access to the repository, **Create new branch** is not visible.
 
-## Commit changes
+### Commit changes
 
 To commit changes in the Web IDE:
 
@@ -147,7 +154,7 @@ To commit changes in the Web IDE:
 1. Enter your commit message.
 1. Commit to the current branch or [create a new branch](#create-a-branch).
 
-## Create a merge request
+### Create a merge request
 
 To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 
@@ -156,7 +163,12 @@ To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 
 For more information, see [View missed notifications](#view-missed-notifications).
 
-## Use the Command Palette
+## Customize the Web IDE
+
+Customize the Web IDE to match your preferences for keyboard shortcuts,
+themes, settings, and synchronization.
+
+### Use the Command Palette
 
 You can use the Command Palette to access many commands.
 To open the Command Palette and run a command in the Web IDE:
@@ -164,7 +176,7 @@ To open the Command Palette and run a command in the Web IDE:
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
 1. Enter or select the command.
 
-## Edit settings
+### Edit settings
 
 You can use the settings editor to view and edit your user and workspace settings.
 To open the settings editor in the Web IDE:
@@ -174,7 +186,7 @@ To open the settings editor in the Web IDE:
 
 In the settings editor, you can search for the settings you want to change.
 
-## Edit keyboard shortcuts
+### Edit keyboard shortcuts
 
 You can use the keyboard shortcuts editor to view and change
 the default keybindings for all available commands.
@@ -191,16 +203,7 @@ In the keyboard shortcuts editor, you can search for:
 Keybindings are based on your keyboard layout.
 If you change your keyboard layout, existing keybindings are updated automatically.
 
-### Use Vim keybindings
-
-Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
-With the [Extensions Marketplace](#extension-marketplace), you can add Vim keybindings to
-the Web IDE.
-
-To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
-extension. For more information, see [install an extension](#install-an-extension).
-
-## Change the color theme
+### Change the color theme
 
 You can choose between different color themes for the Web IDE.
 The default theme is **GitLab Dark**.
@@ -214,7 +217,7 @@ To change the color theme in the Web IDE:
 
 The Web IDE stores your active color theme in your [user settings](#edit-settings).
 
-## Configure sync settings
+### Configure sync settings
 
 To configure sync settings in the Web IDE:
 
@@ -232,7 +235,7 @@ To configure sync settings in the Web IDE:
 These settings sync automatically across multiple Web IDE instances.
 You cannot sync user profiles or go back to an earlier version of synced settings.
 
-## View missed notifications
+### View missed notifications
 
 When you perform actions in the Web IDE, notifications appear in the lower right.
 To view any notification you might have missed:
@@ -317,6 +320,14 @@ the Red Hat [YAML](https://open-vsx.org/extension/redhat/vscode-yaml) extension.
          "gitlab-web-ide://~/<path-to-local-schema>.json": ["*.yaml", "*.yml"]
       }
       ```
+
+#### Use Vim keybindings
+
+Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
+With the Extensions Marketplace, you can add Vim keybindings to the Web IDE.
+
+To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
+extension. For more information, see [install an extension](#install-an-extension).
 
 ## Related topics
 

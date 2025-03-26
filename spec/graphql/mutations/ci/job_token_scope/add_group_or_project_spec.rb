@@ -32,6 +32,12 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
       end
     end
 
+    before do
+      allow_next_found_instance_of(Project) do |project|
+        allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+      end
+    end
+
     context 'when we add a project' do
       let_it_be(:target_project) { create(:project) }
       let_it_be(:target_project_path) { target_project.full_path }

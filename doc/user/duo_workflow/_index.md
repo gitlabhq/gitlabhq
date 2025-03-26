@@ -66,6 +66,7 @@ Before you can use Workflow, you must:
   - The repository you want to work with should be small or medium-sized.
     Workflow can be slow or fail for large repositories.
 - [Successfully connect to your repository](#connect-to-your-repository).
+- [Ensure an HTTP/2 connection to the Workflow service is possible](troubleshooting.md#network-issues).
 
 {{< alert type="note" >}}
 

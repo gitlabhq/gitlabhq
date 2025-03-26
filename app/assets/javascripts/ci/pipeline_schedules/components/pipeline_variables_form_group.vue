@@ -5,7 +5,9 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormTextarea,
+  GlIcon,
 } from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
@@ -21,6 +23,7 @@ export default {
     GlFormInput,
     GlFormTextarea,
     InputsAdoptionBanner,
+    GlIcon,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -41,7 +44,7 @@ export default {
       showVarValues: false,
     };
   },
-  formElementClasses: 'md:gl-mr-3 gl-mb-3 gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
+  formElementClasses: '!gl-block gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
   // it's used to prevent the overwrite if 'gl-h-7' or '!gl-h-7' were used
   textAreaStyle: { height: '32px' },
   typeOptions: [
@@ -66,6 +69,15 @@ export default {
     },
     showVarSecurityBtn() {
       return this.editing && this.hasExistingScheduleVariables;
+    },
+    isMobile() {
+      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+    },
+    removeButtonCategory() {
+      return this.isMobile ? 'secondary' : 'tertiary';
+    },
+    removeButtonSize() {
+      return this.isMobile ? 'medium' : 'small';
     },
   },
   watch: {
@@ -133,10 +145,10 @@ export default {
         class="gl-mt-0"
         :feature-name="$options.userCalloutsFeatureName"
       />
-      <div v-for="(variable, index) in variables" :key="`var-${index}`">
+      <div v-for="(variable, index) in variables" :key="`var-${index}`" class="gl-mb-4">
         <div
           v-if="!variable.destroy"
-          class="gl-mb-3 gl-flex gl-flex-col gl-items-stretch gl-pb-2 md:gl-flex-row md:gl-items-start"
+          class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 md:gl-flex-row"
           data-testid="ci-variable-row"
         >
           <gl-collapsible-listbox
@@ -163,7 +175,7 @@ export default {
             v-if="displayHiddenChars(variable)"
             value="*****************"
             disabled
-            class="gl-mb-3 !gl-h-7"
+            class="!gl-h-7"
             data-testid="pipeline-form-ci-variable-hidden-value"
           />
 
@@ -172,7 +184,7 @@ export default {
             v-model="variable.value"
             :placeholder="s__('CiVariables|Input variable value')"
             :aria-label="s__('CiVariables|Input variable value')"
-            class="gl-mb-3 gl-min-h-7"
+            class="gl-min-h-7"
             :style="$options.textAreaStyle"
             :no-resize="false"
             data-testid="pipeline-form-ci-variable-value"
@@ -182,17 +194,19 @@ export default {
           <template v-if="variables.length > 1">
             <gl-button
               v-if="canRemove(index)"
-              class="gl-mb-3 md:gl-ml-3"
+              class="gl-shrink-0"
               data-testid="remove-ci-variable-row"
-              variant="danger"
-              category="secondary"
-              icon="clear"
+              :size="removeButtonSize"
+              :category="removeButtonCategory"
               :aria-label="s__('CiVariables|Remove variable')"
               @click="removeVariable(index)"
-            />
+            >
+              <gl-icon class="!gl-mr-0" name="remove" />
+              <span class="md:gl-hidden">{{ s__('CiVariables|Remove variable') }}</span>
+            </gl-button>
             <gl-button
               v-else
-              class="gl-invisible gl-mb-3 gl-hidden md:gl-ml-3 md:gl-block"
+              class="gl-invisible gl-hidden md:gl-block"
               icon="clear"
               :aria-label="s__('CiVariables|Remove variable')"
             />

@@ -35,6 +35,12 @@ export default {
         8,
       );
 
+      const dayOfWeek = this.currentTime.getDay();
+      const daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+      const untilNextWeek = new Date(this.currentTime);
+      untilNextWeek.setDate(this.currentTime.getDate() + daysUntilMonday);
+      untilNextWeek.setHours(8, 0, 0, 0);
+
       const toTimeString = (date) => localeDateFormat.asTime.format(date);
 
       return [
@@ -79,6 +85,20 @@ export default {
                 });
 
                 this.$emit('snooze-until', untilTomorrow);
+              },
+            },
+            {
+              text: s__('Todos|Until next week'),
+              formattedDate: sprintf(s__('Todos|%{day}, %{time}'), {
+                day: dateFormat(untilNextWeek, 'DDDD'),
+                time: toTimeString(untilNextWeek),
+              }),
+              action: () => {
+                this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+                  label: 'snooze_until_next_week',
+                });
+
+                this.$emit('snooze-until', untilNextWeek);
               },
             },
           ],

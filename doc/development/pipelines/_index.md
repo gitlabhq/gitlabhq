@@ -800,6 +800,18 @@ Single database tests run in two modes:
 
 If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
 
+### Elasticsearch and OpenSearch versions testing
+
+Our test suite runs against Elasticsearch 8 as GitLab.com runs on Elasticsearch 8 when certain conditions are met.
+
+We run our test suite against Elasticsearch 7, 8 and OpenSearch 1, 2 on nightly scheduled pipelines. All
+test suites use PostgreSQL 16 because there is no dependency between the database and search backend.
+
+| Where?                                                                                          | Elasticsearch version | OpenSearch Version   | PostgreSQL version   |
+|-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
+| Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 8.X (production)      |                      | 16 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 8.X (production) | 1.X, 2.X             | 16 (default version) |
+
 ## Monitoring
 
 The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `main` branch, and any branch

@@ -13,12 +13,13 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
   end
 
   context 'when authenticating with a CI job token from another project' do
-    let(:source_project) { project }
+    let(:source_project) { project.reload }
     let(:job_user) { user }
     let(:target_job) { create(:ci_build, :running, user: job_user) }
     let(:allowed_policies) { Array(policies) }
     let(:default_permissions) { false }
     let(:skip_allowlist_creation) { false }
+    let(:job_token_policies_enabled) { true }
     let!(:features_state) do
       source_project.project_feature.attributes
         .slice(*::ProjectFeature::FEATURES.map { |feature| "#{feature}_access_level" })
@@ -37,6 +38,10 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     before do
       # Make all project features private
       enable_project_features(source_project, nil)
+      # Enable fine-grained job token permissions
+      namespace_settings = source_project.root_ancestor.namespace_settings ||
+        source_project.root_ancestor.build_namespace_settings
+      namespace_settings.update!(job_token_policies_enabled:)
     end
 
     after do
@@ -56,10 +61,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
       # This test makes sure that endpoints for which we want to enable job token permissions
       # are denied access when an allowlist entry is missing.
       let(:allowlist) { nil }
-
-      before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
-      end
+      let(:job_token_policies_enabled) { false }
 
       it 'denies access' do
         expect(do_request).to have_gitlab_http_status(:forbidden)
@@ -100,11 +102,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
       end
 
       context 'when job token policies are disabled' do
-        before do
-          allow_next_found_instance_of(Project) do |project|
-            allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-          end
-        end
+        let(:job_token_policies_enabled) { false }
 
         it { is_expected.to have_gitlab_http_status(expected_success_status) }
 

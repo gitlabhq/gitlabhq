@@ -4,6 +4,16 @@ module Namespaces
   class ProjectNamespace < Namespace
     self.allow_legacy_sti_class = true
 
+    SYNCED_ATTRIBUTES = %w[
+      name
+      path
+      namespace_id
+      namespace
+      visibility_level
+      shared_runners_enabled
+      organization_id
+    ].freeze
+
     # These aliases are added to make it easier to sync parent/parent_id attribute with
     # project.namespace/project.namespace_id attribute.
     #
@@ -37,11 +47,9 @@ module Namespaces
     end
 
     def sync_attributes_from_project(project)
-      attribute_list = %w[name path namespace_id namespace visibility_level shared_runners_enabled organization_id]
-
       attributes_to_sync = project
                              .changes
-                             .slice(*attribute_list)
+                             .slice(*SYNCED_ATTRIBUTES)
                              .transform_values { |val| val[1] }
 
       # if visibility_level is not set explicitly for project, it defaults to 0,

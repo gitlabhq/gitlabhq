@@ -95,6 +95,18 @@ describe('WikiNotesApp', () => {
 
     wrapper = shallowMountExtended(WikiNotesApp, {
       apolloProvider: fakeApollo,
+      data() {
+        return {
+          wikiPage: {
+            id: 'gid://gitlab/WikiPage/1',
+            title: 'home',
+            discussions: {
+              nodes: [mockDiscussion('Discussion 1')],
+            },
+          },
+          ...mockQueryResponse,
+        };
+      },
       provide: {
         containerId: noteableId,
         noteCount: 5,
@@ -256,8 +268,49 @@ describe('WikiNotesApp', () => {
       const errorAlert = wrapper.findComponent(GlAlert);
       expect(errorAlert.exists()).toBe(false);
     });
+  });
 
-    it('should delete the note correctly when the WikiDiscussions emits "note-deleted" when there are replies', async () => {
+  describe('when "note-deleted" is fired', () => {
+    let discussions;
+    beforeEach(async () => {
+      discussions = {
+        nodes: [
+          mockDiscussion('Discussion 1'),
+          mockDiscussion('Discussion 2'),
+          mockDiscussion('Discussion 3 Note 1', 'Discussion 3 Note 2', 'Discussion 3 Note 3'),
+        ],
+      };
+
+      await createWrapper({
+        mockQueryResponse: {
+          wikiPage: {
+            id: 'gid://gitlab/WikiPage/1',
+            title: 'home',
+            discussions,
+          },
+        },
+      });
+    });
+
+    it('should call write query with the correct data', async () => {
+      wrapper.findComponent(WikiDiscussion).vm.$emit('note-deleted');
+      await nextTick();
+
+      expect(apolloCache.writeQuery).toHaveBeenCalledWith({
+        query: wikiPageQuery,
+        variables: queryVariables,
+        data: { noteableId: '7', wikiPage },
+      });
+    });
+
+    it('should delete note correctly when there are no replies', async () => {
+      wrapper.findComponent(WikiDiscussion).vm.$emit('note-deleted');
+      await nextTick();
+
+      expect(wrapper.findAllComponents(WikiDiscussion)).toHaveLength(2);
+    });
+
+    it('should delete note correctly when there are replies', async () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
 
       // delete first note

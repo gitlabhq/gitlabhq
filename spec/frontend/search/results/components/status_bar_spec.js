@@ -185,6 +185,7 @@ describe('GlobalSearchStatusBar', () => {
         );
       });
     });
+
     describe('single result', () => {
       beforeEach(() => {
         createComponent({
@@ -225,27 +226,27 @@ describe('GlobalSearchStatusBar', () => {
     beforeEach(() => {
       createComponent({
         propsData: {
+          blobSearch: {
+            perPage: 20,
+            fileCount: 0,
+            matchCount: 0,
+          },
           hasResults: false,
         },
-      });
-    });
-
-    it('does not render the status bar', () => {
-      expect(wrapper.text()).toBe('');
-    });
-  });
-
-  describe('when loading', () => {
-    beforeEach(() => {
-      createComponent({
-        propsData: {
-          isLoading: true,
+        initialState: {
+          query: {
+            ...MOCK_QUERY,
+            group_id: 1,
+            project_id: null,
+            search: 'test',
+          },
+          groupInitialJson,
         },
       });
     });
 
     it('does not render the status bar', () => {
-      expect(wrapper.text()).toBe('');
+      expect(wrapper.text()).toBe('Showing 0 code results for test in group Group Full Name');
     });
   });
 });

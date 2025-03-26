@@ -52,6 +52,10 @@ describe('SnoozeTimePicker', () => {
             formattedDate: 'Tomorrow, 8:00 AM',
             text: 'Until tomorrow',
           }),
+          expect.objectContaining({
+            formattedDate: 'Monday, 8:00 AM',
+            text: 'Until next week',
+          }),
         ],
         name: 'Snooze',
       },
@@ -70,6 +74,7 @@ describe('SnoozeTimePicker', () => {
     ${0}  | ${'2024-12-18T14:24:00.000Z'} | ${'snooze_for_one_hour'}
     ${1}  | ${'2024-12-18T17:24:00.000Z'} | ${'snooze_until_later_today'}
     ${2}  | ${'2024-12-19T08:00:00.000Z'} | ${'snooze_until_tomorrow'}
+    ${3}  | ${'2024-12-23T08:00:00.000Z'} | ${'snooze_until_next_week'}
   `(
     'triggers the snooze action with snoozeUntil = $expectedDate when clicking option #$index',
     ({ index, expectedDate, expectedTrackingLabel }) => {

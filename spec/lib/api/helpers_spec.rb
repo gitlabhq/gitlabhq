@@ -288,6 +288,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
           allow(helper).to receive(:route_authentication_setting).and_return({})
           allow(helper).to receive(:route_setting).with(:authorization).and_return(job_token_policies: job_token_policy)
           allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+          allow_next_found_instance_of(Project) do |project|
+            allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+          end
         end
 
         subject(:find_project!) { helper.find_project!(project.id) }

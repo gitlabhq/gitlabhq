@@ -169,6 +169,12 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
         )
       end
 
+      before do
+        allow_next_found_instance_of(Project) do |project|
+          allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+        end
+      end
+
       it 'returns the correct data' do
         post_graphql(query, current_user: current_user)
 

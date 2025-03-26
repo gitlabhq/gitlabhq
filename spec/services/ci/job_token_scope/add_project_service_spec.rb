@@ -10,6 +10,10 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
   let_it_be(:policies) { %w[read_containers read_packages] }
 
   shared_examples 'adds project' do |context|
+    before do
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+
     it 'adds the project to the scope', :aggregate_failures do
       expect { result }.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
 

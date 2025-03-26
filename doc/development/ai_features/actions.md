@@ -185,8 +185,11 @@ prompt_template:
 
 Once a stable prompt version is added to the AI Gateway it should not be altered. You can create a mutable version of a
 prompt by adding a pre-release suffix to the file name (e.g. `1.0.1-dev.yml`). This will also prevent it from being
-automatically served to clients. Then you can use a feature flag to control the rollout this new version. If your AI
-action is implemented as a subclass of `AiGateway::Completions::Base`, you can achieve this by overriding the prompt
+automatically served to clients. Then you can use a feature flag to control the rollout this new version. For GitLab
+Duo Self-hosted, forced versions are ignored, and only versions defined in `PromptVersions` are used. This avoids
+mistakenly enabling versions for models that don't have that specified version.
+
+If your AI action is implemented as a subclass of `AiGateway::Completions::Base`, you can achieve this by overriding the prompt
 version in your subclass:
 
 ```ruby

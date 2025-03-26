@@ -26648,6 +26648,9 @@ msgstr ""
 msgid "Geo|There was an error deleting the Geo Site"
 msgstr ""
 
+msgid "Geo|There was an error fetching the %{replicableType}. The GraphQL API call to the secondary may have failed."
+msgstr ""
+
 msgid "Geo|There was an error fetching the Geo Settings"
 msgstr ""
 
@@ -35414,9 +35417,6 @@ msgid "Manual"
 msgstr ""
 
 msgid "Manual Variables"
-msgstr ""
-
-msgid "ManualOrdering|Couldn't save the order of the issues"
 msgstr ""
 
 msgid "ManualVariables|There are no manually-specified variables for this pipeline"
@@ -53027,6 +53027,9 @@ msgstr ""
 msgid "SecurityInventory|No projects found"
 msgstr ""
 
+msgid "SecurityInventory|Project vulnerabilities"
+msgstr ""
+
 msgid "SecurityInventory|SAST"
 msgstr ""
 
@@ -59895,9 +59898,6 @@ msgstr ""
 msgid "There was an error fetching stage total counts"
 msgstr ""
 
-msgid "There was an error fetching the %{replicableType}"
-msgstr ""
-
 msgid "There was an error fetching the cancelable jobs."
 msgstr ""
 
@@ -61714,6 +61714,9 @@ msgid "Todos|Until a specific time and date"
 msgstr ""
 
 msgid "Todos|Until later today"
+msgstr ""
+
+msgid "Todos|Until next week"
 msgstr ""
 
 msgid "Todos|Until tomorrow"

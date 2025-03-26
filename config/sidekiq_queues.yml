@@ -995,6 +995,8 @@
   - 1
 - - vulnerabilities_namespace_historical_statistics_update_traversal_ids
   - 1
+- - vulnerabilities_namespace_statistics_adjustment
+  - 1
 - - vulnerabilities_process_archived_events
   - 1
 - - vulnerabilities_process_bulk_dismissed_events

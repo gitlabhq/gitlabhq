@@ -43,6 +43,12 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
 
   let(:mutation_response) { graphql_mutation_response(:ci_job_token_scope_update_policies) }
 
+  before do
+    allow_next_found_instance_of(Project) do |project|
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+  end
+
   context 'when policies are updated for a target project' do
     let_it_be(:target_project) { create(:project, :private) }
     let_it_be(:target_path) { target_project.full_path }

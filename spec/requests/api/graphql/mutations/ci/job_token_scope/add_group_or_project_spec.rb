@@ -85,6 +85,12 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
     end
   end
 
+  before do
+    allow_next_found_instance_of(Project) do |project|
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+  end
+
   context 'when we add a group' do
     let_it_be(:target_group) { create(:group, :private) }
     let(:target_path) { target_group }

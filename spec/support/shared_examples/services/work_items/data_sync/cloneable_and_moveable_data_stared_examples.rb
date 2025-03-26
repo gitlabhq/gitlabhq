@@ -240,14 +240,20 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   end
 
   let_it_be(:child_items) do
+    namespace_params = if original_work_item.project
+                         [project: original_work_item.project]
+                       else
+                         [:group_level, { namespace: original_work_item.namespace }]
+                       end
+
     child_item_type1 =  WorkItems::HierarchyRestriction.where(parent_type: original_work_item.work_item_type).order(
       id: :asc).first.child_type.base_type
     child_item_type2 =  WorkItems::HierarchyRestriction.where(parent_type: original_work_item.work_item_type).order(
       id: :asc).last.child_type.base_type
 
-    child_item1 = create(:work_item, child_item_type1)
+    child_item1 = create(:work_item, child_item_type1, *namespace_params)
     create(:parent_link, work_item: child_item1, work_item_parent: original_work_item)
-    child_item2 = create(:work_item, child_item_type2)
+    child_item2 = create(:work_item, child_item_type2, *namespace_params)
     create(:parent_link, work_item: child_item2, work_item_parent: original_work_item)
 
     [child_item1, child_item2].pluck(:title)
