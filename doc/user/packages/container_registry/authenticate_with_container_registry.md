@@ -12,17 +12,18 @@ title: Authenticate with the container registry
 
 {{< /details >}}
 
-To authenticate with the container registry, you can use a:
+To authenticate with the container registry, you can use:
 
-- [Personal access token](../../profile/personal_access_tokens.md).
-- [Deploy token](../../project/deploy_tokens/_index.md).
-- [Project access token](../../project/settings/project_access_tokens.md).
-- [Group access token](../../group/settings/group_access_tokens.md).
+- GitLab username and password (not available if 2FA is enabled)
+- [Personal access token](../../profile/personal_access_tokens.md)
+- [Deploy token](../../project/deploy_tokens/_index.md)
+- [Project access token](../../project/settings/project_access_tokens.md)
+- [Group access token](../../group/settings/group_access_tokens.md)
 
-All of these authentication methods require the minimum scope:
+For token-based authentication methods, the minimum required scope:
 
-- For read (pull) access, to be `read_registry`.
-- For write (push) access, to be `write_registry` and `read_registry`.
+- For read (pull) access, must be `read_registry`
+- For write (push) access, must be `write_registry` and `read_registry`
 
 {{< alert type="note" >}}
 
@@ -33,7 +34,28 @@ that token works even though Admin Mode is enabled.
 
 {{< /alert >}}
 
-To authenticate, run the `docker login` command. For example:
+## Authenticate with username and password
+
+You can authenticate with the container registry using your GitLab username and password:
+
+```shell
+docker login registry.example.com -u <username> -p <password>
+```
+
+For security reasons, it's recommended to use the `--password-stdin` flag instead of `-p`:
+
+```shell
+echo "<password>" | docker login registry.example.com -u <username> --password-stdin
+```
+
+{{< alert type="warning" >}}
+Username and password authentication is not available if you have two-factor authentication (2FA) enabled.
+In this case, you must use a token-based authentication method.
+{{< /alert >}}
+
+## Authenticate with a token
+
+To authenticate with a token, run the `docker login` command:
 
 ```shell
 TOKEN=<token>
@@ -62,6 +84,12 @@ To use CI/CD to authenticate with the container registry, you can use:
 
   ```shell
   echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  ```
+
+  You can also use the `gitlab-ci-token` scheme:
+
+  ```shell
+  echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u gitlab-ci-token --password-stdin
   ```
 
 - A [deploy token](../../project/deploy_tokens/_index.md#gitlab-deploy-token) with the minimum scope of:

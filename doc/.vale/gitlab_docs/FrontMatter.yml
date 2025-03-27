@@ -1,5 +1,5 @@
 extends: script
-message: "Front matter must have valid 'title' and be closed."
+message: "Page must have valid frontmatter that includes a 'title' field."
 link: https://docs.gitlab.com/development/documentation/metadata/
 level: error
 scope: raw
@@ -12,43 +12,42 @@ script: |
   frontmatter := ""
   hasError := false
 
-  // Check if frontmatter exists
-  if !text.re_match("^---\n", scope) {
+  for line in text.split(scope, "\n") {
+    // Check if frontmatter exists
+    if !text.re_match("^---\n", scope) {
+      start := text.index(scope, line)
+      matches = append(matches, {begin: start, end: start + len(line)})
+      hasError = true
+      break
+    }
+
+    if frontmatterDelimiterCount == 1 {
+      frontmatter += line + "\n"
+    }
+    if frontmatterDelimiterCount == 2 {
+      break
+    }
+    if text.re_match("^---", line) {
+      frontmatterDelimiterCount++
+      start := text.index(scope, line)
+      matches = append(matches, {begin: start, end: start + len(line)})
+    }
+  }
+
+  // Check for unclosed frontmatter
+  if frontmatterDelimiterCount != 2 {
     hasError = true
   }
 
-  if !hasError {
-    for line in text.split(scope, "\n") {
-      if frontmatterDelimiterCount == 1 {
-        frontmatter += line + "\n"
-      }
-      if frontmatterDelimiterCount == 2 {
-        break
-      }
-      if text.re_match("^---", line) {
-        frontmatterDelimiterCount++
-        start := text.index(scope, line)
-        matches = append(matches, {begin: start, end: start + len(line)})
-      }
-    }
-
-    // Check for unclosed frontmatter
-    if frontmatterDelimiterCount != 2 {
+  // Check if the page has redirect_to (these pages don't need titles)
+  hasRedirectTo := text.re_match("(?m)^redirect_to:", frontmatter)
+  if !hasRedirectTo {
+    // First check if we have a title key at all
+    hasTitleKey := text.re_match("(?m)^[tT]itle:", frontmatter)
+    // Then check if it has content (anything but whitespace) after the colon
+    hasValidTitle := text.re_match("(?m)^[tT]itle:[^\\n]*[^\\s][^\\n]*$", frontmatter)
+    if !hasError && (!hasTitleKey || !hasValidTitle) {
       hasError = true
-    }
-
-    // Check if the page has redirect_to (these pages don't need titles)
-    hasRedirectTo := text.re_match("(?m)^redirect_to:", frontmatter)
-
-    if !hasRedirectTo {
-      // First check if we have a title key at all
-      hasTitleKey := text.re_match("(?m)^[tT]itle:", frontmatter)
-      // Then check if it has content (anything but whitespace) after the colon
-      hasValidTitle := text.re_match("(?m)^[tT]itle:[^\\n]*[^\\s][^\\n]*$", frontmatter)
-
-      if !hasError && (!hasTitleKey || !hasValidTitle) {
-        hasError = true
-      }
     }
   }
 
