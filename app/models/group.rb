@@ -134,6 +134,19 @@ class Group < Namespace
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
+  has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
+  delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
+
+  scope :aimed_for_deletion, ->(date) { joins(:deletion_schedule).where('group_deletion_schedules.marked_for_deletion_on <= ?', date) }
+  scope :not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
+  scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
+  scope :with_deletion_schedule_only, -> { preload(:deletion_schedule) }
+
+  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+    joins(:deletion_schedule)
+      .where(group_deletion_schedules: { marked_for_deletion_on: marked_for_deletion_on })
+  end
+
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
 
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads

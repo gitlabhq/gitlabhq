@@ -54,10 +54,10 @@ export default {
   },
   i18n,
   configuringReviewAppsPath: helpPagePath('ci/review_apps/_index.md', {
-    anchor: 'configuring-review-apps',
+    anchor: 'configure-review-apps',
   }),
   reviewAppsExamplesPath: helpPagePath('ci/review_apps/_index.md', {
-    anchor: 'review-apps-examples',
+    anchor: 'example-implementations',
   }),
 };
 </script>

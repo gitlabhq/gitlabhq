@@ -1,9 +1,3 @@
-.base-image-build:
-  extends: .use-kaniko
-  variables:
-    GIT_LFS_SKIP_SMUDGE: 1  # disable pulling objects from lfs
-  retry: 2
-
 .base-image-build-buildx:
   extends: .use-buildx
   variables:
@@ -30,18 +24,18 @@ build-qa-image as-if-foss:
 
 retag-gdk-image:
   extends:
-    - .base-image-build
+    - .base-image-build-buildx
     - .build-images:rules:retag-gdk-image
   tags:
     - docker
   stage: build-images
   needs: []
   script:
+    - echo "$RETAG_GDK_IMAGE_TOKEN" | docker login "$CI_REGISTRY" -u "$RETAG_GDK_IMAGE_TOKEN_NAME" --password-stdin
     - |
       image="registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main"
       tag=$(awk '/ARG GDK_SHA=/ {print $2}' qa/gdk/Dockerfile.gdk | sed 's/.*=//g')
-      skopeo login -u $RETAG_GDK_IMAGE_TOKEN_NAME -p $RETAG_GDK_IMAGE_TOKEN $CI_REGISTRY
-      skopeo copy docker://${image}:${tag} docker://${image}:stable-${tag}
+      docker buildx imagetools create --tag "${image}:stable-${tag}" "${image}:${tag}"
 
 build-gdk-image:
   extends:
@@ -60,20 +54,20 @@ build-gdk-image:
 # NOTE: release-tools verifies the presence on this job for a commit that is
 # candidate to an auto-deploy package. This job name can't be changed without
 # changing the code in release-tools.
+# TODO: assets image is built in compile-production-assets job, update release-tools to not depend on this job
 build-assets-image:
   extends:
-    - .base-image-build
+    - .base-image-build-buildx
     - .build-images:rules:build-assets-image
   stage: build-images
   needs: ["compile-production-assets"]
+  variables:
+    GLCI_BUILD_ASSETS_IMAGE: "true"
   script:
-    - skopeo login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - scripts/build_assets_image
   artifacts:
     expire_in: 7 days
     paths:
-      # The `cached-assets-hash.txt` file is used in `review-build-cng-env` (`.gitlab/ci/review-apps/main.gitlab-ci.yml`)
-      # to pass the assets image tag to the CNG downstream pipeline.
       - cached-assets-hash.txt
 
 build-assets-image as-if-foss:

@@ -44,6 +44,16 @@ module Gitlab
       buildkite
       campfire
       clickup
+      confluence
+      custom_issue_tracker
+      datadog
+      diffblue_cover
+      discord
+      drone_ci
+      emails_on_push
+      ewm
+      external_wiki
+      git_guardian
       mattermost
       mattermost_slash_commands
       microsoft_teams

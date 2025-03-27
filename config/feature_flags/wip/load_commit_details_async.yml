@@ -1,9 +1,0 @@
----
-name: load_commit_details_async
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515892
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183655
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523619
-milestone: '17.10'
-group: group::source code
-type: wip
-default_enabled: false

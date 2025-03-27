@@ -46,7 +46,6 @@ module UsageDataHelpers
     projects_imported_from_github
     projects_jenkins_active
     projects_jira_active
-    projects_custom_issue_tracker_active
     projects_with_repositories_enabled
     projects_with_error_tracking_enabled
     projects_with_enabled_alert_integrations

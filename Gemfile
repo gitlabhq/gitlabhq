@@ -156,7 +156,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap', feature_catego
 gem 'net-ldap', '~> 0.17.1', feature_category: :system_access
 
 # API
-gem 'grape', '~> 2.1.0', feature_category: :api
+gem 'grape', '~> 2.2.0', feature_category: :api
 gem 'grape-entity', '~> 1.0.1', feature_category: :api
 gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.5', group: [:development, :test], feature_category: :api
@@ -725,7 +725,7 @@ gem 'cvss-suite', '~> 3.3.0', require: 'cvss_suite', feature_category: :software
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.1.1', feature_category: :workspaces
+gem 'devfile', '~> 0.3.0', feature_category: :workspaces
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0', feature_category: :mobile_devops

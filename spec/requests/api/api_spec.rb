@@ -404,7 +404,7 @@ RSpec.describe API::API, feature_category: :system_access do
             'route' => '/api/:version/*path'
           )
 
-          expect(data.stringify_keys).not_to include('meta.caller_id', 'meta.user')
+          expect(data.stringify_keys).not_to include('meta.user')
         end
 
         get('/api/v4_or_is_it')

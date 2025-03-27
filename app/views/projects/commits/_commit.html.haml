@@ -56,7 +56,7 @@
 
         - if commit.description?
           %pre{ class: ["commit-row-description gl-whitespace-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")], data: { commit_id: commit.id } }
-            - if !Feature.enabled?(:load_commit_details_async, @project) || !is_commits_page
+            - if !is_commits_page
               = preserve(markdown_field(commit, :description))
 
     .commit-actions.gl-flex.gl-items-center.gl-gap-3

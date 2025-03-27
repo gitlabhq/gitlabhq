@@ -1810,18 +1810,40 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     context 'when registered via command-line' do
       let_it_be(:runner) { create(:ci_runner) }
 
+      specify { expect(runner.token).to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
-      it { is_expected.not_to start_with('t1_') }
+      it { is_expected.not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+
+    context 'when legacy token' do
+      context 'with legacy partition prefix' do
+        let_it_be(:runner) { create(:ci_runner, token: 't1_deadbeaf') }
+
+        it { is_expected.to eq('deadbeaf') }
+      end
+
+      context 'with runner token prefix and legacy partition prefix' do
+        let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user, token: 'glrt-t1_deadbeaf') }
+
+        it { is_expected.to eq('deadbeaf') }
+      end
+
+      context 'without prefix' do
+        let_it_be(:runner) { create(:ci_runner, token: 'deadbeaf') }
+
+        it { is_expected.to eq('deadbeaf') }
+      end
     end
 
     context 'when creating new runner via UI' do
       let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      specify { expect(runner.token).not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
-      it { is_expected.not_to start_with('t1_') }
+      it { is_expected.not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
   end
@@ -1858,12 +1880,18 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     shared_examples 'an encrypted routable token for resource' do |prefix|
+      let(:routing_payload) do
+        {
+          c: 1,
+          **(resource.is_a?(Group) ? { g: resource.id.to_s(36) } : { p: resource.id.to_s(36) }),
+          o: resource.organization_id.to_s(36),
+          u: creator.id.to_s(36),
+          t: described_class.runner_types[runner_type].to_s(36)
+        }.sort.to_h
+      end
+
       let(:expected_routing_payload) do
-        if resource.is_a?(Group)
-          "c:1\ng:#{resource.id.to_s(36)}\no:#{resource.organization_id.to_s(36)}\nu:#{creator.id.to_s(36)}"
-        else
-          "c:1\no:#{resource.organization_id.to_s(36)}\np:#{resource.id.to_s(36)}\nu:#{creator.id.to_s(36)}"
-        end
+        routing_payload.map { |pairs| pairs.join(':') }.join("\n")
       end
 
       context 'when :routable_runner_token feature flag is enabled for the resource' do
@@ -1924,15 +1952,15 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:registration_type) { :registration_token }
 
       context 'when runner is instance type' do
-        it_behaves_like 'an instance runner encrypted token', 't1_'
+        it_behaves_like 'an instance runner encrypted token', described_class::REGISTRATION_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is group type' do
-        it_behaves_like 'a group runner encrypted token', 't2_'
+        it_behaves_like 'a group runner encrypted token', described_class::REGISTRATION_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is project type' do
-        it_behaves_like 'a project runner encrypted token', 't3_'
+        it_behaves_like 'a project runner encrypted token', described_class::REGISTRATION_RUNNER_TOKEN_PREFIX
       end
     end
 
@@ -1940,15 +1968,15 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:registration_type) { :authenticated_user }
 
       context 'when runner is instance type' do
-        it_behaves_like 'an instance runner encrypted token', 'glrt-t1_'
+        it_behaves_like 'an instance runner encrypted token', described_class::CREATED_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is group type' do
-        it_behaves_like 'a group runner encrypted token', 'glrt-t2_'
+        it_behaves_like 'a group runner encrypted token', described_class::CREATED_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is project type' do
-        it_behaves_like 'a project runner encrypted token', 'glrt-t3_'
+        it_behaves_like 'a project runner encrypted token', described_class::CREATED_RUNNER_TOKEN_PREFIX
       end
     end
   end
@@ -2345,6 +2373,28 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     subject(:is_hosted) { runner.dedicated_gitlab_hosted? }
 
     specify { expect(is_hosted).to be false }
+  end
+
+  describe '#partition_id' do
+    subject(:partition) { runner.partition_id }
+
+    context 'with an instance runner' do
+      let(:runner) { build(:ci_runner, :instance) }
+
+      it { is_expected.to be(1) }
+    end
+
+    context 'with a group runner' do
+      let(:runner) { build(:ci_runner, :group, groups: [group]) }
+
+      it { is_expected.to be(2) }
+    end
+
+    context 'with a project runner' do
+      let(:runner) { build(:ci_runner, :project, projects: [project]) }
+
+      it { is_expected.to be(3) }
+    end
   end
 
   describe 'status scopes', :freeze_time do

@@ -65,7 +65,7 @@ module MergeRequests
         return false unless target_project.ci_allow_fork_pipelines_to_run_in_parent_project?
 
         # skip the branch protection check for forks since the source_branch is not in the target_project
-        return true if Feature.enabled?(:allow_merge_request_pipelines_from_fork, project)
+        return true
       end
 
       can_update_source_branch_in_target_project?(merge_request)

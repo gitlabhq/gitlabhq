@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -17,13 +17,19 @@ set -e
 #   which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:${CI_COMMIT_REF_NAME}`.
 # - The auto-deploy pipelines, which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:${CI_COMMIT_SHA}`.
 
-. scripts/utils.sh
-
 # Exit early if we don't want to build the image
-if [ "${BUILD_ASSETS_IMAGE}" != "true" ]
-then
+if [ "${GLCI_BUILD_ASSETS_IMAGE}" != "true" ]; then
+  echo "GLCI_BUILD_ASSETS_IMAGE: ${GLCI_BUILD_ASSETS_IMAGE}. Skipping assets image build."
   exit 0
 fi
+
+# Asset images are only built in canonical namespace
+if [[ ! $CI_PROJECT_NAMESPACE =~ ^gitlab(-org|-cn)?($|\/) ]]; then
+  echo "Asset image build is only supported in canonical namespaces. Skipping assets image build."
+  exit 0
+fi
+
+source "$(dirname "$0")/utils.sh"
 
 # Generate the image name based on the project this is being run in
 ASSETS_IMAGE_NAME="gitlab-assets-ce"
@@ -49,34 +55,22 @@ COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
 # Used for CNG tag pipelines
 COMMIT_REF_NAME_DESTINATION="${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}"
 
-if skopeo inspect "docker://${COMMIT_ASSETS_HASH_DESTINATION}" > /dev/null; then
-  echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, no need to rebuild it."
+DESTINATIONS="--tag=${COMMIT_REF_SLUG_DESTINATION} --tag=${COMMIT_SHA_DESTINATION}"
+if [ -n "${CI_COMMIT_TAG}" ]; then
+  DESTINATIONS="$DESTINATIONS --tag=${COMMIT_REF_NAME_DESTINATION}"
+fi
 
-  echo "Copying assets image for destinations: ${COMMIT_REF_SLUG_DESTINATION} and ${COMMIT_SHA_DESTINATION}"
-
-  skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_REF_SLUG_DESTINATION}"
-  skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_SHA_DESTINATION}"
-
-  if [ -n "${CI_COMMIT_TAG}" ]; then
-    skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_REF_NAME_DESTINATION}"
-  fi
+if docker buildx imagetools inspect "${COMMIT_ASSETS_HASH_DESTINATION}" >/dev/null 2>&1; then
+  echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, only re-tagging with other destination tags" "yes"
+  docker buildx imagetools create ${DESTINATIONS} "$COMMIT_ASSETS_HASH_DESTINATION"
 else
-  echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} doesn't exist, we'll need to build it."
+  echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} doesn't exist, rebuilding" "yes"
 
-  DESTINATIONS="--destination=${COMMIT_ASSETS_HASH_DESTINATION} --destination=${COMMIT_REF_SLUG_DESTINATION} --destination=${COMMIT_SHA_DESTINATION}"
+  DESTINATIONS="${DESTINATIONS} --tag=${COMMIT_ASSETS_HASH_DESTINATION}"
+  build_dir=assets_container.build
+  mkdir -p $build_dir/public
+  cp -r public/assets ${build_dir}/public/
+  cp Dockerfile.assets ${build_dir}/
 
-  if [ -n "${CI_COMMIT_TAG}" ]; then
-    DESTINATIONS="$DESTINATIONS --destination=${COMMIT_REF_NAME_DESTINATION}"
-  fi
-
-  mkdir -p assets_container.build/public
-  cp -r public/assets assets_container.build/public/
-  cp Dockerfile.assets assets_container.build/
-
-  echo "Building assets image for destinations: ${DESTINATIONS}"
-
-  /kaniko/executor \
-    --context="assets_container.build" \
-    --dockerfile="assets_container.build/Dockerfile.assets" \
-    ${DESTINATIONS}
+  docker buildx build --file Dockerfile.assets ${DESTINATIONS} --push $build_dir
 fi

@@ -23137,7 +23137,8 @@ CREATE TABLE subscription_add_on_purchases (
     trial boolean DEFAULT false NOT NULL,
     started_at date,
     organization_id bigint NOT NULL,
-    CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255))
+    CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255)),
+    CONSTRAINT check_d79ce199b3 CHECK ((started_at IS NOT NULL))
 );
 
 CREATE SEQUENCE subscription_add_on_purchases_id_seq

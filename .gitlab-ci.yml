@@ -270,7 +270,6 @@ variables:
   ENABLE_DEPSCORE: "true"
   CACHE_ASSETS_AS_PACKAGE: "true"
   REUSE_FRONTEND_FIXTURES_ENABLED: "true"
-  BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
   SIMPLECOV: "true"
 
 include:

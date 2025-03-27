@@ -38,6 +38,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_one(:chat_team) }
+    it { is_expected.to have_one(:deletion_schedule) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
     it { is_expected.to have_many(:badges).class_name('GroupBadge') }
     it { is_expected.to have_many(:cluster_groups).class_name('Clusters::Group') }
@@ -1293,6 +1294,57 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         result = described_class.for_authorized_project_members([user1.id, user2.id])
 
         expect(result).to match_array([internal_group])
+      end
+    end
+
+    describe '.aimed_for_deletion' do
+      let!(:date) { 10.days.ago }
+
+      subject(:relation) { described_class.aimed_for_deletion(date) }
+
+      it 'only includes groups that are marked for deletion on or before the specified date' do
+        group_not_marked_for_deletion = create(:group)
+
+        group_marked_for_deletion_after_specified_date = create(
+          :group_with_deletion_schedule,
+          marked_for_deletion_on: date + 2.days
+        )
+
+        group_marked_for_deletion_before_specified_date = create(
+          :group_with_deletion_schedule,
+          marked_for_deletion_on: date - 2.days
+        )
+
+        group_marked_for_deletion_on_specified_date = create(
+          :group_with_deletion_schedule,
+          marked_for_deletion_on: date
+        )
+
+        expect(relation).to include(
+          group_marked_for_deletion_before_specified_date,
+          group_marked_for_deletion_on_specified_date
+        )
+        expect(relation).not_to include(
+          group_marked_for_deletion_after_specified_date,
+          group_not_marked_for_deletion
+        )
+      end
+    end
+
+    describe '.by_marked_for_deletion_on' do
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule, marked_for_deletion_on: Date.parse('2024-01-01')) }
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+
+      context 'when marked_for_deletion_on is present' do
+        it 'returns groups marked for deletion on the specified date' do
+          expect(described_class.by_marked_for_deletion_on(Date.parse('2024-01-01'))).to contain_exactly(group_marked_for_deletion)
+        end
+      end
+
+      context 'when marked_for_deletion_on is not present' do
+        it 'does not return any groups marked for deletion' do
+          expect(described_class.by_marked_for_deletion_on(nil)).to be_empty
+        end
       end
     end
 

@@ -20,7 +20,7 @@ include:
   needs:
     # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
     - pipeline: $PARENT_PIPELINE_ID
-      job: build-assets-image
+      job: compile-production-assets
   variables:
     BUILD_ENV: build.env
     CNG_PROJECT_PATH: "${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]"

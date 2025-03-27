@@ -18,9 +18,6 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :validate_path, if: -> { !request.format.atom? }
   before_action :set_is_ambiguous_ref, only: [:show]
   before_action :set_commits, except: :commits_root
-  before_action do
-    push_frontend_feature_flag(:load_commit_details_async, @project)
-  end
 
   feature_category :source_code_management
   urgency :low, [:signatures, :show]

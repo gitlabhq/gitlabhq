@@ -74,7 +74,7 @@ enhancement. They are responsible for:
 - Liaising with their Product Manager to understand what documentation must be
   delivered, and when.
 - Requesting technical reviews from other developers in their group.
-- Requesting documentation reviews from the Technical Writer
+- Requesting documentation reviews from the technical writer
   [assigned to the DevOps stage group](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
   that is delivering the new feature or feature enhancements.
 
@@ -96,11 +96,11 @@ Because the documentation is an essential part of the product, if a `~"type::fea
 issue also contains the `~documentation` label, you must ship the new or
 updated documentation with the code of the feature.
 
-Technical Writers are happy to help, as requested and planned on an
+Technical writers are happy to help, as requested and planned on an
 issue-by-issue basis.
 
 For feature issues requiring documentation, follow the process below unless
-otherwise agreed with the Product Manager and Technical Writer:
+otherwise agreed with the product manager and technical writer:
 
 - Include any new and edited documentation, either in:
   - The merge request introducing the code.
@@ -117,7 +117,7 @@ otherwise agreed with the Product Manager and Technical Writer:
   - [Documentation folder structure](site_architecture/folder_structure.md).
   - [Documentation Style Guide](styleguide/_index.md).
   - [Markdown Guide](../../user/markdown.md).
-- Contact the Technical Writer for the relevant
+- Contact the technical writer for the relevant
   [DevOps stage](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
   in your issue or merge request, or in the `#docs` Slack channel, if you:
   - Need any help to choose the correct place for documentation.
@@ -135,7 +135,7 @@ reviewed by:
 - The code reviewer for the merge request. This is known as a technical review.
 - Optionally, others involved in the work such as other developers or the
   Product Manager.
-- The Technical Writer for the DevOps stage group, except in exceptional
+- The technical writer for the DevOps stage group, except in exceptional
   circumstances where a [post-merge review](#post-merge-reviews)
   can be requested.
 - A maintainer of the project.
@@ -146,7 +146,7 @@ Product Managers are responsible for the
 [documentation requirements](#documentation-requirements) for a feature or
 feature enhancement. They can also:
 
-- Connect with the Technical Writer for discussion and collaboration.
+- Connect with the technical writer for discussion and collaboration.
 - Review documentation themselves.
 
 For issues requiring any new or updated documentation, the Product Manager
@@ -166,9 +166,9 @@ However, a Product Manager will:
   Documentation details.
 - By the kickoff, finalize the documentation details.
 
-### Technical Writer responsibilities
+### Technical writer responsibilities
 
-Technical Writers are responsible for:
+Technical writers are responsible for:
 
 - Participating in issue discussions and reviewing MRs for the upcoming
   milestone.
@@ -183,7 +183,7 @@ Technical Writers are responsible for:
 
 #### Planning
 
-The Technical Writer:
+The technical writer:
 
 - Reviews their group's `~"type::feature"` issues that are part of the next milestone
   to get a sense of the scope of content likely to be authored.
@@ -201,14 +201,14 @@ The Technical Writer:
 #### Collaboration
 
 By default, the developer will work on documentation changes independently, but
-the developer, Product Manager, or Technical Writer can propose a broader
+the developer, product manager, or technical writer can propose a broader
 collaboration for any given issue.
 
-Additionally, Technical Writers are available for questions at any time.
+Additionally, technical writers are available for questions at any time.
 
 #### Review
 
-Technical Writers provide non-blocking reviews of all documentation changes, before or after
+Technical writers provide non-blocking reviews of all documentation changes, before or after
 the change is merged. Identified issues that would block or slow a change's
 release are to be handled in linked, follow-up MRs.
 
@@ -224,7 +224,7 @@ Anyone can add these details, but the Product Manager who assigns the issue to
 a specific release milestone will ensure these details are present and
 finalized by the time of that milestone's kickoff.
 
-Developers, Technical Writers, and others may help further refine this plan at
+Developers, technical writers, and others may help further refine this plan at
 any time on request.
 
 The following details should be included:
@@ -281,7 +281,7 @@ Having two separate MRs means:
 
 - Two different people might be responsible for merging one feature, which
   isn't workable with an asynchronous work style. The feature might merge while
-  the Technical Writer is asleep, creating a potentially lengthy delay between
+  the technical writer is asleep, creating a potentially lengthy delay between
   the two merges.
 - If the documentation MR is assigned to the same maintainer as responsible for
   the feature code MR, they will have to review and juggle two MRs instead of
@@ -292,7 +292,7 @@ Documentation quality might be lower, because:
 - Having documentation in a separate MR will mean far fewer people will see and
   verify them, increasing the likelihood that issues will be missed.
 - In a *split* workflow, engineers might only create the documentation MR after
-  the feature MR is ready, or almost ready. This gives the Technical Writer
+  the feature MR is ready, or almost ready. This gives the technical writer
   little time to learn about the feature to do a good review. It also
   increases pressure on them to review and merge faster than desired, letting
   problems slip in due to haste.
@@ -310,7 +310,7 @@ process) has many benefits:
     for our early adopters.
 - Only a single person will be responsible for merging the feature (the code
   maintainer).
-- The Technical Writer will have more time to gain an understanding of the
+- The technical writer will have more time to gain an understanding of the
   feature and will be better able to verify the content of the documentation in
   the Review App or GDK. They will also be able to offer advice for improving
   the user interface text or offer additional use cases.
@@ -319,7 +319,7 @@ process) has many benefits:
     could include product managers, multiple engineers with deep domain
     knowledge, the code reviewers, and the maintainer. They will be more likely
     to catch issues with examples, and background or concepts that the
-    Technical Writer may not be aware of.
+    technical writer may not be aware of.
   - Increasing visibility of the documentation also has the side effect of
     improving *other* engineers' documentation. By reviewing each other's MRs,
     each engineer's own documentation skills will improve.
@@ -334,27 +334,27 @@ changes might need to happen to a team's current workflow:
 
 - The engineers must strive to include the documentation early in the
   development process, to give ample time for review, not just from the
-  Technical Writer, but also the code reviewer and maintainer.
+  technical writer, but also the code reviewer and maintainer.
 - Reviewers and maintainers must also review the documentation during code
   reviews to ensure the described processes match the expected use of the
   feature and that examples are correct.
   They do **not** need to worry about style or grammar.
-- The Technical Writer must be assigned as a reviewer on the MR directly and not only pinged.
+- The technical writer must be assigned as a reviewer on the MR directly and not only pinged.
   This can be done at any time, but must be before the code maintainer review.
   It's common to have both the documentation and code reviews happening at the
-  same time, with the author, reviewer, and Technical Writer discussing the
+  same time, with the author, reviewer, and technical writer discussing the
   documentation together.
-- When the documentation is ready, the Technical Writer will click **Approve**
+- When the documentation is ready, the technical writer will click **Approve**
   and usually will no longer be involved in the MR. If the feature changes
-  during code review and the documentation is updated, the Technical Writer
+  during code review and the documentation is updated, the technical writer
   must be reassigned the MR to verify the update.
 - Maintainers are allowed to merge features with the documentation *as-is*,
-  even if the Technical Writer hasn't given final approval yet. The
+  even if the technical writer hasn't given final approval yet. The
   **documentation reviews must not be blockers**. Therefore, it's important to
-  get the documentation included and assigned to the Technical Writers early.
+  get the documentation included and assigned to the technical writers early.
   If the feature is merged before final documentation approval, the maintainer
   must create a [post-merge follow-up issue](#post-merge-reviews),
-  and assign it to both the engineer and Technical Writer.
+  and assign it to both the engineer and technical writer.
 
 You can visualize the parallel workflow for code and documentation reviews as:
 
@@ -384,37 +384,105 @@ For complex features split over multiple merge requests:
   documentation to the last MR that must be merged before a feature is
   considered released. This is often, but not always, a frontend MR.
 
-## Documentation labels
+## Labels
 
-When you author an issue or merge request, choose the
-[Documentation template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Documentation.md).
-It includes these labels, which are added to the merge request:
+The Technical Writing team uses the following [labels](../../user/project/labels.md)
+on issues and merge requests:
 
-- A [type label](../labels/_index.md#type-labels), either `~"type::feature"` or `~"type::maintenance"`.
-- A [stage label](../labels/_index.md#stage-labels) and [group label](../labels/_index.md#group-labels).
-  For example, `~devops::create` and `~group::source code`.
-- A `~documentation` [specialization label](../labels/_index.md#specialization-labels).
+- A label for the type of change. The two labels used most often are:
+  - `~"type::feature"`
+  - `~"type::maintenance"` with `~"maintenance::refactor"`
+- A stage and group label. For example:
+  - `~devops::create` 
+  - `~group::source code`
+- The `~documentation` specialization label.
+- The `~Technical Writing` team label.
 
-A member of the Technical Writing team adds the [`~Technical Writing` team label](../labels/_index.md#team-labels).
+The [documentation merge request template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Documentation.md)
+includes some of these labels.
 
-{{< alert type="note" >}}
+### Available labels
 
-With the exception of `/doc/development/documentation`,
-technical writers do not review content in the `doc/development` directory.
-Any Maintainer can merge content in the `doc/development` directory.
-If you would like a technical writer review of content in the `doc/development` directory,
-ask in the `#docs` Slack channel.
+Any issue or merge request a technical writer works on must include the `Technical Writing` label.
 
-{{< /alert >}}
+To further classify the type of effort, include one or more of the following labels:
+
+- [`Category:Docs Site`](https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&sort=relevance&search=Category%3ADocs+Site): Documentation website infrastructure or code. This is not needed for issues related to the documentation itself. Issues with this label are included on the [Docs Workflow issue board](https://gitlab.com/groups/gitlab-org/-/boards/4340643?label_name[]=Category%3ADocs%20Site).
+- [`development guidelines`](https://gitlab.com/gitlab-org/gitlab/-/labels?utf8=%E2%9C%93&subscribed=&search=development+guidelines): Files in the `/developer` directory.
+- [`docs-missing`](https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&sort=relevance&search=docs-missing): Documentation for a feature is missing. Documentation is required with the delivery of a feature for a specific milestone as part of the GitLab [definition of done](../contributing/merge_request_workflow.md#definition-of-done). Add this label to the original feature MR or issue where documentation is missing. Keep the label for historical tracking and use `tw::finished` to indicate when documentation is completed. Does not apply to [experiment features](../../policy/development_stages_support.md#experiment).
+- [`documentation`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&sort=relevance&search=documentation): Files in the `/doc` directory.
+- [`global nav`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/labels?subscribed=&sort=relevance&search=global+nav): Left nav of the docs site. Used in the `docs-gitlab-com` project.
+- [`L10N-docs`](https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&sort=relevance&search=l10n-docs): Localization issue, MR, or epic that impacts the workflows of the Technical Writing team or the `docs.gitlab.com` site and infrastructure.
+- [`release post item`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=release+post+item): Release post items.
+- [`Technical Writing Leadership`](https://gitlab.com/gitlab-org/gitlab/-/labels?subscribed=&search=tech+writing+leadership): Work driven or owned by the Technical Writing leadership team, such as OKRs.
+- [`tw-lead`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=tw-lead): MRs that are driven by or require input from one of the [stage leads](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#stage-leads).
+- [`tw-style`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=tw-style): Style standards for documentation and UI text.
+- [`UI text`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=ui+text): Any user-facing text, such as UI text and error messages.
+
+Other documentation labels include `vale`, `docs-only`, and `docs-channel`. These labels are optional.
+
+### Type labels
+
+All issues and merge requests must be classified into one of three work types: bug, feature, or maintenance.
+Add one of the following labels to an issue or merge request:
+
+- `type::feature`
+- `type::bug`
+- `type::maintenance`
+
+For more information, see [work type classification](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification).
+
+The majority of documentation work uses the `type::maintenance` label.
+You must also apply one these subtype labels to further classify the type of maintenance work:
+
+- `maintenance::refactor`: Edits and improvements of existing documentation.
+- `maintenance::workflow`: Documentation changes that are not visible to readers, like linting and tooling updates, and metadata changes.
+
+For example, if you open a merge request to refactor a page for CTRT, apply the `type::maintenance` and `maintenance::refactor` labels.
+If you open a merge request to modify the metadata, apply the `type::maintenance` and `maintenance::workflow` labels.
+
+### Workflow labels
+
+Writers can use [these labels](https://gitlab.com/groups/gitlab-org/-/labels?utf8=✓&subscribed=&search=tw%3A%3A)
+to describe the status of their work in an issue or merge request:
+
+- `tw::doing`
+- `tw::finished`
+
+The technical writer who authors content usually adds the `tw::doing` label,
+and the technical writer who does the review usually adds the`tw::finished` label.
+For content submissions from community contributors,
+the technical writer would add both labels as part of their review.
+
+The workflow is:
+
+1. An issue or merge request is assigned to the writer for review.
+1. The writer adds the `tw::doing` label while actively working.
+   - If the writer stops work for more than a week,
+     they remove the `tw::doing` label.
+   - Whenever work restarts, the writer adds the `tw::doing` label.
+1. When work is complete on the issue or merge request, a technical writer (typically the
+   reviewer) adds the `tw::finished` label.
+1. The issue or merge request is **Closed** or **Merged**.
+
+The `tw::finished` label indicates that the writer is done with an issue or merge request
+they are not closing or merging.
+If the Technical Writing team is closing or merging, the issue or merge request
+status overrides the scoped `tw` label status. The technical writer does not have to
+use the `tw::finished` label.
+
+If a technical writer is presented with an open issue or merge request with a
+`tw::finished` label that needs more work, the writer should
+re-add the `tw::doing` scoped label.
 
 ## Post-merge reviews
 
-If not assigned to a Technical Writer for review prior to merging, a review must be scheduled
+If not assigned to a technical writer for review prior to merging, a review must be scheduled
 immediately after merge by the developer or maintainer. For this,
 create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Doc%20Review)
 and link to it from the merged merge request that introduced the documentation change.
 
-Circumstances in which a regular pre-merge Technical Writer review might be skipped include:
+Circumstances in which a regular pre-merge technical writer review might be skipped include:
 
 - There is a short amount of time left before the milestone release. If fewer than three
   days are remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
@@ -428,12 +496,12 @@ Remember:
 - At GitLab, we treat documentation like code. As with code, documentation must be reviewed to
   ensure quality.
 - Documentation forms part of the GitLab [definition of done](../contributing/merge_request_workflow.md#definition-of-done).
-- That pre-merge Technical Writer reviews should be most common when the code is complete well in
+- That pre-merge technical writer reviews should be most common when the code is complete well in
   advance of a milestone release and for larger documentation changes.
-- You can request a post-merge Technical Writer review of documentation if it's important to get the
+- You can request a post-merge technical writer review of documentation if it's important to get the
   code with which it ships merged as soon as possible. In this case, the author of the original MR
-  can address the feedback provided by the Technical Writer in a follow-up MR.
-- The Technical Writer can also help decide that documentation can be merged without Technical
+  can address the feedback provided by the technical writer in a follow-up MR.
+- The technical writer can also help decide that documentation can be merged without Technical
   writer review, with the review to occur soon after merge.
 
 ## Pages with no tech writer review

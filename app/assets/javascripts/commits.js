@@ -57,7 +57,6 @@ export default class CommitsList {
   }
 
   initCommitDetails() {
-    if (!gon?.features?.loadCommitDetailsAsync) return;
     this.content.on('click', '.js-toggle-button', ({ currentTarget }) =>
       this.handleToggleCommitDetails(currentTarget.dataset),
     );

@@ -30,6 +30,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
+    it { is_expected.to belong_to(:deleting_user) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:owners_and_maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
@@ -2414,6 +2415,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'descending' do
       it { expect(described_class.sorted_by_storage_size_desc).to eq([project_2, project_3, project_1]) }
+    end
+  end
+
+  describe '.not_aimed_for_deletion' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:delayed_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+    it do
+      expect(described_class.not_aimed_for_deletion).to contain_exactly(project)
+    end
+  end
+
+  describe '.by_marked_for_deletion_on' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:marked_for_deletion_project) { create(:project, marked_for_deletion_at: Date.parse('2024-01-01')) }
+
+    context 'when marked_for_deletion_on is present' do
+      it 'return projects marked for deletion' do
+        expect(described_class.by_marked_for_deletion_on(Date.parse('2024-01-01'))).to contain_exactly(marked_for_deletion_project)
+      end
+    end
+
+    context 'when marked_for_deletion_on is not present' do
+      it 'return projects not marked for deletion' do
+        expect(described_class.by_marked_for_deletion_on(nil)).to contain_exactly(project)
+      end
     end
   end
 
@@ -9804,6 +9831,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:user) }
       let_it_be(:model) { create(:project, creator: parent) }
+    end
+  end
+
+  context 'with loose foreign key on projects.marked_for_deletion_by_user_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project, deleting_user: parent) }
     end
   end
 

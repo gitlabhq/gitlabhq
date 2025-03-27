@@ -41,7 +41,7 @@ RSpec.describe Authn::TokenField::Generator::RoutableToken, feature_category: :s
 
       it 'raises an exception' do
         expect { generator }.to raise_error(described_class::InvalidRoutingKeys,
-          "Invalid routing keys: :q, :k. Valid routing keys are: :c, :g, :o, :p, :u.")
+          "Invalid routing keys: :q, :k. Valid routing keys are: :c, :g, :o, :p, :u, :t.")
       end
     end
   end

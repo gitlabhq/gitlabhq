@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+source "$(dirname "$0")/utils.sh"
+
+yarn_install_script
+GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
+
+echo "GITLAB_ASSETS_HASH: ${GITLAB_ASSETS_HASH}"
+echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"
+
+if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
+  source "$(dirname "$0")/gitlab_component_helpers.sh"
+
+  echoinfo "Fetching cached assets with assets hash ${GITLAB_ASSETS_HASH}" "yes"
+
+  # Rebuild assets from scratch in jobs that are supposed to regenerate cache
+  if [[ "${GLCI_PUSH_CACHED_ASSETS:=false}" != "true" ]] && ! gitlab_assets_archive_doesnt_exist; then
+    retry download_and_extract_gitlab_assets
+    echosuccess "Successfully fetched assets, skipping assets compilation."
+  fi
+
+  # Run assets compilation regardless if cache archive was fetched or not to ensure assets are there if archive got corrupted and had no files in it
+  assets_compile_script
+
+  if [[ "${GLCI_PUSH_CACHED_ASSETS}" == "true" ]]; then
+    echo "Pushing assets cache to GitLab"
+    create_gitlab_assets_package
+    upload_gitlab_assets_package
+  fi
+else
+  assets_compile_script
+fi
+
+echo -n "${GITLAB_ASSETS_HASH}" >"cached-assets-hash.txt"

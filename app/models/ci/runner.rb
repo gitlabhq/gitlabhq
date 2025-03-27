@@ -35,7 +35,8 @@ module Ci
           o: ->(token_owner_record) { token_owner_record.owner.organization_id },
           g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
           p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
-          u: ->(token_owner_record) { token_owner_record.creator_id }
+          u: ->(token_owner_record) { token_owner_record.creator_id },
+          t: ->(token_owner_record) { token_owner_record.partition_id }
         }
       }
 
@@ -62,6 +63,7 @@ module Ci
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
+    REGISTRATION_RUNNER_TOKEN_PREFIX = 'glrtr-'
 
     RUNNER_SHORT_SHA_LENGTH = 8
 
@@ -446,11 +448,19 @@ module Ci
     def short_sha
       return unless token
 
-      # We want to show the first characters of the hash, so we need to bypass any fixed components of the token,
-      # such as CREATED_RUNNER_TOKEN_PREFIX or partition_id_prefix_in_16_bit_encode
-      partition_prefix = partition_id_prefix_in_16_bit_encode
-      start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
-      start_index += partition_prefix.length if token[start_index..].start_with?(partition_prefix)
+      # We want to show the first characters of the hash, so we need to bypass any fixed components of the token, such
+      # as CREATED_RUNNER_TOKEN_PREFIX, REGISTRATION_RUNNER_TOKEN_PREFIX or legacy_partition_id_prefix_in_16_bit_encode
+      legacy_partition_prefix = legacy_partition_id_prefix_in_16_bit_encode
+      start_index = if authenticated_user_registration_type?
+                      CREATED_RUNNER_TOKEN_PREFIX.length
+                    elsif token.start_with?(REGISTRATION_RUNNER_TOKEN_PREFIX)
+                      REGISTRATION_RUNNER_TOKEN_PREFIX.length
+                    else
+                      0
+                    end
+
+      start_index += legacy_partition_prefix.length if token[start_index..].start_with?(legacy_partition_prefix)
+
       token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH - 1]
     end
 
@@ -568,6 +578,10 @@ module Ci
       false
     end
 
+    def partition_id
+      self.class.runner_types[runner_type]
+    end
+
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do
@@ -667,17 +681,17 @@ module Ci
       errors.add(:runner, 'cannot have allowed plans assigned') unless allowed_plan_ids.empty?
     end
 
-    def partition_id_prefix_in_16_bit_encode
+    def legacy_partition_id_prefix_in_16_bit_encode
       # Prefix with t1 / t2 / t3 (`t` as in runner type, to allow us to easily detect how a token got prefixed).
       # This is needed in order to ensure that tokens have unique values across partitions
       # in the new ci_runners partitioned table.
-      "t#{self.class.runner_types[runner_type].to_s(16)}_"
+      "t#{partition_id.to_s(16)}_"
     end
 
     def prefix_for_new_and_legacy_runner
-      return partition_id_prefix_in_16_bit_encode if registration_token_registration_type?
+      return REGISTRATION_RUNNER_TOKEN_PREFIX if registration_token_registration_type?
 
-      "#{CREATED_RUNNER_TOKEN_PREFIX}#{partition_id_prefix_in_16_bit_encode}"
+      CREATED_RUNNER_TOKEN_PREFIX
     end
   end
 end

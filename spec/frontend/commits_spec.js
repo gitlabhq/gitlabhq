@@ -116,27 +116,14 @@ describe('Commits List', () => {
     let jqueryOnSpy;
 
     beforeEach(() => {
-      gon.features = { loadCommitDetailsAsync: true };
       jqueryOnSpy = jest.spyOn($.fn, 'on');
       commitsList = new CommitsList();
     });
 
-    it('initializes click handler when feature flag is enabled', () => {
+    it('initializes click handler for loading commit details', () => {
       commitsList = new CommitsList();
 
       expect(jqueryOnSpy).toHaveBeenCalledWith('click', '.js-toggle-button', expect.any(Function));
-    });
-
-    it('does not initialize click handler when feature flag is disabled', () => {
-      jqueryOnSpy.mockClear();
-      gon.features = { loadCommitDetailsAsync: false };
-      commitsList = new CommitsList();
-
-      expect(jqueryOnSpy).not.toHaveBeenCalledWith(
-        'click',
-        '.js-toggle-button',
-        expect.any(Function),
-      );
     });
 
     describe('when clicking toggle button', () => {

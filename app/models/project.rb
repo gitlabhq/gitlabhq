@@ -183,7 +183,12 @@ class Project < ApplicationRecord
 
   alias_attribute :title, :name
 
+  ## marked_for_deletion_at is deprecated in our v5 REST API in favor of marked_for_deletion_on
+  ## https://docs.gitlab.com/ee/api/projects.html#removals-in-api-v5
+  alias_attribute :marked_for_deletion_on, :marked_for_deletion_at
+
   # Relations
+  belongs_to :deleting_user, foreign_key: 'marked_for_deletion_by_user_id', class_name: 'User'
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
   belongs_to :organization, class_name: 'Organizations::Organization'
@@ -651,6 +656,11 @@ class Project < ApplicationRecord
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
+  scope :aimed_for_deletion, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
+  scope :with_deleting_user, -> { includes(:deleting_user) }
+  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+    where(marked_for_deletion_at: marked_for_deletion_on)
+  end
 
   scope :with_storage_feature, ->(feature) do
     where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))
