@@ -47,6 +47,61 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+    ':package_channel/revisions/:recipe_revision/files' do
+    include_context 'for conan file download endpoints'
+
+    let(:recipe_revision) { recipe_file_metadata.recipe_revision_value }
+    let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/files" }
+    let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
+
+    subject(:api_request) { get api(url), headers: headers }
+
+    it_behaves_like 'enforcing read_packages job token policy' do
+      subject(:request) { api_request }
+    end
+
+    it_behaves_like 'conan FIPS mode'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+
+    it { is_expected.to have_request_urgency(:low) }
+
+    it 'returns the file list' do
+      api_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq({ 'files' => { 'conanfile.py' => {}, 'conanmanifest.txt' => {} } })
+    end
+
+    context 'when the recipe revision files are not found' do
+      # This is a non-existent revision
+      let(:recipe_revision) { 'da39a3ee5e6b4b0d3255bfef95601890afd80709' }
+
+      it_behaves_like 'returning response status with message', status: :not_found,
+        message: '404 Recipe files Not Found'
+    end
+
+    context 'when the package is not found' do
+      # This is a non-existent revision
+      let(:recipe_path) { 'test/9.0.0/namespace1+project-1/stable' }
+
+      it_behaves_like 'returning response status with message', status: :not_found, message: '404 Package Not Found'
+    end
+
+    context 'when the limit is reached' do
+      before do
+        stub_const("#{described_class}::MAX_FILES_COUNT", 1)
+      end
+
+      it 'limits the number of files to MAX_FILES_COUNT' do
+        api_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq("files" => { "conanfile.py" => {} })
+      end
+    end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
     ':package_channel/revisions/:recipe_revision/files/:file_name' do
     include_context 'for conan file download endpoints'
 

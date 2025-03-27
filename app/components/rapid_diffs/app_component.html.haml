@@ -2,7 +2,7 @@
   - helpers.add_page_startup_api_call @metadata_endpoint
   - if @stream_url
     - helpers.content_for :startup_js do
-      = javascript_tag nonce: content_security_policy_nonce do
+      - javascript_tag nonce: content_security_policy_nonce do
         :plain
           var controller = new AbortController();
           window.gl.rapidDiffsPreload = {

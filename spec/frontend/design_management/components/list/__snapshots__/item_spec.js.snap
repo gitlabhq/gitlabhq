@@ -13,10 +13,10 @@ exports[`Design management list item component with notes renders item with mult
   class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
 >
   <gl-card-stub
-    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
-    class="design-list-item gl-mb-0 js-design-list-item"
+    bodyclass="gl-p-0 gl-flex gl-bg-section gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+    class="design-list-item gl-border-section gl-mb-0 hover:gl-border-strong js-design-list-item"
     footerclass=""
-    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+    headerclass="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
       class="gl-flex gl-grow gl-items-center gl-justify-center"
@@ -76,10 +76,10 @@ exports[`Design management list item component with notes renders item with sing
   class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
 >
   <gl-card-stub
-    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
-    class="design-list-item gl-mb-0 js-design-list-item"
+    bodyclass="gl-p-0 gl-flex gl-bg-section gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+    class="design-list-item gl-border-section gl-mb-0 hover:gl-border-strong js-design-list-item"
     footerclass=""
-    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+    headerclass="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
       class="gl-flex gl-grow gl-items-center gl-justify-center"

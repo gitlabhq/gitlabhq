@@ -167,7 +167,7 @@ module API
             package_file = ::Packages::Conan::PackageFileFinder
               .new(
                 package,
-                params[:file_name].to_s,
+                file_name: params[:file_name].to_s,
                 conan_file_type: file_type,
                 conan_package_reference: declared(params)[:conan_package_reference],
                 recipe_revision: params[:recipe_revision]

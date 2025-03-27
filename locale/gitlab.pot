@@ -53316,6 +53316,9 @@ msgstr ""
 msgid "SecurityOrchestration|Custom scan experiment has ended in 17.3"
 msgstr ""
 
+msgid "SecurityOrchestration|Days of month"
+msgstr ""
+
 msgid "SecurityOrchestration|Default approval settings on this merge request have been overridden by policies based on their rules."
 msgstr ""
 
@@ -53784,6 +53787,9 @@ msgid "SecurityOrchestration|SecurityOrchestration|Scan execution policies with 
 msgstr ""
 
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|Select days"
 msgstr ""
 
 msgid "SecurityOrchestration|Select frameworks"
@@ -70001,6 +70007,11 @@ msgstr ""
 
 msgid "day"
 msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "day of the month"
+msgid_plural "days of the month"
 msgstr[0] ""
 msgstr[1] ""
 

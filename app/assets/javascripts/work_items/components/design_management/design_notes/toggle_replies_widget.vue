@@ -32,9 +32,6 @@ export default {
         ? n__('%d reply', '%d replies', this.replies.length)
         : __('Collapse replies');
     },
-    toggleTextColor() {
-      return this.collapsed ? 'gl-text-link' : 'gl-text-default';
-    },
     authors() {
       return [...new Set(this.replies.map((item) => item.author))];
     },
@@ -53,7 +50,7 @@ export default {
 
 <template>
   <li
-    class="toggle-comments gl-flex gl-min-h-8 gl-items-center gl-rounded-bl-base gl-rounded-br-base gl-bg-subtle gl-p-3"
+    class="toggle-comments gl-flex gl-min-h-8 gl-items-center gl-gap-3 gl-rounded-bl-base gl-rounded-br-base gl-bg-subtle gl-p-3"
     :class="{ expanded: !collapsed }"
     :aria-expanded="ariaState"
     data-testid="toggle-comments-wrapper"
@@ -61,7 +58,8 @@ export default {
     <gl-button
       category="tertiary"
       data-testid="toggle-replies-button"
-      class="gl-my-2 gl-mr-3 !gl-p-0"
+      class="-gl-mr-2 !gl-text-link"
+      size="small"
       :icon="iconName"
       :aria-label="toggleText"
       @click="$emit('toggle')"
@@ -84,13 +82,8 @@ export default {
         </template>
       </gl-avatars-inline>
     </template>
-    <gl-button
-      variant="link"
-      data-testid="replies-button"
-      class="toggle-comments-button"
-      @click="$emit('toggle')"
-    >
-      <span :class="toggleTextColor">{{ toggleText }}</span>
+    <gl-button variant="link" data-testid="replies-button" @click="$emit('toggle')">
+      {{ toggleText }}
     </gl-button>
   </li>
 </template>

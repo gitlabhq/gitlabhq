@@ -1,4 +1,4 @@
-import { GlForm, GlFormInput, GlToggle, GlFormTextarea, GlTab, GlLink, GlModal } from '@gitlab/ui';
+import { GlForm, GlToggle, GlFormTextarea, GlTab, GlLink, GlModal } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -70,7 +70,7 @@ describe('AlertsSettingsForm', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findSelect = () => wrapper.find('select');
-  const findFormFields = () => wrapper.findAllComponents(GlFormInput);
+  const findNameField = () => wrapper.findByTestId('integration-name-field');
   const findFormToggle = () => wrapper.findComponent(GlToggle);
   const findSamplePayloadSection = () => wrapper.findByTestId('sample-payload-section');
   const findResetPayloadModal = () => wrapper.findComponent(GlModal);
@@ -89,7 +89,7 @@ describe('AlertsSettingsForm', () => {
 
   const enableIntegration = (index, value = '') => {
     if (value !== '') {
-      findFormFields().at(index).setValue(value);
+      findNameField().setValue(value);
     }
 
     findFormToggle().vm.$emit('change', true);
@@ -108,13 +108,13 @@ describe('AlertsSettingsForm', () => {
       expect(findForm().exists()).toBe(true);
       expect(findSelect().exists()).toBe(true);
       expect(findMultiSupportText().exists()).toBe(false);
-      expect(findFormFields()).toHaveLength(0);
+      expect(findNameField().exists()).toBe(false);
     });
 
     it('shows the rest of the form when the dropdown is used', async () => {
       await selectOptionAtIndex(1);
 
-      expect(findFormFields().at(0).isVisible()).toBe(true);
+      expect(findNameField().exists()).toBe(true);
     });
 
     it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
@@ -128,7 +128,7 @@ describe('AlertsSettingsForm', () => {
       await createComponent();
       await selectOptionAtIndex(2);
 
-      expect(findFormFields()).toHaveLength(0);
+      expect(findNameField().exists()).toBe(false);
     });
 
     it('verify pricing link url', async () => {
@@ -446,13 +446,13 @@ describe('AlertsSettingsForm', () => {
 
     it('should not be able to submit when HTTP integration form is invalid', async () => {
       await selectOptionAtIndex(1);
-      await findFormFields().at(0).vm.$emit('input', '');
+      await findNameField().vm.$emit('input', '');
       expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should be able to submit when HTTP integration  form is valid', async () => {
       await selectOptionAtIndex(1);
-      await findFormFields().at(0).vm.$emit('input', 'Name');
+      await findNameField().vm.$emit('input', 'Name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 
@@ -466,7 +466,7 @@ describe('AlertsSettingsForm', () => {
       const currentIntegration = { type: typeSet.http, name: 'Existing integration' };
       await createComponent({ currentIntegration });
 
-      await findFormFields().at(0).vm.$emit('input', 'Updated name');
+      await findNameField().vm.$emit('input', 'Updated name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 

@@ -161,6 +161,33 @@ describe('TodosApp', () => {
     expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
   });
 
+  it('resets the pagination when filters change', async () => {
+    createComponent();
+
+    const filters = {
+      groupId: ['1'],
+    };
+
+    const newCursor = { first: 50, after: 'cursor-1' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
+    await waitForPromises();
+
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith(expect.objectContaining(newCursor));
+
+    findFilterBar().vm.$emit('filters-changed', filters);
+    await waitForPromises();
+
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith({
+      ...filters,
+      state: ['pending'],
+      first: newCursor.first,
+      last: null,
+      after: null,
+      before: null,
+    });
+    expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
+  });
+
   it('refreshes count and list', async () => {
     createComponent();
     await waitForPromises();

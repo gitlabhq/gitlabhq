@@ -220,6 +220,16 @@ module BulkImports
       next_batch.numbers.each do |batch_number|
         batch = pipeline_tracker.batches.create!(batch_number: batch_number)
 
+        export_batch = export_status.batch(batch_number)
+
+        # Mark the batch tracker as failed if the corresponding export batch on the source instance has failed.
+        if export_batch&.dig('status') == BulkImports::ExportBatch::STATE_VALUES[:failed]
+          fail_batch_tracker(batch, export_batch)
+        end
+
+        # Enqueue the worker for all batches regardless of status.
+        # PipelineBatchWorker will only process batches in 'started' or 'created' states
+        # and will ensure FinishBatchedPipelineWorker gets triggered eventually.
         with_context(bulk_import_entity_id: entity.id) do
           ::BulkImports::PipelineBatchWorker.perform_async(batch.id)
         end
@@ -266,6 +276,21 @@ module BulkImports
 
     def lease_key
       "gitlab:bulk_imports:pipeline_worker:#{pipeline_tracker.id}"
+    end
+
+    def fail_batch_tracker(batch, export_batch)
+      batch.fail_op!
+      exception_message =
+        "Batch export #{export_batch&.dig('batch_number')} from source instance failed: #{export_batch&.dig('error')}"
+
+      BulkImports::Failure.create(
+        bulk_import_entity_id: entity.id,
+        pipeline_class: pipeline_tracker.pipeline_name,
+        pipeline_step: 'pipeline_worker_run',
+        exception_class: '',
+        exception_message: exception_message,
+        correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
+      )
     end
   end
 end

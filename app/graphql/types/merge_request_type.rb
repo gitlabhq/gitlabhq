@@ -37,7 +37,8 @@ module Types
     field :iid, GraphQL::Types::String, null: false,
       description: 'Internal ID of the merge request.'
     field :merge_when_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
-      description: 'Indicates if the merge has been set to auto-merge.'
+      description: 'Indicates if the merge has been set to auto-merge.',
+      deprecated: { reason: :renamed, replacement: 'MergeRequest.autoMergeEnabled', milestone: '17.11' }
     field :merged_at, Types::TimeType, null: true, complexity: 5,
       description: 'Timestamp of when the merge request was merged, null if not merged.'
     field :project, Types::ProjectType, null: false,

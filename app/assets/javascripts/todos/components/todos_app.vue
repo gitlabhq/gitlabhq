@@ -229,6 +229,14 @@ export default {
     updateCursor(cursor) {
       this.cursor = cursor;
     },
+    resetPagination() {
+      this.cursor = {
+        first: this.cursor.first || this.cursor.last,
+        after: null,
+        last: null,
+        before: null,
+      };
+    },
     tabChanged(tabIndex) {
       if (tabIndex === this.currentTab) {
         return;
@@ -241,13 +249,8 @@ export default {
       });
       this.currentTab = tabIndex;
 
-      // Use the previous page size, but fetch the first N of the new tab
-      this.cursor = {
-        first: this.cursor.first || this.cursor.last,
-        after: null,
-        last: null,
-        before: null,
-      };
+      this.resetPagination();
+
       this.syncActiveTabToUrl();
     },
     syncActiveTabToUrl() {
@@ -267,6 +270,7 @@ export default {
     },
     handleFiltersChanged(data) {
       this.alert?.dismiss();
+      this.resetPagination();
       this.queryFilterValues = { ...data };
     },
     handleVisibilityChanged() {

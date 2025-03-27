@@ -10,14 +10,14 @@ exports[`Design item component when item appears in view after image is loaded r
 
 exports[`Design item component with notes renders item with multiple comments 1`] = `
 <a
-  class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
+  class="focus:gl-focus gl-block gl-text-default hover:gl-text-default"
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <gl-card-stub
-    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
-    class="design-list-item gl-mb-0 js-design-list-item"
+    bodyclass="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-b-base"
+    class="design-list-item gl-border-section gl-mb-0 hover:gl-border-strong js-design-list-item"
     footerclass=""
-    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base gl-aspect-video"
+    headerclass=" gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-aspect-video"
   >
     <gl-intersection-observer-stub
       class="gl-flex gl-grow gl-items-center gl-justify-center"
@@ -75,14 +75,14 @@ exports[`Design item component with notes renders item with multiple comments 1`
 
 exports[`Design item component with notes renders item with single comment 1`] = `
 <a
-  class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
+  class="focus:gl-focus gl-block gl-text-default hover:gl-text-default"
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <gl-card-stub
-    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
-    class="design-list-item gl-mb-0 js-design-list-item"
+    bodyclass="gl-py-3 gl-px-4 gl-flex gl-bg-section gl-rounded-b-base"
+    class="design-list-item gl-border-section gl-mb-0 hover:gl-border-strong js-design-list-item"
     footerclass=""
-    headerclass="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base gl-aspect-video"
+    headerclass=" gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-aspect-video"
   >
     <gl-intersection-observer-stub
       class="gl-flex gl-grow gl-items-center gl-justify-center"

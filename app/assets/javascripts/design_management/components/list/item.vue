@@ -139,9 +139,9 @@ export default {
     class="gl-block gl-rounded-base gl-text-default hover:gl-text-default focus:gl-focus"
   >
     <gl-card
-      class="js-design-list-item design-list-item gl-mb-0"
-      header-class="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
-      body-class="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+      class="js-design-list-item design-list-item gl-mb-0 gl-border-section hover:gl-border-strong"
+      header-class="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+      body-class="gl-p-0 gl-flex gl-bg-section gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
     >
       <template #header>
         <div v-if="icon.name" data-testid="design-event" class="gl-absolute gl-right-4 gl-top-3">

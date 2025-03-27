@@ -77,6 +77,36 @@ go build -o analyzer
 ./analyzer convert test/fixtures/app/spotbugsXml.Xml > ./gl-sast-report.json
 ```
 
+### Secure stage CI/CD Templates and components
+
+The secure stage is responsible for maintaining the following CI/CD Templates and Components:
+
+- [Composition Analysis](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis)
+  - CI/CD Templates
+    - [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
+    - [`Dependency-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml)
+    - [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
+    - [`Container-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.latest.gitlab-ci.yml)
+  - CI/CD Components
+    - [Dependency Scanning](https://gitlab.com/components/dependency-scanning/-/blob/main/templates/main/template.yml)
+    - [Container Scanning](https://gitlab.com/components/container-scanning/-/blob/main/templates/container-scanning.yml)
+- [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
+  - CI/CD Templates
+    - [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
+    - [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)
+    - [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
+    - [`SAST-IaC.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml#L1-1)
+  - CI/CD Components
+    - [SAST](https://gitlab.com/components/sast/-/blob/main/templates/sast.yml)
+- [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
+  - CI/CD Templates
+    - [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
+    - [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml)
+  - CI/CD Components
+    - [Secret Detection](https://gitlab.com/components/secret-detection/-/blob/main/templates/secret-detection.yml)
+
+Changes must always be made to both the CI/CD template _and_ component for your group, and you must also determine if the changes need to be applied to the _latest_ CI/CD template.
+
 ### Execution criteria
 
 [Enabling SAST](../../user/application_security/sast/_index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
@@ -335,6 +365,7 @@ Assuming the current analyzer release is `v{N}`:
       ```
 
    1. [Configure scheduled pipelines](#configure-scheduled-pipelines).
+   1. [Bump major analyzer versions in the CI/CD templates and components](#bump-major-analyzer-versions-in-the-cicd-templates-and-components)
 
 #### Major version release with breaking changes
 
@@ -382,8 +413,7 @@ Assuming the current analyzer release is `v{N}`:
    1. Create a Merge Request to merge all the breaking changes from the `v{N+1}` branch into the `default` branch.
    1. Delete the `v{N+1}` branch, since it's no longer needed, as the `default` branch now contains all the changes from the `v{N+1}` branch.
    1. [Configure scheduled pipelines](#configure-scheduled-pipelines).
-
-When the above steps have been completed for all the secure stage analyzers, and images for the `v{N+1}` release are available under `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`, create a new MR to bump the major version for each analyzer in the [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) and [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml) CI templates.
+   1. [Bump major analyzer versions in the CI/CD templates and components](#bump-major-analyzer-versions-in-the-cicd-templates-and-components).
 
 ##### Configure protected tags and branches
 
@@ -405,6 +435,10 @@ When the above steps have been completed for all the secure stage analyzers, and
 
       This scheduled pipeline should already exist
 1. Delete the scheduled pipeline for the `v{N-2}` branch (if it exists), since we only support [two previous major versions](https://about.gitlab.com/support/statement-of-support/#version-support).
+
+##### Bump major analyzer versions in the CI/CD templates and components
+
+When images for all the `v{N+1}` analyzers are available under `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`, create a new merge request to bump the major version for each analyzer in the [Secure stage CI/CD templates and components](#secure-stage-cicd-templates-and-components) belonging to your group.
 
 ## Development of new analyzers
 

@@ -4,6 +4,8 @@ module API
   module Conan
     module V2
       class ProjectPackages < ::API::Base
+        MAX_FILES_COUNT = 1000
+
         before do
           if Feature.disabled?(:conan_package_revisions_support, Feature.current_request)
             not_found!("'conan_package_revisions_support' feature flag is disabled")
@@ -67,6 +69,34 @@ module API
                 end
                 namespace ':recipe_revision' do
                   namespace 'files' do
+                    desc 'List recipe files' do
+                      detail 'This feature was introduced in GitLab 17.11'
+                      success code: 200, model: ::API::Entities::Packages::Conan::RecipeFilesList
+                      failure [
+                        { code: 400, message: 'Bad Request' },
+                        { code: 401, message: 'Unauthorized' },
+                        { code: 403, message: 'Forbidden' },
+                        { code: 404, message: 'Not Found' }
+                      ]
+                      tags %w[conan_packages]
+                    end
+                    route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                    route_setting :authorization, job_token_policies: :read_packages,
+                      allow_public_access_for_enabled_project_features: :package_registry
+                    get urgency: :low do
+                      not_found!('Package') unless package
+
+                      files = ::Packages::Conan::PackageFilesFinder
+                        .new(package, conan_file_type: :recipe_file, recipe_revision: params[:recipe_revision])
+                        .execute
+                        .limit(MAX_FILES_COUNT)
+                        .select(:file_name)
+
+                      not_found!('Recipe files') if files.empty?
+
+                      present({ files: }, with: ::API::Entities::Packages::Conan::RecipeFilesList)
+                    end
+
                     params do
                       requires :file_name, type: String, desc: 'Package file name', values: CONAN_FILES,
                         documentation: { example: 'conanfile.py' }

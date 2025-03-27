@@ -1417,7 +1417,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.1":
+"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1441,10 +1441,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.123.0.tgz#1fa3b1a709755ff7c8ef67e18c0442101655ebf0"
   integrity sha512-yjVn+utOTIKk8d9JlvGo6EgJ4TQ+CKpe3RddflAqtsQqQuL/2MlVdtaUePybxYzWIaumFuh5LouQ6BrWyw1niQ==
 
-"@gitlab/ui@111.3.1":
-  version "111.3.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-111.3.1.tgz#76ebf5bdbe107159f961cfaf6943ef8f84fc4b1f"
-  integrity sha512-NTSZe6aPc7+d8yWR8h3gWq7eTLcV/eARfT5Cunb5f5ZHA9fq3SKInXOZ5jyhl4DBNy9SH54iwSsKW8lC5YcN1g==
+"@gitlab/ui@111.5.0":
+  version "111.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-111.5.0.tgz#24329566443ee933868f900258b53b1a0cfa17d1"
+  integrity sha512-lrSANQ0SFNe04bpTuoPm91tuaHYrftsbbLiDtNthXsjeTX55pgZCuUcqQjL+x45QKMFt+hH+gTr66VMlOOBqNA==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -9486,11 +9486,6 @@ iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
-
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jed@^1.1.1:
   version "1.1.1"

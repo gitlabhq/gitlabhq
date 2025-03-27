@@ -915,6 +915,8 @@
   - 1
 - - security_scan_result_policies_unblock_fail_open_approval_rules
   - 1
+- - security_scan_result_policies_unblock_pending_merge_request_violations
+  - 1
 - - security_scans
   - 2
 - - security_scans_purge_by_job_id

@@ -496,7 +496,6 @@ export default {
             >
               <design
                 v-bind="design"
-                class="gl-bg-default"
                 :is-uploading="false"
                 :is-dragging="isDraggingDesign"
                 :work-item-iid="workItemIid"

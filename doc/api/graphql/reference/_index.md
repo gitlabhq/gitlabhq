@@ -30054,7 +30054,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmergetrainindex"></a>`mergeTrainIndex` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 17.4. Use `index` on `MergeTrains::CarType` instead. |
 | <a id="mergerequestmergetrainscount"></a>`mergeTrainsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 17.4. Use `count` from `cars` connection on `MergeTrains::TrainType` instead. |
 | <a id="mergerequestmergeuser"></a>`mergeUser` | [`UserCore`](#usercore) | User who merged the merge request or set it to auto-merge. |
-| <a id="mergerequestmergewhenpipelinesucceeds"></a>`mergeWhenPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if the merge has been set to auto-merge. |
+| <a id="mergerequestmergewhenpipelinesucceeds"></a>`mergeWhenPipelineSucceeds` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.11. This was renamed. Use: [`MergeRequest.autoMergeEnabled`](#mergerequestautomergeenabled). |
 | <a id="mergerequestmergeabilitychecks"></a>`mergeabilityChecks` {{< icon name="warning-solid" >}} | [`[MergeRequestMergeabilityCheck!]!`](#mergerequestmergeabilitycheck) | **Introduced** in GitLab 16.5. **Status**: Experiment. Status of all mergeability checks of the merge request. |
 | <a id="mergerequestmergeable"></a>`mergeable` | [`Boolean!`](#boolean) | Indicates if the merge request is mergeable. |
 | <a id="mergerequestmergeablediscussionsstate"></a>`mergeableDiscussionsState` | [`Boolean`](#boolean) | Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged. |

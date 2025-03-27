@@ -25,7 +25,7 @@
   removal_milestone: "18.0"
   announcement_milestone: "17.7"
   # Change breaking_change to false if needed.
-  breaking_change: true
+  breaking_change: false
   window:  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
   reporter: deastman  # The GitLab username of the person reporting the change
   stage: Verify
