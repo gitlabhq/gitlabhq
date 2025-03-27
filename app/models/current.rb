@@ -45,10 +45,6 @@ class Current < ActiveSupport::CurrentAttributes
     super
   end
 
-  def organization_id
-    organization&.id
-  end
-
   private
 
   # Do not allow to reset this

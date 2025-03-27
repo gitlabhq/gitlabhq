@@ -112,7 +112,7 @@ class Import::BaseController < ApplicationController
 
     group = Groups::NestedCreateService.new(
       current_user,
-      organization_id: Current.organization_id,
+      organization_id: Current.organization&.id,
       group_path: names
     ).execute
 

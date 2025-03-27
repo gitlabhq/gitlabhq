@@ -98,7 +98,6 @@ export function initMergeRequestDashboard(el) {
     apolloProvider,
     provide: {
       mergeRequestsSearchDashboardPath: el.dataset.mergeRequestsSearchDashboardPath,
-      showMergeChecksSuccess: parseBoolean(el.dataset.showMergeChecksSuccess),
       realtimeEnabled: parseBoolean(el.dataset.realtimeEnabled),
     },
     render(createElement) {

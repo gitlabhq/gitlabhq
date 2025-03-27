@@ -4996,6 +4996,12 @@ msgstr ""
 msgid "AdminUsers|Delete User %{username}?"
 msgstr ""
 
+msgid "AdminUsers|Delete User '%{name}' and contributions?"
+msgstr ""
+
+msgid "AdminUsers|Delete User '%{name}'?"
+msgstr ""
+
 msgid "AdminUsers|Delete user"
 msgstr ""
 
@@ -5057,6 +5063,9 @@ msgid "AdminUsers|Log in"
 msgstr ""
 
 msgid "AdminUsers|Manage (accept/reject) pending user sign ups"
+msgstr ""
+
+msgid "AdminUsers|Name not matching"
 msgstr ""
 
 msgid "AdminUsers|New user"
@@ -5161,6 +5170,9 @@ msgstr ""
 msgid "AdminUsers|There are no more seats left in your subscription. New users cannot be approved for this instance."
 msgstr ""
 
+msgid "AdminUsers|To confirm, type %{name}"
+msgstr ""
+
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
@@ -5243,6 +5255,12 @@ msgid "AdminUsers|Without projects"
 msgstr ""
 
 msgid "AdminUsers|Without two-factor authentication"
+msgstr ""
+
+msgid "AdminUsers|You are about to permanently delete the user %{name}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "AdminUsers|You are about to permanently delete the user %{name}. This will delete all issues, merge requests, groups, and projects linked to them. After you %{strongStart}Delete user%{strongEnd}, you cannot undo this action or recover the data."
 msgstr ""
 
 msgid "AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
@@ -23211,6 +23229,9 @@ msgstr ""
 msgid "Enter confidential issue URL"
 msgstr ""
 
+msgid "Enter duration"
+msgstr ""
+
 msgid "Enter epic URL"
 msgstr ""
 
@@ -25016,6 +25037,9 @@ msgid "Failed to load error details from Sentry."
 msgstr ""
 
 msgid "Failed to load errors from Sentry."
+msgstr ""
+
+msgid "Failed to load file browser. Try reloading the page."
 msgstr ""
 
 msgid "Failed to load group activity metrics. Please try again."
@@ -29826,6 +29850,9 @@ msgid "Hour"
 msgstr ""
 
 msgid "Hour (UTC)"
+msgstr ""
+
+msgid "Hours"
 msgstr ""
 
 msgid "Housekeeping"
@@ -55132,6 +55159,9 @@ msgstr ""
 msgid "ServiceAccounts|Add Service Account"
 msgstr ""
 
+msgid "ServiceAccounts|An error occurred while deleting the service account."
+msgstr ""
+
 msgid "ServiceAccounts|An error occurred while fetching the service accounts."
 msgstr ""
 
@@ -55154,6 +55184,9 @@ msgid "ServiceAccounts|Service Accounts"
 msgstr ""
 
 msgid "ServiceAccounts|Service accounts are non-human accounts that allow interactions between software applications, systems, or services. %{learnMore}"
+msgstr ""
+
+msgid "ServiceAccounts|The service account is being deleted."
 msgstr ""
 
 msgid "ServiceAccount|No more seats are available to create Service Account User"
@@ -60894,6 +60927,9 @@ msgid "Time tracking"
 msgstr ""
 
 msgid "Time tracking report"
+msgstr ""
+
+msgid "Time unit"
 msgstr ""
 
 msgid "Time until first merge request"

@@ -85,7 +85,7 @@ module Mutations
         # We need to rename `uploaded_files` into `files` because
         # it's the expected key param
         args[:files] = args.delete(:uploaded_files)
-        args[:organization_id] = Current.organization_id
+        args[:organization_id] = Current.organization&.id
         # Return nil to make it explicit that this method is mutating the args parameter, and that
         # the return value is not relevant and is not to be used.
         nil

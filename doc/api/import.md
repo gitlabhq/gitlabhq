@@ -14,6 +14,15 @@ title: Import API
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
+{{< alert type="note" >}}
+
+User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
+When you import to a personal namespace, all contributions are assigned to
+a single non-functional user called `Import User` and they cannot be reassigned.
+[Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+
+{{< /alert >}}
+
 ## Import repository from GitHub
 
 {{< history >}}

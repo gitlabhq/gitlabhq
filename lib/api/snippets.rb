@@ -140,7 +140,7 @@ module API
 
         authorize! :create_snippet
 
-        attrs = process_create_params(declared_params(include_missing: false)).merge(organization_id: Current.organization_id)
+        attrs = process_create_params(declared_params(include_missing: false)).merge(organization_id: Current.organization&.id)
         service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs).execute
         snippet = service_response.payload[:snippet]
 

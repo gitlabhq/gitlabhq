@@ -30,6 +30,15 @@ Prerequisites:
 
 Use the following endpoints to [reassign placeholder users in bulk](../user/project/import/_index.md#request-reassignment-by-using-a-csv-file) without using the UI.
 
+{{< alert type="note" >}}
+
+User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
+When you import to a personal namespace, all contributions are assigned to
+a single non-functional user called `Import User` and they cannot be reassigned.
+[Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+
+{{< /alert >}}
+
 ## Download the CSV file
 
 Download a CSV file of pending reassignments.

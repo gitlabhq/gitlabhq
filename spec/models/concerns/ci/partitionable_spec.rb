@@ -98,7 +98,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
 
         context 'when not using ci partitioning automation' do
           before do
-            stub_feature_flags(ci_partitioning_automation: false)
+            stub_feature_flags(ci_create_dynamic_partitions: false)
           end
 
           context 'without any existing partitions' do

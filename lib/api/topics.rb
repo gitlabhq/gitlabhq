@@ -29,7 +29,7 @@ module API
         desc: 'Return list of topics matching the search criteria',
         documentation: { example: 'search' }
       optional :without_projects, type: Boolean, desc: 'Return list of topics without assigned projects'
-      optional :organization_id, type: Integer, default: -> { ::Current.organization_id },
+      optional :organization_id, type: Integer, default: -> { ::Current.organization&.id },
         desc: 'The organization id for the topics'
       use :pagination
     end
@@ -67,7 +67,7 @@ module API
       optional :description, type: String, desc: 'Description'
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
         documentation: { type: 'file' }
-      optional :organization_id, type: Integer, default: -> { ::Current.organization_id },
+      optional :organization_id, type: Integer, default: -> { ::Current.organization&.id },
         desc: 'The organization id for the topic'
     end
     post 'topics' do

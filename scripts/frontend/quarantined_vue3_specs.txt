@@ -70,7 +70,6 @@ ee/spec/frontend/users/identity_verification/components/verify_phone_verificatio
 ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
-ee/spec/frontend/vulnerabilities/generic_report/report_item_graphql_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/admin/abuse_report/components/reported_content_spec.js
@@ -204,7 +203,6 @@ spec/frontend/vue_shared/components/design_management/design_note_pin_spec.js
 spec/frontend/vue_shared/components/diff_stats_dropdown_spec.js
 spec/frontend/vue_shared/components/file_tree_spec.js
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
-spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/pagination_bar/pagination_bar_spec.js
 spec/frontend/vue_shared/components/registry/code_instruction_spec.js

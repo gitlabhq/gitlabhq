@@ -21,12 +21,6 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidCurrentOrganization, feature_category:
       include_examples 'reference offense'
     end
 
-    context 'when referencing Current.organization_id' do
-      let(:node_value) { 'Current.organization_id' }
-
-      include_examples 'reference offense'
-    end
-
     context 'when assigning Current.organization=' do
       let(:node_value) { 'Current.organization' }
 

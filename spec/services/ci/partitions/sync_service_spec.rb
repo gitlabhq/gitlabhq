@@ -14,20 +14,16 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
   describe '.execute' do
     subject(:execute_service) { service.execute }
 
-    shared_examples 'ci_partitions not updated' do
-      it 'does not update ci_partition to ready', :aggregate_failures do
-        expect { execute_service }
-          .to not_change { ci_partition.reload.status }
-          .and not_change { next_ci_partition.reload.status }
-      end
-    end
-
-    context 'when ci_partitioning_automation is disabled' do
+    context 'when ci_auto_switch_to_dynamic_partitions is disabled' do
       before do
-        stub_feature_flags(ci_partitioning_automation: false)
+        stub_feature_flags(ci_auto_switch_to_dynamic_partitions: false)
       end
 
-      it_behaves_like 'ci_partitions not updated'
+      it 'marks the next available partition as ready' do
+        expect { execute_service }
+          .to change { next_ci_partition.reload.status }
+          .from(preparing_status).to(ready_status)
+      end
     end
 
     context 'when ci_partition is nil' do

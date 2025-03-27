@@ -28,7 +28,7 @@
       #js-merge-request-dashboard-config
 
 - if merge_request_dashboard_enabled?(current_user) && !current_page?(merge_requests_search_dashboard_path)
-  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json, show_merge_checks_success: Feature.enabled?(:merge_request_dashboard_merge_checks, current_user, type: :gitlab_com_derisk).to_s, realtime_enabled: Feature.enabled?(:merge_request_dashboard_realtime, current_user, type: :wip).to_s } }
+  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json, realtime_enabled: Feature.enabled?(:merge_request_dashboard_realtime, current_user, type: :wip).to_s } }
     = gl_loading_icon(size: 'lg')
 
 - if !merge_request_dashboard_enabled?(current_user) || current_page?(merge_requests_search_dashboard_path)

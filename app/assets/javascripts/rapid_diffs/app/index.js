@@ -19,20 +19,26 @@ class RapidDiffsFacade {
 
   init() {
     this.#registerCustomElements();
-    const { reloadStreamUrl, metadataEndpoint } =
+    const { reloadStreamUrl, metadataEndpoint, diffFilesEndpoint } =
       document.querySelector('[data-rapid-diffs]').dataset;
     useDiffsView(pinia).metadataEndpoint = metadataEndpoint;
     useDiffsView(pinia)
       .loadMetadata()
       .then(() => {
         initHiddenFilesWarning();
-        initFileBrowser();
       })
-      .catch(() => {
+      .catch((error) => {
         createAlert({
           message: __('Failed to load additional diffs information. Try reloading the page.'),
+          error,
         });
       });
+    initFileBrowser(diffFilesEndpoint).catch((error) => {
+      createAlert({
+        message: __('Failed to load file browser. Try reloading the page.'),
+        error,
+      });
+    });
     initViewSettings({ pinia, streamUrl: reloadStreamUrl });
   }
 

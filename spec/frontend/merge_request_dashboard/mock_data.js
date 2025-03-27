@@ -46,6 +46,7 @@ export function createMockMergeRequest(mergeRequest = {}) {
     approvedBy: {
       nodes: [],
     },
+    mergeabilityChecks: [],
     __typename: 'MergeRequest',
     ...mergeRequest,
   };

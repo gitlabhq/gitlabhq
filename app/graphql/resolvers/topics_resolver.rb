@@ -17,7 +17,7 @@ module Resolvers
       description: 'Global ID of the organization.'
 
     def resolve(**args)
-      organization = authorized_find!(id: args[:organization_id] || ::Current.organization_id)
+      organization = authorized_find!(id: args[:organization_id] || ::Current.organization&.id)
 
       return organization_topics(organization.id) unless args[:search].present?
 

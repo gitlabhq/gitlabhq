@@ -3,14 +3,14 @@
 module Ci
   module Partitions
     class CreateService
-      HEADROOM_PARTITIONS = 3
+      HEADROOM_PARTITIONS = 2
 
       def initialize(partition)
         @partition = partition
       end
 
       def execute
-        return unless Feature.enabled?(:ci_partitioning_automation, :instance)
+        return unless Feature.enabled?(:ci_create_dynamic_partitions, :instance)
         return unless partition
 
         Ci::Partition.create_next! if should_create_next?

@@ -98,7 +98,6 @@ describe('Merge requests query component', () => {
       perPage: 20,
       state: 'opened',
       sort: 'UPDATED_DESC',
-      includeMergeabilityChecks: false,
     });
   });
 
@@ -111,7 +110,6 @@ describe('Merge requests query component', () => {
       perPage: 20,
       state: 'opened',
       sort: 'UPDATED_DESC',
-      includeMergeabilityChecks: false,
     });
   });
 

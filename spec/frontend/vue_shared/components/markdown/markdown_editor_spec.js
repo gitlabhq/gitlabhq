@@ -3,7 +3,7 @@ import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { GlAlert } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   EDITING_MODE_MARKDOWN_FIELD,
   EDITING_MODE_CONTENT_EDITOR,
@@ -14,7 +14,6 @@ import {
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
-import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -56,24 +55,16 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     },
   };
   const buildWrapper = ({ propsData = {}, attachTo, stubs = {} } = {}) => {
-    wrapper = mountExtended(MarkdownEditor, {
+    wrapper = shallowMountExtended(MarkdownEditor, {
       attachTo,
       propsData: {
         ...defaultProps,
         ...propsData,
       },
       stubs: {
-        BubbleMenu: stubComponent(BubbleMenu),
+        MarkdownField,
+        ContentEditor,
         ...stubs,
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            currentUser: {
-              loading: false,
-            },
-          },
-        },
       },
     });
   };
@@ -157,7 +148,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
     buildWrapper({ propsData: { enableContentEditor: true } });
 
-    expect(findMarkdownField().text()).toContain('Switch to rich text editing');
+    expect(findMarkdownField().props('showContentEditorSwitcher')).toBe(true);
   });
 
   it('hides content editor switcher when contentEditorEnabled prop is false', () => {

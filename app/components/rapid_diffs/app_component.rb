@@ -12,6 +12,7 @@ module RapidDiffs
       diff_view:,
       update_user_endpoint:,
       metadata_endpoint:,
+      diff_files_endpoint:,
       preload: true
     )
       @diffs_slice = diffs_slice
@@ -21,6 +22,7 @@ module RapidDiffs
       @diff_view = diff_view
       @update_user_endpoint = update_user_endpoint
       @metadata_endpoint = metadata_endpoint
+      @diff_files_endpoint = diff_files_endpoint
       @preload = preload
     end
 

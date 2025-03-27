@@ -32,21 +32,17 @@ RSpec.describe Packages::Conan::ProcessPackageFileWorker, type: :worker, feature
 
       context 'when service raises an error' do
         let(:exception) { ::Packages::Conan::MetadataExtractionService::ExtractionError.new('test error') }
-        let(:logger) { instance_double(::Logger) }
 
         before do
           allow_next_instance_of(::Packages::Conan::MetadataExtractionService) do |service|
             allow(service).to receive(:execute).and_raise(exception)
           end
-          allow(logger).to receive(:warn)
-          allow(worker).to receive(:logger).and_return(logger)
         end
 
         it 'processes the error through error handling concern' do
-          expect(logger).to receive(:warn).with(
-            message: "Error processing conaninfo.txt file",
-            error: exception.message,
-            package_file: package_file.id,
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+            exception,
+            package_file_id: package_file.id,
             project_id: package_file.project_id,
             package_name: package_file.package.name,
             package_version: package_file.package.version

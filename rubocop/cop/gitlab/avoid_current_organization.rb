@@ -43,7 +43,7 @@ module RuboCop
         def_node_matcher :current_organization?, <<~PATTERN
           (send
             (const
-              {nil? (cbase)} :Current) {:organization | :organization_id | :organization=} ...)
+              {nil? (cbase)} :Current) {:organization | :organization=} ...)
         PATTERN
 
         def on_send(node)

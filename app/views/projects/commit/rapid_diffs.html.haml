@@ -6,10 +6,12 @@
 - page_title        "#{@commit.title} (#{@commit.short_id})", _('Commits')
 - page_description  @commit.description
 - add_page_specific_style 'page_bundles/pipelines'
+-# required for file browser styles, remove when .diff-tree-list is refactored into Rapid Diffs
+- add_page_specific_style 'page_bundles/merge_requests'
 - add_page_specific_style 'page_bundles/commit_rapid_diffs'
 
 .container-fluid{ class: [container_class] }
   = render "commit_box"
   = render "ci_menu"
-  - args = { diffs_slice: @diffs_slice, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: @diff_view, update_user_endpoint: @update_current_user_path, metadata_endpoint: @endpoint_metadata_url }
+  - args = { diffs_slice: @diffs_slice, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: @diff_view, update_user_endpoint: @update_current_user_path, metadata_endpoint: @endpoint_metadata_url, diff_files_endpoint: @diff_files_endpoint }
   = render ::RapidDiffs::AppComponent.new(**args)

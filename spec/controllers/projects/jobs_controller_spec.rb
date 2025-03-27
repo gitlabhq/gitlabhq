@@ -1185,6 +1185,27 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
     end
 
+    context 'when user is forbidden from cancelling the build' do
+      let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+
+      before do
+        sign_in(user)
+        # Stub BuildCancelService invocation to return false when ability for cancel_build operation is evaluated
+        allow_next_instance_of(Ci::BuildCancelService) do |service|
+          allow(service).to receive(:allowed?).and_return(false)
+        end
+        post_cancel
+      end
+
+      it 'responds with not_found for access_denied case' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not transit to canceled' do
+        expect(job.reload).not_to be_canceled
+      end
+    end
+
     def post_cancel(additional_params = {})
       post :cancel, params: { namespace_id: project.namespace,
                               project_id: project,

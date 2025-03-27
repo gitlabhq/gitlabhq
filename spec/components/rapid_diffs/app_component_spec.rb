@@ -10,6 +10,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:diff_view) { 'inline' }
   let(:update_user_endpoint) { '/update_user' }
   let(:metadata_endpoint) { '/metadata' }
+  let(:diff_files_endpoint) { '/diff_files_metadata' }
 
   it "renders diffs slice" do
     render_component
@@ -22,6 +23,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(app).not_to be_nil
     expect(app['data-reload-stream-url']).to eq(reload_stream_url)
     expect(app['data-metadata-endpoint']).to eq(metadata_endpoint)
+    expect(app['data-diff-files-endpoint']).to eq(diff_files_endpoint)
   end
 
   it "renders view settings" do
@@ -96,7 +98,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       show_whitespace:,
       diff_view:,
       update_user_endpoint:,
-      metadata_endpoint:
+      metadata_endpoint:,
+      diff_files_endpoint:
     )
   end
 

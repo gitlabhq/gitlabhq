@@ -130,10 +130,6 @@ GitLab.com and GitLab Self-Managed.
 For information on the other method available for GitLab Self-Managed with disabled feature flags,
 see the documentation for each importer.
 
-User contribution mapping is not supported when you import projects to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace, all contributions are assigned to
-a single non-functional user called `Import User` and they cannot be reassigned.
-
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
 These placeholders are created on the destination instance even if
 users with the same email addresses exist on the source instance.
@@ -152,6 +148,15 @@ After the import has completed, you can:
 
 When you reassign a contribution to a user on the destination instance, the user can
 [accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
+
+{{< alert type="note" >}}
+
+User contribution mapping is not supported when you import projects to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
+When you import to a personal namespace, all contributions are assigned to
+a single non-functional user called `Import User` and they cannot be reassigned.
+[Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+
+{{< /alert >}}
 
 ### Requirements
 
@@ -187,6 +192,7 @@ A placeholder user is created for each user on the source instance, except in th
   mapped to a single non-functional user called `Import User`.
 - You are importing to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
   Contributions are assigned to a single non-functional user called `Import User`.
+  [Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
 
 #### Placeholder user attributes
 

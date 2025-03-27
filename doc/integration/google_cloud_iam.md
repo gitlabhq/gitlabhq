@@ -315,6 +315,6 @@ remove or edit roles as required.
 ## View your IAM policies
 
 Sign into the Google Cloud Console and go to the
-[**IAM** page](https://console.google.com/iam-admin/iam?supportedpurview=project)
+[**IAM** page](https://console.cloud.google.com/iam-admin/iam?supportedpurview=project)
 
 You can select either **View by principals** or **View by roles**.

@@ -21,7 +21,7 @@ class Import::GitlabGroupsController < ApplicationController
         visibility_level: closest_allowed_visibility_level,
         import_export_upload: ImportExportUpload.new(import_file: group_params[:file], user: current_user)
       )
-      .with_defaults(organization_id: Current.organization_id)
+      .with_defaults(organization_id: Current.organization&.id)
 
     response = ::Groups::CreateService.new(current_user, group_data).execute
 

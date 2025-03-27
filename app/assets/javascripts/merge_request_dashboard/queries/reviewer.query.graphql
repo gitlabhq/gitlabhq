@@ -10,7 +10,6 @@ query reviewRequests(
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
-  $includeMergeabilityChecks: Boolean = false
 ) {
   currentUser {
     id

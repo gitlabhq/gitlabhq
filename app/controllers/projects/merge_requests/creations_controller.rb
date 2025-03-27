@@ -65,7 +65,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def rapid_diffs
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
 
+    merge_request = { source_branch: @merge_request.source_branch, target_branch: @merge_request.target_branch }
     @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
+    @stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
+    @reload_stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
+    @diff_files_endpoint = project_new_merge_request_diff_files_metadata_path(@project, merge_request: merge_request)
 
     define_new_vars
   end

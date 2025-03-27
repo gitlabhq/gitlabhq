@@ -62,11 +62,15 @@ Let's test this feature by adding the fake secret `glpat-12345678901234567890` t
    git checkout -b push-protection-tutorial
    ```
 
-1. Create a new file with the following content, removing the spaces before and after
+1. Create a new file with the following content.
+   Be sure to remove the spaces before and after
    the `-` to match the exact format of a personal access token:
 
    ```plaintext
    hello, world!
+   
+   # To make the example work, remove
+   # the spaces before and after the dash:
    glpat - 12345678901234567890
    ```
 

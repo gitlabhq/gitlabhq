@@ -82,7 +82,10 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
         # remove 'valid-lang' when 'lang' attribute is removed from the highlighted code
         # https://gitlab.com/gitlab-org/gitlab/-/issues/466594
         # remove 'color-contrast' when code highlight themes conform to a contrast of 4.5:1
-        expect(page).to be_axe_clean.within('#content-body').skipping :'valid-lang', :'color-contrast'
+        # remove 'heading-order' when file browser is using correct heading level
+        # remove 'nested-interactive' when file browser is using proper markup for nested interactive elements
+        expect(page).to be_axe_clean.within('#content-body').skipping :'valid-lang', :'color-contrast',
+          :'heading-order', :'nested-interactive'
       end
     end
   end

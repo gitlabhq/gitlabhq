@@ -25,9 +25,10 @@ describe('Rapid Diffs App', () => {
 
   beforeEach(() => {
     createTestingPinia();
+    initFileBrowser.mockResolvedValue();
     setHTMLFixture(
       `
-        <div data-rapid-diffs data-reload-stream-url="/reload" data-metadata-endpoint="/metadata">
+        <div data-rapid-diffs data-reload-stream-url="/reload" data-metadata-endpoint="/metadata" data-diff-files-endpoint="/diff-files-metadata">
           <div id="js-stream-container" data-diffs-stream-url="/stream"></div>
         </div>
       `,
@@ -52,7 +53,7 @@ describe('Rapid Diffs App', () => {
     expect(window.customElements.get('streaming-error')).toBe(StreamingError);
     await res();
     expect(initHiddenFilesWarning).toHaveBeenCalled();
-    expect(initFileBrowser).toHaveBeenCalled();
+    expect(initFileBrowser).toHaveBeenCalledWith('/diff-files-metadata');
   });
 
   it('streams remaining diffs', () => {

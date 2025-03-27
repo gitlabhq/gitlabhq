@@ -1,0 +1,9 @@
+---
+name: ci_auto_switch_to_dynamic_partitions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520408
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185964
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/527079
+milestone: '17.11'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false
