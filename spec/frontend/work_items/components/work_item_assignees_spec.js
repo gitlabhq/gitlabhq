@@ -207,6 +207,16 @@ describe('WorkItemAssignees component', () => {
         projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users.length,
       );
     });
+
+    it('shows the current user first if they are an assignee', async () => {
+      showDropdown();
+
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')[0].options[0]).toMatchObject({
+        text: currentUserResponse.data.currentUser.name,
+      });
+    });
   });
 
   describe('when user is logged in and there are no assignees', () => {
@@ -275,6 +285,22 @@ describe('WorkItemAssignees component', () => {
       await nextTick();
 
       expect(findSidebarDropdownWidget().props('itemValue')).toHaveLength(2);
+    });
+
+    it('shows current user first if they are an assignee', async () => {
+      showDropdown();
+      const { currentUser } = currentUserResponse.data;
+
+      await waitForPromises();
+
+      findSidebarDropdownWidget().vm.$emit('updateValue', [
+        'gid://gitlab/User/5',
+        currentUser.id,
+        'gid://gitlab/User/6',
+      ]);
+      await nextTick();
+
+      expect(findAssigneeList().props('users')[0].id).toBe(currentUser.id);
     });
   });
 

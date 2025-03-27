@@ -494,7 +494,6 @@ export default {
             <slot name="note-header-info"></slot>
           </template>
           <span v-if="commit" v-safe-html="actionText"></span>
-          <span v-else-if="note.created_at" class="gl-hidden sm:gl-inline">&middot;</span>
         </note-header>
         <note-actions
           :author="author"

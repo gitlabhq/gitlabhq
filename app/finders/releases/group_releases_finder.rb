@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Releases
   ##
   # The GroupReleasesFinder does not support all the options of ReleasesFinder

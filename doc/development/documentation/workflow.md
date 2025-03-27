@@ -393,7 +393,7 @@ on issues and merge requests:
   - `~"type::feature"`
   - `~"type::maintenance"` with `~"maintenance::refactor"`
 - A stage and group label. For example:
-  - `~devops::create` 
+  - `~devops::create`
   - `~group::source code`
 - The `~documentation` specialization label.
 - The `~Technical Writing` team label.
@@ -433,7 +433,7 @@ Add one of the following labels to an issue or merge request:
 For more information, see [work type classification](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification).
 
 The majority of documentation work uses the `type::maintenance` label.
-You must also apply one these subtype labels to further classify the type of maintenance work:
+You must also apply one of these subtype labels to further classify the type of maintenance work:
 
 - `maintenance::refactor`: Edits and improvements of existing documentation.
 - `maintenance::workflow`: Documentation changes that are not visible to readers, like linting and tooling updates, and metadata changes.
@@ -450,7 +450,7 @@ to describe the status of their work in an issue or merge request:
 - `tw::finished`
 
 The technical writer who authors content usually adds the `tw::doing` label,
-and the technical writer who does the review usually adds the`tw::finished` label.
+and the technical writer who does the review usually adds the `tw::finished` label.
 For content submissions from community contributors,
 the technical writer would add both labels as part of their review.
 
@@ -460,7 +460,7 @@ The workflow is:
 1. The writer adds the `tw::doing` label while actively working.
    - If the writer stops work for more than a week,
      they remove the `tw::doing` label.
-   - Whenever work restarts, the writer adds the `tw::doing` label.
+   - Whenever work restarts, the writer adds the `tw::doing` label again.
 1. When work is complete on the issue or merge request, a technical writer (typically the
    reviewer) adds the `tw::finished` label.
 1. The issue or merge request is **Closed** or **Merged**.

@@ -12,6 +12,8 @@ import {
   validPlanWithoutName,
   invalidPlanWithName,
   invalidPlanWithoutName,
+  validPlanFewChanges,
+  validPlanNoChanges,
 } from '../../components/terraform/mock_data';
 
 jest.mock('~/api.js');
@@ -108,7 +110,7 @@ describe('Terraform extension', () => {
     });
   });
 
-  describe('expanded data', () => {
+  describe('expanded data in expected order', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
     beforeEach(async () => {
       mockPollingApi(HTTP_STATUS_OK, plans, {});
@@ -122,8 +124,10 @@ describe('Terraform extension', () => {
       reportType                          | title                                                                     | subtitle                                                                                                                                                  | logLink                            | lineNumber
       ${'a valid report with name'}       | ${`The job ${validPlanWithName.job_name} generated a report.`}            | ${`Reported Resource Changes: ${validPlanWithName.create} to add, ${validPlanWithName.update} to change, ${validPlanWithName.delete} to delete`}          | ${validPlanWithName.job_path}      | ${0}
       ${'a valid report without name'}    | ${'A Terraform report was generated in your pipelines.'}                  | ${`Reported Resource Changes: ${validPlanWithoutName.create} to add, ${validPlanWithoutName.update} to change, ${validPlanWithoutName.delete} to delete`} | ${validPlanWithoutName.job_path}   | ${1}
-      ${'an invalid report with name'}    | ${`The job ${invalidPlanWithName.job_name} failed to generate a report.`} | ${'Generating the report caused an error.'}                                                                                                               | ${invalidPlanWithName.job_path}    | ${2}
-      ${'an invalid report without name'} | ${'A Terraform report failed to generate.'}                               | ${'Generating the report caused an error.'}                                                                                                               | ${invalidPlanWithoutName.job_path} | ${3}
+      ${'a valid with few changes'}       | ${`The job ${validPlanFewChanges.job_name} generated a report.`}          | ${`Reported Resource Changes: ${validPlanFewChanges.create} to add, ${validPlanFewChanges.update} to change, ${validPlanFewChanges.delete} to delete`}    | ${validPlanFewChanges.job_path}    | ${2}
+      ${'a valid with no changes'}        | ${`The job ${validPlanNoChanges.job_name} generated a report.`}           | ${`Reported Resource Changes: ${validPlanNoChanges.create} to add, ${validPlanNoChanges.update} to change, ${validPlanNoChanges.delete} to delete`}       | ${validPlanNoChanges.job_path}     | ${3}
+      ${'an invalid report with name'}    | ${`The job ${invalidPlanWithName.job_name} failed to generate a report.`} | ${'Generating the report caused an error.'}                                                                                                               | ${invalidPlanWithName.job_path}    | ${4}
+      ${'an invalid report without name'} | ${'A Terraform report failed to generate.'}                               | ${'Generating the report caused an error.'}                                                                                                               | ${invalidPlanWithoutName.job_path} | ${5}
     `('renders correct text for $reportType', ({ title, subtitle, logLink, lineNumber }) => {
       it('renders correct text', () => {
         expect(findListItem(lineNumber).text()).toContain(title);
@@ -192,62 +196,6 @@ describe('Terraform extension', () => {
       it('does not make additional requests after poll is unsuccessful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
       });
-    });
-  });
-
-  describe('sorting', () => {
-    const failedPlan = {
-      create: '',
-      update: '',
-      delete: '',
-      job_name: 'Failed report',
-    };
-    const highChangesPlan = {
-      create: '5',
-      update: '3',
-      delete: '2',
-      job_name: 'High Changes',
-    };
-    const mediumChangesPlan = {
-      create: '1',
-      update: '2',
-      delete: '0',
-      job_name: 'Medium Changes',
-    };
-    const lowChangesPlan = {
-      create: '0',
-      update: '1',
-      delete: '0',
-      job_name: 'Low Changes',
-    };
-    const noChangesPlan = {
-      create: '0',
-      update: '0',
-      delete: '0',
-      job_name: 'No Changes',
-    };
-
-    it('sorts reports by total changes in descending order', async () => {
-      const reports = [
-        lowChangesPlan,
-        highChangesPlan,
-        failedPlan,
-        noChangesPlan,
-        mediumChangesPlan,
-      ];
-
-      mockPollingApi(HTTP_STATUS_OK, reports, {});
-      createComponent();
-      await waitForPromises();
-
-      wrapper.findByTestId('toggle-button').trigger('click');
-      await waitForPromises();
-
-      expect(findListItem(0).text()).toContain('Failed report');
-      expect(findListItem(1).text()).toContain('High Changes');
-      expect(findListItem(2).text()).toContain('Medium Changes');
-      expect(findListItem(3).text()).toContain('Low Changes');
-      expect(findListItem(4).text()).toContain('No Changes');
     });
   });
 });

@@ -407,9 +407,6 @@ merge_request_diff_commits:
 - merge_request_diff_id
 merge_request_diff_files:
 - merge_request_diff_id
-merge_request_diffs:
-- id
-- merge_request_id
 merge_request_metrics:
 - latest_closed_by_id
 - merge_request_id

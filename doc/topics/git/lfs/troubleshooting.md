@@ -151,3 +151,42 @@ To fix the problem, migrate the affected files, and push them up to the reposito
    git reflog expire --expire-unreachable=now --all
    git gc --prune=now
    ```
+
+## LFS objects not checked out automatically
+
+You might encounter an issue where Git LFS objects are not automatically checked out. When
+this happens, the files exist but contain pointer references instead of the actual content.
+If you open these files, instead of seeing the expected file content, you might see an LFS pointer
+that looks like this:
+
+```plaintext
+version https://git-lfs.github.com/spec/v1
+oid sha256:d276d250bc645e27a1b0ab82f7baeb01f7148df7e4816c4b333de12d580caa29
+size 2323563
+```
+
+This issue occurs when filenames do not match a rule in the `.gitattributes` file. LFS files are only
+checked out automatically when they match a rule in `.gitattributes`.
+
+In `git-lfs` v3.6.0, this behavior changed and [how LFS files are matched was optimized](https://github.com/git-lfs/git-lfs/pull/5699).
+
+GitLab Runner v17.7.0 upgraded the default helper image to use `git-lfs` v3.6.0.
+
+For consistent behavior across different operating systems with varying
+case sensitivity, adjust your `.gitattributes` file to match different capitalization patterns.
+
+For example, if you have LFS files named `image.jpg` and `wombat.JPG`, use case-insensitive regular
+expressions in your `.gitattributes` file:
+
+```plaintext
+*.[jJ][pP][gG] filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][eE][gG] filter=lfs diff=lfs merge=lfs -text
+```
+
+If you work exclusively on case-sensitive filesystems, such as most
+Linux distributions, you can use simpler patterns. For example:
+
+```plaintext
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+```

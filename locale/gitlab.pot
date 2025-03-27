@@ -5395,6 +5395,9 @@ msgstr ""
 msgid "Admin|Subscription"
 msgstr ""
 
+msgid "Admin|Targeted messages"
+msgstr ""
+
 msgid "Admin|The number of max seats in your namespace exceeds the number of seats in your subscription. On %{qrtlyDate}, quarterly reconciliation occurs and you are automatically billed a prorated amount for the overage. No action is needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice. For more information about the timing of the invoicing process, view the documentation."
 msgstr ""
 
@@ -17439,9 +17442,6 @@ msgstr ""
 msgid "Create a new repository"
 msgstr ""
 
-msgid "Create a new targeted message"
-msgstr ""
-
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -22462,37 +22462,37 @@ msgstr ""
 msgid "Duration (min)"
 msgstr ""
 
-msgid "Duration|1 day"
+msgid "Duration|%s day"
 msgid_plural "Duration|%s days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Duration|1 hour"
+msgid "Duration|%s hour"
 msgid_plural "Duration|%s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Duration|1 minute"
+msgid "Duration|%s minute"
 msgid_plural "Duration|%s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Duration|1 month"
+msgid "Duration|%s month"
 msgid_plural "Duration|%s months"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Duration|1 second"
+msgid "Duration|%s second"
 msgid_plural "Duration|%s seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Duration|1 week"
+msgid "Duration|%s week"
 msgid_plural "Duration|%s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Duration|1 year"
+msgid "Duration|%s year"
 msgid_plural "Duration|%s years"
 msgstr[0] ""
 msgstr[1] ""
@@ -24886,9 +24886,6 @@ msgstr ""
 msgid "Failed to assign a user because no user was found."
 msgstr ""
 
-msgid "Failed to assign namespaces due to error processing CSV: %{error_message}"
-msgstr ""
-
 msgid "Failed to assign the framework to the project"
 msgstr ""
 
@@ -24941,9 +24938,6 @@ msgid "Failed to create repository"
 msgstr ""
 
 msgid "Failed to create resources"
-msgstr ""
-
-msgid "Failed to create targeted message."
 msgstr ""
 
 msgid "Failed to create wiki"
@@ -38881,9 +38875,6 @@ msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
-msgstr ""
-
-msgid "New targeted message"
 msgstr ""
 
 msgid "New test case"
@@ -54850,9 +54841,6 @@ msgstr ""
 msgid "Select a role"
 msgstr ""
 
-msgid "Select a target type"
-msgstr ""
-
 msgid "Select a template repository"
 msgstr ""
 
@@ -58525,9 +58513,6 @@ msgstr ""
 msgid "Target Path"
 msgstr ""
 
-msgid "Target Type"
-msgstr ""
-
 msgid "Target branch"
 msgstr ""
 
@@ -58555,7 +58540,43 @@ msgstr ""
 msgid "Targeted Messages"
 msgstr ""
 
-msgid "Targeted message was successfully created."
+msgid "Targeted message"
+msgstr ""
+
+msgid "TargetedMessages|Create a new targeted message"
+msgstr ""
+
+msgid "TargetedMessages|Edit targeted message"
+msgstr ""
+
+msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
+msgid "TargetedMessages|Failed to create targeted message: %{error_message}"
+msgstr ""
+
+msgid "TargetedMessages|Failed to update targeted message: %{error_message}"
+msgstr ""
+
+msgid "TargetedMessages|New targeted message"
+msgstr ""
+
+msgid "TargetedMessages|Select a target type"
+msgstr ""
+
+msgid "TargetedMessages|Target Type"
+msgstr ""
+
+msgid "TargetedMessages|Targeted message was successfully created."
+msgstr ""
+
+msgid "TargetedMessages|Targeted message was successfully updated."
+msgstr ""
+
+msgid "TargetedMessages|The following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
+msgstr ""
+
+msgid "TargetedMessages|Upload a csv file for targeted namespaces"
 msgstr ""
 
 msgid "Task"
@@ -59280,9 +59301,6 @@ msgid "The following items will NOT be exported:"
 msgstr ""
 
 msgid "The following items will be exported:"
-msgstr ""
-
-msgid "The following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
 msgstr ""
 
 msgid "The following personal access token was revoked by an administrator, %{username}."
@@ -61040,72 +61058,72 @@ msgstr ""
 msgid "TimeTracking|View time tracking report"
 msgstr ""
 
-msgid "Timeago|1 day ago"
+msgid "Timeago|%s day ago"
 msgid_plural "Timeago|%s days ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 day remaining"
+msgid "Timeago|%s day remaining"
 msgid_plural "Timeago|%s days remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 hour ago"
+msgid "Timeago|%s hour ago"
 msgid_plural "Timeago|%s hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 hour remaining"
+msgid "Timeago|%s hour remaining"
 msgid_plural "Timeago|%s hours remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 minute ago"
+msgid "Timeago|%s minute ago"
 msgid_plural "Timeago|%s minutes ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 minute remaining"
+msgid "Timeago|%s minute remaining"
 msgid_plural "Timeago|%s minutes remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 month ago"
+msgid "Timeago|%s month ago"
 msgid_plural "Timeago|%s months ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 month remaining"
+msgid "Timeago|%s month remaining"
 msgid_plural "Timeago|%s months remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 second ago"
+msgid "Timeago|%s second ago"
 msgid_plural "Timeago|%s seconds ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 second remaining"
+msgid "Timeago|%s second remaining"
 msgid_plural "Timeago|%s seconds remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 week ago"
+msgid "Timeago|%s week ago"
 msgid_plural "Timeago|%s weeks ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 week remaining"
+msgid "Timeago|%s week remaining"
 msgid_plural "Timeago|%s weeks remaining"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 year ago"
+msgid "Timeago|%s year ago"
 msgid_plural "Timeago|%s years ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|1 year remaining"
+msgid "Timeago|%s year remaining"
 msgid_plural "Timeago|%s years remaining"
 msgstr[0] ""
 msgstr[1] ""
@@ -61113,37 +61131,37 @@ msgstr[1] ""
 msgid "Timeago|Past due"
 msgstr ""
 
-msgid "Timeago|in 1 day"
+msgid "Timeago|in %s day"
 msgid_plural "Timeago|in %s days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|in 1 hour"
+msgid "Timeago|in %s hour"
 msgid_plural "Timeago|in %s hours"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|in 1 minute"
+msgid "Timeago|in %s minute"
 msgid_plural "Timeago|in %s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|in 1 month"
+msgid "Timeago|in %s month"
 msgid_plural "Timeago|in %s months"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|in 1 second"
+msgid "Timeago|in %s second"
 msgid_plural "Timeago|in %s seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|in 1 week"
+msgid "Timeago|in %s week"
 msgid_plural "Timeago|in %s weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Timeago|in 1 year"
+msgid "Timeago|in %s year"
 msgid_plural "Timeago|in %s years"
 msgstr[0] ""
 msgstr[1] ""
@@ -63260,9 +63278,6 @@ msgid "Upload New File"
 msgstr ""
 
 msgid "Upload a certificate for your domain with all intermediates"
-msgstr ""
-
-msgid "Upload a csv file for targeted namespaces"
 msgstr ""
 
 msgid "Upload a private key for your certificate"
@@ -65788,6 +65803,9 @@ msgid "Vulnerability|What is EPSS?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
+msgstr ""
+
+msgid "Vulnerability|circular dependency"
 msgstr ""
 
 msgid "Vulnerability|code_flow"

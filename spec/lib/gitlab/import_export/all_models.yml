@@ -767,6 +767,7 @@ project:
 - error_tracking_setting
 - gitlab_slack_application_integration
 - github_integration
+- amazon_q_integration
 - git_guardian_integration
 - protected_environments
 - mirror_user

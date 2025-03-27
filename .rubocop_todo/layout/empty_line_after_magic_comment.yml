@@ -2,15 +2,6 @@
 # Cop supports --autocorrect.
 Layout/EmptyLineAfterMagicComment:
   Exclude:
-    - 'app/controllers/admin/instance_review_controller.rb'
-    - 'app/controllers/groups/registry/repositories_controller.rb'
-    - 'app/finders/ci/auth_job_finder.rb'
-    - 'app/finders/clusters/knative_services_finder.rb'
-    - 'app/finders/keys_finder.rb'
-    - 'app/finders/packages/package_file_finder.rb'
-    - 'app/finders/packages/package_finder.rb'
-    - 'app/finders/packages/tags_finder.rb'
-    - 'app/finders/releases/group_releases_finder.rb'
     - 'app/graphql/resolvers/commit_pipelines_resolver.rb'
     - 'app/graphql/resolvers/group_packages_resolver.rb'
     - 'app/graphql/resolvers/merge_request_pipelines_resolver.rb'

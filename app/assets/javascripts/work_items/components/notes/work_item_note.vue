@@ -378,9 +378,7 @@ export default {
             :note-url="noteUrl"
             :is-internal-note="note.internal"
             :email-participant="externalAuthor"
-          >
-            <span v-if="note.createdAt" class="gl-hidden sm:gl-inline">&middot;</span>
-          </note-header>
+          />
           <div class="gl-inline-flex">
             <note-actions
               v-if="!isEditing"

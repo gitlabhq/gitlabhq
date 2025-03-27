@@ -9,6 +9,11 @@ class MergeRequestDiff < ApplicationRecord
   include BulkInsertableAssociations
   include ShaAttribute
 
+  ignore_columns %i[
+    id_convert_to_bigint
+    merge_request_id_convert_to_bigint
+  ], remove_with: '18.3', remove_after: '2025-07-17'
+
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
   BATCH_SIZE = 1000

@@ -54,6 +54,16 @@ module Gitlab
       ewm
       external_wiki
       git_guardian
+      github
+      gitlab_slack_application
+      google_play
+      hangouts_chat
+      harbor
+      irker
+      jenkins
+      jira
+      jira_cloud_app
+      matrix
       mattermost
       mattermost_slash_commands
       microsoft_teams

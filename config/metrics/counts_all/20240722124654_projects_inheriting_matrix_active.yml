@@ -8,6 +8,9 @@ milestone: "17.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160223
 time_frame: all
 data_source: database
+instrumentation_class: ActiveProjectsInheritingIntegrationsMetric
+options:
+  type: matrix
 data_category: optional
 performance_indicator_type: []
 tiers:

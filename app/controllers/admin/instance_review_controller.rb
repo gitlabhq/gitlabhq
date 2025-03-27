@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Admin::InstanceReviewController < Admin::ApplicationController
   feature_category :devops_reports
 

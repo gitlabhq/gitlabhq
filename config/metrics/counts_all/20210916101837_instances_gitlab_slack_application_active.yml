@@ -10,6 +10,9 @@ milestone: "14.3"
 introduced_by_url: https://gilab.com/gitlab-org/gitlab/-/merge_requests/70496
 time_frame: all
 data_source: database
+instrumentation_class: ActiveInstanceIntegrationsMetric
+options:
+  type: gitlab_slack_application
 data_category: optional
 performance_indicator_type: []
 tiers:

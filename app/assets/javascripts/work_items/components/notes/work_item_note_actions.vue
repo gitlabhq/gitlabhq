@@ -212,7 +212,7 @@ export default {
       v-if="isWorkItemAuthor"
       v-gl-tooltip
       :title="displayAuthorBadgeText"
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="note-hidden-xs gl-mr-3"
       data-testid="author-badge"
     >
       {{ __('Author') }}
@@ -220,7 +220,7 @@ export default {
     <user-access-role-badge
       v-if="maxAccessLevelOfAuthor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="note-hidden-xs gl-mr-3"
       :title="displayMemberBadgeText"
       data-testid="max-access-level-badge"
     >
@@ -229,7 +229,7 @@ export default {
     <user-access-role-badge
       v-else-if="isAuthorContributor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="note-hidden-xs gl-mr-3"
       :title="displayContributorBadgeText"
       data-testid="contributor-badge"
     >
