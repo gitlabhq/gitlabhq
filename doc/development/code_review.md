@@ -269,7 +269,7 @@ See the [test engineering process](https://handbook.gitlab.com/handbook/engineer
 1. You have included changelog trailers, or you have decided that they are not needed.
    - [Does this MR need a changelog?](changelog.md#what-warrants-a-changelog-entry)
 1. You have added/updated documentation or decided that documentation changes are unnecessary for this MR.
-   - [Is documentation required?](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#documentation-for-a-product-change)
+   - [Is documentation required?](documentation/workflow.md#documentation-for-a-product-change)
 
 ##### Security
 

@@ -19,7 +19,7 @@ title: Eclipse troubleshooting
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/?sort=created_date&state=opened&first_page_size=100)
 in the Eclipse plugin's project. If an issue matches your problem, update the issue.
-If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/new).
+If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/new) with the [required information for support](#required-information-for-support).
 
 ## Review the Error Log
 
@@ -44,6 +44,32 @@ The debug logs are available in the `language_server.log` file. To view this fil
 
 - Go to the directory `/Users/<user>/eclipse/<eclipse-version>/Eclipse.app/Contents/MacOS/.gitlab_plugin`, replacing `<user>` and `<eclipse-version>` with the appropriate values.
 - Open the [Error logs](#review-the-error-log). Search for the log `Language server logs saved to: <file>.` where `<file>` is the absolute path to the `language_server.log` file.
+
+## Required information for support
+
+When creating a support request, provide this information:
+
+1. Your current GitLab for Eclipse plugin version.
+   1. Open the `About Eclipse IDE` popup window.
+      - On Windows, in your IDE, select **Help > About Eclipse IDE**.
+      - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
+   1. On the dialog, select **Installation details**.
+   1. Locate **GitLab for Eclipse** and copy the **Version** value.
+
+1. Your Eclipse version.
+   1. Open the `About Eclipse IDE` popup window.
+      - On Windows, in your IDE, select **Help > About Eclipse IDE**.
+      - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
+
+1. Your operating system.
+1. Are you using `gitlab.com` or a self-managed instance?
+1. Are you using a proxy?
+1. Are you using a self-signed certificate?
+1. The [workspace logs](#locate-the-workspace-log-file).
+1. The [Language Server debug logs](#enable-gitlab-language-server-debug-logs).
+1. If applicable, a video or a screenshot of the issue.
+1. If applicable, the steps to reproduce the issue.
+1. If applicable, the attempted steps to resolve the issue.
 
 ## Certificate errors
 

@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/511506
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180331
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517917
 milestone: '17.9'
-type: development
+type: beta
 group: group::source code
-default_enabled: false
+default_enabled: true
