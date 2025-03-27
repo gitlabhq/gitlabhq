@@ -28,6 +28,12 @@ import {
   getNextPageParams,
   getPreviousPageParams,
 } from '~/packages_and_registries/shared/utils';
+import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
+import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
+import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import { smoothScrollTop } from '~/behaviors/smooth_scroll';
+
+const PAGE_SIZE_KEY = 'packages_page_size';
 
 export default {
   components: {
@@ -41,6 +47,7 @@ export default {
     PackageSearch,
     PersistedPagination,
     DeletePackages,
+    PageSizeSelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -53,6 +60,7 @@ export default {
       filters: {},
       isDeleteInProgress: false,
       pageParams: {},
+      pageSize: GRAPHQL_PAGE_SIZE,
       groupSettings: {},
     };
   },
@@ -101,7 +109,7 @@ export default {
         fullPath: this.fullPath,
         sort: this.isGroupPage ? undefined : this.sort,
         groupSort: this.isGroupPage ? this.sort : undefined,
-        first: GRAPHQL_PAGE_SIZE,
+        first: this.pageSize,
         ...this.packageParams,
         ...this.pageParams,
       };
@@ -160,6 +168,14 @@ export default {
       ];
     },
   },
+  created() {
+    const localStoragePageSize = getStorageValue(PAGE_SIZE_KEY);
+    if (localStoragePageSize.exists) {
+      this.pageSize = localStoragePageSize.value;
+    } else {
+      this.savePageSizeToLocalStorage(this.pageSize);
+    }
+  },
   mounted() {
     this.checkDeleteAlert();
   },
@@ -173,16 +189,35 @@ export default {
         historyReplaceState(cleanUrl);
       }
     },
+    handlePageSizeChange(value) {
+      this.pageSize = value;
+      this.savePageSizeToLocalStorage(value);
+      this.pageParams = {
+        after: undefined,
+        before: undefined,
+      };
+
+      const url = mergeUrlParams(this.pageParams, window.location.search, { spreadArrays: true });
+      updateHistory({
+        url,
+      });
+      smoothScrollTop();
+    },
     handleSearchUpdate({ sort, filters, pageInfo }) {
-      this.pageParams = getPageParams(pageInfo, GRAPHQL_PAGE_SIZE);
+      this.pageParams = getPageParams(pageInfo, this.pageSize);
       this.sort = sort;
       this.filters = { ...filters };
     },
     fetchNextPage() {
-      this.pageParams = getNextPageParams(this.pageInfo.endCursor, GRAPHQL_PAGE_SIZE);
+      this.pageParams = getNextPageParams(this.pageInfo.endCursor, this.pageSize);
+      smoothScrollTop();
     },
     fetchPreviousPage() {
-      this.pageParams = getPreviousPageParams(this.pageInfo.startCursor, GRAPHQL_PAGE_SIZE);
+      this.pageParams = getPreviousPageParams(this.pageInfo.startCursor, this.pageSize);
+      smoothScrollTop();
+    },
+    savePageSizeToLocalStorage(value) {
+      saveStorageValue(PAGE_SIZE_KEY, value);
     },
   },
   i18n: {
@@ -258,6 +293,12 @@ export default {
         :pagination="pageInfo"
         @prev="fetchPreviousPage"
         @next="fetchNextPage"
+      />
+      <page-size-selector
+        v-if="packagesCount"
+        :value="pageSize"
+        class="gl-relative gl-right-0 md:gl-absolute"
+        @input="handlePageSizeChange"
       />
     </div>
   </div>

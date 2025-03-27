@@ -61489,9 +61489,6 @@ msgstr ""
 msgid "Todos|Design"
 msgstr ""
 
-msgid "Todos|Directly addressed"
-msgstr ""
-
 msgid "Todos|Done"
 msgstr ""
 

@@ -100,6 +100,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
       'dast_scanner_profiles_builds.project_id', # LFK already present on dast_scanner_profiles and will cascade delete
       'vulnerability_finding_links.project_id', # LFK already present on vulnerability_occurrence with cascade delete
+      'vulnerability_occurrence_identifiers.project_id', # LFK present on vulnerability_occurrence with cascade delete
       'secret_detection_token_statuses.project_id',
       # LFK already present on vulnerability_occurrence with cascade delete.
       'ldap_group_links.group_id',

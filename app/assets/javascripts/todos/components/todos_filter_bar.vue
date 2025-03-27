@@ -117,7 +117,7 @@ export const ACTION_TYPES = [
   },
   {
     id: '2',
-    value: TODO_ACTION_TYPE_MENTIONED,
+    value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
     title: s__('Todos|Mentioned'),
   },
   {
@@ -139,11 +139,6 @@ export const ACTION_TYPES = [
     id: '6',
     value: TODO_ACTION_TYPE_UNMERGEABLE,
     title: s__('Todos|Unmergeable'),
-  },
-  {
-    id: '7',
-    value: TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
-    title: s__('Todos|Directly addressed'),
   },
   {
     id: '8',
@@ -242,7 +237,11 @@ const FILTERS = [
       return value;
     },
     toUrlValueResolver: (value) => {
-      const { id } = ACTION_TYPES.find((option) => option.value === value);
+      const { id } = ACTION_TYPES.find((option) => {
+        // For combined values like "mentioned;directly_addressed" use their first value's id for the URL
+        const optionMainValue = option.value.split(';')[0];
+        return optionMainValue === value;
+      });
       return id;
     },
   },
@@ -341,7 +340,7 @@ export default {
       return Object.fromEntries(
         FILTERS.map(({ apiParam, tokenType }) => {
           const selectedValue = this.filterTokens.find((token) => token.type === tokenType);
-          return [apiParam, selectedValue ? [selectedValue.value.data] : []];
+          return [apiParam, selectedValue ? selectedValue.value.data.split(';') : []];
         }),
       );
     },

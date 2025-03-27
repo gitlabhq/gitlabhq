@@ -24918,7 +24918,8 @@ CREATE TABLE vulnerability_occurrence_identifiers (
     updated_at timestamp with time zone NOT NULL,
     occurrence_id bigint NOT NULL,
     identifier_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_67fe772bae CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_occurrence_identifiers_id_seq
@@ -37513,6 +37514,8 @@ CREATE INDEX index_vulnerability_merge_request_links_on_merge_request_id ON vuln
 CREATE INDEX index_vulnerability_merge_request_links_on_project_id ON vulnerability_merge_request_links USING btree (project_id);
 
 CREATE INDEX index_vulnerability_occurrence_identifiers_on_identifier_id ON vulnerability_occurrence_identifiers USING btree (identifier_id);
+
+CREATE INDEX index_vulnerability_occurrence_identifiers_on_project_id ON vulnerability_occurrence_identifiers USING btree (project_id);
 
 CREATE UNIQUE INDEX index_vulnerability_occurrence_identifiers_on_unique_keys ON vulnerability_occurrence_identifiers USING btree (occurrence_id, identifier_id);
 

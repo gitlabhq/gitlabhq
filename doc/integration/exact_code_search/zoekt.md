@@ -72,13 +72,39 @@ Prerequisites:
 - You must have administrator access to the instance.
 
 Indexing performance depends on the CPU and memory limits on the Zoekt indexer nodes.
-To check indexing status, in the Rails console, run the following command:
+To check indexing status:
 
-```ruby
-Search::Zoekt::Index.group(:state).count
-Search::Zoekt::Repository.group(:state).count
-Search::Zoekt::Task.group(:state).count
-```
+   {{< tabs >}}
+
+   {{< tab title="GitLab 17.10 and later" >}}
+
+   Run this Rake task:
+
+   ```shell
+   gitlab-rake gitlab:zoekt:info
+   ```
+
+   To have the data refresh automatically every 10 seconds, run this task instead:
+
+   ```shell
+   gitlab-rake "gitlab:zoekt:info[10]"
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="GitLab 17.9 and earlier" >}}
+
+   In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run these commands:
+
+   ```ruby
+   Search::Zoekt::Index.group(:state).count
+   Search::Zoekt::Repository.group(:state).count
+   Search::Zoekt::Task.group(:state).count
+   ```
+
+  {{< /tab >}}
+
+   {{< /tabs >}}
 
 ## Delete offline nodes automatically
 
@@ -225,7 +251,7 @@ To resolve this issue, ensure Silent Mode is disabled.
 In `application_json.log`, you might get the following error:
 
 ```plaintext
-connections to all backends failing; last error: UNKNOWN: ipv4:1.2.3.4:5678: Trying to connect an http1.x server 
+connections to all backends failing; last error: UNKNOWN: ipv4:1.2.3.4:5678: Trying to connect an http1.x server
 ```
 
 To resolve this issue, check if you're using any proxies.
