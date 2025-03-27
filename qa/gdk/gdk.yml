@@ -45,4 +45,4 @@ tracer:
     enabled: false
 # https://gitlab.com/gitlab-org/gitlab/-/issues/471172
 gitlab_http_router:
-  enabled: true
+  enabled: false

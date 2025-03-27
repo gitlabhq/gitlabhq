@@ -202,10 +202,8 @@ class WebHookService
   def response_category(response)
     if response.success? || response.redirection?
       :ok
-    elsif response.internal_server_error?
-      :error
     else
-      :failed
+      :error
     end
   end
 

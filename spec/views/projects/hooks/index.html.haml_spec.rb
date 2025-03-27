@@ -19,9 +19,9 @@ RSpec.describe 'projects/hooks/index' do
 
     expect(rendered).to have_css('.gl-heading-2', text: _('Webhooks'))
     expect(rendered).to have_text('Webhooks')
-    expect(rendered).not_to have_css('.gl-badge', text: _('Disabled'))
-    expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Failed to connect'))
-    expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Fails to connect'))
+    expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Rate limited'))
+    expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Disabled'))
+    expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Temporarily disabled'))
   end
 
   context 'webhook is rate limited' do
@@ -29,10 +29,10 @@ RSpec.describe 'projects/hooks/index' do
       allow(existing_hook).to receive(:rate_limited?).and_return(true)
     end
 
-    it 'renders "Disabled" badge' do
+    it 'renders "Rate limited" badge' do
       render
 
-      expect(rendered).to have_css('.gl-badge', text: _('Disabled'))
+      expect(rendered).to have_css('.gl-badge', text: _('Webhooks|Rate limited'))
     end
   end
 
@@ -41,10 +41,10 @@ RSpec.describe 'projects/hooks/index' do
       allow(existing_hook).to receive(:permanently_disabled?).and_return(true)
     end
 
-    it 'renders "Failed to connect" badge' do
+    it 'renders "Disabled" badge' do
       render
 
-      expect(rendered).to have_css('.gl-badge', text: s_('Webhooks|Failed to connect'))
+      expect(rendered).to have_css('.gl-badge', text: s_('Webhooks|Disabled'))
     end
   end
 
@@ -53,10 +53,10 @@ RSpec.describe 'projects/hooks/index' do
       allow(existing_hook).to receive(:temporarily_disabled?).and_return(true)
     end
 
-    it 'renders "Fails to connect" badge' do
+    it 'renders "Temporarily disabled" badge' do
       render
 
-      expect(rendered).to have_css('.gl-badge', text: s_('Webhooks|Fails to connect'))
+      expect(rendered).to have_css('.gl-badge', text: s_('Webhooks|Temporarily disabled'))
     end
   end
 end

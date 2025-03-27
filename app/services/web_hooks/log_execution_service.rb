@@ -52,10 +52,10 @@ module WebHooks
         case response_category
         when :ok
           hook.enable!
-        when :error
+        # TODO remove handling of `:failed` as part of
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/525446
+        when :error, :failed
           hook.backoff!
-        when :failed
-          hook.failed!
         end
 
         hook.parent.update_last_webhook_failure(hook) if hook.parent

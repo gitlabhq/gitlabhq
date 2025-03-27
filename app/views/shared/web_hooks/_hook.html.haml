@@ -11,11 +11,11 @@
         = hook.url
 
         - if hook.rate_limited?
-          = gl_badge_tag(_('Disabled'), variant: :danger)
+          = gl_badge_tag(_('Webhooks|Rate limited'), variant: :danger)
         - elsif hook.permanently_disabled?
-          = gl_badge_tag(s_('Webhooks|Failed to connect'), variant: :danger)
+          = gl_badge_tag(s_('Webhooks|Disabled'), variant: :danger)
         - elsif hook.temporarily_disabled?
-          = gl_badge_tag(s_('Webhooks|Fails to connect'), variant: :warning)
+          = gl_badge_tag(s_('Webhooks|Temporarily disabled'), variant: :warning)
 
       %div
         - hook.class.triggers.each_value do |trigger|

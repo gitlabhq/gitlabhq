@@ -582,8 +582,10 @@ RSpec.describe API::API, feature_category: :system_access do
   end
 
   describe 'Grape::Exceptions::Base handler' do
+    let_it_be(:user) { create(:user) }
+
     it 'returns 400 on JSON parse errors' do
-      post api('/projects'),
+      post api('/projects', user),
         params: '{"test":"random_\$escaped/symbols\;here"}',
         headers: { 'content-type' => 'application/json' }
 

@@ -66072,6 +66072,9 @@ msgstr ""
 msgid "Webhooks|Description (optional)"
 msgstr ""
 
+msgid "Webhooks|Disabled"
+msgstr ""
+
 msgid "Webhooks|Do not show sensitive data such as tokens in the UI."
 msgstr ""
 
@@ -66082,12 +66085,6 @@ msgid "Webhooks|Edit system hook"
 msgstr ""
 
 msgid "Webhooks|Enable SSL verification"
-msgstr ""
-
-msgid "Webhooks|Failed to connect"
-msgstr ""
-
-msgid "Webhooks|Fails to connect"
 msgstr ""
 
 msgid "Webhooks|Feature flag events"
@@ -66150,6 +66147,9 @@ msgstr ""
 msgid "Webhooks|Project or group access token events"
 msgstr ""
 
+msgid "Webhooks|Rate limited"
+msgstr ""
+
 msgid "Webhooks|Regular expression"
 msgstr ""
 
@@ -66189,6 +66189,9 @@ msgstr ""
 msgid "Webhooks|Tag push events"
 msgstr ""
 
+msgid "Webhooks|Temporarily disabled"
+msgstr ""
+
 msgid "Webhooks|The URL must be percent-encoded if it contains one or more special characters."
 msgstr ""
 
@@ -66198,10 +66201,10 @@ msgstr ""
 msgid "Webhooks|The secret token is cleared on save unless it is updated."
 msgstr ""
 
-msgid "Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end} and is scheduled to retry in %{retry_time}. To re-enable the webhook, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
+msgid "Webhooks|The webhook has %{help_link_start}failed%{help_link_end} %{failure_count} times consecutively and has been disabled. To re-enable the webhook, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
 msgstr ""
 
-msgid "Webhooks|The webhook failed to connect and is now disabled. To re-enable the webhook, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
+msgid "Webhooks|The webhook has %{help_link_start}failed%{help_link_end} %{failure_count} times consecutively and is disabled for %{retry_time}. To re-enable the webhook earlier, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
 msgstr ""
 
 msgid "Webhooks|Trigger"
@@ -66219,13 +66222,10 @@ msgstr ""
 msgid "Webhooks|Webhook disabled"
 msgstr ""
 
-msgid "Webhooks|Webhook failed to connect"
-msgstr ""
-
-msgid "Webhooks|Webhook fails to connect"
-msgstr ""
-
 msgid "Webhooks|Webhook rate limit has been reached"
+msgstr ""
+
+msgid "Webhooks|Webhook temporarily disabled"
 msgstr ""
 
 msgid "Webhooks|Webhooks for %{root_namespace} are now disabled because they've been triggered more than %{limit} times per minute. These webhooks are re-enabled automatically in the next minute."

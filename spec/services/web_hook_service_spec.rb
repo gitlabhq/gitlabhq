@@ -627,7 +627,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
                   response_status: 400
                 ).deep_stringify_keys
               ),
-              'failed',
+              'error',
               ''
             )
 

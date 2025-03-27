@@ -493,6 +493,34 @@ You might get an error that states
 
 This error occurs when an unknown error occurs in ReAct agent. Try your request again. If the problem persists, report the issue to the GitLab support team.
 
+## Feature not accessible or feature button not visible
+
+If a feature is not working or a feature button (for example, **`/troubleshoot`**) is not visible:
+
+1. Check if the feature's `unit_primitive` is listed in the [self-hosted models unit primitives list in the `gitlab-cloud-connector` gem configuration](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/blob/main/config/services/self_hosted_models.yml).
+
+   If the feature is missing from this file, that could be the reason it's not accessible.
+
+1. Optional. If the feature is not listed, you can verify this is the cause of the issue by setting the following in your GitLab instance:
+
+   ```shell
+   CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
+   ```
+
+   Then restart GitLab and check if the feature becomes accessible.
+
+   > **Important**: After troubleshooting, restart GitLab **without** this flag set.
+
+   {{< alert type="warning" >}}
+
+   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production.** Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
+
+   {{< /alert >}}
+
+1. To resolve this issue:
+   - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).
+   - If you're a customer, report the issue through [GitLab Support](https://about.gitlab.com/support/).
+
 ## Related topics
 
 - [GitLab Duo troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md)

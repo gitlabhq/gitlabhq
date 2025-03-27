@@ -76,7 +76,7 @@ module Glql
       return if error_type
 
       Gitlab::Metrics::GlqlSlis.record_apdex(
-        labels: labels,
+        labels: labels.merge(error_type: nil),
         success: duration_s <= query_urgency.duration
       )
     end

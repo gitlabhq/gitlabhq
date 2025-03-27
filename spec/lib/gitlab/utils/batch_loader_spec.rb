@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'batch-loader'
 
-RSpec.describe Gitlab::Utils::BatchLoader do
+RSpec.describe Gitlab::Utils::BatchLoader, feature_category: :shared do
   let(:stubbed_loader) do
     double( # rubocop:disable RSpec/VerifiedDoubles
       'Loader',
@@ -54,6 +54,7 @@ RSpec.describe Gitlab::Utils::BatchLoader do
 
       described_class.clear_key(:my_batch_name)
 
+      # .to_i triggers loading of lazy value
       test_module.lazy_method(4).to_i
       test_module.lazy_method_same_batch_key(5).to_i
       test_module.lazy_method_other_batch_key(6).to_i
@@ -64,6 +65,7 @@ RSpec.describe Gitlab::Utils::BatchLoader do
     end
 
     it 'clears loaded values which match the specified batch key' do
+      # .to_i triggers loading of lazy value
       test_module.lazy_method(1).to_i
       test_module.lazy_method_same_batch_key(2).to_i
       test_module.lazy_method_other_batch_key(3).to_i

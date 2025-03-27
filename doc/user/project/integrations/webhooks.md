@@ -481,6 +481,8 @@ To optimize your webhook receivers:
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) for project webhooks in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385902) for group webhooks in GitLab 15.10.
 - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
+- **Fails to connect** and **Failing to connect** [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to **Disabled** and **Temporarily disabled** in GitLab 17.11.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to become permanently disabled after 40 consecutive failures in GitLab 17.11.
 
 {{< /history >}}
 
@@ -500,24 +502,34 @@ To view auto-disabled webhooks:
 
 In the webhook list, auto-disabled webhooks display as:
 
-- **Fails to connect** for [temporarily disabled](#temporarily-disabled-webhooks) webhooks
-- **Failed to connect** for [permanently disabled](#permanently-disabled-webhooks) webhooks
+- **Temporarily disabled** for [temporarily disabled](#temporarily-disabled-webhooks) webhooks
+- **Disabled** for [permanently disabled](#permanently-disabled-webhooks) webhooks
 
-![Badges on failing webhooks](img/failed_badges_v14_9.png)
+![Badges on failing webhooks](img/failed_badges_v17_11.png)
 
 #### Temporarily disabled webhooks
 
-Webhooks are temporarily disabled if they:
+Webhooks are temporarily disabled if they fail four consecutive times.
+If webhooks fail 40 consecutive times, they become [permanently disabled](#permanently-disabled-webhooks).
 
-- Return response codes in the `5xx` range.
-- Experience a [timeout](../../gitlab_com/_index.md#webhooks).
-- Encounter other HTTP errors.
+Failure occurs when:
 
-These webhooks are initially disabled for one minute, with the duration extending on subsequent failures up to 24 hours.
+- The [webhook receiver](#webhook-receiver-requirements) returns a response code in the `4xx` or `5xx` range.
+- The webhook experiences a [timeout](../../gitlab_com/_index.md#webhooks) when attempting to connect to the webhook receiver.
+- The webhook encounters other HTTP errors.
+
+Temporarily disabled webhooks are initially disabled for one minute,
+with the duration extending on subsequent failures up to 24 hours.
+After this period has elapsed, these webhooks are automatically re-enabled.
 
 #### Permanently disabled webhooks
 
-Webhooks are permanently disabled if they return response codes in the `4xx` range, indicating a misconfiguration.
+Webhooks are permanently disabled if they fail 40 consecutive times.
+Unlike [temporarily disabled webhooks](#temporarily-disabled-webhooks), these webhooks are not automatically re-enabled.
+
+Webhooks that were permanently disabled in GitLab 17.10 and earlier underwent a data migration.
+These webhooks might display four failures in [**Recent events**](#view-webhook-request-history)
+even though the UI might state they have 40 failures.
 
 #### Re-enable disabled webhooks
 
@@ -528,10 +540,7 @@ Webhooks are permanently disabled if they return response codes in the `4xx` ran
 
 {{< /history >}}
 
-To re-enable a temporarily or permanently disabled webhook:
-
-- [Send a test request](#test-a-webhook) to the webhook.
-
+To re-enable a disabled webhook, [send a test request](#test-a-webhook).
 The webhook is re-enabled if the test request returns a response code in the `2xx` range.
 
 ### Delivery headers

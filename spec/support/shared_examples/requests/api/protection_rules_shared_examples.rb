@@ -28,8 +28,8 @@ RSpec.shared_examples 'rejecting protection rules request when handling rule ids
   let(:url) { "/projects/#{project_id}/#{path}" }
 
   where(:project_id, :protection_rule_id, :status) do
-    ref(:valid_project_id) | 'invalid'                      | :bad_request
-    ref(:valid_project_id) | non_existing_record_id         | :not_found
+    ref(:valid_project_id) | 'invalid'                | :not_found
+    ref(:valid_project_id) | non_existing_record_id   | :not_found
     ref(:other_project_id) | ref(:valid_protection_rule_id) | :not_found
   end
 

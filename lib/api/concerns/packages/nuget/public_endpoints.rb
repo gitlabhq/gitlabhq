@@ -74,7 +74,7 @@ module API
                   documentation: { example: 'k813f89485474661234z7109cve5709eFFFFFFFF' }
                 requires :same_file_name, same_as: :file_name
               end
-              get '*file_name/*signature/*same_file_name', format: false, urgency: :low do
+              get '*file_name/*signature/*same_file_name', format: true, urgency: :low do
                 bad_request!('Missing checksum header') if headers['Symbolchecksum'].blank?
 
                 project_or_group_without_auth

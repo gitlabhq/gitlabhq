@@ -30,14 +30,12 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-In a GitLab Query Language (GLQL) [query](_index.md#query-syntax), a field is the leftmost part
-of the expression.
-In queries, fields follow the syntax of `<field> <operator> <value> and ...`,
+With GitLab Query Language (GLQL), fields are used to:
 
-In a [GLQL view](_index.md#glql-views), fields are included as a comma-separated list of tokens in
-the `fields:` option.
+- Filter the results returned from a [GLQL query](_index.md#query-syntax).
+- Control the details displayed in a [GLQL view](_index.md#presentation-syntax).
 
-This page lists fields available to use as filters when querying issues or work items.
+The following fields are available:
 
 ## Type
 

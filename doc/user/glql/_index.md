@@ -36,11 +36,6 @@ Use it to filter and embed content from anywhere in the platform, using familiar
 Embed queries in Markdown code blocks.
 The rendered output of this query is called a view.
 
-To test GLQL views:
-
-- On GitLab Self-Managed, ask your administrator to enable the `glql_integration` feature flag on your instance.
-- On GitLab.com, contact your account representative.
-
 Share your feedback in the [GLQL beta feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509791).
 
 ## Query syntax

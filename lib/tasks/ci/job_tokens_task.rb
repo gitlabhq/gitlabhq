@@ -120,7 +120,7 @@ module Tasks
 
         row << [
           "`#{route_path(route)}`",
-          route.description
+          route.options[:description]
         ]
 
         markdown_row(row)
@@ -155,15 +155,15 @@ module Tasks
       end
 
       def allowed_route?(route)
-        route.settings.dig(:authentication, :job_token_allowed)
+        route.options.dig(:settings, :authentication, :job_token_allowed)
       end
 
       def skip_route?(route)
-        route.settings.dig(:authorization, :skip_job_token_policies)
+        route.options.dig(:settings, :authorization, :skip_job_token_policies)
       end
 
       def policies_for(route)
-        Array(route.settings.dig(:authorization, :job_token_policies))
+        Array(route.options.dig(:settings, :authorization, :job_token_policies))
       end
     end
   end

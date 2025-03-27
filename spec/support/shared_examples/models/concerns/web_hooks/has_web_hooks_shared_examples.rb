@@ -19,7 +19,7 @@ RSpec.shared_examples 'something that has web-hooks' do
       context 'when there is a failed hook' do
         before do
           hook = create_hook
-          hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
+          hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1)
         end
 
         it { is_expected.to eq(true) }

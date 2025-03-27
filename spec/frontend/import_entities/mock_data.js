@@ -12,6 +12,10 @@ export const mockAvailableNamespaces = [
   mockGroupFactory('match1'),
   mockGroupFactory('unrelated'),
   mockGroupFactory('match2'),
+  mockGroupFactory('sortme'),
+  mockGroupFactory('sortmea'),
+  mockGroupFactory('sortmeaa'),
+  mockGroupFactory('sortmeab'),
 ];
 
 export const mockNamespacesResponse = {

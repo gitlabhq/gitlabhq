@@ -8,144 +8,64 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
     allow(logger).to receive(:info)
   end
 
-  shared_examples 'is tolerant of invalid records' do
-    specify do
-      hook.url = nil
+  describe '.executable and .disabled', :freeze_time do
+    include_context 'with webhook auto-disabling failure thresholds'
 
-      expect(hook).to be_invalid
-      run_expectation
-    end
-  end
-
-  describe '.executable/.disabled', :freeze_time do
-    let!(:not_executable) do
-      [
-        [4, nil], # Exceeded the grace period, set by #fail!
-        [4, 1.second.from_now], # Exceeded the grace period, set by #backoff!
-        [4, Time.current] # Exceeded the grace period, set by #backoff!, edge-case
-      ].map do |(recent_failures, disabled_until)|
-        create(
-          hook_factory,
-          **default_factory_arguments,
+    with_them do
+      let(:web_hook) do
+        factory_arguments = default_factory_arguments.merge(
           recent_failures: recent_failures,
           disabled_until: disabled_until
         )
-      end
-    end
 
-    let!(:executables) do
-      expired = 1.second.ago
-      borderline = Time.current
-      suspended = 1.second.from_now
-
-      [
-        # Most of these are impossible states, but are included for completeness
-        [0, nil],
-        [1, nil],
-        [3, nil],
-        [4, expired],
-
-        # Impossible cases:
-        [3, suspended],
-        [3, expired],
-        [3, borderline],
-        [1, suspended],
-        [1, expired],
-        [1, borderline],
-        [0, borderline],
-        [0, suspended],
-        [0, expired]
-      ].map do |(recent_failures, disabled_until)|
-        create(
-          hook_factory,
-          **default_factory_arguments,
-          recent_failures: recent_failures,
-          disabled_until: disabled_until
-        )
-      end
-    end
-
-    it 'finds the correct set of project hooks' do
-      expect(find_hooks.executable).to match_array executables
-      expect(find_hooks.executable).to all(be_executable)
-
-      # As expected, and consistent
-      expect(find_hooks.disabled).to match_array not_executable
-      expect(find_hooks.disabled.map(&:executable?)).not_to include(true)
-
-      # Nothing is missing
-      expect(find_hooks.executable.to_a + find_hooks.disabled.to_a).to match_array(find_hooks.to_a)
-    end
-
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(auto_disabling_web_hooks: false)
+        create(hook_factory, **factory_arguments)
       end
 
-      it 'causes all hooks to be considered executable' do
-        expect(find_hooks.executable.count).to eq(16)
+      it 'scopes correctly' do
+        if executable
+          expect(find_hooks.executable).to match_array([web_hook])
+          expect(find_hooks.disabled).to be_empty
+        else
+          expect(find_hooks.executable).to be_empty
+          expect(find_hooks.disabled).to match_array([web_hook])
+        end
       end
 
-      it 'causes no hooks to be considered disabled' do
-        expect(find_hooks.disabled).to be_empty
-      end
-    end
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
 
-    context 'when silent mode is enabled' do
-      before do
-        stub_application_setting(silent_mode_enabled: true)
-      end
-
-      it 'causes no hooks to be considered executable' do
-        expect(find_hooks.executable).to be_empty
+        it 'causes all hooks to be scoped as executable' do
+          expect(find_hooks.executable).to match_array([web_hook])
+          expect(find_hooks.disabled).to be_empty
+        end
       end
 
-      it 'causes all hooks to be considered disabled' do
-        expect(find_hooks.disabled.count).to eq(16)
+      context 'when silent mode is enabled' do
+        before do
+          stub_application_setting(silent_mode_enabled: true)
+        end
+
+        it 'causes all hooks to be scoped as disabled' do
+          expect(find_hooks.executable).to be_empty
+          expect(find_hooks.disabled).to match_array([web_hook])
+        end
       end
     end
   end
 
   describe '#executable?', :freeze_time do
-    let(:web_hook) { create(hook_factory, **default_factory_arguments) }
-
-    where(:recent_failures, :not_until, :executable) do
-      [
-        [0, :not_set, true],
-        [0, :past,    true],
-        [0, :future,  true],
-        [0, :now,     true],
-        [1, :not_set, true],
-        [1, :past,    true],
-        [1, :future,  true],
-        [3, :not_set, true],
-        [3, :past,    true],
-        [3, :future,  true],
-        [4, :not_set, false],
-        [4, :past,    true], # expired suspension
-        [4, :now,     false], # active suspension
-        [4, :future,  false] # active suspension
-      ]
-    end
+    include_context 'with webhook auto-disabling failure thresholds'
 
     with_them do
-      # Phasing means we cannot put these values in the where block,
-      # which is not subject to the frozen time context.
-      let(:disabled_until) do
-        case not_until
-        when :not_set
-          nil
-        when :past
-          1.minute.ago
-        when :future
-          1.minute.from_now
-        when :now
-          Time.current
-        end
-      end
+      let(:web_hook) do
+        factory_arguments = default_factory_arguments.merge(
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
 
-      before do
-        web_hook.update!(recent_failures: recent_failures, disabled_until: disabled_until)
+        create(hook_factory, **factory_arguments)
       end
 
       it 'has the correct state' do
@@ -164,24 +84,17 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
     end
   end
 
-  describe '#enable!' do
-    it 'makes a hook executable if it was marked as failed' do
-      hook.recent_failures = 1000
-
-      expect { hook.enable! }.to change { hook.executable? }.from(false).to(true)
+  describe '#enable!', :freeze_time do
+    before do
+      hook.recent_failures = WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD
+      hook.backoff!
     end
 
-    it 'makes a hook executable if it is currently backed off' do
-      hook.recent_failures = 1000
-      hook.disabled_until = 1.hour.from_now
-
+    it 'makes a hook executable' do
       expect { hook.enable! }.to change { hook.executable? }.from(false).to(true)
     end
 
     it 'logs relevant information' do
-      hook.recent_failures = 1000
-      hook.disabled_until = 1.hour.from_now
-
       expect(logger)
         .to receive(:info)
         .with(a_hash_including(
@@ -196,30 +109,48 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
     end
 
     it 'does not update hooks unless necessary' do
-      hook
+      hook.recent_failures = 0
+      hook.backoff_count = 0
+      hook.disabled_until = nil
 
       sql_count = ActiveRecord::QueryRecorder.new { hook.enable! }.count
 
       expect(sql_count).to eq(0)
     end
 
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        hook.recent_failures = 1000
+    it 'is tolerant of invalid records' do
+      hook.url = nil
 
-        expect { hook.enable! }.to change { hook.executable? }.from(false).to(true)
-      end
+      expect(hook).to be_invalid
+      expect { hook.enable! }.to change { hook.executable? }.from(false).to(true)
     end
   end
 
-  describe '#backoff!', :freeze_time do
+  describe '#backoff!' do
+    around do |example|
+      if example.metadata[:skip_freeze_time]
+        example.run
+      else
+        freeze_time { example.run }
+      end
+    end
+
     context 'when we have not backed off before' do
       it 'does not disable the hook' do
         expect { hook.backoff! }.not_to change { hook.executable? }.from(true)
+        expect(hook.class.executable).to include(hook)
       end
 
       it 'increments recent_failures' do
         expect { hook.backoff! }.to change { hook.recent_failures }.from(0).to(1)
+      end
+
+      it 'does not increment backoff_count' do
+        expect { hook.backoff! }.not_to change { hook.backoff_count }.from(0)
+      end
+
+      it 'does not set disabled_until' do
+        expect { hook.backoff! }.not_to change { hook.disabled_until }.from(nil)
       end
 
       it 'logs relevant information' do
@@ -233,17 +164,27 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
       end
     end
 
-    context 'when we have exhausted the grace period' do
+    context 'when failures exceed the threshold' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD)
       end
 
-      it 'disables the hook' do
+      it 'temporarily disables the hook' do
         expect { hook.backoff! }.to change { hook.executable? }.from(true).to(false)
+        expect(hook).to be_temporarily_disabled
+        expect(hook).not_to be_permanently_disabled
+        expect(hook.class.executable).not_to include(hook)
       end
 
       it 'increments backoff_count' do
         expect { hook.backoff! }.to change { hook.backoff_count }.from(0).to(1)
+      end
+
+      it 'increments recent_failures' do
+        expect { hook.backoff! }.to change {
+          hook.recent_failures
+        }.from(WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD)
+         .to(WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1)
       end
 
       it 'sets disabled_until' do
@@ -256,7 +197,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
           .with(a_hash_including(
             hook_id: hook.id,
             action: 'backoff',
-            recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1,
+            recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1,
             disabled_until: 1.minute.from_now,
             backoff_count: 1
           ))
@@ -264,23 +205,71 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         hook.backoff!
       end
 
+      it 'is no longer disabled after the backoff time has elapsed', :skip_freeze_time do
+        hook.backoff!
+
+        expect(hook).to be_temporarily_disabled
+        expect(hook).not_to be_permanently_disabled
+        expect(hook.class.executable).not_to include(hook)
+
+        travel_to(hook.disabled_until + 1.second) do
+          expect(hook).not_to be_temporarily_disabled
+          expect(hook).not_to be_permanently_disabled
+          expect(hook.class.executable).to include(hook)
+        end
+      end
+
+      it 'increases the backoff time exponentially', :skip_freeze_time do
+        hook.backoff!
+
+        expect(hook).to have_attributes(
+          recent_failures: (WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1),
+          backoff_count: 1,
+          disabled_until: be_like_time(Time.zone.now + 1.minute)
+        )
+
+        travel_to(hook.disabled_until + 1.second) do
+          hook.backoff!
+
+          expect(hook).to have_attributes(
+            recent_failures: (WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 2),
+            backoff_count: 2,
+            disabled_until: be_like_time(Time.zone.now + 2.minutes)
+          )
+        end
+
+        travel_to(hook.disabled_until + 1.second) do
+          hook.backoff!
+
+          expect(hook).to have_attributes(
+            recent_failures: (WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 3),
+            backoff_count: 3,
+            disabled_until: be_like_time(Time.zone.now + 4.minutes)
+          )
+        end
+      end
+
       context 'when the hook is permanently disabled' do
         before do
           allow(hook).to receive(:permanently_disabled?).and_return(true)
         end
 
-        it 'does not set disabled_until' do
-          expect { hook.backoff! }.not_to change { hook.disabled_until }
-        end
+        it 'does not do anything' do
+          sql_count = ActiveRecord::QueryRecorder.new { hook.backoff! }.count
 
-        it 'does not increment the backoff count' do
-          expect { hook.backoff! }.not_to change { hook.backoff_count }
+          expect(sql_count).to eq(0)
         end
       end
 
-      include_examples 'is tolerant of invalid records' do
-        def run_expectation
-          expect { hook.backoff! }.to change { hook.backoff_count }.by(1)
+      context 'when the hook is temporarily disabled' do
+        before do
+          allow(hook).to receive(:temporarily_disabled?).and_return(true)
+        end
+
+        it 'does not do anything' do
+          sql_count = ActiveRecord::QueryRecorder.new { hook.backoff! }.count
+
+          expect(sql_count).to eq(0)
         end
       end
 
@@ -289,80 +278,66 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
           stub_feature_flags(auto_disabling_web_hooks: false)
         end
 
-        it 'does not increment backoff count' do
-          expect { hook.failed! }.not_to change { hook.backoff_count }
-        end
-      end
-    end
-  end
-
-  describe '#failed!' do
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        expect { hook.failed! }.to change { hook.recent_failures }.by(1)
-      end
-
-      context 'when the flag is disabled' do
-        before do
-          stub_feature_flags(auto_disabling_web_hooks: false)
-        end
-
-        it 'does not increment recent failure count' do
-          expect { hook.failed! }.not_to change { hook.recent_failures }
-        end
-      end
-    end
-  end
-
-  describe '#temporarily_disabled?' do
-    it 'is false when not temporarily disabled' do
-      expect(hook).not_to be_temporarily_disabled
-    end
-
-    it 'allows FAILURE_THRESHOLD initial failures before we back-off' do
-      WebHooks::AutoDisabling::FAILURE_THRESHOLD.times do
-        hook.backoff!
-        expect(hook).not_to be_temporarily_disabled
-      end
-
-      hook.backoff!
-      expect(hook).to be_temporarily_disabled
-    end
-
-    context 'when hook has been told to back off' do
-      before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
-        hook.backoff!
-      end
-
-      it 'is true' do
-        expect(hook).to be_temporarily_disabled
-      end
-
-      context 'when the flag is disabled' do
-        before do
-          stub_feature_flags(auto_disabling_web_hooks: false)
-        end
-
-        it 'is false' do
+        it 'does not disable the hook' do
+          expect { hook.backoff! }.not_to change { hook.executable? }.from(true)
           expect(hook).not_to be_temporarily_disabled
+          expect(hook).not_to be_permanently_disabled
+          expect(hook.class.executable).to include(hook)
         end
+      end
+
+      it 'is tolerant of invalid records' do
+        hook.url = nil
+
+        expect(hook).to be_invalid
+        expect { hook.backoff! }.to change { hook.backoff_count }.by(1)
       end
     end
   end
 
-  describe '#permanently_disabled?' do
-    it 'is false when not disabled' do
+  describe '#temporarily_disabled? and #permanently_disabled?', :freeze_time do
+    it 'is initially not disabled at all' do
+      expect(hook).not_to be_temporarily_disabled
       expect(hook).not_to be_permanently_disabled
     end
 
-    context 'when hook has been disabled' do
-      before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
+    it 'becomes temporarily disabled after a threshold of failures has been exceeded' do
+      WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD.times do
+        hook.backoff!
+
+        expect(hook).not_to be_temporarily_disabled
+        expect(hook).not_to be_permanently_disabled
       end
 
-      it 'is true' do
+      hook.backoff!
+
+      expect(hook).to be_temporarily_disabled
+      expect(hook).not_to be_permanently_disabled
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(auto_disabling_web_hooks: false)
+      end
+
+      it 'is not disabled at all' do
+        hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD)
+        hook.backoff!
+
+        expect(hook).not_to be_temporarily_disabled
+        expect(hook).not_to be_permanently_disabled
+      end
+    end
+
+    context 'when hook exceeds the permanently disabled threshold' do
+      before do
+        hook.update!(recent_failures: WebHooks::AutoDisabling::PERMANENTLY_DISABLED_FAILURE_THRESHOLD)
+        hook.backoff!
+      end
+
+      it 'is permanently disabled' do
         expect(hook).to be_permanently_disabled
+        expect(hook).not_to be_temporarily_disabled
       end
 
       context 'when the flag is disabled' do
@@ -370,8 +345,32 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
           stub_feature_flags(auto_disabling_web_hooks: false)
         end
 
-        it 'is false' do
+        it 'is not disabled at all' do
+          expect(hook).not_to be_temporarily_disabled
           expect(hook).not_to be_permanently_disabled
+        end
+      end
+    end
+
+    # TODO Remove as part of https://gitlab.com/gitlab-org/gitlab/-/issues/525446
+    context 'when hook has no disabled_until set and exceeds TEMPORARILY_DISABLED_FAILURE_THRESHOLD (legacy state)' do
+      before do
+        hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1)
+      end
+
+      it 'is permanently disabled' do
+        expect(hook).to be_permanently_disabled
+        expect(hook).not_to be_temporarily_disabled
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
+
+        it 'is not disabled at all' do
+          expect(hook).not_to be_permanently_disabled
+          expect(hook).not_to be_temporarily_disabled
         end
       end
     end
@@ -380,14 +379,14 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
   describe '#alert_status' do
     subject(:status) { hook.alert_status }
 
-    it { is_expected.to eq :executable }
+    it { is_expected.to eq(:executable) }
 
-    context 'when hook has been disabled' do
+    context 'when hook has been permanently disabled' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
+        allow(hook).to receive(:permanently_disabled?).and_return(true)
       end
 
-      it { is_expected.to eq :disabled }
+      it { is_expected.to eq(:disabled) }
 
       context 'when the flag is disabled' do
         before do
@@ -398,13 +397,12 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
       end
     end
 
-    context 'when hook has been backed off' do
+    context 'when hook has been temporarily disabled' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
-        hook.disabled_until = 1.hour.from_now
+        allow(hook).to receive(:temporarily_disabled?).and_return(true)
       end
 
-      it { is_expected.to eq :temporarily_disabled }
+      it { is_expected.to eq(:temporarily_disabled) }
 
       context 'when the flag is disabled' do
         before do

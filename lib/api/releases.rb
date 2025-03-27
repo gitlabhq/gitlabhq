@@ -166,7 +166,7 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
-      get ':id/releases/:tag_name/downloads/*direct_asset_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
+      get ':id/releases/:tag_name/downloads/*direct_asset_path', format: true, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 
         not_found! unless release
@@ -196,7 +196,7 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
-      get ':id/releases/permalink/latest(/)(*suffix_path)', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
+      get ':id/releases/permalink/latest(/)(*suffix_path)', format: true, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 
         # Try to find the latest release

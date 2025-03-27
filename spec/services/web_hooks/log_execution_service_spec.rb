@@ -116,28 +116,6 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       end
     end
 
-    context 'when response_category is :failed' do
-      let(:response_category) { :failed }
-
-      before do
-        data[:response_status] = '400'
-      end
-
-      it 'increments the failure count' do
-        expect { service.execute }.to change { project_hook.recent_failures }.by(1)
-      end
-
-      it 'does not change the disabled_until attribute' do
-        expect { service.execute }.not_to change { project_hook.disabled_until }
-      end
-
-      it 'does not allow the failure count to overflow' do
-        project_hook.update!(recent_failures: 32767)
-
-        expect { service.execute }.not_to change { project_hook.recent_failures }
-      end
-    end
-
     context 'when response_category is :error' do
       let(:response_category) { :error }
 

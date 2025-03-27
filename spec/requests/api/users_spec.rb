@@ -3865,10 +3865,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it "returns 400 for invalid ID" do
+    it "returns 404 for invalid ID" do
       delete api("/user/emails/ASDF", admin, admin_mode: true)
 
-      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 

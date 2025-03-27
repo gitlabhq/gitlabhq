@@ -111,8 +111,8 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
 
         put api(url, user)
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'error' => 'id is invalid' })
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response).to eq({ 'error' => '404 Not Found' })
       end
     end
 

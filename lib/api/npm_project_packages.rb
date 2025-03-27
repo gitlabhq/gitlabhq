@@ -63,7 +63,7 @@ module API
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       route_setting :authorization, job_token_policies: :read_packages,
         allow_public_access_for_enabled_project_features: :package_registry
-      get '*package_name/-/*file_name', format: false do
+      get '*package_name/-/*file_name', format: true do
         authorize_read_package!(project)
 
         package = ::Packages::Npm::Package

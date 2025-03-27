@@ -137,4 +137,19 @@ describe('ImportTargetDropdown', () => {
       { text: 'match2', value: 'match2' },
     ]);
   });
+
+  it('sorts namespaces based on similarity to input', async () => {
+    createComponent();
+
+    findListbox().vm.$emit('search', 'sortme');
+
+    await waitForQuery();
+
+    expect(findListboxGroupsItems()).toEqual([
+      { text: 'sortme', value: 'sortme' },
+      { text: 'sortmea', value: 'sortmea' },
+      { text: 'sortmeaa', value: 'sortmeaa' },
+      { text: 'sortmeab', value: 'sortmeab' },
+    ]);
+  });
 });

@@ -3451,10 +3451,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end.to change { shared_group.shared_with_group_links.count }.by(-1)
       end
 
-      it 'requires the group id to be an integer' do
+      it 'returns a 404 error when the group id is not an integer' do
         delete api("/groups/#{shared_group.id}/share/foo", user)
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns a 404 error when group link does not exist' do

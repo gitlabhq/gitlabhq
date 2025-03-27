@@ -1,97 +1,57 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a hook that does not get automatically disabled on failure' do
+  let(:exeeded_failure_threshold) { WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1 }
+
   describe '.executable/.disabled', :freeze_time do
-    let(:attributes_for_webhooks) do
-      attributes_list = attributes_for_list(hook_factory, 13)
+    include_context 'with webhook auto-disabling failure thresholds'
 
-      merged_attributes = attributes_list.zip([
-        [0, Time.current],
-        [0, 1.minute.from_now],
-        [1, 1.minute.from_now],
-        [3, 1.minute.from_now],
-        [4, nil],
-        [4, 1.day.ago],
-        [4, 1.minute.from_now],
-        [0, nil],
-        [0, 1.day.ago],
-        [1, nil],
-        [1, 1.day.ago],
-        [3, nil],
-        [3, 1.day.ago]
-      ])
+    with_them do
+      let(:web_hook) do
+        factory_arguments = default_factory_arguments.merge(
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
 
-      merged_attributes.map do |attributes, (recent_failures, disabled_until)|
-        attributes.merge(**default_factory_arguments, recent_failures: recent_failures, disabled_until: disabled_until)
-      end
-    end
-
-    let(:webhooks) { described_class.create!(attributes_for_webhooks) }
-
-    it 'finds the correct set of project hooks' do
-      expect(find_hooks).to all(be_executable)
-      expect(find_hooks.executable).to match_array(webhooks)
-      expect(find_hooks.disabled).to be_empty
-    end
-
-    context 'when silent mode is enabled' do
-      before do
-        stub_application_setting(silent_mode_enabled: true)
+        create(hook_factory, **factory_arguments)
       end
 
-      it 'causes no hooks to be considered executable' do
-        expect(find_hooks.executable).to be_empty
+      it 'is always enabled' do
+        expect(find_hooks).to all(be_executable)
+        expect(find_hooks.executable).to match_array(find_hooks)
+        expect(find_hooks.disabled).to be_empty
       end
 
-      it 'causes all hooks to be considered disabled' do
-        expect(find_hooks.disabled).to match_array(webhooks)
+      context 'when silent mode is enabled' do
+        before do
+          stub_application_setting(silent_mode_enabled: true)
+        end
+
+        it 'causes no hooks to be considered executable' do
+          expect(find_hooks.executable).to be_empty
+        end
+
+        it 'causes all hooks to be considered disabled' do
+          expect(find_hooks.disabled).to match_array(find_hooks)
+        end
       end
     end
   end
 
   describe '#executable?', :freeze_time do
-    let(:web_hook) { build(hook_factory, **default_factory_arguments) }
-
-    where(:recent_failures, :not_until) do
-      [
-        [0, :not_set],
-        [0, :past],
-        [0, :future],
-        [0, :now],
-        [1, :not_set],
-        [1, :past],
-        [1, :future],
-        [3, :not_set],
-        [3, :past],
-        [3, :future],
-        [4, :not_set],
-        [4, :past], # expired suspension
-        [4, :now], # active suspension
-        [4, :future] # active suspension
-      ]
-    end
+    include_context 'with webhook auto-disabling failure thresholds'
 
     with_them do
-      # Phasing means we cannot put these values in the where block,
-      # which is not subject to the frozen time context.
-      let(:disabled_until) do
-        case not_until
-        when :not_set
-          nil
-        when :past
-          1.minute.ago
-        when :future
-          1.minute.from_now
-        when :now
-          Time.current
-        end
+      let(:web_hook) do
+        factory_arguments = default_factory_arguments.merge(
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
+
+        build(hook_factory, **factory_arguments)
       end
 
-      before do
-        web_hook.update!(recent_failures: recent_failures, disabled_until: disabled_until)
-      end
-
-      it 'has the correct state' do
+      it 'is always executable' do
         expect(web_hook).to be_executable
       end
     end
@@ -129,7 +89,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
     context 'when we have exhausted the grace period' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD)
       end
 
       it 'does not disable the hook' do
@@ -144,7 +104,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
       expect(hook).not_to be_temporarily_disabled
 
       # Backing off
-      WebHooks::AutoDisabling::FAILURE_THRESHOLD.times do
+      WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD.times do
         hook.backoff!
         expect(hook).not_to be_temporarily_disabled
       end
@@ -159,7 +119,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
       # Initially
       expect(hook).not_to be_permanently_disabled
 
-      hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
+      hook.update!(recent_failures: exeeded_failure_threshold)
 
       expect(hook).not_to be_permanently_disabled
     end
@@ -172,7 +132,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
     context 'when hook has been disabled' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
+        hook.update!(recent_failures: exeeded_failure_threshold)
       end
 
       it { is_expected.to eq :executable }
@@ -180,7 +140,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
     context 'when hook has been backed off' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
+        hook.update!(recent_failures: exeeded_failure_threshold)
         hook.disabled_until = 1.hour.from_now
       end
 
