@@ -32,6 +32,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-pipl-compliance-alert',
   '.gcp-signup-offer',
   '.js-gold-trial-callout',
+  '.js-namespace-user-cap-reached-alert',
 ];
 
 const initCallouts = () => {

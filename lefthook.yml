@@ -75,11 +75,6 @@ pre-push:
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
       fail_text: PO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot
-    docs-metadata: # See https://docs.gitlab.com/development/documentation/metadata/
-      tags: documentation style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: 'doc/*.md'
-      run: scripts/lint-docs-metadata.sh {files}
     docs-deprecations:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -172,11 +167,6 @@ pre-commit:
     secrets-detection:
       tags: secrets
       run: .lefthook/gitleaks.sh pre-commit
-    docs-metadata: # See https://docs.gitlab.com/development/documentation/metadata/
-      tags: documentation style
-      files: git diff --name-only --diff-filter=d --staged
-      glob: 'doc/*.md'
-      run: scripts/lint-docs-metadata.sh {files}
     docs-deprecations:
       tags: documentation
       files: git diff --name-only --diff-filter=d --staged

@@ -8,6 +8,7 @@ module EncryptedUserPassword
 
   BCRYPT_PREFIX = '$2a$'
   PBKDF2_SHA512_PREFIX = '$pbkdf2-sha512$'
+  PBKDF2_SALT_LENGTH = 64
 
   BCRYPT_STRATEGY = :bcrypt
   PBKDF2_SHA512_STRATEGY = :pbkdf2_sha512
@@ -47,7 +48,7 @@ module EncryptedUserPassword
                                 Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
                                   new_password,
                                   Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512::STRETCHES,
-                                  Devise.friendly_token[0, 16])
+                                  Devise.friendly_token(PBKDF2_SALT_LENGTH))
                               else
                                 Devise::Encryptor.digest(self.class, new_password)
                               end
@@ -85,10 +86,12 @@ module EncryptedUserPassword
     # Reversing this ordering will break tests in spec/models/concerns/encrypted_user_password_spec.rb.
 
     if password_strategy == encryptor
-      return true unless Feature.enabled?(:increase_password_storage_stretches) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- required to enable FFing a Class method, which is required to FF the Stretches config
-      return true if (BCRYPT_STRATEGY == password_strategy) && bcrypt_password_matches_current_stretches?
-      # We do not attempt to upgrade stretches on PBKDF2-stored passwords.
-      return true if PBKDF2_SHA512_STRATEGY == password_strategy
+      if BCRYPT_STRATEGY == password_strategy
+        return true if Feature.disabled?(:increase_password_storage_stretches) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- required to enable FFing a Class method, which is required to FF the Stretches config
+        return true if bcrypt_password_matches_current_stretches?
+      elsif PBKDF2_SHA512_STRATEGY == password_strategy
+        return true if pbkdf2_password_matches_salt_length?
+      end
     end
 
     # We do not want to send a "your password changed" notification on stretch update
@@ -100,6 +103,15 @@ module EncryptedUserPassword
     return false unless bcrypt_password?
 
     ::BCrypt::Password.new(encrypted_password).cost == self.class.stretches
+  end
+
+  def pbkdf2_password_matches_salt_length?
+    return false unless pbkdf2_password?
+
+    current_salt_length = Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512
+      .split_digest(encrypted_password)[:salt].length
+
+    PBKDF2_SALT_LENGTH == current_salt_length
   end
 
   def encryptor

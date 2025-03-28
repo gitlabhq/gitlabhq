@@ -26,16 +26,6 @@ then
   ((ERRORCODE++))
 fi
 
-# Documentation pages need front matter for tracking purposes.
-# shellcheck disable=2059
-printf "${COLOR_GREEN}INFO: Checking documentation for front matter...${COLOR_RESET}\n"
-if ! scripts/lint-docs-metadata.sh
-then
-  # shellcheck disable=2059
-  printf "${COLOR_RED}ERROR: These documentation pages need front matter!${COLOR_RESET}"
-  ((ERRORCODE++))
-fi
-
 # Ensure that the CHANGELOG.md does not contain duplicate versions
 DUPLICATE_CHANGELOG_VERSIONS=$(grep --extended-regexp '^## .+' CHANGELOG.md | sed -E 's| \(.+\)||' | sort -r | uniq -d)
 # shellcheck disable=2059

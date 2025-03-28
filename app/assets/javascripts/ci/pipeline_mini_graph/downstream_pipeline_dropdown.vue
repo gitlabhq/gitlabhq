@@ -124,6 +124,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
+    class="pipeline-mini-graph-stage-container"
     data-testid="pipeline-mini-graph-dropdown"
     :aria-label="dropdownAriaLabel"
     fluid-width
@@ -144,7 +145,7 @@ export default {
 
     <template #header>
       <div
-        class="gl-flex gl-min-h-8 gl-w-34 gl-flex-col gl-gap-2 gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-leading-1 gl-border-b-solid"
+        class="gl-flex gl-min-h-10 gl-w-34 gl-flex-col gl-gap-2 gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-leading-1 gl-border-b-solid"
       >
         <span class="gl-font-bold">{{ dropdownHeaderText }}</span>
         <p class="!gl-m-0">

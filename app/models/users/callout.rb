@@ -44,9 +44,9 @@ module Users
       ci_deprecation_warning_for_types_keyword: 41,
       security_training_feature_promotion: 42, # EE-only
       namespace_storage_pre_enforcement_banner: 43, # EE-only
-      ci_minutes_limit_alert_warning_stage: 44,
-      ci_minutes_limit_alert_danger_stage: 45,
-      ci_minutes_limit_alert_exceeded_stage: 46,
+      ci_minutes_limit_alert_warning_stage: 44,  # EE-only
+      ci_minutes_limit_alert_danger_stage: 45,   # EE-only
+      ci_minutes_limit_alert_exceeded_stage: 46, # EE-only
       # 47 and 48 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95446
       # 49 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91533
       # because the banner was no longer relevant.

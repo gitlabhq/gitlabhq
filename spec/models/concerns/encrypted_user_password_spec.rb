@@ -100,6 +100,27 @@ RSpec.describe User, feature_category: :system_access do
           expect(user.encrypted_password).to start_with('$2a$')
         end
       end
+
+      context 'when in FIPS mode and salt length 16', :fips_mode do
+        let(:encrypted_password) do
+          Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
+            password, 20_000, Devise.friendly_token[0, 16])
+        end
+
+        def pbkdf2_salt_length(password)
+          Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.split_digest(password)[:salt].length
+        end
+
+        it 're-encrypts the password with a stronger salt' do
+          expect(user.encrypted_password).to start_with('$pbkdf2-sha512$')
+          expect(pbkdf2_salt_length(user.encrypted_password)).to eq(16)
+
+          validate_password
+
+          expect(user.encrypted_password).to start_with('$pbkdf2-sha512$')
+          expect(pbkdf2_salt_length(user.encrypted_password)).to eq(64)
+        end
+      end
     end
 
     context 'when the default encryption method is PBKDF2+SHA512 and the user password is BCrypt', :fips_mode do

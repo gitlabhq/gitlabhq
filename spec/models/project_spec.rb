@@ -139,6 +139,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:releases) }
     it { is_expected.to have_many(:lfs_objects_projects) }
     it { is_expected.to have_many(:project_group_links) }
+    it { is_expected.to have_many(:invited_groups).through(:project_group_links).source(:group) }
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
     it { is_expected.to have_many(:forked_to_members).class_name('ForkNetworkMember') }
     it { is_expected.to have_many(:forks).through(:forked_to_members) }
@@ -652,6 +653,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           expect(index_of_has_many_notes_association).to be < index_of_issuable_included_association
         end
       end
+    end
+
+    describe '#invited_groups.with_developer_access' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:guest_group) { create(:project_group_link, :guest, project: project).group }
+      let_it_be(:planner_group) { create(:project_group_link, :planner, project: project).group }
+      let_it_be(:reporter_group) { create(:project_group_link, :reporter, project: project).group }
+      let_it_be(:maintainer_group) { create(:project_group_link, :maintainer, project: project).group }
+      let_it_be(:developer_group) { create(:project_group_link, project: project).group }
+      let_it_be(:owner_group) { create(:project_group_link, :owner, project: project).group }
+
+      subject { project.invited_groups.with_developer_access }
+
+      it { is_expected.to contain_exactly(developer_group, maintainer_group, owner_group) }
     end
   end
 

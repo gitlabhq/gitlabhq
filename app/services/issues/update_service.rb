@@ -108,7 +108,7 @@ module Issues
         ::WorkItems::DataSync::MoveService.new(
           work_item: issue, current_user: current_user, target_namespace: move_service_container
         ).execute[:work_item]
-      else
+      elsif target_container.is_a?(Project) || target_container.is_a?(Namespaces::ProjectNamespace)
         ::Issues::MoveService.new(
           container: project, current_user: current_user
         ).execute(issue, target_container)
@@ -163,7 +163,7 @@ module Issues
           work_item: issue, current_user: current_user, target_namespace: clone_service_container,
           params: { clone_with_notes: with_notes }
         ).execute[:work_item]
-      elsif target_container.is_a?(Project)
+      elsif target_container.is_a?(Project) || target_container.is_a?(Namespaces::ProjectNamespace)
         Issues::CloneService.new(container: project, current_user: current_user).execute(
           issue, target_container, with_notes: with_notes
         )

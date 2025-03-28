@@ -152,11 +152,13 @@ module Banzai
       # Use a passed class for the pipeline or default to PostProcessPipeline
       pipeline = context.delete(:post_process_pipeline) || ::Banzai::Pipeline::PostProcessPipeline
 
-      if context[:xhtml]
-        pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
-      else
-        pipeline.to_html(html, context)
-      end.html_safe
+      instrument_filters do
+        if context[:xhtml]
+          pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
+        else
+          pipeline.to_html(html, context)
+        end.html_safe
+      end
     end
 
     def self.cacheless_render(text, context = {})

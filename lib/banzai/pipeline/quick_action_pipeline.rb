@@ -7,9 +7,6 @@ module Banzai
     class QuickActionPipeline < BasePipeline
       def self.filters
         FilterArray[
-          Filter::NormalizeSourceFilter,
-          Filter::TruncateSourceFilter,
-          Filter::FrontMatterFilter,
           Filter::BlockquoteFenceLegacyFilter,
           Filter::MarkdownFilter,
           Filter::QuickActionFilter

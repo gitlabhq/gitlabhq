@@ -597,6 +597,15 @@ module Gitlab
               example: "registry.organization.com",
               name: s_("DastProfiles|Docker registry"),
               description: s_("DastProfiles|Set the Docker registry base address from which to download the analyzer.")
+            },
+            SECURE_LOG_LEVEL: {
+              type: "string",
+              example: "debug",
+              name: s_("DastProfiles|Default log level"),
+              description: s_(
+                "DastProfiles|Set the default level for the file log. " \
+                  "See [SECURE_LOG_LEVEL](../troubleshooting.md#secure_log_level)." \
+              )
             }
           }
         }.freeze

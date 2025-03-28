@@ -36,7 +36,6 @@
 /doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /lib/tasks/gitlab/tw/codeowners.rake @marcel.amirault @aqualls @gitlab-org/tw-leadership
 /scripts/lint-doc.sh @marcel.amirault @eread @axil @gitlab-org/tw-leadership
-/scripts/lint-docs-metadata.sh @marcel.amirault @eread @axil @gitlab-org/tw-leadership
 /scripts/lint-docs-redirects.rb @marcel.amirault @eread @axil @gitlab-org/tw-leadership
 
 config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tkuah

@@ -1451,11 +1451,26 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       end
 
       context 'with work_item_move_and_clone disabled' do
-        it_behaves_like 'move issue to another project' do
-          let(:move_service_class) { Issues::MoveService }
+        let(:move_service_class) { Issues::MoveService }
+        let_it_be(:target_project) { create(:project) }
 
-          before do
-            stub_feature_flags(work_item_move_and_clone: false)
+        before do
+          stub_feature_flags(work_item_move_and_clone: false)
+          target_project.add_maintainer(user)
+        end
+
+        it_behaves_like 'move issue to another project'
+
+        context 'when target_clone_container is a ProjectNamespace' do
+          it 'calls the legacy move service with the proper issue and project' do
+            expect_next_instance_of(move_service_class) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            new_issue = update_issue(target_container: target_project.project_namespace)
+
+            expect(new_issue.project).to eq(target_project)
+            expect(new_issue.title).to eq(issue.title)
           end
         end
       end
@@ -1521,12 +1536,25 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       end
 
       context 'with work_item_move_and_clone disabled' do
+        let(:clone_service_class) { Issues::CloneService }
+
         before do
           stub_feature_flags(work_item_move_and_clone: false)
         end
 
-        it_behaves_like 'clone an issue' do
-          let(:clone_service_class) { Issues::CloneService }
+        it_behaves_like 'clone an issue'
+
+        context 'when target_clone_container is a ProjectNamespace' do
+          it 'calls the legacy clone service with the proper issue and project' do
+            expect_next_instance_of(clone_service_class) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            new_issue = update_issue(target_clone_container: project.project_namespace)
+
+            expect(new_issue.project).to eq(project)
+            expect(new_issue.title).to eq(issue.title)
+          end
         end
       end
 

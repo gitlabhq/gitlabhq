@@ -409,7 +409,12 @@ class Project < ApplicationRecord
   has_many :lfs_objects, -> { distinct }, through: :lfs_objects_projects
   has_many :lfs_file_locks
   has_many :project_group_links
-  has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :invited_groups, through: :project_group_links, source: :group do
+    def with_developer_access
+      where(project_group_links: { group_access: [Gitlab::Access::DEVELOPER..Gitlab::Access::OWNER] })
+    end
+  end
+
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
