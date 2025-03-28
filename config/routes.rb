@@ -343,6 +343,8 @@ InitializerConnections.raise_if_new_database_connection do
 
     root to: "root#index"
 
+    get '/-/u/:id' => 'users/redirect#redirect_from_id'
+
     get '*unmatched_route', to: 'application#route_not_found', format: false
 
     # Load all custom URLs definitions via `direct' after the last route

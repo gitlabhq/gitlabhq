@@ -86,7 +86,7 @@ no-jh-check:
 .pipeline-tier-base:
   extends:
     - .preflight-job-base
-  image: alpine:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   variables:
     GIT_STRATEGY: none
   script:

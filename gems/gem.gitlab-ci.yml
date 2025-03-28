@@ -39,7 +39,7 @@ include:
 .default: &default
   tags:
     - gitlab-org
-  image: "ruby:${RUBY_VERSION}"
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   cache:
     key: "$[[inputs.gem_name]]-${RUBY_VERSION}"
     paths:

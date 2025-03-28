@@ -219,7 +219,7 @@ feature-flags-usage:
       - tmp/feature_flags/
 
 ensure-application-settings-have-definition-file:
-  image: ruby:${RUBY_VERSION}-alpine
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
   extends:
     - .static-analysis-base
     - .static-analysis:rules:ensure-application-settings-have-definition-file
@@ -232,7 +232,7 @@ semgrep-appsec-custom-rules:
   stage: lint
   extends:
     - .semgrep-appsec-custom-rules:rules
-  image: returntocorp/semgrep:1.99.0
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}returntocorp/semgrep:1.99.0
   needs: []
   script:
     - git fetch origin master
@@ -306,7 +306,7 @@ templates-shellcheck:
 
 ping-appsec-for-sast-findings:
   stage: lint
-  image: alpine:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   extends:
     - .ping-appsec-for-sast-findings:rules
   variables:

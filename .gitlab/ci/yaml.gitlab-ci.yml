@@ -5,7 +5,7 @@ lint-yaml:
   extends:
     - .default-retry
     - .yaml-lint:rules
-  image: pipelinecomponents/yamllint:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
   needs: []
   script:
@@ -19,7 +19,7 @@ lint-pipeline-yaml:
   extends:
     - .default-retry
     - .lint-pipeline-yaml:rules
-  image: pipelinecomponents/yamllint:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
   needs: []
   variables:
@@ -31,7 +31,7 @@ lint-metrics-yaml:
   extends:
     - .default-retry
     - .lint-metrics-yaml:rules
-  image: pipelinecomponents/yamllint:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
   needs: []
   variables:

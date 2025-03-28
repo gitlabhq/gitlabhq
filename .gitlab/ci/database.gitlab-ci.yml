@@ -204,7 +204,7 @@ db:migrate-non-superuser:
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing
   stage: test
-  image: ruby:${RUBY_VERSION}-alpine
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
   needs: []
   allow_failure: true
   script:

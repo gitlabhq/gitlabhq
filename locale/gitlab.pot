@@ -53394,6 +53394,9 @@ msgstr ""
 msgid "SecurityOrchestration|Don't show the alert anymore"
 msgstr ""
 
+msgid "SecurityOrchestration|Drag with a mouse to adjust editor's width"
+msgstr ""
+
 msgid "SecurityOrchestration|Edge case settings"
 msgstr ""
 

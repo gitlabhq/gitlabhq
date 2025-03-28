@@ -116,7 +116,7 @@ delete-as-if-foss-branch:
     - .as-if-foss:rules:start-as-if-foss:allow-failure:manual
     - .as-if-foss-variables
   image:
-    name: alpine/git
+    name: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/git
     entrypoint: [""]
   stage: prepare
   timeout: 10m
@@ -139,7 +139,7 @@ delete-as-if-foss-branch:
 delete-as-if-foss-environment:
   extends:
     - .as-if-foss:rules:start-as-if-foss:allow-failure
-  image: alpine:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   stage: prepare
   needs:
     - delete-as-if-foss-branch

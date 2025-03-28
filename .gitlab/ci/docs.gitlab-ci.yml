@@ -76,7 +76,7 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.142.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.142.0
   extends:
     - .default-retry
     - .docs:rules:docs-lint
