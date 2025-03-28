@@ -22,19 +22,22 @@ module Environments
 
     # rubocop: disable Performance/ActiveRecordSubtransactionMethods
     def to_resource(job)
-      job.project.environments.safe_find_or_create_by(name: job.expanded_environment_name) do |environment|
+      environment = job.project.environments
+                       .safe_find_or_create_by(name: job.expanded_environment_name) do |environment|
         # Initialize the attributes at creation
         environment.auto_stop_in = expanded_auto_stop_in(job)
         environment.tier = job.environment_tier_from_options
         environment.merge_request = job.pipeline.merge_request
+      end
 
-        if resource_management_feature_enabled?(job)
-          authorization = matching_authorization(job)
-          if authorization && authorization.agent.resource_management_enabled?
-            environment.cluster_agent = authorization.agent
-          end
+      if resource_management_feature_enabled?(job) && environment.cluster_agent.nil?
+        authorization = matching_authorization(job)
+        if authorization && authorization.agent.resource_management_enabled?
+          environment.update(cluster_agent: authorization.agent)
         end
       end
+
+      environment
     end
     # rubocop: enable Performance/ActiveRecordSubtransactionMethods
 

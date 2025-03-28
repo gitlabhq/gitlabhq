@@ -15291,6 +15291,33 @@ CREATE SEQUENCE group_wiki_repository_states_id_seq
 
 ALTER SEQUENCE group_wiki_repository_states_id_seq OWNED BY group_wiki_repository_states.id;
 
+CREATE TABLE routes (
+    id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    source_type character varying NOT NULL,
+    path character varying NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    name character varying,
+    namespace_id bigint,
+    CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL))
+);
+
+CREATE TABLE shards (
+    id bigint NOT NULL,
+    name character varying NOT NULL
+);
+
+CREATE VIEW group_wikis_routes_view AS
+ SELECT gr.group_id,
+    sh.name AS repository_storage,
+    gr.disk_path,
+    r.path AS path_with_namespace,
+    r.name AS name_with_namespace
+   FROM ((group_wiki_repositories gr
+     JOIN routes r ON (((r.source_id = gr.group_id) AND ((r.source_type)::text = 'Namespace'::text))))
+     JOIN shards sh ON ((gr.shard_id = sh.id)));
+
 CREATE SEQUENCE groups_visits_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -19707,11 +19734,6 @@ CREATE SEQUENCE personal_access_tokens_id_seq
 
 ALTER SEQUENCE personal_access_tokens_id_seq OWNED BY personal_access_tokens.id;
 
-CREATE TABLE shards (
-    id bigint NOT NULL,
-    name character varying NOT NULL
-);
-
 CREATE TABLE snippet_repositories (
     snippet_id bigint NOT NULL,
     shard_id bigint NOT NULL,
@@ -20724,18 +20746,6 @@ CREATE SEQUENCE project_deploy_tokens_id_seq
     CACHE 1;
 
 ALTER SEQUENCE project_deploy_tokens_id_seq OWNED BY project_deploy_tokens.id;
-
-CREATE TABLE routes (
-    id bigint NOT NULL,
-    source_id bigint NOT NULL,
-    source_type character varying NOT NULL,
-    path character varying NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    name character varying,
-    namespace_id bigint,
-    CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL))
-);
 
 CREATE VIEW project_design_management_routes_view AS
  SELECT p.id,

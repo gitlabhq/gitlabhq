@@ -21,10 +21,6 @@ module Users
         .where({ emails: { detumbled_email: ::Gitlab::Utils::Email.normalize_email(email) } })
         .where.not({ emails: { confirmed_at: nil } })
     end
-
-    scope :by_user_ids, ->(ids) { where(user_id: ids) }
-    scope :created_before, ->(interval) { where(created_at: ...interval) }
-    scope :without_deleted_projects, -> { where(projects_deleted: false) }
   end
 end
 

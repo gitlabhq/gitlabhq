@@ -127,16 +127,6 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.owned_by' do
-      let_it_be(:project_owner_authorization) { project.owner.project_authorizations.first }
-
-      it 'returns all records owned by particular users' do
-        expect(described_class.owned_by([user.id]).map(&:attributes)).to contain_exactly(
-          project_owner_authorization.attributes
-        )
-      end
-    end
-
     describe '.for_project' do
       let_it_be(:project_2) { create(:project, namespace: user.namespace) }
       let_it_be(:project_3) { create(:project, namespace: user.namespace) }

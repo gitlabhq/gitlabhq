@@ -241,6 +241,27 @@ RSpec.shared_examples 'create environment for job' do
             expect(subject.cluster_agent).to be_nil
           end
         end
+
+        context 'when the environment already exists' do
+          context 'when the environment does not have a cluster agent' do
+            let(:environment) { create(:environment, project: project, name: environment_name) }
+
+            it 'updates the environment with the specified cluster agent' do
+              expect { subject }.to change { environment.reload.cluster_agent }.from(nil).to(agent)
+            end
+          end
+
+          context 'when the environment has a associated cluster agent' do
+            let_it_be(:another_agent) { create(:cluster_agent, project: project) }
+            let(:environment) do
+              create(:environment, project: project, name: environment_name, cluster_agent: another_agent)
+            end
+
+            it 'does not update the environment' do
+              expect { subject }.not_to change { environment.reload.cluster_agent }
+            end
+          end
+        end
       end
 
       context 'when the agent does not have resource management enabled' do

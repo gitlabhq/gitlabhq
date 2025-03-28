@@ -6,6 +6,8 @@
 %html{ lang: I18n.locale, class: page_classes }
   = render "layouts/head"
   %body{ class: body_classes, data: body_data }
+    -# all tooltips from GitLab UI will mount here by default
+    #js-tooltips-container
     = render "layouts/init_auto_complete" if @gfm_form
     = render "layouts/init_client_detection_flags"
     = render 'peek/bar'

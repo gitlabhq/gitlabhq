@@ -313,7 +313,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/tasks/duo_pro/bulk_user_assignment_spec.rb'
     - 'ee/spec/uploaders/every_gitlab_uploader_spec.rb'
     - 'ee/spec/views/admin/application_settings/_ee_package_registry.html.haml_spec.rb'
-    - 'ee/spec/views/gitlab_subscriptions/trials/duo_pro/_advantages_list.html.haml_spec.rb'
     - 'ee/spec/views/groups/billings/index.html.haml_spec.rb'
     - 'ee/spec/workers/groups/enterprise_users/bulk_associate_by_domain_worker_spec.rb'
     - 'ee/spec/workers/vulnerabilities/mark_dropped_as_resolved_worker_spec.rb'

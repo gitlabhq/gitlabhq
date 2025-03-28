@@ -9601,50 +9601,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '.with_active_owners' do
-    subject(:results) { described_class.with_active_owners }
-
-    context 'when the project owner is active' do
-      let_it_be(:project) { create(:project) }
-
-      it 'includes the project' do
-        expect(results).to match_array([project])
-      end
-    end
-
-    context 'when the project owner is banned' do
-      let_it_be(:project) { create(:project) }
-
-      before_all do
-        project.owners.first.ban!
-      end
-
-      it 'does not include the project' do
-        expect(results).not_to be_present
-      end
-
-      context 'when the project has another active owner' do
-        before do
-          project.add_owner(create(:user))
-        end
-
-        it 'includes the project' do
-          expect(results).to match_array([project])
-        end
-      end
-
-      context 'when the project has an active owner that is not human' do
-        before do
-          project.add_owner(create(:user, :project_bot))
-        end
-
-        it 'does not include the project' do
-          expect(results).not_to be_present
-        end
-      end
-    end
-  end
-
   describe '#created_and_owned_by_banned_user?' do
     subject { project.created_and_owned_by_banned_user? }
 

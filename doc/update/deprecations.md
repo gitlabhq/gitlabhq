@@ -244,6 +244,23 @@ See the corresponding [deprecation announcement](https://docs.gitlab.com/update/
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Enforce keyset pagination on audit event API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
+
+</div>
+
+The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0
+we will enforce keyset pagination on these APIs.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### GitLab Self-Managed certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">
@@ -1015,23 +1032,6 @@ At the time when each analyzer reached End of Support, we updated its job `rules
 However, you might have customized the template to continue to use these jobs or depend on them existing in your pipelines.
 If you have any customization that depends on the jobs above, perform the [actions required](https://gitlab.com/gitlab-org/gitlab/-/issues/519133#actions-required) before
 upgrading to 18.0 to avoid disruptions to your CI/CD pipelines.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Enforce keyset pagination on audit event API
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.8</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
-
-</div>
-
-The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0
-we will enforce keyset pagination on these APIs.
 
 </div>
 

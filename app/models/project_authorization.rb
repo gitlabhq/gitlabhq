@@ -15,7 +15,6 @@ class ProjectAuthorization < ApplicationRecord
   scope :for_project, ->(projects) { where(project: projects) }
   scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
   scope :owners, -> { where(access_level: ::Gitlab::Access::OWNER) }
-  scope :owned_by, ->(users) { owners.where(user: users) }
 
   scope :preload_users, -> { preload(:user) }
 
