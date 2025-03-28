@@ -6,6 +6,8 @@ describe('Filtered search utils', () => {
       queryStringObject                                        | expected
       ${{ statuses: 'SUCCESS' }}                               | ${{ statuses: 'SUCCESS' }}
       ${{ statuses: 'failed' }}                                | ${{ statuses: 'FAILED' }}
+      ${{ sources: 'PUSH' }}                                   | ${{ sources: 'PUSH' }}
+      ${{ sources: 'push' }}                                   | ${{ sources: 'PUSH' }}
       ${{ runnerTypes: 'instance_type' }}                      | ${{ runnerTypes: 'INSTANCE_TYPE' }}
       ${{ runnerTypes: 'wrong_runner_type' }}                  | ${null}
       ${{ statuses: 'SUCCESS', runnerTypes: 'instance_type' }} | ${{ statuses: 'SUCCESS', runnerTypes: 'INSTANCE_TYPE' }}

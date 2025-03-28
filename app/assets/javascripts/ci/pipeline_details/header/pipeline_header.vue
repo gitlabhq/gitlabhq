@@ -383,15 +383,16 @@ export default {
           <header-badges :pipeline="pipeline" />
 
           <div class="gl-inline-block">
-            <span
+            <button
               v-gl-tooltip
               :title="s__('Pipelines|Total number of jobs for the pipeline')"
-              class="gl-ml-2"
-              data-testid="total-jobs"
+              class="gl-ml-2 !gl-cursor-default gl-rounded-base gl-border-none gl-bg-transparent gl-p-0"
             >
-              <gl-icon name="pipeline" />
-              {{ totalJobsText }}
-            </span>
+              <span data-testid="total-jobs">
+                <gl-icon name="pipeline" />
+                {{ totalJobsText }}
+              </span>
+            </button>
             <span
               v-if="showComputeMinutes"
               v-gl-tooltip

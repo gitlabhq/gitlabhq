@@ -267,6 +267,24 @@ this may cause the target cell's database to have foreign key violations when da
 moved.
 See [#471182](https://gitlab.com/gitlab-org/gitlab/-/issues/471182) for examples and possible solutions.
 
+## Ensure sharding key presence on application level
+
+When you define your sharding key you must make sure it's filled on application level.
+Every `ApplicationRecord` model includes a helper `populate_sharding_key`, which
+provides a convenient way of defining sharding key logic,
+and also a corresponding matcher to test your sharding key logic. For example:
+
+```ruby
+# in model.rb
+populate_sharding_key :project_id, source: :merge_request, field: :target_project_id
+
+# in model_spec.rb
+it { is_expected.to populate_sharding_key(:project_id).from(:merge_request, :target_project_id) }
+```
+
+See more [helper examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/populates_sharding_key.rb)
+and [RSpec matcher examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/matchers/populate_sharding_key_matcher.rb).
+
 ## Static data
 
 Problem: A clusterwide database table is used to store static data.

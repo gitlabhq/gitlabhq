@@ -5,7 +5,7 @@ import { GlBadge } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { __, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import DetailRow from './sidebar_detail_row.vue';
 
@@ -123,23 +123,29 @@ export default {
     TEST_SUMMARY: __('Test summary'),
     TIMEOUT: __('Timeout'),
     // Human-readable values of possible source values found in
-    // https://docs.gitlab.com/ci/jobs/job_rules/#ci_pipeline_source-predefined-variable
+    // https://docs.gitlab.com/api/graphql/reference/#cijobsource
     sources: {
-      api: __('API'),
-      chat: __('Chat'),
-      external: __('External'),
-      external_pull_request_event: __('External pull request event'),
-      merge_request_event: __('Merge request event'),
-      ondemand_dast_scan: __('On-demand DAST scan'),
-      ondemand_dast_validation: __('On-demand DAST validation'),
-      parent_pipeline: __('Parent pipeline'),
-      pipeline: __('Pipeline'),
-      push: __('Push'),
-      schedule: __('Schedule'),
-      security_orchestration_policy: __('Security orchestration policy'),
-      trigger: __('Trigger'),
-      web: __('Web'),
-      webide: __('Web IDE'),
+      api: s__('JobSource|API'),
+      chat: s__('JobSource|Chat'),
+      container_registry_push: s__('JobSource|Container Registry Push'),
+      duo_workflow: s__('JobSource|Duo Workflow'),
+      external: s__('JobSource|External'),
+      external_pull_request_event: s__('JobSource|External Pull Request'),
+      merge_request_event: s__('JobSource|Merge Request'),
+      ondemand_dast_scan: s__('JobSource|On-Demand DAST Scan'),
+      ondemand_dast_validation: s__('JobSource|On-Demand DAST Validation'),
+      parent_pipeline: s__('JobSource|Parent Pipeline'),
+      pipeline: s__('JobSource|Pipeline'),
+      pipeline_execution_policy: s__('JobSource|Pipeline Execution Policy'),
+      pipeline_execution_policy_schedule: s__('JobSource|Pipeline Execution Policy Schedule'),
+      push: s__('JobSource|Push'),
+      scan_execution_policy: s__('JobSource|Scan Execution Policy'),
+      schedule: s__('JobSource|Schedule'),
+      security_orchestration_policy: s__('JobSource|Security Orchestration Policy'),
+      trigger: s__('JobSource|Trigger'),
+      web: s__('JobSource|Web'),
+      webide: s__('JobSource|Web IDE'),
+      unknown: s__('JobSource|Unknown'),
     },
   },
   TIMEOUT_HELP_URL: helpPagePath('/ci/pipelines/settings.md', {

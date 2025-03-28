@@ -1061,6 +1061,8 @@ In GitLab 18.0, the Dependency Proxy will require both `read_registry` and `writ
 
 This is a breaking change. Before you upgrade, create new access tokens with the [required scopes](https://docs.gitlab.com/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy-for-container-images), and update your workflow variables and scripts with these new tokens.
 
+To assess how this change impacts your GitLab Self-Managed instance, you can monitor authentication logs for warning messages in GitLab 17.10 and later. In your `auth_json.log` file, look for entries that contain `Dependency proxy missing authentication abilities`. These entries show authentication attempts using tokens without the required scopes, which will fail after upgrading to GitLab 18.0.
+
 </div>
 
 <div class="deprecation breaking-change" data-milestone="18.0">

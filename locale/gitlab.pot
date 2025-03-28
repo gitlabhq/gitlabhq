@@ -24741,9 +24741,6 @@ msgstr ""
 msgid "ExtensionMarketplace|Use Open VSX extension registry"
 msgstr ""
 
-msgid "External"
-msgstr ""
-
 msgid "External URL"
 msgstr ""
 
@@ -24751,9 +24748,6 @@ msgid "External User:"
 msgstr ""
 
 msgid "External authorization denied access to this project"
-msgstr ""
-
-msgid "External pull request event"
 msgstr ""
 
 msgid "External storage URL"
@@ -33538,6 +33532,12 @@ msgstr ""
 msgid "JobSource|Chat"
 msgstr ""
 
+msgid "JobSource|Container Registry Push"
+msgstr ""
+
+msgid "JobSource|Duo Workflow"
+msgstr ""
+
 msgid "JobSource|External"
 msgstr ""
 
@@ -33559,16 +33559,28 @@ msgstr ""
 msgid "JobSource|Pipeline"
 msgstr ""
 
+msgid "JobSource|Pipeline Execution Policy"
+msgstr ""
+
+msgid "JobSource|Pipeline Execution Policy Schedule"
+msgstr ""
+
 msgid "JobSource|Push"
+msgstr ""
+
+msgid "JobSource|Scan Execution Policy"
 msgstr ""
 
 msgid "JobSource|Schedule"
 msgstr ""
 
-msgid "JobSource|Security Policy"
+msgid "JobSource|Security Orchestration Policy"
 msgstr ""
 
 msgid "JobSource|Trigger"
+msgstr ""
+
+msgid "JobSource|Unknown"
 msgstr ""
 
 msgid "JobSource|Web"
@@ -36067,6 +36079,9 @@ msgstr ""
 msgid "MemberRole|Added from %{role}"
 msgstr ""
 
+msgid "MemberRole|Admin role"
+msgstr ""
+
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
@@ -36089,6 +36104,12 @@ msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
 msgid "MemberRole|Could not update role."
+msgstr ""
+
+msgid "MemberRole|Create a role to manage member permissions for groups and projects."
+msgstr ""
+
+msgid "MemberRole|Create a role to manage permissions in the Admin area."
 msgstr ""
 
 msgid "MemberRole|Create admin role"
@@ -36193,6 +36214,9 @@ msgstr ""
 msgid "MemberRole|Manage which actions users can take with %{linkStart}roles and permissions%{linkEnd}."
 msgstr ""
 
+msgid "MemberRole|Member role"
+msgstr ""
+
 msgid "MemberRole|Name"
 msgstr ""
 
@@ -36239,9 +36263,6 @@ msgid "MemberRole|Role successfully deleted."
 msgstr ""
 
 msgid "MemberRole|Role type"
-msgstr ""
-
-msgid "MemberRole|Roles"
 msgstr ""
 
 msgid "MemberRole|Roles and permissions"
@@ -36671,9 +36692,6 @@ msgid "Merge request dependencies"
 msgstr ""
 
 msgid "Merge request dependencies must be merged."
-msgstr ""
-
-msgid "Merge request event"
 msgstr ""
 
 msgid "Merge request events"
@@ -40611,12 +40629,6 @@ msgstr ""
 msgid "On-call schedules"
 msgstr ""
 
-msgid "On-demand DAST scan"
-msgstr ""
-
-msgid "On-demand DAST validation"
-msgstr ""
-
 msgid "On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects"
 msgstr ""
 
@@ -42584,9 +42596,6 @@ msgid "Parent item removed successfully."
 msgstr ""
 
 msgid "Parent item set successfully."
-msgstr ""
-
-msgid "Parent pipeline"
 msgstr ""
 
 msgid "Parse error: Expected `%{expected}`, but got `%{got}`."
@@ -52184,9 +52193,6 @@ msgstr ""
 msgid "Scanner profile not found for given parameters"
 msgstr ""
 
-msgid "Schedule"
-msgstr ""
-
 msgid "Schedule a new pipeline"
 msgstr ""
 
@@ -52751,9 +52757,6 @@ msgid "Security dashboard"
 msgstr ""
 
 msgid "Security inventory"
-msgstr ""
-
-msgid "Security orchestration policy"
 msgstr ""
 
 msgid "Security policy"
@@ -65974,9 +65977,6 @@ msgid "We've noticed an unusually high storage usage on %{project_name}"
 msgstr ""
 
 msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
-msgstr ""
-
-msgid "Web"
 msgstr ""
 
 msgid "Web IDE"

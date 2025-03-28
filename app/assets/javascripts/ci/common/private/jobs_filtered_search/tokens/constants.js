@@ -49,4 +49,12 @@ export const JOB_SOURCES = [
     text: s__('JobSource|Parent Pipeline'),
     value: 'PARENT_PIPELINE',
   },
+  {
+    text: s__('JobSource|Container Registry Push'),
+    value: 'CONTAINER_REGISTRY_PUSH',
+  },
+  {
+    text: s__('JobSource|Unknown'),
+    value: 'UNKNOWN',
+  },
 ];

@@ -108,7 +108,8 @@ RSpec.configure do |config|
     # We fail early if we detect a PG::QueryCanceled error
     #
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/402915
-    if example.exception && example.exception.message.include?('PG::QueryCanceled')
+    exception = example.exception
+    if exception && exception.message.include?('PG::QueryCanceled')
       ENV['RSPEC_BYPASS_SYSTEM_EXIT_PROTECTION'] = 'true'
 
       warn
@@ -124,6 +125,11 @@ RSpec.configure do |config|
       warn "********************************************************************************************"
       warn "********************************************************************************************"
       warn "********************************************************************************************"
+      warn
+      warn exception.message
+      warn Gitlab::ExceptionLogFormatter.find_sql(exception)
+      warn
+      warn exception.backtrace.join("\n")
       warn
 
       exit 3

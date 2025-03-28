@@ -47,7 +47,8 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five scan execution policies to each security policy project.
-- Scan execution policies may be [overridden](pipeline_execution_policies.md#interaction-with-scan-execution-policies) by pipeline execution policies when you use `override_ci` strategy.
+- Local project YAML files cannot override scan execution policies. These policies take precedence over any configurations defined for a pipeline, even if you use the same job name in your project's CI/CD configuration.
+- Pipeline execution policies can [override](pipeline_execution_policies.md#interaction-with-scan-execution-policies) scan execution policies when you use the `override_ci` strategy.
 
 ## Jobs
 

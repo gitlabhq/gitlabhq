@@ -7,7 +7,7 @@
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: nagyv-gitlab
-  stage: depoy
+  stage: deploy
   issue_url: https://gitlab.com/components/opentofu/-/issues/43#note_1913822299
   impact: low
   scope: project
