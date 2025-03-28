@@ -26,11 +26,11 @@ if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
 
   if [[ "${GLCI_PUSH_CACHED_ASSETS}" == "true" ]]; then
     echo "Pushing assets cache to GitLab"
+    echo -n "${GITLAB_ASSETS_HASH}" >"cached-assets-hash.txt"
     create_gitlab_assets_package
     upload_gitlab_assets_package
   fi
 else
   assets_compile_script
+  echo -n "${GITLAB_ASSETS_HASH}" >"cached-assets-hash.txt"
 fi
-
-echo -n "${GITLAB_ASSETS_HASH}" >"cached-assets-hash.txt"

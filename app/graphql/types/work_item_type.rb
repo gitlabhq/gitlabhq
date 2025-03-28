@@ -10,6 +10,7 @@ module Types
     authorize :read_work_item
 
     present_using WorkItemPresenter
+    expose_permissions Types::PermissionTypes::WorkItem
 
     field :author, Types::UserType, null: true,
       description: 'User that created the work item.',
@@ -90,8 +91,6 @@ module Types
 
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
-
-    expose_permissions Types::PermissionTypes::WorkItem
 
     def work_item_type
       context.scoped_set!(:resource_parent, object.resource_parent)

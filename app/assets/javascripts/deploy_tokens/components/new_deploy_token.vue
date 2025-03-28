@@ -45,6 +45,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    dependencyProxyEnabled: {
+      type: Boolean,
+      required: true,
+    },
     packagesRegistryEnabled: {
       type: Boolean,
       required: true,
@@ -84,6 +88,8 @@ export default {
         writeRepository: false,
         readRegistry: false,
         writeRegistry: false,
+        readVirtualRegistry: false,
+        writeVirtualRegistry: false,
         readPackageRegistry: false,
         writePackageRegistry: false,
         scopes: [
@@ -107,6 +113,20 @@ export default {
             value: false,
             helpText: this.$options.translations.writeRegistryHelp,
             scopeName: 'write_registry',
+          },
+          {
+            id: 'deploy_token_read_virtual_registry',
+            isShown: this.$props.dependencyProxyEnabled,
+            value: false,
+            helpText: this.$options.translations.readVirtualRegistryHelp,
+            scopeName: 'read_virtual_registry',
+          },
+          {
+            id: 'deploy_token_write_virtual_registry',
+            isShown: this.$props.dependencyProxyEnabled,
+            value: false,
+            helpText: this.$options.translations.writeVirtualRegistryHelp,
+            scopeName: 'write_virtual_registry',
           },
           {
             id: 'deploy_token_read_package_registry',

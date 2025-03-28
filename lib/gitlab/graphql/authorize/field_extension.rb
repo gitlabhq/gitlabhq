@@ -81,9 +81,11 @@ module Gitlab
         end
 
         def set_skip_type_authorization(context)
-          skip_type_authorization = Array.wrap(
-            [@field.skip_type_authorization, context[:skip_type_authorization]]
-          ).flatten.compact.uniq
+          skip_type_authorization = [@field.skip_type_authorization, context[:skip_type_authorization]]
+
+          skip_type_authorization.flatten!
+          skip_type_authorization.compact!
+          skip_type_authorization.uniq!
 
           context.scoped_set!(:skip_type_authorization, skip_type_authorization) if skip_type_authorization.any?
         end

@@ -872,12 +872,20 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             widgets {
               type
               ... on WorkItemWidgetNotes {
-                discussions(filter: ONLY_COMMENTS, first: 10) {
+                discussions(filter: ALL_NOTES, first: 10) {
                   nodes {
                     id
+                    resolvable
+                    resolvedBy {
+                      username
+                    }
+                    userPermissions {
+                      resolveNote
+                    }
                     notes {
                       nodes {
                         id
+                        system
                         body
                         maxAccessLevelOfAuthor
                         authorIsContributor
@@ -908,6 +916,52 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
         before_all do
           create(:award_emoji, awardable: note, name: 'rocket', user: developer)
+        end
+
+        context 'when fetching resolvable notes data' do
+          context 'with system notes' do
+            let_it_be(:comment1) { create(:discussion_note_on_issue, project: work_item.project, noteable: work_item) }
+            let_it_be(:comment2) { create(:note, discussion_id: comment1.discussion_id) }
+            let_it_be(:sys_note1) { create(:system_note, project: work_item.project, noteable: work_item) }
+            let_it_be(:sys_note2) { create(:resource_state_event, user: developer, issue: work_item, state: :closed) }
+
+            it 'returns resolve note permission' do
+              all_widgets = graphql_dig_at(work_item_data, :widgets)
+              notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+              discussions = graphql_dig_at(notes_widget['discussions'], :nodes)
+
+              expect(discussions).to include(
+                hash_including(
+                  'id' => note.discussion.to_global_id.to_s,
+                  'resolvable' => false,
+                  'userPermissions' => {
+                    'resolveNote' => true
+                  }
+                ),
+                hash_including(
+                  'id' => comment1.discussion.to_global_id.to_s,
+                  'resolvable' => true,
+                  'userPermissions' => {
+                    'resolveNote' => true
+                  }
+                ),
+                hash_including(
+                  'id' => sys_note1.discussion.to_global_id.to_s,
+                  'resolvable' => false,
+                  'userPermissions' => {
+                    'resolveNote' => false
+                  }
+                ),
+                hash_including(
+                  'id' => sys_note2.work_item_synthetic_system_note.discussion.to_global_id.to_s,
+                  'resolvable' => false,
+                  'userPermissions' => {
+                    'resolveNote' => false
+                  }
+                )
+              )
+            end
+          end
         end
 
         it 'returns award emoji data' do

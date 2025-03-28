@@ -36,6 +36,12 @@ const translations = {
   writeRegistryHelp: s__(
     'DeployTokens|Allows write access to registry images. You need both read and write access to push images.',
   ),
+  readVirtualRegistryHelp: s__(
+    'DeployTokens|Allows read-only access to container images through the dependency proxy.',
+  ),
+  writeVirtualRegistryHelp: s__(
+    'DeployTokens|Allows read, write, and delete access to container images through the dependency proxy.',
+  ),
   readPackageRegistryHelp: s__('DeployTokens|Allows read-only access to the package registry.'),
   groupWritePackageRegistryHelp: s__(
     'DeployTokens|Allows read and write access to the package registry.',

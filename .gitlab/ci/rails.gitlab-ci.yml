@@ -651,11 +651,6 @@ rspec:merge-auto-explain-logs:
   needs: !reference ["rspec:coverage", "needs"]
   script:
     - scripts/merge-auto-explain-logs
-    - |
-      if [[ -f "$RSPEC_AUTO_EXPLAIN_LOG_PATH" && "$CI_COMMIT_REF_NAME" == "$CI_DEFAULT_BRANCH" ]]; then
-        source scripts/gitlab_component_helpers.sh
-        create_and_upload_auto_explain_package
-      fi
   artifacts:
     name: auto-explain-logs
     expire_in: 31d

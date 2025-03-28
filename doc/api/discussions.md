@@ -1375,15 +1375,14 @@ Parameters:
 | `position[position_type]` | string         | yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
 | `created_at`              | string         | no                               | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `position`                | hash           | no                               | Position when creating a diff note. |
-
-| `position[new_path]`      | string         | no       | File path after change. |
-| `position[new_line]`      | integer        | no       | Line number after change. |
-| `position[old_path]`      | string         | no       | File path before change. |
-| `position[old_line]`      | integer        | no       | Line number before change. |
-| `position[height]`        | integer        | no       | For `image` diff notes, image height. |
-| `position[width]`         | integer        | no       | For `image` diff notes, image width. |
-| `position[x]`             | integer        | no       | For `image` diff notes, X coordinate. |
-| `position[y]`             | integer        | no       | For `image` diff notes, Y coordinate. |
+| `position[new_path]`      | string         | no                               | File path after change. |
+| `position[new_line]`      | integer        | no                               | Line number after change. |
+| `position[old_path]`      | string         | no                               | File path before change. |
+| `position[old_line]`      | integer        | no                               | Line number before change. |
+| `position[height]`        | integer        | no                               | For `image` diff notes, image height. |
+| `position[width]`         | integer        | no                               | For `image` diff notes, image width. |
+| `position[x]`             | integer        | no                               | For `image` diff notes, X coordinate. |
+| `position[y]`             | integer        | no                               | For `image` diff notes, Y coordinate. |
 
 ```shell
 curl --request POST \

@@ -39,6 +39,7 @@
   - c.with_form do
     #js-new-deploy-token{ data: {
         container_registry_enabled: container_registry_enabled?(group_or_project),
+        dependency_proxy_enabled: dependency_proxy_enabled?(group_or_project),
         packages_registry_enabled: packages_registry_enabled?(group_or_project),
         create_new_token_path: create_deploy_token_path(group_or_project),
         token_type: group_or_project.is_a?(Group) ? 'group' : 'project',

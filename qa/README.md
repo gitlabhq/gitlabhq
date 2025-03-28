@@ -1,6 +1,6 @@
 # GitLab QA - End-to-end tests for GitLab
 
-This directory contains [end-to-end tests](../doc/development/testing_guide/end_to_end/index.md)
+This directory contains [end-to-end tests](../doc/development/testing_guide/end_to_end/_index.md)
 for GitLab. It includes the test framework and the tests themselves.
 
 The tests can be found in `qa/specs/features` (not to be confused with the unit
@@ -84,15 +84,15 @@ By default tests on CI use `info` log level. `debug` level is still available in
 - [Writing tests from scratch tutorial](../doc/development/testing_guide/end_to_end/beginners_guide.md)
   - [Best practices](../doc/development/testing_guide/best_practices.md)
   - [Using page objects](../doc/development/testing_guide/end_to_end/page_objects.md)
-  - [Guidelines](../doc/development/testing_guide/index.md)
+  - [Guidelines](../doc/development/testing_guide/_index.md)
   - [Tests with special setup for local environments](../doc/development/testing_guide/end_to_end/running_tests_that_require_special_setup.md)
 
 ### Running tests
 
-- [Against your GDK environment](../doc/development/testing_guide/end_to_end/running_tests/index.md#against-your-gdk-environment)
-- [Against GitLab in Docker](../doc/development/testing_guide/end_to_end/running_tests/index.md#against-gitlab-in-docker)
-- [Specific types of tests](../doc/development/testing_guide/end_to_end/running_tests/index.md#specific-types-of-tests)
-- [Test configuration](../doc/development/testing_guide/end_to_end/running_tests/index.md#test-configuration)
+- [Against your GDK environment](../doc/development/testing_guide/end_to_end/running_tests/_index.md#against-your-gdk-environment)
+- [Against GitLab in Docker](../doc/development/testing_guide/end_to_end/running_tests/_index.md#against-gitlab-in-docker)
+- [Specific types of tests](../doc/development/testing_guide/end_to_end/running_tests/_index.md#specific-types-of-tests)
+- [Test configuration](../doc/development/testing_guide/end_to_end/running_tests/_index.md#test-configuration)
 
 ### Building a Docker image to test
 

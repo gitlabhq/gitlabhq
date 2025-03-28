@@ -77,6 +77,7 @@ Prerequisites:
 
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
 - Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
+- Deploy token scopes `read_virtual_registry` and `write_virtual_registry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336800) in GitLab 17.11 with a flag named `dependency_proxy_read_write_scopes`. Disabled by default.
 
 {{< /history >}}
 
@@ -101,9 +102,17 @@ echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com --username
 You can authenticate using:
 
 - Your GitLab username and password.
-- A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`, or to `api`.
-- A [group deploy token](../../project/deploy_tokens/_index.md) with the scope set to `read_registry` and `write_registry`.
-- A [group access token](../../group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`, or to `api`.
+- A [personal access token](../../profile/personal_access_tokens.md).
+- A [group deploy token](../../project/deploy_tokens/_index.md).
+- A [group access token](../../group/settings/group_access_tokens.md) for the group.
+
+The token should have the scope set to one of the following:
+
+- `api`: Grants full API access.
+- `read_registry`: Grants read-only access to the container registry.
+- `write_registry`: Grants both read and write access to the container registry.
+- `read_virtual_registry`: Grants read-only access (pull) to container images through the dependency proxy.
+- `write_virtual_registry`: Grants read (pull), write (push), and delete access to container images through the dependency proxy.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.

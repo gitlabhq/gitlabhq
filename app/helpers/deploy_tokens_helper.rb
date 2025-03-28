@@ -14,6 +14,13 @@ module DeployTokensHelper
       can?(current_user, :manage_deploy_tokens, group_or_project)
   end
 
+  def dependency_proxy_enabled?(group_or_project)
+    return false unless ::Gitlab.config.dependency_proxy.enabled
+
+    can?(current_user, :read_dependency_proxy, group_or_project) ||
+      can?(current_user, :manage_deploy_tokens, group_or_project)
+  end
+
   def packages_registry_enabled?(group_or_project)
     return false unless ::Gitlab.config.packages.enabled
 

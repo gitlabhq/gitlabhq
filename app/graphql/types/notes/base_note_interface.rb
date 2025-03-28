@@ -56,7 +56,10 @@ module Types
       end
 
       def url
-        ::Gitlab::UrlBuilder.build(object)
+        # compute note url if noteable_url is not already precomputed
+        return ::Gitlab::UrlBuilder.build(object) unless context[:noteable_url]
+
+        context[:noteable_url] + "#note_#{object.id}"
       end
 
       def body_first_line_html
