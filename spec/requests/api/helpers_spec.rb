@@ -42,7 +42,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
     env['warden'] = warden
   end
 
-  def error!(message, status, header = {})
+  def error!(message, status, header)
     raise StandardError, "#{status} - #{message}"
   end
 
@@ -336,7 +336,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
   describe '.handle_api_exception' do
     before do
-      allow_any_instance_of(self.class).to receive(:error!)
+      allow_any_instance_of(self.class).to receive(:rack_response)
 
       stub_sentry_settings
 

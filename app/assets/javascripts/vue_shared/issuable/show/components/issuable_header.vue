@@ -47,11 +47,6 @@ export default {
       required: false,
       default: '',
     },
-    statusIconClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     blocked: {
       type: Boolean,
       required: false,

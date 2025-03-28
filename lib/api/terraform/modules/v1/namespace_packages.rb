@@ -234,7 +234,7 @@ module API
                 ]
                 tags %w[terraform_registry]
               end
-              get format: true do
+              get format: false do
                 presenter = ::Terraform::ModuleVersionPresenter.new(package, params[:module_system])
                 present presenter, with: ::API::Entities::Terraform::ModuleVersion
               end

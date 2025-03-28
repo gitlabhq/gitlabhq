@@ -320,9 +320,9 @@ export const sortedFrequentItems = [
 ];
 
 export const sidebarDataCountResponse = ({
-  openIssuesCount = null,
-  openMergeRequestsCount = null,
-}) => {
+  openIssuesCount = 8,
+  openMergeRequestsCount = 236456,
+} = {}) => {
   return {
     data: {
       namespace: {

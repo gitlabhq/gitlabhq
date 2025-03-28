@@ -129,11 +129,11 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns 404 for invalid `id` parameter' do
+    it 'returns 400 for invalid `id` parameter' do
       get api('/topics/invalid')
 
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['error']).to eql('404 Not Found')
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eql('id is invalid')
     end
   end
 
@@ -245,11 +245,11 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it 'returns 404 for invalid `id` parameter' do
+      it 'returns 400 for invalid `id` parameter' do
         put api('/topics/invalid', admin, admin_mode: true), params: params
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['error']).to eql('404 Not Found')
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eql('id is invalid')
       end
 
       context 'with blank avatar' do
@@ -318,11 +318,11 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it 'returns 404 for invalid `id` parameter' do
+      it 'returns 400 for invalid `id` parameter' do
         delete api('/topics/invalid', admin, admin_mode: true), params: params
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['error']).to eql('404 Not Found')
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eql('id is invalid')
       end
     end
 

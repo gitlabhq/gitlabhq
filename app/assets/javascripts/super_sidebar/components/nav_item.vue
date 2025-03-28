@@ -8,7 +8,6 @@ import {
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
 import eventHub from '../event_hub';
-import { formatAsyncCount } from '../utils';
 import NavItemLink from './nav_item_link.vue';
 import NavItemRouterLink from './nav_item_router_link.vue';
 
@@ -81,7 +80,7 @@ export default {
   computed: {
     pillData() {
       if (this.item.pill_count_field) {
-        return formatAsyncCount(this.asyncCount[this.item.pill_count_field]);
+        return this.asyncCount[this.item.pill_count_field];
       }
       return this.item.pill_count;
     },

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::FilterParameters do
   subject { described_class.new }
 
   describe ".parameters" do
-    let(:route) { instance_double('Grape::Router::Route', options: options) }
+    let(:route) { instance_double('Grape::Router::Route', settings: settings) }
     let(:endpoint) { instance_double('Grape::Endpoint', route: route) }
 
     let(:env) do
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::FilterParameters do
     end
 
     context 'when the log_safety setting is provided' do
-      let(:options) { { settings: { log_safety: { safe: %w[foo bar key], unsafe: %w[oof rab value] } } } }
+      let(:settings) { { log_safety: { safe: %w[foo bar key], unsafe: %w[oof rab value] } } }
 
       it 'includes safe parameters, and filters unsafe ones' do
         data = subject.parameters(mock_request, nil)
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::FilterParameters do
     end
 
     context 'when the log_safety is not provided' do
-      let(:options) { {} }
+      let(:settings) { {} }
 
       it 'behaves like the normal parameter filter' do
         data = subject.parameters(mock_request, nil)

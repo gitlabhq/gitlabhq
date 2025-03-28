@@ -657,6 +657,11 @@ class ApplicationSetting < ApplicationRecord
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
+  jsonb_accessor :clickhouse,
+    use_clickhouse_for_analytics: [:boolean, { default: false }]
+
+  validates :clickhouse, json_schema: { filename: "application_setting_clickhouse" }
+
   jsonb_accessor :rate_limits,
     autocomplete_users_limit: [:integer, { default: 300 }],
     autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],

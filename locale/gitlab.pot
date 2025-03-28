@@ -17895,9 +17895,6 @@ msgstr ""
 msgid "Creates a branch and a merge request to resolve this issue."
 msgstr ""
 
-msgid "Creates a reminder to-do item after the specified time period."
-msgstr ""
-
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
@@ -26267,6 +26264,9 @@ msgstr ""
 msgid "Geo|%{noBoldStart}Next sync retry:%{noBoldEnd} Retry #%{retryCount} scheduled %{timeAgo}"
 msgstr ""
 
+msgid "Geo|%{noBoldStart}Next verification retry:%{noBoldEnd} Retry #%{retryCount} scheduled %{timeAgo}"
+msgstr ""
+
 msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
@@ -26304,6 +26304,9 @@ msgid "Geo|Allowed Geo IP should be between 1 and 255 characters"
 msgstr ""
 
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
+msgstr ""
+
+msgid "Geo|Checksum: %{verificationChecksum}"
 msgstr ""
 
 msgid "Geo|Checksummed"
@@ -26373,6 +26376,9 @@ msgid "Geo|Error: %{message}"
 msgstr ""
 
 msgid "Geo|Errors:"
+msgstr ""
+
+msgid "Geo|Expected checksum: %{verificationChecksum}"
 msgstr ""
 
 msgid "Geo|External URL"
@@ -26448,6 +26454,9 @@ msgid "Geo|Last synced: %{timeAgo}"
 msgstr ""
 
 msgid "Geo|Last time verified"
+msgstr ""
+
+msgid "Geo|Last verified: %{timeAgo}"
 msgstr ""
 
 msgid "Geo|Learn more about Geo"
@@ -26648,6 +26657,9 @@ msgstr ""
 msgid "Geo|Storage config"
 msgstr ""
 
+msgid "Geo|Succeeded"
+msgstr ""
+
 msgid "Geo|Synced"
 msgstr ""
 
@@ -26745,6 +26757,9 @@ msgid "Geo|Verification failed - %{error}"
 msgstr ""
 
 msgid "Geo|Verification information"
+msgstr ""
+
+msgid "Geo|Verification started: %{timeAgo}"
 msgstr ""
 
 msgid "Geo|Verification status"
@@ -48918,9 +48933,6 @@ msgstr ""
 msgid "Remind later"
 msgstr ""
 
-msgid "Reminder set."
-msgstr ""
-
 msgid "Remote"
 msgstr ""
 
@@ -55646,9 +55658,6 @@ msgid "Set to 0 to disable timeout."
 msgstr ""
 
 msgid "Set to auto-merge"
-msgstr ""
-
-msgid "Set to-do reminder"
 msgstr ""
 
 msgid "Set up"

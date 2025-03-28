@@ -1,5 +1,6 @@
 import { transformAstToDisplayFields } from '~/glql/core/transformer/ast';
 import * as ast from '~/glql/core/parser/ast';
+import { derivedFields } from '~/glql/core/transformer/derived_fields';
 
 describe('transformAstToDisplayFields', () => {
   it('transforms a single field name', () => {
@@ -73,6 +74,17 @@ describe('transformAstToDisplayFields', () => {
       },
       { key: 'descriptionHtml', label: 'Description', name: 'descriptionHtml' },
     ]);
+  });
+
+  it('gets transformer for derived field', () => {
+    const input = ast.fieldName('lastComment');
+    const result = transformAstToDisplayFields(input);
+    expect(result).toEqual({
+      key: 'lastComment',
+      label: 'Last comment',
+      name: 'lastComment',
+      transform: derivedFields.lastComment,
+    });
   });
 
   it('throws an error for unknown AST node types', () => {

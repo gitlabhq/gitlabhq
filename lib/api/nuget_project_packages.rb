@@ -377,7 +377,7 @@ module API
             requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version',
               regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.0.1' }
           end
-          delete '*package_name/*package_version', format: true, urgency: :low do
+          delete '*package_name/*package_version', format: false, urgency: :low do
             authorize_destroy_package!(project_or_group)
 
             destroy_conditionally!(find_package) do |package|

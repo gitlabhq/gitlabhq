@@ -1415,7 +1415,6 @@ RSpec/BeEq:
     - 'spec/support/shared_examples/lib/gitlab/repo_type_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/repository_size_checker_shared_examples.rb'
     - 'spec/support/shared_examples/lib/sidebars/projects/menus/zentao_menu_shared_examples.rb'
-    - 'spec/support/shared_examples/lib/sidebars/your_work/menus/menu_item_examples.rb'
     - 'spec/support/shared_examples/loose_foreign_keys/have_loose_foreign_key.rb'
     - 'spec/support/shared_examples/mailers/notify_shared_examples.rb'
     - 'spec/support/shared_examples/models/active_record_enum_shared_examples.rb'

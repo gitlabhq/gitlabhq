@@ -124,26 +124,26 @@ module API
     after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
-      error!({ 'message' => '403 Forbidden' }, 403)
+      rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
     end
 
     rescue_from ActiveRecord::RecordNotFound do
-      error!({ 'message' => '404 Not found' }, 404)
+      rack_response({ 'message' => '404 Not found' }.to_json, 404)
     end
 
     rescue_from(
       ::ActiveRecord::StaleObjectError,
       ::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     ) do
-      error!({ 'message' => '409 Conflict: Resource lock' }, 409)
+      rack_response({ 'message' => '409 Conflict: Resource lock' }.to_json, 409)
     end
 
     rescue_from UploadedFile::InvalidPathError do |e|
-      error!({ 'message' => e.message }, 400)
+      rack_response({ 'message' => e.message }.to_json, 400)
     end
 
     rescue_from ObjectStorage::RemoteStoreError do |e|
-      error!({ 'message' => e.message }, 500)
+      rack_response({ 'message' => e.message }.to_json, 500)
     end
 
     # Retain 405 error rather than a 500 error for Grape 0.15.0+.
@@ -157,15 +157,15 @@ module API
     end
 
     rescue_from MovedPermanentlyError do |e|
-      error!(e.message, 301, { 'Location' => e.location_url })
+      rack_response(e.message, 301, { 'Location' => e.location_url })
     end
 
     rescue_from Gitlab::Auth::TooManyIps do |e|
-      error!({ 'message' => '403 Forbidden' }, 403)
+      rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
     end
 
     rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
-      error!({ 'message' => exception.message }, 503, exception.headers)
+      rack_response({ 'message' => exception.message }.to_json, 503, exception.headers)
     end
 
     rescue_from :all do |exception|
@@ -183,7 +183,7 @@ module API
 
     rescue_from RateLimitedService::RateLimitedError do |exception|
       exception.log_request(context.request, context.current_user)
-      error!({ 'message' => { 'error' => exception.message } }, 429, exception.headers)
+      rack_response({ 'message' => { 'error' => exception.message } }.to_json, 429, exception.headers)
     end
 
     format :json

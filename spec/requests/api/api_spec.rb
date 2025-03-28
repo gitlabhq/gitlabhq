@@ -404,7 +404,7 @@ RSpec.describe API::API, feature_category: :system_access do
             'route' => '/api/:version/*path'
           )
 
-          expect(data.stringify_keys).not_to include('meta.user')
+          expect(data.stringify_keys).not_to include('meta.caller_id', 'meta.user')
         end
 
         get('/api/v4_or_is_it')
@@ -582,10 +582,8 @@ RSpec.describe API::API, feature_category: :system_access do
   end
 
   describe 'Grape::Exceptions::Base handler' do
-    let_it_be(:user) { create(:user) }
-
     it 'returns 400 on JSON parse errors' do
-      post api('/projects', user),
+      post api('/projects'),
         params: '{"test":"random_\$escaped/symbols\;here"}',
         headers: { 'content-type' => 'application/json' }
 

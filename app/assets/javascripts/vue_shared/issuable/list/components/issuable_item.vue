@@ -11,7 +11,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_OPEN, STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { isExternal, setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
+import { isExternal, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
@@ -248,9 +248,6 @@ export default {
           this.issuable.assignees,
       );
     },
-    issuableNotesLink() {
-      return setUrlFragment(this.issuableLinkHref, 'notes');
-    },
     statusBadgeVariant() {
       if (this.isMergeRequest && this.isClosed) {
         return 'danger';
@@ -302,17 +299,6 @@ export default {
     labelTarget(label) {
       const value = encodeURIComponent(this.labelTitle(label));
       return `?${this.labelFilterParam}[]=${value}`;
-    },
-    /**
-     * This is needed as an independent method since
-     * when user changes current page, `$refs.authorLink`
-     * will be null until next page results are loaded & rendered.
-     */
-    getAuthorPopoverTarget() {
-      if (this.$refs.authorLink) {
-        return this.$refs.authorLink.$el;
-      }
-      return '';
     },
     handleIssuableItemClick(e) {
       if (e.metaKey || e.ctrlKey || this.showCheckbox || e.button === 1) {

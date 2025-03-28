@@ -8,7 +8,7 @@ title: Use ClickHouse for analytics reports
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}

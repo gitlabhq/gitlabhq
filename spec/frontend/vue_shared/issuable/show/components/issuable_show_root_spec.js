@@ -45,7 +45,6 @@ describe('IssuableShowRoot', () => {
   describe('template', () => {
     const {
       statusIcon,
-      statusIconClass,
       enableEdit,
       enableAutocomplete,
       editFormVisible,
@@ -67,7 +66,6 @@ describe('IssuableShowRoot', () => {
       expect(issuableHeader.props()).toMatchObject({
         issuableState: state,
         statusIcon,
-        statusIconClass,
         blocked,
         confidential,
         createdAt,

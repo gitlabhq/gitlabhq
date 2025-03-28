@@ -8,7 +8,6 @@ import { __ } from '~/locale';
 import { DRAG_DELAY } from '~/sortable/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import issuableEventHub from '~/issues/list/eventhub';
 import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
@@ -44,7 +43,6 @@ export default {
     LocalStorageSync,
     EmptyResult,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     namespace: {
       type: String,
@@ -260,9 +258,6 @@ export default {
     },
     issuablesWrapper() {
       return this.isManualOrdering ? VueDraggable : 'ul';
-    },
-    gridViewFeatureEnabled() {
-      return Boolean(this.glFeatures?.issuesGridView);
     },
     hasItems() {
       return this.issuables.length > 0;

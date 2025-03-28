@@ -114,7 +114,7 @@ module API
                 params do
                   use :terraform_get
                 end
-                get format: true do
+                get format: false do
                   present_package_file
                 end
 

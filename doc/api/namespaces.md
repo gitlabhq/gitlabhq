@@ -33,7 +33,7 @@ GET /namespaces
 
 | Attribute        | Type    | Required | Description |
 | ---------------- | ------- | -------- | ----------- |
-| `search`         | string  | no       | Only returns namespaces accessible by the current user. |
+| `search`         | string  | no       | Returns only namespaces that contain the specified value in their name or path. |
 | `owned_only`     | boolean | no       | If `true`, only returns namespaces by the current user. |
 | `top_level_only` | boolean | no       | In GitLab 16.8 and later, if `true`, only returns top-level namespaces. |
 

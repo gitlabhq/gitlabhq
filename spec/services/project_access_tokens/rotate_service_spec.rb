@@ -134,13 +134,18 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
 
           context 'when its a bot user' do
             let_it_be(:bot_user) { create(:user, :project_bot) }
+            let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
             let_it_be(:bot_user_membership) do
-              create(:project_member, :developer, user: bot_user, project: create(:project))
+              create(
+                :project_member,
+                :developer,
+                user: bot_user,
+                project: create(:project),
+                expires_at: token.expires_at
+              )
             end
 
-            let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
-
-            it 'does not update membership expires at' do
+            it 'does not set membership expires at' do
               response
               expect(bot_user_membership.reload.expires_at).to be_nil
             end

@@ -13,15 +13,15 @@ module Gitlab
 
         def safe_parameters(request)
           loggable_params = super
-          options = request.env[Grape::Env::API_ENDPOINT]&.route&.options
+          settings = request.env[Grape::Env::API_ENDPOINT]&.route&.settings
 
-          return loggable_params unless options&.dig(:settings, :log_safety)
+          return loggable_params unless settings&.key?(:log_safety)
 
-          options[:settings][:log_safety][:safe].each do |key|
+          settings[:log_safety][:safe].each do |key|
             loggable_params[key] = request.params[key] if loggable_params.key?(key)
           end
 
-          options[:settings][:log_safety][:unsafe].each do |key|
+          settings[:log_safety][:unsafe].each do |key|
             loggable_params[key] = @replacement if loggable_params.key?(key)
           end
 

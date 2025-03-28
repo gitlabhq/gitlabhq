@@ -48,12 +48,12 @@ module Sidebars
 
         override :has_pill?
         def has_pill?
-          pill_count > 0
+          true
         end
 
-        override :pill_count
-        def pill_count
-          user_merge_requests_counts[:total]
+        override :pill_count_field
+        def pill_count_field
+          "total_merge_requests"
         end
 
         private
@@ -66,7 +66,7 @@ module Sidebars
             link: link,
             active_routes: { page: link },
             has_pill: true,
-            pill_count: user_merge_requests_counts[:assigned],
+            pill_count_field: "assigned_merge_requests",
             item_id: :merge_requests_assigned
           )
         end
@@ -79,7 +79,7 @@ module Sidebars
             link: link,
             active_routes: { page: link },
             has_pill: true,
-            pill_count: user_merge_requests_counts[:review_requested],
+            pill_count_field: "review_requested_merge_requests",
             item_id: :merge_requests_to_review
           )
         end

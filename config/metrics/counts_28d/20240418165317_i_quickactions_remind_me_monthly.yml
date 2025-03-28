@@ -3,9 +3,11 @@ key_path: redis_hll_counters.code_review.i_quickactions_remind_me_monthly
 description: Count of WAU using the `/remind_me` quick action
 product_group: code_review
 value_type: number
-status: active
+status: removed
 milestone: "17.0"
+milestone_removed: "17.11"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149938
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185413
 time_frame: 28d
 data_source: redis_hll
 data_category: optional

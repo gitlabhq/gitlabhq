@@ -126,5 +126,25 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         expect { response }.not_to change { token.reload.revoked? }.from(false)
       end
     end
+
+    context "for service account's token" do
+      let_it_be(:current_user) { create(:user, :service_account) }
+      let_it_be(:token, reload: true) do
+        create(:personal_access_token, user: current_user, expires_at: Time.zone.today + 30.days)
+      end
+
+      it_behaves_like "rotates token successfully"
+
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/526327
+      context 'with membership expiration date' do
+        let_it_be(:membership_with_expiration_date) do
+          create(:project_member, user: current_user, expires_at: 30.days.since)
+        end
+
+        it 'does not update membership expiration date' do
+          expect { response }.not_to change { membership_with_expiration_date.reload.expires_at }
+        end
+      end
+    end
   end
 end

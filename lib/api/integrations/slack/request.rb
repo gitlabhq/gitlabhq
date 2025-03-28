@@ -5,8 +5,8 @@ module API
     module Slack
       module Request
         VERIFICATION_VERSION = 'v0'
-        VERIFICATION_TIMESTAMP_HEADER = 'x-slack-request-timestamp'
-        VERIFICATION_SIGNATURE_HEADER = 'x-slack-signature'
+        VERIFICATION_TIMESTAMP_HEADER = 'X-Slack-Request-Timestamp'
+        VERIFICATION_SIGNATURE_HEADER = 'X-Slack-Signature'
         VERIFICATION_DELIMITER = ':'
         VERIFICATION_HMAC_ALGORITHM = 'sha256'
         VERIFICATION_TIMESTAMP_EXPIRY = 1.minute.to_i

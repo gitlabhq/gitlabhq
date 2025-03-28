@@ -15,19 +15,14 @@ const functions = {
         if (values.length > 10)
           throw new Error(__('Function `labels` can only take a maximum of 10 parameters.'));
 
+        const filter = (label) => values.some((value) => wildcardMatch(label.title, value));
         return {
           ...data,
-          nodes: data.nodes.map((node) => {
-            const filter = (label) => values.some((value) => wildcardMatch(label.title, value));
-            return {
-              ...node,
-              [key]: { ...node.labels, nodes: node.labels.nodes.filter(filter) },
-              labels: {
-                ...node.labels,
-                nodes: node.labels.nodes.filter((label) => !filter(label)),
-              },
-            };
-          }),
+          [key]: { ...data.labels, nodes: data.labels.nodes.filter(filter) },
+          labels: {
+            ...data.labels,
+            nodes: data.labels.nodes.filter((label) => !filter(label)),
+          },
         };
       },
   },

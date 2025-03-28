@@ -1,6 +1,7 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoolPresenter from '~/glql/components/presenters/bool.vue';
 import HealthPresenter from '~/glql/components/presenters/health.vue';
+import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
 import LinkPresenter from '~/glql/components/presenters/link.vue';
@@ -60,9 +61,10 @@ describe('componentForField', () => {
 
   describe('if field name is passed', () => {
     it.each`
-      fieldName         | field        | presenter          | presenterName
-      ${'healthStatus'} | ${'onTrack'} | ${HealthPresenter} | ${'HealthPresenter'}
-      ${'state'}        | ${'opened'}  | ${StatePresenter}  | ${'StatePresenter'}
+      fieldName         | field            | presenter          | presenterName
+      ${'healthStatus'} | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
+      ${'state'}        | ${'opened'}      | ${StatePresenter}  | ${'StatePresenter'}
+      ${'lastComment'}  | ${'lastComment'} | ${HtmlPresenter}   | ${'HtmlPresenter'}
     `('returns $presenterName for field name: $fieldName', ({ fieldName, field, presenter }) => {
       expect(componentForField(field, fieldName)).toBe(presenter);
     });

@@ -906,6 +906,21 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryjobsrunnertypes"></a>`runnerTypes` {{< icon name="warning-solid" >}} | [`[CiRunnerType!]`](#cirunnertype) | **Introduced** in GitLab 16.4. **Status**: Experiment. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | <a id="queryjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
+### `Query.ldapAdminRoleLinks`
+
+LDAP admin links. Available only for GitLab Self-Managed.
+
+{{< details >}}
+**Introduced** in GitLab 17.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`LdapAdminRoleLinkConnection`](#ldapadminrolelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.licenseHistoryEntries`
 
 Fields related to entries in the license history.
@@ -16534,6 +16549,29 @@ The edge type for [`Label`](#label).
 | <a id="labeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="labeledgenode"></a>`node` | [`Label`](#label) | The item at the end of the edge. |
 
+#### `LdapAdminRoleLinkConnection`
+
+The connection type for [`LdapAdminRoleLink`](#ldapadminrolelink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ldapadminrolelinkconnectionedges"></a>`edges` | [`[LdapAdminRoleLinkEdge]`](#ldapadminrolelinkedge) | A list of edges. |
+| <a id="ldapadminrolelinkconnectionnodes"></a>`nodes` | [`[LdapAdminRoleLink]`](#ldapadminrolelink) | A list of nodes. |
+| <a id="ldapadminrolelinkconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `LdapAdminRoleLinkEdge`
+
+The edge type for [`LdapAdminRoleLink`](#ldapadminrolelink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ldapadminrolelinkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ldapadminrolelinkedgenode"></a>`node` | [`LdapAdminRoleLink`](#ldapadminrolelink) | The item at the end of the edge. |
+
 #### `LfsObjectRegistryConnection`
 
 The connection type for [`LfsObjectRegistry`](#lfsobjectregistry).
@@ -29811,6 +29849,20 @@ Label to apply to associated Kubernetes objects of a workspace.
 | <a id="labeltextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
 | <a id="labeltitle"></a>`title` | [`String!`](#string) | Content of the label. |
 | <a id="labelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the label was last updated. |
+
+### `LdapAdminRoleLink`
+
+Represents an instance-level LDAP link.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ldapadminrolelinkadminmemberrole"></a>`adminMemberRole` | [`AdminMemberRole!`](#adminmemberrole) | Custom admin member role. |
+| <a id="ldapadminrolelinkcn"></a>`cn` | [`String`](#string) | Common Name (CN) of the LDAP group. |
+| <a id="ldapadminrolelinkfilter"></a>`filter` | [`String`](#string) | Search filter for the LDAP group. |
+| <a id="ldapadminrolelinkid"></a>`id` | [`ID!`](#id) | ID of the LDAP link. |
+| <a id="ldapadminrolelinkprovider"></a>`provider` | [`String!`](#string) | LDAP provider for the LDAP link. |
 
 ### `LfsObjectRegistry`
 

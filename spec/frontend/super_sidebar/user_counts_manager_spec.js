@@ -47,6 +47,16 @@ describe('User Count Manager', () => {
     global.BroadcastChannel = newBroadcastChannelMock;
   });
 
+  describe('userCounts', () => {
+    it('returns total_merge_requests', () => {
+      expect(userCounts.total_merge_requests).toEqual(7);
+
+      Object.assign(userCounts, userCountUpdate, { last_update: 0 });
+
+      expect(userCounts.total_merge_requests).toEqual(101901);
+    });
+  });
+
   describe('createUserCountsManager', () => {
     beforeEach(() => {
       createUserCountsManager();
@@ -91,6 +101,16 @@ describe('User Count Manager', () => {
 
         expect(userCounts).toMatchObject(userCountUpdate);
         expect(userCounts.i_am_unknown).toBeUndefined();
+      });
+
+      it('does not update total_merge_requests', () => {
+        expect(userCounts).toMatchObject(userCountDefaults);
+        expect(userCounts.total_merge_requests).toEqual(7);
+
+        channelMock.onmessage({ data: { ...userCountUpdate, total_merge_requests: 22 } });
+
+        expect(userCounts).toMatchObject(userCountUpdate);
+        expect(userCounts.total_merge_requests).toEqual(101901);
       });
     });
 

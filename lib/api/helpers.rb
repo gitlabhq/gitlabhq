@@ -631,9 +631,7 @@ module API
     end
 
     def render_api_error!(message, status)
-      error_message = message.is_a?(ActiveModel::Errors) ? message.to_hash : message
-
-      render_structured_api_error!({ 'message' => error_message }, status)
+      render_structured_api_error!({ 'message' => message }, status)
     end
 
     def render_structured_api_error!(hash, status)
@@ -677,7 +675,7 @@ module API
           '500 Internal Server Error'
         end
 
-      error!({ 'message' => response_message }, 500)
+      rack_response({ 'message' => response_message }.to_json, 500)
     end
 
     # project helpers

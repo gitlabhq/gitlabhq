@@ -1374,10 +1374,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^8.7.4":
-  version "8.7.4"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-8.7.4.tgz#d74e342d1c9916ff72f7c01c13205a1c92ab41c2"
-  integrity sha512-AfiYPBNQEKHOq5Emh0WXORhI42rmzPaVccrD9mlD8R42RUKTcuC2ZLus8sANLAd67XxSqHkc/xjjPB4X4Qns+g==
+"@gitlab/duo-ui@^8.7.8":
+  version "8.7.8"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-8.7.8.tgz#7ce67a8126db9578d97c15234ec8b32f438cbd55"
+  integrity sha512-ma+Mk0cmbiZfdYVBTq+BvxDoKXJMjjXQKs1vSfICO4d9u2EHSgJpe4zUPYJWZ3Oc8GoC9ygzVqCz+1GDQCj4Jw==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -1422,10 +1422,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
-"@gitlab/query-language-rust@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.5.1.tgz#8ed59f3265c61168e550ef12054945ea4a64de57"
-  integrity sha512-CM7JjeJse7sl8/LBP1dbmhmYcliozsqjYaR9pMLsNckNZxcuHhXIMg0KbZrj3bOdY938iQeQAmH6K5g0UbdBew==
+"@gitlab/query-language-rust@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.5.2.tgz#0ffbc450bf4412b3b1073750b092e2fa268fa39c"
+  integrity sha512-22RQh6RvFQ5FmqR+RnPljIQ1aypE/+whOSYSjtMmGkH5Oey66rWjQ9Si4G7AnPtl2u17ANCqgIa1b+98q5X8tg==
 
 "@gitlab/stylelint-config@6.2.2":
   version "6.2.2"

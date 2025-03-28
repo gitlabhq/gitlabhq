@@ -190,69 +190,59 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
 
   def allowed_route_without_policies
     instance_double(Grape::Router::Route,
-      options: {
-        description: 'route description',
-        settings: {
-          authentication: { job_token_allowed: true }
-        }
+      settings: {
+        authentication: { job_token_allowed: true }
       },
       request_method: 'GET',
+      description: 'route description',
       origin: 'path/to/allowed_route_without_policies'
     )
   end
 
   def allowed_route_with_invalid_policies
     instance_double(Grape::Router::Route,
-      options: {
-        description: 'route description',
-        settings: {
-          authentication: { job_token_allowed: true },
-          authorization: { job_token_policies: :invalid_policy }
-        }
+      settings: {
+        authentication: { job_token_allowed: true },
+        authorization: { job_token_policies: :invalid_policy }
       },
       request_method: 'GET',
+      description: 'route description',
       origin: 'path/to/allowed_route_with_invalid_policies'
     )
   end
 
   def allowed_route_with_valid_policies
     instance_double(Grape::Router::Route,
-      options: {
-        description: 'route description',
-        settings: {
-          authentication: { job_token_allowed: true },
-          authorization: { job_token_policies: :read_packages }
-        }
+      settings: {
+        authentication: { job_token_allowed: true },
+        authorization: { job_token_policies: :read_packages }
       },
       request_method: 'GET',
+      description: 'route description',
       origin: 'path/to/allowed_route_with_valid_policies'
     )
   end
 
   def allowed_route_with_skipped_policies
     instance_double(Grape::Router::Route,
-      options: {
-        description: 'route description',
-        settings: {
-          authentication: { job_token_allowed: true },
-          authorization: { skip_job_token_policies: true }
-        }
+      settings: {
+        authentication: { job_token_allowed: true },
+        authorization: { skip_job_token_policies: true }
       },
       request_method: 'GET',
+      description: 'route description',
       origin: 'path/to/allowed_route_with_skipped_policies'
     )
   end
 
   def not_allowed_route
     instance_double(Grape::Router::Route,
-      options: {
-        description: 'route description',
-        settings: {
-          authentication: { job_token_allowed: false },
-          authorization: { job_token_policies: :read_packages }
-        }
+      settings: {
+        authentication: { job_token_allowed: false },
+        authorization: { job_token_policies: :read_packages }
       },
       request_method: 'GET',
+      description: 'route description',
       origin: 'path/to/route'
     )
   end

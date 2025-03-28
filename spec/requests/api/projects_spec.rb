@@ -4016,10 +4016,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    it 'returns a 404 when group id is not an integer' do
+    it 'returns a 400 when group id is not an integer' do
       delete api("/projects/#{project.id}/share/foo", user)
 
-      expect(response).to have_gitlab_http_status(:not_found)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns a 404 error when group link does not exist' do

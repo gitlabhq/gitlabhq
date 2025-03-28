@@ -156,7 +156,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap', feature_catego
 gem 'net-ldap', '~> 0.17.1', feature_category: :system_access
 
 # API
-gem 'grape', '~> 2.2.0', feature_category: :api
+gem 'grape', '~> 2.0.0', feature_category: :api
 gem 'grape-entity', '~> 1.0.1', feature_category: :api
 gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.5', group: [:development, :test], feature_category: :api

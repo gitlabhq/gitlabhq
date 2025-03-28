@@ -11,6 +11,7 @@ import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '~/super_sidebar/constants';
 import { sidebarData, sidebarDataCountResponse } from 'ee_else_ce_jest/super_sidebar/mock_data';
+import { userCounts } from '~/super_sidebar/user_counts_manager';
 
 const menuItems = [
   { id: 1, title: 'No subitems' },
@@ -215,12 +216,7 @@ describe('Sidebar Menu', () => {
   });
 
   describe('Fetching async nav item pill count', () => {
-    handler = jest.fn().mockResolvedValue(
-      sidebarDataCountResponse({
-        openIssuesCount: 8,
-        openMergeRequestsCount: 2,
-      }),
-    );
+    handler = jest.fn().mockResolvedValue(sidebarDataCountResponse());
 
     it('when there is no `currentPath` prop, the query is not called', async () => {
       createWrapper({
@@ -295,6 +291,32 @@ describe('Sidebar Menu', () => {
         },
       );
 
+      it('provides userCounts as async counts when panel is "Your work"', async () => {
+        Object.assign(userCounts, {
+          todos: 112,
+          assigned_issues: 0,
+          assigned_merge_requests: 3,
+          review_requested_merge_requests: 4,
+          last_update: Date.now(),
+        });
+
+        createWrapper({
+          items: menuItems,
+          panelType: 'your_work',
+        });
+
+        await waitForPromises();
+
+        expect(findNonStaticItems().wrappers.map((w) => w.props('asyncCount'))[0]).toMatchObject({
+          assigned_issues: null,
+          assigned_merge_requests: 3,
+          last_update: 1593993600000,
+          review_requested_merge_requests: 4,
+          todos: 112,
+          total_merge_requests: 7,
+        });
+      });
+
       it.each`
         component          | panelType    | property       | response
         ${'PinnedSection'} | ${'project'} | ${'data'}      | ${emptyData}
@@ -329,18 +351,7 @@ describe('Sidebar Menu', () => {
       `(
         'asyncCount prop returns the sidebar object for `$component` when it exists',
         async ({ panelType, componentAsyncProp }) => {
-          const asyncCountData = {
-            openIssuesCount: 8,
-            openMergeRequestsCount: 2,
-            __typename: 'NamespaceSidebar',
-          };
-
-          handler = jest.fn().mockResolvedValue(
-            sidebarDataCountResponse({
-              openIssuesCount: 8,
-              openMergeRequestsCount: 2,
-            }),
-          );
+          handler = jest.fn().mockResolvedValue(sidebarDataCountResponse());
 
           createWrapper({
             items: menuItems,
@@ -353,25 +364,15 @@ describe('Sidebar Menu', () => {
           await waitForPromises();
 
           expect(handler).toHaveBeenCalled();
-          expect(componentAsyncProp().wrappers.map((w) => w.props('asyncCount'))[0]).toMatchObject(
-            asyncCountData,
-          );
+          expect(componentAsyncProp().wrappers.map((w) => w.props('asyncCount'))[0]).toMatchObject({
+            openIssuesCount: '8',
+            openMergeRequestsCount: '236.5k',
+          });
         },
       );
 
       it('asyncCount prop returns the sidebar object for PinnedSection when it exists', async () => {
-        const asyncCountData = {
-          openIssuesCount: 8,
-          openMergeRequestsCount: 2,
-          __typename: 'NamespaceSidebar',
-        };
-
-        handler = jest.fn().mockResolvedValue(
-          sidebarDataCountResponse({
-            openIssuesCount: 8,
-            openMergeRequestsCount: 2,
-          }),
-        );
+        handler = jest.fn().mockResolvedValue(sidebarDataCountResponse());
 
         createWrapper({
           items: menuItems,
@@ -384,7 +385,10 @@ describe('Sidebar Menu', () => {
         await waitForPromises();
 
         expect(handler).toHaveBeenCalled();
-        expect(findPinnedSection().props('asyncCount')).toMatchObject(asyncCountData);
+        expect(findPinnedSection().props('asyncCount')).toMatchObject({
+          openIssuesCount: '8',
+          openMergeRequestsCount: '236.5k',
+        });
       });
     });
 

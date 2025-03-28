@@ -9,14 +9,19 @@ export const userCounts = Vue.observable({
   assigned_issues: 0,
   assigned_merge_requests: 0,
   review_requested_merge_requests: 0,
+  get total_merge_requests() {
+    return this.assigned_merge_requests + this.review_requested_merge_requests;
+  },
 });
+
+const computed = ['total_merge_requests'];
 
 function updateCounts(payload = {}) {
   if ((payload.last_update ?? 0) < userCounts.last_update) {
     return;
   }
   for (const key in userCounts) {
-    if (Number.isInteger(payload[key])) {
+    if (!computed.includes(key) && Number.isInteger(payload[key])) {
       userCounts[key] = payload[key];
     }
   }

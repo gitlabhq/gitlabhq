@@ -34,6 +34,7 @@ const presentersByFieldName = {
   state: StatePresenter,
   description: HtmlPresenter,
   descriptionHtml: HtmlPresenter,
+  lastComment: HtmlPresenter,
 };
 
 const presentersByDisplayType = {

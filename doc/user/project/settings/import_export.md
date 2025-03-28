@@ -38,6 +38,8 @@ Using project export files for backups does not always work, and not all items a
   [troubleshooting documentation](import_export_troubleshooting.md#error-pgquerycanceled-error-canceling-statement-due-to-statement-timeout).
 - In GitLab 17.0, 17.1, and 17.2, imported epics and work items are mapped
   to the importing user rather than the original author.
+- For merge requests, only the latest diff is preserved during import or export.
+  After importing or exporting a project, only the latest diff version and the latest pipeline in merge requests are visible.
 
 ## Migrate projects by uploading an export file
 

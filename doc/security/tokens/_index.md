@@ -345,7 +345,7 @@ The following table shows the prefixes for each type of token.
 | Project access token              | `glpat-`           |
 | Group access token                | `glpat-`           |
 | Deploy token                      | `gldt-` ([Added in GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/376752)) |
-| Runner authentication token       | `glrt-`            |
+| Runner authentication token       | `glrt-` or `glrtr-` if created via registration token |
 | CI/CD Job token                   | `glcbt-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426137) in GitLab 16.8 behind a feature flag named `prefix_ci_build_tokens`. Disabled by default.) <br /> &bull; ([Generally available](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17299) in GitLab 16.9. Feature flag `prefix_ci_build_tokens` removed.) |
 | Trigger token                     | `glptt-`           |
 | Feed token                        | `glft-`            |

@@ -6,7 +6,10 @@ RSpec.describe Sidebars::YourWork::Menus::TodosMenu, feature_category: :navigati
   let(:user) { build_stubbed(:user) }
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 
-  subject { described_class.new(context) }
+  subject(:menu) { described_class.new(context) }
 
-  include_examples 'menu item shows pill based on count', :todos_pending_count
+  it 'has correct pill settings' do
+    expect(menu.has_pill?).to be true
+    expect(menu.pill_count_field).to eq("todos")
+  end
 end

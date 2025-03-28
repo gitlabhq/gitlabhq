@@ -7,18 +7,7 @@ title: Documentation workflow
 
 Documentation at GitLab follows a workflow.
 
-## Before merging
-
-Ensure your documentation includes:
-
-- [Product availability details](styleguide/availability_details.md).
-- The GitLab [version](styleguide/availability_details.md) that introduced the feature.
-- Accurate [links](styleguide/_index.md#links).
-- Accurate [user permissions](../../user/permissions.md).
-
-Ensure you've followed the [style guide](styleguide/_index.md) and [word list](styleguide/word_list.md).
-
-### Branch naming
+## Branch naming
 
 The [CI/CD pipeline for the main GitLab project](../pipelines/_index.md) is configured to
 run shorter, faster pipelines on merge requests that contain only documentation changes.
@@ -32,7 +21,7 @@ to make the shorter pipeline run, you must follow these guidelines when naming y
 | Starting with `docs-` | `docs-update-api-issues`     |
 | Ending in `-docs`     | `123-update-api-issues-docs` |
 
-### Moving content
+## Moving content
 
 When you move content to a new location, and edit the content in the same merge request,
 use separate commits.
@@ -71,7 +60,7 @@ Developers are the primary authors of documentation for a feature or feature
 enhancement. They are responsible for:
 
 - Developing initial content required for a feature.
-- Liaising with their Product Manager to understand what documentation must be
+- Liaising with their product manager to understand what documentation must be
   delivered, and when.
 - Requesting technical reviews from other developers in their group.
 - Requesting documentation reviews from the technical writer
@@ -106,7 +95,7 @@ otherwise agreed with the product manager and technical writer:
   - The merge request introducing the code.
   - A separate merge request raised around the same time.
 - Use the [documentation requirements](#documentation-requirements) developed
-  by the Product Manager in the issue and discuss any further documentation
+  by the product manager in the issue and discuss any further documentation
   plans or ideas as needed.
 
   If the new or changed documentation requires extensive collaboration or
@@ -134,22 +123,22 @@ reviewed by:
 
 - The code reviewer for the merge request. This is known as a technical review.
 - Optionally, others involved in the work such as other developers or the
-  Product Manager.
+  product manager.
 - The technical writer for the DevOps stage group, except in exceptional
   circumstances where a [post-merge review](#post-merge-reviews)
   can be requested.
 - A maintainer of the project.
 
-### Product Manager responsibilities
+### Product manager responsibilities
 
-Product Managers are responsible for the
+Product managers are responsible for the
 [documentation requirements](#documentation-requirements) for a feature or
 feature enhancement. They can also:
 
 - Connect with the technical writer for discussion and collaboration.
 - Review documentation themselves.
 
-For issues requiring any new or updated documentation, the Product Manager
+For issues requiring any new or updated documentation, the product manager
 must:
 
 - Add the `~documentation` label.
@@ -160,7 +149,7 @@ must:
     [documentation folder structure](site_architecture/folder_structure.md)).
 
 Everyone is encouraged to draft the documentation requirements in the issue.
-However, a Product Manager will:
+However, a product manager will:
 
 - When the issue is assigned a release milestone, review and update the
   Documentation details.
@@ -177,7 +166,7 @@ Technical writers are responsible for:
   authoring and editing process.
 - Reviewing all significant new and updated documentation content, whether
   before merge or after it is merged.
-- Assisting the developer and Product Manager with feature documentation
+- Assisting the developer and product manager with feature documentation
   delivery.
 - Ensuring that issues and MRs are labeled appropriately, and that doc content has the correct [metadata](metadata.md).
 
@@ -220,7 +209,7 @@ issue description. Issues created using the
 [**Feature Proposal** template](https://gitlab.com/gitlab-org/gitlab/-/raw/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md)
 have this section by default.
 
-Anyone can add these details, but the Product Manager who assigns the issue to
+Anyone can add these details, but the product manager who assigns the issue to
 a specific release milestone will ensure these details are present and
 finalized by the time of that milestone's kickoff.
 
@@ -517,8 +506,8 @@ GitLab team members must follow the guidelines documented in the [internal handb
 
 ## Related topics
 
-- [Reviews and levels of edit](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#reviews)
 - [Technical writing assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-- The [Style Guide](styleguide/_index.md)
-- The [Word list](styleguide/word_list.md)
-- The [Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/)
+- [Reviews and levels of edit](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#reviews)
+- [Documentation Style Guide](styleguide/_index.md)
+- [Recommended word list](styleguide/word_list.md)
+- [Product availability details](styleguide/availability_details.md)

@@ -931,6 +931,9 @@ Gitlab.ee do
   Settings.cron_jobs['compliance_violations_consistency_worker'] ||= {}
   Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['compliance_violations_consistency_worker']['job_class'] = 'ComplianceManagement::MergeRequests::ComplianceViolationsConsistencyWorker'
+  Settings.cron_jobs['framework_evaluation_scheduler_worker'] ||= {}
+  Settings.cron_jobs['framework_evaluation_scheduler_worker']['cron'] ||= '0 */12 * * *'
+  Settings.cron_jobs['framework_evaluation_scheduler_worker']['job_class'] = 'ComplianceManagement::FrameworkEvaluationSchedulerWorker'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'

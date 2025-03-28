@@ -25,7 +25,11 @@ const transformForDataSource = (data) => {
 };
 
 const transformField = (data, field) => {
-  if (field.transform) return field.transform(data);
+  if (field.transform)
+    return {
+      ...data,
+      nodes: data.nodes.map((node) => field.transform(node)),
+    };
   return data;
 };
 

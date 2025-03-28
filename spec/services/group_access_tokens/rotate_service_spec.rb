@@ -7,6 +7,10 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
     let_it_be(:group) { create(:group) }
     let_it_be(:token, reload: true) { create(:resource_access_token, resource: group) }
 
+    before_all do
+      token.user.members.first.update!(expires_at: token.expires_at)
+    end
+
     subject(:response) { described_class.new(current_user, token, group).execute }
 
     shared_examples_for 'rotates the token successfully' do

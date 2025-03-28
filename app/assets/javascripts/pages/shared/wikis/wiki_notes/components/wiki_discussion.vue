@@ -83,6 +83,16 @@ export default {
         this.populateReplies();
       },
     },
+    replies: {
+      handler() {
+        // for the first reply on a new note, when added in the same
+        // session as the note it is replying to, the creating-note:success event
+        // is not fired for some reason so this is a bit of a workaround
+        if (this.isReplying) {
+          this.updateNote();
+        }
+      },
+    },
   },
   mounted() {
     if (getDraft(this.autosaveKey)?.trim()) {
