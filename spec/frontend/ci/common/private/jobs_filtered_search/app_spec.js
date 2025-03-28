@@ -50,7 +50,7 @@ describe('Jobs filtered search', () => {
   it('displays filtered search placeholder', () => {
     createComponent();
 
-    expect(findFilteredSearch().props('placeholder')).toBe('Search or filter jobs...');
+    expect(findFilteredSearch().props('placeholder')).toBe('Search or filter jobs…');
   });
 
   it('displays filtered search text label', () => {

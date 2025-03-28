@@ -724,9 +724,7 @@ module ProjectsHelper
   def dashboard_projects_app_data
     {
       initial_sort: project_list_sort_by,
-      programming_languages: programming_languages,
-      empty_state_projects_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
-      empty_state_search_svg_path: image_path('illustrations/empty-state/empty-search-md.svg')
+      programming_languages: programming_languages
     }.to_json
   end
 

@@ -28,9 +28,9 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The Web IDE is an advanced editor with commit staging where you can make changes to multiple
-files directly from the GitLab UI. It provides a more robust editing experience compared to the
-[Web Editor](../repository/web_editor.md).
+The Web IDE is an advanced editor where you can edit multiple files, stage changes, and create
+commits directly in the GitLab UI. Unlike the [Web Editor](../repository/web_editor.md), the Web
+IDE provides a full-featured development environment with source control management.
 
 Support for [GitLab Flavored Markdown](../../markdown.md) preview in the Web IDE is proposed in
 [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
@@ -59,8 +59,9 @@ You can access the Web IDE through several methods.
 The Web IDE opens new and modified files in separate tabs, and displays changes side by side.
 To reduce load time, only 10 files with the most lines changed open automatically.
 
-The left **Explorer** sidebar adds a merge request icon ({{< icon name="merge-request" >}}) next to new or modified files.
-To view changes to a file, right-click the file and select **Compare with merge request base**.
+The Web IDE interface displays a merge request icon ({{< icon name="merge-request" >}}) next to
+new or modified files in the left sidebar **Explorer** view. To view changes to a file, right-click
+the file and select **Compare with merge request base**.
 
 ## Manage files
 
@@ -84,12 +85,12 @@ To search across open files in the Web IDE:
 
 To upload a file in the Web IDE:
 
-1. On the left activity bar, select **Explorer**, or
+1. On the left side of the Web IDE, select **Explorer** ({{< icon name="documents" >}}), or
    press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>E</kbd>.
 1. Go to the directory where you want to upload the file.
    To create a new directory:
 
-   - On the left **Explorer** sidebar, in the upper right,
+   - In the **Explorer** view, in the upper right,
      select **New Folder** ({{< icon name="folder-new" >}}).
 
 1. Right-click the directory and select **Upload**.
@@ -121,7 +122,7 @@ commit changes, and create merge requests.
 
 To view a list of files you modified in the Web IDE:
 
-- On the left activity bar, select **Source Control**, or
+- On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
   press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
@@ -149,7 +150,7 @@ If you do not have write access to the repository, **Create new branch** is not 
 
 To commit changes in the Web IDE:
 
-1. On the left activity bar, select **Source Control**, or
+1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Enter your commit message.
 1. Commit to the current branch or [create a new branch](#create-a-branch).
@@ -240,10 +241,11 @@ You cannot sync user profiles or go back to an earlier version of synced setting
 When you perform actions in the Web IDE, notifications appear in the lower right.
 To view any notification you might have missed:
 
-1. On the bottom status bar, on the right, select the bell icon ({{< icon name="notifications" >}}) for a list of notifications.
+1. On the bottom status bar, on the right, select the bell icon ({{< icon name="notifications" >}})
+   for a list of notifications.
 1. Select the notification you want to view.
 
-## Extension marketplace
+## Manage extensions
 
 {{< details >}}
 
@@ -269,16 +271,19 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Prerequisites:
+The VS Code Extension Marketplace provides you with access to extensions that enhance the
+functionality of the Web IDE. By default, the GitLab Web IDE instance is configured to use the
+[Open VSX Registry](https://open-vsx.org/).
 
-- In the **Admin** area, a GitLab administrator must
-  [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md).
-- In user preferences, you must
-  [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace).
-- In group settings, users with the Owner role must
-  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
+Before you can manage and use extensions in the Web IDE:
 
-You can use the extension marketplace to download and run VS Code extensions in the Web IDE.
+- A GitLab administrator must [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md)
+  in the **Admin** area.
+- You must [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace)
+  in your user preferences.
+- For enterprise users, a person with the Owner role must
+  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces)
+  in group settings.
 
 ### Install an extension
 

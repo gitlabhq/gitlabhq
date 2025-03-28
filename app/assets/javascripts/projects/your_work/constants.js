@@ -105,7 +105,7 @@ export const DASHBOARD_ROUTE_NAME = 'dashboard';
 
 export const PROJECTS_DASHBOARD_ROUTE_NAME = 'projects-dashboard';
 
-export const CUSTOM_DASHBOARD_ROUTE_NAMES = [
+export const FIRST_TAB_ROUTE_NAMES = [
   ROOT_ROUTE_NAME,
   DASHBOARD_ROUTE_NAME,
   PROJECTS_DASHBOARD_ROUTE_NAME,

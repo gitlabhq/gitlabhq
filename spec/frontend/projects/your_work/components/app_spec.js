@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
-import { PROJECT_DASHBOARD_TABS } from '~/projects/your_work/constants';
+import { PROJECT_DASHBOARD_TABS, FIRST_TAB_ROUTE_NAMES } from '~/projects/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
@@ -10,15 +10,26 @@ import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_s
 import {
   SORT_OPTIONS,
   SORT_OPTION_UPDATED,
+  SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+} from '~/vue_shared/components/resource_lists/constants';
+import { programmingLanguages } from 'jest/groups_projects/components/mock_data';
 
 describe('YourWorkProjectsApp', () => {
   let wrapper;
 
+  const defaultPropsData = {
+    initialSort: 'created_desc',
+    programmingLanguages,
+  };
+
   const createComponent = () => {
-    wrapper = shallowMountExtended(YourWorkProjectsApp);
+    wrapper = shallowMountExtended(YourWorkProjectsApp, { propsData: defaultPropsData });
   };
 
   beforeEach(() => {
@@ -37,6 +48,13 @@ describe('YourWorkProjectsApp', () => {
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
       sortOptions: SORT_OPTIONS,
       defaultSortOption: SORT_OPTION_UPDATED,
+      timestampTypeMap: {
+        [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
+        [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+      },
+      firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
+      initialSort: defaultPropsData.initialSort,
+      programmingLanguages: defaultPropsData.programmingLanguages,
     });
   });
 });

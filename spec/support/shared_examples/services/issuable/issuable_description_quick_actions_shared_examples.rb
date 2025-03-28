@@ -72,9 +72,14 @@ RSpec.shared_examples 'issuable record that supports quick actions' do |with_wid
 
   let(:new_descr) { "some updated description" }
   let(:base_params) { { title: 'My issuable title' } }
-  let(:params) { base_params.merge(with_widgets ? { label_ids: example_params.delete(:label_ids) } : example_params) }
+  let(:params) { with_widgets ? base_params : base_params.merge(example_params) }
   let(:widget_params) do
-    with_widgets ? { description_widget: { description: example_params.delete(:description) } } : {}
+    next {} unless with_widgets
+
+    {
+      description_widget: { description: example_params.delete(:description) },
+      labels_widget: { label_ids: example_params.delete(:label_ids) }
+    }
   end
 
   before do

@@ -10,6 +10,7 @@ import {
 } from '~/vue_shared/components/pagination/constants';
 
 applyGitLabUIConfig({
+  firstDayOfWeek: gon.first_day_of_week,
   translations: {
     'CloseButton.title': __('Close'),
     'DuoChatContextItemPopover.DisabledReason': __('This item is disabled'),

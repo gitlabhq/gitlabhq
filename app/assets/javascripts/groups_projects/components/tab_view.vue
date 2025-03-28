@@ -24,7 +24,6 @@ export default {
     GlLoadingIcon,
     GlKeysetPagination,
   },
-  inject: ['programmingLanguages'],
   props: {
     tab: {
       required: true,
@@ -50,10 +49,15 @@ export default {
     },
     timestampType: {
       type: String,
-      required: true,
+      required: false,
+      default: undefined,
       validator(value) {
         return TIMESTAMP_TYPES.includes(value);
       },
+    },
+    programmingLanguages: {
+      type: Array,
+      required: true,
     },
   },
   data() {

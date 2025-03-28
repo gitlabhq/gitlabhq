@@ -48,6 +48,7 @@ describe('TabView', () => {
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
     },
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
+    programmingLanguages,
   };
 
   const createComponent = ({ handler, propsData = {} } = {}) => {
@@ -56,7 +57,6 @@ describe('TabView', () => {
     wrapper = shallowMountExtended(TabView, {
       apolloProvider: mockApollo,
       propsData: { ...defaultPropsData, ...propsData },
-      provide: { programmingLanguages },
     });
 
     apolloClient = mockApollo.defaultClient;

@@ -11,6 +11,8 @@ RSpec.describe GitlabSchema.types['Repository'], feature_category: :source_code_
 
   specify { expect(described_class).to have_graphql_field(:tree) }
 
+  specify { expect(described_class).to have_graphql_field(:last_commit) }
+
   specify { expect(described_class).to have_graphql_field(:paginated_tree, calls_gitaly?: true, max_page_size: 100) }
 
   specify { expect(described_class).to have_graphql_field(:exists, calls_gitaly?: true, complexity: 2) }

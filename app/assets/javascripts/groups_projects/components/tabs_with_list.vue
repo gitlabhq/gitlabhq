@@ -2,10 +2,6 @@
 import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
 import { isEqual, pick } from 'lodash';
 import { __ } from '~/locale';
-import {
-  TIMESTAMP_TYPE_CREATED_AT,
-  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
-} from '~/vue_shared/components/resource_lists/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { createAlert } from '~/alert';
@@ -13,11 +9,6 @@ import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_
 import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
-import {
-  SORT_OPTION_UPDATED,
-  SORT_OPTION_CREATED,
-} from '~/projects/filtered_search_and_sort/constants';
-import { CUSTOM_DASHBOARD_ROUTE_NAMES } from '~/projects/your_work/constants';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
@@ -42,7 +33,6 @@ export default {
     TabView,
     FilteredSearchAndSort,
   },
-  inject: ['initialSort', 'programmingLanguages'],
   props: {
     tabs: {
       type: Array,
@@ -74,6 +64,28 @@ export default {
     defaultSortOption: {
       type: Object,
       required: true,
+    },
+    timestampTypeMap: {
+      type: Object,
+      required: true,
+    },
+    firstTabRouteNames: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    initialSort: {
+      type: String,
+      required: true,
+    },
+    programmingLanguages: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
     },
   },
   data() {
@@ -204,12 +216,7 @@ export default {
       return filters;
     },
     timestampType() {
-      const SORT_MAP = {
-        [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
-        [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
-      };
-
-      return SORT_MAP[this.activeSortOption.value] || TIMESTAMP_TYPE_CREATED_AT;
+      return this.timestampTypeMap[this.activeSortOption.value];
     },
   },
   methods: {
@@ -225,7 +232,7 @@ export default {
       this.$router.push({ query });
     },
     initActiveTabIndex() {
-      return CUSTOM_DASHBOARD_ROUTE_NAMES.includes(this.$route.name)
+      return this.firstTabRouteNames.includes(this.$route.name)
         ? 0
         : this.tabs.findIndex((tab) => tab.value === this.$route.name);
     },
@@ -312,6 +319,7 @@ export default {
         :sort="sort"
         :filters="filters"
         :timestamp-type="timestampType"
+        :programming-languages="programmingLanguages"
         @page-change="onPageChange"
       />
       <template v-else>{{ tab.text }}</template>

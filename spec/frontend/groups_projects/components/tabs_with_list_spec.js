@@ -13,6 +13,7 @@ import {
   DASHBOARD_ROUTE_NAME,
   PROJECTS_DASHBOARD_ROUTE_NAME,
   PROJECT_DASHBOARD_TABS,
+  FIRST_TAB_ROUTE_NAMES,
   CONTRIBUTED_TAB,
   STARRED_TAB,
   PERSONAL_TAB,
@@ -58,11 +59,6 @@ const defaultRoute = {
   name: ROOT_ROUTE_NAME,
 };
 
-const defaultProvide = {
-  initialSort: 'created_desc',
-  programmingLanguages,
-};
-
 const defaultPropsData = {
   tabs: PROJECT_DASHBOARD_TABS,
   filteredSearchSupportedTokens: [
@@ -74,6 +70,13 @@ const defaultPropsData = {
   filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
   sortOptions: SORT_OPTIONS,
   defaultSortOption: SORT_OPTION_UPDATED,
+  timestampTypeMap: {
+    [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
+    [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+  },
+  firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
+  initialSort: 'created_desc',
+  programmingLanguages,
 };
 
 const searchTerm = 'foo bar';
@@ -97,7 +100,6 @@ describe('TabsWithList', () => {
   });
 
   const createComponent = async ({
-    provide = {},
     propsData = {},
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
@@ -116,7 +118,6 @@ describe('TabsWithList', () => {
       stubs: {
         TabView: stubComponent(TabView),
       },
-      provide: { ...defaultProvide, ...provide },
       propsData: { ...defaultPropsData, ...propsData },
     });
   };
@@ -387,7 +388,7 @@ describe('TabsWithList', () => {
   describe('when sort query param and initial sort are invalid', () => {
     beforeEach(async () => {
       await createComponent({
-        provide: { initialSort: 'foo_bar' },
+        propsData: { initialSort: 'foo_bar' },
         route: {
           ...defaultRoute,
           query: {
@@ -531,14 +532,14 @@ describe('TabsWithList', () => {
 
   describe.each`
     sort                      | expectedTimestampType
-    ${'name_asc'}             | ${TIMESTAMP_TYPE_CREATED_AT}
-    ${'name_desc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'name_asc'}             | ${undefined}
+    ${'name_desc'}            | ${undefined}
     ${'created_asc'}          | ${TIMESTAMP_TYPE_CREATED_AT}
     ${'created_desc'}         | ${TIMESTAMP_TYPE_CREATED_AT}
     ${'latest_activity_asc'}  | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
     ${'latest_activity_desc'} | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
-    ${'stars_asc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
-    ${'stars_desc'}           | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'stars_asc'}            | ${undefined}
+    ${'stars_desc'}           | ${undefined}
   `('when sort is $sort', ({ sort, expectedTimestampType }) => {
     beforeEach(async () => {
       await createComponent({

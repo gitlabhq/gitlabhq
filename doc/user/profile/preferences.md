@@ -491,8 +491,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-You can use the [extension marketplace](../project/web_ide/_index.md#extension-marketplace) to search and
-manage extensions for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
+You can use the extension marketplace to search and
+[manage extensions](../project/web_ide/_index.md#manage-extensions) for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
 For third-party extensions, you must enable the marketplace in user preferences.
 
 Prerequisites:

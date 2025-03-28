@@ -1,5 +1,7 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
+import emptyStateSearchSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
+import emptyStateProjectsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { __, s__ } from '~/locale';
 
 export default {
@@ -12,7 +14,6 @@ export default {
   components: {
     GlEmptyState,
   },
-  inject: ['emptyStateSearchSvgPath', 'emptyStateProjectsSvgPath'],
   props: {
     search: {
       type: String,
@@ -37,7 +38,7 @@ export default {
       return Boolean(this.search);
     },
     svgPath() {
-      return this.hasSearch ? this.emptyStateSearchSvgPath : this.emptyStateProjectsSvgPath;
+      return this.hasSearch ? emptyStateSearchSvgPath : emptyStateProjectsSvgPath;
     },
     computedTitle() {
       return this.hasSearch ? this.$options.i18n.emptyStateSearchTitle : this.title;

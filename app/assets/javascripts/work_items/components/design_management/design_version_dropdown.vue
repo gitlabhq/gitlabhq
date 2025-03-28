@@ -87,7 +87,7 @@ export default {
         path: this.$route.path,
         query: {
           // Retain any existing page params and only append/override `version`.
-          ...queryToObject(window.location.search),
+          ...queryToObject(window.location.search, { specialOperators: true }),
           version: this.findVersionId(versionId),
         },
       });

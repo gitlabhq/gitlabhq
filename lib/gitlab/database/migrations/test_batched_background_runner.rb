@@ -187,7 +187,8 @@ module Gitlab
 
         def job_meta(job)
           set_shared_model_connection do
-            job.slice(:min_value, :max_value, :batch_size, :sub_batch_size, :pause_ms)
+            min_max_keys = job.migration_job_class.cursor? ? [:min_cursor, :max_cursor] : [:min_value, :max_value]
+            job.slice(*min_max_keys, :batch_size, :sub_batch_size, :pause_ms, :min_cursor, :max_cursor)
           end
         end
 

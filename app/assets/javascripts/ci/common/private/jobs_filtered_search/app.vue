@@ -130,7 +130,7 @@ export default {
 <template>
   <gl-filtered-search
     v-if="glFeatures.feSearchBuildByName"
-    :placeholder="s__('Jobs|Search or filter jobs...')"
+    :placeholder="s__('Jobs|Search or filter jobs…')"
     :available-tokens="tokens"
     :value="filteredSearchValue"
     :search-text-option-label="__('Search for this text')"

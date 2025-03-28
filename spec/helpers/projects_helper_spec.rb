@@ -1980,9 +1980,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       expect(Gitlab::Json.parse(helper.dashboard_projects_app_data)).to eq(
         {
           'initial_sort' => 'created_desc',
-          'programming_languages' => ProgrammingLanguage.most_popular,
-          'empty_state_projects_svg_path' => helper.image_path('illustrations/empty-state/empty-projects-md.svg'),
-          'empty_state_search_svg_path' => helper.image_path('illustrations/empty-state/empty-search-md.svg')
+          'programming_languages' => ProgrammingLanguage.most_popular
         }
       )
     end

@@ -266,11 +266,12 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 {{< /history >}}
 
-You can use the
-[extension marketplace](../project/web_ide/_index.md#extension-marketplace) in workspaces
-when it is [enabled](../profile/preferences.md#integrate-with-the-extension-marketplace).
+The VS Code Extension Marketplace provides you with access to extensions that enhance the
+functionality of your workspace.
 
-The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
+You can use the [extension marketplace](../project/web_ide/_index.md#manage-extensions) in your
+workspace Web IDE. The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
+For more information, see [Configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 ## Personal access token
 

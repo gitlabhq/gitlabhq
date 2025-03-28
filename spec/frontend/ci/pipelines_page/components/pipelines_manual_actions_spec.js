@@ -76,7 +76,7 @@ describe('Pipeline manual actions', () => {
     });
 
     it('display loading state while actions are being fetched', () => {
-      expect(findAllDropdownItems().at(0).text()).toBe('Loading...');
+      expect(findAllDropdownItems().at(0).text()).toBe('Loading…');
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findAllDropdownItems()).toHaveLength(1);
     });

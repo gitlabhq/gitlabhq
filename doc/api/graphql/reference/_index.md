@@ -37294,6 +37294,20 @@ Returns [`Commit`](#commit).
 | ---- | ---- | ----------- |
 | <a id="repositorycommitref"></a>`ref` | [`String!`](#string) | Commit reference (SHA, branch name, or tag name). |
 
+##### `Repository.lastCommit`
+
+The last commit made in the repository for the given path and ref.
+
+Returns [`Commit`](#commit).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorylastcommitpath"></a>`path` | [`String`](#string) | Path to get the last commit for. Default value is the root of the repository. |
+| <a id="repositorylastcommitref"></a>`ref` | [`String`](#string) | Commit ref to get the last commit for. Default value is HEAD. |
+| <a id="repositorylastcommitreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
+
 ##### `Repository.paginatedTree`
 
 Paginated tree of the repository.
@@ -38748,9 +38762,24 @@ Representing a to-do entry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="treeblobs"></a>`blobs` | [`BlobConnection!`](#blobconnection) | Blobs of the tree. (see [Connections](#connections)) |
-| <a id="treelastcommit"></a>`lastCommit` | [`Commit`](#commit) | Last commit for the tree. |
 | <a id="treesubmodules"></a>`submodules` | [`SubmoduleConnection!`](#submoduleconnection) | Sub-modules of the tree. (see [Connections](#connections)) |
 | <a id="treetrees"></a>`trees` | [`TreeEntryConnection!`](#treeentryconnection) | Trees of the tree. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `Tree.lastCommit`
+
+Last commit for the tree.
+
+Returns [`Commit`](#commit).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="treelastcommitpath"></a>`path` | [`String`](#string) | Path to get the last commit for. Default value is the root of the repository. |
+| <a id="treelastcommitref"></a>`ref` | [`String`](#string) | Commit ref to get the last commit for. Default value is HEAD. |
+| <a id="treelastcommitreftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 
 ### `TreeEntry`
 

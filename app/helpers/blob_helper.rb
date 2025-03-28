@@ -85,10 +85,6 @@ module BlobHelper
     !blob.stored_externally? && can_collaborate_with_project?(project)
   end
 
-  def leave_edit_message
-    _("Leave edit mode? All unsaved changes will be lost.")
-  end
-
   def editing_preview_title(filename)
     if Gitlab::MarkupHelper.previewable?(filename)
       _('Preview')

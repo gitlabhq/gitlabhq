@@ -280,11 +280,25 @@ To have the batch sized reduced, you must have a feature flag enabled. For more 
 
 ## Error: `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]`
 
-You might receive the error `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]` in logs
-when migrating projects by using file exports. If you receive this error:
+You might get the following error in logs when you migrate projects by using file exports:
 
-- When exporting a file export, you can safely ignore the error. GitLab retries the exited command.
-- When importing a file import, you must retry the import. GitLab doesn't automatically retry the import.
+```plaintext
+command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]
+```
+
+This error occurs during export or import when Sidekiq receives a `SIGTERM`, often while executing the `tar` command.
+
+In Kubernetes environments like GitLab.com and GitLab Dedicated, the operating system triggers `SIGTERM` signals
+due to memory or disk shortage, code deployments, or instance upgrades.
+To identify the root cause, an administrator should investigate why Kubernetes terminated the instance.
+
+In non-Kubernetes environments, this error might occur if the instance is terminated while executing the `tar` command.
+However, this error does not occur due to disk shortage, so memory shortage is the most likely cause.
+
+If you get this error:
+
+- When you export a file, GitLab retries the export until the maximum number of retries is reached and marks the export as failed.
+- When you import a file, you must retry the import yourself. GitLab does not retry the import automatically.
 
 ## Troubleshooting performance issues
 

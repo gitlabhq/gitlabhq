@@ -305,6 +305,8 @@ On the destination instance, users with the Owner role for a top-level group can
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
 user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
 active regular users.
+If an assigned user becomes inactive before accepting the reassignment request,
+the pending reassignment remains linked to the user until they accept it.
 
 Bot user contributions and memberships on the source instance cannot be reassigned to bot users on the destination instance.
 You might choose to keep source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
@@ -318,6 +320,8 @@ Users that receive a reassignment request can:
 
 In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
 are mapped automatically to the user who previously accepted reassignments for that source user.
+
+#### Completing the reassignment
 
 The reassignment process must be fully completed before you:
 

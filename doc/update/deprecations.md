@@ -627,8 +627,7 @@ the GitLab 18.0 release:
 
 - GitLab Advanced SAST: version 1
 - Container Scanning: version 7
-- Dependency Scanning: version 0
-- Gemnasium: [all versions](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)
+- Gemnasium: version 5
 - DAST: version 5
 - DAST API: version 4
 - Fuzz API: version 4

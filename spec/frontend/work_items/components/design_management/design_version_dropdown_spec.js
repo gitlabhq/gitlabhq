@@ -130,7 +130,9 @@ describe('Design management design version dropdown component', () => {
 
     it('should update the route when a version is selected', async () => {
       const originalLocation = window.location.href;
-      setWindowLocation(`${originalLocation}?show=foo&page_after=bar&first_page_size=10`);
+      setWindowLocation(
+        `${originalLocation}?&or%5Blabel_name%5D%5B%5D=bug&or%5Blabel_name%5D%5B%5D=tech%20debt&not%5Blabel_name%5D%5B%5D=documentation&not%5Blabel_name%5D%5B%5D=feature&first_page_size=20&show=foo`,
+      );
 
       createComponent();
 
@@ -140,7 +142,13 @@ describe('Design management design version dropdown component', () => {
 
       expect($router.push).toHaveBeenCalledWith({
         path: MOCK_ROUTE.path,
-        query: { show: 'foo', page_after: 'bar', first_page_size: '10', version: '2' },
+        query: {
+          first_page_size: '20',
+          'not[label_name][]': ['documentation', 'feature'],
+          'or[label_name][]': ['bug', 'tech debt'],
+          show: 'foo',
+          version: '2',
+        },
       });
     });
   });

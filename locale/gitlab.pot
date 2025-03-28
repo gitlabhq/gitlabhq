@@ -33619,7 +33619,7 @@ msgstr ""
 msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
 msgstr ""
 
-msgid "Jobs|Search or filter jobs..."
+msgid "Jobs|Search or filter jobs…"
 msgstr ""
 
 msgid "Jobs|Stage"
@@ -43171,10 +43171,10 @@ msgstr ""
 msgid "PipelineEditor|Validate pipeline under simulated conditions"
 msgstr ""
 
-msgid "PipelineEditor|Validating pipeline... It can take up to a minute."
+msgid "PipelineEditor|Validating pipeline… It can take up to a minute."
 msgstr ""
 
-msgid "PipelineEditor|Waiting for CI content to load..."
+msgid "PipelineEditor|Waiting for CI content to load…"
 msgstr ""
 
 msgid "PipelineGraph|Are you sure you want to retry %{jobName}?"
@@ -51068,7 +51068,7 @@ msgstr ""
 msgid "Runners|Save the Terraform script to a file"
 msgstr ""
 
-msgid "Runners|Search description..."
+msgid "Runners|Search description…"
 msgstr ""
 
 msgid "Runners|Security or compatibility upgrades are recommended."
