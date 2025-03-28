@@ -81,4 +81,27 @@ describe('JobDropdownItem', () => {
       });
     });
   });
+
+  describe('job status', () => {
+    it.each`
+      statusGroup  | shouldHaveFailedClass
+      ${'success'} | ${false}
+      ${'failed'}  | ${true}
+    `(
+      'when status is $statusGroup, failed class presence should be $shouldHaveFailedClass',
+      ({ statusGroup, shouldHaveFailedClass }) => {
+        const failedJob = {
+          ...mockJobInfo,
+          detailedStatus: {
+            ...detailedStatus,
+            group: statusGroup,
+          },
+        };
+
+        createComponent({ props: { job: failedJob } });
+
+        expect(wrapper.classes().includes('ci-job-item-failed')).toBe(shouldHaveFailedClass);
+      },
+    );
+  });
 });

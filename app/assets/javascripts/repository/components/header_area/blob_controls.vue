@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { computed } from 'vue';
 import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
+import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
@@ -26,6 +27,8 @@ import { updateElementsVisibility } from '~/repository/utils/dom';
 import {
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
+  isIdeTarget,
+  forkSuggestionForSelectedEditor,
 } from '~/repository/utils/fork_suggestion_utils';
 import { showBlameButton, isUsingLfs } from '~/repository/utils/storage_info_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
@@ -34,6 +37,7 @@ import applicationInfoQuery from '~/blob/queries/application_info.query.graphql'
 import { getRefType } from '~/repository/utils/ref_type';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
 
 export default {
@@ -49,6 +53,7 @@ export default {
     OpenMrBadge,
     GlButton,
     OverflowMenu,
+    ForkSuggestionModal,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
   },
   directives: {
@@ -133,6 +138,7 @@ export default {
       project: {},
       currentUser: {},
       gitpodEnabled: false,
+      isForkSuggestionModalVisible: false,
     };
   },
   computed: {
@@ -247,6 +253,23 @@ export default {
     onCopy() {
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
     },
+    onShowForkSuggestion() {
+      this.isForkSuggestionModalVisible = true;
+    },
+    onEdit(target) {
+      const { ideEditPath, editBlobPath } = this.blobInfo;
+      const showForkSuggestionForSelectedEditor = forkSuggestionForSelectedEditor(
+        target,
+        this.shouldShowWebIdeForkSuggestion,
+        this.shouldShowSingleFileEditorForkSuggestion,
+      );
+
+      if (showForkSuggestionForSelectedEditor) {
+        this.isForkSuggestionModalVisible = true;
+      } else {
+        visitUrl(isIdeTarget(target) ? ideEditPath : editBlobPath);
+      }
+    },
   },
 };
 </script>
@@ -313,7 +336,13 @@ export default {
       :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
       is-blob
       disable-fork-modal
-      v-on="$listeners"
+      @edit="onEdit"
+    />
+    <fork-suggestion-modal
+      v-if="!isLoadingRepositoryBlob"
+      :visible="isForkSuggestionModalVisible"
+      :fork-path="blobInfo.forkAndViewPath"
+      @hide="isForkSuggestionModalVisible = false"
     />
 
     <overflow-menu
@@ -324,6 +353,7 @@ export default {
       :is-empty-repository="project.repository.empty"
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
+      @showForkSuggestion="onShowForkSuggestion"
     />
   </div>
 </template>

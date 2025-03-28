@@ -103,8 +103,8 @@ export const blobControlsDataMock = {
           canModifyBlob: true,
           canModifyBlobWithWebIde: true,
           forkAndViewPath: 'fork/view/path',
-          editBlobPath: 'edit/blob/path/file.js',
-          ideEditPath: 'ide/blob/path/file.js',
+          editBlobPath: 'https://edit/blob/path/file.js',
+          ideEditPath: 'https://ide/blob/path/file.js',
           pipelineEditorPath: 'pipeline/editor/path/file.yml',
           gitpodBlobUrl: 'gitpod/blob/url/file.js',
           simpleViewer: {

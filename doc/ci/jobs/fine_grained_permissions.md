@@ -34,7 +34,7 @@ These permissions are applied to the CI/CD job tokens in a specified project.
 
 This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature is not ready for production use. If you want to use this feature, you should test outside of production first.
 
-## Enable fine-grained permissions for projects
+## Enable use of fine-grained permissions
 
 Prerequisites:
 
@@ -49,6 +49,32 @@ To enable fine-grained permissions for all projects in a group:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Turn on the **Enable fine-grained permissions for CI/CD job tokens** toggle.
+
+## Add fine-grained permissions to the job token allowlist
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- You must enable the use of fine-grained permissions for a project.
+
+You can add fine-grained permissions to groups and projects on your job token allowlist. This allows
+them to use job tokens to access specific project resources and more accurately control which
+resources are available to these groups and projects.
+
+To add fine-grained permissions to groups or projects on the job token allowlist:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Job token permissions**.
+1. In the **CI/CD job token allowlist** section, select **Add**.
+1. From the dropdown list, select **Group or project**.
+1. Enter the path to an existing group or project.
+1. Select **Fine-grained permissions**.
+1. Grant permissions to the [available API endpoints](#available-api-endpoints).
+1. Select **Add**.
+
+GitLab adds the group or project to the job token allowlist with the specified permissions. The group or project can now
+access any allowed resources in the current project.
 
 ## Available API endpoints
 

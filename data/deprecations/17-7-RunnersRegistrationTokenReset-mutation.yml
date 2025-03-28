@@ -1,6 +1,6 @@
 - title: "RunnersRegistrationTokenReset GraphQL mutation is deprecated"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "20.0"
   announcement_milestone: "17.7"
   breaking_change: true
   window: "2"
@@ -14,14 +14,14 @@
   manual_task: true
   body: |  # (required) Don't change this line.
     The support for runner registration tokens is deprecated. Consequently, the support for resetting a registration token has also been deprecated
-    and will be removed in GitLab 18.0.
+    and will be removed in a future GitLab release.
 
     A new method to bind runners to a GitLab instance has been implemented
     as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
     For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
     This new architecture introduces a new method for registering runners and eliminates the legacy
     [runner registration token](https://docs.gitlab.com/security/tokens/#runner-registration-tokens-deprecated).
-    In GitLab 18.0, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
+    In a future GitLab release, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
 #
   # When support for this feature ends, in XX.YY milestone format.
   end_of_support_milestone:

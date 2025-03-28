@@ -4,7 +4,6 @@ import { sprintf, __ } from '~/locale';
 import { showForkSuggestion } from '~/repository/utils/fork_suggestion_utils';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 import getRefMixin from '~/repository/mixins/get_ref';
-import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 
 const REPLACE_BLOB_MODAL_ID = 'modal-replace-blob';
@@ -18,7 +17,6 @@ export default {
   components: {
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
-    ForkSuggestionModal,
     UploadBlobModal,
   },
   mixins: [getRefMixin],
@@ -52,11 +50,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      isForkSuggestionModalVisible: false,
-    };
-  },
   computed: {
     replaceFileItem() {
       return {
@@ -77,7 +70,7 @@ export default {
   methods: {
     showModal() {
       if (this.shouldShowForkSuggestion) {
-        this.isForkSuggestionModalVisible = true;
+        this.$emit('showForkSuggestion');
         return;
       }
 
@@ -94,11 +87,6 @@ export default {
       :item="replaceFileItem"
       data-testid="replace-dropdown-item"
       @action="showModal"
-    />
-    <fork-suggestion-modal
-      :visible="isForkSuggestionModalVisible"
-      :fork-path="blobInfo.forkAndViewPath"
-      @hide="isForkSuggestionModalVisible = false"
     />
     <upload-blob-modal
       :ref="$options.replaceBlobModalId"

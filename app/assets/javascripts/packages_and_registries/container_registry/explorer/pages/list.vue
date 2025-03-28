@@ -17,6 +17,7 @@ import Tracking from '~/tracking';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
+import DockerHubRateLimitsAlert from '~/vue_shared/components/docker_hub_rate_limits_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getPageParams,
@@ -64,6 +65,7 @@ export default {
         /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
       ),
     DeleteModal,
+    DockerHubRateLimitsAlert,
     GlSprintf,
     GlLink,
     GlAlert,
@@ -252,6 +254,8 @@ export default {
 
 <template>
   <div>
+    <docker-hub-rate-limits-alert class="gl-my-5" />
+
     <metadata-database-alert v-if="!config.isMetadataDatabaseEnabled" />
     <gl-alert
       v-if="showDeleteAlert"

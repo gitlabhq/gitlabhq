@@ -14,7 +14,7 @@ title: SAML Group Sync
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for GitLab Self-Managed instances in GitLab 15.1.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) to GitLab Self-Managed in GitLab 15.1.
 
 {{< /history >}}
 
@@ -28,10 +28,35 @@ or that all groups are removed from GitLab to disable Group Sync.
 
 {{< /alert >}}
 
-SAML group sync allows users to be assigned to pre-existing GitLab groups with specific permissions based on the user's group assignment in the SAML identity provider (IdP). This feature allows you to create a many-to-many mapping between SAML IdP groups and GitLab groups. For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP, SAML group sync allows you to assign `@amelia` to the `security-gitlab` and `vulnerability` GitLab groups with `maintainer` and `reporter` permissions, respectively. SAML group sync does not create groups. You [create groups separately](../_index.md#create-a-group), and then create the mapping.
+Use SAML group sync to assign users with specific roles to existing GitLab groups,
+based on the users' group assignment in the SAML identity provider (IdP).
+With SAML group sync you can create a many-to-many mapping between SAML IdP groups and GitLab groups.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
+For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP,
+you can use SAML group sync to assign `@amelia` to the `security-gitlab` group with Maintainer role,
+and to the `vulnerability` group with Reporter role.
+
+SAML group sync does not create groups.
+You have to first [create a group](../_index.md#create-a-group), then create the mapping.
+
+## Role prioritization
+
+Group sync determines the role and membership type of a user in the mapped group.
+
+### Multiple SAML groups
+
+If a user is a member of multiple SAML groups that map to the same GitLab group, the user is assigned the highest role from any of those SAML groups.
+
+For example, if a user has the Guest role in a group and the Maintainer role in another group, they are assigned the Maintainer role.
+
+### Membership types
+
+If a user's role in a SAML group is higher than their role in one of its subgroups, their [membership](../../project/members/_index.md#display-direct-members) in the mapped GitLab group is different based on their assigned role in the mapped group.
+
+If through group sync the user was assigned:
+
+- A higher role, they are a direct member of the group.
+- A role that is the same as or lower, they are an inherited member of the group.
 
 ## Configure SAML Group Links
 
@@ -122,34 +147,6 @@ Now let's change the previous example so that the user is not a member of either
 - When the user signs in to a group with `SAML1`, the user is given the `Owner` role in that group.
 - When the user signs in with `SAML2`, the user is removed from the group because they are not a member of either configured group link.
 
-### Role prioritization
-
-#### Members of multiple mapped SAML groups
-
-If a user is a member of multiple SAML groups mapped to the same GitLab group,
-the user gets the highest role from the groups. For example, if one group
-is linked as Guest and another Maintainer, a user in both groups gets the Maintainer
-role.
-
-#### Parent group role is higher than child group
-
-Users granted:
-
-- A higher role with Group Sync are displayed as having
-  [direct membership](../../project/members/_index.md#display-direct-members) of the group.
-- A lower or the same role with Group Sync are displayed as having
-  [inherited membership](../../project/members/_index.md#membership-types) of the group.
-
-### Use the API
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
-
-{{< /history >}}
-
-You can use the GitLab API to [list, add, and delete](../../../api/saml.md#saml-group-links) SAML group links.
-
 ## Configure SAML Group Sync
 
 {{< alert type="note" >}}
@@ -228,6 +225,9 @@ example configurations for [Azure AD](example_saml_config.md#group-sync) and [Ok
 Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
 
 {{< /alert >}}
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo of group sync using Microsoft Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
 
 Azure AD sends up to 150 groups in the groups claim. When users are members of more than 150 groups Azure AD sends a
 group overage claim attribute in the SAML response. Then group memberships must be obtained using the Microsoft Graph API.

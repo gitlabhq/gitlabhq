@@ -72,6 +72,9 @@ export default {
       // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
       return this.isMobile ? 'bottom-start' : 'right-start';
     },
+    isFailed() {
+      return this.group?.status?.group === 'failed';
+    },
   },
   methods: {
     handleResize() {
@@ -100,7 +103,11 @@ export default {
     @hidden="hideDropdown"
   >
     <template #toggle>
-      <button type="button" :class="cssClassJobName" class="gl-w-full gl-bg-transparent gl-pr-4">
+      <button
+        type="button"
+        :class="[cssClassJobName, { 'ci-job-item-failed': isFailed }]"
+        class="gl-w-full gl-bg-transparent gl-pr-4"
+      >
         <div class="gl-flex gl-items-stretch gl-justify-between">
           <job-item
             :type="$options.jobItemTypes.jobDropdown"

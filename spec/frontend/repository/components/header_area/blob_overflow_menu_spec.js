@@ -118,6 +118,16 @@ describe('Blob Overflow Menu', () => {
         findBlobDefaultActionsGroup().vm.$emit('copy');
         expect(wrapper.emitted('copy')).toBeUndefined();
       });
+
+      it('proxy showForkSuggestion event from BlobButtonGRoup', () => {
+        findBlobButtonGroup().vm.$emit('showForkSuggestion');
+        expect(wrapper.emitted('showForkSuggestion')).toHaveLength(1);
+      });
+
+      it('proxy showForkSuggestion event from BlobDeleteFileGRoup', () => {
+        findBlobDeleteFileGroup().vm.$emit('showForkSuggestion');
+        expect(wrapper.emitted('showForkSuggestion')).toHaveLength(1);
+      });
     });
   });
 

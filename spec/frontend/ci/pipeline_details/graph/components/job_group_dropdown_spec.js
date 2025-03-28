@@ -176,4 +176,35 @@ describe('job group dropdown component', () => {
       );
     });
   });
+
+  describe('job status', () => {
+    it.each`
+      statusGroup  | shouldHaveFailedClass
+      ${'success'} | ${false}
+      ${'failed'}  | ${true}
+    `(
+      'when status is $statusGroup, failed class presence should be $shouldHaveFailedClass',
+      ({ statusGroup, shouldHaveFailedClass }) => {
+        const testGroup = {
+          ...group,
+          status: {
+            ...group.status,
+            group: statusGroup,
+          },
+        };
+
+        createComponent({
+          props: { group: testGroup },
+          mountFn: mount,
+        });
+
+        expect(
+          findDisclosureDropdown()
+            .find('button')
+            .attributes('class')
+            .includes('ci-job-item-failed'),
+        ).toBe(shouldHaveFailedClass);
+      },
+    );
+  });
 });

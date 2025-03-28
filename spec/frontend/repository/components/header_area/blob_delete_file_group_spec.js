@@ -5,7 +5,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobDeleteFileGroup from '~/repository/components/header_area/blob_delete_file_group.vue';
-import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -56,7 +55,6 @@ describe('BlobDeleteFileGroup component', () => {
 
   const findDeleteItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findDeleteBlobModal = () => wrapper.findComponent(CommitChangesModal);
-  const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
 
   beforeEach(async () => {
     await createComponent();
@@ -105,18 +103,12 @@ describe('BlobDeleteFileGroup component', () => {
         expect(showDeleteBlobModalMock).not.toHaveBeenCalled();
       });
 
-      it('changes ForkSuggestionModal visibility', async () => {
+      it('emits showForkSuggestion event', async () => {
         findDeleteItem().vm.$emit('action');
         await nextTick();
 
-        expect(findForkSuggestionModal().props('visible')).toBe(true);
+        expect(wrapper.emitted('showForkSuggestion')).toEqual([[]]);
       });
-    });
-  });
-
-  it('renders ForkSuggestionModal', () => {
-    expect(findForkSuggestionModal().props()).toMatchObject({
-      forkPath: 'fork/view/path',
     });
   });
 
@@ -133,5 +125,6 @@ describe('BlobDeleteFileGroup component', () => {
     expect(findDeleteItem().props('item')).toMatchObject({
       extraAttrs: { disabled: false },
     });
+    expect(wrapper.emitted('showForkSuggestion')).toBeUndefined();
   });
 });

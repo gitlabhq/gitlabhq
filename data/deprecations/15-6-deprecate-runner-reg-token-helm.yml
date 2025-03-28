@@ -1,7 +1,6 @@
 - title: "`runnerRegistrationToken` parameter for GitLab Runner Helm Chart"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.6"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2025-04-22"
+  removal_milestone: "20.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -18,5 +17,5 @@
     as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
     The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
-    From GitLab 18.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
+    In a future GitLab release, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

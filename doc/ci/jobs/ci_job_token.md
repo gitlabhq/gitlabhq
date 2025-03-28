@@ -380,7 +380,7 @@ parameter in the `projects` REST API endpoint.
 
 ## Fine-grained permissions for job tokens
 
-Fine-grained permissions for job tokens are an [experiment](../../policy/development_stages_support.md#experiment). For information on this feature and the available resources, see [Fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+Fine-grained permissions for job tokens are an [experiment](../../policy/development_stages_support.md#experiment). For information on this feature and the available resources, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
 
 ## Use a job token
 

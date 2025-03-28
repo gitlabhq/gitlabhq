@@ -93,7 +93,7 @@ The runner authentication tokens are recognizable by their `glrt-` prefix.
 
 When you create a runner in the GitLab UI, you specify configuration values that were previously command-line options
 prompted by the `gitlab-runner register` command.
-These command-line options have been [deprecated](../../update/deprecations.md#registration-tokens-and-server-side-runner-arguments-in-post-apiv4runners-endpoint).
+These command-line options will be deprecated in the future.
 
 If you specify a runner authentication token with:
 

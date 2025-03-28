@@ -24371,9 +24371,7 @@ CREATE TABLE virtual_registries_packages_maven_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    cache_validity_hours smallint DEFAULT 1 NOT NULL,
-    CONSTRAINT check_b3fbe8eb62 CHECK ((cache_validity_hours >= 0))
+    updated_at timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE virtual_registries_packages_maven_registries_id_seq

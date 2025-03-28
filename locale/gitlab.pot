@@ -8836,6 +8836,9 @@ msgstr ""
 msgid "Authenticate user SSH keys without requiring additional configuration. Performance of GitLab can be improved by using the GitLab database instead. %{link_start}How do I configure authentication using the GitLab database? %{link_end}"
 msgstr ""
 
+msgid "Authenticate with Docker Hub"
+msgstr ""
+
 msgid "Authenticate with GitHub"
 msgstr ""
 
@@ -14569,6 +14572,12 @@ msgstr ""
 msgid "ColorMode|Light"
 msgstr ""
 
+msgid "ColorPicker|Enter any hex color or choose one of the suggested colors below."
+msgstr ""
+
+msgid "ColorPicker|Enter any hex color."
+msgstr ""
+
 msgid "ColorWidget|An error occurred while updating color."
 msgstr ""
 
@@ -15039,6 +15048,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Compliance framework ID"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Controls"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Copy ID"
 msgstr ""
 
@@ -15073,6 +15085,9 @@ msgid "ComplianceFrameworksReport|Policies"
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Remove as default framework"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Requirements"
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Set as default framework"
@@ -21853,6 +21868,9 @@ msgstr ""
 msgid "Do you want to remove this deploy key?"
 msgstr ""
 
+msgid "Docker Hub pull rate limits begin April 1, 2025 and might affect CI/CD pipelines that pull Docker images. To prevent pipeline failures, configure the GitLab Dependency Proxy to authenticate with Docker Hub."
+msgstr ""
+
 msgid "Dockerfile"
 msgstr ""
 
@@ -23224,12 +23242,6 @@ msgid "Enter admin mode"
 msgstr ""
 
 msgid "Enter an integer number between 0 and 100"
-msgstr ""
-
-msgid "Enter any color or choose one of the suggested colors below."
-msgstr ""
-
-msgid "Enter any color."
 msgstr ""
 
 msgid "Enter at least three characters to search"

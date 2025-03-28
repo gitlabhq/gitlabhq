@@ -4,6 +4,8 @@ import {
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
   showForkSuggestion,
+  isIdeTarget,
+  forkSuggestionForSelectedEditor,
 } from '~/repository/utils/fork_suggestion_utils';
 
 jest.mock('~/lib/utils/common_utils');
@@ -101,6 +103,53 @@ describe('forkSuggestionUtils', () => {
           canModifyBlobWithWebIde: false,
         }),
       ).toBe(false);
+    });
+  });
+
+  describe('isIdeTarget', () => {
+    it('returns true when target is "ide"', () => {
+      expect(isIdeTarget('ide')).toBe(true);
+    });
+
+    it('returns false when target is not "ide"', () => {
+      expect(isIdeTarget('simple')).toBe(false);
+      expect(isIdeTarget('')).toBe(false);
+      expect(isIdeTarget(null)).toBe(false);
+      expect(isIdeTarget(undefined)).toBe(false);
+    });
+  });
+
+  describe('forkSuggestionForSelectedEditor', () => {
+    it('returns Web IDE fork suggestion when target is "ide"', () => {
+      const webIdeSuggestion = true;
+      const singleFileSuggestion = false;
+
+      expect(forkSuggestionForSelectedEditor('ide', webIdeSuggestion, singleFileSuggestion)).toBe(
+        webIdeSuggestion,
+      );
+    });
+
+    it('returns single file editor fork suggestion when target is not "ide"', () => {
+      const webIdeSuggestion = false;
+      const singleFileSuggestion = true;
+
+      expect(
+        forkSuggestionForSelectedEditor('simple', webIdeSuggestion, singleFileSuggestion),
+      ).toBe(singleFileSuggestion);
+    });
+
+    it('handles different combinations of suggestion values', () => {
+      // Both true
+      expect(forkSuggestionForSelectedEditor('ide', true, true)).toBe(true);
+      expect(forkSuggestionForSelectedEditor('simple', true, true)).toBe(true);
+
+      // Both false
+      expect(forkSuggestionForSelectedEditor('ide', false, false)).toBe(false);
+      expect(forkSuggestionForSelectedEditor('simple', false, false)).toBe(false);
+
+      // Mixed values
+      expect(forkSuggestionForSelectedEditor('ide', true, false)).toBe(true);
+      expect(forkSuggestionForSelectedEditor('simple', false, true)).toBe(true);
     });
   });
 });

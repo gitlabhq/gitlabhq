@@ -8,7 +8,7 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
 
   include ApplicationWorker
 
-  data_consistency :always
+  data_consistency :sticky
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
   include Gitlab::ExclusiveLeaseHelpers
 

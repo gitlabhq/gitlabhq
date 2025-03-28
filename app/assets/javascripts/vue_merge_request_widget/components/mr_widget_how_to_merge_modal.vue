@@ -131,8 +131,11 @@ export default {
       {{ $options.i18n.steps.step1.help }}
     </p>
     <pre
-      :class="$options.userColorScheme"
-      class="code highlight js-syntax-highlight gl-rounded-base"
+      :class="[
+        $options.userColorScheme,
+        'code highlight js-syntax-highlight gl-rounded-base',
+        { 'gl-rounded-b-none': reviewingDocsPath },
+      ]"
       data-testid="how-to-merge-instructions"
       >{{ mergeInfo1 }}</pre
     >

@@ -127,7 +127,7 @@ To improve your security, try these features:
 | [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |
 | [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |
 | [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli) | Ultimate | GitLab Duo Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |
-| [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | Ultimate | GitLab Duo Enterprise | GitLab.com | Beta |
+| [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | Ultimate | GitLab Duo Enterprise | GitLab.com, GitLab Self-Managed | Beta |
 | [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | Ultimate | GitLab Duo Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | Beta |
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | Ultimate | GitLab Duo Enterprise | GitLab.com, GitLab Self-Managed | Experiment |
 | [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | Ultimate | GitLab Duo Enterprise | GitLab.com, GitLab Self-Managed, GitLab Dedicated | General availability |

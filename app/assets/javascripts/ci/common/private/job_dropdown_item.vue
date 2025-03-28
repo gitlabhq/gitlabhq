@@ -37,6 +37,9 @@ export default {
     status() {
       return this.job.detailedStatus || this.job.status;
     },
+    isFailed() {
+      return this.status?.group === 'failed';
+    },
     tooltipText() {
       const statusTooltip = capitalizeFirstCharacter(this.status?.tooltip);
 
@@ -49,7 +52,12 @@ export default {
 };
 </script>
 <template>
-  <gl-disclosure-dropdown-item :item="item" class="ci-job-component" data-testid="ci-job-item">
+  <gl-disclosure-dropdown-item
+    :item="item"
+    class="ci-job-component"
+    :class="{ 'ci-job-item-failed': isFailed }"
+    data-testid="ci-job-item"
+  >
     <template #list-item>
       <div class="-gl-my-2 gl-flex gl-items-center gl-justify-between">
         <job-name-component

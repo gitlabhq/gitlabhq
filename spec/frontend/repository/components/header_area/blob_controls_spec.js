@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { logError } from '~/lib/logger';
+import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -21,6 +22,7 @@ import applicationInfoQuery from '~/blob/queries/application_info.query.graphql'
 import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import {
   blobControlsDataMock,
   refMock,
@@ -34,6 +36,13 @@ jest.mock('~/behaviors/shortcuts/shortcuts_blob');
 jest.mock('~/blob/blob_line_permalink_updater');
 jest.mock('~/alert');
 jest.mock('~/lib/logger');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
+jest.mock('~/lib/utils/common_utils', () => ({
+  isLoggedIn: jest.fn().mockReturnValue(true),
+}));
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('Blob controls component', () => {
@@ -115,7 +124,7 @@ describe('Blob controls component', () => {
       },
       mixins: [{ data: () => ({ ref: refMock }) }, glFeatureFlagMixin()],
       stubs: {
-        WebIdeLink: false,
+        WebIdeLink,
       },
     });
 
@@ -127,6 +136,7 @@ describe('Blob controls component', () => {
   const findBlameButton = () => wrapper.findByTestId('blame');
   const findPermalinkButton = () => wrapper.findByTestId('permalink');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
+  const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -297,8 +307,8 @@ describe('Blob controls component', () => {
       it('renders the WebIdeLink component with the correct props', () => {
         expect(findWebIdeLink().props()).toMatchObject({
           showEditButton: false,
-          editUrl: 'edit/blob/path/file.js',
-          webIdeUrl: 'ide/blob/path/file.js',
+          editUrl: 'https://edit/blob/path/file.js',
+          webIdeUrl: 'https://ide/blob/path/file.js',
           needsToFork: false,
           needsToForkWithWebIde: false,
           showPipelineEditorButton: true,
@@ -333,6 +343,73 @@ describe('Blob controls component', () => {
         });
 
         expect(findWebIdeLink().exists()).toBe(false);
+      });
+
+      describe('when can modify blob', () => {
+        it('redirects to WebIDE to edit the file', async () => {
+          findWebIdeLink().vm.$emit('edit', 'ide');
+          await nextTick();
+
+          expect(visitUrl).toHaveBeenCalledWith('https://ide/blob/path/file.js');
+          expect(findForkSuggestionModal().props('visible')).toBe(false);
+        });
+
+        it('redirects to single file editor to edit the file', async () => {
+          findWebIdeLink().vm.$emit('edit', 'simple');
+          await nextTick();
+
+          expect(visitUrl).toHaveBeenCalledWith('https://edit/blob/path/file.js');
+          expect(findForkSuggestionModal().props('visible')).toBe(false);
+        });
+      });
+
+      describe('when user cannot modify blob', () => {
+        it('changes ForkSuggestionModal visibility', async () => {
+          const blobControlsForForkResolver = jest.fn().mockResolvedValue({
+            data: {
+              project: {
+                ...blobControlsDataMock,
+                userPermissions: {
+                  ...blobControlsDataMock.userPermissions,
+                  pushCode: false,
+                  createMergeRequestIn: true,
+                },
+                repository: {
+                  ...blobControlsDataMock.repository,
+                  blobs: {
+                    ...blobControlsDataMock.repository.blobs,
+                    nodes: [
+                      {
+                        ...blobControlsDataMock.repository.blobs.nodes[0],
+                        canModifyBlob: false,
+                        canModifyBlobWithWebIde: false,
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          });
+          await createComponent({
+            blobControlsResolver: blobControlsForForkResolver,
+            glFeatures: { blobOverflowMenu: true },
+          });
+
+          findWebIdeLink().vm.$emit('edit', 'simple');
+          await nextTick();
+
+          expect(findForkSuggestionModal().props('visible')).toBe(true);
+        });
+      });
+    });
+
+    describe('ForkSuggestionModal component', () => {
+      it('renders ForkSuggestionModal', () => {
+        expect(findForkSuggestionModal().exists()).toBe(true);
+        expect(findForkSuggestionModal().props()).toMatchObject({
+          visible: false,
+          forkPath: 'fork/view/path',
+        });
       });
     });
 
@@ -369,6 +446,13 @@ describe('Blob controls component', () => {
         findOverflowMenu().vm.$emit('copy');
 
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Example raw text content');
+      });
+
+      it('changes ForkSuggestionModal visibility when receives showForkSuggestion event', async () => {
+        findOverflowMenu().vm.$emit('showForkSuggestion');
+        await nextTick();
+
+        expect(findForkSuggestionModal().props('visible')).toBe(true);
       });
     });
   });

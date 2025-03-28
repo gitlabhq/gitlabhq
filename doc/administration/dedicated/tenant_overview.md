@@ -59,3 +59,21 @@ Each Sunday night in UTC, Switchboard updates to display the planned GitLab vers
 ## Hosted runners
 
 The **Hosted runners** section shows the [hosted runners](hosted_runners.md) associated with your instance.
+
+## NAT IP addresses
+
+NAT gateway IP addresses typically remain consistent during standard operations but might change occasionally, such as when GitLab needs to rebuild your instance during disaster recovery.
+
+You need to know your NAT gateway IP addresses in cases like:
+
+- Configuring webhook receivers to accept incoming requests from your GitLab Dedicated instance.
+- Setting up allowlists for external services to accept connections from your GitLab Dedicated instance.
+
+### View your NAT gateway IP addresses
+
+To view the current NAT gateway IP addresses for your GitLab Dedicated instance:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Select your tenant.
+1. Select the **Configuration** tab.
+1. Under **Tenant Details**, find your **NAT gateways**.

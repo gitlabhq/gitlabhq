@@ -4,7 +4,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobButtonGroup from '~/repository/components/header_area/blob_button_group.vue';
-import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import { blobControlsDataMock, refMock } from 'ee_else_ce_jest/repository/mock_data';
 
@@ -57,7 +56,6 @@ describe('BlobButtonGroup component', () => {
 
   const findReplaceItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
-  const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
 
   beforeEach(async () => {
     await createComponent();
@@ -104,18 +102,12 @@ describe('BlobButtonGroup component', () => {
         expect(showUploadBlobModalMock).not.toHaveBeenCalled();
       });
 
-      it('triggers ForkSuggestionModal from the replace item', async () => {
+      it('emits showForkSuggestion from the replace item', async () => {
         findReplaceItem().vm.$emit('action');
         await nextTick();
 
-        expect(findForkSuggestionModal().props('visible')).toBe(true);
+        expect(wrapper.emitted('showForkSuggestion')).toEqual([[]]);
       });
-    });
-  });
-
-  it('renders ForkSuggestionModal', () => {
-    expect(findForkSuggestionModal().props()).toMatchObject({
-      forkPath: 'fork/view/path',
     });
   });
 
@@ -134,5 +126,6 @@ describe('BlobButtonGroup component', () => {
       path: 'some/file.js',
       replacePath: 'some/replace/file.js',
     });
+    expect(wrapper.emitted('showForkSuggestion')).toBeUndefined();
   });
 });

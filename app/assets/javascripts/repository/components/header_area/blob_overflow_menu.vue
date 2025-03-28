@@ -140,6 +140,9 @@ export default {
         this.$emit('copy');
       }
     },
+    onShowForkSuggestion() {
+      this.$emit('showForkSuggestion');
+    },
   },
 };
 </script>
@@ -165,6 +168,7 @@ export default {
       :can-lock="canLock"
       :is-replace-disabled="!canModifyFile"
       :is-locked="isLocked"
+      @showForkSuggestion="onShowForkSuggestion"
     />
     <blob-default-actions-group
       :active-viewer-type="activeViewerType"
@@ -181,6 +185,7 @@ export default {
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
       :disabled="!canModifyFile"
+      @showForkSuggestion="onShowForkSuggestion"
     />
   </gl-disclosure-dropdown>
 </template>

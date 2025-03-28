@@ -24,11 +24,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
-| [Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint](https://gitlab.com/gitlab-org/gitlab/-/issues/379743) | Critical | Verify | Instance, group, project |
-| [`runnerRegistrationToken` parameter for GitLab Runner Helm Chart](https://gitlab.com/gitlab-org/gitlab/-/issues/381111) | Critical | Verify | Instance, group, project |
-| [Registration tokens and server-side runner arguments in `gitlab-runner register` command](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) | Critical | Verify | Instance, group, project |
-| [Support for REST API endpoints that reset runner registration tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) | Critical | Verify | Instance, group, project |
-| [GitLab Runner platforms and setup instructions in GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/387937) | Low | Verify | Instance, group, project |
 | [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
 | [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) | Low | Secure | Project |
@@ -64,11 +59,9 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 | Deprecation | Impact | Stage | Scope |
 |-------------|--------|-------|-------|
 | [Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions](https://gitlab.com/gitlab-org/gitlab/-/issues/391941) | Low | Verify | Project |
-| [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/453949) | Medium | Verify | Instance |
 | [The `heroku/builder:22` image is deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79) | Medium | Deploy | Project |
 | [`ciMinutesUsed` GraphQL field renamed to `ciDuration`](https://gitlab.com/gitlab-org/gitlab/-/issues/497364) | Medium | Verify | Instance |
 | [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |
-| [RunnersRegistrationTokenReset GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/505703) | High | Verify | Instance, group, project |
 | [Behavior change for Upcoming and Started milestone filters](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) | Low | Plan | Group, project |
 | [`kpt`-based `agentk` is deprecated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656) | Low | Deploy | Project |
 | [Updating CI/CD job tokens to JWT standard](https://gitlab.com/gitlab-org/gitlab/-/issues/509578) |  | Software supply chain security |  |
