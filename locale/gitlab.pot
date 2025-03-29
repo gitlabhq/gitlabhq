@@ -25180,7 +25180,7 @@ msgstr ""
 msgid "Failed to set iteration on this issue. Please try again."
 msgstr ""
 
-msgid "Failed to signing using smartcard authentication"
+msgid "Failed to sign in using smart card authentication."
 msgstr ""
 
 msgid "Failed to toggle the to-do status for the design."
