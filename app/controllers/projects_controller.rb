@@ -47,6 +47,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:filter_blob_path, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
+    push_frontend_feature_flag(:ci_pipeline_status_realtime, @project)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)

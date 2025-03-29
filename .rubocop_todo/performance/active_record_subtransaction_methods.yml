@@ -20,7 +20,6 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'app/services/lfs/file_transformer.rb'
     - 'app/services/merge_requests/approval_service.rb'
     - 'app/services/namespaces/statistics_refresher_service.rb'
-    - 'app/services/projects/create_service.rb'
     - 'app/services/projects/lfs_pointers/lfs_download_service.rb'
     - 'app/services/service_desk_settings/update_service.rb'
     - 'app/services/terraform/remote_state_handler.rb'

@@ -159,6 +159,34 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
     end
   end
 
+  describe '#successfully_archived?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:metadata) do
+      build(:ci_build_trace_metadata,
+        archived_at: archived_at,
+        checksum: checksum,
+        remote_checksum: remote_checksum)
+    end
+
+    subject { metadata.successfully_archived? }
+
+    where(:archived_at, :checksum, :remote_checksum, :result) do
+      '2025-01-01' | nil | nil | true
+      '2025-01-01' | 'a' | nil | true
+      '2025-01-01' | 'a' | 'a' | true
+      '2025-01-01' | 'a' | 'b' | false
+      nil          | nil | nil | false
+      nil          | 'a' | nil | false
+      nil          | 'a' | 'a' | false
+      nil          | 'a' | 'b' | false
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
+
   describe 'partitioning' do
     include Ci::PartitioningHelpers
 

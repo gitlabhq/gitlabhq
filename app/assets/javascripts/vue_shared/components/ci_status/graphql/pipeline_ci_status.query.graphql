@@ -1,0 +1,14 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+query pipelineCiStatus($fullPath: ID!, $pipelineId: CiPipelineID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(id: $pipelineId) {
+      id
+      detailedStatus {
+        label
+        ...CiIcon
+      }
+    }
+  }
+}

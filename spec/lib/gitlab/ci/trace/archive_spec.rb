@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Trace::Archive, feature_category: :scalability do
   context 'with transactional fixtures' do
     let_it_be_with_reload(:job) { create(:ci_build, :success, :trace_live) }
-    let_it_be_with_reload(:trace_metadata) { create(:ci_build_trace_metadata, build: job) }
+    let_it_be_with_refind(:trace_metadata) { create(:ci_build_trace_metadata, build: job) }
     let_it_be(:src_checksum) do
       job.trace.read { |stream| Digest::MD5.hexdigest(stream.raw) }
     end
@@ -36,6 +36,26 @@ RSpec.describe Gitlab::Ci::Trace::Archive, feature_category: :scalability do
             expect(metrics)
             .not_to have_received(:increment_error_counter)
             .with(error_reason: :archive_invalid_checksum)
+          end
+
+          it 'deletes trace metadata record' do
+            expect { subject.execute!(stream) }
+              .to change { Ci::BuildTraceMetadata.count }.by(-1)
+
+            expect(job.reload.trace_metadata).to be_nil
+          end
+
+          context 'when FF `ci_delete_archived_trace_metadata` is disabled' do
+            before do
+              stub_feature_flags(ci_delete_archived_trace_metadata: false)
+            end
+
+            it 'does not delete trace metadata record' do
+              expect { subject.execute!(stream) }
+                .not_to change { Ci::BuildTraceMetadata.count }
+
+              expect(job.reload.trace_metadata).to eq(trace_metadata)
+            end
           end
         end
 
@@ -107,6 +127,13 @@ RSpec.describe Gitlab::Ci::Trace::Archive, feature_category: :scalability do
               expect(metrics)
                 .to have_received(:increment_error_counter)
                 .with(error_reason: :archive_invalid_checksum)
+            end
+
+            it 'does not delete trace metadata record' do
+              expect { subject.execute!(stream) }
+                .not_to change { Ci::BuildTraceMetadata.count }
+
+              expect(job.reload.trace_metadata).to eq(trace_metadata)
             end
 
             include_context 'with FIPS'

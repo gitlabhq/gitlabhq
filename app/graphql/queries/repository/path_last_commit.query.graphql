@@ -58,15 +58,6 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!, $refType: 
                 node {
                   __typename
                   id
-                  detailedStatus {
-                    __typename
-                    id
-                    detailsPath
-                    icon
-                    tooltip
-                    text
-                    group
-                  }
                 }
               }
             }

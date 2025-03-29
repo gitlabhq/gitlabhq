@@ -98,7 +98,7 @@ if (global.document) {
       RouterLinkStub: {
         ...actualVTU.RouterLinkStub,
         render() {
-          const { default: defaultSlot } = this.$slots ?? {};
+          const { default: defaultSlot } = this.$scopedSlots ?? {};
           const defaultSlotFn =
             defaultSlot && typeof defaultSlot !== 'function' ? () => defaultSlot : defaultSlot;
           return actualVTU.RouterLinkStub.render.call({

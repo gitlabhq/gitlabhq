@@ -167,9 +167,7 @@ module Projects
         )
 
         if group_access_level > GroupMember::NO_ACCESS
-          current_user.project_authorizations.safe_find_or_create_by!(
-            project: @project,
-            access_level: group_access_level)
+          ProjectAuthorization.find_or_create_authorization_for(current_user.id, @project.id, group_access_level)
         end
 
         AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(@project.id)
@@ -193,10 +191,7 @@ module Projects
         # isn't picked up (or finished) by the time the user is redirected to the newly created project's page.
         # If that happens, the user will hit a 404. To avoid that scenario, we manually create a `project_authorizations` record for the user here.
         if owner_member.persisted?
-          owner_user.project_authorizations.safe_find_or_create_by(
-            project: @project,
-            access_level: ProjectMember::OWNER
-          )
+          ProjectAuthorization.find_or_create_authorization_for(owner_user.id, @project.id, ProjectMember::OWNER)
         end
         # During the process of adding a project owner, a check on permissions is made on the user which caches
         # the max member access for that user on this project.

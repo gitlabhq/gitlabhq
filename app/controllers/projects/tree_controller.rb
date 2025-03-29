@@ -24,6 +24,7 @@ class Projects::TreeController < Projects::ApplicationController
     push_frontend_feature_flag(:filter_blob_path, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
+    push_frontend_feature_flag(:ci_pipeline_status_realtime, @project)
   end
 
   feature_category :source_code_management

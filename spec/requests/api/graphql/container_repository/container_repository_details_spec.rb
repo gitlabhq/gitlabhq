@@ -729,12 +729,46 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       it 'returns nil' do
         subject
 
+        expect(tag_permissions_response).to be_nil
+      end
+    end
+
+    context 'when there is an immutable rule' do
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          :immutable,
+          project: project,
+          tag_name_pattern: 'la'
+        )
+      end
+
+      it 'returns the maximum access fields from the matching protection rules' do
+        subject
+
         expect(tag_permissions_response).to eq(
           {
             'minimumAccessLevelForPush' => nil,
             'minimumAccessLevelForDelete' => nil
           }
         )
+      end
+
+      context 'when the feature container_registry_immutable_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it 'ignores the immutable rule' do
+          subject
+
+          expect(tag_permissions_response).to eq(
+            {
+              'minimumAccessLevelForPush' => 'OWNER',
+              'minimumAccessLevelForDelete' => 'OWNER'
+            }
+          )
+        end
       end
     end
   end

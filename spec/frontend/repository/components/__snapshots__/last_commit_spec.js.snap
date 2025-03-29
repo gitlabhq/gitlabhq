@@ -12,12 +12,10 @@ exports[`Repository last commit component renders commit widget 1`] = `
       <div
         class="gl-flex gl-h-7 gl-items-center gl-ml-5"
       >
-        <ci-icon-stub
-          aria-label="Pipeline: failed"
-          class="gl-mr-2 js-commit-pipeline"
-          showtooltip="true"
-          status="[object Object]"
-          uselink="true"
+        <pipeline-ci-status-stub
+          class="gl-mr-2"
+          pipelineid="gid://gitlab/Ci::Pipeline/167"
+          projectfullpath="gitlab-org/gitlab-foss"
         />
       </div>
       <gl-button-group-stub

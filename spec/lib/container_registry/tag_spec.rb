@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
   let_it_be(:group) { create(:group, name: 'group') }
-  let_it_be(:project) { create(:project, path: 'test', group: group) }
-  let_it_be(:repository) { create(:container_repository, name: '', project: project) }
+  let_it_be_with_refind(:project) { create(:project, path: 'test', group: group) }
+  let_it_be_with_refind(:repository) { create(:container_repository, name: '', project: project) }
 
   let(:headers) do
     { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') }
@@ -434,50 +434,85 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
     describe '#protection_rule' do
       subject { tag.protection_rule }
 
-      before_all do
-        create(
-          :container_registry_protection_tag_rule,
-          project: project,
-          tag_name_pattern: 'tag',
-          minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
-          minimum_access_level_for_delete: Gitlab::Access::OWNER
-        )
+      context 'when the project has protection rules' do
+        before_all do
+          create(
+            :container_registry_protection_tag_rule,
+            project: project,
+            tag_name_pattern: 'tag',
+            minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
+            minimum_access_level_for_delete: Gitlab::Access::OWNER
+          )
 
-        create(
-          :container_registry_protection_tag_rule,
-          project: project,
-          tag_name_pattern: '.*',
-          minimum_access_level_for_push: Gitlab::Access::OWNER,
-          minimum_access_level_for_delete: Gitlab::Access::MAINTAINER
-        )
+          create(
+            :container_registry_protection_tag_rule,
+            project: project,
+            tag_name_pattern: 'ta',
+            minimum_access_level_for_push: Gitlab::Access::OWNER,
+            minimum_access_level_for_delete: Gitlab::Access::MAINTAINER
+          )
 
-        create(
-          :container_registry_protection_tag_rule,
-          project: project,
-          tag_name_pattern: 'non-matching-pattern',
-          minimum_access_level_for_push: Gitlab::Access::ADMIN,
-          minimum_access_level_for_delete: Gitlab::Access::ADMIN
-        )
-      end
+          create(
+            :container_registry_protection_tag_rule,
+            project: project,
+            tag_name_pattern: 'non-matching-pattern',
+            minimum_access_level_for_push: Gitlab::Access::ADMIN,
+            minimum_access_level_for_delete: Gitlab::Access::ADMIN
+          )
 
-      it 'returns the highest access level from the matching protection rules' do
-        is_expected.to have_attributes(
-          minimum_access_level_for_push: 'owner',
-          minimum_access_level_for_delete: 'owner'
-        )
-      end
-
-      context 'when the feature container_registry_protected_tags is disabled' do
-        before do
-          stub_feature_flags(container_registry_protected_tags: false)
-        end
-
-        it 'returns nil for push and delete' do
-          is_expected.to have_attributes(
+          create(
+            :container_registry_protection_tag_rule,
+            project: project,
+            tag_name_pattern: 'sample',
             minimum_access_level_for_push: nil,
             minimum_access_level_for_delete: nil
           )
         end
+
+        it 'returns the highest access level from the matching protection rules' do
+          is_expected.to have_attributes(
+            minimum_access_level_for_push: 'owner',
+            minimum_access_level_for_delete: 'owner'
+          )
+        end
+
+        context 'when the feature container_registry_protected_tags is disabled' do
+          before do
+            stub_feature_flags(container_registry_protected_tags: false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when there are no protection rules that match the tag name' do
+          let(:tag) { described_class.new(repository, 'newname') }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when there are matching immutable rules' do
+          let(:tag) { described_class.new(repository, 'sample') }
+
+          it 'returns a matching immutable rule' do
+            is_expected.to have_attributes(
+              tag_name_pattern: 'sample',
+              minimum_access_level_for_push: nil,
+              minimum_access_level_for_delete: nil
+            )
+          end
+
+          context 'when the feature container_registry_immutable_tags is disabled' do
+            before do
+              stub_feature_flags(container_registry_protected_tags: false)
+            end
+
+            it { is_expected.to be_nil }
+          end
+        end
+      end
+
+      context 'when the project has no protection rules' do
+        it { is_expected.to be_nil }
       end
     end
 
@@ -502,19 +537,27 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
         it { is_expected.to be_falsey }
       end
 
-      context 'for admin' do
+      context 'when there is an immutable tag rule' do
         before do
-          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+          allow(tag).to receive(:immutable_protection_rule).and_return(
+            build(:container_registry_protection_tag_rule, :immutable)
+          )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when there is no protection rule' do
+        before do
+          allow(tag).to receive(:protection_rule).and_return(nil)
         end
 
         it { is_expected.to be_falsey }
       end
 
-      context 'when minimum_access_level_for_delete is nil' do
+      context 'for admin' do
         before do
-          allow(tag).to receive(:protection_rule).and_return(
-            build(:container_registry_protection_tag_rule, minimum_access_level_for_delete: nil)
-          )
+          allow(user).to receive(:can_admin_all_resources?).and_return(true)
         end
 
         it { is_expected.to be_falsey }
@@ -534,6 +577,12 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
         end
 
         it { is_expected.to be_falsey }
+      end
+
+      context 'when user is nil' do
+        let_it_be(:user) { nil }
+
+        it { is_expected.to be_truthy }
       end
     end
   end

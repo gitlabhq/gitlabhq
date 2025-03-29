@@ -13,8 +13,7 @@ module Types
           description:
             'Minimum GitLab access level required to delete container image tags from the container repository. ' \
             'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, no minimum access level is enforced. ' \
-            'Users with the Developer role or higher can delete tags by default.'
+            'If the value is `nil`, no access level can delete tags. '
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
@@ -23,8 +22,7 @@ module Types
           description:
             'Minimum GitLab access level required to push container image tags to the container repository. ' \
             'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, no minimum access level is enforced. ' \
-            'Users with the Developer role or higher can push tags by default.'
+            'If the value is `nil`, no access level can push tags. '
       end
     end
   end

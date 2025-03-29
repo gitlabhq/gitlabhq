@@ -25,6 +25,9 @@ module Gitlab
           end
 
           validate_archived_trace unless Gitlab::FIPS.enabled?
+
+          trace_metadata.destroy! if trace_metadata.successfully_archived? && \
+            Feature.enabled?(:ci_delete_archived_trace_metadata, job.project)
         end
 
         private

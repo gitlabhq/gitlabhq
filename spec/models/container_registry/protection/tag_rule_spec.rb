@@ -5,6 +5,20 @@ require 'spec_helper'
 RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
+  shared_examples 'returning same result for different access levels' do |expected_result|
+    where(:user_access_level) do
+      [
+        Gitlab::Access::MAINTAINER,
+        Gitlab::Access::OWNER,
+        Gitlab::Access::ADMIN
+      ]
+    end
+
+    with_them do
+      it { is_expected.to be(expected_result) }
+    end
+  end
+
   it_behaves_like 'having unique enum values'
 
   describe 'relationships' do
@@ -108,56 +122,56 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
   end
 
   describe '.for_actions_and_access' do
-    let(:rule_one) do
+    let_it_be(:rule_one) do
       create(:container_registry_protection_tag_rule,
         tag_name_pattern: 'one',
         minimum_access_level_for_push: :maintainer,
         minimum_access_level_for_delete: :maintainer)
     end
 
-    let(:rule_two) do
+    let_it_be(:rule_two) do
       create(:container_registry_protection_tag_rule,
         tag_name_pattern: 'two',
         minimum_access_level_for_push: :owner,
         minimum_access_level_for_delete: :maintainer)
     end
 
-    let(:rule_three) do
+    let_it_be(:rule_three) do
       create(:container_registry_protection_tag_rule,
         tag_name_pattern: 'three',
         minimum_access_level_for_push: :maintainer,
         minimum_access_level_for_delete: :admin)
     end
 
-    let(:rule_four) do
+    let_it_be(:rule_four) do
       create(:container_registry_protection_tag_rule,
         tag_name_pattern: 'four',
         minimum_access_level_for_push: :admin,
         minimum_access_level_for_delete: :admin)
     end
 
-    before do
-      rule_one
-      rule_two
-      rule_three
-      rule_four
+    let_it_be(:rule_five) do
+      create(:container_registry_protection_tag_rule,
+        tag_name_pattern: 'five',
+        minimum_access_level_for_push: nil,
+        minimum_access_level_for_delete: nil)
     end
 
     where(:user_access_level, :actions, :expected_rules) do
-      Gitlab::Access::DEVELOPER  | ['push']         | lazy { [rule_one, rule_two, rule_three, rule_four] }
-      Gitlab::Access::DEVELOPER  | ['delete']       | lazy { [rule_one, rule_two, rule_three, rule_four] }
-      Gitlab::Access::DEVELOPER  | %w[push delete]  | lazy { [rule_one, rule_two, rule_three, rule_four] }
-      Gitlab::Access::DEVELOPER  | ['unknown']      | lazy { [rule_one, rule_two, rule_three, rule_four] }
-      Gitlab::Access::DEVELOPER  | %w[push unknown] | lazy { [rule_one, rule_two, rule_three, rule_four] }
-      Gitlab::Access::MAINTAINER | ['push']         | lazy { [rule_two, rule_four] }
-      Gitlab::Access::MAINTAINER | ['delete']       | lazy { [rule_three, rule_four] }
-      Gitlab::Access::MAINTAINER | %w[push delete]  | lazy { [rule_two, rule_three, rule_four] }
-      Gitlab::Access::OWNER      | ['push']         | lazy { [rule_four] }
-      Gitlab::Access::OWNER      | ['delete']       | lazy { [rule_three, rule_four] }
-      Gitlab::Access::OWNER      | %w[push delete]  | lazy { [rule_three, rule_four] }
-      Gitlab::Access::ADMIN      | ['push']         | lazy { [] }
-      Gitlab::Access::ADMIN      | ['delete']       | lazy { [] }
-      Gitlab::Access::ADMIN      | %w[push delete]  | lazy { [] }
+      Gitlab::Access::DEVELOPER  | ['push']         | lazy { [rule_one, rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::DEVELOPER  | ['delete']       | lazy { [rule_one, rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::DEVELOPER  | %w[push delete]  | lazy { [rule_one, rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::DEVELOPER  | ['unknown']      | lazy { [rule_one, rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::DEVELOPER  | %w[push unknown] | lazy { [rule_one, rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::MAINTAINER | ['push']         | lazy { [rule_two, rule_four, rule_five] }
+      Gitlab::Access::MAINTAINER | ['delete']       | lazy { [rule_three, rule_four, rule_five] }
+      Gitlab::Access::MAINTAINER | %w[push delete]  | lazy { [rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::OWNER      | ['push']         | lazy { [rule_four, rule_five] }
+      Gitlab::Access::OWNER      | ['delete']       | lazy { [rule_three, rule_four, rule_five] }
+      Gitlab::Access::OWNER      | %w[push delete]  | lazy { [rule_three, rule_four, rule_five] }
+      Gitlab::Access::ADMIN      | ['push']         | lazy { [rule_five] }
+      Gitlab::Access::ADMIN      | ['delete']       | lazy { [rule_five] }
+      Gitlab::Access::ADMIN      | %w[push delete]  | lazy { [rule_five] }
     end
 
     with_them do
@@ -198,11 +212,18 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
         minimum_access_level_for_delete: :admin)
     end
 
+    let_it_be(:rule_five) do
+      create(:container_registry_protection_tag_rule,
+        tag_name_pattern: 'five',
+        minimum_access_level_for_push: nil,
+        minimum_access_level_for_delete: nil)
+    end
+
     where(:user_access_level, :expected_rules) do
-      Gitlab::Access::DEVELOPER  | [ref(:rule_one), ref(:rule_two), ref(:rule_three), ref(:rule_four)]
-      Gitlab::Access::MAINTAINER | [ref(:rule_three), ref(:rule_four)]
-      Gitlab::Access::OWNER      | [ref(:rule_three), ref(:rule_four)]
-      Gitlab::Access::ADMIN      | []
+      Gitlab::Access::DEVELOPER  | lazy { [rule_one, rule_two, rule_three, rule_four, rule_five] }
+      Gitlab::Access::MAINTAINER | lazy { [rule_three, rule_four, rule_five] }
+      Gitlab::Access::OWNER      | lazy { [rule_three, rule_four, rule_five] }
+      Gitlab::Access::ADMIN      | lazy { [rule_five] }
     end
 
     with_them do
@@ -230,46 +251,106 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
   end
 
   describe '#push_restricted?' do
-    let(:rule) do
-      create(
+    let_it_be(:rule) do
+      build(
         :container_registry_protection_tag_rule,
-        minimum_access_level_for_push: :maintainer,
-        minimum_access_level_for_delete: :owner
+        minimum_access_level_for_push: :owner,
+        minimum_access_level_for_delete: :maintainer
       )
     end
 
-    it 'returns true if user access level is below the push minimum' do
-      expect(rule.push_restricted?(Gitlab::Access::DEVELOPER)).to be(true)
+    subject { rule.push_restricted?(user_access_level) }
+
+    where(:user_access_level, :expected_result) do
+      Gitlab::Access::MAINTAINER  | true
+      Gitlab::Access::OWNER       | false
+      Gitlab::Access::ADMIN       | false
     end
 
-    it 'returns false if user access level meets the push minimum' do
-      expect(rule.push_restricted?(Gitlab::Access::MAINTAINER)).to be(false)
+    with_them do
+      it { is_expected.to be(expected_result) }
     end
 
-    it 'returns false if user access level exceeds the push minimum' do
-      expect(rule.push_restricted?(Gitlab::Access::OWNER)).to be(false)
+    context 'for an immutable tag rule' do
+      let_it_be(:rule) do
+        build(:container_registry_protection_tag_rule, :immutable)
+      end
+
+      it_behaves_like 'returning same result for different access levels', true
+
+      context 'when the feature container_registry_immutable_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it_behaves_like 'returning same result for different access levels', false
+      end
     end
   end
 
   describe '#delete_restricted?' do
-    let(:rule) do
-      create(
+    let_it_be(:rule) do
+      build(
         :container_registry_protection_tag_rule,
         minimum_access_level_for_push: :maintainer,
         minimum_access_level_for_delete: :owner
       )
     end
 
-    it 'returns true if user access level is below the delete minimum' do
-      expect(rule.delete_restricted?(Gitlab::Access::MAINTAINER)).to be(true)
+    subject { rule.delete_restricted?(user_access_level) }
+
+    where(:user_access_level, :expected_result) do
+      Gitlab::Access::MAINTAINER  | true
+      Gitlab::Access::OWNER       | false
+      Gitlab::Access::ADMIN       | false
     end
 
-    it 'returns false if user access level meets the delete minimum' do
-      expect(rule.delete_restricted?(Gitlab::Access::OWNER)).to be(false)
+    with_them do
+      it { is_expected.to be(expected_result) }
     end
 
-    it 'returns false if user access level exceeds the delete minimum' do
-      expect(rule.delete_restricted?(Gitlab::Access::ADMIN)).to be(false)
+    context 'for an immutable tag rule' do
+      let_it_be(:rule) do
+        build(:container_registry_protection_tag_rule, :immutable)
+      end
+
+      it_behaves_like 'returning same result for different access levels', true
+
+      context 'when the feature container_registry_immutable_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it_behaves_like 'returning same result for different access levels', false
+      end
+    end
+  end
+
+  describe '#immutable?' do
+    subject { rule.immutable? }
+
+    context 'when access levels are nil' do
+      let(:rule) do
+        build(
+          :container_registry_protection_tag_rule,
+          minimum_access_level_for_push: nil,
+          minimum_access_level_for_delete: nil
+        )
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when access levels are not nil' do
+      let(:rule) do
+        build(
+          :container_registry_protection_tag_rule,
+          minimum_access_level_for_push: :owner,
+          minimum_access_level_for_delete: :owner
+        )
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 end

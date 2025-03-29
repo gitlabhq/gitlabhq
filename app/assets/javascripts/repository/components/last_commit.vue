@@ -2,10 +2,10 @@
 import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
-import { sprintf, s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import PipelineCiStatus from '~/vue_shared/components/ci_status/pipeline_ci_status.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import projectPathQuery from '../queries/project_path.query.graphql';
@@ -20,16 +20,16 @@ export default {
     CollapsibleCommitInfo,
     ClipboardButton,
     SignatureBadge,
-    CiIcon,
     GlButtonGroup,
     GlButton,
     GlLoadingIcon,
+    PipelineCiStatus,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -56,6 +56,7 @@ export default {
       error(error) {
         throw error;
       },
+      pollInterval: 30000,
     },
   },
   props: {
@@ -82,16 +83,14 @@ export default {
     };
   },
   computed: {
-    statusTitle() {
-      return sprintf(s__('PipelineStatusTooltip|Pipeline: %{ciStatus}'), {
-        ciStatus: this.commit?.pipeline?.detailedStatus?.text,
-      });
-    },
     isLoading() {
       return this.$apollo.queries.commit.loading;
     },
     showCommitId() {
       return this.commit?.sha?.substr(0, 8);
+    },
+    showRealTimePipelineStatus() {
+      return this.glFeatures.ciPipelineStatusRealtime;
     },
   },
   watch: {
@@ -120,11 +119,12 @@ export default {
     <commit-info :commit="commit" class="gl-hidden sm:gl-flex">
       <div class="commit-actions gl-my-2 gl-flex gl-items-start gl-gap-3">
         <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
-        <div v-if="commit.pipeline" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
-          <ci-icon
-            :status="commit.pipeline.detailedStatus"
-            :aria-label="statusTitle"
-            class="js-commit-pipeline gl-mr-2"
+        <div v-if="commit.pipeline.id" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
+          <pipeline-ci-status
+            :pipeline-id="commit.pipeline.id"
+            :project-full-path="projectPath"
+            :can-subscribe="showRealTimePipelineStatus"
+            class="gl-mr-2"
           />
         </div>
         <gl-button-group class="js-commit-sha-group gl-ml-4 gl-flex gl-items-center">

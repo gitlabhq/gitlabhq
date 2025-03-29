@@ -65,7 +65,7 @@
     "@gitlab/fonts": "^1.3.0",
     "@gitlab/query-language-rust": "0.5.2",
     "@gitlab/svgs": "3.123.0",
-    "@gitlab/ui": "111.9.0",
+    "@gitlab/ui": "111.9.1",
     "@gitlab/vue-router-vue3": "npm:vue-router@4.5.0",
     "@gitlab/vuex-vue3": "npm:vuex@4.1.0",
     "@gitlab/web-ide": "^0.0.1-dev-20250320115735",

@@ -30,7 +30,7 @@ gem 'slack-notifier', '~> 2.4', require: false
 gem 'googleauth', '~> 1.9.0', require: false # see: https://gitlab.com/gitlab-org/gitlab/-/issues/449019
 gem 'fog-google', '~> 1.24', '>= 1.24.1', require: false
 gem 'fog-core', '2.1.0', require: false # fog-google generates a ton of warnings with latest core
-gem "warning", "~> 1.4"
+gem "warning", "~> 1.5"
 # TODO: activesupport loads mutex_m from standard library which will stop working in ruby 3.4.0
 # This gem should be removed once activesupport is updated to 7.1 version
 gem "mutex_m", "~> 0.3.0"
