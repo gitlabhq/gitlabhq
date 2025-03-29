@@ -98,6 +98,29 @@ When this metadata is set on a page:
 - Technical writers doing the Technical Writing team's monthly tasks aren't prompted to add the page to the global
   navigation.
 
+## Indicate GitLab Dedicated support
+
+The `gitlab_dedicated` metadata indicates whether a documentation page applies to GitLab Dedicated.
+
+Add this field to documentation pages when GitLab Dedicated availability status has been confirmed with the product team. This metadata should complement, not replace, the information from the **Offering** details.
+
+For example, usually pages that apply to GitLab Self-Managed apply to GitLab Dedicated.
+Use this metadata when they don't:
+
+```yaml
+gitlab_dedicated: no
+```
+
+When a page applies to GitLab Dedicated, use:
+
+```yaml
+gitlab_dedicated: yes
+```
+
+For pages with partial availability on GitLab Dedicated, use `gitlab_dedicated: yes`
+and update the [product availability details](styleguide/availability_details.md)
+for any topics that don't apply to GitLab Dedicated.
+
 ## Additional metadata
 
 The following metadata is optional and is not actively maintained.

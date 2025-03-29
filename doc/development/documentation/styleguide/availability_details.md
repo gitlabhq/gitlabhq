@@ -52,6 +52,13 @@ For example:
 - `GitLab Self-Managed`
 - `GitLab Self-Managed, GitLab Dedicated`
 
+{{< alert type="note" >}}
+
+If you have reviewed a page and it specifically doesn't apply to GitLab Dedicated,
+[assign metadata](../metadata.md#indicate-gitlab-dedicated-support).
+
+{{< /alert >}}
+
 ### Tier
 
 For tier, choose one:
