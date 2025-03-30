@@ -1496,8 +1496,11 @@ Payload example:
   "build_stage": "test",
   "build_status": "created",
   "build_created_at": "2021-02-23T02:41:37.886Z",
+  "build_created_at_iso": "2021-02-23T02:41:37Z",
   "build_started_at": null,
+  "build_started_at_iso": null,
   "build_finished_at": null,
+  "build_finished_at_iso": null,
   "build_duration": null,
   "build_queued_duration": 1095.588715, // duration in seconds
   "build_allow_failure": false,
@@ -1522,7 +1525,9 @@ Payload example:
     "status": "created",
     "duration": null,
     "started_at": null,
-    "finished_at": null
+    "started_at_iso": null,
+    "finished_at": null,
+    "finished_at_iso": null
   },
   "repository": {
     "name": "gitlab_test",

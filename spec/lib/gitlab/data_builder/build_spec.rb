@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
   let_it_be(:runner) { create(:ci_runner, :instance, :tagged_only) }
   let_it_be(:user) { create(:user, :public_email) }
-  let_it_be(:pipeline) { create(:ci_pipeline, name: 'Build pipeline') }
-  let_it_be(:ci_build) { create(:ci_build, :running, pipeline: pipeline, runner: runner, user: user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, started_at: 1.hour.ago, finished_at: 1.minute.ago, name: 'Build pipeline') }
+  let_it_be(:ci_build) { create(:ci_build, :finished, started_at: 1.hour.ago, finished_at: 1.minute.ago, pipeline: pipeline, runner: runner, user: user) }
 
   describe '.build' do
     around do |example|
@@ -26,6 +26,9 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it { expect(data[:build_created_at]).to eq(ci_build.created_at) }
     it { expect(data[:build_started_at]).to eq(ci_build.started_at) }
     it { expect(data[:build_finished_at]).to eq(ci_build.finished_at) }
+    it { expect(data[:build_created_at_iso]).to eq(ci_build.created_at.iso8601) }
+    it { expect(data[:build_started_at_iso]).to eq(ci_build.started_at.iso8601) }
+    it { expect(data[:build_finished_at_iso]).to eq(ci_build.finished_at.iso8601) }
     it { expect(data[:build_duration]).to eq(ci_build.duration) }
     it { expect(data[:build_queued_duration]).to eq(ci_build.queued_duration) }
     it { expect(data[:build_allow_failure]).to eq(false) }
@@ -55,6 +58,14 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it { expect(data[:runner][:is_shared]).to eq(ci_build.runner.instance_type?) }
     it { expect(data[:project]).to eq(ci_build.project.hook_attrs(backward: false)) }
     it { expect(data[:environment]).to be_nil }
+
+    context 'when started_at and finished_at are not present' do
+      let_it_be(:ci_build) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, user: user) }
+
+      it { expect(data[:build_started_at_iso]).to be_nil }
+      it { expect(data[:build_finished_at_iso]).to be_nil }
+    end
+
     it { expect(data[:source_pipeline]).to be_nil }
 
     it 'does not exceed number of expected queries' do
@@ -128,5 +139,9 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
         it { expect(source_pipeline_attrs[:project][:id]).not_to eq pipeline.project.id }
       end
     end
+
+    it { expect(data[:commit][:finished_at]).to eq(ci_build.pipeline.finished_at) }
+    it { expect(data[:commit][:started_at_iso]).to eq(ci_build.pipeline.started_at.iso8601) }
+    it { expect(data[:commit][:finished_at_iso]).to eq(ci_build.pipeline.finished_at.iso8601) }
   end
 end

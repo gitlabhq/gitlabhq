@@ -5,6 +5,7 @@ module Gitlab
     module Build
       extend self
 
+      # rubocop:disable Metrics/AbcSize -- build webhook payload
       def build(build)
         project = build.project
         commit = build.pipeline
@@ -30,6 +31,9 @@ module Gitlab
           build_created_at: build.created_at,
           build_started_at: build.started_at,
           build_finished_at: build.finished_at,
+          build_created_at_iso: build.created_at&.iso8601,
+          build_started_at_iso: build.started_at&.iso8601,
+          build_finished_at_iso: build.finished_at&.iso8601,
           build_duration: build.duration,
           build_queued_duration: build.queued_duration,
           build_allow_failure: build.allow_failure,
@@ -55,7 +59,9 @@ module Gitlab
             status: commit.status,
             duration: commit.duration,
             started_at: commit.started_at,
-            finished_at: commit.finished_at
+            finished_at: commit.finished_at,
+            started_at_iso: commit.started_at&.iso8601,
+            finished_at_iso: commit.finished_at&.iso8601
           },
 
           repository: {
@@ -76,6 +82,7 @@ module Gitlab
         attrs[:source_pipeline] = source_pipeline_attrs(commit.source_pipeline) if commit.source_pipeline.present?
         attrs
       end
+      # rubocop:enable Metrics/AbcSize
 
       private
 
