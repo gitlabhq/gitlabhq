@@ -13,6 +13,7 @@ variables:
   DEFAULT_SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
   SCAN_KUBERNETES_MANIFESTS: "false"
+  GITLAB_ADVANCED_SAST_SCA_FILENAME: "GLAS_SCA.json"
 
 sast:
   stage: test
@@ -86,6 +87,90 @@ gitlab-advanced-sast:
         - '**/*.mjs'
         - '**/*.cs'
         - '**/*.rb'
+
+.static-reachability-rules:
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $GITLAB_STATIC_REACHABILITY_ENABLED != 'true'
+      when: never
+      # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
+    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    # If there's no open merge request, add it to a *branch* pipeline instead.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
+
+gitlab-static-reachability:
+  extends:
+    - gitlab-advanced-sast
+  variables:
+    SAST_SCANNER_ALLOWED_CLI_OPTS: --sca-output-path ${GITLAB_ADVANCED_SAST_SCA_FILENAME}
+  before_script:
+    - |
+      echo keep-builtin-rules: false >> /lightz-aio_default_config.yaml
+  artifacts:
+    paths:
+      - $GITLAB_ADVANCED_SAST_SCA_FILENAME
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $GITLAB_STATIC_REACHABILITY_ENABLED != 'true'
+      when: never
+      # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
+    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    # If there's no open merge request, add it to a *branch* pipeline instead.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+        - '**/*.java'
+        - '**/*.jsp'
+
+gitlab-enrich-cdx-results:
+  stage: .post
+  extends: .static-reachability-rules
+  variables:
+    GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.3"
+    GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_FILENAME
+    SCA_TO_SARIF_PROJECT_ID: 60962090
+    DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*-*.cdx.json"
+  image:
+    name: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    entrypoint: [""]
+  before_script:
+    - |
+        wget "gitlab.com/api/v4/projects/${SCA_TO_SARIF_PROJECT_ID}/packages/generic/sca-to-sarif-matcher/${GLAS_STATIC_REACHABILITY_MATCHER_VERSION}/matcher" \
+          --no-verbose -O /matcher
+    - chmod +x /matcher
+  script:
+    - /matcher process
+  artifacts:
+    paths:
+      - "**/gl-sbom-*.cdx.json"
+    reports:
+      cyclonedx: "**/gl-sbom-*.cdx.json"
 
 kubesec-sast:
   extends: .sast-analyzer

@@ -11,4 +11,3 @@ InternalAffairs/NumblockHandler:
     - 'rubocop/cop/migration/with_lock_retries_disallowed_method.rb'
     - 'rubocop/cop/qa/ambiguous_page_object_name.rb'
     - 'rubocop/cop/rspec/feature_category.rb'
-    - 'rubocop/cop/rspec/shared_groups_metadata.rb'

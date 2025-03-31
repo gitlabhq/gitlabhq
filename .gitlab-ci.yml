@@ -99,10 +99,15 @@ workflow:
     # Example of project bot usernames (the format changed over time):
     # - project_278964_bot2
     # - project_278964_bot_7fb4d1cca8242cb399a0b8f483783120
+    #
+    # We set the DOCKER_AUTH_CONFIG variable to authenticate to Docker Hub to not be impacted by rate limitations
+    # We don't set DOCKER_AUTH_CONFIG as a CI/CD group/project variable, because it would then have higher precedence than .gitlab-ci.yml,
+    # and we would always reconfigure the docker deamon for any CI/CD pipeline.
     - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
       variables:
         <<: [*next-ruby-variables, *default-merge-request-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+        DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by a project token)'
     - <<: *if-merge-request-security-canonical-sync
       variables:
@@ -145,10 +150,15 @@ workflow:
     # Example of project bot usernames (the format changed over time):
     # - project_278964_bot2
     # - project_278964_bot_7fb4d1cca8242cb399a0b8f483783120
+    #
+    # We set the DOCKER_AUTH_CONFIG variable to authenticate to Docker Hub to not be impacted by rate limitations
+    # We don't set DOCKER_AUTH_CONFIG as a CI/CD group/project variable, because it would then have higher precedence than .gitlab-ci.yml,
+    # and we would always reconfigure the docker deamon for any CI/CD pipeline.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+        DOCKER_AUTH_CONFIG: "${DOCKER_AUTH_CONFIG_OVERRIDE}"
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch (triggered by a project token)'
     # For `$CI_DEFAULT_BRANCH` from wider community contributors, we don't want to run any pipelines on pushes,
     # because normally we want to run merge request pipelines and scheduled pipelines, not for repository synchronization.

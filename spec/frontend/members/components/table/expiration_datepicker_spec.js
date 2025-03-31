@@ -1,8 +1,8 @@
 import { GlDatepicker } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
@@ -40,7 +40,7 @@ describe('ExpirationDatepicker', () => {
   };
 
   const createComponent = (propsData = {}) => {
-    wrapper = mount(ExpirationDatepicker, {
+    wrapper = shallowMountExtended(ExpirationDatepicker, {
       propsData: {
         member,
         permissions: { canUpdate: true },
@@ -56,7 +56,6 @@ describe('ExpirationDatepicker', () => {
     });
   };
 
-  const findInput = () => wrapper.find('input');
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
 
   describe('datepicker input', () => {
@@ -65,7 +64,7 @@ describe('ExpirationDatepicker', () => {
 
       await nextTick();
 
-      expect(findInput().element.value).toBe('2020-03-17');
+      expect(findDatepicker().props('value')).toEqual(new Date('2020-03-17'));
     });
   });
 
@@ -128,9 +127,8 @@ describe('ExpirationDatepicker', () => {
     beforeEach(async () => {
       createComponent();
 
-      findInput().setValue('2020-03-17');
-      await nextTick();
-      wrapper.find('[data-testid="clear-button"]').trigger('click');
+      await findDatepicker().vm.$emit('input', new Date('2020-03-17'));
+      await findDatepicker().vm.$emit('clear');
     });
 
     it('calls `updateMemberExpiration` Vuex action', () => {

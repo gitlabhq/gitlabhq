@@ -20,7 +20,7 @@ module Resolvers
 
     argument :name, GraphQL::Types::String,
       required: false,
-      experiment: { milestone: '17.1' },
+      experiment: { milestone: '17.11' },
       description: 'Filter jobs by name.'
 
     argument :sources, [::Types::Ci::JobSourceEnum],
@@ -47,11 +47,7 @@ module Resolvers
         jobs = ::Ci::BuildNameFinder.new(
           relation: jobs,
           name: args[:name],
-          project: project,
-          params: {
-            before: decode_cursor(args[:before]), after: decode_cursor(args[:after]),
-            asc: args[:last].present?, invert_ordering: true
-          }
+          project: project
         ).execute
       elsif filter_by_sources
         jobs = ::Ci::BuildSourceFinder.new(
@@ -67,14 +63,6 @@ module Resolvers
     end
 
     private
-
-    def decode_cursor(encoded)
-      return unless encoded.present?
-
-      Gitlab::Json.parse(context.schema.cursor_encoder.decode(encoded, nonce: true))&.fetch('id')
-    rescue JSON::ParserError
-      raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
-    end
 
     def preloads
       {

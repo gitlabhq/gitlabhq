@@ -775,7 +775,7 @@ POST /projects/:id/jobs/:job_id/cancel
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
-| `force`   | boolean        | No       | [Forces cancellation](../ci/jobs/job_logs.md#force-cancel-a-job) of a job in `canceling` state when set to `true`. |
+| `force`   | boolean        | No       | [Forces cancellation](../ci/jobs/_index.md#force-cancel-a-job) of a job in `canceling` state when set to `true`. |
 
 ```shell
 curl --request POST \

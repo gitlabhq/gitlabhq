@@ -590,6 +590,53 @@ npm-deploy-job:
     - npm dist-tag add @scope/package@version my-tag
 ```
 
+### Audit npm packages
+
+GitLab supports `npm audit` commands, allowing you to check your packages for known vulnerabilities.
+
+#### Use `npm audit`
+
+Prerequisites:
+
+- [Configure authentication](#authenticate-to-the-package-registry) to the package registry.
+- [Set up the registry URL](#set-up-the-registry-url).
+
+To run security audits, you can run the following command:
+
+```shell
+npm audit --registry=https://gitlab.example.com/api/v4/packages/npm/
+```
+
+Or, if you've already set your registry configuration:
+
+```shell
+npm audit
+```
+
+The `npm audit` command checks your dependencies for known vulnerabilities and provides a report.
+
+#### `npm audit` workflow
+
+When you run `npm audit` against the GitLab package registry, one of two scenarios occurs:
+
+1. If package forwarding is enabled (default), GitLab forwards the audit request to `npmjs.com` to retrieve vulnerability information for both public and private packages.
+1. If package forwarding is disabled, GitLab returns an empty result set. GitLab does not scan packages for vulnerabilities independently.
+
+To learn more about the package forwarding setting, see [Package forwarding to npmjs.com](#package-forwarding-to-npmjscom).
+
+#### Important security considerations
+
+If you do not specify GitLab as your package registry (either with the `--registry` flag or by setting it as your default registry in the `.npmrc` file), the audit request goes to the public [npm registry](https://registry.npmjs.org) instead.
+
+In this case, the request body contains information about all packages in your project, including your private GitLab packages.
+
+To ensure your private package information stays within GitLab, always make sure to specify the GitLab registry when running `npm audit` commands.
+
+#### Limitations
+
+- Audit results depend on [package forwarding](#package-forwarding-to-npmjscom) being enabled. If forwarding is disabled by an administrator or group Owner, `npm audit` does not return vulnerability information.
+- The audit request includes information about all packages in your project, including private packages.
+
 ### Supported CLI commands
 
 The GitLab npm repository supports the following commands for the npm CLI (`npm`) and yarn CLI
@@ -604,6 +651,7 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 - `npm view`: Show package metadata.
 - `npm pack`: Create a tarball from a package.
 - `npm deprecate`: Deprecate a version of a package.
+- `npm audit`: Check for vulnerabilities in your project dependencies.
 
 ## Troubleshooting
 

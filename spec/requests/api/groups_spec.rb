@@ -18,6 +18,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
+  before do
+    stub_feature_flags(downtier_delayed_deletion: false)
+  end
+
   def expect_log_keys(caller_id:, route:, root_namespace:)
     expect(API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
       expect(data.stringify_keys).to include(

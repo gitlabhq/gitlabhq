@@ -40,6 +40,20 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::License, feature_category: :dependency
       end
     end
 
+    context "when the license has neither id nor name" do
+      let(:data) do
+        {
+          "license" => {
+            "url" => "https://example.com/license.txt"
+          }
+        }
+      end
+
+      it "returns nil" do
+        is_expected.to be_nil
+      end
+    end
+
     context "when the license is defined using an expression" do
       let(:data) do
         {

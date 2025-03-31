@@ -33,7 +33,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low | Fulfillment | Instance, group |
 | [Public use of Secure container registries is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) | Low | Secure | Instance |
 | [Limit number of scan execution policy actions allowed per policy](https://gitlab.com/gitlab-org/gitlab/-/issues/510897) | Low | Security risk management | Instance, group, project |
-| [Pipelines API cancel endpoint returns error for non-cancelable pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/414963) | High | Verify | Instance, group, project |
 | [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |
 | [Pipeline job limits extended to the Commits API](https://gitlab.com/gitlab-org/gitlab/-/issues/436361) | Low | Verify | Project |
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |
@@ -65,7 +64,7 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 | [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |
 | [Behavior change for Upcoming and Started milestone filters](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) | Low | Plan | Group, project |
 | [`kpt`-based `agentk` is deprecated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656) | Low | Deploy | Project |
-| [Updating CI/CD job tokens to JWT standard](https://gitlab.com/gitlab-org/gitlab/-/issues/509578) |  | Software supply chain security |  |
+| [Updating CI/CD job tokens to JWT standard](https://gitlab.com/gitlab-org/gitlab/-/issues/509578) | Low | Software supply chain security | Project |
 
 ## Window 3
 

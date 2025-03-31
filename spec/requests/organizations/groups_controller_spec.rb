@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Organizations::GroupsController, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
 
+  before do
+    stub_feature_flags(downtier_delayed_deletion: false)
+  end
+
   describe 'GET #new' do
     subject(:gitlab_request) { get new_groups_organization_path(organization) }
 

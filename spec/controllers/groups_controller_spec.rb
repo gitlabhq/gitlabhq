@@ -24,6 +24,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
   before do
     enable_admin_mode!(admin_with_admin_mode)
+    stub_feature_flags(downtier_delayed_deletion: false)
   end
 
   shared_examples 'member with ability to create subgroups' do

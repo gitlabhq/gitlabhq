@@ -35,6 +35,15 @@ You can configure merge request status checks for each individual project. These
 
 Status checks fail if they stay in the pending state for more than two minutes.
 
+## Access permissions
+
+External status check responses can be viewed by:
+
+- Users with Reporter role or higher permissions in the project
+- Any authenticated user who can view the merge request when the project has internal visibility
+
+This means that if you have an internal project, any logged-in user who can access the merge request can view the external status check responses.
+
 For more information about use cases, feature discovery, and development timelines,
 see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 

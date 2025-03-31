@@ -3,7 +3,11 @@ import {
   OPERATORS_BEFORE,
   OPERATORS_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { DEFAULT_SORT, SORT_OPTIONS, TOKENS } from '~/access_tokens/constants';
+import {
+  DEFAULT_SORT,
+  SORT_OPTIONS,
+  FILTER_OPTIONS_CREDENTIALS_INVENTORY,
+} from '~/access_tokens/constants';
 
 /**
  * @param {Object<string, string>} filters
@@ -26,7 +30,7 @@ function initializeFilters(filters, search) {
       });
     } else {
       try {
-        const { operators } = TOKENS.find(({ options }) =>
+        const { operators } = FILTER_OPTIONS_CREDENTIALS_INVENTORY.find(({ options }) =>
           options.some((option) => option.value === value),
         );
         tokens.push({

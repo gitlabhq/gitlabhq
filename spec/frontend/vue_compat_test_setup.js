@@ -82,7 +82,14 @@ if (global.document) {
   }).mount(document.createElement('div'));
 
   Vue.configureCompat(compatConfig);
-  installVTUCompat(VTU, fullCompatConfig, compatH);
+  installVTUCompat(
+    VTU,
+    {
+      ...fullCompatConfig,
+      WRAPPER_SET_VALUE_DOES_NOT_TRIGGER_CHANGE: false,
+    },
+    compatH,
+  );
 
   jest.mock('vue', () => {
     const actualVue = jest.requireActual('vue');

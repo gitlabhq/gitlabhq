@@ -49,6 +49,7 @@ class Project < ApplicationRecord
   include Importable
   include SafelyChangeColumnDefault
   include Todoable
+  include Namespaces::AdjournedDeletable
 
   columns_changing_default :organization_id
 

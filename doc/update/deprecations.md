@@ -785,8 +785,8 @@ To ensure continued compatibility and security, migrate to Signature Version 4. 
 
 To migrate:
 
-1. Check your S3 storage backend configuration in the GitLab container registry settings.
-1. Remove the `v4auth: false` option if it's set.
+1. Check your [S3 storage backend configuration in the GitLab container registry settings](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
+1. If `v4auth` is set to `false`, remove the option.
 1. Verify your existing credentials work with v4 authentication.
 
 If you encounter any issues after making these changes, try regenerating your AWS credentials.
@@ -1610,25 +1610,6 @@ Starting in GitLab 18.0, the maximum [number of jobs in active pipelines](https:
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Pipelines API cancel endpoint returns error for non-cancelable pipelines
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.6</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
-
-</div>
-
-The Pipelines API cancel endpoint [`POST /projects/:id/pipelines/:pipeline_id/cancel`](https://docs.gitlab.com/api/pipelines/#cancel-a-pipelines-jobs)
-returns a `200` success response regardless of whether a pipeline can be canceled.
-Starting in GitLab 18.0, the endpoint will return a `422 Unprocessable Entity` error when a pipeline cannot be canceled.
-Update your API integration to handle the `422` status code when making pipeline cancellation requests.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### PostgreSQL 14 and 15 no longer supported
 
 <div class="deprecation-notes">
@@ -2234,9 +2215,9 @@ In other cases:
 
 </div>
 
-In GitLab 18.0, CI/CD job tokens are moving to the JWT standard by default. All new projects will use this standard, but existing projects will continue to use the legacy format. Existing projects can switch to the JWT standard before the GitLab 18.0 release. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 18.3 release.
+In GitLab 18.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 19.0 release.
 
-In GitLab 18.3, all CI/CD job tokens must use the JWT standard. Before this release, you can temporarily revert your tokens back to the legacy job token format.
+In GitLab 19.0, all CI/CD job tokens must use the JWT standard. Before this release, you can temporarily revert your tokens back to the legacy job token format.
 
 Known issues:
 

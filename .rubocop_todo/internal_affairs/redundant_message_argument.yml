@@ -15,6 +15,5 @@ InternalAffairs/RedundantMessageArgument:
     - 'rubocop/cop/migration/prevent_single_statement_with_disable_ddl_transaction.rb'
     - 'rubocop/cop/migration/schema_addition_methods_no_post.rb'
     - 'rubocop/cop/redis_queue_usage.rb'
-    - 'rubocop/cop/rspec/shared_groups_metadata.rb'
     - 'rubocop/cop/sidekiq_api_usage.rb'
     - 'rubocop/cop/sidekiq_redis_call.rb'

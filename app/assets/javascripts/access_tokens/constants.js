@@ -11,6 +11,81 @@ export const FEED_TOKEN = 'feedToken';
 export const INCOMING_EMAIL_TOKEN = 'incomingEmailToken';
 export const STATIC_OBJECT_TOKEN = 'staticObjectToken';
 
+export const FILTER_OPTIONS = [
+  {
+    icon: 'status',
+    title: s__('AccessTokens|State'),
+    type: 'state',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      { value: 'active', title: s__('AccessTokens|Active') },
+      { value: 'inactive', title: s__('AccessTokens|Inactive') },
+    ],
+  },
+  {
+    icon: 'remove',
+    title: s__('AccessTokens|Revoked'),
+    type: 'revoked',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      { value: 'true', title: __('Yes') },
+      { value: 'false', title: __('No') },
+    ],
+  },
+  {
+    icon: 'history',
+    title: __('Created date'),
+    type: 'created',
+    token: DateToken,
+    operators: OPERATORS_AFTER_BEFORE,
+    unique: true,
+  },
+  {
+    icon: 'history',
+    title: __('Expiration date'),
+    type: 'expires',
+    token: DateToken,
+    operators: OPERATORS_AFTER_BEFORE,
+    unique: true,
+  },
+  {
+    icon: 'history',
+    title: __('Last used date'),
+    type: 'last_used',
+    token: DateToken,
+    operators: OPERATORS_AFTER_BEFORE,
+    unique: true,
+  },
+];
+
+export const FILTER_OPTIONS_CREDENTIALS_INVENTORY = [
+  {
+    icon: 'key',
+    title: s__('CredentialsInventory|Type'),
+    type: 'filter',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      {
+        value: 'personal_access_tokens',
+        title: s__('CredentialsInventory|Personal access tokens'),
+      },
+      { value: 'ssh_keys', title: s__('CredentialsInventory|SSH keys') },
+      {
+        value: 'resource_access_tokens',
+        title: s__('CredentialsInventory|Project and group access tokens'),
+      },
+      { value: 'gpg_keys', title: s__('CredentialsInventory|GPG keys') },
+    ],
+  },
+  ...FILTER_OPTIONS,
+];
+
 export const DEFAULT_SORT = { value: 'expires', isAsc: true };
 
 export const SORT_OPTIONS = [
@@ -45,77 +120,6 @@ export const SORT_OPTIONS = [
       asc: 'name_asc',
       desc: 'name_desc',
     },
-  },
-];
-
-export const TOKENS = [
-  {
-    icon: 'key',
-    title: s__('CredentialsInventory|Type'),
-    type: 'filter',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
-    options: [
-      {
-        value: 'personal_access_tokens',
-        title: s__('CredentialsInventory|Personal access tokens'),
-      },
-      { value: 'ssh_keys', title: s__('CredentialsInventory|SSH keys') },
-      {
-        value: 'resource_access_tokens',
-        title: s__('CredentialsInventory|Project and group access tokens'),
-      },
-      { value: 'gpg_keys', title: s__('CredentialsInventory|GPG keys') },
-    ],
-  },
-  {
-    icon: 'status',
-    title: s__('CredentialsInventory|State'),
-    type: 'state',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
-    options: [
-      { value: 'active', title: s__('CredentialsInventory|Active') },
-      { value: 'inactive', title: s__('CredentialsInventory|Inactive') },
-    ],
-  },
-  {
-    icon: 'remove',
-    title: s__('CredentialsInventory|Revoked'),
-    type: 'revoked',
-    token: GlFilteredSearchToken,
-    operators: OPERATORS_IS,
-    unique: true,
-    options: [
-      { value: 'true', title: __('Yes') },
-      { value: 'false', title: __('No') },
-    ],
-  },
-  {
-    icon: 'history',
-    title: s__('CredentialsInventory|Created date'),
-    type: 'created',
-    token: DateToken,
-    operators: OPERATORS_AFTER_BEFORE,
-    unique: true,
-  },
-  {
-    icon: 'history',
-    title: s__('CredentialsInventory|Expiration date'),
-    type: 'expires',
-    token: DateToken,
-    operators: OPERATORS_AFTER_BEFORE,
-    unique: true,
-  },
-  {
-    icon: 'history',
-    title: s__('CredentialsInventory|Last used date'),
-    type: 'last_used',
-    token: DateToken,
-    operators: OPERATORS_AFTER_BEFORE,
-    unique: true,
   },
 ];
 

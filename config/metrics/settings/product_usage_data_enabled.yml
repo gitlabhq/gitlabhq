@@ -1,0 +1,19 @@
+---
+data_category: optional
+key_path: product_usage_data_enabled
+description: Whether product usage data is enabled
+product_group: analytics_instrumentation
+value_type: boolean
+status: active
+time_frame: none
+data_source: system
+instrumentation_class: GitlabSettingsMetric
+options:
+  setting_method: product_usage_data_enabled?
+tiers:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "17.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184899

@@ -23,6 +23,13 @@ module Types
             'Minimum GitLab access level required to push container image tags to the container repository. ' \
             'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
             'If the value is `nil`, no access level can push tags. '
+
+        field :immutable,
+          GraphQL::Types::Boolean,
+          null: false,
+          method: :immutable?,
+          experiment: { milestone: '17.11' },
+          description: 'Returns true when tag rule is for tag immutability. Otherwise, false.'
       end
     end
   end

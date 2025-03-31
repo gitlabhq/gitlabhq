@@ -399,7 +399,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       buildWrapper();
       const newValue = 'new value';
 
-      await findTextarea().setValue(newValue);
+      const textArea = findTextarea();
+      textArea.element.value = newValue;
+      await findTextarea().trigger('input');
 
       expect(wrapper.emitted('input')).toEqual([[value], [newValue]]);
     });

@@ -13,6 +13,9 @@ module Gitlab
             license = data['license']
             return unless license
 
+            # A license must have either id or name
+            return unless license['id'].present? || license['name'].present?
+
             ::Gitlab::Ci::Reports::Sbom::License.new(
               spdx_identifier: license['id'],
               name: license['name'],

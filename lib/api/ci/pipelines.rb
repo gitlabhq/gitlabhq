@@ -346,6 +346,7 @@ module API
           authorize! :cancel_pipeline, pipeline
 
           # TODO: inconsistent behavior: when pipeline is not cancelable we should return an error
+          # Set to be fixed on V5 to avoid breaking changes: https://gitlab.com/gitlab-org/gitlab/-/issues/519143
           ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
 
           status 200

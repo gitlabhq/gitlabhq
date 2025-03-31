@@ -23,7 +23,7 @@ RSpec.shared_examples 'Model disables STI' do
   end
 end
 
-RSpec.shared_examples 'STI disabled', type: :model do # rubocop:disable RSpec/SharedGroupsMetadata -- Shared example is run within every spec tagged `type: :model`
+RSpec.shared_context 'with STI disabled' do
   include_examples 'Model disables STI' do
     let(:models) { [described_class] }
   end

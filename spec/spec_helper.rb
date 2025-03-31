@@ -225,7 +225,9 @@ RSpec.configure do |config|
   config.include ClickHouseHelpers, :click_house
   config.include WorkItems::DataSync::AssociationsHelpers
 
+  config.shared_context_metadata_behavior = :apply_to_host_groups
   config.include_context 'when rendered has no HTML escapes', type: :view
+  config.include_context 'with STI disabled', type: :model
 
   include StubFeatureFlags
   include StubSnowplow

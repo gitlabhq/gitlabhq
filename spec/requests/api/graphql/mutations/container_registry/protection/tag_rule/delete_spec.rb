@@ -44,7 +44,8 @@ RSpec.describe 'Deleting a container registry tag protection rule', :aggregate_f
         'id' => container_protection_rule.to_global_id.to_s,
         'tagNamePattern' => container_protection_rule.tag_name_pattern,
         'minimumAccessLevelForDelete' => container_protection_rule.minimum_access_level_for_delete.upcase,
-        'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase
+        'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase,
+        'immutable' => container_protection_rule.immutable?
       }
     )
   end

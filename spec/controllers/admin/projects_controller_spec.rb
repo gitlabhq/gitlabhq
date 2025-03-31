@@ -7,6 +7,7 @@ RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects
 
   before do
     sign_in(create(:admin))
+    stub_feature_flags(downtier_delayed_deletion: false)
   end
 
   describe 'GET /projects' do

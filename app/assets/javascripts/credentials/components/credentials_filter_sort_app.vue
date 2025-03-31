@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearch, GlSorting } from '@gitlab/ui';
-import { SORT_OPTIONS, TOKENS } from '~/access_tokens/constants';
+import { SORT_OPTIONS, FILTER_OPTIONS_CREDENTIALS_INVENTORY } from '~/access_tokens/constants';
 import { initializeValuesFromQuery, goTo } from '../utils';
 
 export default {
@@ -19,10 +19,10 @@ export default {
     availableTokens() {
       // Once SSH or GPG key is selected, discard the rest of the tokens
       if (this.hasKey) {
-        return TOKENS.filter(({ type }) => type === 'filter');
+        return FILTER_OPTIONS_CREDENTIALS_INVENTORY.filter(({ type }) => type === 'filter');
       }
 
-      return TOKENS;
+      return FILTER_OPTIONS_CREDENTIALS_INVENTORY;
     },
     hasKey() {
       return this.tokens.some(

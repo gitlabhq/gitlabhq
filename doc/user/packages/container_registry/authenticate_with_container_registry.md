@@ -82,6 +82,8 @@ To use CI/CD to authenticate with the container registry, you can use:
 
 - A [CI job token](../../../ci/jobs/ci_job_token.md).
 
+  This token can only be used for read (pull) access. It has the `read_registry` scope but not the `write_registry` scope needed for push operations.
+
   ```shell
   echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   ```

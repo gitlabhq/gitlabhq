@@ -45,7 +45,29 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
     end
 
     with_them do
-      it_behaves_like 'supported token type'
+      context 'with default instance prefix' do
+        it_behaves_like 'supported token type'
+      end
+
+      context 'with custom instance prefix' do
+        let_it_be(:instance_prefix) { 'instance-prefix-' }
+
+        before do
+          stub_application_setting(instance_token_prefix: instance_prefix)
+        end
+
+        # this will make sure that we find old tokens with the default instance prefix,
+        # even if we have configured a custom one:
+        it_behaves_like 'supported token type'
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it_behaves_like 'supported token type'
+      end
     end
   end
 

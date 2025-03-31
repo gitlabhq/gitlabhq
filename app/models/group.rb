@@ -22,6 +22,7 @@ class Group < Namespace
   include Importable
   include IdInOrdered
   include Members::Enumerable
+  include Namespaces::AdjournedDeletable
 
   extend ::Gitlab::Utils::Override
 
@@ -933,10 +934,6 @@ class Group < Namespace
 
   def export_archive_exists?(user)
     import_export_upload_by_user(user)&.export_archive_exists?
-  end
-
-  def adjourned_deletion?
-    false
   end
 
   def execute_hooks(data, hooks_scope)

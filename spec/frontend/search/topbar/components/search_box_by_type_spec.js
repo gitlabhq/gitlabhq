@@ -132,7 +132,9 @@ describe('search box by type component', () => {
 
         createComponent({ debounce }, mount);
 
-        findInput().setValue(newValue);
+        const input = findInput();
+        input.element.value = newValue;
+        input.trigger('input');
       });
 
       it(`emits a ${modelEvent} after the debounce delay`, () => {
@@ -151,7 +153,9 @@ describe('search box by type component', () => {
     beforeEach(() => {
       createComponent({ lazy: true }, mount);
 
-      findInput().setValue(newValue);
+      const input = findInput();
+      input.element.value = newValue;
+      input.trigger('input');
     });
 
     it.each(['change', 'blur'])(`emits ${modelEvent} event after input's %s event`, (event) => {

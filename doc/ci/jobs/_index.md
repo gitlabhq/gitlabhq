@@ -297,6 +297,152 @@ One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **e
 of job names only. Matching substrings found at the beginning or in the middle of
 job names are not removed.
 
+## Retry a job
+
+You can retry a job after it completes, regardless of its final state (failed, success, or canceled).
+
+When you retry a job:
+
+- A new job instance is created with a new job ID.
+- The job runs with the same parameters and variables as the original job.
+- If the job produces artifacts, new artifacts are created and stored.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To retry a job from a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. From your merge request, do one of the following:
+   - In the pipeline widget, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
+   - Select the **Pipelines** tab, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
+
+To retry a job from the job log:
+
+1. Go to the job's log page.
+1. In the upper-right corner, select **Run again** ({{< icon name="retry" >}}).
+
+To retry a job from a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Find the pipeline that contains the job you want to retry.
+1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
+
+### Retry all failed or canceled jobs in a pipeline
+
+If a pipeline has multiple failed or canceled jobs, you can retry all of them at once:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Do one of the following:
+   - Select **Build > Pipelines**.
+   - Go to a merge request and select the **Pipelines** tab.
+1. For the pipeline with failed or canceled jobs, select **Retry all failed or canceled jobs** ({{< icon name="retry" >}}).
+
+## Cancel a job
+
+You can cancel a CI/CD job depending on its current state and the runner's capabilities.
+
+When you cancel a job, what happens next depends on the job state and runner capabilities:
+
+- For a `pending` job (not yet executing), the job is canceled immediately.
+- For a `running` job:
+  - If the runner supports graceful cancellation, the job enters the `canceling` state.
+    The runner can complete its [`after_script`](../yaml/_index.md#after_script) before the job is marked as `canceled`.
+  - If the runner doesn't support graceful cancellation, the job moves to the `canceled` state immediately.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+stateDiagram-v2
+    accTitle: CI/CD job state transitions
+    accDescr: Shows possible state transitions for CI/CD jobs, including cancellation paths.
+
+    direction TB
+    state if_graceful <>
+    [*] --> pending: Job created
+    pending --> canceled: Cancel requested
+    canceled --> [*]
+    pending --> running: Runner picks up job
+    running --> success: Job succeeds
+    success --> [*]
+    running --> failed: Job fails
+    failed --> [*]
+    running --> if_graceful: Cancel requested
+    if_graceful --> canceling: Runner supports graceful cancellation
+    if_graceful --> canceled: Runner doesn't support graceful cancellation
+    canceling --> canceled: Graceful cancellation complete
+    note right of if_graceful: Does the runner support graceful cancellation?
+```
+
+Prerequisites:
+
+- You must have at least the Developer role for the project,
+  or the [minimum role required to cancel a pipeline or job](../pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
+
+To cancel a job from a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. From your merge request, do one of the following:
+   - In the pipeline widget, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
+   - Select the **Pipelines** tab, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
+
+To cancel a job from the job log:
+
+1. Go to the job's log page.
+1. In the upper-right corner, select **Cancel** ({{< icon name="cancel" >}}).
+
+To cancel a job from a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Find the pipeline that contains the job you want to cancel.
+1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
+
+### Cancel all running jobs in a pipeline
+
+You can cancel all jobs in a running pipeline at once.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Do one of the following:
+   - Select **Build > Pipelines**.
+   - Go to a merge request and select the **Pipelines** tab.
+1. For the pipeline you want to cancel, select **Cancel the running pipeline** ({{< icon name="cancel" >}}).
+
+### Force cancel a job
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467107) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `force_cancel_build`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag">}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+If a job is stuck in the `canceling` state, you can force it to the `canceled` state.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To force cancel a job:
+
+- From the job log, select **Force cancel**.
+
+{{< alert type="warning" >}}
+
+When you force cancel a job, the [job token](ci_job_token.md) is revoked.
+If the runner is still trying to execute the job, it loses access to GitLab.
+The runner aborts the job without waiting for `after_script` to complete.
+
+{{< /alert >}}
+
 ## Troubleshoot a failed job
 
 When a pipeline fails or is allowed to fail, there are several places where you

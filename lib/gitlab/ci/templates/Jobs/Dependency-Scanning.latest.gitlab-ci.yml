@@ -227,24 +227,11 @@ dependency-scanning:
   variables:
     ANALYZER_SUPPORTED_FILES: "packages.lock.json,conan.lock,conda-lock.yml,pubspec.lock,go.mod,go.graph,ivy-report.xml,maven.graph.json,dependencies.lock,package-lock.json,npm-shrinkwrap.json,pnpm-lock.yaml,yarn.lock,Podfile.lock,composer.lock,pipdeptree.json,requirements.txt,Pipfile.lock,pipenv.graph.json,poetry.lock,uv.lock,Gemfile.lock,gems.locked,Cargo.lock,dependencies-compile.dot,Package.resolved"
     ADDITIONAL_SUPPORTED_FILES: "pom.xml,build.gradle,build.gradle.kts,build.sbt,requirements.pip,Pipfile,requires.txt,setup.py"
-    SCA_TO_SARIF_MATCHER_VERSION: "v2.0.1"
   stage: test
   image:
     name: "$CI_TEMPLATE_REGISTRY_HOST/security-products/dependency-scanning:v0"
-  needs:
-    - job: gitlab-static-reachability
-      optional: true
-      artifacts: true
   script:
-    - |
-      /analyzer run || exit $?
-      if [ -f "reachable_packages.json" ]; then
-        echo "Found reachable_packages.json"
-        echo "Downloading SCA-to-sarif-matcher ${SCA_TO_SARIF_MATCHER_VERSION}"
-        curl -L "gitlab.com/api/v4/projects/60962090/packages/generic/sca-to-sarif-matcher/${SCA_TO_SARIF_MATCHER_VERSION}/matcher" -o /home/gitlab/sbom-enricher
-        chmod +x  /home/gitlab/sbom-enricher
-        /home/gitlab/sbom-enricher process --glas_report="reachable_packages.json"
-      fi
+    - /analyzer run
   allow_failure: true
   artifacts:
     access: "developer"
@@ -315,42 +302,3 @@ dependency-scanning:
         - '**/{conda-lock.yml,pubspec.lock,Podfile.lock,Cargo.lock,Package.resolved}'
       variables:
         DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'
-
-gitlab-static-reachability:
-  stage: test
-  variables:
-    SEARCH_MAX_DEPTH: 20
-    STATIC_REACHABILITY_ANALYZER_IMAGE_TAG: 1
-    # For now we are using GLAS as our static reachability analyzer
-    STATIC_REACHABILITY_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$STATIC_REACHABILITY_ANALYZER_IMAGE_TAG"
-  image:
-    name: "$STATIC_REACHABILITY_ANALYZER_IMAGE"
-  cache: []
-  script:
-    - |
-      export SAST_SCANNER_ALLOWED_CLI_OPTS="--sca-output-path reachable_packages.json"
-      echo keep-builtin-rules: false >> /lightz-aio_default_config.yaml
-      /analyzer run
-      chmod 644 reachable_packages.json
-  artifacts:
-    access: 'developer'
-    paths:
-      - reachable_packages.json
-  rules:
-    - if: $GITLAB_STATIC_REACHABILITY_ENABLED != 'true' || $DS_ENFORCE_NEW_ANALYZER != 'true'
-      when: never
-      # if DS is disabled then static reachability cannot execute
-    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
-      when: never
-      # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          $GITLAB_FEATURES =~ /\bsast_advanced\b/
-      exists:
-        - '**/*.py'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-      when: never
-    # If there's no open merge request, add it to a *branch* pipeline instead.
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast_advanced\b/
-      exists:
-        - '**/*.py'

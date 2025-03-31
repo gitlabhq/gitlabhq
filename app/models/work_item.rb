@@ -135,7 +135,7 @@ class WorkItem < Issue
     end
 
     def non_widgets
-      [:related_vulnerabilities, :pending_escalations]
+      [:pending_escalations]
     end
   end
 
