@@ -161,6 +161,16 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
     end
 
+    describe '.for_placeholder_user' do
+      let(:placeholder_user) { source_user_2.placeholder_user }
+
+      it 'only returns source users for the given placeholder user' do
+        expect(described_class.for_placeholder_user(placeholder_user).to_a).to match_array(
+          [source_user_2]
+        )
+      end
+    end
+
     describe '.awaiting_reassignment' do
       it 'only returns source users that await reassignment' do
         namespace = create(:namespace)

@@ -35,7 +35,7 @@ describe('InputsAdoptionBanner', () => {
       it('sets the correct props', () => {
         expect(findBanner().props()).toMatchObject({
           variant: 'introduction',
-          buttonLink: '/help/ci/yaml/inputs#define-input-parameters-with-specinputs',
+          buttonLink: '/help/ci/inputs/_index.md#define-input-parameters-with-specinputs',
           buttonText: 'Start using inputs',
         });
       });

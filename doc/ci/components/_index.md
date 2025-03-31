@@ -25,7 +25,7 @@ title: CI/CD components
 A CI/CD component is a reusable single pipeline configuration unit. Use components
 to create a small part of a larger pipeline, or even to compose a complete pipeline configuration.
 
-A component can be configured with [input parameters](../yaml/inputs.md) for more
+A component can be configured with [input parameters](../inputs/_index.md) for more
 dynamic behavior.
 
 CI/CD components are similar to the other kinds of [configuration added with the `include` keyword](../yaml/includes.md),
@@ -468,7 +468,7 @@ stage is hardcoded, all pipelines using the component **must** either define
 the exact same stage, or [override](../yaml/includes.md#override-included-configuration-values)
 the configuration.
 
-The preferred method is to use the [`input` keyword](../yaml/inputs.md) for dynamic
+The preferred method is to use the [`input` keyword](../inputs/_index.md) for dynamic
 component configuration. The component user can specify the exact value they need.
 
 For example, to create a component with `stage` configuration that can be defined by users:

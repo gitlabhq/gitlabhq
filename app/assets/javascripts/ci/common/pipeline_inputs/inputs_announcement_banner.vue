@@ -6,7 +6,7 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 export default {
   name: 'InputsAnnouncementBanner',
   components: { GlBanner, UserCalloutDismisser },
-  inputDocLink: helpPagePath('ci/yaml/inputs', {
+  inputDocLink: helpPagePath('ci/inputs/_index.md', {
     anchor: 'define-input-parameters-with-specinputs',
   }),
 };

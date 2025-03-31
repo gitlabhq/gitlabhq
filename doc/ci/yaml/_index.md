@@ -437,7 +437,7 @@ In this example:
 
 **Related topics**:
 
-- [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
+- [Set input values when using `include`](../inputs/_index.md#set-input-values-when-using-include).
 
 #### `include:rules`
 
@@ -952,7 +952,7 @@ scan-website:
 
 **Related topics**:
 
-- [Define input parameters with `spec:inputs`](inputs.md#define-input-parameters-with-specinputs).
+- [Define input parameters with `spec:inputs`](../inputs/_index.md#define-input-parameters-with-specinputs).
 
 ##### `spec:inputs:default`
 
@@ -1116,7 +1116,7 @@ in a header section.
 
 **Supported values**: Can be one of:
 
-- `array`, to accept an [array](inputs.md#array-type) of inputs.
+- `array`, to accept an [array](../inputs/_index.md#array-type) of inputs.
 - `string`, to accept string inputs (default when not defined).
 - `number`, to only accept numeric inputs.
 - `boolean`, to only accept `true` or `false` inputs.
@@ -5713,7 +5713,7 @@ Use `trigger:include` to declare that a job is a "trigger job" which starts a
 Additionally, use:
 
 - `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
-- `trigger:include:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+- `trigger:include:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
   uses [`spec:inputs`](#specinputs).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -5816,7 +5816,7 @@ successfully complete before starting.
 
 {{</history >}}
 
-Use `trigger:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+Use `trigger:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
 uses [`spec:inputs`](#specinputs).
 
 **Example of `trigger:inputs`**:

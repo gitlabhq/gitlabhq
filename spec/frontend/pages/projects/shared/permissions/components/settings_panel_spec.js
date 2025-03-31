@@ -15,6 +15,7 @@ import {
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 const defaultProps = {
   currentSettings: {
@@ -915,6 +916,70 @@ describe('Settings Panel', () => {
         label: 'GitLab Duo',
         labelFor: null,
         locked: false,
+      });
+    });
+
+    describe('Auto review settings', () => {
+      it('shows auto review toggle within Duo settings', () => {
+        wrapper = mountComponent({ amazonQAvailable: true });
+
+        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
+        expect(autoReviewToggle.exists()).toBe(true);
+      });
+
+      it('disables auto review toggle when Duo features are locked', () => {
+        wrapper = mountComponent({
+          amazonQAvailable: true,
+          duoFeaturesLocked: true,
+        });
+
+        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
+        expect(autoReviewToggle.props('disabled')).toBe(true);
+      });
+
+      it('disables auto review toggle when Duo features are not enabled', () => {
+        wrapper = mountComponent({
+          amazonQAvailable: true,
+          currentSettings: { duoFeaturesEnabled: false },
+        });
+
+        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
+        expect(autoReviewToggle.props('disabled')).toBe(true);
+      });
+
+      it('enables auto review toggle when Amazon Q and Duo features are enabled', () => {
+        wrapper = mountComponent({
+          amazonQAvailable: true,
+          currentSettings: { duoFeaturesEnabled: true },
+        });
+
+        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
+        expect(autoReviewToggle.props('disabled')).toBe(false);
+      });
+
+      it('updates the hidden input value when toggled', async () => {
+        wrapper = mountComponent(
+          {
+            amazonQAvailable: true,
+            amazonQAutoReviewEnabled: true,
+            currentSettings: {
+              duoFeaturesEnabled: true,
+              autoReviewEnabled: true,
+            },
+          },
+          mountExtended,
+        );
+        const findHiddenInput = () =>
+          wrapper.find('input[name="project[amazon_q_auto_review_enabled]"]');
+
+        expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
+        await autoReviewToggle.vm.$emit('change', false);
+
+        // Vue 3 returns an empty string, while Vue 2 returns 'false'
+        // That's why we parse a boolean to verify the value both for Vue 2 and Vue 3
+        expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
       });
     });
 

@@ -1,9 +1,7 @@
-@use 'constants';
 @import 'framework/variables';
 
 .rd-diff-file-component {
-  --rd-diff-file-sticky-top-offset: calc(var(--rd-diff-file-sticky-top-padding, 0) + #{constants.$diff-file-sticky-top-margin});
-  scroll-margin-top: var(--rd-diff-file-sticky-top-offset);
+  scroll-margin-top: var(--rd-app-sticky-top-with-padding);
 }
 
 .rd-diff-file {
@@ -15,7 +13,7 @@
 .rd-diff-file-header {
   position: sticky;
   // 1px offset to hide top border
-  top: calc(var(--rd-diff-file-sticky-top-padding, 1px) - 1px);
+  top: calc(var(--rd-app-sticky-top, 1px) - 1px);
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);

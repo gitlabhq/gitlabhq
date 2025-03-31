@@ -135,13 +135,13 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
     end
 
     context 'when the pipeline schedule has inputs' do
-      let(:input_for_update) do
+      let_it_be(:input_for_update) do
         create(
           :ci_pipeline_schedule_input, name: 'input_for_update', value: 'value', pipeline_schedule: pipeline_schedule
         )
       end
 
-      let(:input_for_destroy) do
+      let_it_be(:input_for_destroy) do
         create(
           :ci_pipeline_schedule_input, name: 'input_for_destroy', value: 'value', pipeline_schedule: pipeline_schedule
         )
@@ -151,8 +151,8 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
         {
           inputs: [
             { name: 'new_input', value: 'value' },
-            { id: input_for_update.to_global_id.to_s, name: 'input_for_update', value: 'new_value' },
-            { id: input_for_destroy.to_global_id.to_s, name: 'input_for_destroy', value: 'value', destroy: true }
+            { name: 'input_for_update', value: 'new_value' },
+            { name: 'input_for_destroy', value: 'value', destroy: true }
           ]
         }
       end

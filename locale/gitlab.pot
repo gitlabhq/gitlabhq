@@ -1177,9 +1177,6 @@ msgstr ""
 msgid "%{owner} %{created_date} ago."
 msgstr ""
 
-msgid "%{path} on %{ref}"
-msgstr ""
-
 msgid "%{percentage}%%"
 msgstr ""
 
@@ -2337,6 +2334,9 @@ msgstr ""
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
+msgid "AI|Auto Review"
+msgstr ""
+
 msgid "AI|Autocomplete"
 msgstr ""
 
@@ -2347,6 +2347,9 @@ msgid "AI|Creating an MR from a public project will publicly expose the vulnerab
 msgstr ""
 
 msgid "AI|Description is required"
+msgstr ""
+
+msgid "AI|Enable Auto Review"
 msgstr ""
 
 msgid "AI|Explain or Resolve with AI"
@@ -2434,6 +2437,9 @@ msgid "AI|Use GitLab Duo to provide insights about the vulnerability and suggest
 msgstr ""
 
 msgid "AI|What does the selected code mean?"
+msgstr ""
+
+msgid "AI|When a merge request is created, automatically starts an Amazon Q review"
 msgstr ""
 
 msgid "AI|Write a brief description and have AI fill in the details."
@@ -2940,13 +2946,13 @@ msgstr ""
 msgid "AccessTokens|Are you sure you want to revoke the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
-msgid "AccessTokens|Are you sure you want to revoke the token \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
+msgid "AccessTokens|Are you sure you want to revoke the token %{tokenName}? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
 msgid "AccessTokens|Are you sure you want to rotate the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
-msgid "AccessTokens|Are you sure you want to rotate the token \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
+msgid "AccessTokens|Are you sure you want to rotate the token %{tokenName}? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
 msgid "AccessTokens|Are you sure?"
@@ -3146,7 +3152,7 @@ msgstr ""
 msgid "AccessTokens|Revoke %{name}"
 msgstr ""
 
-msgid "AccessTokens|Revoke the token \"%{tokenName}\"?"
+msgid "AccessTokens|Revoke the token '%{tokenName}'?"
 msgstr ""
 
 msgid "AccessTokens|Revoked"
@@ -3158,7 +3164,7 @@ msgstr ""
 msgid "AccessTokens|Rotate"
 msgstr ""
 
-msgid "AccessTokens|Rotate the token \"%{tokenName}\"?"
+msgid "AccessTokens|Rotate the token '%{tokenName}'?"
 msgstr ""
 
 msgid "AccessTokens|Scopes"
@@ -64217,6 +64223,9 @@ msgid "UserMapping|Placeholder %{name} (@%{username}) was kept as a placeholder.
 msgstr ""
 
 msgid "UserMapping|Placeholder deleted"
+msgstr ""
+
+msgid "UserMapping|Placeholder top-level group:"
 msgstr ""
 
 msgid "UserMapping|Placeholder user"

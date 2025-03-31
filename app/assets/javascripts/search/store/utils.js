@@ -8,6 +8,11 @@ import {
   SCOPE_BLOB,
 } from '~/search/sidebar/constants';
 import {
+  SEARCH_SCOPE,
+  USER_HANDLE,
+} from '~/super_sidebar/components/global_search/command_palette/constants';
+
+import {
   MAX_FREQUENT_ITEMS,
   MAX_FREQUENCY,
   SIDEBAR_PARAMS,
@@ -186,12 +191,21 @@ export const addCountOverLimit = (count = '') => {
 export const injectRegexSearch = (link) => {
   const urlObject = new URL(link, getBaseURL());
   const queryObject = queryToObject(urlObject.search);
-  if (loadDataFromLS(LS_REGEX_HANDLE) && (queryObject.project_id || queryObject.group_id)) {
+  if (loadDataFromLS(LS_REGEX_HANDLE) && (queryObject?.project_id || queryObject?.group_id)) {
     queryObject[REGEX_PARAM] = true;
   }
   if (isEmpty(queryObject)) {
     return urlObject.pathname;
   }
+  return `${urlObject.pathname}?${objectToQuery(queryObject)}`;
+};
+
+/** @param { string } link */
+export const injectUsersScope = (link) => {
+  const urlObject = new URL(link, getBaseURL());
+  const queryObject = queryToObject(urlObject.search);
+  queryObject.scope = SEARCH_SCOPE[USER_HANDLE];
+
   return `${urlObject.pathname}?${objectToQuery(queryObject)}`;
 };
 

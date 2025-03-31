@@ -80,7 +80,7 @@ describe('Diffs view store', () => {
     it('calls reloadDiffs on diffsList store', () => {
       const spy = useDiffsList().reloadDiffs.mockResolvedValue();
       store.updateDiffView();
-      expect(spy).toHaveBeenCalledWith(`${defaultState.streamUrl}?view=inline&w=1`);
+      expect(spy).toHaveBeenCalledWith(`${defaultState.streamUrl}?view=inline&w=0`);
     });
   });
 
@@ -88,7 +88,7 @@ describe('Diffs view store', () => {
     it('handles switch to parallel view', () => {
       store.updateViewType('parallel');
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=parallel&w=1`,
+        `${defaultState.streamUrl}?view=parallel&w=0`,
       );
       expect(setCookie).toHaveBeenCalledWith(DIFF_VIEW_COOKIE_NAME, 'parallel');
       expect(queueRedisHllEvents).toHaveBeenCalledWith([
@@ -101,7 +101,7 @@ describe('Diffs view store', () => {
     it('handles switch to inline view', () => {
       store.updateViewType('inline');
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=inline&w=1`,
+        `${defaultState.streamUrl}?view=inline&w=0`,
       );
       expect(setCookie).toHaveBeenCalledWith(DIFF_VIEW_COOKIE_NAME, 'inline');
       expect(queueRedisHllEvents).toHaveBeenCalledWith([
@@ -116,7 +116,7 @@ describe('Diffs view store', () => {
     it('handles switch to hide whitespace', () => {
       store.updateShowWhitespace(false);
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=inline&w=0`,
+        `${defaultState.streamUrl}?view=inline&w=1`,
       );
       expect(store.showWhitespace).toEqual(false);
     });
@@ -124,7 +124,7 @@ describe('Diffs view store', () => {
     it('handles switch to show whitespace', () => {
       store.updateShowWhitespace(true);
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=inline&w=1`,
+        `${defaultState.streamUrl}?view=inline&w=0`,
       );
       expect(store.showWhitespace).toEqual(true);
     });

@@ -20,10 +20,6 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     let(:default_permissions) { false }
     let(:skip_allowlist_creation) { false }
     let(:job_token_policies_enabled) { true }
-    let!(:features_state) do
-      source_project.project_feature.attributes
-        .slice(*::ProjectFeature::FEATURES.map { |feature| "#{feature}_access_level" })
-    end
 
     let!(:allowlist) do
       create(:ci_job_token_project_scope_link,
@@ -42,11 +38,6 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
       namespace_settings = source_project.root_ancestor.namespace_settings ||
         source_project.root_ancestor.build_namespace_settings
       namespace_settings.update!(job_token_policies_enabled:)
-    end
-
-    after do
-      # Reinstate the initial project features
-      source_project.project_feature.update!(features_state)
     end
 
     subject(:do_request) do
@@ -111,21 +102,11 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     end
 
     context 'when the source project is public and the target job user is not a member of the source project' do
-      let(:original_visibility_level) { source_project.visibility_level }
       let(:job_user) { create(:user) }
 
       # Make sure the source_project is public.
       before do
-        if original_visibility_level != ::Gitlab::VisibilityLevel::PUBLIC
-          source_project.update!(visibility_level: ::Gitlab::VisibilityLevel::PUBLIC)
-        end
-      end
-
-      # If the source_project wasn't public, reset the visibility to it's original level
-      after do
-        if original_visibility_level != ::Gitlab::VisibilityLevel::PUBLIC
-          source_project.update!(visibility_level: original_visibility_level)
-        end
+        source_project.update!(visibility_level: ::Gitlab::VisibilityLevel::PUBLIC)
       end
 
       context 'when policies are not allowed, but the specified project features allow public access',

@@ -33,6 +33,7 @@ module API
 
       def assign_file_vars!
         authorize_read_code!
+        authorize_ai_access! if ai_workflow_scope?
 
         @commit = user_project.commit(params[:ref])
         not_found!('Commit') unless @commit
@@ -41,6 +42,17 @@ module API
         @blob = @repo.blob_at(@commit.sha, params[:file_path], limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
         not_found!('File') unless @blob
+      end
+
+      def ai_workflow_scope?
+        token_info = ::Current.token_info
+        return false unless token_info
+
+        Array.wrap(token_info[:token_scopes]).include?(:ai_workflows)
+      end
+
+      def authorize_ai_access!
+        forbidden!('Insufficient permissions for Duo Workflow') unless can?(current_user, :duo_workflow, user_project)
       end
 
       def commit_response(attrs)

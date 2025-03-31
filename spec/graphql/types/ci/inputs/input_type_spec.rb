@@ -6,6 +6,6 @@ RSpec.describe GitlabSchema.types['CiInputsInputType'], feature_category: :pipel
   specify { expect(described_class.graphql_name).to eq('CiInputsInputType') }
 
   it 'has the correct arguments' do
-    expect(described_class.arguments.keys).to match_array(%w[destroy id name value])
+    expect(described_class.arguments.keys).to match_array(%w[destroy name value])
   end
 end

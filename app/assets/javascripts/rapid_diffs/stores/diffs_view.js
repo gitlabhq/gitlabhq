@@ -74,7 +74,8 @@ export const useDiffsView = defineStore('diffsView', {
   },
   getters: {
     requestParams() {
-      return { view: this.viewType, w: this.showWhitespace ? '1' : '0' };
+      // w: '1' means ignore whitespace, app/helpers/diff_helper.rb#hide_whitespace?
+      return { view: this.viewType, w: this.showWhitespace ? '0' : '1' };
     },
   },
 });

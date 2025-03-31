@@ -7,12 +7,6 @@ module Types
         graphql_name 'CiInputsInputType'
         description 'Attributes for defining an input.'
 
-        argument :id,
-          ::Types::GlobalIDType[::Ci::PipelineScheduleInput],
-          required: false,
-          description: 'Global ID of the input. Only needed when updating an input.',
-          experiment: { milestone: '17.11' }
-
         argument :name,
           GraphQL::Types::String,
           required: true,

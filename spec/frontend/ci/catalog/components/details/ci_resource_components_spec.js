@@ -135,7 +135,7 @@ describe('CiResourceComponents', () => {
         it('renders the help link', () => {
           expect(findInputHelpLink().exists()).toBe(true);
           expect(findInputHelpLink().attributes('href')).toBe(
-            '/help/ci/yaml/inputs#define-input-parameters-with-specinputs',
+            '/help/ci/inputs/_index.md#define-input-parameters-with-specinputs',
           );
           expect(findInputHelpLink().attributes('title')).toBe('Learn more');
         });

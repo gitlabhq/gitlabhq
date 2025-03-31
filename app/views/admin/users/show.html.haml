@@ -69,6 +69,17 @@
             .gl-col-span-2
               %strong= @user.namespace_id
 
+          - if @user.placeholder?
+            - placeholder_group = Import::SourceUser.for_placeholder_user(@user)&.take&.namespace
+            %li{ class: list_item_classes }
+              %span.gl-text-subtle= s_('UserMapping|Placeholder top-level group:')
+              .gl-col-span-2
+                %strong
+                  - if placeholder_group
+                    = link_to placeholder_group.name, admin_group_path(placeholder_group)
+                  - else
+                    = _('None')
+
           %li.two-factor-status{ class: list_item_classes }
             %span.gl-text-subtle= _('Two-factor Authentication:')
             .gl-col-span-2

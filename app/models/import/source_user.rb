@@ -42,6 +42,7 @@ module Import
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
     scope :by_source_hostname, ->(source_hostname) { where(source_hostname: source_hostname) }
     scope :by_import_type, ->(import_type) { where(import_type: import_type) }
+    scope :for_placeholder_user, ->(user) { where(placeholder_user: user) }
     scope :by_statuses, ->(statuses) { where(status: statuses) }
     scope :awaiting_reassignment, -> { where(status: [0, 1, 2, 3, 4]) }
     scope :reassigned, -> { where(status: [5, 6]) }

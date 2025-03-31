@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineScheduleInput, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
-  let_it_be(:persisted_input) do
+  let_it_be_with_reload(:persisted_input) do
     create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, project: project)
   end
 
@@ -69,6 +69,14 @@ RSpec.describe Ci::PipelineScheduleInput, feature_category: :continuous_integrat
           expect(input.errors.full_messages).to contain_exactly('Value exceeds max serialized size: 4 characters')
         end
       end
+    end
+  end
+
+  describe '.pluck_identifiers' do
+    it 'returns input IDs and names' do
+      expect(
+        described_class.pluck_identifiers(pipeline_schedule.id, [persisted_input.name])
+      ).to contain_exactly([persisted_input.id, persisted_input.name])
     end
   end
 end

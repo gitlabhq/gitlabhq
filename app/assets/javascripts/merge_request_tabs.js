@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
-import { parseUrlPathname, visitUrl, getParameterByName } from '~/lib/utils/url_utility';
+import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
@@ -191,7 +191,7 @@ export const pageBundles = {
 };
 
 export default class MergeRequestTabs {
-  constructor({ action, setUrl, stubLocation } = {}) {
+  constructor({ action, setUrl, stubLocation, createRapidDiffsApp } = {}) {
     const containers = document.querySelectorAll('.content-wrapper .container-fluid');
     this.contentWrapper = containers[containers.length - 1];
     this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
@@ -221,7 +221,7 @@ export default class MergeRequestTabs {
     this.diffsClass = null;
     this.commitsLoaded = false;
     this.isFixedLayoutPreferred = this.contentWrapper.classList.contains('container-limited');
-    this.isRapidDiffs = getParameterByName('rapid_diffs') === 'true';
+    this.createRapidDiffsApp = createRapidDiffsApp;
     this.rapidDiffsApp = null;
     this.eventHub = createEventHub();
     this.loadedPages = { [action]: true };
@@ -532,12 +532,9 @@ export default class MergeRequestTabs {
 
   // Initialize the Changes tab
   async startDiffs(options = {}) {
-    if (this.isRapidDiffs) {
+    if (this.createRapidDiffsApp) {
       if (!this.rapidDiffsApp) {
-        const { createRapidDiffsApp } = await import('~/rapid_diffs/app');
-
-        this.rapidDiffsApp = createRapidDiffsApp();
-
+        this.rapidDiffsApp = this.createRapidDiffsApp();
         this.rapidDiffsApp.reloadDiffs();
         this.rapidDiffsApp.init();
       }

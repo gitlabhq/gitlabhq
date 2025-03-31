@@ -1,16 +1,17 @@
+@use 'constants';
+
 .rd-page-container {
   max-width: none;
+}
+
+.rd-app {
+  --rd-app-sticky-top-with-padding: calc(var(--rd-app-sticky-top, 0) + #{constants.$app-sticky-top-padding});
 }
 
 .rd-app-header {
   display: flex;
   padding: $gl-spacing-scale-3 0;
   min-height: 3rem;
-  // do not let dropdowns cover sticky header
-  position: relative;
-  // this should always be higher than z-index inside diff files or file browser
-  // otherwise dropdowns will not cover diff file or file tree content
-  z-index: 10;
 }
 
 .rd-app-settings {
@@ -31,6 +32,7 @@
 }
 
 .rd-app-sidebar {
+  top: var(--rd-app-sticky-top-with-padding) !important;
   width: 320px;
   flex: none;
   box-sizing: content-box;

@@ -82,7 +82,6 @@ describe('GlobalSearchModal', () => {
   let wrapper;
   let store;
   let handleClosingSpy;
-  let onKeyComboDownSpy;
 
   const actionSpies = {
     setSearch: jest.fn(),
@@ -138,12 +137,6 @@ describe('GlobalSearchModal', () => {
 
   beforeEach(() => {
     handleClosingSpy = jest.spyOn(GlobalSearchModal.methods, 'handleClosing');
-    onKeyComboDownSpy = jest.spyOn(GlobalSearchModal.methods, 'onKeyComboToggleDropdown');
-  });
-
-  afterEach(() => {
-    handleClosingSpy.mockRestore();
-    onKeyComboDownSpy.mockRestore();
   });
 
   const findGlobalSearchModal = () => wrapper.findComponent(GlModal);
@@ -321,6 +314,29 @@ describe('GlobalSearchModal', () => {
           await findCommandPaletteDropdown().vm.$emit('selected', handle);
           await nextTick();
           expect(document.activeElement).toBe(findCommandPaletteInput().element);
+        });
+      });
+
+      describe('when searching for users in command palette', () => {
+        beforeEach(() => {
+          createComponent({
+            initialState: { search: '', commandChar: '@' },
+            mockGetters: {
+              ...defaultMockGetters,
+              isCommandMode: () => Boolean('@'),
+            },
+            stubs: {
+              GlModal,
+              GlSearchBoxByType,
+            },
+            attachTo: document.body,
+          });
+
+          findGlobalSearchInput().vm.$emit('click');
+        });
+
+        it('shows scoped search', () => {
+          expect(findGlobalSearchScopedItems().exists()).toBe(true);
         });
       });
     });

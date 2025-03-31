@@ -48,10 +48,13 @@ module Mutations
         def resolve(id:, variables: [], inputs: [], **pipeline_schedule_attrs)
           schedule = authorized_find!(id: id)
 
-          params = pipeline_schedule_attrs.merge(variables_attributes: transform_attributes_for(variables))
+          params = pipeline_schedule_attrs.merge(
+            inputs_attributes: [],
+            variables_attributes: variables_attributes_for(variables)
+          )
 
           if Feature.enabled?(:ci_inputs_for_pipelines, schedule.project)
-            params = params.merge(inputs_attributes: transform_attributes_for(inputs))
+            params = params.merge(inputs_attributes: inputs.map(&:to_h))
           end
 
           service_response = ::Ci::PipelineSchedules::UpdateService
@@ -66,10 +69,11 @@ module Mutations
 
         private
 
-        # This method transforms the GraphQL argument values into values that can be understood by ActiveRecord.
-        def transform_attributes_for(nodes)
-          nodes.map do |node|
-            node.to_h.tap do |hash|
+        # This method transforms the GraphQL argument values for pipeline schedule variables into values that can be
+        # understood by ActiveRecord when performing a nested attributes collection update.
+        def variables_attributes_for(variables)
+          variables.map do |variable|
+            variable.to_h.tap do |hash|
               hash[:id] = GlobalID::Locator.locate(hash[:id]).id if hash[:id]
 
               hash[:_destroy] = hash.delete(:destroy)

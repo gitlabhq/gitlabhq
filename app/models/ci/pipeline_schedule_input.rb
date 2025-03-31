@@ -17,6 +17,12 @@ module Ci
 
     encrypts :value
 
+    def self.pluck_identifiers(pipeline_schedule_id, inputs_names)
+      where(pipeline_schedule_id: pipeline_schedule_id, name: inputs_names)
+        .limit(PipelineSchedule::MAX_INPUTS)
+        .pluck(:id, :name)
+    end
+
     private
 
     def value_does_not_exceed_max_size

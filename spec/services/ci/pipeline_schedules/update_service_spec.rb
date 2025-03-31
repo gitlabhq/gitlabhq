@@ -84,6 +84,38 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
                            }.from('foovalue').to('barvalue')
       end
 
+      context 'when updating inputs' do
+        before_all do
+          create(
+            :ci_pipeline_schedule_input, name: 'input_for_update', value: 'value', pipeline_schedule: pipeline_schedule
+          )
+          create(
+            :ci_pipeline_schedule_input, name: 'input_for_delete', value: 'value', pipeline_schedule: pipeline_schedule
+          )
+        end
+
+        let(:params) do
+          {
+            inputs_attributes: [
+              { name: 'new_input', value: 'a new input' },
+              { name: 'input_for_update', value: 'updated value' },
+              { name: 'input_for_delete', value: 'value', destroy: true }
+            ]
+          }
+        end
+
+        it 'pairs the new values with existing input IDs so they are updated correctly' do
+          service.execute
+
+          pipeline_schedule.reload
+
+          expect(pipeline_schedule.inputs.pluck(:name, :value)).to contain_exactly(
+            ['input_for_update', 'updated value'],
+            ['new_input', 'a new input']
+          )
+        end
+      end
+
       context 'when the ref is ambiguous' do
         let(:ref) { 'ambiguous' }
 

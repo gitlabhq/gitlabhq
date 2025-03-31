@@ -491,12 +491,14 @@ export default {
       >
         <scroll-scrim class="gl-grow !gl-overflow-x-hidden" data-testid="nav-container">
           <div class="gl-pb-3">
-            <command-palette-items
-              v-if="isCommandMode"
-              :search-query="commandPaletteQuery"
-              :handle="commandChar"
-              @updated="highlightFirstCommand"
-            />
+            <template v-if="isCommandMode">
+              <global-search-scoped-items v-if="commandChar === $options.USER_HANDLE" />
+              <command-palette-items
+                :search-query="commandPaletteQuery"
+                :handle="commandChar"
+                @updated="highlightFirstCommand"
+              />
+            </template>
             <template v-else>
               <global-search-scoped-items v-if="showScopedSearchItems" />
               <global-search-default-items v-if="showDefaultItems" />

@@ -195,7 +195,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
-Example request with [inputs](../ci/yaml/inputs.md):
+Example request with [inputs](../ci/inputs/_index.md):
 
 _Required [feature flag](feature_flags.md): `ci_inputs_for_pipelines`_
 

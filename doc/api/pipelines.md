@@ -409,7 +409,7 @@ Basic example:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
-Example request with [inputs](../ci/yaml/inputs.md):
+Example request with [inputs](../ci/inputs/_index.md):
 
 ```shell
 curl --request POST \

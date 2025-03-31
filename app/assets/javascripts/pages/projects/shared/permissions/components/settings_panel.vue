@@ -217,6 +217,11 @@ export default {
       required: false,
       default: false,
     },
+    amazonQAutoReviewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     duoFeaturesLocked: {
       type: Boolean,
       required: false,
@@ -358,6 +363,7 @@ export default {
       extendedPratExpiryWebhooksExecute: false,
       cveIdRequestEnabled: true,
       duoFeaturesEnabled: false,
+      autoReviewEnabled: this.amazonQAutoReviewEnabled,
       sppRepositoryPipelineAccess: false,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
@@ -473,7 +479,6 @@ export default {
       return this.currentSettings.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
     },
     duoEnabledSetting() {
-      // TODO(Q): What if both Amazon Q and Duo are available??
       if (this.amazonQAvailable) {
         return {
           label: s__('ProjectSettings|Amazon Q'),
@@ -493,6 +498,11 @@ export default {
     },
   },
   watch: {
+    duoFeaturesEnabled(isEnabled) {
+      if (this.amazonQAvailable) {
+        this.autoReviewEnabled = isEnabled;
+      }
+    },
     visibilityLevel(value, oldValue) {
       if (value === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         if (
@@ -1100,6 +1110,25 @@ export default {
           name="project[project_setting_attributes][duo_features_enabled]"
           data-testid="duo_features_enabled_toggle"
         />
+        <div class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7">
+          <project-setting-row
+            :label="s__('AI|Enable Auto Review')"
+            class="gl-mt-5"
+            :help-text="
+              s__('AI|When a merge request is created, automatically starts an Amazon Q review')
+            "
+          >
+            <gl-toggle
+              v-model="autoReviewEnabled"
+              class="gl-mt-2"
+              :disabled="duoFeaturesLocked || !duoFeaturesEnabled"
+              :label="s__('AI|Auto Review')"
+              label-position="hidden"
+              name="project[amazon_q_auto_review_enabled]"
+              data-testid="amazon_q_auto_review_enabled"
+            />
+          </project-setting-row>
+        </div>
       </project-setting-row>
 
       <project-setting-row v-if="canDisableEmails" ref="email-settings">

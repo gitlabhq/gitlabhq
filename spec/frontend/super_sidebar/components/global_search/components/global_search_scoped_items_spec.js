@@ -15,12 +15,19 @@ import {
   SCOPE_SEARCH_ALL,
   SCOPE_SEARCH_GROUP,
   SCOPE_SEARCH_PROJECT,
+  USER_HANDLE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
+import { injectRegexSearch, injectUsersScope } from '~/search/store/utils';
 import {
   MOCK_SEARCH,
   MOCK_SCOPED_SEARCH_GROUP,
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
 } from '../mock_data';
+
+jest.mock('~/search/store/utils', () => ({
+  injectRegexSearch: jest.fn((href) => `${href}/injected-regex`),
+  injectUsersScope: jest.fn((href) => `${href}/injected-users-scope`),
+}));
 
 Vue.use(Vuex);
 
@@ -57,7 +64,7 @@ describe('GlobalSearchScopedItems', () => {
   const findItemsText = () => findItems().wrappers.map((w) => trimText(w.text()));
   const findItemLinks = () => findItems().wrappers.map((w) => w.find('a').attributes('href'));
 
-  describe('Search results scoped items', () => {
+  describe('when render scoped items', () => {
     beforeEach(() => {
       createComponent();
     });
@@ -75,11 +82,11 @@ describe('GlobalSearchScopedItems', () => {
     });
 
     it('renders links correctly', () => {
-      const expectedLinks = MOCK_SCOPED_SEARCH_GROUP.items.map((o) => o.href);
+      const expectedLinks = ['/mock-project/injected-regex', '/mock-group', '/'];
       expect(findItemLinks()).toStrictEqual(expectedLinks);
     });
 
-    describe('tracking', () => {
+    describe('when tracking', () => {
       const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
       it.each`
@@ -87,11 +94,74 @@ describe('GlobalSearchScopedItems', () => {
         ${SCOPE_SEARCH_ALL}     | ${EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH}
         ${SCOPE_SEARCH_GROUP}   | ${EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH}
         ${SCOPE_SEARCH_PROJECT} | ${EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH}
-      `("triggers tracking event '$event' after emiting action '$action'", ({ action, event }) => {
+      `("triggers '$event' with '$action'", ({ action, event }) => {
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
         findGroup().vm.$emit('action', { text: action });
         expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
       });
+    });
+  });
+
+  describe('when using injectSearchPropsToHref', () => {
+    beforeEach(() => {
+      injectRegexSearch.mockClear();
+      injectUsersScope.mockClear();
+    });
+
+    it('applies injectRegexSearch when item.text is SCOPE_SEARCH_PROJECT', () => {
+      const mockSearchGroup = {
+        name: 'Test Group',
+        items: [
+          {
+            text: SCOPE_SEARCH_PROJECT,
+            href: '/test-project-href',
+            description: 'Search in project',
+          },
+        ],
+      };
+
+      createComponent({}, { scopedSearchGroup: () => mockSearchGroup });
+
+      expect(injectRegexSearch).toHaveBeenCalledWith('/test-project-href');
+      expect(findItemLinks()[0]).toBe('/test-project-href/injected-regex');
+    });
+
+    it('applies injectUsersScope when commandChar is USER_HANDLE', () => {
+      const mockSearchGroup = {
+        name: 'Test Group',
+        items: [
+          {
+            text: 'some-other-text',
+            href: '/test-users-href',
+            description: 'Search for users',
+          },
+        ],
+      };
+
+      createComponent({ commandChar: USER_HANDLE }, { scopedSearchGroup: () => mockSearchGroup });
+
+      expect(injectUsersScope).toHaveBeenCalledWith('/test-users-href');
+      expect(findItemLinks()[0]).toBe('/test-users-href/injected-users-scope');
+    });
+
+    it('returns original href when no conditions are met', () => {
+      const mockSearchGroup = {
+        name: 'Test Group',
+        items: [
+          {
+            text: 'some-random-text',
+            href: '/original-href',
+            description: 'Regular search',
+          },
+        ],
+      };
+
+      createComponent({ commandChar: '>' }, { scopedSearchGroup: () => mockSearchGroup });
+
+      expect(injectRegexSearch).not.toHaveBeenCalled();
+      expect(injectUsersScope).not.toHaveBeenCalled();
+
+      expect(findItemLinks()[0]).toBe('/original-href');
     });
   });
 });
