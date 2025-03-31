@@ -10,7 +10,7 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import updateDesignDescriptionMutation from '../graphql/update_design_description.mutation.graphql';
 import { UPDATE_DESCRIPTION_ERROR } from '../constants';
@@ -187,13 +187,13 @@ export default {
         if (!sourcepos) return;
 
         // Toggle checkboxes based on user input
-        this.descriptionText = toggleMarkCheckboxes({
+        this.descriptionText = toggleCheckbox({
           rawMarkdown: this.descriptionText,
           checkboxChecked: target.checked,
           sourcepos,
         });
 
-        // Update the desciption text using mutation
+        // Update the description text using mutation
         this.updateDesignDescription();
       }
     },

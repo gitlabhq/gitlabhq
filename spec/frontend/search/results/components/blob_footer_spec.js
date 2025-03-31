@@ -38,7 +38,7 @@ describe('BlobFooter', () => {
 
     it(`renders default closed state`, () => {
       expect(findGlButton().exists()).toBe(true);
-      expect(wrapper.text()).toContain('Show 1 more matches');
+      expect(wrapper.text()).toContain('Show 1 more result');
     });
 
     it(`renders default open state`, async () => {
@@ -70,7 +70,7 @@ describe('BlobFooter', () => {
 
     it(`renders closed state`, () => {
       expect(findGlButton().exists()).toBe(true);
-      expect(wrapper.text()).toContain('Show 97 more matches');
+      expect(wrapper.text()).toContain('Show 97 more results');
     });
 
     it(`renders open state`, async () => {
@@ -78,7 +78,7 @@ describe('BlobFooter', () => {
       await nextTick();
       expect(findGlLink().exists()).toBe(true);
       expect(wrapper.text()).toContain(
-        `Show less - Too many matches found. Showing 5 chunks out of 200 results. Open the file to view all.`,
+        `Show less - Showing 5 of 200 results. Open the file to view all results.`,
       );
     });
 

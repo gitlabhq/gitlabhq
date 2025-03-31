@@ -25,7 +25,6 @@ import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import TimelineEntryItem from './timeline_entry_item.vue';
 
@@ -57,7 +56,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [descriptionVersionHistoryMixin, glFeatureFlagsMixin()],
+  mixins: [descriptionVersionHistoryMixin],
   props: {
     note: {
       type: Object,
@@ -73,7 +72,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['targetNoteHash', 'descriptionVersions', 'getNoteableData']),
+    ...mapGetters(['targetNoteHash', 'descriptionVersions']),
     ...mapState(['isLoadingDescriptionVersion']),
     noteAnchorId() {
       return `note_${this.note.id}`;
@@ -103,9 +102,6 @@ export default {
     deleteButtonClasses() {
       return this.singleLineDescription ? 'gl-top-5 gl-right-2 gl-mt-2' : 'gl-top-6 gl-right-3';
     },
-    isMergeRequest() {
-      return this.getNoteableData.noteableType === 'MergeRequest';
-    },
     iconBgClass() {
       return ICON_COLORS[this.note.system_note_icon_name] || 'gl-text-subtle';
     },
@@ -126,6 +122,7 @@ export default {
     renderGFM(this.$refs['gfm-content']);
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- These are used by the `descriptionVersionHistoryMixin` mixin
     ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
     async toggleDiff() {
       this.showLines = !this.showLines;

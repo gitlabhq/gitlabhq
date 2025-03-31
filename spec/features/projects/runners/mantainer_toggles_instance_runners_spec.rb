@@ -6,8 +6,8 @@ RSpec.describe 'Maintainer toggles instance runners', feature_category: :fleet_v
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vue_project_runners_settings: false)
     project.add_maintainer(user)
-
     sign_in(user)
   end
 

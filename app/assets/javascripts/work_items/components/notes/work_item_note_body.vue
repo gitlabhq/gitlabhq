@@ -1,7 +1,7 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
@@ -79,7 +79,7 @@ export default {
         return;
       }
 
-      const commentText = toggleMarkCheckboxes({
+      const commentText = toggleCheckbox({
         rawMarkdown: this.note.body,
         checkboxChecked: target.checked,
         sourcepos,

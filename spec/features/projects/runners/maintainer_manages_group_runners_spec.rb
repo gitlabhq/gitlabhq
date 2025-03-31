@@ -12,6 +12,7 @@ RSpec.describe 'Maintainer manages group runners related to project', feature_ca
   end
 
   before do
+    stub_feature_flags(vue_project_runners_settings: false)
     sign_in(user)
   end
 

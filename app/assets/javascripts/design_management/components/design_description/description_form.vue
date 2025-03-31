@@ -5,7 +5,7 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import updateDesignDescriptionMutation from '../../graphql/mutations/update_design_description.mutation.graphql';
@@ -148,7 +148,7 @@ export default {
         if (!sourcepos) return;
 
         // Toggle checkboxes based on user input
-        this.descriptionText = toggleMarkCheckboxes({
+        this.descriptionText = toggleCheckbox({
           rawMarkdown: this.descriptionText,
           checkboxChecked: target.checked,
           sourcepos,

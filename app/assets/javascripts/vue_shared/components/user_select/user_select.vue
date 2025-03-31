@@ -268,6 +268,7 @@ export default {
     focusSearch() {
       this.$refs.search.focusInput();
     },
+    // eslint-disable-next-line vue/no-unused-properties -- showDropdown() is part of the component's public API.
     showDropdown() {
       this.$refs.dropdown.show();
     },

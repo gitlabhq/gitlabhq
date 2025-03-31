@@ -12,13 +12,12 @@ title: Suggest Changes API
 
 {{< /details >}}
 
+When you review code, suggestions provide a way to propose specific changes
+that can be directly applied. For more information,
+see [Suggest changes](../user/project/merge_requests/reviews/suggestions.md).
+
 You can programmatically create and apply code suggestions in merge request discussions with
-this API. When you review code, suggestions provide a way to propose specific changes
-that can be directly applied.
-
-For more information, see [Suggest changes](../user/project/merge_requests/reviews/suggestions.md).
-
-Every API call to suggestions must be authenticated.
+this API. Every API call to suggestions must be authenticated.
 
 ## Create a suggestion
 
@@ -47,7 +46,9 @@ PUT /suggestions/:id/apply
 | `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/suggestions/5/apply"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/suggestions/5/apply"
 ```
 
 Example response:
@@ -76,7 +77,11 @@ PUT /suggestions/batch_apply
 | `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header 'Content-Type: application/json' --data '{"ids": [5, 6]}' "https://gitlab.example.com/api/v4/suggestions/batch_apply"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header 'Content-Type: application/json' \
+  --data '{"ids": [5, 6]}' \
+  --url "https://gitlab.example.com/api/v4/suggestions/batch_apply"
 ```
 
 Example response:

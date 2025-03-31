@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Vue from 'vue';
 import Sortable from 'sortablejs';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
 import { InternalEvents } from '~/tracking';
@@ -312,22 +313,11 @@ export default {
 
         if (!sourcepos) return;
 
-        const [startRange] = sourcepos.split('-');
-        let [startRow] = startRange.split(':');
-        startRow = Number(startRow) - 1;
-
-        const descriptionTextRows = this.descriptionText.split('\n');
-        const newDescriptionText = descriptionTextRows
-          .map((row, index) => {
-            if (startRow === index) {
-              if (target.checked) {
-                return row.replace(/\[ \]/, '[x]');
-              }
-              return row.replace(/\[[x~]\]/i, '[ ]');
-            }
-            return row;
-          })
-          .join('\n');
+        const newDescriptionText = toggleCheckbox({
+          rawMarkdown: this.descriptionText,
+          sourcepos,
+          checkboxChecked: target.checked,
+        });
 
         this.$emit('descriptionUpdated', newDescriptionText);
       }

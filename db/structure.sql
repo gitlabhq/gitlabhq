@@ -18421,7 +18421,8 @@ CREATE TABLE onboarding_progresses (
     secure_dast_run_at timestamp with time zone,
     license_scanning_run_at timestamp with time zone,
     code_added_at timestamp with time zone,
-    ended_at timestamp with time zone
+    ended_at timestamp with time zone,
+    duo_seat_assigned_at timestamp with time zone
 );
 
 CREATE SEQUENCE onboarding_progresses_id_seq

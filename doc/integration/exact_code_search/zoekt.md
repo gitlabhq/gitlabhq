@@ -47,8 +47,11 @@ The following installation methods are supported for Zoekt:
 - [Zoekt chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-zoekt/)
   (as a standalone chart or subchart of the GitLab Helm chart)
 - [GitLab Operator](https://docs.gitlab.com/operator/) (with `gitlab-zoekt.install=true`)
+
+The following installation methods are available for testing, not for production use:
+
 - [Docker Compose](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/tree/main/example/docker-compose)
-- [Ansible playbook](https://gitlab.com/johnmason/ansible-gitlab-zoekt) (experiment)
+- [Ansible playbook](https://gitlab.com/gitlab-org/search-team/code-search/ansible-gitlab-zoekt)
 
 ## Enable exact code search
 

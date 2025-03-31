@@ -15,11 +15,6 @@ export default {
       required: true,
     },
   },
-  methods: {
-    isActive(name) {
-      return this.alert.assignees.nodes.some(({ username }) => username === name);
-    },
-  },
 };
 </script>
 

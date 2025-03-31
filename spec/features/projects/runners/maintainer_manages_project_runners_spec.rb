@@ -12,6 +12,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
   end
 
   before do
+    stub_feature_flags(vue_project_runners_settings: false)
     sign_in(user)
   end
 

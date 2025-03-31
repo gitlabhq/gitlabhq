@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :runner do
+  RSpec.describe 'Verify', :runner, product_group: :runner,
+    feature_flag: { name: 'vue_project_runners_settings', scope: :project } do
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let!(:runner) { create(:project_runner, name: executor, tags: [executor]) }
       let!(:runner_managers) { create_list(:runner_manager, 2, runner: runner) }
       let(:expected_job_log) { "Runner was registered successfully" }
+
+      before do
+        Runtime::Feature.disable(:vue_project_runners_settings)
+      end
 
       after do
         runner.remove_via_api!

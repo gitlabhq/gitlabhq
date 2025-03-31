@@ -38,7 +38,7 @@ describe('Chunk component', () => {
     });
 
     it('renders highlighted content if appear event is emitted', async () => {
-      createComponent({ chunkIndex: 1, isHighlighted: false });
+      createComponent({ isHighlighted: false });
       findIntersectionObserver().vm.$emit('appear');
 
       await nextTick();
@@ -89,7 +89,7 @@ describe('Chunk component', () => {
 
     it('adds code navigation data to newly rendered chunks', async () => {
       createComponent(
-        { chunkIndex: 1, isHighlighted: false },
+        { isHighlighted: false },
         { blobs: ['index.js'], data: { 'index.js': { '0:1': 'test' } } },
       );
 
