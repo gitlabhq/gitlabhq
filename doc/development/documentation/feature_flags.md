@@ -9,29 +9,23 @@ title: Document features deployed behind feature flags
 GitLab uses [feature flags](../feature_flags/_index.md) to roll
 out the deployment of its own features.
 
-When the state of a feature flag changes, the developer who made the change
-**must update the documentation**.
+{{< alert type="note" >}}
+
+The developer who changes the state of a feature flag is responsible for
+updating the documentation.
+
+{{< /alert >}}
 
 ## When to document features behind a feature flag
 
-Every feature introduced to the codebase, even if it's behind a disabled flag,
-must be documented. For more information, see
-[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment and beta](../../policy/development_stages_support.md) features are usually behind a flag and must also be documented. For more information, see [Document experiment or beta features](experiment_beta.md).
+Before a feature flag is enabled for all customers in an environment (GitLab Self-Managed, GitLab.com, or GitLab Dedicated),
+the feature must be documented.
 
-When the feature is [implemented in multiple merge requests](../feature_flags/_index.md#feature-flags-in-gitlab-development),
-discuss the plan with your technical writer.
+For all other features behind flags, the PM or EM for the group determines whether or not
+to document the feature.
 
-You can create a documentation issue and delay the documentation if the feature:
-
-- Is far-reaching (makes changes across many areas of GitLab), like navigation changes.
-- Includes many MRs.
-- Affects more than a few documentation pages.
-- Is not fully functional if the feature flag is enabled for testing.
-
-The PM, EM, and writer should make sure the documentation work is assigned and scheduled.
-
-Every feature flag in the codebase is [in the documentation](../../user/feature_flags.md),
-even when the feature is not fully functional or otherwise documented.
+Even when a flag is not documented alongside the feature, it is
+[automatically documented on a central page](../../user/feature_flags.md).
 
 ## How to add feature flag documentation
 
