@@ -590,6 +590,7 @@ module ApplicationSettingsHelper
       :global_search_users_enabled,
       :global_search_issues_enabled,
       :global_search_merge_requests_enabled,
+      :global_search_block_anonymous_searches_enabled,
       :vscode_extension_marketplace,
       :vscode_extension_marketplace_enabled
     ].tap do |settings|

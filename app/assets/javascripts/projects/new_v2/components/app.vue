@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlFormGroup, GlIcon, GlAlert } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { s__, sprintf, formatNumber } from '~/locale';
 import { getLocationHash, setLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
@@ -33,13 +33,13 @@ export default {
     SafeHtml,
   },
   inject: {
-    rootPath: {
-      default: '/',
-    },
     projectsUrl: {
       default: null,
     },
     userNamespaceId: {
+      default: null,
+    },
+    userNamespaceFullPath: {
       default: null,
     },
     isCiCdAvailable: {
@@ -61,7 +61,7 @@ export default {
       default: null,
     },
     namespaceId: {
-      default: null,
+      default: '',
     },
     trackLabel: {
       default: null,
@@ -75,23 +75,29 @@ export default {
   },
   data() {
     return {
-      selectedNamespace:
-        this.namespaceId && this.canSelectNamespace ? this.namespaceId : this.userNamespaceId,
+      namespace: {
+        id: this.namespaceId ? this.namespaceId : this.userNamespaceId,
+        fullPath: this.namespaceFullPath ? this.namespaceFullPath : this.userNamespaceFullPath,
+        isPersonal: this.namespaceId === '',
+      },
       selectedProjectType: OPTIONS.blank.value,
       currentStep: 1,
-      rootUrl: this.rootPath,
+      showValidation: false,
     };
   },
 
   computed: {
-    isPersonalProject() {
-      return this.selectedNamespace === this.userNamespaceId;
-    },
     canChooseOption() {
-      if (!this.isPersonalProject) return true;
-      return this.canCreateProject && this.userProjectLimit > 0;
+      if (this.namespace.isPersonal) {
+        return this.canCreateProject && this.userProjectLimit > 0;
+      }
+      if (!this.canSelectNamespace) return false;
+      return true;
     },
     errorMessage() {
+      if (!this.canSelectNamespace && !this.namespace.isPersonal) {
+        return s__('ProjectsNew|You have no groups. Create a new one or join an existing group.');
+      }
       if (this.userProjectLimit === 0) {
         return s__(
           'ProjectsNew|You cannot create projects in your personal namespace. Contact your GitLab administrator.',
@@ -102,7 +108,7 @@ export default {
           "ProjectsNew|You've reached your limit of %{limit} projects created. Contact your GitLab administrator.",
         ),
         {
-          limit: this.userProjectLimit,
+          limit: formatNumber(this.userProjectLimit),
         },
       );
     },
@@ -124,6 +130,10 @@ export default {
     additionalBreadcrumb() {
       return this.currentStep === 2 ? this.selectedProjectOption : null;
     },
+    isGroupSelectedValid() {
+      if (this.showValidation) return this.namespace.id !== '';
+      return true;
+    },
   },
 
   created() {
@@ -131,11 +141,17 @@ export default {
   },
 
   methods: {
-    choosePersonalNamespace() {
-      this.selectedNamespace = this.userNamespaceId;
-    },
-    chooseGroupNamespace() {
-      this.selectedNamespace = null;
+    setNamespace(isPersonal) {
+      if (isPersonal) {
+        this.namespace.id = this.userNamespaceId;
+        this.namespace.fullPath = this.userNamespaceFullPath;
+        this.namespace.isPersonal = true;
+      } else {
+        this.namespace.id = this.namespaceId || '';
+        this.namespace.fullPath = this.namespaceFullPath;
+        this.namespace.isPersonal = false;
+      }
+      this.showValidation = false;
     },
     selectProjectType(value) {
       this.selectedProjectType = value;
@@ -145,6 +161,11 @@ export default {
       setLocationHash();
     },
     onNext() {
+      if (this.namespace.id === '') {
+        this.showValidation = true;
+        return;
+      }
+
       this.currentStep += 1;
       setLocationHash(this.selectedProjectType);
     },
@@ -156,6 +177,11 @@ export default {
       } else {
         this.currentStep = 1;
       }
+    },
+    onSelectNamespace({ id, fullPath }) {
+      this.namespace.id = id;
+      this.namespace.fullPath = fullPath;
+      this.showValidation = false;
     },
   },
 };
@@ -172,41 +198,53 @@ export default {
       data-testid="new-project-step1"
     >
       <template #form>
-        <gl-form-group :label="s__('ProjectNew|What do you want to create?')">
+        <gl-form-group :label="s__('ProjectNew|Where do you want to create the new project?')">
           <gl-button-group class="gl-w-full">
             <gl-button
               category="primary"
               variant="default"
               size="medium"
-              :selected="isPersonalProject"
+              :selected="namespace.isPersonal"
               class="gl-w-full"
               data-testid="personal-namespace-button"
-              @click="choosePersonalNamespace"
+              @click="setNamespace(true)"
             >
-              {{ s__('ProjectsNew|A personal project') }}
+              {{ s__('ProjectsNew|In your personal namespace') }}
             </gl-button>
             <gl-button
               category="primary"
               variant="default"
               size="medium"
-              :selected="!isPersonalProject"
+              :selected="!namespace.isPersonal"
               class="gl-w-full"
               data-testid="group-namespace-button"
-              @click="chooseGroupNamespace"
+              @click="setNamespace(false)"
             >
-              {{ s__('ProjectsNew|A project within a group') }}
+              {{ s__('ProjectsNew|In one of your groups') }}
             </gl-button>
           </gl-button-group>
         </gl-form-group>
 
-        <gl-form-group v-if="!isPersonalProject" :label="s__('ProjectsNew|Choose a group')">
+        <gl-form-group
+          v-if="!namespace.isPersonal && canChooseOption"
+          :invalid-feedback="
+            s__('ProjectsNew|Pick a group or namespace where you want to create this project.')
+          "
+          :state="isGroupSelectedValid"
+          data-testid="group-selector-form-group"
+        >
+          <label id="group-selector" for="group">
+            {{ s__('ProjectsNew|Choose a group') }}
+          </label>
           <new-project-destination-select
-            :namespace-full-path="namespaceFullPath"
-            :namespace-id="namespaceId"
+            :namespace-full-path="namespace.fullPath"
+            :namespace-id="namespace.id"
             :track-label="trackLabel"
-            :root-url="rootUrl"
             :groups-only="true"
+            toggle-aria-labelled-by="group-selector"
+            toggle-id="group"
             data-testid="group-selector"
+            @onSelectNamespace="onSelectNamespace"
           />
         </gl-form-group>
 
@@ -230,7 +268,7 @@ export default {
           {{ errorMessage }}
         </gl-alert>
       </template>
-      <template #next>
+      <template v-if="canChooseOption" #next>
         <gl-button
           category="primary"
           variant="confirm"
@@ -240,9 +278,9 @@ export default {
           {{ __('Next step') }}
         </gl-button>
       </template>
-      <template #footer>
+      <template v-if="canChooseOption" #footer>
         <div v-if="newProjectGuidelines" v-safe-html="newProjectGuidelines" class="gl-mb-6"></div>
-        <command-line v-if="isPersonalProject" />
+        <command-line v-if="namespace.isPersonal" />
       </template>
     </multi-step-form-template>
 
@@ -251,7 +289,7 @@ export default {
       v-if="currentStep === 2"
       :key="selectedProjectOption.key"
       :option="selectedProjectOption"
-      :namespace-id="selectedNamespace"
+      :namespace="namespace"
       data-testid="new-project-step2"
       @back="onBack"
       @next="onNext"

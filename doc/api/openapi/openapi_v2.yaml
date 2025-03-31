@@ -42,6 +42,8 @@ tags:
   description: Operations about branches
 - name: secure_files
   description: Operations about secure_files
+- name: cargo_packages
+  description: Operations about cargo_packages
 - name: commits
   description: Operations about commits
 - name: pages
@@ -92,12 +94,8 @@ tags:
   description: Operations about namespaces
 - name: organizations
   description: Operations about organizations
-- name: project_repository_storage_moves
-  description: Operations about project_repository_storage_moves
 - name: snippets
   description: Operations about snippets
-- name: snippet_repository_storage_moves
-  description: Operations about snippet_repository_storage_moves
 - name: hooks
   description: Operations about hooks
 - name: usage_data
@@ -996,7 +994,8 @@ paths:
         required: false
       - in: query
         name: all_available
-        description: Show all group that you have access to
+        description: When `true`, returns all accessible groups. When `false`, returns
+          only groups where the user is a member.
         type: boolean
         required: false
       - in: query
@@ -1664,7 +1663,8 @@ paths:
         required: false
       - in: query
         name: all_available
-        description: Show all group that you have access to
+        description: When `true`, returns all accessible groups. When `false`, returns
+          only groups where the user is a member.
         type: boolean
         required: false
       - in: query
@@ -1795,7 +1795,8 @@ paths:
         required: false
       - in: query
         name: all_available
-        description: Show all group that you have access to
+        description: When `true`, returns all accessible groups. When `false`, returns
+          only groups where the user is a member.
         type: boolean
         required: false
       - in: query
@@ -4074,6 +4075,67 @@ paths:
       tags:
       - group_packages
       operationId: getApiV4GroupsIdPackages
+  "/api/v4/groups/{id}/placeholder_reassignments":
+    get:
+      summary: Download the list of pending placeholder assignments for a group
+      description: This feature was added in GitLab 17.10
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Download the list of pending placeholder assignments for a
+            group
+      tags:
+      - groups
+      operationId: getApiV4GroupsIdPlaceholderReassignments
+    post:
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      - name: postApiV4GroupsIdPlaceholderReassignments
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4GroupsIdPlaceholderReassignments"
+      responses:
+        '201':
+          description: created PlaceholderReassignment
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdPlaceholderReassignments
+  "/api/v4/groups/{id}/placeholder_reassignments/authorize":
+    post:
+      summary: Workhorse authorization for the reassignment CSV file
+      description: This feature was introduced in GitLab 17.10
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '201':
+          description: Workhorse authorization for the reassignment CSV file
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdPlaceholderReassignmentsAuthorize
   "/api/v4/groups/{id}/variables":
     get:
       description: Get a list of group-level variables
@@ -8164,14 +8226,73 @@ paths:
         type: string
         required: true
       - in: query
+        name: revoked
+        description: Filter tokens where revoked state matches parameter
+        type: boolean
+        required: false
+      - in: query
         name: state
-        description: Filter tokens which are either active or inactive
+        description: Filter tokens which are either active or not
         type: string
         enum:
         - active
         - inactive
         required: false
         example: active
+      - in: query
+        name: created_before
+        description: Filter tokens which were created before given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: created_after
+        description: Filter tokens which were created after given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2021-01-01'
+      - in: query
+        name: last_used_before
+        description: Filter tokens which were used before given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2021-01-01'
+      - in: query
+        name: last_used_after
+        description: Filter tokens which were used after given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: expires_before
+        description: Filter tokens which expire before given datetime
+        type: string
+        format: date
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: expires_after
+        description: Filter tokens which expire after given datetime
+        type: string
+        format: date
+        required: false
+        example: '2021-01-01'
+      - in: query
+        name: search
+        description: Filters tokens by name
+        type: string
+        required: false
+        example: token
+      - in: query
+        name: sort
+        description: Sort tokens
+        type: string
+        required: false
+        example: created_at_desc
       responses:
         '200':
           description: Get list of all access tokens for the specified resource
@@ -10638,6 +10759,11 @@ paths:
         type: integer
         format: int32
         required: true
+      - name: postApiV4ProjectsIdJobsJobIdCancel
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdJobsJobIdCancel"
       responses:
         '201':
           description: Cancel a specific job of a project
@@ -11362,6 +11488,22 @@ paths:
       - in: query
         name: updated_after
         description: 'Return pipelines updated after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_before
+        description: 'Return pipelines created before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_after
+        description: 'Return pipelines created after the specified datetime. Format:
           ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         type: string
         format: date-time
@@ -13000,6 +13142,28 @@ paths:
       tags:
       - cluster_agents
       operationId: deleteApiV4ProjectsIdClusterAgentsAgentId
+  "/api/v4/projects/{id}/packages/cargo/config.json":
+    get:
+      summary: Get config.json
+      description: This will be used by cargo for further requests
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Get config.json
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      tags:
+      - cargo_packages
+      operationId: getApiV4ProjectsIdPackagesCargoConfigJson
   "/api/v4/projects/{id}/repository/commits":
     get:
       description: Get a project repository commits
@@ -13878,7 +14042,7 @@ paths:
         '200':
           description: Package Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -13928,7 +14092,7 @@ paths:
         '200':
           description: Recipe Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -14031,7 +14195,7 @@ paths:
         '200':
           description: Package Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -14081,7 +14245,7 @@ paths:
         '200':
           description: Recipe Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -14137,7 +14301,7 @@ paths:
         '200':
           description: Package Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -14187,7 +14351,7 @@ paths:
         '200':
           description: Recipe Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -14245,7 +14409,7 @@ paths:
         '200':
           description: Package Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -14297,7 +14461,7 @@ paths:
         '200':
           description: Recipe Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -14817,6 +14981,116 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansSearch
+  "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/latest":
+    get:
+      summary: Get the latest revision
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      responses:
+        '200':
+          description: Get the latest revision
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeRevision"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelLatest
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files"
+  : get:
+      summary: List recipe files
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      responses:
+        '200':
+          description: List recipe files
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeFilesList"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFiles
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files/{file_name}"
   : get:
       summary: Download recipe files
@@ -14886,6 +15160,152 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+    put:
+      summary: Upload recipe package files
+      description: This feature was introduced in GitLab 17.10
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: file_name
+        description: Package file name
+        type: string
+        enum:
+        - conanfile.py
+        - conanmanifest.txt
+        - conan_sources.tgz
+        - conan_export.tgz
+        - conaninfo.txt
+        - conan_package.tgz
+        required: true
+        example: conanfile.py
+      - name: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName"
+      responses:
+        '200':
+          description: Upload recipe package files
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files/{file_name}/authorize"
+  : put:
+      summary: Workhorse authorize the conan recipe file
+      description: This feature was introduced in GitLab 17.10
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: file_name
+        description: Package file name
+        type: string
+        enum:
+        - conanfile.py
+        - conanmanifest.txt
+        - conan_sources.tgz
+        - conan_export.tgz
+        - conaninfo.txt
+        - conan_package.tgz
+        required: true
+        example: conanfile.py
+      responses:
+        '200':
+          description: Workhorse authorize the conan recipe file
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileNameAuthorize
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/Release.gpg":
     get:
       summary: The Release file signature
@@ -16911,8 +17331,7 @@ paths:
   "/api/v4/projects/{id}/environments/{environment_id}/stop":
     post:
       summary: Stop an environment
-      description: It returns 200 if the environment was successfully stopped, and
-        404 if the environment does not exist.
+      description: It returns 200 if the environment was successfully stopped.
       produces:
       - application/json
       consumes:
@@ -16940,6 +17359,8 @@ paths:
           description: Stop an environment
           schema:
             "$ref": "#/definitions/API_Entities_Environment"
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
         '404':
@@ -26005,6 +26426,25 @@ paths:
         default: 20
         required: false
         example: 20
+      - in: query
+        name: order_by
+        description: Return package files ordered by `id`, `created_at` or `file_name`
+        type: string
+        default: id
+        enum:
+        - id
+        - created_at
+        - file_name
+        required: false
+      - in: query
+        name: sort
+        description: Return package files sorted in `asc` or `desc` order.
+        type: string
+        default: asc
+        enum:
+        - asc
+        - desc
+        required: false
       responses:
         '200':
           description: List package files
@@ -26740,6 +27180,8 @@ paths:
           description: Bad Request
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not Found
       tags:
@@ -30570,96 +31012,6 @@ paths:
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdPackagesProtectionRulesPackageProtectionRuleId
-  "/api/v4/projects/{id}/repository_storage_moves":
-    get:
-      summary: Get a list of all project repository storage moves
-      description: This feature was introduced in GitLab 13.1.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all project repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - projects
-      operationId: getApiV4ProjectsIdRepositoryStorageMoves
-    post:
-      summary: Schedule a project repository storage move
-      description: This feature was introduced in GitLab 13.1.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - name: postApiV4ProjectsIdRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdRepositoryStorageMoves"
-      responses:
-        '201':
-          description: Schedule a project repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdRepositoryStorageMoves
-  "/api/v4/projects/{id}/repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a project repository storage move
-      description: This feature was introduced in GitLab 13.1.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a project repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a project repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - projects
-      operationId: getApiV4ProjectsIdRepositoryStorageMovesRepositoryStorageMoveId
   "/api/v4/projects/{id}/snapshot":
     get:
       summary: Download a (possibly inconsistent) snapshot of a repository
@@ -34076,6 +34428,32 @@ paths:
       tags:
       - projects
       operationId: getApiV4ProjectsIdRepositoryCompare
+  "/api/v4/projects/{id}/repository/health":
+    get:
+      description: Get repository health
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 1
+      - in: query
+        name: generate
+        description: Triggers a new health report to be generated
+        type: boolean
+        default: false
+        required: false
+      responses:
+        '200':
+          description: Get repository health
+          schema:
+            "$ref": "#/definitions/API_Entities_RepositoryHealth"
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdRepositoryHealth
   "/api/v4/projects/{id}/repository/contributors":
     get:
       description: Get repository contributors
@@ -34303,14 +34681,73 @@ paths:
         type: string
         required: true
       - in: query
+        name: revoked
+        description: Filter tokens where revoked state matches parameter
+        type: boolean
+        required: false
+      - in: query
         name: state
-        description: Filter tokens which are either active or inactive
+        description: Filter tokens which are either active or not
         type: string
         enum:
         - active
         - inactive
         required: false
         example: active
+      - in: query
+        name: created_before
+        description: Filter tokens which were created before given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: created_after
+        description: Filter tokens which were created after given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2021-01-01'
+      - in: query
+        name: last_used_before
+        description: Filter tokens which were used before given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2021-01-01'
+      - in: query
+        name: last_used_after
+        description: Filter tokens which were used after given datetime
+        type: string
+        format: date-time
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: expires_before
+        description: Filter tokens which expire before given datetime
+        type: string
+        format: date
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: expires_after
+        description: Filter tokens which expire after given datetime
+        type: string
+        format: date
+        required: false
+        example: '2021-01-01'
+      - in: query
+        name: search
+        description: Filters tokens by name
+        type: string
+        required: false
+        example: token
+      - in: query
+        name: sort
+        description: Sort tokens
+        type: string
+        required: false
+        example: created_at_desc
       responses:
         '200':
           description: Get list of all access tokens for the specified resource
@@ -37795,7 +38232,7 @@ paths:
         '200':
           description: Package Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -37840,7 +38277,7 @@ paths:
         '200':
           description: Recipe Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -37933,7 +38370,7 @@ paths:
         '200':
           description: Package Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -37978,7 +38415,7 @@ paths:
         '200':
           description: Recipe Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -38029,7 +38466,7 @@ paths:
         '200':
           description: Package Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -38074,7 +38511,7 @@ paths:
         '200':
           description: Recipe Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -38127,7 +38564,7 @@ paths:
         '200':
           description: Package Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -38174,7 +38611,7 @@ paths:
         '200':
           description: Recipe Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -41465,6 +41902,8 @@ paths:
           description: Query the GraphQL endpoint of an existing Geo node
         '404':
           description: 404 GeoNode Not Found
+        '500':
+          description: 500 Internal Server Error
       tags:
       - geo
       operationId: postApiV4GeoNodeProxyIdGraphql
@@ -42474,6 +42913,20 @@ paths:
         required: false
         example: '2022-01-01'
       - in: query
+        name: expires_before
+        description: Filter tokens which expire before given datetime
+        type: string
+        format: date
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: expires_after
+        description: Filter tokens which expire after given datetime
+        type: string
+        format: date
+        required: false
+        example: '2021-01-01'
+      - in: query
         name: search
         description: Filters tokens by name
         type: string
@@ -42585,79 +43038,6 @@ paths:
       tags:
       - personal_access_tokens
       operationId: postApiV4PersonalAccessTokensIdRotate
-  "/api/v4/project_repository_storage_moves":
-    get:
-      summary: Get a list of all project repository storage moves
-      description: This feature was introduced in GitLab 13.0.
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all project repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - project_repository_storage_moves
-      operationId: getApiV4ProjectRepositoryStorageMoves
-    post:
-      summary: Schedule bulk project repository storage moves
-      description: This feature was introduced in GitLab 13.7.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4ProjectRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectRepositoryStorageMoves"
-      responses:
-        '202':
-          description: Schedule bulk project repository storage moves
-      tags:
-      - project_repository_storage_moves
-      operationId: postApiV4ProjectRepositoryStorageMoves
-  "/api/v4/project_repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a project repository storage move
-      description: This feature was introduced in GitLab 13.0.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a project repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a project repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - project_repository_storage_moves
-      operationId: getApiV4ProjectRepositoryStorageMovesRepositoryStorageMoveId
   "/api/v4/snippets":
     get:
       summary: Get a snippets list for an authenticated user
@@ -42983,169 +43363,6 @@ paths:
       tags:
       - snippets
       operationId: getApiV4SnippetsIdUserAgentDetail
-  "/api/v4/snippets/{id}/repository_storage_moves":
-    get:
-      summary: Get a list of all snippets repository storage moves
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a snippet
-        type: string
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all snippets repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippets
-      operationId: getApiV4SnippetsIdRepositoryStorageMoves
-    post:
-      summary: Schedule a snippet repository storage move
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a snippet
-        type: string
-        required: true
-      - name: postApiV4SnippetsIdRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4SnippetsIdRepositoryStorageMoves"
-      responses:
-        '201':
-          description: Schedule a snippet repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippets
-      operationId: postApiV4SnippetsIdRepositoryStorageMoves
-  "/api/v4/snippets/{id}/repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a snippet repository storage move
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a snippet
-        type: string
-        required: true
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a snippet repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a snippet repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippets
-      operationId: getApiV4SnippetsIdRepositoryStorageMovesRepositoryStorageMoveId
-  "/api/v4/snippet_repository_storage_moves":
-    get:
-      summary: Get a list of all snippet repository storage moves
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all snippet repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippet_repository_storage_moves
-      operationId: getApiV4SnippetRepositoryStorageMoves
-    post:
-      summary: Schedule bulk snippet repository storage moves
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4SnippetRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4SnippetRepositoryStorageMoves"
-      responses:
-        '202':
-          description: Schedule bulk snippet repository storage moves
-      tags:
-      - snippet_repository_storage_moves
-      operationId: postApiV4SnippetRepositoryStorageMoves
-  "/api/v4/snippet_repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a snippet repository storage move
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a snippet repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a snippet repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippet_repository_storage_moves
-      operationId: getApiV4SnippetRepositoryStorageMovesRepositoryStorageMoveId
   "/api/v4/suggestions/{id}/apply":
     put:
       description: Apply suggestion patch in the Merge Request it was created
@@ -44163,8 +44380,9 @@ paths:
         description: Date string in the format YEAR-MONTH-DAY
         type: string
         format: date-time
-        default: '2024-09-05T09:41:43.021Z'
+        default: As default, the current time - 6 month will be calculated
         required: false
+        example: '2024-08-14T17:26:19.883Z'
       - in: query
         name: page
         description: Current page number
@@ -45369,10 +45587,10 @@ definitions:
       container_registry_size:
         type: integer
         format: int32
-        description: Container Registry size in bytes.
+        description: container registry size in bytes.
       container_registry_size_is_estimated:
         type: boolean
-        description: Indicates whether the deduplicated Container Registry size for
+        description: Indicates whether the deduplicated container registry size for
           the namespace is an estimated value or not.
       dependency_proxy_size:
         type: integer
@@ -47558,6 +47776,14 @@ definitions:
         type: string
       pipeline:
         "$ref": "#/definitions/API_Entities_Package_Pipeline"
+  postApiV4GroupsIdPlaceholderReassignments:
+    type: object
+    properties:
+      file:
+        type: file
+        description: The CSV file containing the reassignments
+    required:
+    - file
   API_Entities_Ci_Variable:
     type: object
     properties:
@@ -50657,8 +50883,18 @@ definitions:
     properties:
       name:
         type: string
-        description: Resource access token name
-        example: test
+        description: The name of the access token
+        example: My token
+      description:
+        type: string
+        description: The description of the access token
+        example: A token used for k8s
+      expires_at:
+        type: string
+        format: date
+        description: The expiration date of the token
+        default: As default, the current time + 365 days will be calculated
+        example: '2026-02-14T17:26:19.810Z'
       scopes:
         type: array
         description: The permissions of the token
@@ -50679,16 +50915,6 @@ definitions:
           - read_observability
           - write_observability
           - ai_features
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date of the token
-        default: '2026-03-05T09:41:42.949Z'
-        example: "\"2021-01-31"
-      description:
-        type: string
-        description: Resource access token description
-        example: test description
       access_level:
         type: integer
         format: int32
@@ -50704,8 +50930,8 @@ definitions:
         example: 40
     required:
     - name
-    - scopes
     - expires_at
+    - scopes
     description: Create a resource access token
   postApiV4GroupsIdAccessTokensTokenIdRotate:
     type: object
@@ -51331,6 +51557,14 @@ definitions:
         type: string
         example: online
     description: API_Entities_Ci_RunnerManager model
+  postApiV4ProjectsIdJobsJobIdCancel:
+    type: object
+    properties:
+      force:
+        type: boolean
+        description: Whether to force cancellation for a job in `canceling` state
+        example: true
+    description: Cancel a specific job of a project
   postApiV4ProjectsIdJobsJobIdPlay:
     type: object
     properties:
@@ -51544,6 +51778,9 @@ definitions:
               - env_var
               - file
               default: env_var
+      inputs:
+        type: object
+        description: The list of inputs to be used to create the pipeline.
     required:
     - ref
     description: Create a new pipeline
@@ -52186,6 +52423,9 @@ definitions:
         example:
           VAR1: value1
           VAR2: value2
+      inputs:
+        type: object
+        description: The list of inputs to be used to create the pipeline.
     required:
     - token
     description: Trigger a GitLab project pipeline
@@ -52841,43 +53081,43 @@ definitions:
         description: The name of the tag
         example: v1.0.0
     description: Composer packages endpoint for registering packages
-  API_Entities_ConanPackage_ConanPackageSnapshot:
+  API_Entities_Packages_Conan_PackageSnapshot:
     type: object
     properties:
       package_snapshot:
         type: object
         example: '{ "conan_package.tgz": "749b29bdf72587081ca03ec033ee59dc" }'
-    description: API_Entities_ConanPackage_ConanPackageSnapshot model
-  API_Entities_ConanPackage_ConanRecipeSnapshot:
+    description: API_Entities_Packages_Conan_PackageSnapshot model
+  API_Entities_Packages_Conan_RecipeSnapshot:
     type: object
     properties:
       recipe_snapshot:
         type: object
         example: '{ "conan_sources.tgz": "eadf19b33f4c3c7e113faabf26e76277" }'
-    description: API_Entities_ConanPackage_ConanRecipeSnapshot model
-  API_Entities_ConanPackage_ConanPackageManifest:
+    description: API_Entities_Packages_Conan_RecipeSnapshot model
+  API_Entities_Packages_Conan_PackageManifest:
     type: object
     properties:
       package_urls:
         type: object
         example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"'
-    description: API_Entities_ConanPackage_ConanPackageManifest model
-  API_Entities_ConanPackage_ConanRecipeManifest:
+    description: API_Entities_Packages_Conan_PackageManifest model
+  API_Entities_Packages_Conan_RecipeManifest:
     type: object
     properties:
       recipe_urls:
         type: object
         example: '{ "conan_sources.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conan_sources.tgz"
           }'
-    description: API_Entities_ConanPackage_ConanRecipeManifest model
-  API_Entities_ConanPackage_ConanUploadUrls:
+    description: API_Entities_Packages_Conan_RecipeManifest model
+  API_Entities_Packages_Conan_UploadUrls:
     type: object
     properties:
       upload_urls:
         type: object
         example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"
           }'
-    description: API_Entities_ConanPackage_ConanUploadUrls model
+    description: API_Entities_Packages_Conan_UploadUrls model
   putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName:
     type: object
     properties:
@@ -52896,6 +53136,35 @@ definitions:
     required:
     - file
     description: Upload package files
+  API_Entities_Packages_Conan_RecipeRevision:
+    type: object
+    properties:
+      revision:
+        type: string
+        example: 75151329520e7685dcf5da49ded2fec0
+        description: The revision hash of the Conan recipe
+      time:
+        type: string
+        example: '2024-12-17T09:16:40.334Z'
+        description: The UTC timestamp when the revision was created
+    description: API_Entities_Packages_Conan_RecipeRevision model
+  API_Entities_Packages_Conan_RecipeFilesList:
+    type: object
+    properties:
+      files:
+        type: object
+        example: '{ "files" : { "conan_sources.tgz" : { }, "conanmanifest.txt" : {
+          }, "conanfile.py" : { } } }'
+    description: API_Entities_Packages_Conan_RecipeFilesList model
+  ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+  : type: object
+    properties:
+      file:
+        type: file
+        description: The package file to be published (generated by Multipart middleware)
+    required:
+    - file
+    description: Upload recipe package files
   putApiV4ProjectsIdPackagesDebianFileName:
     type: object
     properties:
@@ -53614,7 +53883,6 @@ definitions:
         enum:
         - always
         - with_action
-        default: always
     required:
     - name
     description: Create a new environment
@@ -59087,7 +59355,10 @@ definitions:
         description: If `true`, removes the source branch.
       merge_when_pipeline_succeeds:
         type: boolean
-        description: If `true`, the merge request is merged when the pipeline succeeds.
+        description: 'Deprecated: Use auto_merge instead.'
+      auto_merge:
+        type: boolean
+        description: If `true`, the merge request is set to auto merge.
       sha:
         type: string
         description: If present, then this SHA must match the HEAD of the source branch,
@@ -60399,6 +60670,9 @@ definitions:
       package_type:
         type: string
         example: npm
+      minimum_access_level_for_delete:
+        type: string
+        example: owner
       minimum_access_level_for_push:
         type: string
         example: maintainer
@@ -60419,11 +60693,22 @@ definitions:
         - maven
         - npm
         - pypi
+      minimum_access_level_for_delete:
+        type: string
+        description: Minimum GitLab access level required to delete a package. Valid
+          values include `null`, `owner` or `admin`. If the value is `null`, the default
+          minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push`
+          is not set. Behind a feature flag named `packages_protected_packages_delete`.
+          Disabled by default.
+        enum:
+        - owner
+        - admin
       minimum_access_level_for_push:
         type: string
-        description: |-
-          Minimum GitLab access level able to push a package. Must be at least `maintainer`.
-                      For example `maintainer`, `owner` or `admin`.
+        description: Minimum GitLab access level required to push a package. Valid
+          values include `null`, `maintainer`, `owner` or `admin`. If the value is
+          `null`, the default minimum access level is `developer`. Must be provided
+          when `minimum_access_level_for_delete` is not set.
         enum:
         - maintainer
         - owner
@@ -60431,7 +60716,6 @@ definitions:
     required:
     - package_name_pattern
     - package_type
-    - minimum_access_level_for_push
     description: Create a package protection rule for a project
   patchApiV4ProjectsIdPackagesProtectionRulesPackageProtectionRuleId:
     type: object
@@ -60449,49 +60733,27 @@ definitions:
         - maven
         - npm
         - pypi
+      minimum_access_level_for_delete:
+        type: string
+        description: Minimum GitLab access level required to delete a package. Valid
+          values include `null`, `owner` or `admin`. If the value is `null`, the default
+          minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push`
+          is not set. Behind a feature flag named `packages_protected_packages_delete`.
+          Disabled by default.
+        enum:
+        - owner
+        - admin
       minimum_access_level_for_push:
         type: string
-        description: |-
-          Minimum GitLab access level able to push a package. Must be at least `maintainer`.
-                        For example `maintainer`, `owner` or `admin`.
+        description: Minimum GitLab access level required to push a package. Valid
+          values include `null`, `maintainer`, `owner` or `admin`. If the value is
+          `null`, the default minimum access level is `developer`. Must be provided
+          when `minimum_access_level_for_delete` is not set.
         enum:
         - maintainer
         - owner
         - admin
     description: Update a package protection rule for a project
-  API_Entities_Projects_RepositoryStorageMove:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      created_at:
-        type: string
-        format: date-time
-        example: '2020-05-07T04:27:17.234Z'
-      state:
-        type: string
-        example: scheduled
-      source_storage_name:
-        type: string
-        example: default
-      destination_storage_name:
-        type: string
-        example: storage1
-      error_message:
-        type: string
-        example: Failed to move repository
-      project:
-        "$ref": "#/definitions/API_Entities_ProjectIdentity"
-    description: API_Entities_Projects_RepositoryStorageMove model
-  postApiV4ProjectsIdRepositoryStorageMoves:
-    type: object
-    properties:
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-    description: Schedule a project repository storage move
   API_Entities_ProjectSnippet:
     type: object
     properties:
@@ -63272,6 +63534,58 @@ definitions:
         type: string
         example: https://gitlab.example.com/gitlab/gitlab-foss/-/compare/main...feature
     description: API_Entities_Compare model
+  API_Entities_RepositoryHealth:
+    type: object
+    properties:
+      size:
+        type: integer
+        format: int32
+        description: Repository size in bytes.
+      references:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_References"
+      objects:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_Objects"
+      updated_at:
+        type: string
+        format: date-time
+        example: '2025-02-24T09:05:50.355Z'
+    description: API_Entities_RepositoryHealth model
+  API_Entities_RepositoryHealth_References:
+    type: object
+    properties:
+      loose_count:
+        type: integer
+        format: int32
+        description: Number of loose references in the repository.
+      packed_size:
+        type: integer
+        format: int32
+        description: Size in bytes of packed references in the repository.
+      reference_backend:
+        type: string
+        description: Type of backend used to store references. Either 'REFERENCE_BACKEND_REFTABLE'
+          or 'REFERENCE_BACKEND_FILES'.
+  API_Entities_RepositoryHealth_Objects:
+    type: object
+    properties:
+      size:
+        type: integer
+        format: int32
+        description: Size in bytes of all objects in the repository.
+      recent_size:
+        type: integer
+        format: int32
+        description: Size in bytes of all recent objects in the repository. Recent
+          objects are those which are reachable.
+      stale_size:
+        type: integer
+        format: int32
+        description: Size in bytes of all stale objects in the repository. Stale objects
+          are those which are unreachable and may be deleted during housekeeping.
+      keep_size:
+        type: integer
+        format: int32
+        description: Size in bytes of all packfiles with the .keep extension.
   API_Entities_Contributor:
     type: object
     properties:
@@ -63362,8 +63676,18 @@ definitions:
     properties:
       name:
         type: string
-        description: Resource access token name
-        example: test
+        description: The name of the access token
+        example: My token
+      description:
+        type: string
+        description: The description of the access token
+        example: A token used for k8s
+      expires_at:
+        type: string
+        format: date
+        description: The expiration date of the token
+        default: As default, the current time + 365 days will be calculated
+        example: '2026-02-14T17:26:19.810Z'
       scopes:
         type: array
         description: The permissions of the token
@@ -63384,16 +63708,6 @@ definitions:
           - read_observability
           - write_observability
           - ai_features
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date of the token
-        default: '2026-03-05T09:41:42.948Z'
-        example: "\"2021-01-31"
-      description:
-        type: string
-        description: Resource access token description
-        example: test description
       access_level:
         type: integer
         format: int32
@@ -63409,8 +63723,8 @@ definitions:
         example: 40
     required:
     - name
-    - scopes
     - expires_at
+    - scopes
     description: Create a resource access token
   postApiV4ProjectsIdAccessTokensTokenIdRotate:
     type: object
@@ -65390,7 +65704,18 @@ definitions:
     properties:
       name:
         type: string
-        description: The name of the personal access token
+        description: The name of the access token
+        example: My token
+      description:
+        type: string
+        description: The description of the access token
+        example: A token used for k8s
+      expires_at:
+        type: string
+        format: date
+        description: Expiration date of the access token in ISO format (YYYY-MM-DD).
+          If undefined, the date is set to the maximum allowable lifetime limit.
+        example: '2021-01-31'
       scopes:
         type: array
         description: The array of scopes of the personal access token
@@ -65412,14 +65737,6 @@ definitions:
           - sudo
           - admin_mode
           - read_service_ping
-      description:
-        type: string
-        description: The description of the personal access token
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date in the format YEAR-MONTH-DAY of the personal
-          access token
     required:
     - name
     - scopes
@@ -67208,22 +67525,6 @@ definitions:
         description: The expiration date of the token
         example: '2021-01-31'
     description: Rotate personal access token
-  postApiV4ProjectRepositoryStorageMoves:
-    type: object
-    properties:
-      source_storage_name:
-        type: string
-        description: The source storage shard
-        enum:
-        - default
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-        enum:
-        - default
-    required:
-    - source_storage_name
-    description: Schedule bulk project repository storage moves
   API_Entities_Snippet:
     type: object
     properties:
@@ -67433,97 +67734,6 @@ definitions:
           required:
           - action
     description: Update an existing snippet
-  API_Entities_Snippets_RepositoryStorageMove:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      created_at:
-        type: string
-        format: date-time
-        example: '2020-05-07T04:27:17.234Z'
-      state:
-        type: string
-        example: scheduled
-      source_storage_name:
-        type: string
-        example: default
-      destination_storage_name:
-        type: string
-        example: storage1
-      error_message:
-        type: string
-        example: Failed to move repository
-      snippet:
-        "$ref": "#/definitions/API_Entities_BasicSnippet"
-    description: API_Entities_Snippets_RepositoryStorageMove model
-  API_Entities_BasicSnippet:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      title:
-        type: string
-        example: test
-      description:
-        type: string
-        example: Ruby test snippet
-      visibility:
-        type: string
-        example: public
-      author:
-        "$ref": "#/definitions/API_Entities_UserBasic"
-      created_at:
-        type: string
-        format: date-time
-        example: '2012-06-28T10:52:04Z'
-      updated_at:
-        type: string
-        format: date-time
-        example: '2012-06-28T10:52:04Z'
-      project_id:
-        type: integer
-        format: int32
-        example: 1
-      web_url:
-        type: string
-        example: http://example.com/example/example/snippets/1
-      raw_url:
-        type: string
-        example: http://example.com/example/example/snippets/1/raw
-      ssh_url_to_repo:
-        type: string
-        example: ssh://user@gitlab.example.com/snippets/65.git
-      http_url_to_repo:
-        type: string
-        example: https://gitlab.example.com/snippets/65.git
-  postApiV4SnippetsIdRepositoryStorageMoves:
-    type: object
-    properties:
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-    description: Schedule a snippet repository storage move
-  postApiV4SnippetRepositoryStorageMoves:
-    type: object
-    properties:
-      source_storage_name:
-        type: string
-        description: The source storage shard
-        enum:
-        - default
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-        enum:
-        - default
-    required:
-    - source_storage_name
-    description: Schedule bulk snippet repository storage moves
   putApiV4SuggestionsIdApply:
     type: object
     properties:
@@ -68109,7 +68319,18 @@ definitions:
     properties:
       name:
         type: string
-        description: The name of the personal access token
+        description: The name of the access token
+        example: My token
+      description:
+        type: string
+        description: The description of the access token
+        example: A token used for k8s
+      expires_at:
+        type: string
+        format: date
+        description: Expiration date of the access token in ISO format (YYYY-MM-DD).
+          If undefined, the date is set to the maximum allowable lifetime limit.
+        example: '2021-01-31'
       scopes:
         type: array
         description: The array of scopes of the personal access token
@@ -68117,15 +68338,6 @@ definitions:
           type: string
           enum:
           - k8s_proxy
-      description:
-        type: string
-        description: The description of the personal access token
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date in the format YEAR-MONTH-DAY of the personal
-          access token
-        default: {}
     required:
     - name
     - scopes

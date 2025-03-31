@@ -22,9 +22,26 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'gitlab:db:sos task' do
-    it 'calls Gitlab::Database::Sos.run' do
-      expect(Gitlab::Database::Sos).to receive(:run).and_call_original
-      expect { run_rake_task('gitlab:db:sos') }.not_to raise_error
+    before do
+      Rake::Task['gitlab:db:sos'].reenable
+
+      allow(Gitlab::AppLogger).to receive(:info)
+    end
+
+    context 'when an output path is provided' do
+      let(:custom_path) { 'custom/path/to/folder' }
+
+      it 'executes Gitlab::Database::Sos.run with the output path' do
+        expect(Gitlab::Database::Sos).to receive(:run).with(custom_path)
+        expect { Rake::Task['gitlab:db:sos'].invoke(custom_path) }.not_to raise_error
+      end
+    end
+
+    context 'when an output path is not provided' do
+      it 'executes Gitlab::Database::Sos.run with the default output path' do
+        expect(Gitlab::Database::Sos).to receive(:run).with("tmp/sos")
+        expect { Rake::Task['gitlab:db:sos'].invoke }.not_to raise_error
+      end
     end
   end
 

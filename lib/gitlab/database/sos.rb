@@ -18,7 +18,7 @@ module Gitlab
       ].freeze
 
       def self.run(output_file)
-        Output.writing(output_file, mode: :directory) do |output|
+        Output.writing(output_file, mode: :zip) do |output|
           Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |conn, name|
             SINGLE_TASKS.each do |t|
               t.new(conn, name, output).run

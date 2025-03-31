@@ -105,7 +105,10 @@ module API
             type: Date,
             desc: "The expiration date of the token",
             default: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now,
-            documentation: { example: '"2021-01-31' }
+            documentation: {
+              example: '2026-02-14T17:26:19.810Z',
+              default: "As default, the current time + #{PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS} days will be calculated"
+            }
           optional :access_level,
             type: Integer,
             values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,

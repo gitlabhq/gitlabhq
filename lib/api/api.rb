@@ -322,7 +322,6 @@ module API
         mount ::API::ProjectJobTokenScope
         mount ::API::ProjectPackages
         mount ::API::ProjectPackagesProtectionRules
-        mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnapshots
         mount ::API::ProjectSnippets
         mount ::API::ProjectStatistics
@@ -341,7 +340,6 @@ module API
         mount ::API::RpmProjectPackages
         mount ::API::RubygemPackages
         mount ::API::Snippets
-        mount ::API::SnippetRepositoryStorageMoves
         mount ::API::Statistics
         mount ::API::Submodules
         mount ::API::Suggestions
@@ -383,12 +381,14 @@ module API
       mount ::API::NotificationSettings
       mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
+      mount ::API::ProjectRepositoryStorageMoves
       mount ::API::ProtectedTags
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
       mount ::API::Search
       mount ::API::Settings
       mount ::API::SidekiqMetrics
+      mount ::API::SnippetRepositoryStorageMoves
       mount ::API::Subscriptions
       mount ::API::Tags
       mount ::API::Templates

@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
 import eventHub from '../event_hub';
@@ -15,6 +15,9 @@ export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['id', 'issuableType'],
   computed: {
@@ -41,6 +44,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
+    v-gl-tooltip.left="s__('WorkItem|Task actions')"
     class="task-list-item-actions-wrapper"
     category="tertiary"
     icon="ellipsis_v"

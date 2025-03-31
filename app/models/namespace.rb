@@ -781,6 +781,10 @@ class Namespace < ApplicationRecord
     NamespaceSetting.column_defaults['pipeline_variables_default_role']
   end
 
+  def traversal_ids_as_sql
+    traversal_ids.join(',')
+  end
+
   private
 
   def parent_organization_match

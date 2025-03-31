@@ -477,6 +477,123 @@ You should not use the task for routine checks as database inconsistencies might
 gitlab-rake gitlab:db:schema_checker:run
 ```
 
+## Collect information and statistics about the database
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-com/-/epics/2456) in GitLab 17.11.
+
+{{< /history >}}
+
+The `gitlab:db:sos` command gathers configuration, performance, and diagnostic data about your GitLab
+database to help you troubleshoot issues. Where you run this command depends on your configuration:
+
+- **Scaled GitLab**: on your Puma or Sidekiq server.
+- **Cloud native install**: on the toolbox pod.
+- **All other configurations**: on your GitLab server.
+
+Modify the command as needed:
+
+- **Default path** - To run the command with the default folder path (`tmp/sos`), run `gitlab-rake gitlab:db:sos`.
+- **Custom path** - To change the folder path, run `gitlab-rake gitlab:db:sos["custom/path/to/folder"]`.
+- **Zsh users** - If you have not modified your Zsh configuration, you must add quotation marks
+  around the entire command, like this: `gitlab-rake "gitlab:db:sos[custom/path/to/folder]"`
+
+The Rake task runs for five minutes. It creates a compressed folder in the path you specify.
+The compressed folder contains a large number of files.
+
+### Enable optional query statistics data
+
+The `gitlab:db:sos` Rake task can also gather data for troubleshooting slow queries using the
+[`pg_stat_statements` extension](https://www.postgresql.org/docs/current/pgstatstatements.html).
+
+Enabling this extension is optional, and requires restarting PostgreSQL and GitLab. This data is 
+likely required for troubleshooting GitLab performance issues caused by slow database queries.
+
+Prerequisites:
+
+- You must be a PostgreSQL user with superuser privileges to enable or disable an extension.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Modify `/etc/gitlab/gitlab.rb` to add the following line:
+
+   ```ruby
+   postgresql['shared_preload_libraries'] = 'pg_stat_statements'
+   ```
+
+1. Run reconfigure:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. PostgreSQL needs to restart to load this extension, requiring a GitLab restart as well:
+
+   ```shell
+   sudo gitlab-ctl restart postgresql
+   sudo gitlab-ctl restart sidekiq
+   sudo gitlab-ctl restart puma
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+1. Modify `/etc/gitlab/gitlab.rb` to add the following line:
+
+   ```ruby
+   postgresql['shared_preload_libraries'] = 'pg_stat_statements'
+   ```
+
+1. Run reconfigure:
+
+   ```shell
+   docker exec -it <container-id> gitlab-ctl reconfigure
+   ```
+
+1. PostgreSQL needs to restart to load this extension, requiring a GitLab restart as well:
+
+   ```shell
+   docker exec -it <container-id> gitlab-ctl restart postgresql
+   docker exec -it <container-id> gitlab-ctl restart sidekiq
+   docker exec -it <container-id> gitlab-ctl restart puma
+   ```
+
+{{< /tab >}}
+
+{{< tab title="External PostgreSQL service" >}}
+
+1. Add or uncomment the following parameters in your `postgresql.conf` file
+
+   ```shell
+   shared_preload_libraries = 'pg_stat_statements'
+   pg_stat_statements.track = all
+   ```
+
+1. Restart PostgreSQL for the changes to take effect.
+
+1. Restart GitLab: the web (Puma) and Sidekiq services should be restarted.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+1. On the [database console](../troubleshooting/postgresql.md) run:
+
+   ```SQL
+   CREATE EXTENSION pg_stat_statements;
+   ```
+
+1. Check the extension is working:
+
+   ```SQL
+   SELECT extname FROM pg_extension WHERE extname = 'pg_stat_statements';
+   SELECT * FROM pg_stat_statements LIMIT 10;
+   ```
+
 ## Check the database for deduplicate CI/CD tags
 
 {{< history >}}

@@ -74,6 +74,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.global_search_users_enabled).to be(true) }
     it { expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false }) }
     it { expect(setting.vscode_extension_marketplace_enabled?).to be(false) }
+    it { expect(setting.global_search_block_anonymous_searches_enabled).to be(false) }
 
     it do
       expect(setting.sign_in_restrictions).to eq({

@@ -858,6 +858,15 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#traversal_ids_as_sql' do
+    let!(:parent_namespace) { create(:group) }
+    let!(:namespace) { create(:group, parent: parent_namespace) }
+
+    it 'returns concatenated list of traversal IDs' do
+      expect(namespace.traversal_ids_as_sql).to eq("#{parent_namespace.id},#{namespace.id}")
+    end
+  end
+
   context 'traversal scopes' do
     it_behaves_like 'namespace traversal scopes'
 

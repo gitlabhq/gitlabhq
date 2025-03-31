@@ -63,16 +63,19 @@ export default {
 <template>
   <div
     v-if="glFeatures.searchButtonTopRight"
-    :class="{ 'border-0 gl-w-[300px] gl-rounded-base': !isNarrowScreen }"
+    :class="{ 'border-0 gl-max-w-26 gl-rounded-base': !isNarrowScreen }"
   >
     <gl-button
       id="super-sidebar-search"
       v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
+      class="focus:!gl-focus"
+      :title="$options.i18n.searchBtnText"
+      :aria-label="$options.i18n.searchBtnText"
       :class="
         isNarrowScreen
-          ? 'border-0 shadow-none bg-transparent'
-          : 'user-bar-button gl-w-[300px] !gl-justify-start'
+          ? 'shadow-none bg-transparent gl-border gl-w-6 !gl-p-0'
+          : 'user-bar-button gl-w-full !gl-justify-start !gl-pr-7'
       "
       data-testid="super-sidebar-search-button"
       @click="trackEvent('click_search_button_to_activate_command_palette', { label: 'top_right' })"

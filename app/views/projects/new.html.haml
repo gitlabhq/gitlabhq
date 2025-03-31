@@ -10,6 +10,7 @@
     namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id_from(params))&.full_path || @current_user_group&.full_path,
     namespace_id: namespace_id_from(params).to_s || @current_user_group&.id.to_s,
     user_namespace_id: current_user.namespace_id.to_s,
+    user_namespace_full_path: current_user.namespace.full_path,
     new_project_guidelines: brand_new_project_guidelines,
     push_to_create_project_command: push_to_create_project_command,
     root_path: root_path,

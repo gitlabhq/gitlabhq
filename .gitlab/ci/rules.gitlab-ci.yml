@@ -603,6 +603,11 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
 
+.code-rest-api-patterns: &code-rest-api-patterns
+  - "{,ee/,jh/}lib/api/**/*"
+  # Auto-generated files
+  - "doc/api/openapi/openapi_v2.yaml"
+
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -624,6 +629,7 @@
   - "vendor/assets/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
+  - "doc/api/openapi/openapi_v2.yaml"
   # CI changes
   - "{,jh/}.gitlab-ci.yml"
   - "{,jh/}.gitlab/ci/**/*"
@@ -1293,6 +1299,16 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
+
+##################
+# OpenAPI rules  #
+##################
+.openapi:rules:openapi-check_docs:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-rest-api-patterns
 
 ############################
 # Audit event types rules  #

@@ -785,7 +785,7 @@ export default {
 
 <template>
   <form @submit.prevent="createWorkItem">
-    <work-item-loading v-if="isLoading" />
+    <work-item-loading v-if="isLoading" class="gl-mt-5" />
     <template v-else>
       <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = null">
         {{ error }}

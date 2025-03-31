@@ -564,10 +564,15 @@
 .use-docker-in-docker:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}docker:${DOCKER_VERSION}
   services:
-    - docker:${DOCKER_VERSION}-dind
+    - name: "$GL_DOCKER_REGISTRY_MIRROR/docker:${DOCKER_VERSION}-dind"
+      alias: docker
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh $GL_DOCKER_DIND_OPTIONS"]
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
+    GL_DOCKER_REGISTRY_MIRROR: mirror.gcr.io
+    GL_DOCKER_REGISTRY_MIRROR_ENDPOINT: https://${GL_DOCKER_REGISTRY_MIRROR}
+    GL_DOCKER_DIND_OPTIONS: "--registry-mirror=$GL_DOCKER_REGISTRY_MIRROR_ENDPOINT"
   tags:
     # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7019 for tag descriptions
     - gitlab-org-docker

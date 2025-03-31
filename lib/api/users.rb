@@ -1458,7 +1458,16 @@ module API
 
       desc 'Get a list of user activities'
       params do
-        optional :from, type: DateTime, default: 6.months.ago, desc: 'Date string in the format YEAR-MONTH-DAY'
+        optional(
+          :from,
+          type: DateTime,
+          default: 6.months.ago,
+          desc: 'Date string in the format YEAR-MONTH-DAY',
+          documentation: {
+            default: 'As default, the current time - 6 month will be calculated',
+            example: '2024-08-14T17:26:19.883Z'
+          }
+        )
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
