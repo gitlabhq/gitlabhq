@@ -38,60 +38,37 @@ A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitla
 
 You can express interest in other IDE extension support [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
-## Supported languages
-
-Code Suggestions supports a range of programming languages and familiar development concepts. It also works with infrastructure-as-code (IaC) interfaces, including Kubernetes Resource Model (KRM), Google Cloud CLI, and Terraform.
-
-Code Suggestions provides enhanced support for the following core languages:
-
-- C#
-- C++
-- C
-- Go
-- Java
-- JavaScript
-- Kotlin
-- Python
-- Ruby
-- Rust
-- PHP
-- TypeScript
-
-When working with these languages, Code Suggestions leverages [files open in tabs as context](_index.md#use-files-open-in-tabs-as-context) and [Repository X-Ray](repository_xray.md) to deliver more accurate, context-aware code suggestions.
+## Supported languages by IDE
 
 The following table provides more information on the languages Code Suggestions supports by default, and the IDEs.
 
-{{< alert type="note" >}}
-
-Code Suggestions works with other languages that are not in this table, but you must manually [add support for that language](#add-support-for-more-languages).
-
-{{< /alert >}}
+Code Suggestions also works with other languages, but you must [manually add support](#add-support-for-more-languages).
 
 | Language                     | Web IDE                    | VS Code                                                                                    | JetBrains IDEs         | Visual Studio 2022 for Windows | Neovim                                                                                                |
 |-------------------------------|----------------------------|---------------------------------------------------------------------------------------------|-----------------------|--------------------------------|--------------------------------------------------------------------------------------------------------|
-| C                             | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| C++                           | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| C#                            | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| CSS                           | {{< icon name="check-circle" >}} Yes     | {{< icon name="dotted-circle" >}} No                                                                     | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No         | {{< icon name="dotted-circle" >}} No                                                                                 |
-| Go                            | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Google SQL                    | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| HAML                          | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| HTML                          | {{< icon name="check-circle" >}} Yes     | {{< icon name="dotted-circle" >}} No                                                                     | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No         | {{< icon name="dotted-circle" >}} No                                                                                 |
-| Java                          | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| JavaScript                    | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Kotlin                        | {{< icon name="dotted-circle" >}} No     | {{< icon name="check-circle" >}} Yes <br><br>(Requires third-party extension providing Kotlin support) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Markdown                      | {{< icon name="check-circle" >}} Yes     |{{< icon name="dotted-circle" >}} No                                                                     | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No         | {{< icon name="dotted-circle" >}} No                                                                                 |
-| PHP                           | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Python                        | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Ruby                          | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Rust                          | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Scala                         | {{< icon name="dotted-circle" >}} No     | {{< icon name="check-circle" >}} Yes <br><br>(Requires third-party extension providing Scala support) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Shell scripts (`bash` only)   | {{< icon name="check-circle" >}} Yes     | {{< icon name="dotted-circle" >}} No                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Svelte                        | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Swift                         | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| TypeScript                    | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
-| Terraform                     | {{< icon name="dotted-circle" >}} No     | {{< icon name="check-circle" >}} Yes <br><br>(Requires third-party extension providing Terraform support) | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No         | {{< icon name="check-circle" >}} Yes <br><br>(Requires third-party extension providing the `terraform` file type) |
-| Vue                           | {{< icon name="check-circle" >}} Yes     | {{< icon name="check-circle" >}} Yes                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes         | {{< icon name="check-circle" >}} Yes                                                                                 |
+| C                             | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| C++                           | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| C#                            | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| CSS                           | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="dash-circle" >}} No                                                                     | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No         | {{< icon name="dash-circle" >}} No                                                                                 |
+| Go                            | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Google SQL                    | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| HAML                          | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| HTML                          | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="dash-circle" >}} No                                                                     | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No         | {{< icon name="dash-circle" >}} No                                                                                 |
+| Java                          | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| JavaScript                    | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Kotlin                        | {{< icon name="dash-circle" >}} No     | {{< icon name="check-circle-filled" >}} Yes <br><br>(Requires third-party extension providing Kotlin support) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Markdown                      | {{< icon name="check-circle-filled" >}} Yes     |{{< icon name="dash-circle" >}} No                                                                     | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No         | {{< icon name="dash-circle" >}} No                                                                                 |
+| PHP                           | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Python                        | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Ruby                          | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Rust                          | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Scala                         | {{< icon name="dash-circle" >}} No     | {{< icon name="check-circle-filled" >}} Yes <br><br>(Requires third-party extension providing Scala support) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Shell scripts (`bash` only)   | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="dash-circle" >}} No                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Svelte                        | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Swift                         | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| TypeScript (`.ts` and `.tsx` files) | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
+| Terraform                     | {{< icon name="dash-circle" >}} No     | {{< icon name="check-circle-filled" >}} Yes <br><br>(Requires third-party extension providing Terraform support) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No         | {{< icon name="check-circle-filled" >}} Yes <br><br>(Requires third-party extension providing the `terraform` file type) |
+| Vue                           | {{< icon name="check-circle-filled" >}} Yes     | {{< icon name="check-circle-filled" >}} Yes                                                                     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes         | {{< icon name="check-circle-filled" >}} Yes                                                                                 |
 
 {{< alert type="note" >}}
 
@@ -100,8 +77,13 @@ plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
 {{< /alert >}}
 
-Locally, you can add [more languages](#add-support-for-more-languages). For languages not listed in the table,
-Code Suggestions might not function as expected.
+## Support for Infrastructure-as-Code (IaC)
+
+Code Suggestions works with infrastructure-as-code interfaces, including:
+
+- Kubernetes Resource Model (KRM)
+- Google Cloud CLI
+- Terraform
 
 ## Manage languages for Code Suggestions
 
@@ -126,10 +108,11 @@ You can do this by editing your `settings.json` file directly, or from the VS Co
 When you disable Code Suggestions for a language, the Duo icon changes to show that suggestions are disabled
 for this language. On hover, it shows **Code Suggestions are disabled for this language**.
 
-### Add support for more languages
+## Add support for more languages
 
 If your desired language doesn't have Code Suggestions available by default,
 you can add support for your language locally.
+However, Code Suggestions might not function as expected.
 
 {{< tabs >}}
 
@@ -149,9 +132,7 @@ To do this:
    You need the **Identifier** for your languages in a later step.
 1. In VS Code, open the extension settings for **GitLab Workflow**:
    1. On the top bar, go to **Code > Settings > Extensions**.
-
    1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
-
    1. Select **Extension Settings**.
    1. In your **User** settings, find
       **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.

@@ -145,26 +145,28 @@ For use cases and best practices, follow the [GitLab Duo examples documentation]
 
 ## The context Code Suggestions is aware of
 
-Code Suggestions uses the following information about your development environment as context to enrich suggestions:
+Code Suggestions is aware of the context you're working in.
 
-- The file open in your IDE, including the content before and after the cursor in that file.
-- The filename and extension.
-- (Optional) Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. On by default. To manage tabs as context, see [Using open files as context](#using-open-files-as-context).
-- (Optional) Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. Off by default. To manage imported files as context, see [Using imported files as context](#using-imported-files-as-context).
-- Code suggestion functionality uses content from the [supported languages](supported_extensions.md#supported-languages).
-- Code generation functionality uses content from the following languages:
-  - Go
-  - Java
-  - JavaScript
-  - Kotlin
-  - Python
-  - Ruby
-  - Rust
-  - TypeScript (`.ts` and `.tsx` files)
-  - Vue
-  - YAML
+| Context | Description | Default status |
+|---------|-------------|----------------|
+| Current file content <sup>1</sup> | The file open in your IDE, including the content before and after the cursor in that file. | Always included. |
+| Filename and extension | The name and extension of the current file. | Always included. |
+| [Open tab files](#using-open-files-as-context) | Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. | Optional, but on by default. |
+| [Imported files](#using-imported-files-as-context) | Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. | Optional and off by default. |
+
+**Footnotes:**
+
+1. Code completion is aware of all [supported languages](supported_extensions.md#supported-languages-by-ide).
+   Code generation is aware of files in these languages only:
+   Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 
 For more information, see [epic 57](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/57).
+
+### Enhanced suggestions
+
+For the following languages, Code Suggestions uses [files open in tabs as context](_index.md#use-files-open-in-tabs-as-context)
+and [Repository X-Ray](repository_xray.md) to deliver more accurate, context-aware suggestions:
+C, C#, C++, Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, PHP, and TypeScript.
 
 ### Using open files as context
 

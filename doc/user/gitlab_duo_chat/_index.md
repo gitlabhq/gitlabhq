@@ -67,47 +67,36 @@ If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for t
 GitLab Duo Chat is sometimes aware of the context you're working in.
 Other times, you must be more specific with your request.
 
-The context Chat is aware of also depends on your subscription tier:
-
-- In the GitLab UI:
-  - Chat is aware of code files if you have either Premium with GitLab Duo Pro, or
-    Ultimate with GitLab Duo Pro or Enterprise.
-  - For all other areas, you must have Ultimate with GitLab Duo Enterprise.
-- In the IDEs:
-  - Chat is aware of selected lines in the editor if you have either Premium with
-    GitLab Duo Pro, or Ultimate with GitLab Duo Pro or Enterprise.
-  - For all other areas, you must have Ultimate with GitLab Duo Enterprise.
-
-In the GitLab UI, GitLab Duo Chat knows about these areas:
-
-| Area           | How to ask Chat |
-|----------------|-----------------|
-| Epics          | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
-| Issues         | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
-| Code files     | From the single file, ask about `this code` or `this file`. |
-| Merge requests | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
-| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
-
-In the IDEs, GitLab Duo Chat knows about these areas:
-
-| Area                         | How to ask Chat |
-|------------------------------|-----------------|
-| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Epics                        | Ask about the URL. |
-| Issues                       | Ask about the URL. |
-| Files                        | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
-
-In addition, in the IDEs, when you use any of the slash commands,
-like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
-code you selected.
-
 Duo Chat always has access to:
 
 - GitLab documentation.
 - General programming and coding knowledge.
 
-We are continuously working to expand contextual awareness of Chat to include more types of content.
+In addition, Chat is aware of different information, depending on where you use it.
+
+### In the GitLab UI
+
+| Area | What Chat knows | GitLab Duo Pro | GitLab Duo Enterprise | How to ask Chat |
+|------|----------------|----------------|----------------------|-----------------|
+| Code files | File content | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | From the single file, ask about `this code` or `this file`. |
+| Epics | Epic details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
+| Issues | Issue details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
+| Merge requests | MR details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
+| Commits | Commit details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
+| Pipeline jobs | Job details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
+
+### In IDEs
+
+| Area | What Chat knows | GitLab Duo Pro | GitLab Duo Enterprise | How to ask Chat |
+|------|----------------|----------------|----------------------|-----------------|
+| Selected lines in editor | Selected code | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
+| Epics | Epic details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
+| Issues | Issue details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
+| Files | File content | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
+
+In addition, in the IDEs, when you use any of the slash commands,
+like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
+code you selected.
 
 ### Additional features
 

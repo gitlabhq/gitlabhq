@@ -34,7 +34,7 @@ For more information on troubleshooting GitLab Duo, see:
 If suggestions are not displayed, ensure that you:
 
 - Have [configured GitLab Duo correctly](../../../gitlab_duo/turn_on_off.md).
-- Are using a [supported language](supported_extensions.md#supported-languages)
+- Are using a [supported language](supported_extensions.md#supported-languages-by-ide)
   and [editor extension](supported_extensions.md#supported-editor-extensions).
 - Have [configured your editor extension correctly](set_up.md#configure-editor-extension).
 

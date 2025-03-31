@@ -14,7 +14,7 @@ To set up Code Suggestions, follow the instructions for your IDE.
 To use Code Suggestions, you need:
 
 - A GitLab Duo add-on subscription and an assigned seat.
-- To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages).
+- To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages-by-ide).
   Different IDEs support different languages.
 
 ## Configure editor extension
