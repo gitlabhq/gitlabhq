@@ -64,7 +64,6 @@ Gitlab/NoFindInWorkers:
     - 'app/workers/upload_checksum_worker.rb'
     - 'app/workers/wikis/git_garbage_collect_worker.rb'
     - 'app/workers/work_items/import_work_items_csv_worker.rb'
-    - 'ee/app/workers/adjourned_project_deletion_worker.rb'
     - 'ee/app/workers/admin_emails_worker.rb'
     - 'ee/app/workers/analytics/devops_adoption/create_snapshot_worker.rb'
     - 'ee/app/workers/approval_rules/external_approval_rule_payload_worker.rb'

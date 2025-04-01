@@ -3404,7 +3404,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/validators/user_id_existence_validator.rb'
     - 'ee/app/workers/active_user_count_threshold_worker.rb'
     - 'ee/app/workers/adjourned_group_deletion_worker.rb'
-    - 'ee/app/workers/adjourned_project_deletion_worker.rb'
     - 'ee/app/workers/adjourned_projects_deletion_cron_worker.rb'
     - 'ee/app/workers/admin_emails_worker.rb'
     - 'ee/app/workers/app_sec/container_scanning/scan_image_worker.rb'

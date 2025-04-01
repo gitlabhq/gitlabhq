@@ -226,6 +226,26 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :container_repository_delete
+- :name: cronjob:adjourned_group_deletion
+  :worker_name: AdjournedGroupDeletionWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:adjourned_projects_deletion_cron
+  :worker_name: AdjournedProjectsDeletionCronWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:admin_email
   :worker_name: AdminEmailWorker
   :feature_category: :source_code_management
@@ -2754,6 +2774,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :update_namespace_statistics
+- :name: adjourned_project_deletion
+  :worker_name: AdjournedProjectDeletionWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports
