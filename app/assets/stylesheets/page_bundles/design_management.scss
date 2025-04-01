@@ -62,8 +62,8 @@ $design-pin-diameter-sm: 24px;
   height: $design-pin-diameter-sm;
   width: $design-pin-diameter-sm;
   box-sizing: content-box;
-  @apply gl-bg-purple-500 dark:gl-bg-purple-700;
-  color: var(--white, $white);
+  @apply gl-text-neutral-0;
+  background-color: var(--gl-status-brand-icon-color);
   font-weight: $gl-font-weight-bold;
   border-radius: 50%;
   z-index: 1;
@@ -71,16 +71,16 @@ $design-pin-diameter-sm: 24px;
   border: 0;
 
   &.draft {
-    background-color: var(--orange-500, $orange-500);
+    background-color: var(--gl-status-warning-icon-color);
   }
 
   &.resolved {
-    background-color: var(--gray-500, $gray-500);
+    @apply gl-bg-strong gl-text-strong;
   }
 
   &.on-image {
     box-shadow: 0 2px 4px var(--gl-color-alpha-dark-8), 0 0 1px var(--gl-color-alpha-dark-24);
-    border: var(--white, $white) 2px solid;
+    @apply gl-border-2 gl-border-solid gl-border-neutral-0;
     will-change: transform, box-shadow, opacity;
     // NOTE: verbose transition property required for Safari
     transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
@@ -106,7 +106,7 @@ $design-pin-diameter-sm: 24px;
 
   &.small {
     position: absolute;
-    border: 1px solid var(--white, $white);
+    @apply gl-border-1 gl-border-solid gl-border-neutral-0;
     height: $design-pin-diameter-sm;
     width: $design-pin-diameter-sm;
   }
@@ -161,7 +161,7 @@ $design-pin-diameter-sm: 24px;
 
     &::before {
       content: '';
-      border-left: 1px solid var(--gray-100, $gray-100);
+      @apply gl-border-l;
       position: absolute;
       left: 11px;
       top: -17px;

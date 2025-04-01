@@ -19,7 +19,7 @@ exports[`Design note pin component should match the snapshot of note without ind
   type="button"
 >
   <gl-icon-stub
-    class="gl-bg-white gl-border-2 gl-border-solid gl-border-white gl-rounded-full"
+    class="gl-bg-neutral-0 gl-border-2 gl-border-neutral-0 gl-border-solid gl-rounded-full gl-text-neutral-950"
     name="image-comment-dark"
     size="24"
     variant="current"
@@ -35,7 +35,7 @@ exports[`Design note pin component should match the snapshot when pin is resolve
   type="button"
 >
   <gl-icon-stub
-    class="gl-bg-white gl-border-2 gl-border-solid gl-border-white gl-rounded-full"
+    class="gl-bg-neutral-0 gl-border-2 gl-border-neutral-0 gl-border-solid gl-rounded-full gl-text-neutral-950"
     name="image-comment-dark"
     size="24"
     variant="current"
@@ -50,7 +50,7 @@ exports[`Design note pin component should match the snapshot when position is ab
   type="button"
 >
   <gl-icon-stub
-    class="gl-bg-white gl-border-2 gl-border-solid gl-border-white gl-rounded-full"
+    class="gl-bg-neutral-0 gl-border-2 gl-border-neutral-0 gl-border-solid gl-rounded-full gl-text-neutral-950"
     name="image-comment-dark"
     size="24"
     variant="current"

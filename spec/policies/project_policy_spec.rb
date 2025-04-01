@@ -3978,32 +3978,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'when project is created and owned by a banned user' do
-    let_it_be(:project) { create(:project, :public) }
-
-    let(:current_user) { guest }
-
-    before do
-      allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
-    end
-
-    it { expect_disallowed(:read_project) }
-
-    context 'when current user is an admin', :enable_admin_mode do
-      let(:current_user) { admin }
-
-      it { expect_allowed(:read_project) }
-    end
-
-    context 'when hide_projects_of_banned_users FF is disabled' do
-      before do
-        stub_feature_flags(hide_projects_of_banned_users: false)
-      end
-
-      it { expect_allowed(:read_project) }
-    end
-  end
-
   describe 'webhooks' do
     context 'when the current_user is a maintainer' do
       let(:current_user) { maintainer }

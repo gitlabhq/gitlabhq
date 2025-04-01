@@ -783,9 +783,7 @@ pre {
   font-size: $gl-font-size;
   word-break: break-all;
   word-wrap: break-word;
-  @apply gl-text-default;
-  background-color: $gray-10;
-  border: 1px solid $gray-100;
+  @apply gl-text-default gl-bg-subtle gl-border;
   border-radius: $border-radius-small;
 
   // Select only code elements that will have the copy code button

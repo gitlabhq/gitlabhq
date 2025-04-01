@@ -104,9 +104,6 @@ export default {
     isPaginationDisabled() {
       return this.isLoading || this.isPrefetchingPages;
     },
-    pollingInterval() {
-      return this.graphqlEtagKey ? ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL : null;
-    },
     isDirectionAscending() {
       return this.sortDirection === DIRECTION_ASCENDING;
     },

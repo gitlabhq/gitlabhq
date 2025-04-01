@@ -21,7 +21,8 @@
 
 // Pipeline mini graph
 .pipeline-mini-graph-stage-container {
-  // Temoorarily sets a max height for the dropdown
+  position: relative;
+  // Temporarily sets a max height for the dropdown
   // until GlDisclosureDropdown supports adding
   // a max-height value
   // see https://gitlab.com/gitlab-org/gitlab-ui/-/issues/3010

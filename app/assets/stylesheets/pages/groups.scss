@@ -62,7 +62,7 @@
     }
 
     &:first-child {
-      border-top: 1px solid $gray-100;
+      @apply gl-border-t;
     }
   }
 

@@ -118,7 +118,7 @@ Refer to [Track and Propose Sessions for Python Learning Group](https://gitlab.c
 
 ### Communication
 
-- Stay updated by following the [learning group issue](<https://gitlab.com/gitlab-org/gitlab/-/issues/517449>)
+- Stay updated by following the [learning group issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517449)
 - Join the discussion on Slack: **#python_getting_started**
 
 ---

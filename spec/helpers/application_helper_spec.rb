@@ -938,13 +938,6 @@ RSpec.describe ApplicationHelper do
       it_behaves_like 'returns icon with tooltip'
     end
 
-    context 'when resource is a project' do
-      let_it_be(:resource) { build(:project) }
-      let(:expected_title) { 'This project is hidden because its creator has been banned' }
-
-      it_behaves_like 'returns icon with tooltip'
-    end
-
     context 'when css_class is provided' do
       let_it_be(:resource) { build(:issue) }
 

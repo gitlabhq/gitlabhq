@@ -1,36 +1,10 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
-.x-axis path,
-.y-axis path,
-.label-x-axis-line,
-.label-y-axis-line {
-  fill: none;
-  stroke-width: 1;
-  shape-rendering: crispEdges;
-}
-
-.x-axis path,
-.y-axis path {
-  stroke: var(--gray-300, $gray-300);
-}
-
-.label-x-axis-line,
-.label-y-axis-line {
-  stroke: var(--gray-100, $gray-100);
-}
-
-.y-axis {
-  line {
-    stroke: var(--gray-300, $gray-300);
-    stroke-width: 1;
-  }
-}
-
 /**
  * Deploy boards
 */
 .deploy-board {
-  background-color: var(--gray-50, $gray-50);
+  @apply gl-bg-strong;
   min-height: 20px;
 
   > .loading-icon,

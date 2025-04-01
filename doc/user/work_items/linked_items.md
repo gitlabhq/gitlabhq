@@ -152,7 +152,7 @@ Alternatively, you can remove a linked item using the `/unlink` [quick action](.
 
 ## Related topics
 
-- [Work items](../work_items/_index.md)
+- [Work items](_index.md)
 - [Issues](../project/issues/_index.md)
 - [Epics](../group/epics/_index.md)
 - [Tasks](../tasks.md)

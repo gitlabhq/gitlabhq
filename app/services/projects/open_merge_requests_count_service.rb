@@ -9,7 +9,7 @@ module Projects
     end
 
     def self.query(project_ids)
-      MergeRequest.opened.of_projects(project_ids)
+      MergeRequest.opened.without_hidden.of_projects(project_ids)
     end
   end
 end

@@ -531,7 +531,7 @@ To set this limit to `2000` on your instance, run the following command in the G
 Plan.default.actual_limits.update!(pipeline_hierarchy_size: 2000)
 ```
 
-You can also set this limit by using the GitLab UI in the [Admin area](../administration/settings/continuous_integration.md#set-cicd-limits).
+You can also set this limit by using the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits).
 
 This limit is enabled on GitLab.com and cannot be changed.
 

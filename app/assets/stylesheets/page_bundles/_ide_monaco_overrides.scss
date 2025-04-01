@@ -103,7 +103,7 @@
 
     .margin {
       background-color: $white;
-      border-right: 1px solid $gray-100;
+      @apply gl-border-r;
 
       .line-insert {
         border-right: 1px solid $line-added-dark;

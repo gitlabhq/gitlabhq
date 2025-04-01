@@ -508,8 +508,6 @@ module ApplicationHelper
       title = format(issuable_title, issuable: _('issue'))
     when MergeRequest
       title = format(issuable_title, issuable: _('merge request'))
-    when Project
-      title = _('This project is hidden because its creator has been banned')
     end
 
     return unless title

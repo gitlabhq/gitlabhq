@@ -244,7 +244,7 @@
   @apply gl-transition-width;
   height: $toggle-sidebar-height;
   padding: 0 $gl-padding;
-  background-color: $gray-10;
+  @apply gl-bg-subtle;
   border: 0;
   @apply gl-text-subtle;
   display: flex;
@@ -252,7 +252,7 @@
   @apply gl-border-b;
 
   &:hover {
-    background-color: $gray-100;
+    @apply gl-bg-strong;
     @apply gl-text-default;
   }
 }

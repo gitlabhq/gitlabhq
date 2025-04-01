@@ -162,3 +162,5 @@ config:
     ]
 ignores:
   - "doc/architecture"
+customRules:
+  - "./doc/.markdownlint/rules/unnecessary_traversal.js"

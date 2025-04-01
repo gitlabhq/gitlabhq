@@ -47,7 +47,7 @@ Verify the presence of report on the base commit by obtaining the `base_sha` usi
 
 ## No Code Quality symbol in the changes view
 
-If no symbol is displayed in the [changes view](../testing/code_quality.md#merge-request-changes-view), ensure that the `location.path` in the code quality report:
+If no symbol is displayed in the [changes view](code_quality.md#merge-request-changes-view), ensure that the `location.path` in the code quality report:
 
 - Is using a relative path to the file containing the code quality violation.
 - Is not prefixed with `./`. For example, the `path` should be `somedir/file1.rb` instead of `./somedir/file1.rb`.

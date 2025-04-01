@@ -159,7 +159,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   display: flex;
   position: relative;
   font-size: $gl-font-size-sm;
-  border: 1px solid var(--gray-100, $gray-100);
+  @apply gl-border;
   border-right-style: none;
   border-left-style: none;
   line-height: $gl-line-height-16;
@@ -177,7 +177,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     width: $disclosure-hierarchy-chevron-dimension;
     height: $disclosure-hierarchy-chevron-dimension;
     transform: rotate(45deg) skew(14deg, 14deg);
-    border: 1px solid var(--gray-100, $gray-100);
+    @apply gl-border;
     border-color: inherit;
     border-bottom-color: transparent;
     border-left-color: transparent;
@@ -197,7 +197,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   .disclosure-hierarchy-item:first-child & {
     padding-left: $gl-spacing-scale-3;
-    border-left: 1px solid var(--gray-100, $gray-100);
+    @apply gl-border-l;
     border-top-left-radius: $gl-border-radius-base;
     border-bottom-left-radius: $gl-border-radius-base;
 
@@ -215,7 +215,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   .disclosure-hierarchy-item:last-child & {
     padding-right: $gl-spacing-scale-4;
-    border-right: 1px solid var(--gray-100, $gray-100);
+    @apply gl-border-r;
     border-top-right-radius: $gl-border-radius-base;
     border-bottom-right-radius: $gl-border-radius-base;
 
@@ -349,7 +349,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     .work-item-design-grid {
       @apply gl-grid-cols-3;
     }
-    
+
     .work-item-design-show-sm {
       @apply gl-block;
     }

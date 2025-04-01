@@ -47,11 +47,6 @@ export default {
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"`;
     },
   },
-  methods: {
-    commaOrPeriod(index, length) {
-      return index + 1 === length ? '.' : ',';
-    },
-  },
   i18n,
   configuringReviewAppsPath: helpPagePath('ci/review_apps/_index.md', {
     anchor: 'configure-review-apps',

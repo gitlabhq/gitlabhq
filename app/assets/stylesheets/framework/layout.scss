@@ -125,8 +125,7 @@ html {
   padding-left: $gl-padding;
   padding-right: $gl-padding;
   box-shadow: none;
-  background-color: $gray-10;
-  border-left: 1px solid $gray-100;
+  @apply gl-bg-subtle gl-border-l;
 
   @include media-breakpoint-down(sm) {
     min-width: unset;

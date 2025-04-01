@@ -5,8 +5,6 @@ module ProjectsHelper
   include CompareHelper
   include Gitlab::Allowable
 
-  BANNED = 'banned'
-
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting
@@ -573,7 +571,7 @@ module ProjectsHelper
       project_avatar: project.avatar_url,
       project_name: project.name,
       project_id: project.id,
-      project_visibility_level: visibility_level_name(project)
+      project_visibility_level: Gitlab::VisibilityLevel.string_level(project.visibility_level)
     }.merge(
       dropdown_attributes,
       fork_button_attributes,
@@ -672,10 +670,6 @@ module ProjectsHelper
   end
 
   def visibility_level_content(project, css_class: nil, icon_css_class: nil, icon_variant: nil)
-    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-      return hidden_resource_icon(project, css_class: css_class, variant: icon_variant)
-    end
-
     title = visibility_icon_description(project)
     container_class = [
       'has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit',
@@ -789,14 +783,6 @@ module ProjectsHelper
       stars_count: number_with_delimiter(project.star_count),
       button_text: button_text.presence || _('Delete project')
     }
-  end
-
-  def visibility_level_name(project)
-    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-      BANNED
-    else
-      Gitlab::VisibilityLevel.string_level(project.visibility_level)
-    end
   end
 
   def can_admin_project_clusters?(project)

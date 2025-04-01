@@ -309,10 +309,6 @@ class ProjectPolicy < BasePolicy
 
   condition(:namespace_catalog_available) { namespace_catalog_available? }
 
-  condition(:created_and_owned_by_banned_user, scope: :subject) do
-    Feature.enabled?(:hide_projects_of_banned_users) && @subject.created_and_owned_by_banned_user?
-  end
-
   desc "User has either planner or reporter access"
   condition(:planner_or_reporter_access) do
     can?(:reporter_access) || can?(:planner_access)
@@ -1098,10 +1094,6 @@ class ProjectPolicy < BasePolicy
 
   rule { developer & model_experiments_enabled }.policy do
     enable :write_model_experiments
-  end
-
-  rule { ~admin & ~organization_owner & created_and_owned_by_banned_user }.policy do
-    prevent :read_project
   end
 
   rule { ~private_project & guest & external_user }.enable :read_container_image

@@ -266,7 +266,7 @@ Prerequisites:
   [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 If you have the Owner role for a top-level group, you can enable the
-[extension marketplace](../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
+[extension marketplace](_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
 
 To enable the extension marketplace for the
 [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md):

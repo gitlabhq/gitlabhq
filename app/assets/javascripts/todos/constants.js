@@ -4,7 +4,6 @@ export const TODO_STATE_DONE = 'done';
 export const TODO_STATE_PENDING = 'pending';
 
 export const TODO_TARGET_TYPE_ISSUE = 'ISSUE';
-export const TODO_TARGET_TYPE_WORK_ITEM = 'WORKITEM';
 export const TODO_TARGET_TYPE_MERGE_REQUEST = 'MERGEREQUEST';
 export const TODO_TARGET_TYPE_DESIGN = 'DESIGN';
 export const TODO_TARGET_TYPE_ALERT = 'ALERT';

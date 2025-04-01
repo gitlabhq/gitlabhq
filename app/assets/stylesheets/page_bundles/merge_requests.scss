@@ -621,7 +621,7 @@
       border: 1px solid var(--gl-border-color-default);
 
       .circle-icon-container {
-        color: var(--gray-100, $gray-100);
+        color: var(--gl-border-color-default);
       }
     }
   }
@@ -857,8 +857,7 @@
 }
 
 .memory-graph-container {
-  background: var(--white, $white);
-  border: 1px solid var(--gray-100, $gray-100);
+  @apply gl-bg-default gl-border;
 }
 
 .review-bar-component {

@@ -29,9 +29,6 @@ Vue.use(VueApollo);
 describe('Agents', () => {
   let wrapper;
 
-  const defaultProps = {
-    defaultBranchName: 'default',
-  };
   const provideData = {
     fullPath: 'path/to/project/group',
   };
@@ -94,7 +91,6 @@ describe('Agents', () => {
     wrapper = shallowMount(Agents, {
       apolloProvider,
       propsData: {
-        ...defaultProps,
         ...props,
       },
       provide: {

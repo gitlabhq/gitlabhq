@@ -1294,28 +1294,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#visibility_level_name' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:banned_user, :feature_flag_enabled, :expected) do
-      true  | true  | 'banned'
-      false | false | 'private'
-      true  | false | 'private'
-      false | true  | 'private'
-    end
-
-    with_them do
-      before do
-        stub_feature_flags(hide_projects_of_banned_users: feature_flag_enabled)
-        allow(project).to receive(:created_and_owned_by_banned_user?).and_return(banned_user)
-      end
-
-      subject { visibility_level_name(project) }
-
-      it { is_expected.to eq(expected) }
-    end
-  end
-
   shared_examples 'configure import method modal' do
     context 'as a user' do
       it 'returns a link to contact an administrator' do
@@ -1835,35 +1813,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it_behaves_like 'returns visibility level content_tag'
-
-    context 'when project creator is banned' do
-      let(:hidden_resource_icon) { '<svg>fake hidden resource icon</svg>' }
-
-      before do
-        allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
-        allow(helper).to receive(:hidden_resource_icon).and_return(hidden_resource_icon)
-      end
-
-      it 'returns hidden resource icon' do
-        expect(helper.visibility_level_content(project)).to eq hidden_resource_icon
-      end
-    end
-
-    context 'with hide_projects_of_banned_users feature flag disabled' do
-      before do
-        stub_feature_flags(hide_projects_of_banned_users: false)
-      end
-
-      it_behaves_like 'returns visibility level content_tag'
-
-      context 'when project creator is banned' do
-        before do
-          allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
-        end
-
-        it_behaves_like 'returns visibility level content_tag'
-      end
-    end
   end
 
   describe '#hidden_issue_icon' do

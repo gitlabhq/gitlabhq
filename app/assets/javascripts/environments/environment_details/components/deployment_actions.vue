@@ -80,9 +80,6 @@ export default {
     isActionsShown() {
       return this.actions.length > 0;
     },
-    deploymentIid() {
-      return this.approvalEnvironment.deploymentIid;
-    },
     environment() {
       return this.approvalEnvironment.environment;
     },

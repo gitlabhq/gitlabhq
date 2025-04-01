@@ -69,7 +69,7 @@ enhancement. They are responsible for:
 
 The first merge request where a feature can be tested should include the
 documentation, even if the feature is behind a feature flag.
-For more information, see the [guidelines](../documentation/feature_flags.md).
+For more information, see the [guidelines](feature_flags.md).
 
 The author of this MR, either a frontend or backend developer, should write the documentation.
 
@@ -101,7 +101,7 @@ otherwise agreed with the product manager and technical writer:
   If the new or changed documentation requires extensive collaboration or
   conversation, a separate, linked issue can be used for the planning process.
 
-- Use the [Documentation guidelines](../documentation/_index.md),
+- Use the [Documentation guidelines](_index.md),
   and other resources linked from there, including:
   - [Documentation folder structure](site_architecture/folder_structure.md).
   - [Documentation Style Guide](styleguide/_index.md).
@@ -114,7 +114,7 @@ otherwise agreed with the product manager and technical writer:
   - Want to request any other help.
 - If you are working on documentation in a separate merge request, ensure the
   documentation is merged as close as possible to the code merge.
-- If the feature has a feature flag, [follow the policy for documenting feature-flagged issues](../documentation/feature_flags.md).
+- If the feature has a feature flag, [follow the policy for documenting feature-flagged issues](feature_flags.md).
 
 #### Review
 

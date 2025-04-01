@@ -213,7 +213,7 @@ writes, but should be set to a low value, such as 10 seconds.
 
 `Rails.cache` uses Redis as the store.
 GitLab instances, like GitLab.com, can configure Redis for [key eviction](https://redis.io/docs/latest/develop/reference/eviction/).
-See the [Redis development guide](../development/redis.md#caching).
+See the [Redis development guide](redis.md#caching).
 
 ### When to use HTTP caching
 

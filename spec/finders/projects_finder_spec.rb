@@ -25,12 +25,6 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       create(:project, :private, name: 'D', path: 'D')
     end
 
-    let_it_be(:banned_user_project) do
-      create(:project, :public, name: 'Project created by a banned user', creator: create(:user, :banned)).tap do |p|
-        create(:project_authorization, :owner, user: p.creator, project: p)
-      end
-    end
-
     let(:params) { {} }
     let(:current_user) { user }
     let(:project_ids_relation) { nil }
@@ -554,22 +548,13 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
               public_project,
               internal_project,
               private_project,
-              shared_project,
-              banned_user_project
+              shared_project
             ])
           end
         end
 
         context 'with admin mode disabled' do
           it { is_expected.to match_array([public_project, internal_project]) }
-
-          context 'when hide_projects_of_banned_users FF is disabled' do
-            before do
-              stub_feature_flags(hide_projects_of_banned_users: false)
-            end
-
-            it { is_expected.to match_array([public_project, internal_project, banned_user_project]) }
-          end
         end
       end
     end

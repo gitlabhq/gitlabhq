@@ -1072,26 +1072,6 @@ class Project < ApplicationRecord
   scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
   scope :is_importing, -> { with_import_state.where(import_state: { status: %w[started scheduled] }) }
 
-  scope :without_created_and_owned_by_banned_user, -> do
-    where_not_exists(
-      Users::BannedUser.joins(
-        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
-      ).where('projects.creator_id = banned_users.user_id')
-        .where('project_authorizations.project_id = projects.id')
-        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
-    )
-  end
-
-  scope :with_created_and_owned_by_banned_user, -> do
-    where_exists(
-      Users::BannedUser.joins(
-        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
-      ).where('projects.creator_id = banned_users.user_id')
-        .where('project_authorizations.project_id = projects.id')
-        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
-    )
-  end
-
   class << self
     # Searches for a list of projects based on the query given in `query`.
     #
@@ -3365,12 +3345,6 @@ class Project < ApplicationRecord
 
   def pending_delete_or_hidden?
     pending_delete? || hidden?
-  end
-
-  def created_and_owned_by_banned_user?
-    return false unless creator
-
-    creator.banned? && team.max_member_access(creator.id) == Gitlab::Access::OWNER
   end
 
   def work_items_feature_flag_enabled?

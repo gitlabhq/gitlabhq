@@ -68,11 +68,10 @@ describe('Visibility icon button', () => {
 
     describe('if item represents project', () => {
       it.each`
-        visibilityLevel                     | visibilityTooltip                                               | visibilityIcon                                            | tooltipPlacement
-        ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}      | ${VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PUBLIC_STRING]}   | ${'top'}
-        ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}    | ${VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_INTERNAL_STRING]} | ${'bottom'}
-        ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}     | ${VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]}  | ${'left'}
-        ${'banned'}                         | ${'This project is hidden because its creator has been banned'} | ${'spam'}                                                 | ${'right'}
+        visibilityLevel                     | visibilityTooltip                                            | visibilityIcon                                            | tooltipPlacement
+        ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}   | ${VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PUBLIC_STRING]}   | ${'top'}
+        ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]} | ${VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_INTERNAL_STRING]} | ${'bottom'}
+        ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}  | ${VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]}  | ${'left'}
       `(
         'should return corresponding text when visibility level is $visibilityLevel',
         ({ visibilityLevel, visibilityTooltip, visibilityIcon, tooltipPlacement }) => {

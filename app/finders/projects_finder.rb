@@ -59,10 +59,6 @@ class ProjectsFinder < UnionFinder
         init_collection
       end
 
-    if Feature.enabled?(:hide_projects_of_banned_users)
-      collection = without_created_and_owned_by_banned_user(collection)
-    end
-
     use_cte = params.delete(:use_cte)
     collection = Project.wrap_with_cte(collection) if use_cte
     collection = filter_projects(collection)
@@ -298,12 +294,6 @@ class ProjectsFinder < UnionFinder
     return {} unless min_access_level?
 
     { min_access_level: params[:min_access_level] }
-  end
-
-  def without_created_and_owned_by_banned_user(projects)
-    return projects if current_user&.can?(:admin_all_resources)
-
-    projects.without_created_and_owned_by_banned_user
   end
 
   # Returns the available organizations to filter topics
