@@ -21,7 +21,7 @@ module ActiveContext
         def search(collection:, query:)
           raise ArgumentError, "Expected Query object, you used #{query.class}" unless query.is_a?(ActiveContext::Query)
 
-          es_query = Processor.transform(query)
+          es_query = Processor.transform(collection, query)
           res = client.search(index: collection, body: es_query)
           QueryResult.new(res)
         end

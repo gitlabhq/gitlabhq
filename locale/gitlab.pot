@@ -6589,13 +6589,13 @@ msgstr ""
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr ""
 
-msgid "An Administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
-msgstr ""
-
 msgid "An administrator added this OAuth application "
 msgstr ""
 
 msgid "An administrator changed the password for your GitLab account on %{link_to}."
+msgstr ""
+
+msgid "An administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
 msgstr ""
 
 msgid "An alert has been resolved in %{project_path}."
@@ -12964,6 +12964,9 @@ msgid "Clear start date"
 msgstr ""
 
 msgid "Clear templates search input"
+msgstr ""
+
+msgid "Clear the date to create access tokens without expiration."
 msgstr ""
 
 msgid "Clear this checkbox to use a personal access token instead."

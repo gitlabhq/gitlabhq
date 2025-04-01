@@ -110,3 +110,47 @@ To set as default (or remove the default) from [compliance framework report](com
 
 To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
 [Compliance projects report](compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
+
+## Import and export compliance frameworks
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16499) in GitLab 17.11.
+
+{{< /history >}}
+
+Download existing compliance frameworks as JSON files and upload new frameworks from JSON templates.
+
+A library of JSON templates is available from the
+[Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project.
+Use these templates to quickly adopt predefined compliance frameworks.
+
+### Export a compliance framework as a JSON file
+
+With this feature, you can share and back up compliance frameworks.
+
+To export a compliance framework from the compliance center:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Locate the compliance framework you wish to export.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+1. Select **Export as JSON file**.
+
+The JSON file is downloaded to your local system.
+
+### Import a compliance framework from a JSON file
+
+With this feature, you can use shared or backed up compliance frameworks.
+
+To import a compliance framework by using a JSON template:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework**.
+1. Select **Import framework**.
+1. In the dialog that appears, select the JSON file from your local system.
+
+If the import is successful, the new compliance framework appears in the list. Any errors are displayed for correction.

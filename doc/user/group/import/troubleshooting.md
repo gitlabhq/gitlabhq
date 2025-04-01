@@ -144,3 +144,27 @@ ensure it is valid. For example, `Destination-Project-Path` is normalized to `de
 You might receive the error `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]` in logs
 when migrating projects by using direct transfer. If you receive this error, you can safely ignore it. GitLab retries
 the exited command.
+
+## Error: `Batch export [batch_number] from source instance failed`
+
+On the destination instance, you might encounter the following error:
+
+```plaintext
+Batch export [batch_number] from source instance failed: [source instance error]
+```
+
+This error occurs when the source instance fails to export some records.
+The most common reasons are:
+
+- Insufficient disk space
+- Multiple interruptions of Sidekiq jobs due to insufficient memory
+- Database statement timeout
+
+To resolve this issue:
+
+1. Identify and fix the problem on the source instance.
+1. Delete the partially imported project or group from the destination instance and initiate a new import.
+
+For more information about the relations and batches that failed to export,
+use the export status API endpoints for [projects](../../../api/project_relations_export.md#export-status)
+and [groups](../../../api/group_relations_export.md#export-status) on the source instance.

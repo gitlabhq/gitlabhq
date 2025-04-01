@@ -48,6 +48,7 @@ To create a new compliance framework from the compliance frameworks report:
 1. Select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select the **New framework**.
+1. Select **Create blank framework**.
 1. Select the **Add framework** to create compliance framework.
 
 ## Edit a compliance framework

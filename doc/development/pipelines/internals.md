@@ -128,7 +128,7 @@ By default, this variable is set from the value of `${GITLAB_DEPENDENCY_PROXY}`.
 - `GITLAB_DEPENDENCY_PROXY` is a CI/CD variable in the [`gitlab-org`](https://gitlab.com/gitlab-org) and the [`gitlab-com`](https://gitlab.com/gitlab-com) groups. It is defined as `${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`.
 - `GITLAB_DEPENDENCY_PROXY_ADDRESS` is defined in the `gitlab-org/gitlab` project. It defaults to `"${GITLAB_DEPENDENCY_PROXY}"`, but is overridden in some cases (see the workaround section below).
 
-In `gitlab-org/gitlab`, we'll use `GITLAB_DEPENDENCY_PROXY_ADDRESS` [due to a workaround](#work-around-for-when-a-pipeline-is-started-by-a-project-access-token-user). Everywhere else in the `gitlab-org` and `gitlab-com` groups, we should use `GITLAB_DEPENDENCY_PROXY` to use the Dependency Proxy:
+In `gitlab-org/gitlab`, we'll use `GITLAB_DEPENDENCY_PROXY_ADDRESS` [due to a workaround](#work-around-for-when-a-pipeline-is-started-by-a-project-access-token-user). Everywhere else in the `gitlab-org` and `gitlab-com` groups, we should use `GITLAB_DEPENDENCY_PROXY` to use the Dependency Proxy. For any other project, you can rely on the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` predefined CI/CD variable to enable the dependency proxy:
 
 ```yaml
 # In the gitlab-org/gitlab project
@@ -136,6 +136,9 @@ image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
 
 # In any other project in gitlab-org and gitlab-com groups
 image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+
+# In projects outside of gitlab-org and gitlab-com groups
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:edge
 ```
 
 Forks that reside on any other personal namespaces or groups fall back to

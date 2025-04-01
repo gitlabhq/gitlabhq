@@ -83,14 +83,38 @@ module Gitlab
         tagging_models.each do |tagging_model|
           tagging_model.include EachBatch
 
+          delete_duplicate_taggings(tagging_model, tag_remap)
+
           bad_tag_ids.each do |bad_tag_id|
             tagging_model.where(tag_id: bad_tag_id).each_batch(of: TAGGING_BATCH_SIZE) do |batch|
               batch.update_all(tag_id: tag_remap.fetch(bad_tag_id)) unless dry_run
-            end
 
-            logger.info(
-              "Updated tag_id #{bad_tag_id} on #{tagging_model.table_name} records to #{tag_remap.fetch(bad_tag_id)}"
-            )
+              logger.info(
+                "Updated tag_id #{bad_tag_id} on #{tagging_model.table_name} records to #{tag_remap.fetch(bad_tag_id)}"
+              )
+            end
+          end
+        end
+      end
+
+      def taggings_with_fk(model_record)
+        case model_record
+        when ::Ci::BuildTag
+          model_record.class.where(build_id: model_record.build_id)
+        when ::Ci::RunnerTagging
+          model_record.class.where(runner_id: model_record.runner_id)
+        end
+      end
+
+      def delete_duplicate_taggings(tagging_model, tag_remap)
+        tagging_model.where(tag_id: tag_remap.keys).each_batch(of: TAGGING_BATCH_SIZE) do |batch|
+          batch.each do |bad_tag_id_row|
+            existing_tag_id = tag_remap.fetch(bad_tag_id_row.tag_id)
+
+            next unless taggings_with_fk(bad_tag_id_row).where(tag_id: existing_tag_id).exists?
+            next if dry_run
+
+            taggings_with_fk(bad_tag_id_row).where(tag_id: bad_tag_id_row.tag_id).delete_all
           end
         end
       end

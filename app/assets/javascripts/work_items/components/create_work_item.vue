@@ -24,6 +24,7 @@ import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
@@ -69,7 +70,6 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
-import WorkItemDates from './work_item_dates.vue';
 
 export default {
   components: {

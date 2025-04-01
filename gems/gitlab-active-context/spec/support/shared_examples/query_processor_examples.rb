@@ -9,7 +9,7 @@ RSpec.shared_examples 'a query processor' do
       expect(described_class).to receive(:new).and_return(processor)
       expect(processor).to receive(:process).with(query)
 
-      described_class.transform(query)
+      described_class.transform(double, query)
     end
   end
 

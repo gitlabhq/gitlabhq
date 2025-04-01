@@ -39,6 +39,12 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
     SQL
   end
 
+  let(:tagging_ids) do
+    [
+      ci_build_tagging_ids, ci_runner_tagging_ids
+    ]
+  end
+
   describe '#execute' do
     subject(:execute) { service.execute }
 
@@ -69,7 +75,21 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
       let(:build2_id) { create_build }
       let(:pending_build2_id) { create_pending_build(build2_id, [duplicate_tag_ids.second, tag_ids.third]) }
 
-      let!(:duplicate_ci_build_tagging_id) do
+      let!(:ci_build2_tagging1_id) do
+        connection.select_value(<<~SQL)
+          INSERT INTO p_ci_build_tags (build_id, tag_id, partition_id, project_id)
+            VALUES (#{build2_id}, #{tag_ids.second}, #{partition_id}, #{project_id}) RETURNING id;
+        SQL
+      end
+
+      let!(:duplicate_ci_build2_tagging2_id) do
+        connection.select_value(<<~SQL)
+          INSERT INTO p_ci_build_tags (build_id, tag_id, partition_id, project_id)
+            VALUES (#{build2_id}, #{duplicate_tag_ids.second}, #{partition_id}, #{project_id}) RETURNING id;
+        SQL
+      end
+
+      let!(:duplicate_ci_build2_tagging3_id) do
         connection.select_value(<<~SQL)
           INSERT INTO p_ci_build_tags (build_id, tag_id, partition_id, project_id)
             VALUES (#{build2_id}, #{duplicate_tag_ids.second}, #{partition_id}, #{project_id}) RETURNING id;
@@ -85,16 +105,19 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
 
       let(:duplicate_tagging_ids) do
         [
-          duplicate_ci_build_tagging_id, duplicate_ci_runner_tagging_id, pending_build2_id
+          ci_build2_tagging1_id, duplicate_ci_build2_tagging2_id, duplicate_ci_runner_tagging_id,
+          pending_build2_id
         ]
       end
 
       around do |example|
         connection.transaction do
-          tag_ids
+          tagging_ids
 
           # allow a scenario where multiple tags with same name coexist
           connection.execute('DROP INDEX index_tags_on_name')
+          # allow a scenario where same build with same tag id coexist
+          connection.execute('DROP INDEX index_p_ci_build_tags_on_tag_id_and_build_id_and_partition_id')
 
           duplicate_tagging_ids
 
@@ -107,9 +130,14 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
           .to change { table_count('tags') }.by(-2)
           .and not_change { ci_runner_tagging_relationship_for(ci_runner_tagging_ids.second) }
           .and not_change { ci_pending_build_tag_ids_for(pending_build1_id) }
-          .and change { ci_build_tagging_relationship_for(duplicate_ci_build_tagging_id) }
+          .and not_change { ci_build_tagging_relationship_for(ci_build2_tagging1_id) }
+            .from(build2_id => tag_ids.second)
+          .and change { ci_build_tagging_relationship_for(duplicate_ci_build2_tagging2_id) }
             .from(build2_id => duplicate_tag_ids.second)
-            .to(build2_id => tag_ids.second)
+            .to({})
+          .and change { ci_build_tagging_relationship_for(duplicate_ci_build2_tagging3_id) }
+            .from(build2_id => duplicate_tag_ids.second)
+            .to({})
           .and change { ci_pending_build_tag_ids_for(pending_build2_id) }
             .from([duplicate_tag_ids.second, tag_ids.third])
             .to([tag_ids.second, tag_ids.third])
@@ -132,7 +160,7 @@ RSpec.describe Gitlab::Database::DeduplicateCiTags, :aggregate_failures, feature
             .and not_change { ci_runner_tagging_relationship_for(ci_runner_tagging_ids.second) }
             .and not_change { ci_runner_tagging_relationship_for(ci_runner_tagging_ids.third) }
             .and not_change { ci_pending_build_tag_ids_for(pending_build2_id) }
-            .and not_change { ci_build_tagging_relationship_for(duplicate_ci_build_tagging_id) }
+            .and not_change { ci_build_tagging_relationship_for(duplicate_ci_build2_tagging2_id) }
             .and not_change { ci_runner_tagging_relationship_for(duplicate_ci_runner_tagging_id) }
 
           # Index wasn't recreated because we're in dry run mode

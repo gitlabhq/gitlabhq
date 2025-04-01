@@ -21,11 +21,14 @@ module ActiveContext
           setup_connection_pool
         end
 
-        def search(_query)
-          with_connection do |conn|
-            res = conn.execute('SELECT * FROM pg_stat_activity')
-            QueryResult.new(res)
+        def search(collection:, query:)
+          raise ArgumentError, "Expected Query object, you used #{query.class}" unless query.is_a?(ActiveContext::Query)
+
+          sql = Processor.transform(collection, query)
+          res = with_connection do |conn|
+            conn.execute(sql)
           end
+          QueryResult.new(res)
         end
 
         def bulk_process(operations)

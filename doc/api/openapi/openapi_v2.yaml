@@ -45848,6 +45848,9 @@ definitions:
         - default_on
         - default_off
         - never_on
+      amazon_q_auto_review_enabled:
+        type: boolean
+        description: Enable Amazon Q auto review for merge request
       experiment_features_enabled:
         type: boolean
         description: Enable experiment features for this group
@@ -46032,6 +46035,9 @@ definitions:
         - default_on
         - default_off
         - never_on
+      amazon_q_auto_review_enabled:
+        type: boolean
+        description: Enable Amazon Q auto review for merge request
       experiment_features_enabled:
         type: boolean
         description: Enable experiment features for this group

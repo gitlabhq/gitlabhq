@@ -602,7 +602,9 @@ tests = [
     expected: [
       'ee/spec/graphql/types/remote_development/namespace_cluster_agent_mapping_type_spec.rb',
       'ee/spec/requests/api/graphql/mutations/remote_development/' \
-        'namespace_cluster_agent_mapping_operations/create_spec.rb'
+        'namespace_cluster_agent_mapping_operations/create_spec.rb',
+      'ee/spec/requests/api/graphql/mutations/remote_development/' \
+        'namespace_cluster_agent_mapping_operations/delete_spec.rb'
     ]
   },
   ## END Remote development GraphQL types

@@ -4,6 +4,8 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ListType } from '~/boards/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
+
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -32,7 +34,6 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
-import WorkItemDates from './work_item_dates.vue';
 
 export default {
   ListType,

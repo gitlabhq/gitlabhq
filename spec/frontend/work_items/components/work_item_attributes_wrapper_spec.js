@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import WorkItemDates from '~/work_items/components/work_item_dates.vue';
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';

@@ -63,7 +63,7 @@ module Ci
       Ci::BuildSource
         .where(project_id: project.id)
         .loose_index_scan(column: :source)
-        .select(:source).where(source: sources)
+        .where(source: sources)
     end
 
     def array_mapping_scope

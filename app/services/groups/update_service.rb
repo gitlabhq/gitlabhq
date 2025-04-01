@@ -28,7 +28,7 @@ module Groups
       handle_changes
       handle_namespace_settings
       handle_hierarchy_cache_update
-      group.assign_attributes(params)
+      group.assign_attributes(params.except(*non_assignable_group_params))
 
       return false if group.errors.present?
 
@@ -224,6 +224,10 @@ module Groups
       )
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def non_assignable_group_params
+      []
     end
   end
 end

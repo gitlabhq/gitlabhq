@@ -231,6 +231,9 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       allow(raw_connection).to receive(:server_version).and_return(120000)
       allow(ActiveContext::Databases::Postgresql::QueryResult).to receive(:new)
+
+      allow(ActiveContext::Databases::Postgresql::Processor).to receive(:transform)
+        .and_return('SELECT * FROM pg_stat_activity')
     end
 
     it 'executes query and returns QueryResult' do
@@ -238,7 +241,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       expect(ActiveContext::Databases::Postgresql::QueryResult)
         .to receive(:new).with(query_result)
 
-      client.search('test query')
+      client.search(collection: 'test', query: ActiveContext::Query.filter(project_id: 1))
     end
   end
 
