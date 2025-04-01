@@ -189,6 +189,7 @@ Users are notified of the following events:
 | User added to project                    | User            | Sent when user is added to project.                                                                                                     |
 | Group access expired                     | Group members   | Sent when user's access to a group expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                 |
 | Project access expired                   | Project members | Sent when user's access to a project expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                                   |
+| Group scheduled for deletion             | Group Owners    | Sent when group is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_         |
 
 ## Notifications on issues, merge requests, and epics
 

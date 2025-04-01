@@ -113,6 +113,19 @@ module NamespacesHelper
   def group_usage_quotas_url(group, *args)
     Rails.application.routes.url_helpers.group_usage_quotas_url(group.root_ancestor, *args)
   end
+
+  def permanent_deletion_date_formatted(container_or_date, format: '%F')
+    date =
+      if container_or_date.respond_to?(:self_deletion_scheduled_deletion_created_on)
+        container_or_date.self_deletion_scheduled_deletion_created_on
+      else
+        container_or_date
+      end
+
+    return unless date
+
+    ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(date).strftime(format)
+  end
 end
 
 NamespacesHelper.prepend_mod_with('NamespacesHelper')

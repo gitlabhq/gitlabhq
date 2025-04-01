@@ -8,7 +8,8 @@ title: Repository X-Ray
 
 {{< details >}}
 
-- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Pro or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -164,12 +165,12 @@ job is run. To learn more about pipeline configuration and triggers, see the
 
 When running Repository X-Ray, you might get an error that states `401: Unauthorized`.
 
-A Duo Pro add-on is linked to a group when you buy that add-on. To solve the error, ensure
-that your current project is part of a group with the Duo Pro add-on.
+A GitLab Duo Pro add-on is linked to a group when you buy that add-on. To solve the error, ensure
+that your current project is part of a group with the GitLab Duo Pro add-on.
 
 This link can be either of the following:
 
-- Direct, that is, the project is in a group that has the Duo Pro add-on.
-- Indirect, for example, the parent group of the current project's group has the Duo Pro add-on.
+- Direct, that is, the project is in a group that has the GitLab Duo Pro add-on.
+- Indirect, for example, the parent group of the current project's group has the GitLab Duo Pro add-on.
 
 <!--- end_remove -->

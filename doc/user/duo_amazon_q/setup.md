@@ -22,7 +22,7 @@ title: Set up GitLab Duo with Amazon Q
 
 {{< alert type="note" >}}
 
-If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
+If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not available.
 
 {{< /alert >}}
 

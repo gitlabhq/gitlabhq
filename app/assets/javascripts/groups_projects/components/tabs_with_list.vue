@@ -11,6 +11,7 @@ import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/consta
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { InternalEvents } from '~/tracking';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -19,6 +20,8 @@ import {
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 // Will be made more generic to work with groups and projects in future commits
 export default {
@@ -33,6 +36,7 @@ export default {
     TabView,
     FilteredSearchAndSort,
   },
+  mixins: [trackingMixin],
   props: {
     tabs: {
       type: Array,
@@ -87,6 +91,13 @@ export default {
         return [];
       },
     },
+    eventTracking: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -126,6 +137,9 @@ export default {
     },
   },
   computed: {
+    activeTab() {
+      return this.tabs[this.activeTabIndex];
+    },
     filteredSearchTokens() {
       return [
         {
@@ -245,6 +259,12 @@ export default {
 
       const tab = this.tabs[index] || this.tabs[0];
       this.$router.push({ name: tab.value });
+
+      if (!this.eventTracking?.tabs) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.tabs, { label: tab.text });
     },
     tabCount(tab) {
       return this.counts[tab.value];
@@ -265,16 +285,80 @@ export default {
     updateSort(sort) {
       this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
       this.userPreferencesUpdateMutate(sort);
+
+      if (!this.eventTracking?.sort) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.sort, { label: this.activeTab.text, property: sort });
     },
     onFilter(filters) {
       const { sort } = this.$route.query;
 
       this.pushQuery({ sort, ...filters });
+
+      if (!this.eventTracking?.filteredSearch) {
+        return;
+      }
+
+      Object.entries(this.eventTracking.filteredSearch).forEach(([filter, event]) => {
+        const filterValues = filters[filter];
+
+        if (!filterValues) {
+          return;
+        }
+
+        // Don't record the value when using text search.
+        // Only record with pre-set values (e.g language or access level).
+        if (filter === this.filteredSearchTermKey) {
+          this.trackEvent(event, { label: this.activeTab.text });
+
+          return;
+        }
+
+        const filteredSearchToken = this.filteredSearchTokens.find(
+          (token) => token.type === filter,
+        );
+
+        if (!filteredSearchToken) {
+          return;
+        }
+
+        const optionTitles = filterValues.flatMap((filterValue) => {
+          const optionTitle = filteredSearchToken.options.find(
+            ({ value }) => filterValue === value,
+          )?.title;
+
+          if (!optionTitle) {
+            return [];
+          }
+
+          return [optionTitle];
+        });
+
+        if (!optionTitles.length) {
+          return;
+        }
+
+        this.trackEvent(event, {
+          label: this.activeTab.text,
+          property: optionTitles.join(','),
+        });
+      });
     },
     onPageChange(pagination) {
       this.pushQuery(
         calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
       );
+
+      if (!this.eventTracking?.pagination) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.pagination, {
+        label: this.activeTab.text,
+        property: pagination.startCursor === null ? 'next' : 'previous',
+      });
     },
     async userPreferencesUpdateMutate(sort) {
       try {

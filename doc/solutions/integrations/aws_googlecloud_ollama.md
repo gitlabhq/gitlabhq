@@ -7,7 +7,8 @@ title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with 
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Pro or Enterprise
+- Tier: Ultimate
+- Add-on: GitLab Duo Pro or Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}

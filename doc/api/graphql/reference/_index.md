@@ -12475,6 +12475,7 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreatenamespacepath"></a>`namespacePath` | [`ID`](#id) | Full path of the namespace(project or group) the work item is created in. |
 | <a id="mutationworkitemcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Please use namespacePath instead. That will cover for both projects and groups. Deprecated in GitLab 15.10. |
 | <a id="mutationworkitemcreatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
+| <a id="mutationworkitemcreatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationworkitemcreatetitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="mutationworkitemcreatevulnerabilityid"></a>`vulnerabilityId` {{< icon name="warning-solid" >}} | [`VulnerabilityID`](#vulnerabilityid) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.9. |
 | <a id="mutationworkitemcreateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
@@ -12680,6 +12681,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
+| <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationworkitemupdatetimetrackingwidget"></a>`timeTrackingWidget` | [`WorkItemWidgetTimeTrackingInput`](#workitemwidgettimetrackinginput) | Input for time tracking widget. |
 | <a id="mutationworkitemupdatetitle"></a>`title` | [`String`](#string) | Title of the work item. |
 | <a id="mutationworkitemupdateverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusInput`](#verificationstatusinput) | Input for verification status widget. |
@@ -46361,6 +46363,12 @@ A `WorkItemsRelatedWorkItemLinkID` is a global ID. It is encoded as a string.
 
 An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::RelatedWorkItemLink/1"`.
 
+### `WorkItemsStatusesStatusID`
+
+A `WorkItemsStatusesStatusID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsStatusesStatusID` is: `"gid://gitlab/WorkItems::Statuses::Status/1"`.
+
 ### `WorkItemsTypeID`
 
 A `WorkItemsTypeID` is a global ID. It is encoded as a string.
@@ -48820,6 +48828,14 @@ Attributes for value stream stage.
 | <a id="workitemwidgetstartandduedateupdateinputduedate"></a>`dueDate` | [`Date`](#date) | Due date for the work item. |
 | <a id="workitemwidgetstartandduedateupdateinputisfixed"></a>`isFixed` | [`Boolean`](#boolean) | Indicates if the work item is using fixed dates. |
 | <a id="workitemwidgetstartandduedateupdateinputstartdate"></a>`startDate` | [`Date`](#date) | Start date for the work item. |
+
+### `WorkItemWidgetStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetstatusinputstatus"></a>`status` | [`WorkItemsStatusesStatusID`](#workitemsstatusesstatusid) | Status of the work item. |
 
 ### `WorkItemWidgetTimeTrackingInput`
 

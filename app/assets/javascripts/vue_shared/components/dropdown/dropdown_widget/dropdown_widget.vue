@@ -97,6 +97,7 @@ export default {
       }
       return this.selected && option.id && this.selected.id === option.id;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- showDropdown() is part of the component's public API.
     showDropdown() {
       this.$refs.dropdown.show();
     },

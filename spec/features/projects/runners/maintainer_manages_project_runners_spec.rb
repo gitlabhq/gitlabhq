@@ -117,7 +117,12 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
           visit project_runners_path(project)
 
           within_testid 'available-shared-runners' do
-            expect(page).to have_content format(_('Available instance runners: %{count}'), { count: 2 })
+            within_testid 'crud-title' do
+              expect(page).to have_content _('Available instance runners')
+            end
+            within_testid 'crud-count' do
+              expect(page).to have_content 2
+            end
           end
         end
 
@@ -179,7 +184,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       it 'user sees instance runners description' do
         visit project_runners_path(project)
 
-        within_testid('shared-runners-description') do
+        within_testid('available-shared-runners') do
           expect(page).not_to have_content('The same instance runner executes code from multiple projects')
           expect(page).to have_content(shared_runners_html)
         end

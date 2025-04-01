@@ -414,6 +414,9 @@ These errors may occur when indexing Git repository data.
 Prerequisites:
 
 - You must have administrator access to the instance.
+- Configure the [number of shards per index](#number-of-elasticsearch-shards).
+- Configure the [number of replicas per index](#number-of-elasticsearch-replicas).
+- Optional. Prepare for [indexing large instances](#index-large-instances-efficiently).
 
 To enable advanced search:
 
@@ -938,7 +941,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Schedules a zero-downtime cluster reindexing task. |
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent reindex job as failed. |
 | [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
-| [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
+| [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of code and wiki index sizes and total cluster size based on the total repository size. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of shard sizes for each index based on approximate database counts. This estimate does not include repository data (code, commits, and wikis). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11. |
 | [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Enables advanced search with Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Disables advanced search with Elasticsearch. |
@@ -1006,7 +1009,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 #### Number of Elasticsearch shards
 
 For single-node clusters, set the number of Elasticsearch shards per index to the number of
-CPU cores. Keep the average shard size between a few GB and 30 GB.
+CPU cores on the Elasticsearch data nodes. Keep the average shard size between a few GB and 30 GB.
 
 For multi-node clusters, set the number of Elasticsearch shards per index to at least `5`.
 
@@ -1039,6 +1042,9 @@ For indices that contain repository data:
 - `gitlab-production`
 - `gitlab-production-wikis`
 - `gitlab-production-commits`
+
+Run the Rake task `gitlab:elastic:estimate_cluster_size` to determine the number of shards.
+The task returns approximate index sizes for code (`gitlab-production`) and wiki (`gitlab-production-wikis`).
 
 Keep the average shard size between a few GB and 30 GB.
 If the average shard size grows to more than 30 GB, increase the shard size

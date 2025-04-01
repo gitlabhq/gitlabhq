@@ -210,6 +210,7 @@ export default {
 
       this.$emit('save', this.dashboard.slug, this.dashboard);
     },
+    // eslint-disable-next-line vue/no-unused-properties -- confirmDiscardIfChanged() is part of the component's public API.
     async confirmDiscardIfChanged() {
       // Implicityly confirm if no changes were made
       if (!this.changesMade) return true;

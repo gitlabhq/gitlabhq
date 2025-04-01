@@ -1182,6 +1182,8 @@ Search/NamespacedClass:
     - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb'
     - 'lib/gitlab/sidekiq_middleware/pause_control/strategies/zoekt.rb'
+    - 'lib/tasks/**/*.rake'
+    - 'ee/lib/tasks/**/*.rake'
 
 SidekiqLoadBalancing/WorkerDataConsistency:
   Enabled: true
@@ -1256,6 +1258,12 @@ Gitlab/TokenWithoutPrefix:
     - 'lib/**/*'
     - 'ee/app/**/*'
     - 'ee/lib/**/*'
+
+Rake/TopLevelMethodDefinition:
+  Enabled: true
+  Include:
+    - 'lib/tasks/**/*.rake'
+    - 'ee/lib/tasks/**/*.rake'
 
 Rails/StrongParams:
   Enabled: true

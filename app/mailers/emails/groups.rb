@@ -17,3 +17,5 @@ module Emails
     end
   end
 end
+
+Emails::Groups.prepend_mod

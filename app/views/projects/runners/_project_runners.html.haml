@@ -1,11 +1,11 @@
-%h4
-  = s_('Runners|Project runners')
-
-= render Pajamas::AlertComponent.new(dismissible: false, show_icon: false, alert_options: { class: 'gl-mb-5' }) do |c|
-  - c.with_body do
-    %p= s_('Runners|These runners are assigned to this project.')
+= render ::Layouts::CrudComponent.new(s_('Runners|Project runners'),
+  icon: 'project',
+  count: @project_runners.count) do |c|
+  - c.with_description do
+    = s_('Runners|These runners are assigned to this project.')
+  - c.with_actions do
     - if can?(current_user, :create_runner, @project)
-      = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), variant: :confirm) do
+      = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), size: :small) do
         = s_('Runners|New project runner')
       .gl-inline
         #js-project-runner-registration-dropdown{ data: {
@@ -13,19 +13,21 @@
           registration_token: @project.runners_token,
           project_id: @project.id
         } }
+  - c.with_body do
+    - if can?(current_user, :create_runner, @project)
+      - if @project_runners.any?
+        %h3.gl-heading-5.gl-mt-5.gl-mb-0.gl-px-5= s_('Runners|Assigned project runners')
+        %ul.content-list{ data: { testid: 'assigned_project_runners' } }
+          = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
+        = paginate @project_runners, theme: "gitlab", param_name: "project_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
+
+      - if @assignable_runners.any?
+        %h3.gl-heading-5.gl-mt-5.gl-mb-0.gl-px-5= _('Other available runners')
+        %ul.content-list{ data: { testid: 'available_project_runners' } }
+          = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
+        = paginate @assignable_runners, theme: "gitlab", param_name: "specific_page", :params => { :anchor => 'js-runners-settings'}
+
     - else
-      = _('Please contact an admin to create runners.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
-%hr
-
-- if @project_runners.any?
-  %h4.underlined-title= s_('Runners|Assigned project runners')
-  %ul.bordered-list{ data: { testid: 'assigned_project_runners' } }
-    = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
-  = paginate @project_runners, theme: "gitlab", param_name: "project_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
-
-- if @assignable_runners.any?
-  %h4.underlined-title= _('Other available runners')
-  %ul.bordered-list{ data: { testid: 'available_project_runners' } }
-    = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
-  = paginate @assignable_runners, theme: "gitlab", param_name: "specific_page", :params => { :anchor => 'js-runners-settings'}
+      .gl-text-subtle
+        = s_('Runners|Please contact an admin to create runners.')
+        = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'

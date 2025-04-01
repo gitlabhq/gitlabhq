@@ -108,7 +108,6 @@ export default {
   },
   data() {
     return {
-      initialRender: true,
       recentSearchesPromise: null,
       recentSearches: [],
       filterValue: this.initialFilterValue,

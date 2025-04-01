@@ -64,11 +64,6 @@ export default {
       required: false,
       default: null,
     },
-    groupPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
     projectId: {
       type: Number,
       required: false,
@@ -104,7 +99,6 @@ export default {
     return {
       searchValue: '',
       isProjectNamespace: this.isProjectScoped ? 'true' : 'false',
-      selected: [],
       items: [],
       isLoading: false,
     };

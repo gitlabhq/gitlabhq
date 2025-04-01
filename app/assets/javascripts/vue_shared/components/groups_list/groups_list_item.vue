@@ -197,7 +197,6 @@ export default {
         v-if="group.isLinkedToSubscription"
         :visible="isDeleteModalVisible"
         :modal-id="modalId"
-        :group="group"
         @change="onModalChange"
       />
       <group-list-item-delete-modal

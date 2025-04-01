@@ -8,7 +8,8 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -55,7 +56,7 @@ Prerequisites:
 
 - You must be an administrator.
 - You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have a GitLab Duo Enterprise license add-on.
 
 To configure a self-hosted model:
 
@@ -92,7 +93,7 @@ Prerequisites:
 
 - You must be an administrator.
 - You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have a GitLab Duo Enterprise license add-on.
 
 To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models and features:
 
@@ -116,7 +117,7 @@ Prerequisites:
 
 - You must be an administrator.
 - You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have a GitLab Duo Enterprise license add-on.
 
 ### View configured features
 

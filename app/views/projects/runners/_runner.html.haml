@@ -29,9 +29,9 @@
             = render Pajamas::ButtonComponent.new(variant: :default, size: :small, type: :submit) do
               = _('Enable for this project')
   - if runner.description.present?
-    %p.gl-my-2
+    %p.gl-text-subtle.gl-my-0
       = runner.description
   - if runner.tags.present?
-    .gl-my-2
+    .gl-flex.gl-flex-wrap.gl-gap-2.gl-mt-3
       - runner.tags.map(&:name).sort.each do |tag|
         = gl_badge_tag tag, variant: :info

@@ -55,6 +55,16 @@ describe('YourWorkProjectsApp', () => {
       firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: defaultPropsData.programmingLanguages,
+      eventTracking: {
+        filteredSearch: {
+          [FILTERED_SEARCH_TERM_KEY]: 'search_on_your_work_projects',
+          [FILTERED_SEARCH_TOKEN_LANGUAGE]: 'filter_by_language_on_your_work_projects',
+          [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: 'filter_by_role_on_your_work_projects',
+        },
+        pagination: 'click_pagination_on_your_work_projects',
+        tabs: 'click_tab_on_your_work_projects',
+        sort: 'click_sort_on_your_work_projects',
+      },
     });
   });
 });

@@ -300,7 +300,6 @@ describe('GroupsListItem', () => {
         it('displays prevent delete modal', () => {
           expect(findPreventDeleteModal().props()).toMatchObject({
             visible: true,
-            group: groupLinkedToSubscription,
           });
         });
 

@@ -35,7 +35,7 @@ title: 'Topic title'
 
 ## Available options
 
-Use the following text for the tier, offering, status, and version history.
+Use the following text for the tier, offering, add-on, status, and version history.
 
 ### Offering
 
@@ -67,24 +67,22 @@ For tier, choose one:
 - `Premium, Ultimate`
 - `Ultimate`
 
-#### GitLab Duo Pro or Enterprise add-on
-
-Document add-ons by using the phrase `with` and the add-on.
-For example, `with GitLab Duo Pro`.
-
-The possibilities are:
-
-```markdown
-- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise
-- Tier: Ultimate with GitLab Duo Pro or Enterprise
-- Tier: Ultimate with GitLab Duo Enterprise
-```
-
 {{< alert type="note" >}}
 
 GitLab Dedicated always includes an Ultimate subscription.
 
 {{< /alert >}}
+
+#### Add-ons
+
+For add-ons, the possibilities are:
+
+```markdown
+- Add-on: GitLab Duo Pro
+- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo with Amazon Q
+```
 
 ### Status
 

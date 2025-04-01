@@ -160,13 +160,6 @@ export default {
       this.isFormVisible = false;
       this.$emit('hideForm');
     },
-    toggleForm() {
-      if (this.isFormVisible) {
-        this.hideForm();
-      } else {
-        this.showForm();
-      }
-    },
     getLocalStorageKeyName() {
       return `crud-collapse-${this.anchorId}`;
     },

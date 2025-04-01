@@ -203,14 +203,3 @@ Additional details about the differences between the two solutions are outlined 
 | **Ability to apply one standard to multiple projects** | The same compliance framework label can be applied to multiple projects inside a group. | The same security policy project can be used for multiple projects across GitLab with no requirement of being located in the same group. |
 
 Feedback is welcome on our vision for [unifying the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312)
-
-## Custom security role
-
-You can create a [custom role](../custom_roles/_index.md) for security team members who need access to application security features, such as vulnerability management, security policies, or dependencies. This approach allows organizations to follow the Principle of Least Privilege by providing security team members with the privileges they need without promoting them to Developer or Maintainer on a group or project.
-
-For example, the custom security role may have the following [permissions](../custom_roles/abilities.md):
-
-- Name: Custom Security Role
-- Description: Manage vulnerabilities and link security policy projects.
-- Base Role: Reporter (or any default role)
-- Permissions: `admin_vulnerability`, `read_dependency`, `manage_security_policy_link`

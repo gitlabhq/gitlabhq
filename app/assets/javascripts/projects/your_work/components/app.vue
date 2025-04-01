@@ -34,6 +34,16 @@ export default {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
   },
+  eventTracking: {
+    filteredSearch: {
+      [FILTERED_SEARCH_TERM_KEY]: 'search_on_your_work_projects',
+      [FILTERED_SEARCH_TOKEN_LANGUAGE]: 'filter_by_language_on_your_work_projects',
+      [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: 'filter_by_role_on_your_work_projects',
+    },
+    pagination: 'click_pagination_on_your_work_projects',
+    tabs: 'click_tab_on_your_work_projects',
+    sort: 'click_sort_on_your_work_projects',
+  },
   name: 'YourWorkProjectsApp',
   components: {
     TabsWithList,
@@ -64,5 +74,6 @@ export default {
     :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
     :initial-sort="initialSort"
     :programming-languages="programmingLanguages"
+    :event-tracking="$options.eventTracking"
   />
 </template>

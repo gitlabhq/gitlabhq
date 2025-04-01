@@ -1,48 +1,38 @@
-- link = link_to _('Runner API'), help_page_path('api/runners.md')
-
-%h4
-  = _('Group runners')
-
-= render Pajamas::AlertComponent.new(variant: :warning,
-  dismissible: false,
-  show_icon: false,
-  alert_options: { class: 'gl-mb-5' }) do |c|
-  - c.with_body do
+= render ::Layouts::CrudComponent.new(s_('Runners|Group runners'),
+  icon: 'group',
+  count: @group_runners_count,
+  options: { data: { testid: 'group-runners' } }) do |c|
+  - c.with_description do
+    - link = link_to _('Runner API'), help_page_path('api/runners.md')
     = _('These runners are shared across projects in this group.')
-    %br
-    %br
     = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
   - if @project.group
     - c.with_actions do
-      %br
-      %br
-      %div
-        - if @project.group_runners_enabled?
-          = link_button_to toggle_group_runners_project_runners_path(@project), method: :post do
-            = _('Disable group runners')
+      - if @project.group_runners_enabled?
+        = render Pajamas::ButtonComponent.new(href: toggle_group_runners_project_runners_path(@project), method: :post, size: :small) do
+          = _('Disable group runners')
+      - else
+        = render Pajamas::ButtonComponent.new(href: toggle_group_runners_project_runners_path(@project), variant: :confirm, category: :secondary, method: :post, size: :small) do
+          = _('Enable group runners')
+      %span.gl-text-sm.gl-text-subtle= _('for this project')
+
+  - c.with_body do
+    - if !@project.group
+      .gl-text-subtle= _('This project does not belong to a group and cannot make use of group runners.')
+
+    - elsif @group_runners.empty?
+      .gl-text-subtle
+        = _('This group does not have any group runners yet.')
+        - if can?(current_user, :register_group_runners, @project.group) || can?(current_user, :create_runner, @project.group)
+          - group_link_start = "<a href='#{group_runners_path(@project.group)}'>".html_safe
+          - group_link_end = '</a>'.html_safe
+          = s_("Runners|To register them, go to the %{link_start}group's Runners page%{link_end}.").html_safe % { link_start: group_link_start, link_end: group_link_end }
         - else
-          = link_button_to toggle_group_runners_project_runners_path(@project), method: :post, variant: :confirm, category: :secondary do
-            = _('Enable group runners')
-        &nbsp;
-        = _('for this project')
+          = _('Ask your group owner to set up a group runner.')
 
-- if !@project.group
-  = _('This project does not belong to a group and cannot make use of group runners.')
-
-- elsif @group_runners.empty?
-  = _('This group does not have any group runners yet.')
-
-  - if can?(current_user, :register_group_runners, @project.group) || can?(current_user, :create_runner, @project.group)
-    - group_link_start = "<a href='#{group_runners_path(@project.group)}'>".html_safe
-    - group_link_end = '</a>'.html_safe
-    = s_("Runners|To register them, go to the %{link_start}group's Runners page%{link_end}.").html_safe % { link_start: group_link_start, link_end: group_link_end }
-  - else
-    = _('Ask your group owner to set up a group runner.')
-
-- else
-  %div{ data: { testid: 'group-runners' } }
-    %h5.gl-mt-6.gl-mb-0
-      = _('Available group runners: %{runners}') % { runners: @group_runners_count }
-    %ul.bordered-list
-      = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
-    = paginate @group_runners, theme: "gitlab", param_name: "group_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
+    - else
+      %h3.gl-heading-5.gl-mt-5.gl-mb-0.gl-px-5
+        = _('Available group runners: %{runners}') % { runners: @group_runners_count }
+      %ul.content-list
+        = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
+      = paginate @group_runners, theme: "gitlab", param_name: "group_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }

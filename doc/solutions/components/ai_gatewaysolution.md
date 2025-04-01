@@ -7,7 +7,8 @@ title: AI Gateway Solution
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Pro or Enterprise
+- Tier: Ultimate
+- Add-on: GitLab Duo Pro or Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}

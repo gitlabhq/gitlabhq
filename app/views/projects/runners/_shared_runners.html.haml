@@ -1,13 +1,19 @@
-= render 'shared/runners/shared_runners_description'
-
-#toggle-shared-runners-form{ data: toggle_shared_runners_settings_data(@project) }
-
-- if @shared_runners_count == 0
-  = _('This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.')
-- else
-  %div{ data: { testid: 'available-shared-runners' } }
-    %h5.gl-mt-6.gl-mb-0
-      = s_('Runners|Available instance runners: %{count}') % {count: @shared_runners_count}
-    %ul.bordered-list
-      = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner
-    = paginate @shared_runners, theme: "gitlab", param_name: "shared_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }
+= render ::Layouts::CrudComponent.new(s_('Runners|Available instance runners'),
+  icon: 'users',
+  count: @shared_runners_count,
+  options: { data: { testid: 'available-shared-runners' } }) do |c|
+  - c.with_actions do
+    #toggle-shared-runners-form{ data: toggle_shared_runners_settings_data(@project) }
+  - c.with_description do
+    %span{ data: { testid: 'shared-runners-description' } }
+      - shared_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('ci/runners/runners_scope.md', anchor: 'instance-runners') }
+      = s_('Runners|%{link_start}These runners%{link_end} are available to all groups and projects.').html_safe % { link_start: shared_link_start, link_end: '</a>'.html_safe }
+      - if Gitlab::CurrentSettings.shared_runners_text.present?
+        #js-shared-runners-markdown= markdown(Gitlab::CurrentSettings.current_application_settings.shared_runners_text)
+  - c.with_body do
+    - if @shared_runners_count == 0
+      .gl-text-subtle= _('This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.')
+    - else
+      %ul.content-list
+        = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner
+      = paginate @shared_runners, theme: "gitlab", param_name: "shared_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }

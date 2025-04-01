@@ -271,4 +271,42 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
       expect(helper.group_usage_quotas_url(subgroup1)).to eql(usage_quotas_pipelines_url)
     end
   end
+
+  describe '#permanent_deletion_date_formatted', :freeze_time do
+    before do
+      stub_application_setting(deletion_adjourned_period: 5)
+    end
+
+    context 'when container responds to :self_deletion_scheduled_deletion_created_on' do
+      context 'when container.self_deletion_scheduled_deletion_created_on returns nil' do
+        # FIXME: Replace `double` with `instance_double(Namespace` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+        let(:container) { double(self_deletion_scheduled_deletion_created_on: nil) } # rubocop:disable RSpec/VerifiedDoubles -- We'll solve this with the above task
+
+        it 'returns nil' do
+          expect(permanent_deletion_date_formatted(container)).to be_nil
+        end
+      end
+
+      context 'when container.self_deletion_scheduled_deletion_created_on returns a date' do
+        # FIXME: Replace `double` with `instance_double(Namespace` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+        let(:container) { double(self_deletion_scheduled_deletion_created_on: Date.yesterday) } # rubocop:disable RSpec/VerifiedDoubles -- We'll solve this with the above task
+
+        it 'returns the date formatted' do
+          expect(permanent_deletion_date_formatted(container)).to eq(4.days.from_now.strftime('%F'))
+        end
+      end
+
+      context 'when date is passed as argument' do
+        it 'returns the date formatted' do
+          expect(permanent_deletion_date_formatted(Date.current)).to eq(5.days.from_now.strftime('%F'))
+        end
+      end
+    end
+
+    context 'when a format is given' do
+      it 'returns the date formatted with the given format' do
+        expect(permanent_deletion_date_formatted(Date.current, format: Date::DATE_FORMATS[:medium])).to eq(5.days.from_now.strftime(Date::DATE_FORMATS[:medium]))
+      end
+    end
+  end
 end

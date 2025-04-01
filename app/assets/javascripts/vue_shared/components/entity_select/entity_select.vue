@@ -85,7 +85,6 @@ export default {
       searchString: '',
       items: [],
       page: 1,
-      errorMessage: '',
       ...this.setInitialSelected(),
     };
   },

@@ -25,10 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    group: {
-      type: Object,
-      required: true,
-    },
   },
   CANCEL_PROPS: {
     text: __('Cancel'),

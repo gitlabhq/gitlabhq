@@ -49,4 +49,21 @@ RSpec.describe CloudConnector::ServiceAccessToken, type: :model, feature_categor
       expect(expired_token).to be_expired
     end
   end
+
+  describe '#refresh_required?', :freeze_time do
+    let_it_be(:active_long_lived_token) { create(:service_access_token, expires_at: 3.days.from_now) }
+    let_it_be(:active_short_lived_token) { create(:service_access_token, expires_at: 1.day.from_now) }
+
+    it 'returns false for a token that lives longer 2 days' do
+      expect(active_long_lived_token.refresh_required?).to be false
+    end
+
+    it 'returns true for a token that expires within 2 days' do
+      expect(active_short_lived_token.refresh_required?).to be true
+    end
+
+    it 'returns true for expired token' do
+      expect(expired_token.refresh_required?).to be true
+    end
+  end
 end
