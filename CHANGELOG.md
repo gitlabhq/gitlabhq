@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.4 (2025-04-01)
+
+### Fixed (1 change)
+
+- [Ensure runner taggings are copied from taggings](https://gitlab.com/gitlab-org/gitlab/-/commit/40aa3c8333f19f65f7a74526d61c228e2525f3c0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186278))
+
+### Other (1 change)
+
+- [No-op ci_runner_machines_687967fa8a table backfill migration](https://gitlab.com/gitlab-org/gitlab/-/commit/9339d0b92dae455ad74d27cde67bc897b153eaf8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185303))
+
 ## 17.9.3 (2025-03-26)
 
 ### Fixed (2 changes)
