@@ -1,0 +1,7 @@
+mutation updatePreferences($mergeRequestDashboardListType: MergeRequestsDashboardListType) {
+  userPreferencesUpdate(input: { mergeRequestDashboardListType: $mergeRequestDashboardListType }) {
+    userPreferences {
+      mergeRequestDashboardListType: mergeRequestDashboardListType
+    }
+  }
+}

@@ -5773,8 +5773,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   context 'loose foreign key on ci_pipelines.user_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:model) { create(:ci_pipeline, user: create(:user)) }
-      let!(:parent) { model.user }
+      let(:lfk_column) { :user_id }
+      let_it_be(:model) { create(:ci_pipeline, user: create(:user)) }
+      let_it_be(:parent) { model.user }
     end
   end
 

@@ -55,7 +55,7 @@ export default {
 </script>
 
 <template>
-  <gl-button-group class="gl-z-1">
+  <gl-button-group class="gl-z-1 gl-rounded-lg gl-bg-default">
     <gl-button
       icon="dash"
       :disabled="disableDecrease"
@@ -64,7 +64,7 @@ export default {
     />
     <span
       data-testid="scale-value"
-      class="gl-border-t gl-border-b gl-bg-overlap gl-p-3 gl-text-sm"
+      class="gl-border-t gl-border-b gl-bg-overlap gl-p-3 gl-text-sm dark:gl-border-transparent"
       >{{ scaleLabel }}</span
     >
     <gl-button

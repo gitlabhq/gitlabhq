@@ -3,8 +3,11 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createDefaultClient from '~/lib/graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
+import currentUserPreferencesQuery from './queries/current_user_preferences.query.graphql';
 import App from './components/app.vue';
 import ConfigDropdown from './components/config_dropdown.vue';
 
@@ -83,10 +86,27 @@ export function initMergeRequestDashboard(el) {
     ),
   });
 
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: currentUserPreferencesQuery,
+    data: {
+      currentUser: {
+        id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
+        userPreferences: {
+          listType: el.dataset.listType,
+          __typename: 'UserPreferences',
+        },
+        __typename: 'CurrentUser',
+      },
+    },
+  });
+
   // eslint-disable-next-line no-new
   new Vue({
     el: document.getElementById('js-merge-request-dashboard-config'),
     apolloProvider,
+    provide: {
+      listTypeToggleEnabled: parseBoolean(el.dataset.listTypeToggleEnabled),
+    },
     render(h) {
       return h(ConfigDropdown);
     },

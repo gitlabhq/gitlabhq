@@ -3,6 +3,8 @@
 module Projects
   module ImportExport
     class ExportService < BaseService
+      include Gitlab::InternalEventsTracking
+
       def initialize(*args)
         super
 
@@ -53,6 +55,13 @@ module Projects
 
       def save_all!
         log_info('Project export started')
+
+        track_internal_event(
+          'start_project_export',
+          user: current_user,
+          project: project,
+          namespace: project.namespace
+        )
 
         if save_exporters && save_export_archive
           log_info('Project successfully exported')

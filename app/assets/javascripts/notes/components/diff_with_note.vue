@@ -204,7 +204,7 @@ export default {
             :file-hash="discussion.diff_file.file_hash"
             :show-comment-icon="true"
             :should-toggle-discussion="false"
-            badge-class="image-comment-badge gl-text-purple-500 gl-bg-white gl-rounded-full gl-border-white gl-border-1 gl-border-solid gl-pointer-events-none gl-shadow-md"
+            badge-class="image-comment-badge gl-text-purple-500 gl-bg-default gl-rounded-full gl-border-white gl-border-1 gl-border-solid gl-pointer-events-none gl-shadow-md"
           />
         </template>
       </diff-viewer>

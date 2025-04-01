@@ -9,10 +9,14 @@ RSpec.shared_context 'for loose foreign keys' do
   let(:foreign_key_definition) do
     foreign_keys_for_parent = Gitlab::Database::LooseForeignKeys.definitions_by_table[parent.class.table_name]
 
-    foreign_keys_for_parent.find do |definition|
+    definitions = foreign_keys_for_parent.select do |definition|
       definition.from_table == model.class.table_name &&
         (lfk_column.nil? || definition.options[:column].to_sym == lfk_column.to_sym)
     end
+
+    raise "More than one loose foreign key definition found. Specify :lfk_column" if definitions.length > 1
+
+    definitions.first
   end
 
   def find_model

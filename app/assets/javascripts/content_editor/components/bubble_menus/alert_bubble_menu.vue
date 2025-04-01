@@ -80,7 +80,7 @@ export default {
 <template>
   <editor-state-observer :debounce="0" @transaction="updateAlertTypeToState">
     <bubble-menu
-      class="gl-rounded-base gl-bg-white gl-shadow"
+      class="gl-rounded-base gl-bg-overlap gl-shadow"
       plugin-key="bubbleMenuAlert"
       :should-show="shouldShow"
       :tippy-options="tippyOptions"

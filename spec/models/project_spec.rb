@@ -9697,6 +9697,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   context 'with loose foreign key on projects.creator_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :marked_for_deletion_by_user_id }
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project, creator: parent) }
+    end
+
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :creator_id }
       let_it_be(:parent) { create(:user) }
       let_it_be(:model) { create(:project, creator: parent) }
     end
@@ -9704,6 +9711,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   context 'with loose foreign key on projects.marked_for_deletion_by_user_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :marked_for_deletion_by_user_id }
       let_it_be(:parent) { create(:user) }
       let_it_be(:model) { create(:project, deleting_user: parent) }
     end

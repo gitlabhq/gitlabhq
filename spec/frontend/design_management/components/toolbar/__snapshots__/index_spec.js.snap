@@ -2,7 +2,7 @@
 
 exports[`Design management toolbar component renders design and updated data 1`] = `
 <header
-  class="gl-bg-white gl-border-b gl-flex gl-flex-col gl-justify-between gl-max-w-full gl-pl-5 gl-py-4 js-design-header md:gl-flex-row md:gl-items-center"
+  class="gl-bg-default gl-border-b gl-flex gl-flex-col gl-justify-between gl-max-w-full gl-pl-5 gl-py-4 js-design-header md:gl-flex-row md:gl-items-center"
 >
   <div
     class="gl-flex gl-flex-row gl-items-center gl-mb-3 gl-overflow-hidden md:gl-mb-0"

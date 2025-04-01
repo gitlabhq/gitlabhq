@@ -79,6 +79,16 @@ RSpec.describe GroupClusterablePresenter, feature_category: :environment_managem
     it { is_expected.to eq(group_cluster_path(group, cluster)) }
   end
 
+  describe '#sidebar_text' do
+    subject { presenter.sidebar_text }
+
+    it 'renders correct sidebar text' do
+      is_expected.to eq(s_('ClusterIntegration|Connect your group to a Kubernetes cluster with the GitLab agent and ' \
+        'share the connection across multiple projects. Use review apps, deploy your applications, ' \
+        'and easily run your pipelines for all projects using the same cluster.'))
+    end
+  end
+
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 

@@ -72,5 +72,5 @@ else
   cp -r public/assets ${build_dir}/public/
   cp Dockerfile.assets ${build_dir}/
 
-  docker buildx build --file Dockerfile.assets ${DESTINATIONS} --push $build_dir
+  docker buildx build --file Dockerfile.assets --platform "${ARCH:-linux/amd64}" ${DESTINATIONS} --push $build_dir
 fi

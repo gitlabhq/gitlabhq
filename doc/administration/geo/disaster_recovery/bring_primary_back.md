@@ -101,7 +101,7 @@ When a secondary site is added, if it contains data that would otherwise be sync
 
 - Git repositories are transferred by `git fetch`, which only transfers missing refs.
 - Geo's container registry sync code compares tags and only pulls missing tags.
-- [Blobs/files](#skipping-re-transfer-of-blobs-or-files) are skipped if they exist on the first sync.
+- [Blobs](#skipping-re-transfer-of-blobs) are skipped if they exist on the first sync.
 
 Use-cases:
 
@@ -113,7 +113,7 @@ Use-cases:
 - You delete or truncate registry table rows in the Geo tracking database to workaround a problem.
 - You reset the Geo tracking database to workaround a problem.
 
-### Skipping re-transfer of blobs or files
+### Skipping re-transfer of blobs
 
 {{< history >}}
 
@@ -122,7 +122,7 @@ Use-cases:
 
 {{< /history >}}
 
-When you add a secondary site which has preexisting file data, then the secondary Geo site will avoid re-transferring that data. This applies to:
+When you add a secondary site which has preexisting blobs data, then the secondary Geo site will avoid re-transferring that data. This applies to:
 
 - CI job artifacts
 - CI pipeline artifacts
@@ -136,6 +136,6 @@ When you add a secondary site which has preexisting file data, then the secondar
 - Dependency proxy manifests
 - Dependency proxy blobs
 
-If the secondary site's copy is actually corrupted, then background verification will eventually fail, and the file will be resynced.
+If the secondary site's copy is actually corrupted, then background verification will eventually fail, and the blob will be resynced.
 
-Files will only be skipped in this manner if they do not have a corresponding registry record in the Geo tracking database. The conditions are strict because resyncing is almost always intentional, and we cannot risk mistakenly skipping a transfer.
+Blobs will only be skipped in this manner if they do not have a corresponding registry record in the Geo tracking database. The conditions are strict because resyncing is almost always intentional, and we cannot risk mistakenly skipping a transfer.

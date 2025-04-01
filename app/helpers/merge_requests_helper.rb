@@ -474,7 +474,99 @@ module MergeRequestsHelper
     { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
   end
 
+  def merge_request_dashboard_role_based_data
+    {
+      tabs: [
+        {
+          title: s_('MergeRequestsTab|Active'),
+          key: '',
+          lists: [
+            [
+              {
+                id: 'reviews',
+                title: _('Reviewer (Active)'),
+                helpContent: _(''),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[UNREVIEWED REVIEW_STARTED UNAPPROVED],
+                  perPage: 10
+                }
+              },
+              {
+                id: 'reviews_inactive',
+                title: _('Reviewer (Inactive)'),
+                hideCount: true,
+                helpContent: _(''),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
+                  perPage: 10
+                }
+              },
+              {
+                id: 'assigned',
+                title: _('Assigned (Active)'),
+                helpContent: _(''),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[REQUESTED_CHANGES REVIEWED],
+                  perPage: 10
+                }
+              },
+              {
+                id: 'assigned_inactive',
+                title: _('Assigned (Inactive)'),
+                hideCount: true,
+                helpContent: _(''),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
+                  perPage: 10
+                }
+              }
+            ]
+          ]
+        },
+        {
+          title: s_('MergeRequestsTab|Merged'),
+          key: 'merged',
+          lists: [
+            [
+              {
+                id: 'merged_recently_reviews',
+                title: _('Reviews'),
+                helpContent: _(''),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
+              },
+              {
+                id: 'merged_recently_assigned',
+                title: _('Assigned'),
+                helpContent: _(''),
+                query: 'assignedMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  end
+
   def merge_request_dashboard_data
+    if Feature.enabled?(:mr_dashboard_list_type_toggle, current_user, type: :beta) &&
+        current_user.merge_request_dashboard_list_type == 'role_based'
+      return merge_request_dashboard_role_based_data
+    end
+
     {
       tabs: [
         {

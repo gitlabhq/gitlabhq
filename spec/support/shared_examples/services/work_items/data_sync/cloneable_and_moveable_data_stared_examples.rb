@@ -334,6 +334,9 @@ RSpec.shared_examples 'for clone and move services' do
       # Designs are only available for project level work items so we will skip the spec group level work items.
       next if widget[:assoc_name] == :designs && original_work_item.project.blank?
 
+      task_unsupported_eval_values = [:wi_epic, :wi_weights_source, :wi_linked_items]
+      next if task_unsupported_eval_values.include?(widget[:eval_value]) && new_work_item.work_item_type.task?
+
       widget_value = send(widget[:eval_value], new_work_item)
 
       if widget[:operations].include?(described_class)

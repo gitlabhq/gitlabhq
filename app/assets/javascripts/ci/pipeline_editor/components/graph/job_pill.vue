@@ -61,7 +61,7 @@ export default {
     <tooltip-on-truncate :title="jobName" truncate-target="child" placement="top">
       <div
         :id="id"
-        class="gl-relative gl-z-1 gl-mb-3 gl-truncate gl-rounded-6 gl-bg-white gl-px-5 gl-py-3 gl-text-center gl-shadow-inner-1-gray-100 gl-duration-slow gl-ease-ease"
+        class="gl-relative gl-z-1 gl-mb-3 gl-truncate gl-rounded-6 gl-bg-default gl-px-5 gl-py-3 gl-text-center gl-shadow-inner-1-gray-100 gl-duration-slow gl-ease-ease"
         :class="jobPillClasses"
         @mouseover="onMouseEnter"
         @mouseleave="onMouseLeave"

@@ -8502,6 +8502,12 @@ msgstr ""
 msgid "Assigned %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
+msgid "Assigned (Active)"
+msgstr ""
+
+msgid "Assigned (Inactive)"
+msgstr ""
+
 msgid "Assigned issues"
 msgstr ""
 
@@ -9976,6 +9982,9 @@ msgid "Blame|Newer"
 msgstr ""
 
 msgid "Blame|Older"
+msgstr ""
+
+msgid "Blob"
 msgstr ""
 
 msgid "BlobViewer|Copy contents"
@@ -13810,9 +13819,6 @@ msgstr ""
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
-msgstr ""
-
 msgid "ClusterIntegration|Adding a Kubernetes cluster will automatically share the cluster across all projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr ""
 
@@ -13892,6 +13898,9 @@ msgid "ClusterIntegration|Connect a Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}."
+msgstr ""
+
+msgid "ClusterIntegration|Connect your group to a Kubernetes cluster with the GitLab agent and share the connection across multiple projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Connection Error"
@@ -21853,6 +21862,9 @@ msgid "Display milestones"
 msgstr ""
 
 msgid "Display name"
+msgstr ""
+
+msgid "Display preferences"
 msgstr ""
 
 msgid "Display progress of child issues"
@@ -38296,6 +38308,9 @@ msgstr ""
 msgid "My reaction"
 msgstr ""
 
+msgid "My reviews and assigned"
+msgstr ""
+
 msgid "My topic"
 msgstr ""
 
@@ -39059,6 +39074,9 @@ msgid "Next scan"
 msgstr ""
 
 msgid "Next step"
+msgstr ""
+
+msgid "Next step in review workflow"
 msgstr ""
 
 msgid "Next unresolved thread"
@@ -50152,6 +50170,12 @@ msgid_plural "%d Reviewers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Reviewer (Active)"
+msgstr ""
+
+msgid "Reviewer (Inactive)"
+msgstr ""
+
 msgid "Reviewer commented"
 msgstr ""
 
@@ -50168,6 +50192,9 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
+msgstr ""
+
+msgid "Reviews"
 msgstr ""
 
 msgid "Revoke"
@@ -60145,6 +60172,9 @@ msgstr ""
 msgid "There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
+msgid "There was an error updating your display preferences."
+msgstr ""
+
 msgid "There was an error when reseting email token."
 msgstr ""
 
@@ -67841,6 +67871,9 @@ msgid "WorkItem|the following items"
 msgstr ""
 
 msgid "WorkItem|ticket"
+msgstr ""
+
+msgid "Workflow"
 msgstr ""
 
 msgid "Workspaces"

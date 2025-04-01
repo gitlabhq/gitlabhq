@@ -15,6 +15,8 @@ Some examples of Python in our codebase:
 - [Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
 - [CloudConnector Python library](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/tree/main/src/python)
 
+This documentation does not cover guidelines for Python usage on Data Science projects. For those, refer to the [Data Team Platform Guide](https://handbook.gitlab.com/handbook/enterprise-data/platform/python-guide/).
+
 ## Design principles
 
 - Tooling should help contributors achieve their goals, both on short and long term.

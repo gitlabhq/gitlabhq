@@ -33,7 +33,7 @@ For GitLab Runner to function, you _must_ specify the following in your
   either of the following tokens:
 
   - `runnerToken`: The runner authentication token for the runner configuration [created in the GitLab UI](../../../../../ci/runners/runners_scope.md).
-  - `runnerRegistrationToken` ([deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102681) in GitLab 15.6 and scheduled to be removed in GitLab 17.0): The registration token for used to add new runners to GitLab.
+  - `runnerRegistrationToken` ([deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102681) in GitLab 15.6 and is planned for removal in GitLab 20.0.): The registration token for used to add new runners to GitLab.
 
 These values can be specified using [CI/CD variables](../../../../../ci/variables/_index.md):
 

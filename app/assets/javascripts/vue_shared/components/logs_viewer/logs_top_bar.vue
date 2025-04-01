@@ -40,7 +40,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-sticky gl-bg-white" :class="headerTopClass">
+  <div class="gl-sticky gl-bg-default" :class="headerTopClass">
     <div class="gl-border gl-flex gl-flex-wrap gl-items-center">
       <gl-button
         class="gl-m-3"

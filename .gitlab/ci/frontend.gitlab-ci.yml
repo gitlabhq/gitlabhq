@@ -40,6 +40,7 @@ compile-production-assets:
     - $GITLAB_LARGE_RUNNER_OPTIONAL
   variables:
     GLCI_BUILD_ASSETS_IMAGE: "true"
+    ARCH: linux/amd64,linux/arm64
   before_script:
     - !reference [.compile-assets-base, before_script]
     - !reference [.buildx-setup, before_script]

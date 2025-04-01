@@ -41,7 +41,7 @@ export default {
 <template>
   <div
     data-testid="helpPane"
-    class="sidebar-help-state gl-border-1 gl-border-default gl-bg-white gl-border-b-solid gl-border-t-solid"
+    class="sidebar-help-state gl-border-1 gl-border-default gl-bg-default gl-border-b-solid gl-border-t-solid"
   >
     <div class="time-tracking-info">
       <h4>{{ __('Track time with quick actions') }}</h4>

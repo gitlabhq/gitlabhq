@@ -207,7 +207,7 @@ export default {
   >
     <bubble-menu
       data-testid="media-bubble-menu"
-      class="gl-rounded-base gl-bg-white gl-shadow"
+      class="gl-rounded-base gl-bg-overlap gl-shadow"
       plugin-key="bubbleMenuMedia"
       :should-show="shouldShow"
       @show="updateMediaInfoToState"

@@ -56,7 +56,7 @@ export const CLUSTER_TYPES = {
 export const MAX_REQUESTS = 3;
 
 export const STATUSES = {
-  default: { className: 'gl-bg-white', title: __('Unknown') },
+  default: { className: 'gl-bg-default', title: __('Unknown') },
   disabled: { className: 'disabled', title: __('Disabled') },
   created: { className: 'bg-success', title: __('Connected') },
   unreachable: { className: 'bg-danger', title: __('Unreachable') },

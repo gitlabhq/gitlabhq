@@ -147,6 +147,7 @@ RSpec.describe Ci::JobToken::GroupScopeLink, feature_category: :continuous_integ
 
   context 'when group gets deleted, it loses the foreign key on ci_job_token_group_scope_links.target_group_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :target_group_id }
       let_it_be(:parent) { create(:group) }
       let_it_be(:model) { create(:ci_job_token_group_scope_link, target_group: parent) }
     end
@@ -154,6 +155,7 @@ RSpec.describe Ci::JobToken::GroupScopeLink, feature_category: :continuous_integ
 
   context 'when project gets deleted, it looses the foreign key on ci_job_token_group_scope_links.source_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :source_project_id }
       let_it_be(:parent) { create(:project, namespace: group) }
       let_it_be(:model) { create(:ci_job_token_project_scope_link, source_project: parent) }
     end

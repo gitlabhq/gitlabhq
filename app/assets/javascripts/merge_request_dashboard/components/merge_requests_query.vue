@@ -16,8 +16,8 @@ export default {
       },
       variables() {
         return {
-          ...this.variables,
           perPage: PER_PAGE,
+          ...this.variables,
         };
       },
       error() {
@@ -71,7 +71,8 @@ export default {
     },
     variables: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     hideCount: {
       type: Boolean,

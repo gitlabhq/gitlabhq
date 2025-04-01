@@ -29,7 +29,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
 
   In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register runners.
-  The legacy workflow that uses registration tokens is now disabled by default in GitLab 17.0 and will be removed in GitLab 18.0.
+  The legacy workflow that uses registration tokens is now disabled by default in GitLab 17.0 and is planned for removal in GitLab 20.0.
   If registration tokens are still being used, upgrading to GitLab 17.0 will cause runner registration to fail.
 
 - Gitaly storages can no longer share the same path as in this example:

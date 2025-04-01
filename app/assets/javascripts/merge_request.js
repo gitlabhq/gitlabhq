@@ -154,6 +154,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
 
   if (titleEl) {
     titleEl.textContent = title;
+    document.title = title;
   }
 
   const draftToggles = document.querySelectorAll('.js-draft-toggle-button');

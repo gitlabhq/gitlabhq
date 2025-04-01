@@ -16,6 +16,18 @@ class ApplicationSetting < ApplicationRecord
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
+  ignore_columns %i[
+    package_registry_allow_anyone_to_pull_option
+    package_registry_cleanup_policies_worker_capacity
+    packages_cleanup_package_file_worker_capacity
+    npm_package_requests_forwarding
+    lock_npm_package_requests_forwarding
+    maven_package_requests_forwarding
+    lock_maven_package_requests_forwarding
+    pypi_package_requests_forwarding
+    lock_pypi_package_requests_forwarding
+  ], remove_with: '18.1', remove_after: '2025-05-20'
+
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin area > Settings > General > Kroki'
 
@@ -34,11 +46,11 @@ class ApplicationSetting < ApplicationRecord
   # matches the size set in the database constraint
   DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
-  PACKAGE_REGISTRY_SETTINGS = [:nuget_skip_metadata_url_validation].freeze
-
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
 
   INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
+
+  DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
 
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
@@ -729,11 +741,18 @@ class ApplicationSetting < ApplicationRecord
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
 
-  DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
-
   jsonb_accessor :package_registry,
     nuget_skip_metadata_url_validation: [:boolean, { default: false }],
-    helm_max_packages_count: [:integer, { default: DEFAULT_HELM_MAX_PACKAGES_COUNT }]
+    helm_max_packages_count: [:integer, { default: DEFAULT_HELM_MAX_PACKAGES_COUNT }],
+    package_registry_allow_anyone_to_pull_option: [:boolean, { default: true }],
+    package_registry_cleanup_policies_worker_capacity: [:integer, { default: 2 }],
+    packages_cleanup_package_file_worker_capacity: [:integer, { default: 2 }],
+    npm_package_requests_forwarding: [:boolean, { default: true }],
+    lock_npm_package_requests_forwarding: [:boolean, { default: false }],
+    maven_package_requests_forwarding: [:boolean, { default: true }],
+    lock_maven_package_requests_forwarding: [:boolean, { default: false }],
+    pypi_package_requests_forwarding: [:boolean, { default: true }],
+    lock_pypi_package_requests_forwarding: [:boolean, { default: false }]
 
   validates :helm_max_packages_count,
     presence: true,
@@ -813,8 +832,18 @@ class ApplicationSetting < ApplicationRecord
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1,
                     message: N_('must be a value between 0 and 1') }
 
-  validates :package_registry_allow_anyone_to_pull_option,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  with_options(inclusion: { in: [true, false], message: N_('must be a boolean value') }) do
+    validates(
+      :package_registry_allow_anyone_to_pull_option,
+      :nuget_skip_metadata_url_validation,
+      :npm_package_requests_forwarding,
+      :lock_npm_package_requests_forwarding,
+      :pypi_package_requests_forwarding,
+      :lock_pypi_package_requests_forwarding,
+      :maven_package_requests_forwarding,
+      :lock_maven_package_requests_forwarding
+    )
+  end
 
   validates :security_txt_content,
     length: { maximum: 2_048, message: N_('is too long (maximum is %{count} characters)') },

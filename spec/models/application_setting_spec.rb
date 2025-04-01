@@ -18,70 +18,80 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   it { expect(setting).to have_db_column(:auto_devops_enabled) }
 
   describe 'default values' do
-    subject(:setting) { described_class.new }
+    subject { described_class.new }
 
-    it { expect(setting.id).to eq(1) }
-    it { expect(setting.repository_storages_weighted).to eq({}) }
-    it { expect(setting.kroki_formats).to eq({}) }
-    it { expect(setting.default_branch_protection_defaults).to eq({}) }
-    it { expect(setting.enforce_email_subaddress_restrictions).to be(false) }
-    it { expect(setting.helm_max_packages_count).to eq(1000) }
-    it { expect(setting.max_decompressed_archive_size).to eq(25600) }
-    it { expect(setting.decompress_archive_file_timeout).to eq(210) }
-    it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
-    it { expect(setting.allow_project_creation_for_guest_and_below).to be(true) }
-    it { expect(setting.members_delete_limit).to eq(60) }
-    it { expect(setting.downstream_pipeline_trigger_limit_per_project_user_sha).to eq(0) }
-    it { expect(setting.asciidoc_max_includes).to eq(32) }
-    it { expect(setting.concurrent_github_import_jobs_limit).to eq(1000) }
-    it { expect(setting.concurrent_bitbucket_import_jobs_limit).to eq(100) }
-    it { expect(setting.concurrent_bitbucket_server_import_jobs_limit).to eq(100) }
-    it { expect(setting.nuget_skip_metadata_url_validation).to be(false) }
-    it { expect(setting.silent_admin_exports_enabled).to be(false) }
-    it { expect(setting.autocomplete_users_limit).to eq(300) }
-    it { expect(setting.autocomplete_users_unauthenticated_limit).to eq(100) }
-    it { expect(setting.group_api_limit).to eq(400) }
-    it { expect(setting.group_invited_groups_api_limit).to eq(60) }
-    it { expect(setting.group_projects_api_limit).to eq(600) }
-    it { expect(setting.group_shared_groups_api_limit).to eq(60) }
-    it { expect(setting.groups_api_limit).to eq(200) }
-    it { expect(setting.create_organization_api_limit).to eq(10) }
-    it { expect(setting.organization_cluster_agent_authorization_enabled).to be(false) }
-    it { expect(setting.project_api_limit).to eq(400) }
-    it { expect(setting.project_invited_groups_api_limit).to eq(60) }
-    it { expect(setting.projects_api_limit).to eq(2000) }
-    it { expect(setting.instance_token_prefix).to eq('gl') }
-    it { expect(setting.use_clickhouse_for_analytics).to be false }
-    it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
-    it { expect(setting.user_projects_api_limit).to eq(300) }
-    it { expect(setting.user_starred_projects_api_limit).to eq(100) }
-    it { expect(setting.users_api_limit_followers).to eq(100) }
-    it { expect(setting.users_api_limit_following).to eq(100) }
-    it { expect(setting.users_api_limit_status).to eq(240) }
-    it { expect(setting.users_api_limit_ssh_keys).to eq(120) }
-    it { expect(setting.users_api_limit_ssh_key).to eq(120) }
-    it { expect(setting.users_api_limit_gpg_keys).to eq(120) }
-    it { expect(setting.users_api_limit_gpg_key).to eq(120) }
-    it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to be(false) }
-    it { expect(setting.root_moved_permanently_redirection).to be(false) }
-    it { expect(setting.resource_usage_limits).to eq({}) }
-    it { expect(setting.resource_access_token_notify_inherited).to be(false) }
-    it { expect(setting.lock_resource_access_token_notify_inherited).to be(false) }
-    it { expect(setting.ropc_without_client_credentials).to be(true) }
-    it { expect(setting.global_search_issues_enabled).to be(true) }
-    it { expect(setting.global_search_merge_requests_enabled).to be(true) }
-    it { expect(setting.global_search_snippet_titles_enabled).to be(true) }
-    it { expect(setting.global_search_users_enabled).to be(true) }
-    it { expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false }) }
-    it { expect(setting.vscode_extension_marketplace_enabled?).to be(false) }
-    it { expect(setting.global_search_block_anonymous_searches_enabled).to be(false) }
-
-    it do
-      expect(setting.sign_in_restrictions).to eq({
-        'disable_password_authentication_for_users_with_sso_identities' => false,
-        'root_moved_permanently_redirection' => false,
-        'session_expire_from_init' => false
-      })
+    it 'has correct default values' do
+      is_expected.to have_attributes(
+        id: 1,
+        repository_storages_weighted: {},
+        kroki_formats: {},
+        default_branch_protection_defaults: {},
+        enforce_email_subaddress_restrictions: false,
+        helm_max_packages_count: 1000,
+        max_decompressed_archive_size: 25600,
+        decompress_archive_file_timeout: 210,
+        bulk_import_concurrent_pipeline_batch_limit: 25,
+        allow_project_creation_for_guest_and_below: true,
+        members_delete_limit: 60,
+        downstream_pipeline_trigger_limit_per_project_user_sha: 0,
+        asciidoc_max_includes: 32,
+        concurrent_github_import_jobs_limit: 1000,
+        concurrent_bitbucket_import_jobs_limit: 100,
+        concurrent_bitbucket_server_import_jobs_limit: 100,
+        nuget_skip_metadata_url_validation: false,
+        silent_admin_exports_enabled: false,
+        autocomplete_users_limit: 300,
+        autocomplete_users_unauthenticated_limit: 100,
+        group_api_limit: 400,
+        group_invited_groups_api_limit: 60,
+        group_projects_api_limit: 600,
+        group_shared_groups_api_limit: 60,
+        groups_api_limit: 200,
+        create_organization_api_limit: 10,
+        organization_cluster_agent_authorization_enabled: false,
+        project_api_limit: 400,
+        project_invited_groups_api_limit: 60,
+        projects_api_limit: 2000,
+        instance_token_prefix: 'gl',
+        use_clickhouse_for_analytics: false,
+        user_contributed_projects_api_limit: 100,
+        user_projects_api_limit: 300,
+        user_starred_projects_api_limit: 100,
+        users_api_limit_followers: 100,
+        users_api_limit_following: 100,
+        users_api_limit_status: 240,
+        users_api_limit_ssh_keys: 120,
+        users_api_limit_ssh_key: 120,
+        users_api_limit_gpg_keys: 120,
+        users_api_limit_gpg_key: 120,
+        disable_password_authentication_for_users_with_sso_identities: false,
+        root_moved_permanently_redirection: false,
+        resource_usage_limits: {},
+        resource_access_token_notify_inherited: false,
+        lock_resource_access_token_notify_inherited: false,
+        ropc_without_client_credentials: true,
+        global_search_issues_enabled: true,
+        global_search_merge_requests_enabled: true,
+        global_search_snippet_titles_enabled: true,
+        global_search_users_enabled: true,
+        vscode_extension_marketplace: { 'enabled' => false },
+        vscode_extension_marketplace_enabled?: false,
+        global_search_block_anonymous_searches_enabled: false,
+        package_registry_allow_anyone_to_pull_option: true,
+        package_registry_cleanup_policies_worker_capacity: 2,
+        packages_cleanup_package_file_worker_capacity: 2,
+        npm_package_requests_forwarding: true,
+        lock_npm_package_requests_forwarding: false,
+        maven_package_requests_forwarding: true,
+        lock_maven_package_requests_forwarding: false,
+        pypi_package_requests_forwarding: true,
+        lock_pypi_package_requests_forwarding: false,
+        sign_in_restrictions: {
+          'disable_password_authentication_for_users_with_sso_identities' => false,
+          'root_moved_permanently_redirection' => false,
+          'session_expire_from_init' => false
+        }
+      )
     end
   end
 
@@ -262,6 +272,24 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to allow_values([true, false]).for(:enforce_ci_inbound_job_token_scope_enabled) }
     it { is_expected.not_to allow_value(nil).for(:enforce_ci_inbound_job_token_scope_enabled) }
+
+    it { is_expected.to allow_values([true, false]).for(:package_registry_allow_anyone_to_pull_option) }
+    it { is_expected.not_to allow_value(nil).for(:package_registry_allow_anyone_to_pull_option) }
+
+    it { is_expected.to allow_values([true, false]).for(:npm_package_requests_forwarding) }
+    it { is_expected.to allow_values([true, false]).for(:lock_npm_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:npm_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:lock_npm_package_requests_forwarding) }
+
+    it { is_expected.to allow_values([true, false]).for(:maven_package_requests_forwarding) }
+    it { is_expected.to allow_values([true, false]).for(:lock_maven_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:maven_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:lock_maven_package_requests_forwarding) }
+
+    it { is_expected.to allow_values([true, false]).for(:pypi_package_requests_forwarding) }
+    it { is_expected.to allow_values([true, false]).for(:lock_pypi_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
 
     context 'for non-null integer attributes starting from 0' do
       where(:attribute) do

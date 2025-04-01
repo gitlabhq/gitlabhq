@@ -3,7 +3,7 @@
 class Groups::ClustersController < ::Clusters::ClustersController
   include ControllerWithCrossProjectAccessCheck
 
-  before_action :ensure_feature_enabled!, except: [:index] # rubocop:disable Rails/LexicallyScopedActionFilter -- The index action is defined in the parent controller
+  before_action :ensure_feature_enabled!, except: [:index, :new_cluster_docs] # rubocop:disable Rails/LexicallyScopedActionFilter -- The index action is defined in the parent controller
   requires_cross_project_access
 
   layout 'group'

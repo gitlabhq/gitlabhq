@@ -1043,8 +1043,14 @@ Example response:
 
 {{< alert type="warning" >}}
 
-Runner registration tokens and support for certain configuration arguments were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. These features are scheduled for removal in GitLab 17.0.
-After GitLab 17.0, you can no longer reset runner registration tokens and the `reset_registration_token` endpoint cannot function.
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+
+For more information, see
+[Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 {{< /alert >}}
 
@@ -1063,8 +1069,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< alert type="warning" >}}
 
-Runner registration tokens and support for certain configuration arguments were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. These features scheduled for removal in GitLab 17.0.
-After GitLab 17.0, you can no longer reset runner registration tokens and the `reset_registration_token` endpoint cannot function.
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
+[Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 {{< /alert >}}
 
@@ -1083,8 +1094,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< alert type="warning" >}}
 
-Runner registration tokens and support for certain configuration arguments were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. These features are scheduled for removal in GitLab 17.0.
-After GitLab 17.0, you can no longer reset runner registration tokens and the `reset_registration_token` endpoint cannot function.
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
+[Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 {{< /alert >}}
 

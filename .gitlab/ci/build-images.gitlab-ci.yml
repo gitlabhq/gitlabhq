@@ -63,6 +63,7 @@ build-assets-image:
   needs: ["compile-production-assets"]
   variables:
     GLCI_BUILD_ASSETS_IMAGE: "true"
+    ARCH: linux/amd64,linux/arm64
   script:
     - scripts/build_assets_image
   artifacts:

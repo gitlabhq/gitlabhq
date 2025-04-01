@@ -68,7 +68,7 @@ export default {
 };
 </script>
 <template>
-  <section class="gl-m-3 gl-flex gl-bg-white">
+  <section class="gl-m-3 gl-flex gl-bg-default">
     <div class="gl-flex gl-flex-col">
       <label :for="stableWeightId" :class="$options.css.label" class="gl-rounded-tl-base">
         {{ $options.translations.stableLabel }}

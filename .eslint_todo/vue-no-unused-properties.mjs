@@ -532,7 +532,6 @@ export default {
     'ee/app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_multi_select.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_single_select.vue',
-    'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_text.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_development/work_item_development_ff_item.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_health_status.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_iteration.vue',

@@ -70,7 +70,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
-    expect(bubbleMenu.classes()).toEqual(['gl-rounded-base', 'gl-bg-white', 'gl-shadow']);
+    expect(bubbleMenu.classes()).toEqual(['gl-rounded-base', 'gl-bg-overlap', 'gl-shadow']);
   });
 
   it('selects plaintext language by default', async () => {

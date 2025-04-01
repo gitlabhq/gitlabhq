@@ -35,7 +35,7 @@ export default {
     <gl-single-stat
       v-for="(stat, index) in stats"
       :key="index"
-      class="gl-border gl-mx-3 gl-mt-3 gl-w-full gl-cursor-pointer gl-flex-col gl-items-center gl-justify-center gl-border-alpha-dark-8 gl-bg-white gl-p-3"
+      class="gl-border gl-mx-3 gl-mt-3 gl-w-full gl-cursor-pointer gl-flex-col gl-items-center gl-justify-center gl-border-alpha-dark-8 gl-bg-default gl-p-3"
       :value="stat.value"
       :title="stat.title"
       :class="{ 'gl-shadow-inner-b-2-blue-500': active === stat.title }"

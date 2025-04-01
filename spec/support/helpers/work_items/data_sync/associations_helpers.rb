@@ -35,7 +35,6 @@ module WorkItems
         start_and_due_date: [:dates_source],
         time_tracking: [:timelogs],
         rolledup_dates: [],
-        status: [],
         weight: [:weights_source]
       }.freeze
 

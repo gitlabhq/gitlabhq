@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlToggle } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -67,7 +67,7 @@ describe('Merge request dashboard config dropdown component', () => {
 
       createComponent(isShowingLabels);
 
-      wrapper.findComponent(GlDisclosureDropdownItem).vm.$emit('action');
+      wrapper.findComponent(GlToggle).vm.$emit('change');
 
       await waitForPromises();
 
@@ -91,7 +91,7 @@ describe('Merge request dashboard config dropdown component', () => {
     async ({ isShowingLabels, mutationValue }) => {
       createComponent(isShowingLabels);
 
-      wrapper.findComponent(GlDisclosureDropdownItem).vm.$emit('action');
+      wrapper.findComponent(GlToggle).vm.$emit('change');
 
       await nextTick();
 

@@ -157,7 +157,7 @@ export default {
   <editor-state-observer :debounce="0" @transaction="updateReferenceInfoToState">
     <bubble-menu
       v-show="isExpandable"
-      class="gl-rounded-base gl-bg-white gl-shadow"
+      class="gl-rounded-base gl-bg-overlap gl-shadow"
       plugin-key="bubbleMenuReference"
       :should-show="shouldShow"
       :tippy-options="$options.tippyOptions"

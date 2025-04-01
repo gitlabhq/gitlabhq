@@ -40,36 +40,36 @@ verification methods:
 | Git      | Project Snippets                                | Geo with Gitaly                              | Gitaly Checksum               |
 | Git      | Personal Snippets                               | Geo with Gitaly                              | Gitaly Checksum               |
 | Git      | Group wiki repository                           | Geo with Gitaly                              | Gitaly Checksum               |
-| Blobs    | User uploads _(file system)_                    | Geo with API                                 | SHA256 checksum               |
-| Blobs    | User uploads _(object storage)_                 | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | LFS objects _(file system)_                     | Geo with API                                 | SHA256 checksum               |
-| Blobs    | LFS objects _(object storage)_                  | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | CI job artifacts _(file system)_                | Geo with API                                 | SHA256 checksum               |
-| Blobs    | CI job artifacts _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Archived CI build traces _(file system)_        | Geo with API                                 | _Not implemented_             |
-| Blobs    | Archived CI build traces _(object storage)_     | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
-| Blobs    | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Package registry _(file system)_                | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Package registry _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Terraform Module Registry _(file system)_       | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
-| Blobs    | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
-| Blobs    | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
-| Blobs    | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Dependency Proxy Images_(file system)_          | Geo with API                                 | SHA256 checksum               |
-| Blobs    | Dependency Proxy Images _(object storage)_      | Geo with API/managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | User uploads _(file system)_                    | Geo with API                                 | SHA256 checksum               |
+| Blob     | User uploads _(object storage)_                 | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | LFS objects _(file system)_                     | Geo with API                                 | SHA256 checksum               |
+| Blob     | LFS objects _(object storage)_                  | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | CI job artifacts _(file system)_                | Geo with API                                 | SHA256 checksum               |
+| Blob     | CI job artifacts _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Archived CI build traces _(file system)_        | Geo with API                                 | _Not implemented_             |
+| Blob     | Archived CI build traces _(object storage)_     | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
+| Blob     | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
+| Blob     | Package registry _(file system)_                | Geo with API                                 | SHA256 checksum               |
+| Blob     | Package registry _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Terraform Module Registry _(file system)_       | Geo with API                                 | SHA256 checksum               |
+| Blob     | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
+| Blob     | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
+| Blob     | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
+| Blob     | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |
+| Blob     | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
+| Blob     | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
+| Blob     | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
+| Blob     | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob     | Dependency Proxy Images_(file system)_          | Geo with API                                 | SHA256 checksum               |
+| Blob     | Dependency Proxy Images _(object storage)_      | Geo with API/managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 
 **Footnotes:**
 

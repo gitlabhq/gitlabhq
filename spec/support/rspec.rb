@@ -16,6 +16,8 @@ require 'gitlab/utils/all'
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
 RSpec.configure do |config|
+  config.shared_context_metadata_behavior = :apply_to_host_groups
+
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/379686
   config.threadsafe = false
 

@@ -194,9 +194,12 @@ To work around this issue, ensure that the instance runner settings are consiste
 
 {{< alert type="warning" >}}
 
-The option to pass a runner registration token and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
-in GitLab 18.0. Use runner authentication tokens instead. For more information, see
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 {{< /alert >}}
@@ -1039,10 +1042,13 @@ variables:
 
 {{< /history >}}
 
-Runners can generate and produce provenance metadata for all build artifacts.
+Runners can generate an [SLSA Provenance](https://slsa.dev/spec/v1.0/provenance)
+and produce an [SLSA Statement](https://slsa.dev/spec/v1.0/attestation-model#model-and-terminology)
+that binds the provenance to all build artifacts.
+The statement is called artifact provenance metadata.
 
-To enable artifact provenance data, set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment
-variable to `true`. You can set the variable as global or for individual jobs:
+To enable artifact provenance metadata, set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment
+variable to `true`. You can set the variable globally or for individual jobs:
 
 ```yaml
 variables:
@@ -1061,9 +1067,9 @@ defined in the `.gitlab-ci.yml` file. If the name is not defined, the default fi
 
 ### Provenance metadata format
 
-The provenance metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [1.0](https://github.com/in-toto/attestation/tree/v1.0/spec).
-
-To use an SLSA v1.0 statement, set the `SLSA_PROVENANCE_SCHEMA_VERSION=v1` variable in the `.gitlab-ci.yml` file.
+The artifact provenance metadata is generated in the
+[in-toto v0.1 Statement](https://github.com/in-toto/attestation/tree/v0.1.0/spec#statement) format.
+It contains a provenance predicate generated in the [SLSA 1.0 Provenance](https://slsa.dev/spec/v1.0/provenance) format.
 
 The following fields are populated by default:
 
@@ -1072,199 +1078,21 @@ The following fields are populated by default:
 | `_type` | `https://in-toto.io/Statement/v0.1` |
 | `subject.name` | The filename of the artifact. |
 | `subject.digest.sha256` | The artifact's `sha256` checksum. |
-| `predicateType` | `https://slsa.dev/provenance/v0.2` |
-| `predicate.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example v15.0.0 |
-| `predicate.builder.id` | A URI pointing to the runner details page, for example `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
-| `predicate.invocation.configSource.uri` | ``https://gitlab.example.com/.../{PROJECT_NAME}`` |
-| `predicate.invocation.configSource.digest.sha256` | The repository's `sha256` checksum. |
-| `predicate.invocation.configSource.entryPoint` | The name of the CI job that triggered the build. |
-| `predicate.invocation.environment.name` | The name of the runner. |
-| `predicate.invocation.environment.executor` | The runner executor. |
-| `predicate.invocation.environment.architecture` | The architecture on which the CI job is run. |
-| `predicate.invocation.parameters` | The names of any CI/CD or environment variables that were present when the build command was run. The value is always represented as an empty string to avoid leaking any secrets. |
-| `metadata.buildStartedOn` | The time when the build was started. `RFC3339` formatted. |
-| `metadata.buildEndedOn` | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
-| `metadata.reproducible` | Whether the build is reproducible by gathering all the generated metadata. Always `false`. |
-| `metadata.completeness.parameters` | Whether the parameters are supplied. Always `true`. |
-| `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
-| `metadata.completeness.materials` | Whether the build materials are reported. Always `false`. |
-
-An example of provenance metadata that the GitLab Runner might generate is as follows:
-
-```json
-{
- "_type": "https://in-toto.io/Statement/v0.1",
- "predicateType": "https://slsa.dev/provenance/v1",
- "subject": [
-  {
-   "name": "build/pico_w/wifi/blink/picow_blink.uf2",
-   "digest": {
-    "sha256": "f5a381a3fdf095a88fb928094f0e38cf269d226b07414369e8906d749634c090"
-   }
-  },
-  {
-   "name": "build/pico_w/wifi/blink/picow_blink.0.1.148-2-new-feature49.cosign.bundle",
-   "digest": {
-    "sha256": "f8762bf0b3ea1b88550b755323bf04417c2bbe9e50010cfcefc1fa877e2b52a6"
-   }
-  },
-  {
-   "name": "build/pico_w/wifi/blink/pico-examples-3a.0.1.148-2-new-feature49.tar.gz",
-   "digest": {
-    "sha256": "104674887da894443ab55918d81b0151dc7abb2472e5dafcdd78e7be71098af1"
-   }
-  },
-  {
-   "name": "build/pico_w/wifi/blink/pico-examples-3a.0.1.148-2-new-feature49.tar.gz.cosign.bundle",
-   "digest": {
-    "sha256": "33f3f7a19779a2d189dc03b420eb0be199a38404e8c1a24b2c8731bdfa3a30fb"
-   }
-  }
- ],
- "predicate": {
-  "buildDefinition": {
-   "buildType": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/761ae5dd/PROVENANCE.md",
-   // All other CI variable names are listed here. Values are always represented as empty strings to avoid leaking secrets and to comply with SLSA.
-   "externalParameters": {
-    "CI": "",
-    "CI_API_GRAPHQL_URL": "",
-    "CI_API_V4_URL": "",
-    "CI_COMMIT_AUTHOR": "",
-    "CI_COMMIT_BEFORE_SHA": "",
-    "CI_COMMIT_BRANCH": "",
-    "CI_COMMIT_DESCRIPTION": "",
-    "CI_COMMIT_MESSAGE": "",
-    "CI_COMMIT_REF_NAME": "",
-    "CI_COMMIT_REF_PROTECTED": "",
-    "CI_COMMIT_REF_SLUG": "",
-    "CI_COMMIT_SHA": "",
-    "CI_COMMIT_SHORT_SHA": "",
-    "CI_COMMIT_TIMESTAMP": "",
-    "CI_COMMIT_TITLE": "",
-    "CI_CONFIG_PATH": "",
-    "CI_DEFAULT_BRANCH": "",
-    "CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX": "",
-    "CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX": "",
-    "CI_DEPENDENCY_PROXY_PASSWORD": "",
-    "CI_DEPENDENCY_PROXY_SERVER": "",
-    "CI_DEPENDENCY_PROXY_USER": "",
-    "CI_JOB_ID": "",
-    "CI_JOB_NAME": "",
-    "CI_JOB_NAME_SLUG": "",
-    "CI_JOB_STAGE": "",
-    "CI_JOB_STARTED_AT": "",
-    "CI_JOB_TOKEN": "",
-    "CI_JOB_URL": "",
-    "CI_NODE_TOTAL": "",
-    "CI_OPEN_MERGE_REQUESTS": "",
-    "CI_PAGES_DOMAIN": "",
-    "CI_PAGES_URL": "",
-    "CI_PIPELINE_CREATED_AT": "",
-    "CI_PIPELINE_ID": "",
-    "CI_PIPELINE_IID": "",
-    "CI_PIPELINE_NAME": "",
-    "CI_PIPELINE_SOURCE": "",
-    "CI_PIPELINE_URL": "",
-    "CI_PROJECT_CLASSIFICATION_LABEL": "",
-    "CI_PROJECT_DESCRIPTION": "",
-    "CI_PROJECT_ID": "",
-    "CI_PROJECT_NAME": "",
-    "CI_PROJECT_NAMESPACE": "",
-    "CI_PROJECT_NAMESPACE_ID": "",
-    "CI_PROJECT_PATH": "",
-    "CI_PROJECT_PATH_SLUG": "",
-    "CI_PROJECT_REPOSITORY_LANGUAGES": "",
-    "CI_PROJECT_ROOT_NAMESPACE": "",
-    "CI_PROJECT_TITLE": "",
-    "CI_PROJECT_URL": "",
-    "CI_PROJECT_VISIBILITY": "",
-    "CI_REGISTRY": "",
-    "CI_REGISTRY_IMAGE": "",
-    "CI_REGISTRY_PASSWORD": "",
-    "CI_REGISTRY_USER": "",
-    "CI_REPOSITORY_URL": "",
-    "CI_RUNNER_DESCRIPTION": "",
-    "CI_RUNNER_ID": "",
-    "CI_RUNNER_TAGS": "",
-    "CI_SERVER_FQDN": "",
-    "CI_SERVER_HOST": "",
-    "CI_SERVER_NAME": "",
-    "CI_SERVER_PORT": "",
-    "CI_SERVER_PROTOCOL": "",
-    "CI_SERVER_REVISION": "",
-    "CI_SERVER_SHELL_SSH_HOST": "",
-    "CI_SERVER_SHELL_SSH_PORT": "",
-    "CI_SERVER_URL": "",
-    "CI_SERVER_VERSION": "",
-    "CI_SERVER_VERSION_MAJOR": "",
-    "CI_SERVER_VERSION_MINOR": "",
-    "CI_SERVER_VERSION_PATCH": "",
-    "CI_TEMPLATE_REGISTRY_HOST": "",
-    "COSIGN_YES": "",
-    "DS_EXCLUDED_ANALYZERS": "",
-    "DS_EXCLUDED_PATHS": "",
-    "DS_MAJOR_VERSION": "",
-    "DS_SCHEMA_MODEL": "",
-    "GITLAB_CI": "",
-    "GITLAB_FEATURES": "",
-    "GITLAB_USER_EMAIL": "",
-    "GITLAB_USER_ID": "",
-    "GITLAB_USER_LOGIN": "",
-    "GITLAB_USER_NAME": "",
-    "GitVersion_FullSemVer": "",
-    "GitVersion_LegacySemVer": "",
-    "GitVersion_Major": "",
-    "GitVersion_MajorMinorPatch": "",
-    "GitVersion_Minor": "",
-    "GitVersion_Patch": "",
-    "GitVersion_SemVer": "",
-    "RUNNER_GENERATE_ARTIFACTS_METADATA": "",
-    "SAST_EXCLUDED_ANALYZERS": "",
-    "SAST_EXCLUDED_PATHS": "",
-    "SAST_IMAGE_SUFFIX": "",
-    "SCAN_KUBERNETES_MANIFESTS": "",
-    "SECRETS_ANALYZER_VERSION": "",
-    "SECRET_DETECTION_EXCLUDED_PATHS": "",
-    "SECRET_DETECTION_IMAGE_SUFFIX": "",
-    "SECURE_ANALYZERS_PREFIX": "",
-    "SIGSTORE_ID_TOKEN": "",
-    "entryPoint": "create_generic_package",
-    "source": "https://gitlab.com/dsanoy-demo/experiments/pico-examples-3a"
-   },
-   "internalParameters": {
-    "architecture": "amd64",
-    "executor": "docker+machine",
-    "job": "7211908025",
-    "name": "green-6.saas-linux-small-amd64.runners-manager.gitlab.com/default"
-   },
-   "resolvedDependencies": [
-    {
-     "uri": "https://gitlab.com/dsanoy-demo/experiments/pico-examples-3a",
-     "digest": {
-      "sha256": "7e1aeac4e6c07138769b638d4926f429692d0124"
-     }
-    }
-   ]
-  },
-  "runDetails": {
-   "builder": {
-    "id": "https://gitlab.com/dsanoy-demo/experiments/pico-examples-3a/-/runners/32976645",
-    "version": {
-     "gitlab-runner": "761ae5dd"
-    }
-   },
-   "metadata": {
-    "invocationID": "7211908025",
-    "startedOn": "2024-06-28T09:56:44Z",
-    "finishedOn": "2024-06-28T09:56:58Z"
-   }
-  }
- }
-}
-```
-
-To verify compliance with the in-toto specification,
-see the [in-toto statement](https://in-toto.io/Statement/v0.1).
+| `predicateType` | `https://slsa.dev/provenance/v1` |
+| `predicate.buildDefinition.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example, v15.0.0 |
+| `predicate.runDetails.builder.id` | A URI pointing to the runner details page, for example, `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
+| `predicate.buildDefinition.externalParameters` | The names of any CI/CD or environment variables available during the build command execution. The value is always represented as an empty string to protect secrets. |
+| `predicate.buildDefinition.externalParameters.source` | The URL of the project. |
+| `predicate.buildDefinition.externalParameters.entryPoint` | The name of the CI/CD job that triggered the build. |
+| `predicate.buildDefinition.internalParameters.name` | The name of the runner. |
+| `predicate.buildDefinition.internalParameters.executor` | The runner executor. |
+| `predicate.buildDefinition.internalParameters.architecture` | The architecture on which the CI/CD job is run. |
+| `predicate.buildDefinition.internalParameters.job` | The ID of the CI/CD job that triggered the build. |
+| `predicate.buildDefinition.resolvedDependencies[0].uri` | The URL of the project. |
+| `predicate.buildDefinition.resolvedDependencies[0].digest.sha256` | The commit revision of the project. |
+| `predicate.runDetails.metadata.invocationID` | The ID of the CI/CD job that triggered the build. |
+| `predicate.runDetails.metadata.startedOn` | The time when the build was started. This field is `RFC3339` formatted. |
+| `predicate.runDetails.metadata.finishedOn` | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. This field is `RFC3339` formatted. |
 
 ## Staging directory
 

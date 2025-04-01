@@ -1,0 +1,9 @@
+---
+name: mr_dashboard_list_type_toggle
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519717
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183805
+rollout_issue_url:
+milestone: '17.11'
+group: group::code review
+type: beta
+default_enabled: false

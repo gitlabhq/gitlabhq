@@ -33,6 +33,16 @@ RSpec.describe InstanceClusterablePresenter, feature_category: :environment_mana
     it { is_expected.to eq(update_migration_admin_cluster_path(cluster)) }
   end
 
+  describe '#sidebar_text' do
+    subject { presenter.sidebar_text }
+
+    it 'renders correct sidebar text' do
+      is_expected.to eq(s_('ClusterIntegration|Adding a Kubernetes cluster will automatically share ' \
+        'the cluster across all projects. Use review apps, deploy your applications, ' \
+        'and easily run your pipelines for all projects using the same cluster.'))
+    end
+  end
+
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 

@@ -45,7 +45,13 @@ export default {
         }
       }
 
-      return BADGE_METHODS[this.listId]?.(this);
+      const badgeMethods = BADGE_METHODS[this.listId];
+
+      return badgeMethods.reduce((acc, method) => {
+        if (acc) return acc;
+
+        return method(this) || acc;
+      }, null);
     },
   },
 };

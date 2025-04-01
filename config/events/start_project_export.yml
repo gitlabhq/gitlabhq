@@ -1,0 +1,17 @@
+---
+description: Tracks when a project export is started
+internal_events: true
+action: start_project_export
+identifiers:
+- project
+- namespace
+- user
+product_group: import_and_integrate
+product_categories:
+- importers
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186125
+tiers:
+- free
+- premium
+- ultimate

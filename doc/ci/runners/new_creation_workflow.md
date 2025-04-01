@@ -15,8 +15,8 @@ title: Migrating to the new runner registration workflow
 {{< alert type="disclaimer" />}}
 
 In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
-runners. The legacy workflow that uses registration tokens is deprecated.
-There is no planned removal milestone or date. Use the runner creation workflow instead. 
+runners. The legacy workflow that uses registration tokens is deprecated and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token) instead.
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
@@ -44,7 +44,7 @@ The new runner registration workflow has the following benefits:
 ## Estimated time frame for planned changes
 
 - In GitLab 15.10 and later, you can use the new runner registration workflow.
-- In GitLab 17.0, we plan to disable runner registration tokens.
+- In GitLab 20.0, we plan to disable runner registration tokens.
 
 ## Prevent your runner registration workflow from breaking
 

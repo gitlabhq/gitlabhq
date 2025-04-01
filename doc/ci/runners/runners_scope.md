@@ -86,9 +86,12 @@ the authentication token is stored in the `config.toml`.
 
 {{< alert type="warning" >}}
 
-The option to pass a runner registration token and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
-in GitLab 18.0. Use runner authentication tokens instead. For more information, see
+The option to use runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 {{< /alert >}}
@@ -300,9 +303,12 @@ The runner authentication token displays in the UI for only a short period of ti
 
 {{< alert type="warning" >}}
 
-The option to pass a runner registration token and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
-in GitLab 18.0. Use runner authentication tokens instead. For more information, see
+The option to use runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 {{< /alert >}}
@@ -547,9 +553,12 @@ The runner authentication token displays in the UI for only a short period of ti
 
 {{< alert type="warning" >}}
 
-The option to pass a runner registration token and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
-in GitLab 18.0. Use runner authentication tokens instead. For more information, see
+The option to use runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 {{< /alert >}}
@@ -782,9 +791,12 @@ project.
 
 {{< alert type="warning" >}}
 
-The option to pass a runner registration token and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
-in GitLab 18.0. Use runner authentication tokens instead. For more information, see
+The option to use runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 {{< /alert >}}

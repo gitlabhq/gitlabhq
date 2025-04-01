@@ -28,7 +28,14 @@
       #js-merge-request-dashboard-config
 
 - if merge_request_dashboard_enabled?(current_user) && !current_page?(merge_requests_search_dashboard_path)
-  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json, realtime_enabled: Feature.enabled?(:merge_request_dashboard_realtime, current_user, type: :wip).to_s } }
+  #js-merge-request-dashboard{ data: {
+    base_path: merge_requests_dashboard_path,
+    merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username),
+    initial_data: merge_request_dashboard_data.to_json,
+    list_type: current_user.merge_request_dashboard_list_type,
+    realtime_enabled: Feature.enabled?(:merge_request_dashboard_realtime, current_user, type: :wip).to_s,
+    list_type_toggle_enabled: Feature.enabled?(:mr_dashboard_list_type_toggle, current_user, type: :beta).to_s
+  } }
     = gl_loading_icon(size: 'lg')
 
 - if !merge_request_dashboard_enabled?(current_user) || current_page?(merge_requests_search_dashboard_path)

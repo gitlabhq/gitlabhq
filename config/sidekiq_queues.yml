@@ -33,6 +33,8 @@
   - 1
 - - analytics_code_review_metrics
   - 1
+- - analytics_code_suggestions_usage_backfill
+  - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
 - - analytics_usage_trends_counter_job

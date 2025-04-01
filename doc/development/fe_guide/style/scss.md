@@ -283,12 +283,12 @@ The reason for this is that IDE extensions might only be able to detect conflict
 the CSS Classes are in one line:
 
 ```css
-// ✅ Conflict detected: 'gl-bg-black' applies the same CSS properties as 'gl-bg-white'.(cssConflict)
-@apply gl-bg-white gl-bg-black;
+// ✅ Conflict detected: 'gl-bg-subtle' applies the same CSS properties as 'gl-bg-default'.(cssConflict)
+@apply gl-bg-default gl-bg-subtle;
 
 // ❌ No conflict detected
-@apply gl-bg-white;
-@apply gl-bg-black;
+@apply gl-bg-default;
+@apply gl-bg-subtle;
 ```
 
 The exception to this rule is when working with `!important`. Since `!important` applies to
