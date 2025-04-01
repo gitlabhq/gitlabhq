@@ -14,6 +14,9 @@ describe('WorkItemDevelopmentRelationshipList', () => {
     wrapper = shallowMountExtended(WorkItemDevelopmentRelationshipList, {
       propsData: {
         workItemDevWidget,
+        canCreateMergeRequest: true,
+        workItemFullPath: 'gitlab-org/gitlab-test',
+        workItemIid: '1',
       },
     });
   };

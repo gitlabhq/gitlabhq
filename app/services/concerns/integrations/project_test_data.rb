@@ -111,8 +111,6 @@ module Integrations
     end
 
     def vulnerability_events_data
-      return unless ::Feature.enabled?(:vulnerabilities_as_webhook_events, project)
-
       vulnerability = project.vulnerabilities.limit(1).last
 
       no_data_error(s_('TestHooks|Ensure the project has vulnerabilities.')) unless vulnerability.present?

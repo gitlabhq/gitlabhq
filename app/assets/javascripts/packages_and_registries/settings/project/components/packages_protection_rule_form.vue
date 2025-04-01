@@ -13,14 +13,17 @@ import createPackagesProtectionRuleMutation from '~/packages_and_registries/sett
 import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  MinimumAccessLevelOptions,
-  GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
-} from '~/packages_and_registries/settings/project/constants';
+import { GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER } from '~/packages_and_registries/settings/project/constants';
 
 const PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while saving the package protection rule.',
 );
+
+// Needs to be an empty string instead of `null` for @vue/compat. The value
+// should be transformed back to `null` as an input to the GraphQL query.
+const GRAPHQL_ACCESS_LEVEL_VALUE_NULL = '';
+const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
+const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
 export default {
   components: {
@@ -53,8 +56,12 @@ export default {
       packageProtectionRuleFormData: {
         packageNamePattern: this.rule?.packageNamePattern ?? '',
         packageType: this.rule?.packageType ?? 'NPM',
-        minimumAccessLevelForPush:
-          this.rule?.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        minimumAccessLevelForPush: this.isExistingRule()
+          ? this.rule.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL
+          : GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        minimumAccessLevelForDelete: this.isExistingRule()
+          ? this.rule.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL
+          : GRAPHQL_ACCESS_LEVEL_VALUE_OWNER,
       },
       updateInProgress: false,
       alertErrorMessage: '',
@@ -62,18 +69,20 @@ export default {
   },
   computed: {
     mutation() {
-      return this.rule
+      return this.isExistingRule()
         ? updatePackagesProtectionRuleMutation
         : createPackagesProtectionRuleMutation;
     },
     mutationKey() {
-      return this.rule ? 'updatePackagesProtectionRule' : 'createPackagesProtectionRule';
+      return this.isExistingRule()
+        ? 'updatePackagesProtectionRule'
+        : 'createPackagesProtectionRule';
     },
     showLoadingIcon() {
       return this.updateInProgress;
     },
     submitButtonText() {
-      return this.rule ? __('Save changes') : s__('PackageRegistry|Add rule');
+      return this.isExistingRule() ? __('Save changes') : s__('PackageRegistry|Add rule');
     },
     isEmptyPackageName() {
       return !this.packageProtectionRuleFormData.packageNamePattern;
@@ -88,12 +97,20 @@ export default {
       return {
         projectPath: this.projectPath,
         ...this.packageProtectionRuleFormData,
+        minimumAccessLevelForPush:
+          this.packageProtectionRuleFormData.minimumAccessLevelForPush || null,
+        minimumAccessLevelForDelete:
+          this.packageProtectionRuleFormData.minimumAccessLevelForDelete || null,
       };
     },
     updatePackagesProtectionRuleMutationInput() {
       return {
         id: this.rule?.id,
         ...this.packageProtectionRuleFormData,
+        minimumAccessLevelForPush:
+          this.packageProtectionRuleFormData.minimumAccessLevelForPush || null,
+        minimumAccessLevelForDelete:
+          this.packageProtectionRuleFormData.minimumAccessLevelForDelete || null,
       };
     },
     packageTypeOptions() {
@@ -112,13 +129,37 @@ export default {
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },
+    minimumAccessLevelForPushOptions() {
+      return [
+        ...(this.glFeatures.packagesProtectedPackagesDelete
+          ? [{ value: GRAPHQL_ACCESS_LEVEL_VALUE_NULL, text: __('Developer (default)') }]
+          : []),
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
+      ];
+    },
+    minimumAccessLevelForDeleteOptions() {
+      return [
+        {
+          value: GRAPHQL_ACCESS_LEVEL_VALUE_NULL,
+          text: s__('PackageRegistry|Maintainer (default)'),
+        },
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
+      ];
+    },
   },
   methods: {
+    isExistingRule() {
+      return Boolean(this.rule);
+    },
     submit() {
       this.clearAlertErrorMessage();
 
       this.updateInProgress = true;
-      const input = this.rule
+
+      const input = this.isExistingRule()
         ? this.updatePackagesProtectionRuleMutationInput
         : this.createPackagesProtectionRuleMutationInput;
 
@@ -153,7 +194,6 @@ export default {
       this.$emit('cancel');
     },
   },
-  minimumAccessLevelForPushOptions: MinimumAccessLevelOptions,
 };
 </script>
 
@@ -214,9 +254,22 @@ export default {
       <gl-form-select
         id="input-minimum-access-level-for-push"
         v-model="packageProtectionRuleFormData.minimumAccessLevelForPush"
-        :options="$options.minimumAccessLevelForPushOptions"
+        :options="minimumAccessLevelForPushOptions"
         :disabled="isFieldDisabled"
-        required
+      />
+    </gl-form-group>
+
+    <gl-form-group
+      v-if="glFeatures.packagesProtectedPackagesDelete"
+      :label="s__('PackageRegistry|Minimum access level for delete')"
+      label-for="input-minimum-access-level-for-delete"
+      :disabled="isFieldDisabled"
+    >
+      <gl-form-select
+        id="input-minimum-access-level-for-delete"
+        v-model="packageProtectionRuleFormData.minimumAccessLevelForDelete"
+        :options="minimumAccessLevelForDeleteOptions"
+        :disabled="isFieldDisabled"
       />
     </gl-form-group>
 

@@ -30,6 +30,19 @@ export default {
       required: false,
       default: false,
     },
+    canCreateMergeRequest: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     list() {
@@ -123,7 +136,14 @@ export default {
         :key="itemId(item)"
         class="gl-border-b gl-py-4 first:!gl-pt-0 last:gl-border-none last:!gl-pb-0"
       >
-        <component :is="itemComponent(item)" :item-content="item" :is-modal="isModal" />
+        <component
+          :is="itemComponent(item)"
+          :item-content="item"
+          :is-modal="isModal"
+          :work-item-full-path="workItemFullPath"
+          :work-item-iid="workItemIid"
+          :can-create-merge-request="canCreateMergeRequest"
+        />
       </li>
     </ul>
   </div>

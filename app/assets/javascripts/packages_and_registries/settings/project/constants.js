@@ -122,13 +122,39 @@ export const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
 
 export const MinimumAccessLevelText = {
-  [GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN]: s__('AdminUsers|Administrator'),
   [GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER]: __('Maintainer'),
   [GRAPHQL_ACCESS_LEVEL_VALUE_OWNER]: __('Owner'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN]: s__('AdminUsers|Administrator'),
 };
 
 export const MinimumAccessLevelOptions = [
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
+];
+
+export const PackagesMinimumAccessForPushLevelText = {
+  null: s__('PackageRegistry|Developer (default)'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER]: __('Maintainer'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_OWNER]: __('Owner'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN]: s__('AdminUsers|Administrator'),
+};
+
+export const PackagesMinimumAccessForDeleteLevelText = {
+  null: s__('PackageRegistry|Maintainer (default)'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_OWNER]: __('Owner'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN]: s__('AdminUsers|Administrator'),
+};
+
+export const PackagesMinimumAccessLevelOptions = [
+  { value: null, text: __('Developer (default)') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
+];
+
+export const PackagesMinimumAccessLevelForDeleteOptions = [
+  { value: null, text: __('Developer (default)') },
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
 ];

@@ -7,6 +7,10 @@ ai_conversation_messages:
   - table: ai_conversation_threads
     column: thread_id
     on_delete: async_delete
+analyzer_project_statuses:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 application_settings:
   - table: push_rules
     column: push_rule_id

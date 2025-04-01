@@ -38,6 +38,7 @@ import {
   formatSelectOptionForCustomField,
   preserveDetailsState,
   getParentGroupName,
+  createBranchMRApiPathHelper,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -474,5 +475,47 @@ describe('preserveDetailsState', () => {
       <details open="true"><summary>Test 1</summary><p>Content 1</p></details>
       <details><summary>Test 2</summary><p>Content 2</p></details>
     `);
+  });
+});
+describe('createMR', () => {
+  const fullPath = 'gitlab-org/gitlab';
+  const workItemIID = '12';
+  const sourceBranch = '12-fix';
+  const targetBranch = 'main';
+
+  it('returns MR url with target branch', () => {
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch,
+      targetBranch,
+    });
+    expect(path).toBe(
+      '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix&merge_request%5Btarget_branch%5D=main',
+    );
+  });
+
+  it('returns MR url without target branch', () => {
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch,
+    });
+    expect(path).toBe(
+      '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix',
+    );
+  });
+
+  it('returns MR url with relative url', () => {
+    gon.relative_url_root = '/foobar';
+
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch,
+    });
+    expect(path).toBe(
+      '/foobar/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix',
+    );
   });
 });

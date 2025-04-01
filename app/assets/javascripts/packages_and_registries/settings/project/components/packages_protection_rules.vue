@@ -17,11 +17,17 @@ import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import { getAccessLevelLabel } from '~/packages_and_registries/settings/project/utils';
+import {
+  PackagesMinimumAccessForPushLevelText,
+  PackagesMinimumAccessForDeleteLevelText,
+} from '~/packages_and_registries/settings/project/constants';
 import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
 const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('PackageRegistry|Minimum access level for push');
+const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__('PackageRegistry|Minimum access level for delete');
 
 export default {
   components: {
@@ -40,6 +46,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   i18n: {
     delete: __('Delete'),
@@ -59,6 +66,7 @@ export default {
       ),
     },
     minimumAccessLevelForPush: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
+    minimumAccessLevelForDelete: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
   },
   data() {
     return {
@@ -80,10 +88,16 @@ export default {
         ? s__('PackageRegistry|Edit protection rule')
         : s__('PackageRegistry|Add protection rule');
     },
+    fields() {
+      return this.glFeatures.packagesProtectedPackagesDelete
+        ? this.$options.fields
+        : this.$options.fields.filter((field) => field.key !== 'minimumAccessLevelForDelete');
+    },
     tableItems() {
       return this.packageProtectionRulesQueryResult.map((packagesProtectionRule) => {
         return {
           id: packagesProtectionRule.id,
+          minimumAccessLevelForDelete: packagesProtectionRule.minimumAccessLevelForDelete,
           minimumAccessLevelForPush: packagesProtectionRule.minimumAccessLevelForPush,
           packageNamePattern: packagesProtectionRule.packageNamePattern,
           packageType: packagesProtectionRule.packageType,
@@ -220,6 +234,11 @@ export default {
       tdClass: '!gl-align-middle',
     },
     {
+      key: 'minimumAccessLevelForDelete',
+      label: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
+      tdClass: '!gl-align-middle',
+    },
+    {
       key: 'rowActions',
       label: __('Actions'),
       thAlignRight: true,
@@ -228,6 +247,8 @@ export default {
   ],
   getAccessLevelLabel,
   getPackageTypeLabel,
+  minimumAccessForPushLevelText: PackagesMinimumAccessForPushLevelText,
+  minimumAccessForDeleteLevelText: PackagesMinimumAccessForDeleteLevelText,
   modal: { id: 'delete-package-protection-rule-confirmation-modal' },
   modalActionPrimary: {
     text: s__('PackageRegistry|Delete package protection rule'),
@@ -272,7 +293,7 @@ export default {
           v-else-if="containsTableItems"
           class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
           :items="tableItems"
-          :fields="$options.fields"
+          :fields="fields"
           stacked="md"
           :aria-label="$options.i18n.settingBlockTitle"
           :busy="isLoadingPackageProtectionRules"
@@ -289,7 +310,16 @@ export default {
 
           <template #cell(minimumAccessLevelForPush)="{ item }">
             <span data-testid="minimum-access-level-push-value">
-              {{ $options.getAccessLevelLabel(item.minimumAccessLevelForPush) }}
+              {{ $options.minimumAccessForPushLevelText[item.minimumAccessLevelForPush] }}
+            </span>
+          </template>
+
+          <template
+            v-if="glFeatures.packagesProtectedPackagesDelete"
+            #cell(minimumAccessLevelForDelete)="{ item }"
+          >
+            <span data-testid="minimum-access-level-delete-value">
+              {{ $options.minimumAccessForDeleteLevelText[item.minimumAccessLevelForDelete] }}
             </span>
           </template>
 

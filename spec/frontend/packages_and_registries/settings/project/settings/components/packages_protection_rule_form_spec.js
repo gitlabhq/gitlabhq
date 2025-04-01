@@ -26,6 +26,7 @@ describe('Packages Protection Rule Form', () => {
     glFeatures: {
       packagesProtectedPackagesConan: true,
       packagesProtectedPackagesMaven: true,
+      packagesProtectedPackagesDelete: true,
     },
   };
 
@@ -34,9 +35,19 @@ describe('Packages Protection Rule Form', () => {
   const findPackageTypeSelect = () => wrapper.findByRole('combobox', { name: /type/i });
   const findMinimumAccessLevelForPushSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for push/i });
+  const findMinimumAccessLevelForDeleteSelect = () =>
+    wrapper.findByRole('combobox', { name: /minimum access level for delete/i });
   const findCancelButton = () => wrapper.findByRole('button', { name: /cancel/i });
   const findSubmitButton = () => wrapper.findByTestId('submit-btn');
   const findForm = () => wrapper.findComponent(GlForm);
+
+  const setSelectValue = async (selectWrapper, value) => {
+    await selectWrapper.setValue(value);
+    // Work around compat flag which prevents change event from being triggered by setValue.
+    // TODO: Disable WRAPPER_SET_VALUE_DOES_NOT_TRIGGER_CHANGE globally:
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/526008
+    await selectWrapper.trigger('change');
+  };
 
   const mountComponent = ({ data, config, props, provide = defaultProvidedValues } = {}) => {
     wrapper = mountExtended(PackagesProtectionRuleForm, {
@@ -123,14 +134,93 @@ describe('Packages Protection Rule Form', () => {
     });
 
     describe('form field "minimumAccessLevelForPushSelect"', () => {
+      const findMinimumAccessLevelForPushSelectOptionValues = () =>
+        findMinimumAccessLevelForPushSelect()
+          .findAll('option')
+          .wrappers.map((option) => option.element.value);
+
       it('contains only the options for maintainer and owner', () => {
         mountComponent();
 
         expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
-        const minimumAccessLevelForPushSelectOptions = findMinimumAccessLevelForPushSelect()
+        expect(findMinimumAccessLevelForPushSelectOptionValues()).toEqual([
+          '',
+          'MAINTAINER',
+          'OWNER',
+          'ADMIN',
+        ]);
+      });
+
+      it('sets correct option for "null" value', () => {
+        mountComponent({
+          props: {
+            rule: { ...packagesProtectionRulesData[0], minimumAccessLevelForPush: null },
+          },
+        });
+
+        expect(findMinimumAccessLevelForPushSelect().element.value).toBe('');
+      });
+
+      describe('when feature flag packagesProtectedPackagesDelete is disabled', () => {
+        it('does not show option "Developer (default)"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesDelete: false,
+              },
+            },
+          });
+
+          expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
+          expect(findMinimumAccessLevelForPushSelectOptionValues()).toEqual([
+            'MAINTAINER',
+            'OWNER',
+            'ADMIN',
+          ]);
+        });
+      });
+    });
+
+    describe('form field "minimumAccessLevelForDeleteSelect"', () => {
+      const findMinimumAccessLevelForDeleteSelectOptionValues = () =>
+        findMinimumAccessLevelForDeleteSelect()
           .findAll('option')
           .wrappers.map((option) => option.element.value);
-        expect(minimumAccessLevelForPushSelectOptions).toEqual(['MAINTAINER', 'OWNER', 'ADMIN']);
+
+      it('contains only the options for maintainer and owner', () => {
+        mountComponent();
+
+        expect(findMinimumAccessLevelForDeleteSelect().exists()).toBe(true);
+        expect(findMinimumAccessLevelForDeleteSelectOptionValues()).toEqual(['', 'OWNER', 'ADMIN']);
+      });
+
+      describe('when form has prop "rule"', () => {
+        it('sets correct option for "null" value', () => {
+          mountComponent({
+            props: {
+              rule: { ...packagesProtectionRulesData[0], minimumAccessLevelForDelete: null },
+            },
+          });
+
+          expect(findMinimumAccessLevelForDeleteSelect().element.value).toBe('');
+        });
+      });
+
+      describe('when feature flag packagesProtectedPackagesDelete is disabled', () => {
+        it('does not show form field "minimumAccessLevelForDeleteSelect"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesDelete: false,
+              },
+            },
+          });
+          expect(findMinimumAccessLevelForDeleteSelect().exists()).toBe(false);
+        });
       });
     });
 
@@ -146,6 +236,7 @@ describe('Packages Protection Rule Form', () => {
         expect(findPackageNamePatternInput().attributes('disabled')).toBe('disabled');
         expect(findPackageTypeSelect().attributes('disabled')).toBe('disabled');
         expect(findMinimumAccessLevelForPushSelect().attributes('disabled')).toBe('disabled');
+        expect(findMinimumAccessLevelForDeleteSelect().attributes('disabled')).toBe('disabled');
       });
 
       it('displays a loading spinner', () => {
@@ -256,9 +347,38 @@ describe('Packages Protection Rule Form', () => {
         await submitForm();
 
         expect(mutationResolver).toHaveBeenCalledWith({
-          input: { projectPath: 'path', ...createPackagesProtectionRuleMutationInput },
+          input: {
+            projectPath: 'path',
+            ...createPackagesProtectionRuleMutationInput,
+            minimumAccessLevelForDelete: 'OWNER',
+          },
         });
         expect(updatePackagesProtectionRuleMutationResolver).not.toHaveBeenCalled();
+      });
+
+      it('dispatches correct apollo mutation when no minimumAccessLevelForPush is selected', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createPackagesProtectionRuleMutationPayload());
+
+        mountComponentWithApollo({ mutationResolver });
+
+        await findPackageNamePatternInput().setValue(
+          createPackagesProtectionRuleMutationInput.packageNamePattern,
+        );
+        await setSelectValue(findMinimumAccessLevelForPushSelect(), '');
+        await setSelectValue(findMinimumAccessLevelForDeleteSelect(), 'ADMIN');
+
+        await submitForm();
+
+        expect(mutationResolver).toHaveBeenCalledWith({
+          input: {
+            projectPath: 'path',
+            ...createPackagesProtectionRuleMutationInput,
+            minimumAccessLevelForPush: null,
+            minimumAccessLevelForDelete: 'ADMIN',
+          },
+        });
       });
 
       it('emits event "submit" when apollo mutation successful', async () => {
@@ -316,7 +436,10 @@ describe('Packages Protection Rule Form', () => {
           createPackagesProtectionRuleMutationInput.packageNamePattern,
         );
         await findMinimumAccessLevelForPushSelect().findAll('option').at(0).setSelected();
+        await findMinimumAccessLevelForDeleteSelect().findAll('option').at(2).setSelected();
+
         findForm().trigger('submit');
+
         await waitForPromises();
       };
 
@@ -343,6 +466,8 @@ describe('Packages Protection Rule Form', () => {
           input: {
             id: packagesProtectionRulesData[0].id,
             ...createPackagesProtectionRuleMutationInput,
+            minimumAccessLevelForDelete: 'ADMIN',
+            minimumAccessLevelForPush: null,
           },
         });
       });

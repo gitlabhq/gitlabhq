@@ -388,10 +388,14 @@ export const createBranchMRApiPathHelper = {
     );
   },
   createMR({ fullPath, workItemIid, sourceBranch, targetBranch }) {
-    return joinPaths(
+    let url = joinPaths(
       gon.relative_url_root || '',
-      `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`,
+      `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}`,
     );
+    if (targetBranch) {
+      url += `&merge_request%5Btarget_branch%5D=${targetBranch}`;
+    }
+    return url;
   },
   getRefs({ fullPath }) {
     return joinPaths(gon.relative_url_root || '', `/${fullPath}/refs?search=`);

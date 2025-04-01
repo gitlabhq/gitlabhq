@@ -21301,6 +21301,9 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
+msgid "Developer (default)"
+msgstr ""
+
 msgid "Development widget is not enabled for this work item type"
 msgstr ""
 
@@ -41991,6 +41994,9 @@ msgstr ""
 msgid "PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete %{name} version %{version} anyway? %{docLinkStart}What are the risks?%{docLinkEnd}"
 msgstr ""
 
+msgid "PackageRegistry|Developer (default)"
+msgstr ""
+
 msgid "PackageRegistry|Duplicate packages"
 msgstr ""
 
@@ -42099,6 +42105,9 @@ msgstr ""
 msgid "PackageRegistry|Machine learning model"
 msgstr ""
 
+msgid "PackageRegistry|Maintainer (default)"
+msgstr ""
+
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr ""
 
@@ -42112,6 +42121,9 @@ msgid "PackageRegistry|Maven Command"
 msgstr ""
 
 msgid "PackageRegistry|Maven XML"
+msgstr ""
+
+msgid "PackageRegistry|Minimum access level for delete"
 msgstr ""
 
 msgid "PackageRegistry|Minimum access level for push"

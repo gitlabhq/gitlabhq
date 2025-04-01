@@ -5,10 +5,13 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlTooltipDirective,
+  GlDropdownDivider,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/directives/tooltip_on_truncate';
 import toast from '~/vue_shared/plugins/global_toast';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { createBranchMRApiPathHelper } from '~/work_items/utils';
 
 export default {
   components: {
@@ -16,6 +19,7 @@ export default {
     GlLink,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+    GlDropdownDivider,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -30,6 +34,19 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    canCreateMergeRequest: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: true,
     },
   },
   computed: {
@@ -53,6 +70,15 @@ export default {
     },
     closeDropdown() {
       this.$refs.branchMoreActions.close();
+    },
+    createMergeRequest() {
+      const path = createBranchMRApiPathHelper.createMR({
+        fullPath: this.workItemFullPath,
+        workItemIid: this.workItemIid,
+        sourceBranch: this.branchName,
+      });
+
+      visitUrl(path);
     },
   },
 };
@@ -89,6 +115,14 @@ export default {
       no-caret
       placement="bottom-end"
     >
+      <gl-disclosure-dropdown-item
+        v-if="canCreateMergeRequest"
+        data-testid="branch-create-merge-request"
+        @action="createMergeRequest"
+      >
+        <template #list-item>{{ __('Create merge request') }}</template>
+      </gl-disclosure-dropdown-item>
+      <gl-dropdown-divider v-if="canCreateMergeRequest" />
       <gl-disclosure-dropdown-item
         data-testid="branch-copy-name"
         :data-clipboard-text="branchName"

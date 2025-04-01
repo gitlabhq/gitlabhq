@@ -98,12 +98,14 @@ export const packagesProtectionRulesData = [
     id: `gid://gitlab/Packages::Protection::Rule/${i}`,
     packageNamePattern: `@flight/flight-maintainer-${i}-*`,
     packageType: 'NPM',
+    minimumAccessLevelForDelete: 'OWNER',
     minimumAccessLevelForPush: 'MAINTAINER',
   })),
   {
     id: 'gid://gitlab/Packages::Protection::Rule/16',
     packageNamePattern: '@flight/flight-owner-16-*',
     packageType: 'NPM',
+    minimumAccessLevelForDelete: 'OWNER',
     minimumAccessLevelForPush: 'OWNER',
   },
 ];
@@ -145,6 +147,7 @@ export const createPackagesProtectionRuleMutationPayload = ({ override, errors =
 export const createPackagesProtectionRuleMutationInput = {
   packageNamePattern: `@flight/flight-developer-14-*`,
   packageType: 'NPM',
+  minimumAccessLevelForDelete: 'MAINTAINER',
   minimumAccessLevelForPush: 'MAINTAINER',
 };
 

@@ -24,6 +24,9 @@ describe('Packages protection rules project settings', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
+    glFeatures: {
+      packagesProtectedPackagesDelete: true,
+    },
   };
 
   const $toast = { show: jest.fn() };
@@ -36,6 +39,10 @@ describe('Packages protection rules project settings', () => {
     extendedWrapper(wrapper.findByRole('table', { name: /protected packages/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
+  const findMinimumAccessLevelForPushInTableRow = (i) =>
+    findTableRow(i).findByTestId('minimum-access-level-push-value');
+  const findMinimumAccessLevelForDeleteInTableRow = (i) =>
+    findTableRow(i).findByTestId('minimum-access-level-delete-value');
   const findTableRowButtonDelete = (i) =>
     extendedWrapper(wrapper.findAllByTestId('delete-rule-btn').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -133,6 +140,7 @@ describe('Packages protection rules project settings', () => {
         (protectionRule, i) => {
           expect(findTableRow(i).text()).toContain(protectionRule.packageNamePattern);
           expect(findTableRow(i).text()).toContain('npm');
+          expect(findTableRow(i).text()).toContain('Maintainer');
           expect(findTableRow(i).text()).toContain('Maintainer');
         },
       );
@@ -287,6 +295,76 @@ describe('Packages protection rules project settings', () => {
 
           expect(findTableLoadingIcon().exists()).toBe(false);
           expect(findTable().attributes('aria-busy')).toBe('false');
+        });
+      });
+    });
+
+    describe('column "Minimum access level for push"', () => {
+      it('renders correct value for blank value', async () => {
+        const packagesProtectionRuleQueryResolver = jest.fn().mockResolvedValue(
+          packagesProtectionRuleQueryPayload({
+            nodes: [
+              {
+                ...packagesProtectionRulesData[0],
+                minimumAccessLevelForPush: null,
+                minimumAccessLevelForDelete: 'ADMIN',
+              },
+            ],
+          }),
+        );
+
+        createComponent({ packagesProtectionRuleQueryResolver });
+
+        await waitForPromises();
+
+        expect(findMinimumAccessLevelForPushInTableRow(0).text()).toContain('Developer (default)');
+        expect(findMinimumAccessLevelForDeleteInTableRow(0).text()).toContain('Administrator');
+      });
+    });
+
+    describe('column "Minimum access level for delete"', () => {
+      it('renders correct value for blank value', async () => {
+        const packagesProtectionRuleQueryResolver = jest.fn().mockResolvedValue(
+          packagesProtectionRuleQueryPayload({
+            nodes: [
+              {
+                ...packagesProtectionRulesData[0],
+                minimumAccessLevelForPush: 'OWNER',
+                minimumAccessLevelForDelete: null,
+              },
+            ],
+          }),
+        );
+
+        createComponent({ packagesProtectionRuleQueryResolver });
+
+        await waitForPromises();
+
+        expect(findMinimumAccessLevelForPushInTableRow(0).text()).toContain('Owner');
+        expect(findMinimumAccessLevelForDeleteInTableRow(0).text()).toContain(
+          'Maintainer (default)',
+        );
+      });
+
+      describe('when feature flag packagesProtectedPackagesDelete is disabled', () => {
+        const findTableColumnHeaderMinimumAccessLevelForDelete = () =>
+          wrapper.findByRole('columnheader', { name: /minimum access level for delete/i });
+
+        it('does not show column "Minimum access level for delete"', async () => {
+          createComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesDelete: false,
+              },
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findTableColumnHeaderMinimumAccessLevelForDelete().exists()).toBe(false);
+          expect(findMinimumAccessLevelForDeleteInTableRow(0).exists()).toBe(false);
         });
       });
     });

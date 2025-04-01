@@ -55,7 +55,7 @@ module Gitlab
         types Issue
         condition do
           current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target) &&
-            quick_action_target.project.boards.count == 1
+            quick_action_target.project&.boards&.count == 1
         end
         command :board_move do |target_list_name|
           labels = find_labels(target_list_name)
