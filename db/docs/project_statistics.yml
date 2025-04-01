@@ -23,4 +23,4 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_project_statistics_on_repository_size_and_project_id
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158614
-table_size: small
+table_size: medium

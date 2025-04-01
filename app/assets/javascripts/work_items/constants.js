@@ -44,15 +44,15 @@ export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_TICKET = 'TICKET';
 
-export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
-export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
-export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
-export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
-export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
-export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirement';
-export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
-export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test Case';
-export const WORK_ITEM_TYPE_VALUE_TICKET = 'Ticket';
+export const WORK_ITEM_TYPE_NAME_EPIC = 'Epic';
+export const WORK_ITEM_TYPE_NAME_INCIDENT = 'Incident';
+export const WORK_ITEM_TYPE_NAME_ISSUE = 'Issue';
+export const WORK_ITEM_TYPE_NAME_KEY_RESULT = 'Key Result';
+export const WORK_ITEM_TYPE_NAME_OBJECTIVE = 'Objective';
+export const WORK_ITEM_TYPE_NAME_REQUIREMENTS = 'Requirement';
+export const WORK_ITEM_TYPE_NAME_TASK = 'Task';
+export const WORK_ITEM_TYPE_NAME_TEST_CASE = 'Test Case';
+export const WORK_ITEM_TYPE_NAME_TICKET = 'Ticket';
 
 export const SEARCH_DEBOUNCE = 500;
 
@@ -92,57 +92,57 @@ export const WORK_ITEMS_TYPE_MAP = {
   [WORK_ITEM_TYPE_ENUM_INCIDENT]: {
     icon: `issue-type-incident`,
     name: s__('WorkItem|Incident'),
-    value: WORK_ITEM_TYPE_VALUE_INCIDENT,
+    value: WORK_ITEM_TYPE_NAME_INCIDENT,
   },
   [WORK_ITEM_TYPE_ENUM_ISSUE]: {
     icon: `issue-type-issue`,
     name: s__('WorkItem|Issue'),
-    value: WORK_ITEM_TYPE_VALUE_ISSUE,
+    value: WORK_ITEM_TYPE_NAME_ISSUE,
     routeParamName: 'issues',
   },
   [WORK_ITEM_TYPE_ENUM_TASK]: {
     icon: `issue-type-task`,
     name: s__('WorkItem|Task'),
-    value: WORK_ITEM_TYPE_VALUE_TASK,
+    value: WORK_ITEM_TYPE_NAME_TASK,
   },
   [WORK_ITEM_TYPE_ENUM_TEST_CASE]: {
     icon: `issue-type-test-case`,
     name: s__('WorkItem|Test case'),
-    value: WORK_ITEM_TYPE_VALUE_TEST_CASE,
+    value: WORK_ITEM_TYPE_NAME_TEST_CASE,
   },
   [WORK_ITEM_TYPE_ENUM_REQUIREMENTS]: {
     icon: `issue-type-requirements`,
     name: s__('WorkItem|Requirements'),
-    value: WORK_ITEM_TYPE_VALUE_REQUIREMENTS,
+    value: WORK_ITEM_TYPE_NAME_REQUIREMENTS,
   },
   [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
     icon: `issue-type-objective`,
     name: s__('WorkItem|Objective'),
-    value: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+    value: WORK_ITEM_TYPE_NAME_OBJECTIVE,
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
     icon: `issue-type-keyresult`,
     name: s__('WorkItem|Key result'),
-    value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+    value: WORK_ITEM_TYPE_NAME_KEY_RESULT,
   },
   [WORK_ITEM_TYPE_ENUM_EPIC]: {
     icon: `epic`,
     name: s__('WorkItem|Epic'),
-    value: WORK_ITEM_TYPE_VALUE_EPIC,
+    value: WORK_ITEM_TYPE_NAME_EPIC,
     routeParamName: 'epics',
   },
 };
 
 export const WORK_ITEM_TYPE_VALUE_MAP = {
-  [WORK_ITEM_TYPE_VALUE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
-  [WORK_ITEM_TYPE_VALUE_INCIDENT]: WORK_ITEM_TYPE_ENUM_INCIDENT,
-  [WORK_ITEM_TYPE_VALUE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
-  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  [WORK_ITEM_TYPE_VALUE_REQUIREMENTS]: WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
-  [WORK_ITEM_TYPE_VALUE_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
-  [WORK_ITEM_TYPE_VALUE_TEST_CASE]: WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  [WORK_ITEM_TYPE_VALUE_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
+  [WORK_ITEM_TYPE_NAME_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: WORK_ITEM_TYPE_ENUM_INCIDENT,
+  [WORK_ITEM_TYPE_NAME_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
+  [WORK_ITEM_TYPE_NAME_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  [WORK_ITEM_TYPE_NAME_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
 };
 
 export const FORM_TYPES = {
@@ -223,9 +223,9 @@ export const LINKED_ITEM_TYPE_VALUE = {
 };
 
 export const LINK_ITEM_FORM_HEADER_LABEL = {
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|The current objective'),
-  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|The current key result'),
-  [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|The current task'),
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: s__('WorkItem|The current objective'),
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: s__('WorkItem|The current key result'),
+  [WORK_ITEM_TYPE_NAME_TASK]: s__('WorkItem|The current task'),
 };
 
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
@@ -301,40 +301,40 @@ export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE = 'source';
 export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH = 'branch';
 
 export const BASE_ALLOWED_CREATE_TYPES = [
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TASK,
 ];
 
 export const ALLOWED_CONVERSION_TYPES = [
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 ];
 
 export const WORK_ITEM_TYPE_NAME_MAP = {
-  [WORK_ITEM_TYPE_VALUE_EPIC]: s__('WorkItem|Epic'),
-  [WORK_ITEM_TYPE_VALUE_INCIDENT]: s__('WorkItem|Incident'),
-  [WORK_ITEM_TYPE_VALUE_ISSUE]: s__('WorkItem|Issue'),
-  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|Key result'),
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|Objective'),
-  [WORK_ITEM_TYPE_VALUE_REQUIREMENTS]: s__('WorkItem|Requirement'),
-  [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|Task'),
-  [WORK_ITEM_TYPE_VALUE_TEST_CASE]: s__('WorkItem|Test case'),
-  [WORK_ITEM_TYPE_VALUE_TICKET]: s__('WorkItem|Ticket'),
+  [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|Epic'),
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|Incident'),
+  [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|Issue'),
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: s__('WorkItem|Key result'),
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: s__('WorkItem|Objective'),
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: s__('WorkItem|Requirement'),
+  [WORK_ITEM_TYPE_NAME_TASK]: s__('WorkItem|Task'),
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: s__('WorkItem|Test case'),
+  [WORK_ITEM_TYPE_NAME_TICKET]: s__('WorkItem|Ticket'),
 };
 
 export const WORK_ITEM_TYPE_NAME_LOWERCASE_MAP = {
-  [WORK_ITEM_TYPE_VALUE_EPIC]: s__('WorkItem|epic'),
-  [WORK_ITEM_TYPE_VALUE_INCIDENT]: s__('WorkItem|incident'),
-  [WORK_ITEM_TYPE_VALUE_ISSUE]: s__('WorkItem|issue'),
-  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|key result'),
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|objective'),
-  [WORK_ITEM_TYPE_VALUE_REQUIREMENTS]: s__('WorkItem|requirement'),
-  [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|task'),
-  [WORK_ITEM_TYPE_VALUE_TEST_CASE]: s__('WorkItem|test case'),
-  [WORK_ITEM_TYPE_VALUE_TICKET]: s__('WorkItem|ticket'),
+  [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|epic'),
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|incident'),
+  [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|issue'),
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: s__('WorkItem|key result'),
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: s__('WorkItem|objective'),
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: s__('WorkItem|requirement'),
+  [WORK_ITEM_TYPE_NAME_TASK]: s__('WorkItem|task'),
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: s__('WorkItem|test case'),
+  [WORK_ITEM_TYPE_NAME_TICKET]: s__('WorkItem|ticket'),
 };
 
 export const WORK_ITEM_WIDGETS_NAME_MAP = {

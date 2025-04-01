@@ -41,10 +41,10 @@ module Banzai
 
       def media_element(doc, element)
         media_element_attrs = {
-            src: element['src'],
-            controls: true,
-            'data-setup': '{}',
-            'data-title': element['title'] || element['alt']
+          src: element['src'],
+          controls: true,
+          'data-setup': '{}',
+          'data-title': element['title'] || element['alt']
         }.merge!(extra_element_attrs(element))
 
         if element['data-canonical-src']

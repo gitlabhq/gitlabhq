@@ -15,10 +15,8 @@ module Packages
         return ERROR_RESPONSE_UNAUTHORIZED unless current_user_can_destroy_package?
         return SUCCESS_RESPONSE_RULE_DOESNT_EXIST if current_user.can_admin_all_resources?
 
-        user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
-
         response = project.package_protection_rules.for_delete_exists?(
-          access_level: user_project_authorization_access_level,
+          access_level: project.team.max_member_access(current_user.id),
           package_name: params[:package_name],
           package_type: params[:package_type]
         )

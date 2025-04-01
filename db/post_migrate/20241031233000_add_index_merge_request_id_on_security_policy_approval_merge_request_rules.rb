@@ -13,8 +13,10 @@ class AddIndexMergeRequestIdOnSecurityPolicyApprovalMergeRequestRules < Gitlab::
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index :approval_merge_request_rules, :merge_request_id,
       where: "report_type IN (#{SECURITY_POLICIES_REPORT_TYPES.join(', ')})", name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

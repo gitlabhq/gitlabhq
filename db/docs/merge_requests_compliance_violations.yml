@@ -8,6 +8,6 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74290
 milestone: '14.6'
 gitlab_schema: gitlab_main_cell
-table_size: small
+table_size: medium
 sharding_key:
   target_project_id: projects

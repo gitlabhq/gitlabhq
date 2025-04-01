@@ -235,9 +235,9 @@ module Gitlab
 
         if current_user
           request_information.merge!({
-                                       user_id: current_user.id,
-                                       username: current_user.username
-                                     })
+            user_id: current_user.id,
+            username: current_user.username
+          })
         end
 
         logger.error(request_information)

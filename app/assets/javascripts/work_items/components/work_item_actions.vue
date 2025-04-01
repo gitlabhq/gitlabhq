@@ -26,12 +26,12 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import {
   sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
@@ -256,7 +256,7 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT;
       },
     },
   },
@@ -289,7 +289,7 @@ export default {
       };
     },
     newRelatedItemLabel() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
         ? sprintfWorkItem(s__('WorkItem|New related %{workItemType}'), this.workItemType)
         : s__('WorkItem|New related item');
     },
@@ -304,7 +304,7 @@ export default {
       return sprintfWorkItem(message, this.workItemType);
     },
     canPromoteToObjective() {
-      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT;
     },
     confidentialItem() {
       return {
@@ -323,7 +323,7 @@ export default {
       return this.isDiscussionLocked ? __('Unlock discussion') : __('Lock discussion');
     },
     objectiveWorkItemTypeId() {
-      return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;
+      return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_NAME_OBJECTIVE).id;
     },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
@@ -344,7 +344,7 @@ export default {
       };
     },
     isEpic() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     confidentialityToggledText() {
       return this.isConfidential
@@ -361,8 +361,8 @@ export default {
 
       if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
         return BASE_ALLOWED_CREATE_TYPES.concat(
-          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+          WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          WORK_ITEM_TYPE_NAME_OBJECTIVE,
         );
       }
 
@@ -372,7 +372,7 @@ export default {
       return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
     },
     showMoveButton() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE && this.canMove;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
     },
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');

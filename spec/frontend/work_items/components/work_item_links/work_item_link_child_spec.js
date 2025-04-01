@@ -13,10 +13,10 @@ import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/wor
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import {
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
 
 import {
@@ -60,7 +60,7 @@ describe('WorkItemLinkChild', () => {
     canUpdate = true,
     issuableGid = WORK_ITEM_ID,
     childItem = workItemObjectiveWithChild,
-    workItemType = WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+    workItemType = WORK_ITEM_TYPE_NAME_OBJECTIVE,
     workItemTreeQueryHandler = getWorkItemTreeQueryHandler,
     isExpanded = false,
     showTaskWeight = false,
@@ -158,7 +158,7 @@ describe('WorkItemLinkChild', () => {
 
   describe('without children', () => {
     beforeEach(() => {
-      createComponent({ childItem: workItemTask, workItemType: WORK_ITEM_TYPE_VALUE_TASK });
+      createComponent({ childItem: workItemTask, workItemType: WORK_ITEM_TYPE_NAME_TASK });
     });
 
     it('does not display expand button', () => {
@@ -231,13 +231,13 @@ describe('WorkItemLinkChild', () => {
       });
 
       it.each`
-        workItemType                      | childItem                     | showTaskWeight | showWeight
-        ${WORK_ITEM_TYPE_VALUE_TASK}      | ${workItemTask}               | ${false}       | ${false}
-        ${WORK_ITEM_TYPE_VALUE_TASK}      | ${workItemTask}               | ${true}        | ${true}
-        ${WORK_ITEM_TYPE_VALUE_OBJECTIVE} | ${workItemObjectiveWithChild} | ${false}       | ${true}
-        ${WORK_ITEM_TYPE_VALUE_OBJECTIVE} | ${workItemObjectiveWithChild} | ${true}        | ${true}
-        ${WORK_ITEM_TYPE_VALUE_OBJECTIVE} | ${workItemObjectiveWithChild} | ${false}       | ${true}
-        ${WORK_ITEM_TYPE_VALUE_EPIC}      | ${workItemEpic}               | ${true}        | ${true}
+        workItemType                     | childItem                     | showTaskWeight | showWeight
+        ${WORK_ITEM_TYPE_NAME_TASK}      | ${workItemTask}               | ${false}       | ${false}
+        ${WORK_ITEM_TYPE_NAME_TASK}      | ${workItemTask}               | ${true}        | ${true}
+        ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${workItemObjectiveWithChild} | ${false}       | ${true}
+        ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${workItemObjectiveWithChild} | ${true}        | ${true}
+        ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${workItemObjectiveWithChild} | ${false}       | ${true}
+        ${WORK_ITEM_TYPE_NAME_EPIC}      | ${workItemEpic}               | ${true}        | ${true}
       `(
         'passes `showWeight` as $showWeight when the type is $workItemType and `showTaskWeight` is $showWeight',
         ({ childItem, showWeight }) => {
@@ -256,7 +256,7 @@ describe('WorkItemLinkChild', () => {
         workItemTreeQueryHandler: jest
           .fn()
           .mockRejectedValue(workItemHierarchyTreeSingleClosedItemResponse),
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        workItemType: WORK_ITEM_TYPE_NAME_OBJECTIVE,
         isExpanded: true,
       });
       await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() });

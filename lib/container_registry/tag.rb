@@ -180,7 +180,7 @@ module ContainerRegistry
       return true if protection_rule.immutable?
       return false if user.can_admin_all_resources?
 
-      max_access = user.max_member_access_for_project(repository.project_id)
+      max_access = repository.project.team.max_member_access(user.id)
       protection_rule.delete_restricted?(max_access)
     end
 

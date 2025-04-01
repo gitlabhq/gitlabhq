@@ -9,4 +9,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17
 milestone: '8.2'
 gitlab_schema: gitlab_main_cell_local
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490482
-table_size: small
+table_size: medium

@@ -14,6 +14,6 @@ description: For tracking blob metadata. Single table inheritance is used to rel
   this table to many other tables. Partitioned by model_type.
 introduced_by_url:
 milestone: '17.11'
-table_size: medium
+table_size: small
 gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true

@@ -11,7 +11,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   ALLOWED_CONVERSION_TYPES,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   sprintfWorkItem,
   WORK_ITEM_WIDGETS_NAME_MAP,
   WIDGET_TYPE_DESIGNS,
@@ -362,7 +362,7 @@ export default {
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
           ),
           this.isSelectedWorkItemTypeEpic
-            ? WORK_ITEM_TYPE_VALUE_EPIC
+            ? WORK_ITEM_TYPE_NAME_EPIC
             : this.selectedWorkItemType.text,
           this.parentWorkItemType,
         );
@@ -379,7 +379,7 @@ export default {
           {
             workItemType: capitalizeFirstCharacter(
               this.isSelectedWorkItemTypeEpic
-                ? WORK_ITEM_TYPE_VALUE_EPIC.toLocaleLowerCase()
+                ? WORK_ITEM_TYPE_NAME_EPIC.toLocaleLowerCase()
                 : this.selectedWorkItemType.text.toLocaleLowerCase(),
             ),
             childItemType: this.allowedChildTypes?.[0]?.name?.toLocaleLowerCase(),
@@ -406,7 +406,7 @@ export default {
             'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
           ),
           this.isSelectedWorkItemTypeEpic
-            ? WORK_ITEM_TYPE_VALUE_EPIC
+            ? WORK_ITEM_TYPE_NAME_EPIC
             : this.selectedWorkItemType.text,
         );
       }

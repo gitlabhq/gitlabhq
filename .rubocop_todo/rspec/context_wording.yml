@@ -775,7 +775,6 @@ RSpec/ContextWording:
     - 'ee/spec/support/shared_examples/services/search_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/update_issuable_health_status_shared_examples.rb'
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
-    - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/groups/edit.html.haml_spec.rb'
     - 'ee/spec/views/layouts/header/_read_only_banner.html.haml_spec.rb'
     - 'ee/spec/views/profiles/preferences/show.html.haml_spec.rb'

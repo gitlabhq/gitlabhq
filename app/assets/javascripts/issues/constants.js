@@ -1,8 +1,8 @@
 import { __ } from '~/locale';
 import {
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 
 export const STATUS_ALL = 'all';
@@ -47,9 +47,9 @@ export const issuableTypeText = {
   [TYPE_ALERT]: __('alert'),
   [TYPE_INCIDENT]: __('incident'),
   [TYPE_TEST_CASE]: __('test case'),
-  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: __('key result'),
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: __('objective'),
-  [WORK_ITEM_TYPE_VALUE_TASK]: __('task'),
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: __('key result'),
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: __('objective'),
+  [WORK_ITEM_TYPE_NAME_TASK]: __('task'),
 };
 
 const SHIFT_KEY = 16;

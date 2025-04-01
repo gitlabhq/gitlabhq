@@ -16,4 +16,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4c622b71fd28405
 milestone: '9.0'
 gitlab_schema: gitlab_main_cell
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-table_size: small
+table_size: large

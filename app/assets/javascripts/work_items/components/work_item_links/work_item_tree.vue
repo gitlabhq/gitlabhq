@@ -16,7 +16,7 @@ import {
   CHILD_ITEMS_ANCHOR,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_HIERARCHY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -266,7 +266,7 @@ export default {
       return this.showRolledUpWeight && this.rolledUpWeight !== null;
     },
     showTaskWeight() {
-      return this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
     allowedChildrenByType() {
       return this.workItemTypes.reduce((acc, type) => {

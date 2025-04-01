@@ -9,4 +9,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1c3c7fb25d972fc
 milestone: '9.1'
 gitlab_schema: gitlab_main
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514589
-table_size: small
+table_size: over_limit

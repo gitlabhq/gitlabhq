@@ -152,7 +152,7 @@ module Auth
       # can return early here, but not any earlier.
       return patterns if user.can_admin_all_resources?
 
-      user_access_level = user.max_member_access_for_project(project.id)
+      user_access_level = project.team.max_member_access(user.id)
       applicable_rules = rules.for_actions_and_access(actions_to_check, user_access_level, include_immutable: false)
 
       applicable_rules.each do |rule|
@@ -386,10 +386,9 @@ module Auth
         next unless push_scope_container_registry_path.valid?
 
         repository_project = push_scope_container_registry_path.repository_project
-        current_user_project_authorization_access_level = current_user&.max_member_access_for_project(repository_project.id)
 
         repository_project.container_registry_protection_rules.for_push_exists?(
-          access_level: current_user_project_authorization_access_level,
+          access_level: repository_project.team.max_member_access(current_user&.id),
           repository_path: push_scope_container_registry_path.to_s
         )
       end

@@ -24,9 +24,9 @@ import {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '~/work_items/constants';
@@ -138,10 +138,10 @@ describe('WorkItemTree', () => {
   });
 
   it.each`
-    workItemType                      | showTaskWeight
-    ${WORK_ITEM_TYPE_VALUE_EPIC}      | ${false}
-    ${WORK_ITEM_TYPE_VALUE_TASK}      | ${true}
-    ${WORK_ITEM_TYPE_VALUE_OBJECTIVE} | ${true}
+    workItemType                     | showTaskWeight
+    ${WORK_ITEM_TYPE_NAME_EPIC}      | ${false}
+    ${WORK_ITEM_TYPE_NAME_TASK}      | ${true}
+    ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${true}
   `(
     'passes `showTaskWeight` as $showTaskWeight when the type is $workItemType',
     async ({ workItemType, showTaskWeight }) => {
@@ -326,8 +326,8 @@ describe('WorkItemTree', () => {
 
     it.each`
       visible | workItemType
-      ${true} | ${WORK_ITEM_TYPE_VALUE_EPIC}
-      ${true} | ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}
+      ${true} | ${WORK_ITEM_TYPE_NAME_EPIC}
+      ${true} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}
     `('renders when the work item type is $workItemType', async ({ workItemType, visible }) => {
       await createComponent({ workItemType });
 

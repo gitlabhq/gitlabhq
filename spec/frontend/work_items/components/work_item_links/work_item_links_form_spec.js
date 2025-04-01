@@ -15,8 +15,8 @@ import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   SEARCH_DEBOUNCE,
   WORK_ITEM_TYPE_ENUM_EPIC,
   MAX_WORK_ITEMS,
@@ -72,7 +72,7 @@ describe('WorkItemLinksForm', () => {
     parentIteration = null,
     parentMilestone = null,
     formType = FORM_TYPES.create,
-    parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
+    parentWorkItemType = WORK_ITEM_TYPE_NAME_ISSUE,
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
     updateMutation = updateMutationResolver,
     createMutation = createMutationResolver,
@@ -247,7 +247,7 @@ describe('WorkItemLinksForm', () => {
       beforeEach(async () => {
         await createComponent({
           isGroup: true,
-          parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+          parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
           childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
         });
       });
@@ -286,7 +286,7 @@ describe('WorkItemLinksForm', () => {
         await createComponent({
           parentConfidential: true,
           isGroup: true,
-          parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+          parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
           childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
         });
 
@@ -315,7 +315,7 @@ describe('WorkItemLinksForm', () => {
       beforeEach(async () => {
         await createComponent({
           isGroup: true,
-          parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+          parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
           childrenType: WORK_ITEM_TYPE_ENUM_EPIC,
         });
       });
@@ -362,7 +362,7 @@ describe('WorkItemLinksForm', () => {
       await createComponent({
         parentConfidential: false,
         isGroup: true,
-        parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+        parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
         childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
       });
 
@@ -399,7 +399,7 @@ describe('WorkItemLinksForm', () => {
       await createComponent({
         parentConfidential: false,
         isGroup: true,
-        parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+        parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
         childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
         createGroupLevelWorkItems: false,
       });

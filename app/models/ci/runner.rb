@@ -420,11 +420,11 @@ module Ci
       when 'instance_type'
         ::User.find_by_id(creator_id)
       when 'group_type'
-        ::Group.find_by_id(sharding_key_id)
+        runner_namespaces.first&.namespace
       when 'project_type'
-        owner_project = ::Project.find_by_id(sharding_key_id)
-
-        owner_project || fallback_owner_project
+        # If runner projects are not yet saved (e.g. when calculating `routable_token`), use in-memory collection
+        candidates = persisted? ? runner_projects.order(:id) : runner_projects
+        candidates.first&.project
       end
     end
     strong_memoize_attr :owner

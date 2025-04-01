@@ -550,6 +550,9 @@ func TestGetDiffProxiedToGitalySuccessfully(t *testing.T) {
 	resp.Body.Close()
 	require.NoError(t, err)
 
+	contentType := resp.Header.Get("Content-Type")
+	require.Equal(t, "text/plain; charset=utf-8", contentType, "GET %q: content type", resp.Request.URL)
+
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 	require.Equal(t, expectedBody, string(body), "GET %q: response body", resp.Request.URL)
 }
@@ -566,6 +569,9 @@ func TestGetPatchProxiedToGitalySuccessfully(t *testing.T) {
 	resp, body, err := doSendDataRequest(t, "/something", "git-format-patch", jsonParams)
 	resp.Body.Close()
 	require.NoError(t, err)
+
+	contentType := resp.Header.Get("Content-Type")
+	require.Equal(t, "text/plain; charset=utf-8", contentType, "GET %q: content type", resp.Request.URL)
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 	require.Equal(t, expectedBody, string(body), "GET %q: response body", resp.Request.URL)

@@ -121,6 +121,15 @@ For pages with partial availability on GitLab Dedicated, use `gitlab_dedicated: 
 and update the [product availability details](styleguide/availability_details.md)
 for any topics that don't apply to GitLab Dedicated.
 
+## Indicate lack of product availability details
+
+On pages that purposely do not have availability details, add this metadata to the
+top of the page:
+
+```yaml
+availability_details: no
+```
+
 ## Additional metadata
 
 The following metadata is optional and is not actively maintained.

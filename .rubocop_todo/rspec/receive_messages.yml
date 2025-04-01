@@ -174,7 +174,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/support/shared_examples/models/concerns/verifiable_replicator_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/audit_events/streaming/headers_operations_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/base_sync_service_shared_examples.rb'
-    - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'ee/spec/views/devise/registrations/new.html.haml_spec.rb'
     - 'ee/spec/views/devise/sessions/new.html.haml_spec.rb'

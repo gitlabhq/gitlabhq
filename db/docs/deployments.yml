@@ -21,4 +21,4 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_deployments_on_user_id_and_status_and_created_at
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157136
-table_size: small
+table_size: over_limit

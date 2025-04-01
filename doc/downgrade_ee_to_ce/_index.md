@@ -2,36 +2,32 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Downgrading from EE to CE
+title: Revert from Enterprise Edition to Community Edition
 ---
 
-If you ever decide to downgrade your Enterprise Edition (EE) back to the
-Community Edition (CE), there are a few steps you need to take beforehand:
+You can revert your Enterprise Edition (EE) instance back to Community Edition (CE), but must first:
 
-- For Linux package installations, these steps are done before installing the CE package on top of the current EE
-  package.
-- For self-compiled installations, these steps are done before you change remotes and fetch the latest CE code.
+1. Disable EE-only authentication mechanisms.
+1. Remove EE-only integrations from the database.
+1. Adjust configuration that uses environment scopes.
 
-## Disable Enterprise-only features
+## Turn off EE-only authentication mechanisms
 
-First thing to do is to disable the following features.
+Kerberos is only available on EE instances. You must:
 
-### Authentication mechanisms
+- Turn off these mechanisms before reverting.
+- Provide a different authentication method to your users.
 
-Kerberos and Atlassian Crowd are only available on the Enterprise Edition. You
-should disable these mechanisms before downgrading. Be sure to provide
-alternative authentication methods to your users.
+## Remove EE-only integrations from the database
 
-### Remove Enterprise-only integrations from the database
-
-The following integrations are only available in the Enterprise Edition codebase:
+These integrations are only available in the EE codebase:
 
 - [GitHub](../user/project/integrations/github.md)
 - [Git Guardian](../user/project/integrations/git_guardian.md)
 - [Google Artifact Management](../user/project/integrations/google_artifact_management.md)
 - [Google Cloud IAM](../integration/google_cloud_iam.md)
 
-If you downgrade to the Community Edition, the following error displays:
+If you downgrade to CE, you might get something like the following error:
 
 ```plaintext
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
@@ -78,43 +74,45 @@ bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleClou
 
 {{< /tabs >}}
 
-### Variables environment scopes
+## Adjust configuration that uses environment scopes
 
-In GitLab Community Edition, [environment scopes](../user/group/clusters/_index.md#environment-scopes)
-are completely ignored, so if you are using this feature there may be some
-necessary adjustments to your configuration. This is especially true if
-configuration variables share the same key, but have different
-scopes in a project. In cases like these you could accidentally get a variable
-which you're not expecting for a particular environment. Make sure that you have
-the right variables in this case.
+If you use [environment scopes](../user/group/clusters/_index.md#environment-scopes), you might need to adjust your
+configuration, especially if configuration variables share the same key, but have different scopes.
+Environment scopes are completely ignored in CE.
 
-Your data is completely preserved in the transition, so you could always upgrade
-back to EE and restore the behavior if you leave it alone.
+With configuration variables that share a key but different scopes, you could accidentally get a variable that you're
+not expecting for a particular environment. Make sure that you have the right variables in this case.
 
-## Downgrade to CE
+Your data is completely preserved in the transition, so you can change back to EE and restore the behavior.
 
-After performing the above mentioned steps, you are now ready to downgrade your
-GitLab installation to the Community Edition.
+## Revert to CE
 
-Remember to follow the correct [update guides](../update/_index.md) to make sure all dependencies are up to date.
+After performing the necessary steps, you can revert your GitLab instance to CE.
 
-### Linux package installations
+Follow the correct [update guides](../update/_index.md) to make sure all dependencies are up to date.
 
-To downgrade a Linux package installation, you can install the Community Edition package on top of
-the currently installed one. You can do this manually, by either:
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Install the CE package on top of EE by either:
 
 - Directly [downloading the package](https://packages.gitlab.com/gitlab/gitlab-ce).
-- Adding our CE package repository and following the  [CE installation instructions](https://about.gitlab.com/install/?version=ce).
+- Adding the CE package repository and following the [CE installation instructions](https://about.gitlab.com/install/?version=ce).
 
-### Self-compiled installations
+{{< /tab >}}
 
-To downgrade a self-compiled installation:
+{{< tab title="Self-compiled (source)" >}}
 
-1. Replace the current remote of your GitLab installation with the Community Edition remote.
-1. Fetch the latest changes, and check out the latest stable branch:
+1. Replace the current Git remote of your GitLab installation with the CE Git remote.
+1. Fetch the latest changes and check out the latest stable branch. For example:
 
    ```shell
    git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
    git fetch --all
-   git checkout 8-x-stable
+   git checkout 17-8-stable
    ```
+
+{{< /tab >}}
+
+{{< /tabs >}}

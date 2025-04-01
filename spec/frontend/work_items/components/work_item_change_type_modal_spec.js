@@ -13,8 +13,8 @@ import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_ite
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
 import {
-  WORK_ITEM_TYPE_VALUE_TASK,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_ENUM_EPIC,
 } from '~/work_items/constants';
 
@@ -32,16 +32,16 @@ describe('WorkItemChangeTypeModal component', () => {
 
   const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const issueTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-    (type) => type.name === WORK_ITEM_TYPE_VALUE_ISSUE,
+    (type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE,
   ).id;
   const taskTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-    (type) => type.name === WORK_ITEM_TYPE_VALUE_TASK,
+    (type) => type.name === WORK_ITEM_TYPE_NAME_TASK,
   ).id;
   namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
-    .find((item) => item.name === WORK_ITEM_TYPE_VALUE_TASK)
+    .find((item) => item.name === WORK_ITEM_TYPE_NAME_TASK)
     .widgetDefinitions.splice(
       namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
-        .find((item) => item.name === WORK_ITEM_TYPE_VALUE_TASK)
+        .find((item) => item.name === WORK_ITEM_TYPE_NAME_TASK)
         .widgetDefinitions.findIndex((item) => item.type === 'CRM_CONTACTS'),
       1,
     );
@@ -70,7 +70,7 @@ describe('WorkItemChangeTypeModal component', () => {
     hasChildren = false,
     workItemsAlpha = false,
     widgets = [],
-    workItemType = WORK_ITEM_TYPE_VALUE_TASK,
+    workItemType = WORK_ITEM_TYPE_NAME_TASK,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     designQueryHandler = noDesignQueryHandler,
     allowedWorkItemTypesEE = [],
@@ -89,7 +89,7 @@ describe('WorkItemChangeTypeModal component', () => {
         hasChildren,
         widgets,
         workItemType,
-        allowedChildTypes: [{ name: WORK_ITEM_TYPE_VALUE_TASK }],
+        allowedChildTypes: [{ name: WORK_ITEM_TYPE_NAME_TASK }],
         allowedWorkItemTypesEE,
       },
       provide: {
@@ -154,7 +154,7 @@ describe('WorkItemChangeTypeModal component', () => {
   });
 
   it('does not allow to change type and disables `Change type` button when the work item has child items', async () => {
-    createComponent({ workItemType: WORK_ITEM_TYPE_VALUE_ISSUE, hasChildren: true });
+    createComponent({ workItemType: WORK_ITEM_TYPE_NAME_ISSUE, hasChildren: true });
 
     await waitForPromises();
 
@@ -171,7 +171,7 @@ describe('WorkItemChangeTypeModal component', () => {
   describe('when widget data has difference', () => {
     it('shows warning message in case of designs', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         designQueryHandler: oneDesignQueryHandler,
       });
 
@@ -187,7 +187,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
     it('shows warning message in case of Contacts widget', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         widgets: [workItemChangeTypeWidgets.CRM_CONTACTS],
       });
 
@@ -209,7 +209,7 @@ describe('WorkItemChangeTypeModal component', () => {
         },
       ];
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         widgets: [workItemChangeTypeWidgets.MILESTONE],
         workItemsAlpha: true,
         allowedWorkItemTypesEE,

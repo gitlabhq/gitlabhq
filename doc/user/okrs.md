@@ -2,6 +2,7 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to create, edit, and maintain objectives and key results (OKRs).
 title: Objectives and key results (OKR)
 ---
 

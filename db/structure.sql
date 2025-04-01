@@ -34451,6 +34451,10 @@ CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 O
 
 CREATE INDEX index_d58435d85e ON project_type_ci_runner_machines USING btree (executor_type);
 
+CREATE INDEX p_ci_pipelines_trigger_id_id_desc_idx ON ONLY p_ci_pipelines USING btree (trigger_id, id DESC);
+
+CREATE INDEX index_d8ae6ea3f3 ON ci_pipelines USING btree (trigger_id, id DESC);
+
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
 CREATE INDEX index_dast_pre_scan_verification_steps_on_project_id ON dast_pre_scan_verification_steps USING btree (project_id);
@@ -40486,6 +40490,8 @@ ALTER INDEX p_ci_stages_pipeline_id_name_partition_id_idx ATTACH PARTITION index
 ALTER INDEX p_ci_stages_project_id_idx ATTACH PARTITION index_ci_stages_on_project_id;
 
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_d58435d85e;
+
+ALTER INDEX p_ci_pipelines_trigger_id_id_desc_idx ATTACH PARTITION index_d8ae6ea3f3;
 
 ALTER INDEX p_ci_builds_user_id_name_idx ATTACH PARTITION index_partial_ci_builds_on_user_id_name_parser_features;
 

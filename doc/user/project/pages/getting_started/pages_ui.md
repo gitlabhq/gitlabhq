@@ -50,7 +50,7 @@ To complete the setup and generate a GitLab Pages deployment:
 
    A **Get Started with Pages** form appears. If this form is not available,
    see [Troubleshooting](#if-the-get-started-with-pages-form-is-not-available).
-1. For **Step 1**, enter an image name and verify that your files are in a `public` folder.
+1. For **Step 1**, enter an image name. You can also [set a custom folder to be deployed with Pages](../introduction.md#customize-the-default-folder).
 1. Select **Next**.
 1. For **Step 2**, enter your installation steps. If your framework's build process does not
    need one of the provided build commands, you can either:

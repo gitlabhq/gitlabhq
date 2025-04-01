@@ -250,6 +250,49 @@ Example response:
 }
 ```
 
+## Revoke a personal access token for a service account user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184287) in GitLab 17.10
+
+{{< /history >}}
+
+Revokes a personal access token for an existing service account user in a given top-level group.
+
+{{< alert type="note" >}}
+
+This endpoint only works on top-level groups.
+
+{{< /alert >}}
+
+```plaintext
+DELETE /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id
+```
+
+Parameters:
+
+| Attribute    | Type            | Required | Description |
+| ------------ | --------------- | -------- | ----------- |
+| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`    | integer | yes      | The ID of the service account user.                            |
+| `token_id`   | integer | yes      | The ID of the token. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens/6"
+```
+
+If successful, returns `204: No Content`.
+
+Other possible responses:
+
+- `400: Bad Request` if not revoked successfully.
+- `401: Unauthorized` if the request is not authorized.
+- `403: Forbidden` if the request is not allowed.
+- `404: Not Found` if the access token does not exist.
+
 ## Rotate a personal access token for a service account user
 
 {{< history >}}

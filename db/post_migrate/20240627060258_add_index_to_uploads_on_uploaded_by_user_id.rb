@@ -7,7 +7,9 @@ class AddIndexToUploadsOnUploadedByUserId < Gitlab::Database::Migration[2.2]
   INDEX_NAME = 'index_uploads_on_uploaded_by_user_id'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index :uploads, :uploaded_by_user_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

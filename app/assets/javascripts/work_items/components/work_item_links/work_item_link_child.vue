@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { STATE_OPEN, WORK_ITEM_TYPE_VALUE_TASK } from '../../constants';
+import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
 import { findHierarchyWidgets, getDefaultHierarchyChildrenCount, getItems } from '../../utils';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -190,7 +190,7 @@ export default {
       return this.childItem.workItemType.name;
     },
     iconClass() {
-      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
+      if (this.childItemType === WORK_ITEM_TYPE_NAME_TASK) {
         return this.isItemOpen ? 'gl-fill-icon-success' : 'gl-fill-icon-info';
       }
       return '';
@@ -214,7 +214,7 @@ export default {
       };
     },
     shouldShowWeight() {
-      return this.childItemType === WORK_ITEM_TYPE_VALUE_TASK ? this.showTaskWeight : true;
+      return this.childItemType === WORK_ITEM_TYPE_NAME_TASK ? this.showTaskWeight : true;
     },
     allowedChildTypes() {
       return this.allowedChildrenByType?.[this.childItemType] || [];

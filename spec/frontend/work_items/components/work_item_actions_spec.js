@@ -19,11 +19,11 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue';
 import {
   STATE_OPEN,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
@@ -623,9 +623,9 @@ describe('WorkItemActions component', () => {
         createComponent({ hasOkrsFeature: false, okrsMvc: false });
 
         expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-          WORK_ITEM_TYPE_VALUE_INCIDENT,
-          WORK_ITEM_TYPE_VALUE_ISSUE,
-          WORK_ITEM_TYPE_VALUE_TASK,
+          WORK_ITEM_TYPE_NAME_INCIDENT,
+          WORK_ITEM_TYPE_NAME_ISSUE,
+          WORK_ITEM_TYPE_NAME_TASK,
         ]);
       });
     });
@@ -635,11 +635,11 @@ describe('WorkItemActions component', () => {
         createComponent({ hasOkrsFeature: true, okrsMvc: true });
 
         expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
-          WORK_ITEM_TYPE_VALUE_INCIDENT,
-          WORK_ITEM_TYPE_VALUE_ISSUE,
-          WORK_ITEM_TYPE_VALUE_TASK,
-          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+          WORK_ITEM_TYPE_NAME_INCIDENT,
+          WORK_ITEM_TYPE_NAME_ISSUE,
+          WORK_ITEM_TYPE_NAME_TASK,
+          WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          WORK_ITEM_TYPE_NAME_OBJECTIVE,
         ]);
       });
     });
@@ -739,7 +739,7 @@ describe('WorkItemActions component', () => {
   describe('move issue button', () => {
     it('shows move button when workItemType is issue and `canMove` is true', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       });
       await waitForPromises();
 
@@ -748,7 +748,7 @@ describe('WorkItemActions component', () => {
 
     it('renders with text "Move"', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       });
 
       await waitForPromises();
@@ -758,7 +758,7 @@ describe('WorkItemActions component', () => {
 
     it('hides move button when `canMove` is false', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         canMove: false,
       });
       await waitForPromises();
@@ -768,7 +768,7 @@ describe('WorkItemActions component', () => {
 
     it('hides move button when workItemType is not issue', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_TASK,
+        workItemType: WORK_ITEM_TYPE_NAME_TASK,
       });
 
       await waitForPromises();
@@ -780,7 +780,7 @@ describe('WorkItemActions component', () => {
   describe('move modal', () => {
     it('does not render move modal when there is no projectId', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         projectId: null,
       });
 
@@ -791,7 +791,7 @@ describe('WorkItemActions component', () => {
 
     it('renders move modal when move button is clicked', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       });
 
       await waitForPromises();
@@ -805,7 +805,7 @@ describe('WorkItemActions component', () => {
 
     it('passes correct props to move modal', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       });
 
       await waitForPromises();
@@ -823,7 +823,7 @@ describe('WorkItemActions component', () => {
 
     it('closes modal when hideModal event is emitted', async () => {
       createComponent({
-        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       });
 
       await waitForPromises();

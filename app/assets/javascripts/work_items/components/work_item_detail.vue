@@ -32,19 +32,19 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
   WORK_ITEM_REFERENCE_CHAR,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -363,7 +363,7 @@ export default {
     hasParent() {
       const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
-      if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
+      if (workItemType === WORK_ITEM_TYPE_NAME_EPIC) {
         return Boolean(hasSubepicsFeature && parentWorkItem);
       }
 
@@ -449,7 +449,7 @@ export default {
       return !this.isModal && !this.editMode && !this.isDrawer;
     },
     workItemLinkedItems() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
         ? this.findWidget(WIDGET_TYPE_LINKED_ITEMS) && this.hasLinkedItemsEpicsFeature
         : this.findWidget(WIDGET_TYPE_LINKED_ITEMS);
     },
@@ -629,7 +629,7 @@ export default {
     openContextualView({ event, modalWorkItem }) {
       if (
         !this.contextualViewEnabled ||
-        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
+        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
         this.isDrawer
       ) {
         return;
@@ -854,7 +854,7 @@ export default {
       });
     },
   },
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORKSPACE_PROJECT,
   noAccessSvg,
 };

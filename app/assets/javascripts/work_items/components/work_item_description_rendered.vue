@@ -20,7 +20,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     childItemType() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
         ? WORK_ITEM_TYPE_ENUM_ISSUE
         : WORK_ITEM_TYPE_ENUM_TASK;
     },

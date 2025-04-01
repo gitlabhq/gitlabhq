@@ -59,5 +59,29 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
         it_behaves_like 'ci_partition not created'
       end
     end
+
+    context 'with default partition threshold' do
+      it 'uses partition threshold' do
+        expect(ci_partition)
+          .to receive(:above_threshold?)
+          .with(Ci::Partition::MAX_PARTITION_SIZE)
+          .and_call_original
+
+        expect { execute_service }.not_to change { Ci::Partition.count }
+      end
+    end
+
+    context 'when executed on staging' do
+      it 'uses smaller threshold' do
+        expect(Gitlab).to receive(:staging?).and_return(true)
+
+        expect(ci_partition)
+          .to receive(:above_threshold?)
+          .with(Ci::Partition::GSTG_PARTITION_SIZE)
+          .and_call_original
+
+        expect { execute_service }.not_to change { Ci::Partition.count }
+      end
+    end
   end
 end

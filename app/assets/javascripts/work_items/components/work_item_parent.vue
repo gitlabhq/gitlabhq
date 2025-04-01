@@ -17,7 +17,7 @@ import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import { isReference, findHierarchyWidgetDefinition, newWorkItemId } from '../utils';
@@ -93,7 +93,7 @@ export default {
   },
   computed: {
     isIssue() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE;
     },
     isLoading() {
       return (

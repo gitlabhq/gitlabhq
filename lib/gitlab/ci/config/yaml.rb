@@ -7,16 +7,7 @@ module Gitlab
         LoadError = Class.new(StandardError)
 
         class << self
-          def load!(content)
-            Loader.new(content).load.then do |result|
-              raise result.error_class, result.error if !result.valid? && result.error_class.present?
-              raise LoadError, result.error unless result.valid?
-
-              result.content
-            end
-          end
-
-          def load_with_inputs!(content, inputs, variables)
+          def load!(content, inputs = {}, variables = [])
             Loader.new(content, inputs: inputs, variables: variables).load.then do |result|
               raise result.error_class, result.error if !result.valid? && result.error_class.present?
               raise LoadError, result.error unless result.valid?

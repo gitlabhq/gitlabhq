@@ -29,7 +29,6 @@ RSpec/ReturnFromStub:
     - 'ee/spec/support/shared_examples/services/base_sync_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/geo_event_store_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/merge_merge_requests_shared_examples.rb'
-    - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/admin/application_settings/_git_abuse_rate_limit.html.haml_spec.rb'
     - 'ee/spec/views/admin/groups/_form.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_update_button.html.haml_spec.rb'

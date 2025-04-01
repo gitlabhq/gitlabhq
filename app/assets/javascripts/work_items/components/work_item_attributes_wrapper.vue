@@ -20,7 +20,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
   WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
@@ -145,7 +145,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
     canWorkItemRollUp() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
@@ -166,10 +166,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
     showRolledupDates() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     isParentEnabled() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? this.hasSubepicsFeature : true;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.hasSubepicsFeature : true;
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;

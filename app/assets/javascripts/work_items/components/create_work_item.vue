@@ -54,8 +54,8 @@ import {
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_NAME_MAP,
   WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -342,7 +342,7 @@ export default {
       // detail view instead. Since the legacy view doesn't support setting a parent
       // we need to hide this attribute here until the migration has been finished.
       // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_INCIDENT) {
+      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT) {
         return false;
       }
 
@@ -504,7 +504,7 @@ export default {
       );
     },
     shouldDatesRollup() {
-      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
     },
   },
   watch: {

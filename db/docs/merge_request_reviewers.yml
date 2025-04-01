@@ -8,6 +8,6 @@ description: Store allocated reviewers for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40358
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell
-table_size: small
+table_size: medium
 sharding_key:
   project_id: projects

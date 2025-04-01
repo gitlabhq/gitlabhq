@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
   let_it_be_with_reload(:ci_partition) { create(:ci_partition, :current) }
   let_it_be_with_reload(:next_ci_partition) { create(:ci_partition) }
+
   let(:service) { described_class.new(ci_partition) }
   let(:current_status) { Ci::Partition.statuses[:current] }
   let(:preparing_status) { Ci::Partition.statuses[:preparing] }
@@ -17,6 +18,10 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
     context 'when ci_auto_switch_to_dynamic_partitions is disabled' do
       before do
         stub_feature_flags(ci_auto_switch_to_dynamic_partitions: false)
+
+        allow_next_found_instance_of(Ci::Partition) do |partition|
+          allow(partition).to receive(:all_partitions_exist?).and_return(true)
+        end
       end
 
       it 'marks the next available partition as ready' do
@@ -39,13 +44,31 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
 
     context 'when all conditions are satisfied' do
       before do
-        allow(service).to receive(:above_threshold?).and_return(true)
         allow_next_found_instance_of(Ci::Partition) do |partition|
           allow(partition).to receive(:all_partitions_exist?).and_return(true)
         end
       end
 
       it 'updates ci_partitions statuses', :aggregate_failures do
+        expect(ci_partition).to receive(:above_threshold?).with(Ci::Partition::MAX_PARTITION_SIZE).and_return(true)
+
+        expect { execute_service }
+          .to change { ci_partition.reload.status }.from(current_status).to(active_status)
+          .and change { next_ci_partition.reload.status }.from(preparing_status).to(current_status)
+      end
+    end
+
+    context 'when executed on staging' do
+      before do
+        allow_next_found_instance_of(Ci::Partition) do |partition|
+          allow(partition).to receive(:all_partitions_exist?).and_return(true)
+        end
+      end
+
+      it 'updates ci_partitions statuses', :aggregate_failures do
+        expect(Gitlab).to receive(:staging?).and_return(true)
+        expect(ci_partition).to receive(:above_threshold?).with(Ci::Partition::GSTG_PARTITION_SIZE).and_return(true)
+
         expect { execute_service }
           .to change { ci_partition.reload.status }.from(current_status).to(active_status)
           .and change { next_ci_partition.reload.status }.from(preparing_status).to(current_status)

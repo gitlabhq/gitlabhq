@@ -25,7 +25,10 @@ module Ci
       end
 
       def above_threshold?
-        partition.above_threshold?(Ci::Partition::MAX_PARTITION_SIZE)
+        threshold = Ci::Partition::MAX_PARTITION_SIZE
+        threshold = Ci::Partition::GSTG_PARTITION_SIZE if Gitlab.staging?
+
+        partition.above_threshold?(threshold)
       end
 
       def headroom_available?

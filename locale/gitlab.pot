@@ -2579,6 +2579,9 @@ msgstr ""
 msgid "AWS OpenSearch IAM credentials"
 msgstr ""
 
+msgid "AWS Role ARN"
+msgstr ""
+
 msgid "AWS Secret Access Key"
 msgstr ""
 
@@ -49886,6 +49889,9 @@ msgstr ""
 msgid "Required only if you are not using role instance credentials."
 msgstr ""
 
+msgid "Required only if you are using AssumeRole for authorization across accounts."
+msgstr ""
+
 msgid "Requirement"
 msgstr ""
 
@@ -57075,9 +57081,6 @@ msgstr ""
 msgid "Source (branch or tag)"
 msgstr ""
 
-msgid "Source Branch"
-msgstr ""
-
 msgid "Source IP:"
 msgstr ""
 
@@ -58638,9 +58641,6 @@ msgid "Take a look at the documentation to discover all of GitLab’s capabiliti
 msgstr ""
 
 msgid "Target"
-msgstr ""
-
-msgid "Target Branch"
 msgstr ""
 
 msgid "Target Path"
@@ -61718,7 +61718,7 @@ msgstr ""
 msgid "Todos|Isn't an empty To-Do List beautiful?"
 msgstr ""
 
-msgid "Todos|Issue or Epic"
+msgid "Todos|Issue"
 msgstr ""
 
 msgid "Todos|It's how you always know what to work on next."

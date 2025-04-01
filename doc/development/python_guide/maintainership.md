@@ -99,7 +99,39 @@ In addition to code reviews, maintainers are responsible for guiding architectur
 When writing and reviewing code, follow our Style Guides. Code authors and reviewers are encouraged to pay attention
 to these areas:
 
-[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/507548).
+## Review focus areas
+
+When reviewing Python code at GitLab, consider the following areas:
+
+### 1. Code style
+
+- Code follows our agreed [Python formatting standards](styleguide.md) (enforced in pipeline).
+- Naming conventions are clear and descriptive.
+- Docstrings are used for all public functions and classes.
+
+### 2. Code quality
+
+- Functions are focused, not overly complex and testable.
+- Code is readable without excessive comments.
+- No unused code or commented-out code.
+
+### 3. Testing
+
+- Test coverage is adequate for new code.
+- Tests follow the naming convention `test_{file_being_tested}.py`.
+- Mocks are used appropriately for external dependencies.
+
+### 4. Documentation
+
+- Functions and classes have clear docstrings.
+- Complex logic has explanatory comments.
+- Documentation is updated when adding features.
+
+### 5. Security
+
+- Code follows GitLab security guidelines.
+- Inputs are properly validated.
+- Error handling is appropriate.
 
 ### Backward Compatibility Requirements
 

@@ -20,4 +20,4 @@ schema_inconsistencies:
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135040
 sharding_key:
   organization_id: organizations
-table_size: small
+table_size: large

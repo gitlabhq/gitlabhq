@@ -278,8 +278,8 @@ If successful, returns `204: No Content`.
 Other possible responses:
 
 - `400: Bad Request` if not revoked successfully.
-- `401: Unauthorized` if the access token is invalid.
-- `403: Forbidden` if the access token does not have the required permissions.
+- `401: Unauthorized` if the request is not authorized.
+- `403: Forbidden` if the request is not allowed.
 
 ### Self-revoke
 

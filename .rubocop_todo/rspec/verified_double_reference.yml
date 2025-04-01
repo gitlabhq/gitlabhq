@@ -65,7 +65,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/support/shared_examples/lib/ai/context/dependencies/config_files/config_file_shared_examples.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/llm/anthropic/client_shared_examples.rb'
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
-    - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/groups/settings/_enforce_ssh_certificates.html.haml_spec.rb'
     - 'ee/spec/workers/analytics/devops_adoption/create_snapshot_worker_spec.rb'
     - 'ee/spec/workers/analytics/value_stream_dashboard/count_worker_spec.rb'

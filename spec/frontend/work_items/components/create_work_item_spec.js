@@ -21,10 +21,10 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEMS_TYPE_MAP,
 } from '~/work_items/constants';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -286,9 +286,9 @@ describe('Create work item component', () => {
 
     it('restricts the type selector to types provided by allowedWorkItemTypes', async () => {
       const allowedWorkItemTypes = [
-        WORK_ITEM_TYPE_VALUE_INCIDENT,
-        WORK_ITEM_TYPE_VALUE_ISSUE,
-        WORK_ITEM_TYPE_VALUE_TASK,
+        WORK_ITEM_TYPE_NAME_INCIDENT,
+        WORK_ITEM_TYPE_NAME_ISSUE,
+        WORK_ITEM_TYPE_NAME_TASK,
       ];
       createComponent({ props: { workItemTypeName: null, allowedWorkItemTypes } });
       await waitForPromises();

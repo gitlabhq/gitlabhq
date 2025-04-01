@@ -169,11 +169,7 @@ module Gitlab
 
       def build_config(config, inputs)
         initial_config = logger.instrument(:config_yaml_load, once: true) do
-          if inputs.present?
-            Config::Yaml.load_with_inputs!(config, inputs, @context.variables)
-          else
-            Config::Yaml.load!(config)
-          end
+          Config::Yaml.load!(config, inputs, @context.variables)
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do

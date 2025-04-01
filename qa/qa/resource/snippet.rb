@@ -56,10 +56,10 @@ module QA
 
       def api_post_body
         {
-            title: title,
-            description: description,
-            visibility: visibility.downcase,
-            files: all_file_contents
+          title: title,
+          description: description,
+          visibility: visibility.downcase,
+          files: all_file_contents
         }
       end
 

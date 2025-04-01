@@ -13,7 +13,7 @@ import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import {
   LINKED_CATEGORIES_MAP,
   STATE_CLOSED,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { ListType } from '../constants';
@@ -180,7 +180,7 @@ export default {
       return !this.disabled && this.list.listType !== ListType.closed;
     },
     workItemType() {
-      return this.isEpicBoard ? WORK_ITEM_TYPE_VALUE_EPIC : this.item.type;
+      return this.isEpicBoard ? WORK_ITEM_TYPE_NAME_EPIC : this.item.type;
     },
     workItemDrawerEnabled() {
       if (gon.current_user_use_work_items_view) return true;

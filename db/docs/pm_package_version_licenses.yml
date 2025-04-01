@@ -8,4 +8,4 @@ description: Tracks licenses under which a given package version has been publis
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102794
 milestone: '15.6'
 gitlab_schema: gitlab_pm
-table_size: small
+table_size: medium

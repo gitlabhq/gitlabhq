@@ -12,4 +12,4 @@ description: SSH keys used by users or for deployments.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685
 milestone: "<6.0"
 gitlab_schema: gitlab_main_clusterwide
-table_size: small
+table_size: medium

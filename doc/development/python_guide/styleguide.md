@@ -86,7 +86,7 @@ def test_get_product_price(argument1, argument2, expected_result):
         "expected_response",
     ),
     [
-      # Test case 1: 
+      # Test case 1:
       (
         "value1",
         {
@@ -136,3 +136,29 @@ class TestMyFunction:
 - Use `unittest.mock` library.
 - Mock at the right level, for example, at method call boundaries.
 - Mock external services and APIs.
+
+## Code style
+
+It's recommended to use automated tools to ensure code quality and security.
+Consider running the following tools in your CI pipeline as well as locally:
+
+### Formatting tools
+
+- **Black**: Code formatter that enforces a consistent style
+- **isort**: Sorts and organizes import statements
+
+### Linting tools
+
+- **flake8**: Checks for PEP-8 compliance and common errors
+- **pylint**: More comprehensive linter for code quality
+- **mypy**: Static type checker for Python
+
+### Testing tools
+
+- **pytest**: Testing framework with coverage reporting
+
+### Security tools
+
+- **Dependency scanning**: Checks for vulnerabilities in dependencies
+- **Secret detection**: Ensures no secrets are committed to the repository
+- **SAST (semgrep)**: Static Application Security Testing

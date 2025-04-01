@@ -17,7 +17,7 @@ RSpec.describe 'Merge Requests > User filters by target branch', :js, feature_ca
 
   context 'filtering by target-branch:master' do
     it 'applies the filter' do
-      select_tokens 'Target Branch', 'master', search_token: true, submit: true
+      select_tokens 'Target branch', 'master', search_token: true, submit: true
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_content mr1.title
@@ -27,7 +27,7 @@ RSpec.describe 'Merge Requests > User filters by target branch', :js, feature_ca
 
   context 'filtering by target-branch:merged-target' do
     it 'applies the filter' do
-      select_tokens 'Target Branch', 'merged-target', search_token: true, submit: true
+      select_tokens 'Target branch', 'merged-target', search_token: true, submit: true
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).not_to have_content mr1.title

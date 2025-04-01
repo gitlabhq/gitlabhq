@@ -1,6 +1,6 @@
 id: gitlab/pages
 title: Get started with GitLab Pages
-description: "Use GitLab Pages to deploy your static website. Follow these steps to create the configuration file, .gitlab-ci.yml, and start a pipeline to deploy the site."
+description: 'Use GitLab Pages to deploy your static website. Follow these steps to create the configuration file, .gitlab-ci.yml, and start a pipeline to deploy the site.'
 steps:
   - inputs:
       - label: Select your build image
@@ -10,42 +10,43 @@ steps:
         widget: text
         target: $BUILD_IMAGE
         required: true
-        pattern: "(?:[a-z]+/)?([a-z]+)(?::[0-9]+)?"
+        pattern: '(?:[a-z]+/)?([a-z]+)(?::[0-9]+)?'
         invalid-feedback: Please enter a valid docker image
-      - widget: checklist
-        items:
-          - text: The application files are in the `public` folder
-            help: GitLab Pages publishes files in the public folder only. If needed, change your jobs to send output to this folder.
+      - label: Choose a directory to publish
+        monospace: true
+        required: true
+        widget: text
+        default: public
+        description: 'Enter a project directory to publish. The default is "public".'
+        target: $DIRECTORY
     template:
       # The Docker image that will be used to build your app
       image: $BUILD_IMAGE
-  - inputs:
-      - label: Installation Steps
-        monospace: true
-        description: "Enter steps to set up a local build environment, like installing dependencies."
-        placeholder: npm ci
-        widget: list
-        target: $INSTALLATION_STEPS
-    template:
-      # Functions that should be executed before the build script is run
-      before_script: $INSTALLATION_STEPS
-  - inputs:
-      - label: Build Steps
-        monospace: true
-        description: "Enter steps to build a production version of your application."
-        widget: list
-        target: $BUILD_STEPS
-    template:
-
-      pages:
-        script: $BUILD_STEPS
-
-        artifacts:
-          paths:
-            # The folder that contains the files to be exposed at the Page URL
-            - public
-
+      create-pages:
+        pages:
+          # The folder that contains the files to be exposed at the Page URL
+          publish: $DIRECTORY
         rules:
           # This ensures that only pushes to the default branch will trigger
           # a pages deploy
           - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  - inputs:
+      - label: Installation Steps
+        monospace: true
+        description: 'Enter steps to set up a local build environment, like installing dependencies.'
+        placeholder: npm ci
+        widget: list
+        target: $INSTALLATION_STEPS
+    template:
+      create-pages:
+        # Functions that should be executed before the build script is run
+        before_script: $INSTALLATION_STEPS
+  - inputs:
+      - label: Build Steps
+        monospace: true
+        description: 'Enter steps to build a production version of your application.'
+        widget: list
+        target: $BUILD_STEPS
+    template:
+      create-pages:
+        script: $BUILD_STEPS

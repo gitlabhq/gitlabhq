@@ -334,7 +334,7 @@ module Projects
 
       return false unless project.has_container_registry_protected_tag_rules?(
         action: 'delete',
-        access_level: current_user.max_member_access_for_project(project.id)
+        access_level: project.team.max_member_access(current_user.id)
       )
 
       return false unless project.has_container_registry_tags?

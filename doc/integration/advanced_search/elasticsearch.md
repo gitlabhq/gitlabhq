@@ -221,6 +221,13 @@ Here's an example of a resource-based (domain) access policy where `es:ESHttp*` 
 }
 ```
 
+{{< alert type="note" >}}
+
+The `aws_role_arn` must be provided if using [AWS `AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)
+across accounts. The ARN should be the role that has permissions to access OpenSearch.
+
+{{< /alert >}}
+
 ###### Identity-based policy examples
 
 Here's an example of an identity-based access policy attached to an IAM principal where `es:ESHttp*` actions are allowed:

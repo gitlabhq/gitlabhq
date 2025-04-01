@@ -8,7 +8,9 @@ class AddZoektRepositoriesIndexOnSizeBytes < Gitlab::Database::Migration[2.2]
   TABLE_NAME = 'zoekt_repositories'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index TABLE_NAME, [:zoekt_index_id, :size_bytes], name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

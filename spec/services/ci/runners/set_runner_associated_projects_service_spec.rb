@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', feature_category: :runner do
   subject(:execute) do
-    described_class.new(runner: runner, current_user: user, project_ids: new_projects.map(&:id)).execute
+    described_class.new(runner: runner, current_user: user, project_ids: new_projects.map(&:id)).execute.tap do
+      # Ensure we're recomputing the owner value
+      runner.clear_memoization(:owner)
+    end
   end
 
   let_it_be(:organization1) { create(:organization) }

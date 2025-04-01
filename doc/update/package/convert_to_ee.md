@@ -145,3 +145,8 @@ To convert a Linux package CE instance to EE:
 
 That's it! You can now use GitLab Enterprise Edition! To upgrade to a newer
 version, follow [Upgrading Linux package instances](_index.md).
+
+## Revert back to CE
+
+For information on reverting an EE instance to CE, see
+[how to revert from EE to CE](../../downgrade_ee_to_ce/_index.md).

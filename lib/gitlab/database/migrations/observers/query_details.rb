@@ -28,11 +28,11 @@ module Gitlab
 
           def record_sql_event(_name, started, finished, _unique_id, payload)
             @writer.push_value({
-                                 start_time: started.iso8601(6),
-                                 end_time: finished.iso8601(6),
-                                 sql: payload[:sql],
-                                 binds: payload[:type_casted_binds]
-                               })
+              start_time: started.iso8601(6),
+              end_time: finished.iso8601(6),
+              sql: payload[:sql],
+              binds: payload[:type_casted_binds]
+            })
           end
         end
       end

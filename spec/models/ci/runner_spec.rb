@@ -515,7 +515,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#assign_to' do
-    subject(:assign_to) { runner.assign_to(project) }
+    subject(:assign_to) do
+      runner.assign_to(project).tap do
+        # Ensure we're recomputing the owner value
+        runner.clear_memoization(:owner)
+      end
+    end
 
     context 'with instance runner' do
       let(:runner) { create(:ci_runner, :instance) }
@@ -540,9 +545,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let_it_be_with_reload(:fallback_owner_project) { create(:project, group: group) }
 
       let(:associated_projects) { [owner_project, fallback_owner_project] }
-      let(:runner) { create(:ci_runner, :project, projects: associated_projects, tag_list: %w[tag1 tag2]) }
-      let(:runner_manager) { create(:ci_runner_machine, runner: runner) }
-      let(:runner_taggings) { runner.taggings }
+      let(:runner) { create(:ci_runner, :project, projects: associated_projects) }
 
       it 'assigns runner to project' do
         expect(assign_to).to be_truthy
@@ -551,53 +554,41 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         expect(runner.project_ids).to contain_exactly(project.id, owner_project.id, fallback_owner_project.id)
       end
 
-      it 'does not change sharding_key_id or owner' do
-        expect { assign_to }
-          .to not_change { runner.reload.sharding_key_id }.from(owner_project.id)
-          .and not_change { runner.owner }.from(owner_project)
-          .and not_change { runner_manager.reload.sharding_key_id }.from(owner_project.id)
-          .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }.from([owner_project.id])
+      it 'does not change owner' do
+        expect { assign_to }.not_to change { runner.reload.owner }.from(owner_project)
       end
 
-      context 'when sharding_key_id does not point to an existing project' do
+      context 'when owner project does not exist' do
         subject(:assign_to) do
-          owner_project.destroy!
+          owner_project.destroy!.then do |project|
+            runner.runner_projects.where(project_id: project.id).delete_all
+            runner.reload
+            runner.clear_memoization(:owner)
+          end
 
           runner.assign_to(project)
         end
 
-        it 'changes sharding_key_id and owner to fallback owner project' do
-          expect { assign_to }
-            .to change { runner.reload.sharding_key_id }.from(owner_project.id).to(fallback_owner_project.id)
-            .and change { runner.owner }.from(owner_project).to(fallback_owner_project)
-            .and change { runner_manager.reload.sharding_key_id }.to(fallback_owner_project.id)
-            .and change { runner.taggings.pluck(:sharding_key_id).uniq }.to([fallback_owner_project.id])
+        it 'changes owner to fallback owner project' do
+          expect { assign_to }.to change { runner.owner }.from(owner_project).to(fallback_owner_project)
         end
 
         context 'and fallback does not exist' do
           let(:associated_projects) { [owner_project] }
 
-          it 'does not change sharding_key_id or owner' do
-            expect { assign_to }
-              .to not_change { runner.reload.sharding_key_id }.from(owner_project.id)
-              .and not_change { runner.owner }.from(owner_project)
-              .and not_change { runner_manager.reload.sharding_key_id }.from(owner_project.id)
-              .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }.from([owner_project.id])
+          it 'changes owner to nil' do
+            expect { assign_to }.to change { runner.owner }.to(nil)
 
-            expect(runner.errors[:assign_to]).to contain_exactly('Runner is orphaned and no fallback owner exists')
+            expect(runner.errors[:assign_to]).to contain_exactly('Taking over an orphaned project runner is not allowed')
           end
         end
       end
 
       context 'when runner is not associated with any projects' do
-        let(:runner) { create(:ci_runner, :project, :without_projects, tag_list: %w[tag1 tag2]) }
+        let(:runner) { create(:ci_runner, :project, :without_projects) }
 
         it 'does not allow taking over project runner' do
-          expect { assign_to }
-            .to not_change { runner.reload.sharding_key_id }
-            .and not_change { runner.owner }
-            .and not_change { runner_manager.reload.sharding_key_id }
-            .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }
+          expect { assign_to }.not_to change { runner.owner }.from(nil)
 
           expect(runner.errors[:assign_to]).to contain_exactly('Taking over an orphaned project runner is not allowed')
         end
@@ -1272,13 +1263,23 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         context 'and owner project is deleted' do
           before do
             owner_project.destroy!
-            project_runner.clear_memoization(:owner)
           end
 
-          it { is_expected.to eq other_project }
-          it { is_expected.not_to eq projects.last }
+          it { is_expected.to eq owner_project }
+
+          it "changes when corresponding runner project is deleted" do
+            project_runner.runner_projects.where(project_id: owner_project.id).delete_all
+            project_runner.reload.clear_memoization(:owner)
+
+            expect(project_runner.owner).to eq other_project
+          end
 
           context 'and projects are associated in different order' do
+            before do
+              project_runner.runner_projects.where(project_id: owner_project.id).delete_all
+              project_runner.reload.clear_memoization(:owner)
+            end
+
             let(:associated_projects) { [owner_project, projects.last, other_project] }
 
             it 'is not sensitive to project ID order' do
@@ -1790,16 +1791,33 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '#owner' do
       subject(:owner) { runner.owner }
 
-      let_it_be_with_refind(:runner) { create(:ci_runner, :group, groups: [group]) }
+      context 'with runner assigned to group' do
+        let(:owner_group) { create(:group) }
+        let(:runner) { create(:ci_runner, :group, groups: [owner_group]) }
 
-      it { is_expected.to eq group }
+        it { is_expected.to eq owner_group }
 
-      context 'when sharding_key_id points to non-existing group' do
-        before do
-          runner.update_columns(sharding_key_id: non_existing_record_id)
+        context 'and owner group is deleted' do
+          before do
+            owner_group.destroy!
+          end
+
+          it { is_expected.to eq owner_group }
+
+          it "becomes nil when corresponding runner namespace is deleted" do
+            runner.runner_namespaces.where(namespace_id: group.id).delete_all
+            runner.clear_memoization(:owner)
+            runner.reload
+
+            is_expected.to be_nil
+          end
         end
+      end
 
-        it { is_expected.to be_nil }
+      context 'with runner assigned to child_group' do
+        let(:runner) { child_group_runner }
+
+        it { is_expected.to eq child_group }
       end
     end
   end

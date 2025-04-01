@@ -11,7 +11,7 @@ import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
-import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC } from '../../constants';
+import { WORK_ITEM_TYPE_NAME_OBJECTIVE, WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
 import { findHierarchyWidgetChildren, getItems, findHierarchyWidgets } from '../../utils';
 import {
   addHierarchyChild,
@@ -233,7 +233,7 @@ export default {
       });
     },
     prefetchWorkItem({ iid }) {
-      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
+      if (this.workItemType !== WORK_ITEM_TYPE_NAME_OBJECTIVE) {
         this.prefetch = setTimeout(
           () => this.addWorkItemQuery({ iid }),
           DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
@@ -499,9 +499,7 @@ export default {
 
       // Check if current item is an Epic
       if (
-        [WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_OBJECTIVE].includes(
-          item?.workItemType.name,
-        )
+        [WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE].includes(item?.workItemType.name)
       ) {
         const { top, left } = originalEvent.target.getBoundingClientRect();
 

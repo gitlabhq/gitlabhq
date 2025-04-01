@@ -137,7 +137,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb'
     - 'ee/spec/lib/gitlab/duo/chat/react_executor_spec.rb'
     - 'ee/spec/lib/gitlab/duo_workflow/client_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/client_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/document_reference_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/elasticsearch_enabled_cache_spec.rb'
     - 'ee/spec/lib/gitlab/exclusive_lease_spec.rb'

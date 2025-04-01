@@ -126,7 +126,7 @@ You can assign or remove seats in bulk for multiple users.
 
 ### SAML Group Sync
 
-GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments](../user/group/saml_sso/group_sync.md#gitlab-duo-seat-assignment).
+GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments](../user/group/saml_sso/group_sync.md#manage-gitlab-duo-seat-assignment).
 
 ### For GitLab.com
 

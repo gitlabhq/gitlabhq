@@ -63,7 +63,7 @@ export const TARGET_TYPES = [
     // eslint-disable-next-line @gitlab/require-i18n-strings
     id: 'Issue',
     value: TODO_TARGET_TYPE_ISSUE,
-    title: s__('Todos|Issue or Epic'),
+    title: s__('Todos|Issue'),
   },
   {
     id: 'MergeRequest',

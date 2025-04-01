@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
-import { WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_TASK } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_TASK } from '~/work_items/constants';
 
 jest.mock('~/issues/show/event_hub');
 
@@ -45,11 +45,11 @@ describe('TaskListItemActions component', () => {
 
   describe('"Convert to child item" dropdown item', () => {
     describe.each`
-      issuableType                 | exists
-      ${TYPE_INCIDENT}             | ${true}
-      ${TYPE_ISSUE}                | ${true}
-      ${WORK_ITEM_TYPE_VALUE_EPIC} | ${true}
-      ${WORK_ITEM_TYPE_VALUE_TASK} | ${false}
+      issuableType                | exists
+      ${TYPE_INCIDENT}            | ${true}
+      ${TYPE_ISSUE}               | ${true}
+      ${WORK_ITEM_TYPE_NAME_EPIC} | ${true}
+      ${WORK_ITEM_TYPE_NAME_TASK} | ${false}
     `(`when $issuableType`, ({ issuableType, exists }) => {
       it(`${exists ? 'renders' : 'does not render'}`, () => {
         mountComponent({ issuableType });

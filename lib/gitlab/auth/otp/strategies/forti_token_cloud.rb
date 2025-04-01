@@ -27,8 +27,8 @@ module Gitlab
               post(
                 url: url('/login'),
                 body: {
-                        client_id: ::Gitlab.config.forti_token_cloud.client_id,
-                        client_secret: ::Gitlab.config.forti_token_cloud.client_secret
+                  client_id: ::Gitlab.config.forti_token_cloud.client_id,
+                  client_secret: ::Gitlab.config.forti_token_cloud.client_secret
                 }.to_json
               )
             end
@@ -45,8 +45,8 @@ module Gitlab
               url: url('/auth'),
               headers: { Authorization: "Bearer #{access_token}" },
               body: {
-                      username: user.username,
-                      token: otp_code
+                username: user.username,
+                token: otp_code
               }.to_json
             )
           end

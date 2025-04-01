@@ -7,7 +7,9 @@ class IndexApprovalMergeRequestRulesOnProjectId < Gitlab::Database::Migration[2.
   INDEX_NAME = 'index_approval_merge_request_rules_on_project_id'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index :approval_merge_request_rules, :project_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

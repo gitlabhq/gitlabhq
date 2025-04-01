@@ -1197,7 +1197,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:expected_params) { { root_namespace: group.full_path_components.first, client_id: "runner/#{runner.id}" } }
             end
 
-            it_behaves_like 'not executing any extra queries for the application context', 2 do
+            it_behaves_like 'not executing any extra queries for the application context', 3 do
               # Extra queries: Group, Route
               let(:subject_proc) { proc { request_job } }
             end

@@ -231,6 +231,8 @@ For example, if a feature applies to one tier for GitLab.com and a different ava
 
 In this case, do any or all of the following:
 
+- Use [metadata](../metadata.md#indicate-lack-of-product-availability-details)
+  to indicate that the page has been reviewed and does not need availability details.
 - Use a [`type="note"`](_index.md#note) alert box to describe the availability details.
 - Add availability details under other topic titles where this information makes more sense.
 - Do not add availability details under the H1.

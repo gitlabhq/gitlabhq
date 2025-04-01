@@ -1,14 +1,14 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
-import { WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 import eventHub from '../event_hub';
 
 const allowedTypes = [
   TYPE_INCIDENT,
   TYPE_ISSUE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 ];
 
 export default {

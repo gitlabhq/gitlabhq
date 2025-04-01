@@ -38,12 +38,12 @@ describe('Pages Template', () => {
             target: VAR_BUILD_IMAGE,
           }),
           expect.objectContaining({
-            widget: 'checklist',
-            items: [
-              expect.objectContaining({
-                text: 'The application files are in the `public` folder',
-              }),
-            ],
+            default: 'public',
+            description: 'Enter a project directory to publish. The default is "public".',
+            label: 'Choose a directory to publish',
+            monospace: true,
+            target: '$DIRECTORY',
+            widget: 'text',
           }),
         ],
         template: expect.stringContaining(VAR_BUILD_IMAGE),
@@ -75,18 +75,17 @@ describe('Pages Template', () => {
     expect(fullTemplate.toString()).toEqual(
       `# The Docker image that will be used to build your app
 image: ${VAR_BUILD_IMAGE}
-# Functions that should be executed before the build script is run
-before_script: ${VAR_INSTALLATION_STEPS}
-pages:
-  script: ${VAR_BUILD_STEPS}
-  artifacts:
-    paths:
-      # The folder that contains the files to be exposed at the Page URL
-      - public
+create-pages:
+  pages:
+    # The folder that contains the files to be exposed at the Page URL
+    publish: $DIRECTORY
   rules:
     # This ensures that only pushes to the default branch will trigger
     # a pages deploy
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  # Functions that should be executed before the build script is run
+  before_script: ${VAR_INSTALLATION_STEPS}
+  script: ${VAR_BUILD_STEPS}
 `,
     );
   });

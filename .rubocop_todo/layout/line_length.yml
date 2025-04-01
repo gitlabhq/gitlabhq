@@ -1817,7 +1817,6 @@ Layout/LineLength:
     - 'ee/spec/support/shared_examples/services/vulnerabilities/calls_vulnerability_statistics_utility_services_in_order.rb'
     - 'ee/spec/tasks/geo_rake_spec.rb'
     - 'ee/spec/validators/json_schema_validator_spec.rb'
-    - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/admin/application_settings/general.html.haml_spec.rb'
     - 'ee/spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'ee/spec/views/groups/security/discover/show.html.haml_spec.rb'

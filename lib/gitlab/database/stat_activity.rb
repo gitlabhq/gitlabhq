@@ -8,6 +8,30 @@ module Gitlab
 
       attr_reader :connection_name
 
+      # This class maintains a hash in Redis per database connection (main) and per application (sidekiq, web).
+      # The hash contains a key per database name `gitlabhq_production_sidekiq`, `gitlabhq_production_sidekiq_urgent`
+      # The payload of each entry in the hash is a json array with samples.
+      #
+      # The whole hash from Redis looks like this:
+      # key: gitlab:pg_stat_sampler:main:sidekiq:samples
+      # {
+      #   "gitlabhq_production_sidekiq": [
+      #     // a sample
+      #     {
+      #       "created_at": 1732543621,
+      #       "payload": {
+      #         "DetectRepositoryLanguagesWorker": {
+      #           "idle in transaction": 1
+      #         },
+      #         "ContainerRegistry::RecordDataRepairDetailWorker": {
+      #           "idle": 1,
+      #           "active": 2
+      #         }
+      #       }
+      #     }
+      #   ]
+      # }
+
       class << self
         def write(connection_name, sample)
           new(connection_name).write(sample)
@@ -22,6 +46,37 @@ module Gitlab
         aggregate_sample_data(sample).each do |application, database, payload|
           update_cached_samples(application, database, payload)
         end
+      end
+
+      # Returns the total of non-idle connections aggregated from the last `min_samples`
+      # for each database name, eg `gitlabhq_production_sidekiq`, `gitlabhq_production_sidekiq_urgent`.
+      # Hash for each database will be empty if there are not enough samples in Redis to meet `min_samples`.
+      #
+      # Returns {
+      #   "gitlabhq_production_sidekiq": {
+      #     "WorkerA": 1,
+      #     "WorkerB": 2
+      #   },
+      #   gitlabhq_production_sidekiq_urgent: {
+      #     "WorkerC": 3
+      #   }
+      # }
+      def non_idle_connections_by_db(min_samples)
+        result = {}
+        samples_by_db.each do |db, samples|
+          result[db] = {}
+          parsed_samples = Gitlab::Json.parse(samples)
+
+          next if parsed_samples.length < min_samples
+
+          result[db] = parsed_samples.last(min_samples)
+                                     .map { |sample| non_idle_by_endpoints(sample) }
+                                     .reduce({}) do |res, hash|
+                                       res.merge(hash) { |_key, old_val, new_val| old_val + new_val }
+                                     end
+        end
+
+        result
       end
 
       private
@@ -68,6 +123,16 @@ module Gitlab
 
             [application, db_config_database, payload]
           end
+      end
+
+      def samples_by_db
+        with_redis { |c| c.hgetall(hash_key(Gitlab.process_name)) }
+      end
+
+      def non_idle_by_endpoints(sample)
+        sample["payload"].transform_values do |states|
+          states.reject { |state, _count| state == "idle" }.values.sum
+        end
       end
 
       def with_redis(&)

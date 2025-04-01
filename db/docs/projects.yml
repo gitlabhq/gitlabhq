@@ -29,4 +29,4 @@ schema_inconsistencies:
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
 sharding_key:
   namespace_id: namespaces
-table_size: small
+table_size: large

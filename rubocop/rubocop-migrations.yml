@@ -1,27 +1,27 @@
 ---
 Migration/UpdateLargeTable:
   Enabled: true
-  OverLimitTables:
-  - :ci_builds_metadata
-  - :ci_builds_metadata_102
-  - :ci_builds_metadata_101
-  - :ci_builds
-  - :ci_pipelines
-  - :ci_builds_102
-  - :ci_builds_101
-  - :taggings
-  - :ci_job_artifacts
-  - :ci_build_needs
-  - :ci_stages
-  - :ci_pipeline_variables
-  - :ci_build_tags_100
-  - :ci_job_artifacts_102
+  OverLimitTables: &2
+  - :approval_merge_request_rules_users
   - :ci_build_names_102
-  - :ci_pipeline_variables_102
-  - :ci_build_tags_102
-  - :ci_build_tags_101
+  - :ci_build_needs
   - :ci_build_report_results
+  - :ci_build_tags_100
+  - :ci_build_tags_101
+  - :ci_build_tags_102
+  - :ci_builds
+  - :ci_builds_101
+  - :ci_builds_102
+  - :ci_builds_metadata
+  - :ci_builds_metadata_101
+  - :ci_builds_metadata_102
+  - :ci_job_artifacts
+  - :ci_job_artifacts_102
   - :ci_job_variables
+  - :ci_pipeline_variables
+  - :ci_pipeline_variables_102
+  - :ci_pipelines
+  - :ci_stages
   - :ci_stages_102
   - :deployments
   - :description_versions
@@ -35,28 +35,36 @@ Migration/UpdateLargeTable:
   - :note_diff_files
   - :notes
   - :oauth_access_tokens
+  - :packages_package_files
   - :project_authorizations
   - :push_event_payloads
   - :resource_label_events
+  - :sbom_occurrences
   - :security_findings
   - :sent_notifications
   - :system_note_metadata
+  - :taggings
   - :todos
   - :vulnerability_finding_links
   - :vulnerability_occurrences
   - :vulnerability_reads
   - :web_hook_logs
-  LargeTables:
-  - :ci_job_artifact_states
-  - :ci_pipeline_messages
+  LargeTables: &1
+  - :approval_merge_request_rules
   - :approval_merge_request_rules_users
   - :audit_events
+  - :authentication_events
+  - :ci_job_artifact_states
+  - :ci_pipeline_messages
+  - :namespaces
   - :packages_package_files
   - :personal_access_tokens
   - :projects
   - :sbom_occurrences
   - :security_scans
+  - :uploads
   - :vulnerabilities
+  - :zoekt_repositories
   HighTrafficTables:
   - :alert_management_alerts
   - :approvals

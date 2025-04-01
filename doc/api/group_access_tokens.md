@@ -280,5 +280,5 @@ If successful, returns `204 No content`.
 
 Other possible responses:
 
-- `400 Bad Request`: Token was not revoked.
-- `404 Not Found`: Token can not be found.
+- `400: Bad Request` if not revoked successfully.
+- `404: Not Found` if the access token does not exist.

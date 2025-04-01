@@ -110,6 +110,147 @@ indent-size = 4
 max-line-length = 120
 ```
 
+## Example Makefile
+
+```makefile
+# Excerpt from project Makefile showing common targets
+
+# lint
+.PHONY: install-lint-deps
+install-lint-deps:
+    @echo "Installing lint dependencies..."
+    @poetry install --only lint
+
+.PHONY: format
+format: black isort
+
+.PHONY: black
+black: install-lint-deps
+    @echo "Running black format..."
+    @poetry run black ${CI_PROJECT_DIR}
+
+.PHONY: isort
+isort: install-lint-deps
+    @echo "Running isort format..."
+    @poetry run isort ${CI_PROJECT_DIR}
+
+.PHONY: lint
+lint: flake8 check-black check-isort check-pylint check-mypy
+
+.PHONY: flake8
+flake8: install-lint-deps
+    @echo "Running flake8..."
+    @poetry run flake8 ${CI_PROJECT_DIR}
+
+.PHONY: check-black
+check-black: install-lint-deps
+    @echo "Running black check..."
+    @poetry run black --check ${CI_PROJECT_DIR}
+
+.PHONY: check-isort
+check-isort: install-lint-deps
+    @echo "Running isort check..."
+    @poetry run isort --check-only ${CI_PROJECT_DIR}
+
+.PHONY: check-pylint
+check-pylint: install-lint-deps install-test-deps
+    @echo "Running pylint check..."
+    @poetry run pylint ${CI_PROJECT_DIR}
+
+.PHONY: check-mypy
+check-mypy: install-lint-deps
+    @echo "Running mypy check..."
+    @poetry run mypy ${CI_PROJECT_DIR}
+
+# test
+.PHONY: test
+test: install-test-deps
+    @echo "Running tests..."
+    @poetry run pytest
+
+.PHONY: test-coverage
+test-coverage: install-test-deps
+    @echo "Running tests with coverage..."
+    @poetry run pytest --cov=duo_workflow_service --cov=lints --cov-report term --cov-report html
+```
+
+## Example GitLab CI Configuration
+
+```yaml
+# Excerpt from .gitlab-ci.yml showing linting and testing jobs
+
+image: python:3.13
+
+stages:
+  - lint
+  - test
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
+  POETRY_VERSION: "2.1.2"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - $PIP_CACHE_DIR
+    - $POETRY_CACHE_DIR
+    - .venv/
+
+# Base template for Python jobs
+.poetry:
+  before_script:
+    - pip install poetry==${POETRY_VERSION}
+    - poetry config virtualenvs.in-project true
+    - poetry add --dev black isort flake8 pylint mypy pytest pytest-cov
+
+# Linting jobs
+black:
+  extends: .poetry
+  stage: lint
+  script:
+    - poetry run black --check ${CI_PROJECT_DIR}
+
+isort:
+  extends: .poetry
+  stage: lint
+  script:
+    - poetry run isort --check-only ${CI_PROJECT_DIR}
+
+flake8:
+  extends: .poetry
+  stage: lint
+  script:
+    - poetry run flake8 ${CI_PROJECT_DIR}
+
+pylint:
+  extends: .poetry
+  stage: lint
+  script:
+    - poetry run pylint ${CI_PROJECT_DIR}
+
+mypy:
+  extends: .poetry
+  stage: lint
+  script:
+    - poetry run mypy ${CI_PROJECT_DIR}
+
+# Testing jobs
+test:
+  extends: .poetry
+  stage: test
+  script:
+    - poetry run pytest --cov=duo_workflow_service --cov-report=term --cov-report=xml:coverage.xml --junitxml=junit.xml
+  coverage: '/TOTAL.+?(\d+\%)/'
+  artifacts:
+    when: always
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+```
+
 ## Adding reviewer roulette
 
 We recommend reviewer roulette to distribute review workload across reviewers and maintainers. A pool of Python Reviewers is available 

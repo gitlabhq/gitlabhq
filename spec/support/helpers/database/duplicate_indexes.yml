@@ -2,6 +2,13 @@
 ci_job_artifact_states:
   index_on_job_artifact_id_partition_id_verification_state:
   - index_job_artifact_states_on_verification_state
+# TODO: will remove these ci_pipelines related rows when the duplicated index is removed
+ci_pipelines:
+  index_d8ae6ea3f3:
+  - index_ac3541b851
+p_ci_pipelines:
+  p_ci_pipelines_trigger_id_id_desc_idx:
+  - p_ci_pipelines_trigger_id_idx
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
   - index_dast_site_tokens_on_project_id

@@ -317,7 +317,7 @@ class ContainerRepository < ApplicationRecord
 
     return false unless project.has_container_registry_protected_tag_rules?(
       action: 'delete',
-      access_level: user.max_member_access_for_project(project.id)
+      access_level: project.team.max_member_access(user.id)
     )
 
     # This is an API call so we put it last
