@@ -1,5 +1,7 @@
 <script>
 import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
+import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -14,6 +16,7 @@ import { FORK_UPDATED_EVENT } from '../constants';
 import CommitInfo from './commit_info.vue';
 import CollapsibleCommitInfo from './collapsible_commit_info.vue';
 
+const trackingMixin = InternalEvents.mixin();
 export default {
   components: {
     CommitInfo,
@@ -29,7 +32,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin, glFeatureFlagMixin(), trackingMixin],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -108,6 +111,9 @@ export default {
     refetchLastCommit() {
       this.$apollo.queries.commit.refetch();
     },
+    handleHistoryClick() {
+      this.trackEvent(HISTORY_BUTTON_CLICK);
+    },
   },
 };
 </script>
@@ -145,6 +151,7 @@ export default {
           data-testid="last-commit-history"
           :href="historyUrl"
           class="!gl-ml-0"
+          @click="handleHistoryClick"
         >
           {{ __('History') }}
         </gl-button>

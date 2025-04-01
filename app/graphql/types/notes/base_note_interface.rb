@@ -29,6 +29,7 @@ module Types
       field :body_html, GraphQL::Types::String,
         method: :note_html,
         null: true,
+        calls_gitaly: true,
         description: "GitLab Flavored Markdown rendering of the content of the note."
 
       field :created_at, Types::TimeType,

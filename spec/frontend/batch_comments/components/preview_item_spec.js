@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import store from '~/mr_notes/stores';
 import { createDraft } from '../mock_data';
@@ -16,22 +16,25 @@ describe('Batch comments draft preview item component', () => {
     store.getters.getDiscussion = jest.fn(() => null);
   });
 
-  function createComponent(isLast = false, extra = {}) {
+  function createComponent(extra = {}, improvedReviewExperience = false) {
     draft = {
       ...createDraft(),
       ...extra,
     };
 
-    wrapper = mount(PreviewItem, {
+    wrapper = mountExtended(PreviewItem, {
       mocks: {
         $store: store,
       },
-      propsData: { draft, isLast },
+      propsData: { draft },
+      provide: {
+        glFeatures: { improvedReviewExperience },
+      },
     });
   }
 
   it('renders text content', () => {
-    createComponent(false, { note_html: '<img src="" /><p>Hello world</p>' });
+    createComponent({ note_html: '<img src="" /><p>Hello world</p>' });
 
     expect(wrapper.find('.review-preview-item-content').element.innerHTML).toBe(
       '<p>Hello world</p>',
@@ -40,13 +43,13 @@ describe('Batch comments draft preview item component', () => {
 
   describe('for file', () => {
     it('renders file path', () => {
-      createComponent(false, { file_path: 'index.js', file_hash: 'abc', position: {} });
+      createComponent({ file_path: 'index.js', file_hash: 'abc', position: {} });
 
       expect(wrapper.find('.review-preview-item-header-text').text()).toContain('index.js');
     });
 
     it('renders new line position', () => {
-      createComponent(false, {
+      createComponent({
         file_path: 'index.js',
         file_hash: 'abc',
         position: {
@@ -62,7 +65,7 @@ describe('Batch comments draft preview item component', () => {
     });
 
     it('renders old line position', () => {
-      createComponent(false, {
+      createComponent({
         file_path: 'index.js',
         file_hash: 'abc',
         position: {
@@ -78,7 +81,7 @@ describe('Batch comments draft preview item component', () => {
     });
 
     it('renders image position', () => {
-      createComponent(false, {
+      createComponent({
         file_path: 'index.js',
         file_hash: 'abc',
         position: { position_type: 'image', x: 10, y: 20 },
@@ -102,7 +105,7 @@ describe('Batch comments draft preview item component', () => {
       });
       store.getters.isDiscussionResolved = jest.fn().mockReturnValue(false);
 
-      createComponent(false, { discussion_id: '1', resolve_discussion: true });
+      createComponent({ discussion_id: '1', resolve_discussion: true });
     });
 
     it('renders title', () => {
@@ -123,4 +126,17 @@ describe('Batch comments draft preview item component', () => {
       expect(wrapper.find('.review-preview-item-header-text').text()).toContain('Your new comment');
     });
   });
+
+  it.each`
+    improvedReviewExperience | component
+    ${true}                  | ${'button'}
+    ${false}                 | ${'span'}
+  `(
+    'renders as $component when improvedReviewExperience is $improvedReviewExperience',
+    ({ improvedReviewExperience }) => {
+      createComponent({}, improvedReviewExperience);
+
+      expect(wrapper.findByTestId('preview-item-header').element).toMatchSnapshot();
+    },
+  );
 });

@@ -139,6 +139,7 @@ export default {
     size="small"
     :selected="selectedTemplateValue"
     :loading="loading"
+    data-testid="template-dropdown"
     searchable
     block
     class="gl-w-30"
@@ -146,7 +147,7 @@ export default {
     @search="handleSearch"
   >
     <template #list-item="{ item }">
-      <span class="gl-break-words">
+      <span class="gl-break-words" data-testid="template-item">
         {{ item.text }}
       </span>
     </template>

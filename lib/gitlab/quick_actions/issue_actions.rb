@@ -452,7 +452,7 @@ module Gitlab
       def can_be_moved_or_cloned?
         return true unless quick_action_target.is_a?(WorkItem) && quick_action_target.work_item_type.epic?
 
-        ::Feature.enabled?(:work_item_move_and_clone, container)
+        container.work_item_move_and_clone_flag_enabled?
       end
     end
   end

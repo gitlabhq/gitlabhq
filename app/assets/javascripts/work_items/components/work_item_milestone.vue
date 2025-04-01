@@ -255,6 +255,7 @@ export default {
         data-reference-type="milestone"
         data-placement="left"
         :href="localMilestone.webPath"
+        data-testid="work-item-milestone-link"
       >
         {{ localMilestone.title }}{{ expired }}
       </gl-link>

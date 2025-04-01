@@ -5,11 +5,13 @@ import { mapGetters as mapVuexGetters } from 'vuex';
 import { GlButton, GlTooltipDirective as GlTooltip, GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SET_REVIEW_BAR_RENDERED } from '~/batch_comments/stores/modules/batch_comments/mutation_types';
 import { useBatchComments } from '~/batch_comments/store';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '../constants';
 import PreviewDropdown from './preview_dropdown.vue';
 import SubmitDropdown from './submit_dropdown.vue';
+import SubmitDrawer from './submit_drawer.vue';
 
 export default {
   components: {
@@ -17,10 +19,12 @@ export default {
     GlButton,
     PreviewDropdown,
     SubmitDropdown,
+    SubmitDrawer,
   },
   directives: {
     GlTooltip,
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       discarding: false,
@@ -67,20 +71,23 @@ export default {
 <template>
   <nav class="review-bar-component js-review-bar" data-testid="review_bar_component">
     <div class="review-bar-content gl-flex gl-justify-end" data-testid="review-bar-content">
-      <gl-button
-        v-gl-tooltip
-        icon="remove"
-        variant="danger"
-        category="tertiary"
-        class="gl-mr-3"
-        :title="__('Discard review')"
-        :aria-label="__('Discard review')"
-        :loading="discarding"
-        data-testid="discard-review-btn"
-        @click="showDiscardModal = true"
-      />
-      <preview-dropdown />
-      <submit-dropdown />
+      <submit-drawer v-if="glFeatures.improvedReviewExperience" />
+      <template v-else>
+        <gl-button
+          v-gl-tooltip
+          icon="remove"
+          variant="danger"
+          category="tertiary"
+          class="gl-mr-3"
+          :title="__('Discard review')"
+          :aria-label="__('Discard review')"
+          :loading="discarding"
+          data-testid="discard-review-btn"
+          @click="showDiscardModal = true"
+        />
+        <preview-dropdown />
+        <submit-dropdown />
+      </template>
     </div>
     <gl-modal
       v-model="showDiscardModal"

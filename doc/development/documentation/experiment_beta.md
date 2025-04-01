@@ -65,8 +65,10 @@ Follow these guidelines when you document GitLab Duo features.
 
 When documenting a GitLab Duo experiment:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md), add a topic to the
-  `Experimental features` section.
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features):
+  - Add a row to the table.
+  - Add the feature to an area at the top of the page, near other features that are available
+    during a similar stage of the software development lifecycle.
 - Document the feature near other similar features.
 - Make sure you add history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
@@ -78,8 +80,8 @@ When documenting a GitLab Duo experiment:
 
 When a GitLab Duo experiment moves to beta:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md), move the topic from the
-  `Experimental features` to the `Beta features` section.
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features),
+  update the row in the table.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
 - For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
@@ -90,8 +92,8 @@ When a GitLab Duo experiment moves to beta:
 
 When a GitLab Duo feature becomes generally available:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md), move the topic from the
-  `Beta features` or `Experimental features` section to the `Generally available features` section.
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features),
+  update the row in the table.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
 - For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)

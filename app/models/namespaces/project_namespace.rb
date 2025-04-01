@@ -71,6 +71,10 @@ module Namespaces
       assign_attributes(attributes_to_sync)
     end
 
+    def work_item_move_and_clone_flag_enabled?
+      project.work_item_move_and_clone_flag_enabled?
+    end
+
     # It's always 1 project but it has to be an AR relation
     def all_projects
       Project.where(id: project.id)

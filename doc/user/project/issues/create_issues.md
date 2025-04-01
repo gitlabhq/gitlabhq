@@ -225,14 +225,17 @@ the appropriate project and followed up from there.
 When you're creating a new issue, you can complete the following fields:
 
 - Title
+- Project: defaults to the current project
 - Type: either issue (default) or incident
 - [Description template](../description_templates.md): overwrites anything in the Description text box
 - Description: you can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md)
 - Checkbox to make the issue [confidential](confidential_issues.md)
 - [Assignees](managing_issues.md#assignees)
 - [Weight](issue_weight.md)
-- [Epic](../../group/epics/_index.md)
-- [Due date](due_dates.md)
+- [Epic](../../group/epics/_index.md) (named Parent if [the new look for issues](issue_work_items.md) is enabled)
+- [Due date](due_dates.md) (named Dates if [the new look for issues](issue_work_items.md) is enabled)
 - [Milestone](../milestones/_index.md)
 - [Labels](../labels.md)
 - [Iteration](../../group/iterations/_index.md)
+- [Health status](managing_issues.md#health-status) ([the new look for issues](issue_work_items.md) must be enabled)
+- [Contacts](../../crm/_index.md) ([the new look for issues](issue_work_items.md) must be enabled)

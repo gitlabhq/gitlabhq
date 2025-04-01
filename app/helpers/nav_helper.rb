@@ -90,7 +90,8 @@ module NavHelper
 
   def new_issue_look?
     current_controller?('issues') &&
-      current_user&.user_preference&.use_work_items_view &&
+      (Feature.enabled?(:work_item_view_for_issues, @project&.group) ||
+      current_user&.user_preference&.use_work_items_view) &&
       !@issue&.work_item_type&.incident? &&
       !@issue&.from_service_desk?
   end

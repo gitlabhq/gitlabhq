@@ -17,7 +17,7 @@ describe('Work Item Note Actions', () => {
   const showSpy = jest.fn();
 
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
-  const findEditButton = () => wrapper.findByTestId('note-actions-edit');
+  const findEditButton = () => wrapper.findByTestId('note-edit-button');
   const findEmojiButton = () => wrapper.findByTestId('note-emoji-button');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteNoteButton = () => wrapper.findByTestId('delete-note-action');

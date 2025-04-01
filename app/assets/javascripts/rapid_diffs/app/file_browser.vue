@@ -29,5 +29,10 @@ export default {
 </script>
 
 <template>
-  <diffs-file-tree v-if="fileBrowserVisible" :loaded-files="loadedFiles" @clickFile="clickFile" />
+  <diffs-file-tree
+    v-if="fileBrowserVisible"
+    floating-resize
+    :loaded-files="loadedFiles"
+    @clickFile="clickFile"
+  />
 </template>

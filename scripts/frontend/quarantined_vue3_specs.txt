@@ -165,7 +165,6 @@ spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/profile/preferences/components/profile_preferences_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
 spec/frontend/projects/commits/components/author_select_spec.js
-spec/frontend/projects/compare/components/revision_dropdown_spec.js
 spec/frontend/projects/new/components/new_project_url_select_spec.js
 spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js

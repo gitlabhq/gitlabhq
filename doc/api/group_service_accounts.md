@@ -196,6 +196,66 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/181"
 ```
 
+## List all personal access tokens for a service account user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/526924) in GitLab 17.11.
+
+{{< /history >}}
+
+Lists all personal access tokens for a service account user in a top-level group.
+
+Supported attributes:
+
+| Attribute          | Type                | Required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | No       | If defined, returns tokens that expire before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_before_asc`, `expires_after_desc`, `last_used_before_asc`, `last_used_after_desc`, `name_asc`, `name_desc`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `user_id`          | integer or string   | No       | If defined, returns tokens owned by the specified user. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/personal_access_tokens?sort=id_desc&search=token2b&created_before=2025-03-27"
+```
+
+Example response:
+
+```json
+[
+    {
+        "id": 187,
+        "name": "service_accounts_token2b",
+        "revoked": false,
+        "created_at": "2025-03-26T14:42:51.084Z",
+        "description": null,
+        "scopes": [
+            "api"
+        ],
+        "user_id": 195,
+        "last_used_at": null,
+        "active": true,
+        "expires_at": null
+    }
+]
+```
+
+Example of unsuccessful responses:
+
+- `401: Unauthorized`
+- `404 Personal access token(s) Not Found`
+
 ## Create a personal access token for a service account user
 
 {{< history >}}
@@ -205,12 +265,6 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 {{< /history >}}
 
 Creates a personal access token for an existing service account user in a given top-level group.
-
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens

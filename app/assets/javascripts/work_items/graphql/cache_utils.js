@@ -10,7 +10,8 @@ import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
 import {
-  findHierarchyWidgets,
+  findCurrentUserTodosWidget,
+  findHierarchyWidget,
   findHierarchyWidgetChildren,
   findNotesWidget,
   getNewWorkItemAutoSaveKey,
@@ -34,7 +35,6 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
-  WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_LINKED_ITEMS,
   STATE_CLOSED,
 } from '../constants';
@@ -182,7 +182,7 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      const widget = findHierarchyWidget(draftState?.workItem);
       widget.hasChildren = true;
       const children = findHierarchyWidgetChildren(draftState?.workItem) || [];
       const existingChild = children.find((child) => child.id === workItem?.id);
@@ -215,7 +215,7 @@ export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      const widget = findHierarchyWidget(draftState?.workItem);
       const newChildren = findHierarchyWidgetChildren(workItem);
 
       const existingChildren = findHierarchyWidgetChildren(draftState?.workItem);
@@ -251,7 +251,7 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      const widget = findHierarchyWidget(draftState?.workItem);
       const children = findHierarchyWidgetChildren(draftState?.workItem);
       const index = children.findIndex((child) => child.id === workItem.id);
       if (index >= 0) children.splice(index, 1);
@@ -295,11 +295,7 @@ export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }
   }
 
   const newData = produce(sourceData, (draftState) => {
-    const { widgets } = draftState.workspace.workItem;
-    const widgetCurrentUserTodos = widgets.find(
-      (widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS,
-    );
-
+    const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.workspace.workItem);
     widgetCurrentUserTodos.currentUserTodos.nodes = todos;
   });
 
@@ -657,7 +653,7 @@ export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing
   }
 
   const updatedParent = produce(parent, (draft) => {
-    const hierarchyWidget = findHierarchyWidgets(draft.workItem.widgets);
+    const hierarchyWidget = findHierarchyWidget(draft.workItem);
 
     const counts = hierarchyWidget.rolledUpCountsByType.find(
       (i) => i.workItemType.name === workItemType,

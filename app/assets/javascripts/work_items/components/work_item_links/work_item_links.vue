@@ -22,7 +22,7 @@ import {
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '../../constants';
 import {
-  findHierarchyWidgets,
+  findHierarchyWidget,
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
   getItems,
@@ -143,7 +143,7 @@ export default {
       return this.parentIssue?.milestone;
     },
     hierarchyWidget() {
-      return this.workItem ? findHierarchyWidgets(this.workItem.widgets) : {};
+      return this.workItem ? findHierarchyWidget(this.workItem) : {};
     },
     children() {
       return this.hierarchyWidget?.children?.nodes || [];

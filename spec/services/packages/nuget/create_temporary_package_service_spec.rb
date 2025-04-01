@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Packages::Nuget::CreateTemporaryPackageService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:build) { create(:ci_build) }
+  let_it_be(:user) { project.owner }
+  let_it_be(:build) { create(:ci_build, user: user) }
 
   describe '#execute' do
     let(:package_params) do
@@ -34,11 +34,15 @@ RSpec.describe Packages::Nuget::CreateTemporaryPackageService, feature_category:
     subject(:response) { service.execute }
 
     context 'when successful' do
+      it_behaves_like 'returning a success service response'
+
       it 'creates a temporary package and enqueues extraction', :aggregate_failures do
         expect(Packages::CreatePackageFileService).to receive(:new).and_call_original
         expect(Packages::Nuget::ExtractionWorker).to receive(:perform_async)
-        expect { response }.to change { Packages::Package.count }.by(1).and change { Packages::PackageFile.count }.by(1)
-        expect(response).to be_success
+
+        expect { response }
+          .to change { Packages::Package.count }.by(1)
+          .and change { Packages::PackageFile.count }.by(1)
       end
     end
 
@@ -49,10 +53,8 @@ RSpec.describe Packages::Nuget::CreateTemporaryPackageService, feature_category:
         end
       end
 
-      it 'returns an error response' do
-        expect(response).to be_error
-        expect(response.message).to eq('Failed to create temporary package')
-      end
+      it_behaves_like 'returning an error service response', message: 'Failed to create temporary package'
+      it { is_expected.to have_attributes(reason: :bad_request) }
     end
 
     context 'when creating package file fails' do
@@ -64,10 +66,15 @@ RSpec.describe Packages::Nuget::CreateTemporaryPackageService, feature_category:
         end
       end
 
-      it 'returns an error response' do
-        expect(response).to be_error
-        expect(response.message).to eq('Failed to create package file')
-      end
+      it_behaves_like 'returning an error service response', message: 'Failed to create package file'
+      it { is_expected.to have_attributes(reason: :bad_request) }
+    end
+
+    context 'with unauthorized user' do
+      let(:user) { create(:user) }
+
+      it_behaves_like 'returning an error service response', message: 'Unauthorized'
+      it { is_expected.to have_attributes(reason: :unauthorized) }
     end
   end
 end

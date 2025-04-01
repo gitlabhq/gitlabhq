@@ -17489,7 +17489,8 @@ ALTER SEQUENCE metrics_users_starred_dashboards_id_seq OWNED BY metrics_users_st
 CREATE TABLE milestone_releases (
     milestone_id bigint NOT NULL,
     release_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_8141b5b804 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE milestones (

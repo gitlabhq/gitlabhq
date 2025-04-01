@@ -4,7 +4,7 @@ import { STATUS_CLOSED } from '~/issues/constants';
 import { humanTimeframe, isInPast, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { STATE_CLOSED } from '~/work_items/constants';
-import { isMilestoneWidget, isStartAndDueDateWidget } from '~/work_items/utils';
+import { findMilestoneWidget, findStartAndDueDateWidget } from '~/work_items/utils';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
@@ -22,10 +22,10 @@ export default {
   },
   computed: {
     milestone() {
-      return this.issue.milestone || this.issue.widgets?.find(isMilestoneWidget)?.milestone;
+      return this.issue.milestone || findMilestoneWidget(this.issue)?.milestone;
     },
     dueDate() {
-      return this.issue.dueDate || this.issue.widgets?.find(isStartAndDueDateWidget)?.dueDate;
+      return this.issue.dueDate || findStartAndDueDateWidget(this.issue)?.dueDate;
     },
     dueDateText() {
       if (this.startDate) {
@@ -52,7 +52,7 @@ export default {
       return this.isOverdue ? 'calendar-overdue' : 'calendar';
     },
     startDate() {
-      return this.issue.widgets?.find(isStartAndDueDateWidget)?.startDate;
+      return findStartAndDueDateWidget(this.issue)?.startDate;
     },
     timeEstimate() {
       return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;

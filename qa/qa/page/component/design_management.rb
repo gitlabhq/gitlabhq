@@ -42,6 +42,10 @@ module QA
             view 'app/assets/javascripts/design_management/components/delete_button.vue' do
               element 'confirm-archiving-button'
             end
+
+            view 'app/assets/javascripts/work_items/components/design_management/design_management_widget.vue' do
+              element 'design-item'
+            end
           end
         end
 
@@ -65,8 +69,14 @@ module QA
           # It accepts a `class:` option, but that only works for class attributes
           # It doesn't work as a CSS selector.
           # So instead we use the name attribute as a locator
-          within_element('design-dropzone-content') do
-            page.attach_file("upload_file", design_file_path, make_visible: { display: 'block' })
+
+          if work_item_enabled?
+            page.attach_file("design_file", design_file_path, make_visible: { display: 'block' }, match: :first)
+
+          else
+            within_element('design-dropzone-content') do
+              page.attach_file("upload_file", design_file_path, make_visible: { display: 'block' })
+            end
           end
 
           filename = ::File.basename(design_file_path)
@@ -74,7 +84,7 @@ module QA
           wait_until(reload: false, sleep_interval: 1, message: "Design upload") do
             image = find_element('design-image', filename: filename).find('img')
 
-            has_element?('design-file-name', text: filename) && image["complete"] && image["naturalWidth"].to_i > 0
+            image["complete"] && image["naturalWidth"].to_i > 0
           end
         end
 
@@ -103,7 +113,11 @@ module QA
         end
 
         def has_design?(filename)
-          has_element?('design-file-name', text: filename)
+          if work_item_enabled?
+            has_element?('design-item', text: filename)
+          else
+            has_element?('design-file-name', text: filename)
+          end
         end
 
         def has_no_design?(filename)

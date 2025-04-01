@@ -13,7 +13,7 @@ import {
   LINKED_CATEGORIES_MAP,
   i18n,
 } from '../constants';
-import { findHierarchyWidgets, findLinkedItemsWidget } from '../utils';
+import { findHierarchyWidget, findLinkedItemsWidget } from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -141,7 +141,7 @@ export default {
         if (!namespace?.workItem) return 0;
 
         /** @type {Array<{countsByState: { opened : number }}> } */
-        const countsByType = findHierarchyWidgets(namespace.workItem.widgets)?.rolledUpCountsByType;
+        const countsByType = findHierarchyWidget(namespace.workItem)?.rolledUpCountsByType;
 
         if (!countsByType) {
           return 0;

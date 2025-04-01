@@ -29,7 +29,7 @@ module Gitlab
           return Gitlab::SlashCommands::Presenters::Access.new.not_found
         end
 
-        new_issue = if Feature.enabled?(:work_item_move_and_clone, project)
+        new_issue = if project.work_item_move_and_clone_flag_enabled?
                       response = ::WorkItems::DataSync::MoveService.new(
                         work_item: old_issue, current_user: current_user,
                         target_namespace: target_project.project_namespace

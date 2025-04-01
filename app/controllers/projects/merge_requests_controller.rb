@@ -43,6 +43,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_show_reports_immediately, project)
+    push_frontend_feature_flag(:improved_review_experience, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]

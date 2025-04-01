@@ -268,7 +268,7 @@ export default {
         <div class="discussion-body">
           <div class="discussion-wrapper">
             <div class="discussion-notes">
-              <ul class="notes">
+              <ul class="notes" data-testid="note-container">
                 <work-item-note
                   is-first-note
                   :note="note"

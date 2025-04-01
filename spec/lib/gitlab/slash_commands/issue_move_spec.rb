@@ -44,7 +44,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, :service, feature_category: :te
           it 'returns the error message' do
             message = "issue move #{issue.iid} #{project.full_path}"
 
-            if Feature.enabled?(:work_item_move_and_clone, issue.project)
+            if issue.project.work_item_move_and_clone_flag_enabled?
               process_message(message)
               # move does not happen, as moving issue to same project results in same issue, but we do not show an error
               expect(issue.reload.moved_to).to be_nil

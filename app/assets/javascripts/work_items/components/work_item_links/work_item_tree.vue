@@ -22,7 +22,7 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../../constants';
 import {
-  findHierarchyWidgets,
+  findHierarchyWidget,
   getDefaultHierarchyChildrenCount,
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
@@ -162,7 +162,7 @@ export default {
         return !this.workItemId;
       },
       update({ workItem = {} }) {
-        const { children } = findHierarchyWidgets(workItem.widgets);
+        const { children } = findHierarchyWidget(workItem);
         this.workItem = workItem;
         return children || {};
       },
@@ -241,7 +241,7 @@ export default {
     },
     hasIndirectChildren() {
       return this.children
-        .map((child) => findHierarchyWidgets(child.widgets) || {})
+        .map((child) => findHierarchyWidget(child) || {})
         .some((hierarchy) => hierarchy.hasChildren);
     },
     isLoadingChildren() {

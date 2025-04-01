@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReviewBar from '~/batch_comments/components/review_bar.vue';
+import SubmitDrawer from '~/batch_comments/components/submit_drawer.vue';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '~/batch_comments/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -19,12 +20,13 @@ describe('Batch comments review bar component', () => {
   const findDiscardReviewButton = () => wrapper.findByTestId('discard-review-btn');
   const findDiscardReviewModal = () => wrapper.findByTestId('discard-review-modal');
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (propsData = {}, improvedReviewExperience = false) => {
     store = createStore();
 
     wrapper = shallowMountExtended(ReviewBar, {
       store,
       propsData,
+      provide: { glFeatures: { improvedReviewExperience } },
     });
   };
 
@@ -83,5 +85,17 @@ describe('Batch comments review bar component', () => {
 
       expect(toast).toHaveBeenCalledWith('Review discarded');
     });
+  });
+
+  it('does not render submit drawer when improvedReviewExperience is false', () => {
+    createComponent({}, false);
+
+    expect(wrapper.findComponent(SubmitDrawer).exists()).toBe(false);
+  });
+
+  it('renders submit drawer when improvedReviewExperience is true', () => {
+    createComponent({}, true);
+
+    expect(wrapper.findComponent(SubmitDrawer).exists()).toBe(true);
   });
 });

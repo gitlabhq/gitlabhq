@@ -33,6 +33,10 @@ module QA
             element 'related-issues-loading-placeholder'
           end
 
+          def work_item_enabled?
+            Page::Project::Issue::Index.perform(&:work_item_enabled?)
+          end
+
           def relate_issue(issue)
             click_element('crud-form-toggle')
             fill_element('add-issue-field', issue.web_url)
@@ -81,7 +85,6 @@ module QA
 
           def delete_issue
             has_delete_issue_button?
-
             click_element(
               'delete-issue-button',
               Page::Modal::DeleteIssue,
@@ -94,8 +97,8 @@ module QA
           end
 
           def open_actions_dropdown
-            # We use find here because these are gitlab-ui elements
             wait_for_requests
+            # We use find here because these are gitlab-ui elements
             find('[data-testid="desktop-dropdown"] > button').click
           end
         end

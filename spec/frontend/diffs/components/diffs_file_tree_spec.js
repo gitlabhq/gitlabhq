@@ -8,6 +8,7 @@ import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import store from '~/mr_notes/stores';
 import * as types from '~/diffs/store/mutation_types';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 describe('DiffsFileTree', () => {
   useLocalStorageSpy();
@@ -15,11 +16,21 @@ describe('DiffsFileTree', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(DiffsFileTree, {
-      store,
-      propsData,
-    });
+    wrapper = extendedWrapper(
+      shallowMount(DiffsFileTree, {
+        store,
+        propsData,
+      }),
+    );
   };
+
+  beforeAll(() => {
+    global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 100;
+  });
+
+  afterAll(() => {
+    global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+  });
 
   it('re-emits clickFile event', () => {
     const obj = {};
@@ -112,6 +123,69 @@ describe('DiffsFileTree', () => {
         await nextTick();
         expect(getCookie(TREE_LIST_WIDTH_STORAGE_KEY)).toBe('350');
       });
+    });
+  });
+
+  describe('floating resize', () => {
+    const getRootStyle = () =>
+      window.getComputedStyle(wrapper.findByTestId('file-browser-tree').element);
+    const getWrapperStyle = () =>
+      window.getComputedStyle(wrapper.findByTestId('file-browser-floating-wrapper').element);
+
+    it('applies cached sizings on resize start', async () => {
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => ({
+        height: 200,
+        top: 100,
+      }));
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.height).toBe('200px');
+      expect(style.width).toBe('350px');
+      expect(style.top).toBe('100px');
+    });
+
+    it('resizes wrapper element', async () => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', 140);
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.width).toBe('350px');
+      expect(style.width).toBe('140px');
+    });
+
+    it('sets sizings on resize end', async () => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', 140);
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-end', 140);
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.width).toBe('140px');
+      expect(style.width).toBe('');
+      expect(style.top).toBe('');
+    });
+
+    it('sets sizings after timeout', async () => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', 140);
+      await nextTick();
+      jest.advanceTimersByTime(100);
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.width).toBe('140px');
+      expect(style.width).toBe('140px');
     });
   });
 

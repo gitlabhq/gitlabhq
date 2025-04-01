@@ -40,7 +40,10 @@ module QA
 
       it 'mentions another user in an issue',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347988' do
-        Page::Project::Issue::Show.perform do |show|
+        work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+        page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+        page_type.perform do |show|
           at_username = "@#{user.username}"
 
           show.select_all_activities_filter

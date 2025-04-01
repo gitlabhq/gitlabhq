@@ -31,6 +31,11 @@ describe('FileBrowser', () => {
     expect(wrapper.findComponent(DiffsFileTree).props('loadedFiles')).toStrictEqual(loadedFiles);
   });
 
+  it('uses floating resize', () => {
+    createComponent();
+    expect(wrapper.findComponent(DiffsFileTree).props('floatingResize')).toBe(true);
+  });
+
   it('is visible by default', () => {
     createComponent();
     expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);

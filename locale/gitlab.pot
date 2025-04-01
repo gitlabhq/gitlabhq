@@ -38911,6 +38911,9 @@ msgid_plural "New issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "New issue look"
+msgstr ""
+
 msgid "New issue title"
 msgstr ""
 
@@ -39362,6 +39365,9 @@ msgid "No parallel deployments"
 msgstr ""
 
 msgid "No parent group"
+msgstr ""
+
+msgid "No pending comments"
 msgstr ""
 
 msgid "No phone number data for matching"
@@ -57755,6 +57761,9 @@ msgstr ""
 msgid "Submit the current review."
 msgstr ""
 
+msgid "Submit your review"
+msgstr ""
+
 msgid "Submit/save changes"
 msgstr ""
 
@@ -66469,6 +66478,9 @@ msgstr ""
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr ""
 
+msgid "We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
+
 msgid "What are some examples?"
 msgstr ""
 
@@ -69344,6 +69356,9 @@ msgid "Your requirements will be imported in the background. After it's finished
 msgstr ""
 
 msgid "Your resource access tokens will expire in %{days_to_expire} or less"
+msgstr ""
+
+msgid "Your review"
 msgstr ""
 
 msgid "Your search didn't match any commits. Try a different query."

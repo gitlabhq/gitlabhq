@@ -20,7 +20,9 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       last_edited_at: 1.day.ago,
       last_edited_by: guest,
       user_agent_detail: create(:user_agent_detail)
-    )
+    ).tap do |work_item|
+      create_list(:discussion_note_on_issue, 3, noteable: work_item, project: project)
+    end
   end
 
   let_it_be(:child_item1) { create(:work_item, :task, project: project, id: 1200) }
@@ -87,6 +89,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'state' => "OPEN",
         'title' => work_item.title,
         'confidential' => work_item.confidential,
+        'userDiscussionsCount' => 3,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
         'reference' => work_item.to_reference,
         'createNoteEmail' => work_item_email,
@@ -990,7 +993,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
           notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
 
-          expect(notes).to contain_exactly(
+          expect(notes).to include(
             hash_including('maxAccessLevelOfAuthor' => 'Developer', 'authorIsContributor' => false)
           )
         end
@@ -1002,7 +1005,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           all_widgets = graphql_dig_at(work_item_data, :widgets)
           notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
-          note = graphql_dig_at(notes_widget['notes'], :nodes).first
+          note = graphql_dig_at(notes_widget['notes'], :nodes).last
 
           expect(note).to include(
             'id' => latest_note.to_gid.to_s,

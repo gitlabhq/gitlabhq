@@ -214,7 +214,7 @@ export default {
       </template>
 
       <template #default>
-        <div class="gl-flex gl-flex-col gl-truncate">
+        <div class="gl-flex gl-flex-col gl-truncate" data-testid="design-file-name">
           <span
             v-gl-tooltip
             class="gl-truncate gl-text-sm"

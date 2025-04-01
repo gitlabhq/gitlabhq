@@ -20,7 +20,7 @@ import {
   NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
+import { autocompleteDataSources, findNotesWidget, markdownPreviewPath } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
@@ -310,8 +310,7 @@ export default {
         };
       },
       update(data) {
-        const widgets = data.workspace?.workItem?.widgets;
-        return widgets?.find((widget) => widget.type === 'NOTES')?.discussions || [];
+        return findNotesWidget(data.workspace?.workItem)?.discussions || [];
       },
       skip() {
         return !this.workItemIid;

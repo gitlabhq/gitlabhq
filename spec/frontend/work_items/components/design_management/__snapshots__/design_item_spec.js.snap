@@ -33,6 +33,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
     </gl-intersection-observer-stub>
     <div
       class="gl-flex gl-flex-col gl-truncate"
+      data-testid="design-file-name"
     >
       <span
         class="gl-text-sm gl-truncate"
@@ -98,6 +99,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
     </gl-intersection-observer-stub>
     <div
       class="gl-flex gl-flex-col gl-truncate"
+      data-testid="design-file-name"
     >
       <span
         class="gl-text-sm gl-truncate"

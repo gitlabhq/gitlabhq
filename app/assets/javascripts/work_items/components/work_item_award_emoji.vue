@@ -11,7 +11,8 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import projectWorkItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
 import updateAwardEmojiMutation from '../graphql/update_award_emoji.mutation.graphql';
-import { WIDGET_TYPE_AWARD_EMOJI, DEFAULT_PAGE_SIZE_EMOJIS } from '../constants';
+import { DEFAULT_PAGE_SIZE_EMOJIS } from '../constants';
+import { findAwardEmojiWidget } from '../utils';
 
 export default {
   defaultAwards: [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN],
@@ -82,8 +83,7 @@ export default {
         };
       },
       update(data) {
-        const widgets = data.workspace?.workItem?.widgets;
-        return widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI).awardEmoji || {};
+        return findAwardEmojiWidget(data.workspace?.workItem).awardEmoji || {};
       },
       skip() {
         return !this.workItemIid;
@@ -180,8 +180,7 @@ export default {
       const sourceData = cache.readQuery(query);
 
       const newData = produce(sourceData, (draftState) => {
-        const { widgets } = draftState.workspace.workItem;
-        const widgetAwardEmoji = widgets.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
+        const widgetAwardEmoji = findAwardEmojiWidget(draftState.workspace.workItem);
         widgetAwardEmoji.awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
       });
 

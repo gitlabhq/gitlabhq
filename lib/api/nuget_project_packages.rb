@@ -125,7 +125,7 @@ module API
           }
         ).execute
 
-        bad_request!(response.message) if response.error?
+        render_api_error!(response.message, response.reason) if response.error?
       end
 
       def extracted_metadata

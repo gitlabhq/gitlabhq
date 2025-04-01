@@ -491,7 +491,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
           post api(path, user),
             params: { to_project_id: project.id }
 
-          if Feature.enabled?(:work_item_move_and_clone, issue.project)
+          if issue.project.work_item_move_and_clone_flag_enabled?
             expect(json_response['id']).to eq(issue.id)
           else
             expect(response).to have_gitlab_http_status(:bad_request)
@@ -601,7 +601,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             # legacy clone adds an extra note for assignees, even though assignees are cloned from original issue and,
             # in case of cloning notes, along with cloning assignments system notes as well
             notes_count = 2
-            notes_count -= 1 if Feature.enabled?(:work_item_move_and_clone, issue.project)
+            notes_count -= 1 if issue.project.work_item_move_and_clone_flag_enabled?
 
             expect(cloned_issue.notes.count).to eq(notes_count)
             expect(cloned_issue.notes.pluck(:note)).not_to include(issue.notes.first.note)
@@ -684,7 +684,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
         # legacy clone adds an extra note for assignees, even though those we cloned from original issue
         notes_count = issue.notes.count + 1
-        notes_count -= 1 if Feature.enabled?(:work_item_move_and_clone, issue.project)
+        notes_count -= 1 if issue.project.work_item_move_and_clone_flag_enabled?
 
         expect(cloned_issue.notes.count).to eq(notes_count)
         expect(cloned_issue.notes.pluck(:note)).to include(issue.notes.first.note)

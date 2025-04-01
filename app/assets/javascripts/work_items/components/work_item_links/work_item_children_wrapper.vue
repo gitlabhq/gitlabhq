@@ -12,7 +12,7 @@ import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
 import { WORK_ITEM_TYPE_NAME_OBJECTIVE, WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
-import { findHierarchyWidgetChildren, getItems, findHierarchyWidgets } from '../../utils';
+import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
 import {
   addHierarchyChild,
   removeHierarchyChild,
@@ -146,7 +146,7 @@ export default {
       return this.canReorder ? options : {};
     },
     parentHeirarchyWidget() {
-      return findHierarchyWidgets(this.parent.widgets);
+      return findHierarchyWidget(this.parent);
     },
     disableList() {
       return this.disableContent || this.updateInProgress;
@@ -404,7 +404,7 @@ export default {
               cache.writeQuery({
                 ...queryArgs,
                 data: produce(sourceData, (draftState) => {
-                  const hierarchyWidget = findHierarchyWidgets(draftState?.workItem.widgets);
+                  const hierarchyWidget = findHierarchyWidget(draftState?.workItem);
                   hierarchyWidget.children.nodes = findHierarchyWidgetChildren(parentWorkItem);
                 }),
               });

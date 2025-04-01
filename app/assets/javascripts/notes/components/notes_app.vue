@@ -323,7 +323,7 @@ export default {
       const noteId = (hash && hash.startsWith('note_') && hash.replace(/^note_/, '')) ?? null;
 
       if (noteId) {
-        const discussion = this.discussions.find((d) => d.notes.some(({ id }) => id === noteId));
+        const discussion = this.discussions.find((d) => d.notes?.some(({ id }) => id === noteId));
 
         if (discussion) {
           this.expandDiscussion({ discussionId: discussion.id });

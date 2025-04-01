@@ -1,7 +1,8 @@
 <script>
-import { GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
 import {
@@ -15,15 +16,12 @@ export default {
   components: {
     GlIcon,
     GlSprintf,
+    GlButton,
   },
-  mixins: [resolvedStatusMixin],
+  mixins: [resolvedStatusMixin, glFeatureFlagsMixin()],
   props: {
     draft: {
       type: Object,
-      required: true,
-    },
-    isLast: {
-      type: Boolean,
       required: true,
     },
   },
@@ -101,12 +99,23 @@ export default {
 
 <template>
   <span>
-    <span class="review-preview-item-header">
-      <gl-icon class="flex-shrink-0" :name="iconName" />
-      <span class="text-nowrap gl-items-center gl-font-bold">
-        <span class="review-preview-item-header-text block-truncated gl-ml-2">
-          {{ titleText }}
-        </span>
+    <component
+      :is="glFeatures.improvedReviewExperience ? 'gl-button' : 'span'"
+      :variant="glFeatures.improvedReviewExperience ? 'link' : undefined"
+      class="review-preview-item-header"
+      :class="{ '!gl-justify-start': glFeatures.improvedReviewExperience }"
+      data-testid="preview-item-header"
+      @click="$emit('click', draft)"
+    >
+      <gl-icon class="flex-shrink-0" :name="iconName" /><span
+        class="text-nowrap gl-items-center"
+        :class="{ 'gl-font-bold': !glFeatures.improvedReviewExperience }"
+      >
+        <span
+          class="review-preview-item-header-text block-truncated"
+          :class="{ 'gl-ml-2': !glFeatures.improvedReviewExperience }"
+          >{{ titleText }}</span
+        >
         <template v-if="showLinePosition">
           <template v-if="startLineNumber === endLineNumber">
             :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
@@ -125,7 +134,7 @@ export default {
           </gl-sprintf>
         </template>
       </span>
-    </span>
+    </component>
     <span class="review-preview-item-content">
       <p>{{ content }}</p>
     </span>

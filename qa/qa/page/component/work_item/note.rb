@@ -26,6 +26,10 @@ module QA
               element 'confirm-button'
             end
 
+            base.view 'app/assets/javascripts/work_items/components/notes/work_item_discussion.vue' do
+              element 'note-container'
+            end
+
             base.view 'app/assets/javascripts/work_items/components/notes/work_item_note_body.vue' do
               element 'work-item-note-body'
             end
@@ -33,12 +37,48 @@ module QA
             base.view 'app/assets/javascripts/work_items/components/notes/work_item_notes_activity_header.vue' do
               element 'work-item-filter'
             end
+
+            base.view 'app/assets/javascripts/work_items/components/notes/work_item_note.vue' do
+              element 'note-wrapper'
+            end
+
+            base.view 'app/assets/javascripts/work_items/components/notes/work_item_note_actions.vue' do
+              element 'note-edit-button'
+            end
+
+            base.view 'app/assets/javascripts/notes/components/toggle_replies_widget.vue' do
+              element 'expand-replies-button'
+              element 'collapse-replies-button'
+            end
           end
 
-          def comment(text, filter: :all_activities)
+          def collapse_replies
+            click_element 'collapse-replies-button'
+          end
+
+          # Attachment option should be an absolute path
+          def comment(text, attachment: nil, filter: :all_activities)
             method(:"select_#{filter}_filter").call
-            fill_element 'markdown-editor-form-field', "#{text}\n"
+            fill_editor_element('markdown-editor-form-field', "#{text}\n")
+
+            unless attachment.nil?
+              QA::Page::Component::Dropzone.new(self, '.new-note')
+                .attach_file(attachment)
+            end
+
+            has_active_element?('confirm-button', wait: 0.5)
             click_element 'confirm-button'
+          end
+
+          def edit_comment(text)
+            click_element 'note-edit-button'
+            within_element 'note-wrapper' do
+              fill_and_submit_comment(text)
+            end
+          end
+
+          def expand_replies
+            click_element 'expand-replies-button'
           end
 
           def has_comment?(comment_text)
@@ -49,8 +89,25 @@ module QA
             )
           end
 
+          def has_comment_author?(author_username)
+            within_element('work-item-note-body') do
+              has_element?('author-name', text: author_username, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            end
+          end
+
           def has_system_note?(note_text)
             has_element?('system-note-content', text: note_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          end
+
+          def noteable_note_item
+            find_element('work-item-note-body')
+          end
+
+          def reply_to_comment(position, reply_text)
+            all_elements('reply-icon', minimum: position)[position - 1].click
+            within_element 'note-container' do
+              fill_and_submit_comment(reply_text)
+            end
           end
 
           def select_all_activities_filter
@@ -78,6 +135,12 @@ module QA
           end
 
           private
+
+          def fill_and_submit_comment(text)
+            fill_editor_element('markdown-editor-form-field', "#{text}\n")
+            has_active_element?('confirm-button', wait: 0.5)
+            click_element 'confirm-button'
+          end
 
           def select_filter_with_type(type)
             retry_on_exception do

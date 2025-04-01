@@ -8,7 +8,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { findDesignWidget, canRouterNav } from '~/work_items/utils';
+import { findDesignsWidget, canRouterNav } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
@@ -99,7 +99,7 @@ export default {
         };
       },
       update(data) {
-        const designWidget = findDesignWidget(data.workItem.widgets);
+        const designWidget = findDesignsWidget(data.workItem);
         if (designWidget.designCollection === null) {
           return null;
         }
@@ -207,8 +207,8 @@ export default {
     issueAsWorkItem() {
       return Boolean(
         !this.isGroup &&
-          this.glFeatures.workItemsViewPreference &&
-          gon.current_user_use_work_items_view,
+          (this.glFeatures.workItemViewForIssues ||
+            (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view)),
       );
     },
     canUseRouter() {

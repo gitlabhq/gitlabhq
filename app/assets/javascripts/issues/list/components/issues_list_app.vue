@@ -620,7 +620,11 @@ export default {
       return !isEmpty(this.activeIssuable);
     },
     issuesDrawerEnabled() {
-      return this.glFeatures?.issuesListDrawer || gon.current_user_use_work_items_view;
+      return (
+        this.glFeatures?.issuesListDrawer ||
+        this.glFeatures?.workItemViewForIssues ||
+        gon.current_user_use_work_items_view
+      );
     },
   },
   watch: {

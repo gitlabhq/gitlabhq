@@ -8,7 +8,7 @@ import {
   updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidgets, findNotesWidget } from '~/work_items/utils';
+import { findHierarchyWidget, findNotesWidget } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
@@ -518,7 +518,7 @@ describe('work items graphql cache utils', () => {
     const workItemType = 'Task';
 
     const getCounts = (data) =>
-      findHierarchyWidgets(data.workItem.widgets).rolledUpCountsByType.find(
+      findHierarchyWidget(data.workItem).rolledUpCountsByType.find(
         (i) => i.workItemType.name === workItemType,
       );
 

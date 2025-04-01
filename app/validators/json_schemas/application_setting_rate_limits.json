@@ -17,82 +17,82 @@
     "concurrent_bitbucket_import_jobs_limit": {
       "type": "integer",
       "minimum": 1,
-      "description": "Maximum number of simultaneous import jobs for Bitbucket Cloud importer"
+      "description": "Maximum number of simultaneous import jobs for Bitbucket Cloud importer."
     },
     "concurrent_bitbucket_server_import_jobs_limit": {
       "type": "integer",
       "minimum": 1,
-      "description": "Maximum number of simultaneous import jobs for Bitbucket Server importer"
+      "description": "Maximum number of simultaneous import jobs for Bitbucket Server importer."
     },
     "concurrent_github_import_jobs_limit": {
       "type": "integer",
       "minimum": 1,
-      "description": "Maximum number of simultaneous import jobs for GitHub importer"
+      "description": "Maximum number of simultaneous import jobs for GitHub importer."
     },
     "concurrent_relation_batch_export_limit": {
       "type": "integer",
       "minimum": 1,
-      "description": "Maximum number of simultaneous batch export jobs to process"
+      "description": "Maximum number of simultaneous batch export jobs to process."
     },
     "create_organization_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the POST /api/v4/organizations API."
+      "description": "Number of requests allowed to the POST /api/v4/organizations endpoint."
     },
     "group_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/groups/:id API."
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id endpoint."
     },
     "group_invited_groups_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/groups/:id/invited_groups API."
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id/invited_groups endpoint."
     },
     "group_projects_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/groups/:id/projects API."
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id/projects endpoint."
     },
     "group_shared_groups_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/groups/:id/groups/shared API."
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id/groups/shared endpoint."
     },
     "groups_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/groups API."
+      "description": "Number of requests allowed to the GET /api/v4/groups endpoint."
     },
     "project_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/projects/:id API."
+      "description": "Number of requests allowed to the GET /api/v4/projects/:id endpoint."
     },
     "project_invited_groups_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/projects/:id/invited_groups API."
+      "description": "Number of requests allowed to the GET /api/v4/projects/:id/invited_groups endpoint."
     },
     "projects_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/projects API."
+      "description": "Number of requests allowed to the GET /api/v4/projects endpoint."
     },
     "user_contributed_projects_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/contributed_projects API."
+      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/contributed_projects endpoint."
     },
     "user_projects_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/projects API."
+      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/projects endpoint."
     },
     "user_starred_projects_api_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/starred_projects."
+      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/starred_projects endpoint."
     },
     "members_delete_limit": {
       "type": "integer",
@@ -107,37 +107,37 @@
     "users_api_limit_followers": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:id/followers API."
+      "description": "Number of requests allowed to the GET /users/:id/followers endpoint."
     },
     "users_api_limit_following": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:id/following API."
+      "description": "Number of requests allowed to the GET /users/:id/following endpoint."
     },
     "users_api_limit_status": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:user_id/status API."
+      "description": "Number of requests allowed to the GET /users/:user_id/status endpoint."
     },
     "users_api_limit_ssh_keys": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:user_id/keys API."
+      "description": "Number of requests allowed to the GET /users/:user_id/keys endpoint."
     },
     "users_api_limit_ssh_key": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:id/keys/:key_id API."
+      "description": "Number of requests allowed to the GET /users/:id/keys/:key_id endpoint."
     },
     "users_api_limit_gpg_keys": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:id/gpg_keys API."
+      "description": "Number of requests allowed to the GET /users/:id/gpg_keys endpoint."
     },
     "users_api_limit_gpg_key": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of requests allowed to the GET /users/:id/gpg_keys/:key_id API."
+      "description": "Number of requests allowed to the GET /users/:id/gpg_keys/:key_id endpoint."
     }
   }
 }

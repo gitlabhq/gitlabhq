@@ -12,7 +12,7 @@
   issues_path: project_issues_path(@project),
   project_path: @project.full_path } }
 
-- if @project&.work_items_alpha_feature_flag_enabled? && current_user&.user_preference&.use_work_items_view
+- if Feature.enabled?(:work_item_view_for_issues, @project.group) || @project&.work_items_alpha_feature_flag_enabled? && current_user&.user_preference&.use_work_items_view
   #js-work-items{ data: work_items_data(@project, current_user) }
 - else
   .js-issues-list-root{ data: project_issues_list_data(@project, current_user) }

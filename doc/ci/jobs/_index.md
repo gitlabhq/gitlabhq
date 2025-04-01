@@ -242,7 +242,44 @@ To view the full list of jobs that ran in a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#view-jobs-in-a-pipeline) and [job name](#job-names).
+You can filter the list by [job status](#view-jobs-in-a-pipeline), [job name](#job-names) and [job source](#available-job-sources).
+
+### View the source of a job
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181159) job source in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `populate_and_use_build_source_table`. Enabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11796) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.11.
+
+{{< /history >}}
+
+GitLab CI/CD jobs now include a source attribute that indicates the action that initially triggered a CI/CD job. Use this attribute to track how a job was initiated or filter job runs based on the specific sources.
+
+#### Available job sources
+
+The source attribute can have the following values:
+
+– `api`: Job initiated by a REST call to the Jobs API.
+– `chat`: Job initiated by a chat command using GitLab ChatOps.
+– `container_registry_push`: Job initiated by container registry push.
+– `duo_workflow`: Job initiated by GitLab Duo Workflow.
+– `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
+– `external_pull_request_event`: Job initiated by a pull request event in an external repository.
+– `merge_request_event`: Job initiated by a merge request event.
+– `ondemand_dast_scan`:Job initiated by an on-demand DAST scan.
+– `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
+– `parent_pipeline`: Job initiated by a parent pipeline
+– `pipeline`: Job initiated by a user manually running a pipeline.
+– `pipeline_execution_policy`: Job initiated by a triggered pipeline execution policy.
+– `pipeline_execution_policy_schedule`: Job initiated by a scheduled pipeline execution policy.
+– `push`: Job initiated by a code push.
+– `scan_execution_policy`: Job initiated by a scan execution policy.
+– `schedule`: Job initiated by a scheduled pipeline.
+– `security_orchestration_policy`: Job initiated by a security orchestration policy.
+– `trigger`: Job initiated by another job or pipeline.
+– `unknown` – Job initiated by an unknown source.
+– `web` – Job initiated by a user from the GitLab UI.
+– `webide` – Job initiated by a user from the Web IDE.
 
 ### Group similar jobs together in pipeline views
 

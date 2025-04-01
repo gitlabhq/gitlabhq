@@ -9,6 +9,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { InternalEvents } from '~/tracking';
 import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import { resetShortcutsForTests } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
@@ -122,7 +123,7 @@ describe('Blob controls component', () => {
         refType: 'heads',
         ...props,
       },
-      mixins: [{ data: () => ({ ref: refMock }) }, glFeatureFlagMixin()],
+      mixins: [{ data: () => ({ ref: refMock }) }, glFeatureFlagMixin(), InternalEvents.mixin()],
       stubs: {
         WebIdeLink,
       },
@@ -232,9 +233,9 @@ describe('Blob controls component', () => {
     });
 
     it('triggers a `focusSearchFile` shortcut when the findFile button is clicked', () => {
-      const findFileButton = findFindButton();
       jest.spyOn(Shortcuts, 'focusSearchFile').mockResolvedValue();
-      findFileButton.vm.$emit('click');
+
+      findFindButton().vm.$emit('click');
 
       expect(Shortcuts.focusSearchFile).toHaveBeenCalled();
     });
@@ -245,7 +246,11 @@ describe('Blob controls component', () => {
 
       findFindButton().vm.$emit('click');
 
-      expect(trackEventSpy).toHaveBeenCalledWith('click_find_file_button_on_repository_pages');
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_find_file_button_on_repository_pages',
+        {},
+        undefined,
+      );
     });
   });
 
@@ -275,6 +280,14 @@ describe('Blob controls component', () => {
       await createComponent({}, { storedExternally: false, externalStorage: null });
 
       expect(findBlameButton().exists()).toBe(true);
+    });
+
+    it('calls trackEvent method when clicked on blame button', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findBlameButton().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith('click_blame_control_on_blob_page', {}, undefined);
     });
   });
 

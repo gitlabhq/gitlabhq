@@ -8,17 +8,20 @@ import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_AWARD_EMOJI,
+  WIDGET_TYPE_COLOR,
+  WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_START_AND_DUE_DATE,
+  WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_WEIGHT,
-  WIDGET_TYPE_AWARD_EMOJI,
-  WIDGET_TYPE_LINKED_ITEMS,
   ISSUABLE_EPIC,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_EPIC,
@@ -31,47 +34,57 @@ import {
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
 
-export const isHealthStatusWidget = (widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS;
-
-export const isLabelsWidget = (widget) => widget.type === WIDGET_TYPE_LABELS;
-
 export const isMilestoneWidget = (widget) => widget.type === WIDGET_TYPE_MILESTONE;
 
 export const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
 
-export const isStartAndDueDateWidget = (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE;
+export const findAwardEmojiWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
 
-export const isWeightWidget = (widget) => widget.type === WIDGET_TYPE_WEIGHT;
+export const findColorWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_COLOR);
 
-export const findHierarchyWidgets = (widgets) =>
-  widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+export const findCurrentUserTodosWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS);
 
 export const findDescriptionWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
 
+export const findDesignsWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
+
+export const findHealthStatusWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS);
+
+export const findHierarchyWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+
+export const findLabelsWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+
 export const findLinkedItemsWidget = (workItem) =>
-  workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
+
+export const findMilestoneWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
 
 export const findNotesWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTES);
 
 export const findStartAndDueDateWidget = (workItem) =>
-  workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE);
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE);
 
-export const findAwardEmojiWidget = (workItem) =>
-  workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
+export const findTimeTrackingWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_TIME_TRACKING);
+
+export const findWeightWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
 
 export const findHierarchyWidgetChildren = (workItem) =>
-  findHierarchyWidgets(workItem?.widgets)?.children?.nodes || [];
+  findHierarchyWidget(workItem)?.children?.nodes || [];
 
 export const findHierarchyWidgetAncestors = (workItem) =>
-  findHierarchyWidgets(workItem?.widgets)?.ancestors?.nodes || [];
-
-export const findDesignWidget = (widgets) =>
-  widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
-
-export const findMilestoneWidget = (widgets) =>
-  widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
+  findHierarchyWidget(workItem)?.ancestors?.nodes || [];
 
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(WORK_ITEM_TYPE_VALUE_MAP).find(

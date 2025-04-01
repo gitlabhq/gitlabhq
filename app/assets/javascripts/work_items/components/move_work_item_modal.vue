@@ -8,7 +8,7 @@ import {
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { findHierarchyWidgets } from '~/work_items/utils';
+import { findHierarchyWidget } from '~/work_items/utils';
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';
 import searchUserProjectsToMove from '~/work_items/graphql/search_user_projects_to_move.query.graphql';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
@@ -98,7 +98,7 @@ export default {
         return !this.workItemId;
       },
       update(data) {
-        return findHierarchyWidgets(data?.workItem?.widgets)?.hasChildren;
+        return findHierarchyWidget(data?.workItem)?.hasChildren;
       },
       error() {
         // If was not able to fetch children, show warning message anyway just in case

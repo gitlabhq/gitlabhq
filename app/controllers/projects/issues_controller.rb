@@ -55,6 +55,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:continue_indented_text, !!project&.continue_indented_text_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
+    push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
   end
 
   before_action only: [:index, :show] do
@@ -195,7 +196,7 @@ class Projects::IssuesController < Projects::ApplicationController
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      @issue = if Feature.enabled?(:work_item_move_and_clone, project)
+      @issue = if project.work_item_move_and_clone_flag_enabled?
                  ::WorkItems::DataSync::MoveService.new(
                    work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
                  ).execute[:work_item]
@@ -410,8 +411,9 @@ class Projects::IssuesController < Projects::ApplicationController
     # Service Desk issues and incidents should not use the work item view
     !issue.from_service_desk? &&
       !issue.work_item_type&.incident? &&
-      Feature.enabled?(:work_items_view_preference, current_user) &&
-      current_user&.user_preference&.use_work_items_view
+      (Feature.enabled?(:work_item_view_for_issues, project&.group) ||
+      (Feature.enabled?(:work_items_view_preference, current_user) &&
+      current_user&.user_preference&.use_work_items_view))
   end
 
   def work_item_redirect_except_actions
@@ -466,7 +468,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_work_item
-    return unless use_work_items_path?(issue) && !show_work_item?
+    return unless use_work_items_path?(issue)
 
     redirect_to project_work_item_path(project, issue.iid, params: request.query_parameters)
   end

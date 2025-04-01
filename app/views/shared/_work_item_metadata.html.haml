@@ -3,3 +3,5 @@
               work_item.work_item_type.name.pluralize
 - page_description work_item.description_html
 - page_card_attributes work_item.card_attributes
+- if @work_item.relocation_target
+  - page_canonical_link @work_item.relocation_target.present(current_user: current_user).web_url

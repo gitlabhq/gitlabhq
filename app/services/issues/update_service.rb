@@ -103,7 +103,7 @@ module Issues
 
       update(issue)
 
-      if Feature.enabled?(:work_item_move_and_clone, container)
+      if container.work_item_move_and_clone_flag_enabled?
         move_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
         ::WorkItems::DataSync::MoveService.new(
           work_item: issue, current_user: current_user, target_namespace: move_service_container
@@ -157,7 +157,7 @@ module Issues
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
 
-      if Feature.enabled?(:work_item_move_and_clone, container)
+      if container.work_item_move_and_clone_flag_enabled?
         clone_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
         ::WorkItems::DataSync::CloneService.new(
           work_item: issue, current_user: current_user, target_namespace: clone_service_container,

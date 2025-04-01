@@ -237,6 +237,7 @@ export default {
         variant="confirm"
         type="submit"
         data-track-action="click_button"
+        data-testid="save-comment-button"
         @click="submitForm"
       >
         {{ buttonText }}

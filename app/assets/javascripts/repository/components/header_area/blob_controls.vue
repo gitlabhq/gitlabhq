@@ -22,7 +22,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
-import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
+import { FIND_FILE_BUTTON_CLICK, BLAME_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import {
   showSingleFileEditorForkSuggestion,
@@ -59,7 +59,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
   apollo: {
     project: {
       query: blobControlsQuery,
@@ -247,8 +247,11 @@ export default {
       );
     },
     handleFindFile() {
-      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
+      this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
+    },
+    handleBlameClick() {
+      this.trackEvent(BLAME_BUTTON_CLICK);
     },
     onCopy() {
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
@@ -301,6 +304,7 @@ export default {
         { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
       ]"
       class="js-blob-blame-link"
+      @click="handleBlameClick"
     >
       {{ $options.i18n.blame }}
     </gl-button>

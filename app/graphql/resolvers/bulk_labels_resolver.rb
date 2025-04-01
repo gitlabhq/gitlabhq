@@ -2,13 +2,9 @@
 
 module Resolvers
   class BulkLabelsResolver < BaseResolver
-    include Gitlab::Graphql::Authorize::AuthorizeResource
-
     type Types::LabelType.connection_type, null: true
 
     def resolve
-      authorize!(object)
-
       bulk_load_labels
     end
 
@@ -22,10 +18,6 @@ module Resolvers
     end
 
     private
-
-    def authorized_resource?(object)
-      Ability.allowed?(current_user, :read_label, object.issuing_parent)
-    end
 
     def bulk_load_labels
       BatchLoader::GraphQL.for(object.id).batch(key: object.class.name, cache: false) do |ids, loader, args|

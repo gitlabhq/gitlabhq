@@ -355,6 +355,10 @@ RSpec.configure do |config|
       # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
       stub_feature_flags(your_work_groups_vue: false)
+
+      # New issue page can cause tests to fail if they link to issue or issue list page
+      # Default false while we make it compatible
+      stub_feature_flags(work_item_view_for_issues: false)
     else
       unstub_all_feature_flags
     end

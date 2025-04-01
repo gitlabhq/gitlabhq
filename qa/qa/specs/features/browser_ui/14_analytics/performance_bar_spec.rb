@@ -6,6 +6,11 @@ module QA
       context 'when logged in as an admin user' do
         # performance metrics: pg, gitaly, redis, rugged (feature flagged), total (not always provided)
         let(:minimum_metrics_count) { 3 }
+        let(:project) do
+          create(:project, name: 'performance-bar-display', description: 'Performance')
+        end
+
+        let(:issue) { create(:issue, project: project) }
 
         before do
           Flow::Login.sign_in_as_admin
@@ -25,14 +30,20 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348030'
         ) do
           # Issue pages always make AJAX requests
-          Resource::Issue.fabricate_via_browser_ui! do |issue|
+          issue.visit!
+
+          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+          resource_type = work_item_enabled ? Resource::WorkItem : Resource::Issue
+
+          resource_type.fabricate_via_browser_ui! do |issue|
             issue.title = 'Performance bar test'
           end
 
           Page::Layout::PerformanceBar.perform do |bar_component|
             expect(bar_component).to have_performance_bar
             expect(bar_component).to have_detailed_metrics(minimum_metrics_count)
-            expect(bar_component).to have_request_for('realtime_changes') # Always requested on issue pages
+            # Always requested on issue pages, but not work items
+            expect(bar_component).to have_request_for('realtime_changes') unless work_item_enabled
           end
         end
       end

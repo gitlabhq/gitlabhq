@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,6 +24,8 @@ const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findStatusBox = () => wrapper.findComponent(SignatureBadge);
 const findCommitInfo = () => wrapper.findComponent(CommitInfo);
 const findPipeline = () => wrapper.findComponent(PipelineCiStatus);
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 const defaultPipelineEdges = [
   {
@@ -154,13 +157,24 @@ describe('Repository last commit component', () => {
     expect(findLastCommitLabel().text()).toBe('12345678');
   });
 
-  it('renders History button with correct href', async () => {
-    createComponent();
+  describe('history button', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
 
-    await waitForPromises();
+    it('renders History button with correct href', () => {
+      expect(findHistoryButton().attributes('href')).toContain('/history');
+    });
 
-    expect(findHistoryButton().exists()).toBe(true);
-    expect(findHistoryButton().attributes('href')).toContain('/history');
+    it('should call trackEvent method when clicked on history button', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findHistoryButton().vm.$emit('click');
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_history_control_on_blob_page',
+        {},
+        undefined,
+      );
+    });
   });
 
   it('hides pipeline components when pipeline does not exist', async () => {

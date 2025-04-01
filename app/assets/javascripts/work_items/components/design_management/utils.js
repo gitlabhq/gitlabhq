@@ -1,17 +1,17 @@
 import { uniqueId } from 'lodash';
-import { findDesignWidget } from '../../utils';
+import { findDesignsWidget } from '../../utils';
 
 export const findVersionId = (id) => (id.match('::Version/(.+$)') || [])[1];
 
 export const findNoteId = (id) => (id.match('DiffNote/(.+$)') || [])[1];
 
 export const extractDesigns = (data) =>
-  findDesignWidget(data.project.workItems.nodes[0].widgets).designCollection.designs.nodes;
+  findDesignsWidget(data.project.workItems.nodes[0]).designCollection.designs.nodes;
 
 export const extractDesign = (data) => (extractDesigns(data) || [])[0];
 
 export const extractVersions = (data) =>
-  findDesignWidget(data.project.workItems.nodes[0].widgets).designCollection.versions.nodes;
+  findDesignsWidget(data.project.workItems.nodes[0]).designCollection.versions.nodes;
 
 export const extractDiscussions = (discussions) =>
   discussions.nodes.map((discussion, index) => ({
@@ -22,7 +22,7 @@ export const extractDiscussions = (discussions) =>
 
 export const getPageLayoutElement = () => document.querySelector('.layout-page');
 
-export const designWidgetOf = (data) => findDesignWidget(data.workItem.widgets);
+export const designWidgetOf = (data) => findDesignsWidget(data.workItem);
 
 export const extractCurrentDiscussion = (discussions, id) =>
   discussions.nodes.find((discussion) => discussion.id === id);

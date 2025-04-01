@@ -1,19 +1,19 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlDropdownSectionHeader } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import { logError } from '~/lib/logger';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { ENTER_KEY } from '~/lib/utils/keys';
 
 const EMPTY_DROPDOWN_TEXT = s__('CompareRevisions|Select branch/tag');
 const SEARCH_DEBOUNCE_MS = 300;
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownSectionHeader,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   props: {
     refsProjectPath: {
@@ -34,17 +34,43 @@ export default {
     return {
       branches: [],
       tags: [],
-      loading: true,
+      isLoadingBranchesAndTags: true,
+      isLoadingSearch: false,
       searchTerm: '',
       selectedRevision: this.getDefaultBranch(),
     };
   },
   computed: {
     hasBranches() {
-      return Boolean(this.branches?.length);
+      return this.branches?.length > 0;
     },
     hasTags() {
-      return Boolean(this.tags?.length);
+      return this.tags?.length > 0;
+    },
+    dropdownItems() {
+      return [
+        ...(this.hasBranches
+          ? [
+              {
+                text: s__('CompareRevisions|Branches'),
+                options: this.branches.map((branch) => ({ text: branch, value: branch })),
+              },
+            ]
+          : []),
+        ...(this.hasTags
+          ? [
+              {
+                text: s__('CompareRevisions|Tags'),
+                options: this.tags.map((tag) => ({ text: tag, value: tag })),
+              },
+            ]
+          : []),
+      ];
+    },
+    searchInputElement() {
+      const listbox = this.$refs.collapsibleDropdown;
+      const { searchBox } = listbox.$refs;
+      return searchBox.$refs.input;
     },
   },
   watch: {
@@ -65,6 +91,8 @@ export default {
   },
   methods: {
     searchBranchesAndTags() {
+      this.isLoadingSearch = true;
+
       return axios
         .get(this.refsProjectPath, {
           params: {
@@ -75,16 +103,21 @@ export default {
           this.branches = data.Branches || [];
           this.tags = data.Tags || [];
         })
-        .catch(() => {
+        .catch((e) => {
+          Sentry.captureException(e);
+          logError(`There was an error while searching the branch/tag list.`, e);
           createAlert({
             message: s__(
               'CompareRevisions|There was an error while searching the branch/tag list. Please try again.',
             ),
           });
+        })
+        .finally(() => {
+          this.isLoadingSearch = false;
         });
     },
     fetchBranchesAndTags(reset = false) {
-      this.loading = true;
+      this.isLoadingBranchesAndTags = true;
 
       if (reset) {
         this.setSelectedRevision(this.paramsBranch);
@@ -96,7 +129,9 @@ export default {
           this.branches = data.Branches || [];
           this.tags = data.Tags || [];
         })
-        .catch(() => {
+        .catch((e) => {
+          Sentry.captureException(e);
+          logError(`There was an error while loading the branch/tag list. Please try again.`, e);
           createAlert({
             message: s__(
               'CompareRevisions|There was an error while loading the branch/tag list. Please try again.',
@@ -104,7 +139,7 @@ export default {
           });
         })
         .finally(() => {
-          this.loading = false;
+          this.isLoadingBranchesAndTags = false;
         });
     },
     getDefaultBranch() {
@@ -114,8 +149,22 @@ export default {
       this.setSelectedRevision(revision);
       this.$emit('selectRevision', { direction: this.paramsName, revision });
     },
-    onSearchEnter() {
-      this.setSelectedRevision(this.searchTerm);
+    handleKeyDown(e) {
+      // temporary hacks to support searching for commits on enter
+      // more elegant solution comes up in https://gitlab.com/gitlab-org/gitlab/-/issues/525192
+      const { code, target } = e;
+      if (code === ENTER_KEY) {
+        this.setSelectedRevision(target.value);
+        const listbox = this.$refs.collapsibleDropdown;
+        const dropdown = listbox.$refs.baseDropdown;
+        dropdown.close();
+      }
+    },
+    onShown() {
+      this.searchInputElement.addEventListener('keydown', this.handleKeyDown);
+    },
+    onHidden() {
+      this.searchInputElement.removeEventListener('keydown', this.handleKeyDown);
     },
     setSelectedRevision(revision) {
       this.selectedRevision = revision || EMPTY_DROPDOWN_TEXT;
@@ -127,46 +176,23 @@ export default {
 <template>
   <div :class="`js-compare-${paramsName}-dropdown`">
     <input type="hidden" :name="paramsName" :value="selectedRevision" />
-    <gl-dropdown
+    <gl-collapsible-listbox
+      ref="collapsibleDropdown"
+      block
+      searchable
       class="gl-w-full gl-font-monospace"
       toggle-class="form-control compare-dropdown-toggle gl-min-w-0"
-      :text="selectedRevision"
+      :items="dropdownItems"
+      :toggle-text="selectedRevision"
       :header-text="s__('CompareRevisions|Select Git revision')"
-      :loading="loading"
-    >
-      <template #header>
-        <gl-search-box-by-type
-          v-model.trim="searchTerm"
-          :placeholder="s__('CompareRevisions|Filter by Git revision')"
-          @keyup.enter="onSearchEnter"
-        />
-      </template>
-      <gl-dropdown-section-header v-if="hasBranches">
-        {{ s__('CompareRevisions|Branches') }}
-      </gl-dropdown-section-header>
-      <gl-dropdown-item
-        v-for="branch in branches"
-        :key="`branch-${branch}`"
-        is-check-item
-        :is-checked="selectedRevision === branch"
-        data-testid="branches-dropdown-item"
-        @click="onClick(branch)"
-      >
-        {{ branch }}
-      </gl-dropdown-item>
-      <gl-dropdown-section-header v-if="hasTags">
-        {{ s__('CompareRevisions|Tags') }}
-      </gl-dropdown-section-header>
-      <gl-dropdown-item
-        v-for="tag in tags"
-        :key="`tag-${tag}`"
-        is-check-item
-        :is-checked="selectedRevision === tag"
-        data-testid="tags-dropdown-item"
-        @click="onClick(tag)"
-      >
-        {{ tag }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      :loading="isLoadingBranchesAndTags"
+      :searching="isLoadingSearch"
+      :search-placeholder="s__('CompareRevisions|Filter by Git revision')"
+      no-results-text=""
+      @shown="onShown"
+      @hidden="onHidden"
+      @search="searchTerm = $event"
+      @select="onClick"
+    />
   </div>
 </template>

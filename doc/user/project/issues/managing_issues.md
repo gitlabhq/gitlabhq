@@ -39,7 +39,7 @@ To edit an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select the title of your issue to view it.
-1. To the right of the title, select **Edit title and description** ({{< icon name="pencil" >}}).
+1. To the right of the title, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the available fields.
 1. Select **Save changes**.
 
@@ -809,6 +809,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+- In GitLab 17.11, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
 
 {{< /history >}}
 
@@ -816,7 +817,6 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 

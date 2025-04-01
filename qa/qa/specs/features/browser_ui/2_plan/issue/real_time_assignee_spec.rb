@@ -18,7 +18,10 @@ module QA
         issue = create(:issue, project: project, assignee_ids: [user1.id])
         issue.visit!
 
-        Page::Project::Issue::Show.perform do |show|
+        work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+        page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+        page_type.perform do |show|
           expect(show).to have_assignee(user1.name)
           # We need to wait 1 second for the page to connect to the websocket to subscribe to updates
           # https://gitlab.com/gitlab-org/gitlab/-/issues/293699#note_583959786

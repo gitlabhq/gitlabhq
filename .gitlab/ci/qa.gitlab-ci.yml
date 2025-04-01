@@ -230,7 +230,8 @@ e2e:test-on-gdk:
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-gdk-pipeline.yml
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
 
-e2e:test-product-analytics:
+# Disabling PA tests as we're moving to decommission in FY26
+.e2e:test-product-analytics:
   extends:
     - .qa:rules:e2e:test-on-gdk
   stage: qa

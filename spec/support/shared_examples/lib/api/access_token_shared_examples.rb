@@ -6,6 +6,7 @@
 # - `path` - The path of the specific token API not including
 #          `/api/v4`.
 #          Example: '/groups/:id/manage/personal_access_tokens'
+# - `current_user` - The user making the API request
 # - `personal_access_token` - The PAT of the user making the request
 # - All tokens in the `all_token_ids` variable below.
 # - `created_at_asc` - An array of tokens in ascending order of creation date

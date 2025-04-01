@@ -3,7 +3,7 @@ import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
 import { differenceBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__, sprintf } from '~/locale';
-import { findDesignWidget, findMilestoneWidget, getParentGroupName } from '~/work_items/utils';
+import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
@@ -128,7 +128,7 @@ export default {
         };
       },
       update(data) {
-        return findDesignWidget(data.workItem.widgets)?.designCollection?.designs.nodes?.length > 0;
+        return findDesignsWidget(data.workItem)?.designCollection?.designs.nodes?.length > 0;
       },
       error(e) {
         this.throwError(e);
@@ -170,7 +170,7 @@ export default {
       return this.selectedWorkItemType?.value === WORK_ITEM_TYPE_ENUM_EPIC;
     },
     milestoneWidget() {
-      return findMilestoneWidget(this.widgets)?.milestone;
+      return this.widgets.find(isMilestoneWidget)?.milestone;
     },
     selectedWorkItemTypeWidgetDefinitions() {
       return this.isSelectedWorkItemTypeEpic

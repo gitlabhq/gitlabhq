@@ -238,16 +238,17 @@
   }
 }
 
+// This 11px value should match the additional value found in
+//      /assets/stylesheets/framework/diffs.scss
+// for the $mr-file-header-top SCSS variable within the
+//      .file-title,
+//      .file-title-flex-parent {
+// rule.
+// If they don't match, the file tree and the diff files stick
+// to the top at different heights, which is a bad-looking defect
+$diff-file-header-top: 11px;
+
 .diff-tree-list {
-  // This 11px value should match the additional value found in
-  //      /assets/stylesheets/framework/diffs.scss
-  // for the $mr-file-header-top SCSS variable within the
-  //      .file-title,
-  //      .file-title-flex-parent {
-  // rule.
-  // If they don't match, the file tree and the diff files stick
-  // to the top at different heights, which is a bad-looking defect
-  $diff-file-header-top: 11px;
 
   position: sticky;
   top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
@@ -258,6 +259,35 @@
   .drag-handle {
     bottom: 16px;
   }
+}
+
+.diff-tree-list-floating {
+  z-index: 9;
+}
+
+.diff-tree-list-floating-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.diff-tree-list-floating .diff-tree-list-floating-wrapper {
+  position: fixed;
+  background-color: var(--gl-background-color-default);
+  box-shadow: $gl-spacing-scale-4 ($diff-file-header-top * -1) var(--gl-background-color-default);
+}
+
+.diff-tree-list-resizer {
+  $drag-handle-width: 4px;
+  right: calc(($gl-spacing-scale-4 + $drag-handle-width / 2) * -1) !important;
+}
+
+.diff-tree-list-resizer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  right: -4px;
 }
 
 .tree-list-holder {

@@ -15,7 +15,7 @@ import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
-import { isLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
+import { findLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
 
 function formatLabelForListbox(label) {
   return {
@@ -134,7 +134,7 @@ export default {
       ];
     },
     labelsWidget() {
-      return this.workItem?.widgets?.find(isLabelsWidget);
+      return findLabelsWidget(this.workItem);
     },
     localLabels() {
       return this.labelsWidget?.labels?.nodes || [];
@@ -185,8 +185,7 @@ export default {
         return data.workspace?.workItem || {};
       },
       result({ data }) {
-        const labels =
-          data?.workspace?.workItem?.widgets?.find(isLabelsWidget)?.labels?.nodes || [];
+        const labels = findLabelsWidget(data?.workspace?.workItem)?.labels?.nodes || [];
         this.labelsCache = unionBy(this.labelsCache, labels, 'id');
       },
       skip() {
@@ -356,7 +355,7 @@ export default {
       </div>
     </template>
     <template #readonly>
-      <div class="gl-mt-1 gl-flex gl-flex-wrap gl-gap-2">
+      <div class="gl-mt-1 gl-flex gl-flex-wrap gl-gap-2" data-testid="selected-label-content">
         <gl-label
           v-for="label in localLabels"
           :key="label.id"
@@ -366,6 +365,7 @@ export default {
           :scoped="scopedLabel(label)"
           :show-close-button="canUpdate"
           :target="labelFilterUrl(label)"
+          :data-testid="label.title"
           @close="removeLabel(label)"
         />
       </div>

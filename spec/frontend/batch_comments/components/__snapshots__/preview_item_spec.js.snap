@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Batch comments draft preview item component renders as button when improvedReviewExperience is true 1`] = `
+<button
+  class="!gl-justify-start btn btn-link btn-md gl-button review-preview-item-header"
+  data-testid="preview-item-header"
+  type="button"
+>
+  <span
+    class="gl-button-text"
+  >
+    <svg
+      aria-hidden="true"
+      class="flex-shrink-0 gl-fill-current gl-icon s16"
+      data-testid="comment-icon"
+      role="img"
+    >
+      <use
+        href="file-mock#comment"
+      />
+    </svg>
+    <span
+      class="gl-items-center text-nowrap"
+    >
+      <span
+        class="block-truncated review-preview-item-header-text"
+      >
+        Your new comment
+      </span>
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Batch comments draft preview item component renders as span when improvedReviewExperience is false 1`] = `
+<span
+  class="review-preview-item-header"
+  data-testid="preview-item-header"
+>
+  <svg
+    aria-hidden="true"
+    class="flex-shrink-0 gl-fill-current gl-icon s16"
+    data-testid="comment-icon"
+    role="img"
+  >
+    <use
+      href="file-mock#comment"
+    />
+  </svg>
+  <span
+    class="gl-font-bold gl-items-center text-nowrap"
+  >
+    <span
+      class="block-truncated gl-ml-2 review-preview-item-header-text"
+    >
+      Your new comment
+    </span>
+  </span>
+</span>
+`;

@@ -11,10 +11,6 @@ module QA
         end
       end
 
-      let(:closed_issue) do
-        Resource::Issue.fabricate_via_api_unless_fips! { |issue| issue.project = project }
-      end
-
       before do
         Flow::Login.sign_in
       end
@@ -24,12 +20,12 @@ module QA
         :mobile,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347989'
       ) do
-        issue = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
+        resource, index_page_type = create_new_issue
 
         Page::Project::Menu.perform(&:go_to_work_items)
 
-        Page::Project::Issue::Index.perform do |index|
-          expect(index).to have_issue(issue)
+        index_page_type.perform do |index|
+          expect(index).to have_issue(resource)
         end
       end
 
@@ -38,9 +34,10 @@ module QA
         :mobile,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347967'
       ) do
-        closed_issue.visit!
+        resource, index_page_type, show_page_type = create_new_issue
+        resource.visit!
 
-        Page::Project::Issue::Show.perform do |issue_page|
+        show_page_type.perform do |issue_page|
           issue_page.click_close_issue_button
 
           expect(issue_page).to have_reopen_issue_button
@@ -48,12 +45,12 @@ module QA
 
         Page::Project::Menu.perform(&:go_to_work_items)
 
-        Page::Project::Issue::Index.perform do |index|
-          expect(index).not_to have_issue(closed_issue)
+        index_page_type.perform do |index|
+          expect(index).not_to have_issue(resource)
 
           index.click_closed_issues_tab
 
-          expect(index).to have_issue(closed_issue)
+          expect(index).to have_issue(resource)
         end
       end
 
@@ -61,20 +58,36 @@ module QA
         let(:png_file_name) { 'testfile.png' }
         let(:file_to_attach) { Runtime::Path.fixture('designs', png_file_name) }
 
-        before do
-          Resource::Issue.fabricate_via_api_unless_fips! { |issue| issue.project = project }.visit!
-        end
-
         it(
           'comments on an issue with an attachment',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946'
         ) do
-          Page::Project::Issue::Show.perform do |show|
+          resource, _, show_page_type = create_new_issue
+          resource.visit!
+          show_page_type.perform do |show|
             show.comment('See attached image for scale', attachment: file_to_attach)
 
             expect(show.noteable_note_item.find("img[src$='#{png_file_name}']")).to be_visible
           end
         end
+      end
+
+      def create_new_issue
+        project.visit!
+        Page::Project::Menu.perform(&:go_to_new_issue)
+        work_item_view_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+
+        if work_item_view_enabled
+          resource = Resource::WorkItem.fabricate_via_browser_ui! { |work_item| work_item.project = project }
+          index_page_type = Page::Project::Issue::Index
+          show_page_type = Page::Project::WorkItem::Show
+        else
+          resource = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
+          index_page_type = Page::Project::Issue::Index
+          show_page_type = Page::Project::Issue::Show
+        end
+
+        [resource, index_page_type, show_page_type]
       end
     end
   end

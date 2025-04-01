@@ -30,7 +30,7 @@ import {
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
-  isLabelsWidget,
+  findLabelsWidget,
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
@@ -158,7 +158,7 @@ export default {
       return (
         this.issuable.labels?.nodes ||
         this.issuable.labels ||
-        this.issuable.widgets?.find(isLabelsWidget)?.labels.nodes ||
+        findLabelsWidget(this.issuable)?.labels.nodes ||
         []
       );
     },
@@ -266,8 +266,8 @@ export default {
         // incidents and Service Desk issues
         !this.isIncident &&
         !this.isServiceDeskIssue &&
-        this.glFeatures.workItemsViewPreference &&
-        gon.current_user_use_work_items_view
+        (this.glFeatures.workItemViewForIssues ||
+          (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view))
       );
     },
     hiddenIssuableTitle() {
@@ -289,8 +289,7 @@ export default {
     },
     scopedLabel(label) {
       const allowsScopedLabels =
-        this.hasScopedLabelsFeature ||
-        this.issuable.widgets?.find(isLabelsWidget)?.allowsScopedLabels;
+        this.hasScopedLabelsFeature || findLabelsWidget(this.issuable)?.allowsScopedLabels;
       return allowsScopedLabels && isScopedLabel(label);
     },
     labelTitle(label) {

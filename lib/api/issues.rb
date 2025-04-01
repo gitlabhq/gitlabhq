@@ -381,7 +381,7 @@ module API
         not_found!('Project') unless new_project
 
         begin
-          issue = if Feature.enabled?(:work_item_move_and_clone, user_project)
+          issue = if user_project.work_item_move_and_clone_flag_enabled?
                     response = ::WorkItems::DataSync::MoveService.new(
                       work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
                     ).execute
@@ -421,7 +421,7 @@ module API
         not_found!('Project') unless target_project
 
         begin
-          issue = if Feature.enabled?(:work_item_move_and_clone, user_project)
+          issue = if user_project.work_item_move_and_clone_flag_enabled?
                     response = ::WorkItems::DataSync::CloneService.new(
                       work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace,
                       params: { clone_with_notes: params[:with_notes] }

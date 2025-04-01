@@ -18,7 +18,20 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
+import { __ } from '~/locale';
 import { issuableInitialDataById, isLegacyIssueType } from './show/utils/issuable_data';
+
+const feedback = {};
+
+if (gon.features?.workItemViewForIssues) {
+  feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/463598';
+  feedback.feedbackIssueText = __('Provide feedback on the experience');
+  feedback.content = __(
+    'We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?',
+  );
+  feedback.title = __('New issue look');
+  feedback.featureName = 'work_item_epic_feedback';
+}
 
 export function initForm() {
   new IssuableForm($('.issue-form')); // eslint-disable-line no-new
@@ -31,10 +44,10 @@ export function initForm() {
   initTypeSelect();
   mountMilestoneDropdown();
 
-  if (gon.features.workItemsViewPreference) {
+  if (gon.features.workItemsViewPreference || gon.features.workItemViewForIssues) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback();
+        initWorkItemsFeedback(feedback);
       })
       .catch({});
   }
@@ -62,10 +75,13 @@ export function initShow() {
     .then((module) => module.default())
     .catch(() => {});
 
-  if (!isLegacyIssueType(issuableData) && gon.features.workItemsViewPreference) {
+  if (
+    !isLegacyIssueType(issuableData) &&
+    (gon.features.workItemsViewPreference || gon.features.workItemViewForIssues)
+  ) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback();
+        initWorkItemsFeedback(feedback);
       })
       .catch({});
   }

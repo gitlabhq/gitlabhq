@@ -8,6 +8,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { __ } from '~/locale';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
@@ -86,10 +87,27 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     },
   });
 
-  if (workItemType === 'issue' && gon.features.workItemsViewPreference && !isGroup) {
+  const feedback = {};
+
+  if (gon.features.workItemViewForIssues) {
+    feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/463598';
+    feedback.feedbackIssueText = __('Provide feedback on the experience');
+    feedback.content = __(
+      'We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?',
+    );
+    feedback.title = __('New issue look');
+    feedback.featureName = 'work_item_epic_feedback';
+  }
+
+  if (
+    workItemType === 'issue' &&
+    gon.features.workItemsViewPreference &&
+    !isGroup &&
+    !gon.features.useWiViewForIssues
+  ) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback();
+        initWorkItemsFeedback(feedback);
       })
       .catch({});
   }
