@@ -42,7 +42,7 @@ in the Helm Charts documentation.
 - No support for online migrations.
 - Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
 - Registry database migrations must be run manually when upgrading versions.
-- No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Omnibus GitLab environments.
+- No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
 
 ## Metadata database feature support
 

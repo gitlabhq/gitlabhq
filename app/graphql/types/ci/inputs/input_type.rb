@@ -4,7 +4,7 @@ module Types
   module Ci
     module Inputs
       class InputType < BaseInputObject
-        graphql_name 'CiInputsInputType'
+        graphql_name 'CiInputsInput'
         description 'Attributes for defining an input.'
 
         argument :name,

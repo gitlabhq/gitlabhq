@@ -3,8 +3,8 @@
 module Types
   module Ci
     module Inputs
-      class InputTypeEnum < BaseEnum
-        graphql_name 'CiInputType'
+      class TypeEnum < BaseEnum
+        graphql_name 'CiInputsType'
         description 'Available input types'
 
         ::Ci::PipelineCreation::Inputs::SpecInputs.input_types.each do |input_type|

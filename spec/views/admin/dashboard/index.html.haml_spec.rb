@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/dashboard/index.html.haml' do
+RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_category: :shared do
   include Devise::Test::ControllerHelpers
   include StubVersion
 
@@ -29,6 +29,23 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
 
     expect(rendered).to have_content 'GitLab Workhorse'
     expect(rendered).to have_content Gitlab::Workhorse.version
+  end
+
+  it 'shows Projects, Groups and Users list and link to create a new entities and show lists', :aggregate_failures do
+    render
+
+    expect(rendered).to have_content 'Projects'
+    expect(rendered).to have_content 'Total Users'
+    expect(rendered).to have_content 'Groups'
+
+    expect(rendered).to have_link _('New project'), href: new_project_path
+    expect(rendered).to have_link _('New user'), href: new_admin_user_path
+    expect(rendered).to have_link _('New group'), href: new_admin_group_path
+
+    expect(rendered).to have_link _('View latest projects'), href: admin_projects_path(sort: 'created_desc')
+    expect(rendered).to have_link _('View latest users'), href: admin_users_path(sort: 'created_desc')
+    expect(rendered).to have_link _('Users statistics'), href: admin_dashboard_stats_path
+    expect(rendered).to have_link _('View latest groups'), href: admin_groups_path(sort: 'created_desc')
   end
 
   it "includes revision of GitLab for pre VERSION" do
@@ -137,6 +154,29 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
       expect(rendered).to have_selector('.js-jh-transition-banner')
       expect(rendered).to have_selector("[data-feature-name='transition_to_jihu_callout']")
       expect(rendered).to have_selector("[data-user-preferred-language='uk']")
+    end
+  end
+
+  describe 'Features' do
+    it 'shows features together with settings links', :aggregate_failures do
+      render
+
+      expect(rendered).to have_content 'Sign up'
+      expect(rendered).to have_link href: general_admin_application_settings_path(anchor: 'js-signup-settings')
+      expect(rendered).to have_content 'LDAP'
+      expect(rendered).to have_link href: help_page_path('administration/auth/ldap/_index.md')
+      expect(rendered).to have_content 'Gravatar'
+      expect(rendered).to have_link href: general_admin_application_settings_path(anchor: 'js-account-settings')
+      expect(rendered).to have_content 'OmniAuth'
+      expect(rendered).to have_link href: general_admin_application_settings_path(anchor: 'js-signin-settings')
+      expect(rendered).to have_content 'Reply by email'
+      expect(rendered).to have_link href: help_page_path('administration/reply_by_email.md')
+      expect(rendered).to have_content 'Container registry'
+      expect(rendered).to have_link href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings')
+      expect(rendered).to have_content 'GitLab Pages'
+      expect(rendered).to have_link href: help_instance_configuration_url
+      expect(rendered).to have_content 'Instance Runners'
+      expect(rendered).to have_link href: admin_runners_path
     end
   end
 end

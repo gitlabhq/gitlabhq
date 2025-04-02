@@ -54,7 +54,7 @@ module Gitlab
       'gl_ES' => 0,
       'id_ID' => 0,
       'it' => 85,
-      'ja' => 95,
+      'ja' => 94,
       'ko' => 99,
       'nb_NO' => 15,
       'nl_NL' => 0,

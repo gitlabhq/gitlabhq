@@ -33,7 +33,7 @@
 #     current_organization: Organizations::Organization - The current organization from the request
 #     language: int
 #     language_name: string
-#
+#     active: boolean - Whether to include projects that are not archived.
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
   include UpdatedAtFilter
@@ -88,6 +88,7 @@ class ProjectsFinder < UnionFinder
     collection = by_topics(collection)
     collection = by_topic_id(collection)
     collection = by_search(collection)
+    collection = by_active(collection)
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
     collection = by_not_aimed_for_deletion(collection)
@@ -288,6 +289,20 @@ class ProjectsFinder < UnionFinder
     return items unless organization
 
     items.in_organization(organization)
+  end
+
+  def by_active(items)
+    return items if params[:active].nil?
+
+    params[:active] ? active(items) : inactive(items)
+  end
+
+  def active(items)
+    items.non_archived
+  end
+
+  def inactive(items)
+    items.archived
   end
 
   def finder_params

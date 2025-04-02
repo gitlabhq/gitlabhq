@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
+  using RSpec::Parameterized::TableSyntax
+
   include AdminModeHelper
 
   describe '#execute' do
@@ -336,6 +338,26 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         let(:params) { { name: group.name, search_namespaces: true } }
 
         it { is_expected.to eq([public_project, internal_project]) }
+      end
+
+      describe 'filter by active' do
+        let_it_be(:active_projects) { [public_project, internal_project] }
+        let_it_be(:archived_project) { create(:project, :archived, :public) }
+
+        let(:current_user) { user }
+
+        where :test_params, :expected_projects do
+          {}                | [ref(:active_projects), ref(:archived_project)]
+          { active: nil  }  | [ref(:active_projects), ref(:archived_project)]
+          { active: true }  | [ref(:active_projects)]
+          { active: false } | [ref(:archived_project)]
+        end
+
+        with_them do
+          let(:params) { test_params }
+
+          it { is_expected.to match_array(expected_projects.flatten) }
+        end
       end
 
       describe 'filter by archived' do

@@ -89,6 +89,10 @@ module Types
       description: 'Whether to show the promotional message for the work item.',
       experiment: { milestone: '17.11' }
 
+    field :hidden, GraphQL::Types::Boolean, null: true,
+      method: :hidden?,
+      description: 'Indicates the work item is hidden because the author has been banned.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

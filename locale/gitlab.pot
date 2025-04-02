@@ -14493,6 +14493,9 @@ msgstr ""
 msgid "CodeownersValidation|Entries with spaces"
 msgstr ""
 
+msgid "CodeownersValidation|Group needs at least Developer access to the project for its members to approve merge requests"
+msgstr ""
+
 msgid "CodeownersValidation|Hide errors"
 msgstr ""
 
@@ -20236,6 +20239,9 @@ msgstr ""
 msgid "Dependencies|Export as CSV"
 msgstr ""
 
+msgid "Dependencies|Export as CycloneDX (JSON)"
+msgstr ""
+
 msgid "Dependencies|Export as JSON"
 msgstr ""
 
@@ -21333,10 +21339,10 @@ msgstr ""
 msgid "DevOps Adoption"
 msgstr ""
 
-msgid "DevOps Reports"
+msgid "DevOps adoption"
 msgstr ""
 
-msgid "DevOps adoption"
+msgid "DevOps adoption gives you an overview of what development, security, and operations features your organization has adopted, and which groups are using these features."
 msgstr ""
 
 msgid "Developer"
@@ -31969,7 +31975,7 @@ msgstr ""
 msgid "Interval"
 msgstr ""
 
-msgid "Introducing Your DevOps Reports"
+msgid "Introducing your DevOps adoption analytics"
 msgstr ""
 
 msgid "Invalid 'schemaVersion' '%{schema_version}'"
@@ -69107,9 +69113,6 @@ msgid "Your Chain of Custody CSV export for the group %{group_name} has been add
 msgstr ""
 
 msgid "Your Contributed Projects (default)"
-msgstr ""
-
-msgid "Your DevOps Reports give an overview of how you are using GitLab from a feature perspective. Use them to view how you compare with other organizations, and how your teams compare against each other."
 msgstr ""
 
 msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. %{faq_link_start}Learn more%{link_end} about the upcoming storage limits."

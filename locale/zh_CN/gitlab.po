@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-31 13:36\n"
+"PO-Revision-Date: 2025-04-02 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -1616,8 +1616,9 @@ msgstr "+ 其余%{moreCount}项"
 msgid "+ %{numberOfHiddenAssignees} more"
 msgstr "+ 其余 %{numberOfHiddenAssignees} 条"
 
-msgid "+ %{n} more deployments"
-msgstr "+ %{n} 更多部署"
+msgid "+ %{n} more deployment"
+msgid_plural "+ %{n} more deployments"
+msgstr[0] ""
 
 msgid "+%d more"
 msgid_plural "+%d more"
@@ -1659,9 +1660,6 @@ msgstr "- %{policy_name} (在 %{elapsed_time} 分钟后发出通知, 除非状�
 msgid "- Add or remove a user."
 msgstr "- 添加或删除用户。"
 
-msgid "- Available to run jobs."
-msgstr "可用于运行作业。"
-
 msgid "- Create or close an issue."
 msgstr "- 创建或关闭议题。"
 
@@ -1677,9 +1675,6 @@ msgstr "- 访问 %{project_name} 的活动页面。"
 
 msgid "- List the visible events for %{project_name} using the Events API %{events_api_link}."
 msgstr "- 使用事件 API %{events_api_link} 列出 %{project_name} 的可见事件。"
-
-msgid "- Not available to run jobs."
-msgstr "- 不可用于运行作业。"
 
 msgid "- Push code to the repository."
 msgstr "- 推送代码到仓库。"
@@ -2402,6 +2397,9 @@ msgstr "AWS访问密钥"
 msgid "AWS OpenSearch IAM credentials"
 msgstr "AWS OpenSearch IAM 凭据"
 
+msgid "AWS Role ARN"
+msgstr ""
+
 msgid "AWS Secret Access Key"
 msgstr "AWS秘密访问密钥"
 
@@ -2813,9 +2811,6 @@ msgstr ""
 msgid "AccessTokens|Created"
 msgstr "创建于"
 
-msgid "AccessTokens|Created date"
-msgstr ""
-
 msgid "AccessTokens|Description"
 msgstr ""
 
@@ -2933,9 +2928,6 @@ msgstr "将此令牌保密。任何拥有它的人都可以像您一样创建议
 
 msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
 msgstr "将此令牌保密。任何拥有它的人都可以像您一样读取动态并发布 RSS feeds 或您的日历 feed。如果发生，%{linkStart}重置此令牌%{linkEnd}。"
-
-msgid "AccessTokens|Last used date"
-msgstr ""
 
 msgid "AccessTokens|Last used:"
 msgstr ""
@@ -3715,7 +3707,13 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
+msgid "AdherenceReport|No statuses found."
+msgstr ""
+
 msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|There was an error loading adherence report."
 msgstr ""
 
 msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
@@ -4813,6 +4811,12 @@ msgstr "确认用户 %{username}？"
 msgid "AdminUsers|Could not load user group counts. Please refresh the page to try again."
 msgstr "无法加载用户群组数。请刷新页面再试一次。"
 
+msgid "AdminUsers|Create"
+msgstr ""
+
+msgid "AdminUsers|Create service account"
+msgstr ""
+
 msgid "AdminUsers|Deactivate"
 msgstr "冻结"
 
@@ -4842,6 +4846,12 @@ msgstr "删除用户"
 
 msgid "AdminUsers|Delete user and contributions"
 msgstr "删除用户及相关贡献"
+
+msgid "AdminUsers|Edit"
+msgstr ""
+
+msgid "AdminUsers|Edit service account"
+msgstr ""
 
 msgid "AdminUsers|Export permissions as CSV (max 100,000 users)"
 msgstr "以 CSV 格式导出权限（最多 100,000 个用户）"
@@ -5034,6 +5044,9 @@ msgstr "取消禁用"
 
 msgid "AdminUsers|Unblock user %{username}?"
 msgstr "取消禁用用户%{username}吗？"
+
+msgid "AdminUsers|Unique username that can be called for usage across GitLab"
+msgstr ""
 
 msgid "AdminUsers|Unlock user %{username}?"
 msgstr "确定解锁%{username}用户吗？"
@@ -6168,8 +6181,8 @@ msgstr "断开 Amazon Q 连接时发生意外错误。请参阅浏览器控制�
 msgid "AmazonQ|An unexpected error occurred while submitting the form. Please see the browser console log for more details."
 msgstr "提交表单时发生意外错误。请参阅浏览器控制台日志以获取更多详细信息。"
 
-msgid "AmazonQ|Apply changes to this merge request based on the comments (Beta)"
-msgstr "基于评论将更改应用于此合并请求（Beta）"
+msgid "AmazonQ|Apply changes to this merge request based on the comments"
+msgstr ""
 
 msgid "AmazonQ|Are you sure? Removing the ARN will disconnect Amazon Q from GitLab and all related features will stop working."
 msgstr "您确定吗？删除 ARN 将断开 Amazon Q 与 GitLab 的连接，所有相关功能将停止工作。"
@@ -6198,25 +6211,22 @@ msgstr "无法解码云连接器令牌"
 msgid "AmazonQ|Configure GitLab Duo with Amazon Q"
 msgstr "使用 Amazon Q 配置 GitLab Duo"
 
-msgid "AmazonQ|Configure GitLab Duo with Amazon Q (Beta)"
-msgstr "使用 Amazon Q 配置 GitLab Duo（Beta）"
-
 msgid "AmazonQ|Copy to clipboard"
 msgstr "复制到剪贴板"
 
-msgid "AmazonQ|Create a merge request to incorporate Amazon Q suggestions (Beta)"
-msgstr "创建合并请求以整合 Amazon Q 建议（Beta）"
+msgid "AmazonQ|Create a merge request to incorporate Amazon Q suggestions"
+msgstr ""
 
 msgid "AmazonQ|Create an identity provider for this GitLab instance within AWS using the following values. %{helpStart}Learn more%{helpEnd}."
 msgstr "使用以下值在 AWS 中为此 GitLab 实例创建身份提供提供商。%{helpStart}了解更多%{helpEnd}。"
 
-msgid "AmazonQ|Create fixes for review findings (Beta)"
-msgstr "为审查发现创建修复（Beta）"
+msgid "AmazonQ|Create fixes for review findings"
+msgstr ""
 
-msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
-msgstr "为 Java 或 Python 文件中的选定代码行创建单元测试（Beta）"
+msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files"
+msgstr ""
 
-msgid "AmazonQ|Create unit tests for this merge request (Beta)"
+msgid "AmazonQ|Create unit tests for this merge request"
 msgstr ""
 
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
@@ -6309,8 +6319,8 @@ msgstr "移除"
 msgid "AmazonQ|Remove IAM role's ARN"
 msgstr "移除 IAM 角色的 ARN"
 
-msgid "AmazonQ|Review merge request for code quality and security issues (Beta)"
-msgstr "审查合并请求以检查代码质量和安全问题（Beta）"
+msgid "AmazonQ|Review merge request for code quality and security issues"
+msgstr ""
 
 msgid "AmazonQ|Save changes"
 msgstr "保存更改"
@@ -6339,8 +6349,8 @@ msgstr "此字段是必需的"
 msgid "AmazonQ|To completely remove GitLab Duo with Amazon Q, update the following in AWS:"
 msgstr "要完全删除 GitLab Duo 与 Amazon Q，请在 AWS 中更新以下内容："
 
-msgid "AmazonQ|Upgrade Java Maven application to Java 17 (Beta)"
-msgstr "将 Java Maven 应用程序升级到 Java 17（Beta）"
+msgid "AmazonQ|Upgrade Java Maven application to Java 17"
+msgstr ""
 
 msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
 msgstr "使用 Amazon Q 自动化工作流程、从议题创建合并请求、升级 Java 并使用 AI 助力的评审改进您的代码。"
@@ -6402,14 +6412,14 @@ msgstr "您想要查看哪个引用？"
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr "具有相同指纹的%{link_start}警报%{link_end}已打开。要更改此警报的状态，请先解决链接中的警报。"
 
-msgid "An Administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
-msgstr "管理员已将最长到期日期设置为 %{maxDate}。%{helpLinkStart}了解更多%{helpLinkEnd}。"
-
 msgid "An administrator added this OAuth application "
 msgstr "管理员添加了此 OAuth 应用程序"
 
 msgid "An administrator changed the password for your GitLab account on %{link_to}."
 msgstr "管理员修改了您在%{link_to}上的GitLab帐户密码。"
+
+msgid "An administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
+msgstr ""
 
 msgid "An alert has been resolved in %{project_path}."
 msgstr "警报已在%{project_path}中解决。"
@@ -8296,6 +8306,12 @@ msgstr "已指派%{assignee_users_sentence}。"
 msgid "Assigned %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr "已将%{reviewer_users_sentence}指派为%{reviewer_text}。"
 
+msgid "Assigned (Active)"
+msgstr ""
+
+msgid "Assigned (Inactive)"
+msgstr ""
+
 msgid "Assigned issues"
 msgstr "分配的问题"
 
@@ -9762,6 +9778,9 @@ msgstr "更新"
 
 msgid "Blame|Older"
 msgstr "更旧"
+
+msgid "Blob"
+msgstr ""
 
 msgid "BlobViewer|Copy contents"
 msgstr ""
@@ -12748,6 +12767,9 @@ msgstr "清除开始日期"
 msgid "Clear templates search input"
 msgstr "清除模板搜索输入"
 
+msgid "Clear the date to create access tokens without expiration."
+msgstr ""
+
 msgid "Clear this checkbox to use a personal access token instead."
 msgstr "清除此复选框，使用个人访问令牌代替。"
 
@@ -13587,9 +13609,6 @@ msgstr "API URL应该是有效的 http/https URL。"
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr "添加 Kubernetes 集群"
 
-msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
-msgstr "将Kubernetes集群添加到群组后，群组中的所有项目都将共享该集群。您可以在同一集群上使用评审应用、部署应用以及运行群集中所有项目的流水线。"
-
 msgid "ClusterIntegration|Adding a Kubernetes cluster will automatically share the cluster across all projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr "添加Kubernetes集群将自动在所有项目中共享集群。此集成可用于审阅、部署应用程序，以及使用同一群集运行所有项目的流水线。"
 
@@ -13670,6 +13689,9 @@ msgstr "连接 Kubernetes 集群"
 
 msgid "ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}."
 msgstr "通过 %{linkStart}集群证书%{linkEnd} 将您的集群连接到 GitLab 。"
+
+msgid "ClusterIntegration|Connect your group to a Kubernetes cluster with the GitLab agent and share the connection across multiple projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
+msgstr ""
 
 msgid "ClusterIntegration|Connection Error"
 msgstr "连接错误"
@@ -14771,8 +14793,14 @@ msgstr "导出链监管报告为CSV文件(限制为 15MB)。"
 msgid "Compliance Center Export|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
 msgstr "作为CSV文件的特定提交的导出链监护报告(限制为 15MB)。"
 
+msgid "Compliance Center Export|Export compliance status report"
+msgstr ""
+
 msgid "Compliance Center Export|Export contents of the compliance frameworks report as a CSV file."
 msgstr "将合规框架报告的内容导出为 CSV 文件。"
+
+msgid "Compliance Center Export|Export contents of the compliance status report as a CSV file."
+msgstr ""
 
 msgid "Compliance Center Export|Export contents of the standards adherence report as a CSV file."
 msgstr "导出标准遵守报告的内容为 CSV 文件。"
@@ -14939,8 +14967,8 @@ msgstr "基本信息"
 msgid "ComplianceFrameworks|Cancel"
 msgstr "取消"
 
-msgid "ComplianceFrameworks|Choose a standard control"
-msgstr "选择一个标准控制"
+msgid "ComplianceFrameworks|Choose a GitLab control"
+msgstr ""
 
 msgid "ComplianceFrameworks|Compliance framework created"
 msgstr "已创建合规框架"
@@ -15071,6 +15099,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Optional"
 msgstr "可选"
 
+msgid "ComplianceFrameworks|Please enter a valid URL"
+msgstr ""
+
 msgid "ComplianceFrameworks|Policies"
 msgstr "策略"
 
@@ -15112,6 +15143,9 @@ msgstr "保存框架变更"
 
 msgid "ComplianceFrameworks|Saved changes to compliance framework"
 msgstr "已保存对合规框架的更改"
+
+msgid "ComplianceFrameworks|Secret token is required"
+msgstr ""
 
 msgid "ComplianceFrameworks|Select policies to enforce on all projects scoped to this framework."
 msgstr "选择要对所有与此框架范围的项目执行的策略。"
@@ -15317,11 +15351,15 @@ msgstr "您可以查看 %{project} 的合规中心。要查看所有项目的相
 msgid "ComplianceReport|and %{count} more"
 msgstr "和 %{count} 更多"
 
-msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr "遵守标准导出"
+
+msgid "ComplianceStandardsAdherence|%d control"
+msgid_plural "ComplianceStandardsAdherence|%d controls"
+msgstr[0] ""
+
+msgid "ComplianceStandardsAdherence|%{failedCount}/%{totalCount} failed"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|A rule is configured to prevent author approved merge requests."
 msgstr "已配置禁止作者批准合并请求的规则。"
@@ -15377,6 +15415,12 @@ msgstr "失败原因"
 msgid "ComplianceStandardsAdherence|Filter by"
 msgstr "筛选方式"
 
+msgid "ComplianceStandardsAdherence|Fix suggestions"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Framework"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Group by"
 msgstr "分组"
 
@@ -15400,6 +15444,9 @@ msgstr "设置一条有效的规则，禁止用户批准他们添加了提交的
 
 msgid "ComplianceStandardsAdherence|How to fix"
 msgstr "如何解决"
+
+msgid "ComplianceStandardsAdherence|Last scanned"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr "合并请求的批准规则"
@@ -15427,6 +15474,12 @@ msgstr "无"
 
 msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr "应用于 %{linkStart}%{projectName}%{linkEnd} 的其他合规性框架"
+
+msgid "ComplianceStandardsAdherence|Passed"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Pending"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
 msgstr "阻止作者成为核准人"
@@ -17717,17 +17770,8 @@ msgstr "创建者"
 msgid "Credentials"
 msgstr "凭据"
 
-msgid "CredentialsInventory|Active"
-msgstr "活跃的"
-
-msgid "CredentialsInventory|Created date"
-msgstr "创建日期"
-
 msgid "CredentialsInventory|Deleted user"
 msgstr "已删除用户"
-
-msgid "CredentialsInventory|Expiration date"
-msgstr "过期日期"
 
 msgid "CredentialsInventory|Expired"
 msgstr "已过期"
@@ -17737,12 +17781,6 @@ msgstr "GPG密钥"
 
 msgid "CredentialsInventory|GPG keys"
 msgstr "GPG keys"
-
-msgid "CredentialsInventory|Inactive"
-msgstr "不活跃的"
-
-msgid "CredentialsInventory|Last used date"
-msgstr "最后使用日期"
 
 msgid "CredentialsInventory|No credentials found"
 msgstr "找不到凭证"
@@ -17767,9 +17805,6 @@ msgstr "SSH keys"
 
 msgid "CredentialsInventory|Search or filter credentials…"
 msgstr ""
-
-msgid "CredentialsInventory|State"
-msgstr "状态"
 
 msgid "CredentialsInventory|Type"
 msgstr "类型"
@@ -21069,6 +21104,9 @@ msgstr "DevOps adoption"
 msgid "Developer"
 msgstr "开发者"
 
+msgid "Developer (default)"
+msgstr ""
+
 msgid "Development widget is not enabled for this work item type"
 msgstr "此工作项类型未启用开发小部件"
 
@@ -21613,6 +21651,9 @@ msgstr "显示里程碑"
 msgid "Display name"
 msgstr "显示名称"
 
+msgid "Display preferences"
+msgstr ""
+
 msgid "Display progress of child issues"
 msgstr "显示子议题的进度"
 
@@ -21924,6 +21965,9 @@ msgstr "例如，%{linkStart}什么是派生%{linkEnd}？"
 
 msgid "DuoChat|GitLab Duo Chat"
 msgstr "极狐GitLab Duo Chat"
+
+msgid "DuoChat|GitLab Duo with Amazon Q"
+msgstr ""
 
 msgid "DuoChat|Give feedback"
 msgstr "给予反馈"
@@ -26703,6 +26747,12 @@ msgstr "GitLab 社区版"
 msgid "GitLab Duo"
 msgstr "极狐GitLab Duo"
 
+msgid "GitLab Duo Chat"
+msgstr ""
+
+msgid "GitLab Duo Chat with Amazon Q"
+msgstr ""
+
 msgid "GitLab Duo Pro seats"
 msgstr "GitLab Duo Pro 座位"
 
@@ -27240,8 +27290,8 @@ msgstr "全局通知级别"
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
 msgstr "提供 %{count} 个默认结果，使用上下箭头键导航搜索结果列表。"
 
-msgid "GlobalSearch|%{lessButtonStart}Show less%{lessButtonEnd} - Too many matches found. Showing %{showingMatches} chunks out of %{fileMatches} results. %{fileLinkStart}Open the file to view all.%{fileLinkEnd}"
-msgstr "%{lessButtonStart}收起%{lessButtonEnd} - 找到的匹配项过多。显示 %{showingMatches} 个分块，共 %{fileMatches} 个结果。%{fileLinkStart}打开文件查看全部.%{fileLinkEnd}"
+msgid "GlobalSearch|%{lessButtonStart}Show less%{lessButtonEnd} - Showing %{showingMatches} of %{fileMatches} results. %{fileLinkStart}Open the file to view all results.%{fileLinkEnd}"
+msgstr ""
 
 msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr "禁用 %{linkStart}精确代码搜索（由 Zoekt 提供支持）%{linkEnd} ，因为 %{ref_elem} 不是默认分支。%{docs_link}"
@@ -27495,8 +27545,9 @@ msgstr "搜索结果正在加载中"
 msgid "GlobalSearch|Settings"
 msgstr "设置"
 
-msgid "GlobalSearch|Show %{matches} more matches"
-msgstr "显示 %{matches} 更多匹配项"
+msgid "GlobalSearch|Show 1 more result"
+msgid_plural "GlobalSearch|Show %d more results"
+msgstr[0] ""
 
 msgid "GlobalSearch|Show less"
 msgstr "显示较少"
@@ -28335,9 +28386,6 @@ msgstr "群组项目的URL以群组命名空间为前缀"
 
 msgid "Group requires separate account"
 msgstr "群组需要单独账户"
-
-msgid "Group runners"
-msgstr "群组Runner"
 
 msgid "Group runners can be managed with the %{link}."
 msgstr "群组 Runner 可以使用 %{link} 管理。"
@@ -30168,6 +30216,12 @@ msgstr "如果这是一个错误，你可以%{leave_link_start}退出%{source_ty
 
 msgid "If this was a mistake you can leave the %{source_type}."
 msgstr "如果这是一个错误，你可以退出%{source_type}。"
+
+msgid "If this was a mistake, you can %{link_start}retain the group%{link_end} before %{deletion_date}."
+msgstr ""
+
+msgid "If this was a mistake, you can retain the group before %{deletion_date}: %{retention_url}"
+msgstr ""
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
 msgstr "如使用 GitHub，GitHub的提交(commits)和拉取请求(pull request) 页面将显示流水线状态。 %{more_info_link}"
@@ -34416,6 +34470,9 @@ msgstr "添加代码所有者"
 msgid "LearnGitLab|Analyze your application for vulnerabilities with DAST"
 msgstr "使用 DAST 分析您的应用程序的漏洞"
 
+msgid "LearnGitLab|Assign a GitLab Duo seat to your colleagues"
+msgstr ""
+
 msgid "LearnGitLab|Complete these tasks first so you can enjoy GitLab's features to their fullest:"
 msgstr "首先完成这些任务，以便您可以充分享受 GitLab 的功能："
 
@@ -37982,6 +38039,9 @@ msgstr "我的公司或团队"
 msgid "My reaction"
 msgstr ""
 
+msgid "My reviews and assigned"
+msgstr ""
+
 msgid "My topic"
 msgstr "我的主题"
 
@@ -38573,6 +38633,9 @@ msgid "New issue"
 msgid_plural "New issues"
 msgstr[0] "新建议题"
 
+msgid "New issue look"
+msgstr ""
+
 msgid "New issue title"
 msgstr "新议题标题"
 
@@ -38743,6 +38806,9 @@ msgstr "下一次扫描"
 
 msgid "Next step"
 msgstr "下一步"
+
+msgid "Next step in review workflow"
+msgstr ""
 
 msgid "Next unresolved thread"
 msgstr "下一个未解决的话题"
@@ -39022,6 +39088,9 @@ msgstr "没有并行部署"
 
 msgid "No parent group"
 msgstr "父群组不存在"
+
+msgid "No pending comments"
+msgstr ""
 
 msgid "No phone number data for matching"
 msgstr "没有可匹配的电话号码数据"
@@ -41670,6 +41739,9 @@ msgstr "删除最后一个软件包 assets 将删除 %{name} 的 %{version} 版�
 msgid "PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete %{name} version %{version} anyway? %{docLinkStart}What are the risks?%{docLinkEnd}"
 msgstr "在为项目启用请求转发时删除此包可能会带来安全风险。仍然要删除 %{name} 的 %{version} 版本吗？%{docLinkStart}有什么风险？%{docLinkEnd}"
 
+msgid "PackageRegistry|Developer (default)"
+msgstr ""
+
 msgid "PackageRegistry|Duplicate packages"
 msgstr "重复的软件包"
 
@@ -41778,6 +41850,9 @@ msgstr "许可证信息位于%{link}"
 msgid "PackageRegistry|Machine learning model"
 msgstr "机器学习模型"
 
+msgid "PackageRegistry|Maintainer (default)"
+msgstr ""
+
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "管理软件包 assets 使用的存储"
 
@@ -41792,6 +41867,9 @@ msgstr "Maven命令"
 
 msgid "PackageRegistry|Maven XML"
 msgstr "Maven XML"
+
+msgid "PackageRegistry|Minimum access level for delete"
+msgstr ""
 
 msgid "PackageRegistry|Minimum access level for push"
 msgstr "推送的最低访问级别"
@@ -44021,9 +44099,6 @@ msgstr "请通过浏览器访问 %{url} 来确认请求。"
 msgid "Please confirm your email address"
 msgstr "请确认您的电子邮件地址"
 
-msgid "Please contact an admin to create runners."
-msgstr "请联系管理员创建 runners。"
-
 msgid "Please contact your GitLab administrator if you think this is an error."
 msgstr "如果您认为这是一个错误，请联系您的GitLab 管理员。"
 
@@ -45909,11 +45984,11 @@ msgstr "您将在该过程完成后收到一封电子邮件通知。要从仓库
 msgid "ProjectNew|Push project from command line"
 msgstr "从命令行推送项目"
 
-msgid "ProjectNew|What do you want to create?"
-msgstr "你想创建什么？"
-
 msgid "ProjectNew|What does this command do?"
 msgstr "此命令的作用是什么？"
+
+msgid "ProjectNew|Where do you want to create the new project?"
+msgstr ""
 
 msgid "ProjectNew|You can also create a project from the command line"
 msgstr "您还可以从命令行创建项目"
@@ -46930,12 +47005,6 @@ msgstr[0] "找到了 %d 个组和命名空间"
 msgid "ProjectsNew|(optional)"
 msgstr "（可选）"
 
-msgid "ProjectsNew|A personal project"
-msgstr "一个个人项目"
-
-msgid "ProjectsNew|A project within a group"
-msgstr "群组中的项目"
-
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr "允许您立即克隆这个项目的仓库。如果您计划推送一个现有的仓库，请跳过这个步骤。"
 
@@ -47030,6 +47099,12 @@ msgid "ProjectsNew|Import projects from Gitea"
 msgstr ""
 
 msgid "ProjectsNew|Import repositories from Bitbucket Server"
+msgstr ""
+
+msgid "ProjectsNew|In one of your groups"
+msgstr ""
+
+msgid "ProjectsNew|In your personal namespace"
 msgstr ""
 
 msgid "ProjectsNew|Include a Getting Started README"
@@ -47142,6 +47217,9 @@ msgstr "您可以稍后更改您的 URL"
 
 msgid "ProjectsNew|You cannot create projects in your personal namespace. Contact your GitLab administrator."
 msgstr "您无法在您的个人命名空间中创建项目。请联系极狐GitLab 管理员。"
+
+msgid "ProjectsNew|You have no groups. Create a new one or join an existing group."
+msgstr ""
 
 msgid "ProjectsNew|You've reached your limit of %{limit} projects created. Contact your GitLab administrator."
 msgstr "您已达到创建项目的数量限制 %{limit}。请联系极狐GitLab 管理员。"
@@ -49513,6 +49591,9 @@ msgstr "在此项目为必须。"
 msgid "Required only if you are not using role instance credentials."
 msgstr "仅当您没有使用角色实例凭据时才需要。"
 
+msgid "Required only if you are using AssumeRole for authorization across accounts."
+msgstr ""
+
 msgid "Requirement"
 msgstr "需求"
 
@@ -49793,6 +49874,12 @@ msgid "Reviewer"
 msgid_plural "%d Reviewers"
 msgstr[0] "%d位审核者"
 
+msgid "Reviewer (Active)"
+msgstr ""
+
+msgid "Reviewer (Inactive)"
+msgstr ""
+
 msgid "Reviewer commented"
 msgstr "审核者评论"
 
@@ -49810,6 +49897,9 @@ msgstr "审阅中"
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr "审核(合并请求 !%{mergeRequestId})"
+
+msgid "Reviews"
+msgstr ""
 
 msgid "Revoke"
 msgstr "撤销"
@@ -50127,8 +50217,8 @@ msgstr "与一个或多个项目关联"
 msgid "Runners|Available"
 msgstr "可用"
 
-msgid "Runners|Available instance runners: %{count}"
-msgstr "可用实例运行器：%{count}"
+msgid "Runners|Available instance runners"
+msgstr ""
 
 msgid "Runners|Available to all projects"
 msgstr "适用于所有项目"
@@ -50335,8 +50425,8 @@ msgstr "群组"
 msgid "Runners|Group area › Runners"
 msgstr "群组中心 › Runners"
 
-msgid "Runners|How do runners pick up jobs?"
-msgstr "Runners 如何挑选作业？"
+msgid "Runners|Group runners"
+msgstr ""
 
 msgid "Runners|How is this calculated?"
 msgstr "这是如何计算的？"
@@ -50376,9 +50466,6 @@ msgstr "安装 %{gcloudLinkStart}Google Cloud CLI%{gcloudLinkEnd} 和 %{terrafor
 
 msgid "Runners|Instance"
 msgstr "实例"
-
-msgid "Runners|Instance runners"
-msgstr "实例运行器"
 
 msgid "Runners|Instance runners are disabled in the group settings."
 msgstr "在群组设置中禁用了实例运行器。"
@@ -50595,6 +50682,9 @@ msgstr "计划节点池大小以确保可以容纳您的工作负载"
 msgid "Runners|Platform"
 msgstr "平台"
 
+msgid "Runners|Please contact an admin to create runners."
+msgstr ""
+
 msgid "Runners|Project"
 msgstr "项目"
 
@@ -50648,9 +50738,6 @@ msgstr "注册一个runner"
 
 msgid "Runners|Register an instance runner"
 msgstr "注册一个实例runner"
-
-msgid "Runners|Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine."
-msgstr "注册尽可能多的 runner。您可以用单独的用户，或者在不同的服务器或者本地计算机上注册 runner。"
 
 msgid "Runners|Register runner"
 msgstr "注册 runner"
@@ -50763,9 +50850,6 @@ msgstr "Runner 版本管理"
 msgid "Runners|Runners"
 msgstr "Runner"
 
-msgid "Runners|Runners are either:"
-msgstr "Runners 是："
-
 msgid "Runners|Runners are grouped when they have the same authentication token. This happens when you re-use a runner configuration in more than one runner manager. %{linkStart}How does this work?%{linkEnd}"
 msgstr "Runners 在具有相同的身份验证令牌时被分为一组。当您在多个 runner 管理器中重复使用 runner 配置时，就会发生这种情况。%{linkStart}工作原理是什么？%{linkEnd}"
 
@@ -50861,9 +50945,6 @@ msgstr "系统 ID"
 
 msgid "Runners|Tags"
 msgstr "标签"
-
-msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure runners only handle the jobs they are equipped to run."
-msgstr "标签控制运行器可以处理的作业类型。通过为运行器设置标签，您可以确保运行器仅处理其能够运行的作业。"
 
 msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} %{token} displays here %{boldStart}for a short time only%{boldEnd}. After you register the runner, this token is stored in the %{codeStart}config.toml%{codeEnd} and cannot be accessed again from the UI."
 msgstr "%{boldStart}Runner 身份验证令牌%{boldEnd} %{token} 在此处%{boldStart}仅短暂%{boldEnd}显示。在您注册 Runner 后，此令牌将储存在 %{codeStart}config.toml%{codeEnd}中，并且无法从界面中再次访问。"
@@ -51077,14 +51158,8 @@ msgstr "区域是必需的。"
 msgid "Runners|Zone must have the right format."
 msgstr "区域必须具有正确的格式。"
 
-msgid "Runners|active"
-msgstr "启用"
-
 msgid "Runners|group"
 msgstr "群组"
-
-msgid "Runners|paused"
-msgstr "已暂停"
 
 msgid "Runners|project"
 msgstr "项目"
@@ -54147,6 +54222,12 @@ msgstr "获取漏洞列表时出错。请检查您的网络连接，然后重试
 msgid "SecurityReports|Error parsing security reports"
 msgstr "解析安全报告时出错"
 
+msgid "SecurityReports|Export"
+msgstr ""
+
+msgid "SecurityReports|Export as CSV"
+msgstr ""
+
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
 msgstr "无法获取安全报告信息。请重新加载页面或稍后再试。"
 
@@ -54309,6 +54390,9 @@ msgstr "选择严重性"
 msgid "SecurityReports|Select status"
 msgstr "选择状态"
 
+msgid "SecurityReports|Send as CSV to email"
+msgstr ""
+
 msgid "SecurityReports|Severity"
 msgstr "严重程度"
 
@@ -54348,6 +54432,9 @@ msgstr "以下 SBOM 报告无法解析。因此，报告的漏洞列表可能不
 
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr "安全报告包含一个或多个无法解析且未记录的漏洞发现。要调查一个报告，下载作业输出中的产物。确保创建的安全报告都符合相关的 %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}。"
+
+msgid "SecurityReports|The report is being generated and will be sent to your email."
+msgstr ""
 
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
 msgstr "此流水线的安全报告 %{helpPageLinkStart}已过期%{helpPageLinkEnd}。重新运行流水线来生成新的安全报告。"
@@ -54844,6 +54931,12 @@ msgstr "服务帐户"
 msgid "ServiceAccounts|Add Service Account"
 msgstr "添加服务帐户"
 
+msgid "ServiceAccounts|An error occurred creating the service account."
+msgstr ""
+
+msgid "ServiceAccounts|An error occurred updating the service account."
+msgstr ""
+
 msgid "ServiceAccounts|An error occurred while deleting the service account."
 msgstr ""
 
@@ -54872,6 +54965,12 @@ msgid "ServiceAccounts|Service accounts are non-human accounts that allow intera
 msgstr "服务帐户是非人类帐户，允许软件应用程序、系统或服务之间的交互。%{learnMore}"
 
 msgid "ServiceAccounts|The service account is being deleted."
+msgstr ""
+
+msgid "ServiceAccounts|The service account was created."
+msgstr ""
+
+msgid "ServiceAccounts|The service account was updated."
 msgstr ""
 
 msgid "ServiceAccount|No more seats are available to create Service Account User"
@@ -56634,9 +56733,6 @@ msgstr "来源"
 msgid "Source (branch or tag)"
 msgstr "源(分支或标签)"
 
-msgid "Source Branch"
-msgstr "源分支"
-
 msgid "Source IP:"
 msgstr "来源 IP："
 
@@ -57324,6 +57420,9 @@ msgstr "提交搜索"
 
 msgid "Submit the current review."
 msgstr "提交当前评审。"
+
+msgid "Submit your review"
+msgstr ""
 
 msgid "Submit/save changes"
 msgstr "提交/保存更改"
@@ -58197,9 +58296,6 @@ msgstr "查看文档，发现 GitLab 的所有功能。"
 
 msgid "Target"
 msgstr "目标"
-
-msgid "Target Branch"
-msgstr "目标分支"
 
 msgid "Target Path"
 msgstr "目标路径"
@@ -59720,6 +59816,9 @@ msgstr "同步项目%{name}时出错"
 msgid "There was an error updating the Maintenance Mode Settings"
 msgstr "更新维护模式设置时出错"
 
+msgid "There was an error updating your display preferences."
+msgstr ""
+
 msgid "There was an error when reseting email token."
 msgstr "重置电子邮件令牌时出错。"
 
@@ -60380,9 +60479,6 @@ msgstr "此项目已存档，无法添加评论。"
 
 msgid "This project is archived and read-only. To resume pull mirroring, unarchive the project."
 msgstr "此项目已存档且为只读。要恢复拉取镜像，请取消存档该项目。"
-
-msgid "This project is hidden because its creator has been banned"
-msgstr "该项目已被隐藏，因为其创建者已被封禁"
 
 msgid "This project is licensed under the %{strong_start}%{license_name}%{strong_end}."
 msgstr "该项目在 %{strong_start}%{license_name}%{strong_end}下获得许可。"
@@ -61207,9 +61303,6 @@ msgstr ""
 msgid "Todos|Due today"
 msgstr ""
 
-msgid "Todos|Epic"
-msgstr "史诗"
-
 msgid "Todos|Failed adding todo. Try again later."
 msgstr ""
 
@@ -61244,7 +61337,7 @@ msgid "Todos|Isn't an empty To-Do List beautiful?"
 msgstr "一个空的待办事项列表是不是很漂亮？"
 
 msgid "Todos|Issue"
-msgstr "议题"
+msgstr ""
 
 msgid "Todos|It's how you always know what to work on next."
 msgstr "这是您始终知道下一步该做什么的方式。"
@@ -61444,9 +61537,6 @@ msgstr "当待办事项被 snoozed 时，它们将出现在这里。"
 
 msgid "Todos|Wiki page"
 msgstr ""
-
-msgid "Todos|Work item"
-msgstr "工作项"
 
 msgid "Todos|You"
 msgstr ""
@@ -63361,8 +63451,8 @@ msgstr "使用 %{code_start}authorized_keys%{code_end} 文件来验证 SSH 密�
 msgid "Use .gitlab-ci.yml"
 msgstr "使用 .gitlab-ci.yml"
 
-msgid "Use Amazon Q to streamline development workflow and project upgrades (Beta)"
-msgstr "使用 Amazon Q 以简化开发工作流程和项目升级（Beta）"
+msgid "Use Amazon Q to streamline development workflow and project upgrades"
+msgstr ""
 
 msgid "Use CRON syntax. %{linkStart}Learn more.%{linkEnd}"
 msgstr "使用 CRON 语法。%{linkStart}了解更多。%{linkEnd}"
@@ -64781,6 +64871,9 @@ msgstr "查看使用详情"
 msgid "View users statistics"
 msgstr "查看用户统计"
 
+msgid "View your group: %{group_url}"
+msgstr ""
+
 msgid "Viewed"
 msgstr "已查看"
 
@@ -65989,6 +66082,9 @@ msgstr ""
 
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr "我们对史诗页面进行了改进，包括实时更新、更多功能以及全新的设计。对此有疑问或想法吗？"
+
+msgid "We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
 
 msgid "What are some examples?"
 msgstr "有哪些示例？"
@@ -67376,6 +67472,9 @@ msgstr "以下项目"
 msgid "WorkItem|ticket"
 msgstr "工单"
 
+msgid "Workflow"
+msgstr ""
+
 msgid "Workspaces"
 msgstr "工作区"
 
@@ -68744,6 +68843,9 @@ msgid "Your free group is now limited to %d member"
 msgid_plural "Your free group is now limited to %d members"
 msgstr[0] "您的免费群组现在限制为 %d 名成员"
 
+msgid "Your group %{group_name} has been marked for deletion and will be removed in %{days}."
+msgstr ""
+
 msgid "Your instance has %{remaining_user_count} users remaining of the %{total_user_count} in your subscription. When there are no more seats, users cannot be invited or added to the instance."
 msgstr "您的实例中还有 %{remaining_user_count} 个用户，这是您订阅中的 %{total_user_count} 个用户。当没有更多席位时，用户无法邀请或添加到实例。"
 
@@ -68851,6 +68953,9 @@ msgstr "您的需求将在后台导入。完成后，您将收到一封确认电
 
 msgid "Your resource access tokens will expire in %{days_to_expire} or less"
 msgstr "您的资源访问令牌将在 %{days_to_expire} 天或更短的时间内到期"
+
+msgid "Your review"
+msgstr ""
 
 msgid "Your search didn't match any commits. Try a different query."
 msgstr "您的搜索与未匹配任何提交。请尝试其他查询。"
@@ -70693,6 +70798,12 @@ msgstr "必须属于需求对象所在的同一项目。"
 msgid "must belong to same project of the work item."
 msgstr "必须属于工作项所在的同一项目。"
 
+msgid "must belong to the compliance requirement."
+msgstr ""
+
+msgid "must belong to the same namespace."
+msgstr ""
+
 msgid "must contain only a discord user ID."
 msgstr "必须只能包含一个 Discord 用户 ID"
 
@@ -71091,6 +71202,9 @@ msgstr "应该从高于或等于从%{group_name} 群组继承的成员身份%{ac
 
 msgid "should have length between 16 to 24 characters."
 msgstr "长度应为 16 到 24 个字符"
+
+msgid "should have the compliance requirement's framework applied to it."
+msgstr ""
 
 msgid "should use only one of: %{requirements}"
 msgstr "应只使用以下之一：%{requirements}"

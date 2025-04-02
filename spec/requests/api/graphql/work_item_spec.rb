@@ -94,6 +94,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'reference' => work_item.to_reference,
         'createNoteEmail' => work_item_email,
         'archived' => false,
+        'hidden' => false,
         'userPermissions' => hash_including(
           'readWorkItem' => true,
           'updateWorkItem' => true,

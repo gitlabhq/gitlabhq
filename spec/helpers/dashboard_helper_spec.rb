@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe DashboardHelper do
-  let(:user) { build(:user) }
+RSpec.describe DashboardHelper, :enable_admin_mode, feature_category: :shared do
+  let_it_be(:user) { build(:admin) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -11,6 +11,8 @@ RSpec.describe DashboardHelper do
   end
 
   describe '#feature_entry' do
+    subject(:feature_entry) { helper.feature_entry(name, params) }
+
     shared_examples "a feature is enabled" do
       it { is_expected.to include('<p aria-label="Demo: enabled" class="gl-py-4 gl-m-0 gl-border-b">') }
     end
@@ -35,27 +37,27 @@ RSpec.describe DashboardHelper do
     end
 
     context 'when implicitly enabled' do
-      subject { feature_entry('Demo') }
+      subject { helper.feature_entry('Demo') }
 
       it_behaves_like 'a feature is enabled'
     end
 
     context 'when explicitly enabled' do
       context 'without links' do
-        subject { feature_entry('Demo', enabled: true) }
+        subject { helper.feature_entry('Demo', enabled: true) }
 
         it_behaves_like 'a feature is enabled'
         it_behaves_like 'a feature without link'
       end
 
       context 'with configure link' do
-        subject { feature_entry('Demo', href: 'demo.link', enabled: true) }
+        subject { helper.feature_entry('Demo', href: 'demo.link', enabled: true) }
 
         it_behaves_like 'a feature with configuration'
       end
 
       context 'with configure and documentation links' do
-        subject { feature_entry('Demo', href: 'demo.link', doc_href: 'doc.link', enabled: true) }
+        subject { helper.feature_entry('Demo', href: 'demo.link', doc_href: 'doc.link', enabled: true) }
 
         it_behaves_like 'a feature with configuration'
         it_behaves_like 'a feature with documentation'
@@ -63,7 +65,7 @@ RSpec.describe DashboardHelper do
     end
 
     context 'when disabled' do
-      subject { feature_entry('Demo', href: 'demo.link', enabled: false) }
+      subject { helper.feature_entry('Demo', href: 'demo.link', enabled: false) }
 
       it_behaves_like 'a feature is disabled'
       it_behaves_like 'a feature with configuration'
@@ -72,6 +74,10 @@ RSpec.describe DashboardHelper do
 
   describe '.has_start_trial?' do
     subject { helper.has_start_trial? }
+
+    before do
+      allow(user).to receive(:has_current_license?).and_return(true)
+    end
 
     it { is_expected.to eq(false) }
   end

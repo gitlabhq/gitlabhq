@@ -486,7 +486,7 @@ New authentications to a project can take up to 5 minutes to appear in the authe
 
 {{< /history >}}
 
-Beginning in GitLab 18.0, CI/CD job tokens use the JWT standard by default. All new projects created after February 21, 2025 on GitLab.com or from 17.10 on GitLab Self-Managed use this standard. Existing projects can continue to use the legacy format by configuring the top-level group for their project. This setting is only available until the GitLab 18.3 release.
+Beginning in GitLab 18.0, CI/CD job tokens use the JWT standard by default. All new projects created after February 21, 2025 on GitLab.com or from 17.10 on GitLab Self-Managed use this standard. Existing projects can continue to use the legacy format by configuring the top-level group for their project. This setting is only available until the GitLab 19.0 release.
 
 To use the legacy format for your CI/CD tokens:
 

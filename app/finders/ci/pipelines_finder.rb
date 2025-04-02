@@ -134,13 +134,11 @@ module Ci
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def by_status(items)
       return items unless Ci::HasStatus::AVAILABLE_STATUSES.include?(params[:status])
 
-      items.where(status: params[:status])
+      items.for_status(params[:status])
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def by_source(items)
       return items unless ::Ci::Pipeline.sources.key?(params[:source])
@@ -148,36 +146,26 @@ module Ci
       items.with_pipeline_source(params[:source])
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def by_ref(items)
-      if params[:ref].present?
-        items.where(ref: params[:ref])
-      else
-        items
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
+      return items unless params[:ref].present?
 
-    # rubocop: disable CodeReuse/ActiveRecord
+      items.for_ref(params[:ref])
+    end
+
     def by_sha(items)
-      if params[:sha].present?
-        items.where(sha: params[:sha])
-      else
-        items
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
+      return items unless params[:sha].present?
 
-    # rubocop: disable CodeReuse/ActiveRecord
+      items.for_sha(params[:sha])
+    end
+
     def by_username(items)
       return items unless params[:username].present?
 
       user_id = User.by_username(params[:username]).pluck_primary_key.first
       return Ci::Pipeline.none unless user_id
 
-      items.where(user_id: user_id)
+      items.for_user(user_id)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def by_yaml_errors(items)

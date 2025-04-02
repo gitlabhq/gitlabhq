@@ -8823,7 +8823,7 @@ Input type: `PipelineCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinecreateasync"></a>`async` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationpipelinecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationpipelinecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project that is triggering the pipeline. |
 | <a id="mutationpipelinecreateref"></a>`ref` | [`String!`](#string) | Ref on which to run the pipeline. |
 | <a id="mutationpipelinecreatevariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | Variables for the pipeline. |
@@ -8887,7 +8887,7 @@ Input type: `PipelineScheduleCreateInput`
 | <a id="mutationpipelineschedulecreatecron"></a>`cron` | [`String!`](#string) | Cron expression of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
 | <a id="mutationpipelineschedulecreatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline schedule. |
-| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationpipelineschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the pipeline schedule is associated with. |
 | <a id="mutationpipelineschedulecreateref"></a>`ref` | [`String!`](#string) | Ref of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
@@ -8970,7 +8970,7 @@ Input type: `PipelineScheduleUpdateInput`
 | <a id="mutationpipelinescheduleupdatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
 | <a id="mutationpipelinescheduleupdatedescription"></a>`description` | [`String`](#string) | Description of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdateid"></a>`id` | [`CiPipelineScheduleID!`](#cipipelinescheduleid) | ID of the pipeline schedule to mutate. |
-| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationpipelinescheduleupdateref"></a>`ref` | [`String`](#string) | Ref of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
 
@@ -22107,21 +22107,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcecomponentid"></a>`id` | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | ID of the component. |
 | <a id="cicatalogresourcecomponentincludepath"></a>`includePath` | [`String`](#string) | Path used to include the component. |
-| <a id="cicatalogresourcecomponentinputs"></a>`inputs` | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | Inputs for the component. |
+| <a id="cicatalogresourcecomponentinputs"></a>`inputs` | [`[CiInputsSpec!]`](#ciinputsspec) | Inputs for the component. |
 | <a id="cicatalogresourcecomponentname"></a>`name` | [`String`](#string) | Name of the component. |
-
-### `CiCatalogResourceComponentInput`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cicatalogresourcecomponentinputdefault"></a>`default` | [`String`](#string) | Default value for the input. |
-| <a id="cicatalogresourcecomponentinputdescription"></a>`description` | [`String`](#string) | Description of the input. |
-| <a id="cicatalogresourcecomponentinputname"></a>`name` | [`String`](#string) | Name of the input. |
-| <a id="cicatalogresourcecomponentinputregex"></a>`regex` | [`String`](#string) | Pattern that the input value must match. Only applicable to string inputs. |
-| <a id="cicatalogresourcecomponentinputrequired"></a>`required` | [`Boolean`](#boolean) | Indicates if an input is required. |
-| <a id="cicatalogresourcecomponentinputtype"></a>`type` | [`CiCatalogResourceComponentInputType`](#cicatalogresourcecomponentinputtype) | Type of the input. |
 
 ### `CiCatalogResourceComponentUsage`
 
@@ -22350,22 +22337,6 @@ CI/CD variables for a group.
 | <a id="cigroupvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="cigroupvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
-### `CiInputSpec`
-
-Input for pipeline creation.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="ciinputspecdefault"></a>`default` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Default value for the input, if provided. |
-| <a id="ciinputspecdescription"></a>`description` | [`String`](#string) | Description of the input. |
-| <a id="ciinputspecname"></a>`name` | [`String!`](#string) | Name of the input. |
-| <a id="ciinputspecoptions"></a>`options` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Possible values that the input can take, if provided. |
-| <a id="ciinputspecregex"></a>`regex` | [`String`](#string) | Regular expression pattern that the input value must match if provided. |
-| <a id="ciinputspecrequired"></a>`required` | [`Boolean!`](#boolean) | Indicates whether the input is required. |
-| <a id="ciinputspectype"></a>`type` | [`CiInputType!`](#ciinputtype) | Input data type. |
-
 ### `CiInputsField`
 
 CI input saved for a pipeline schedule.
@@ -22376,6 +22347,22 @@ CI input saved for a pipeline schedule.
 | ---- | ---- | ----------- |
 | <a id="ciinputsfieldname"></a>`name` | [`String!`](#string) | Name of the input. |
 | <a id="ciinputsfieldvalue"></a>`value` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Value of the input. |
+
+### `CiInputsSpec`
+
+Input for pipeline creation.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputsspecdefault"></a>`default` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Default value for the input, if provided. |
+| <a id="ciinputsspecdescription"></a>`description` | [`String`](#string) | Description of the input. |
+| <a id="ciinputsspecname"></a>`name` | [`String!`](#string) | Name of the input. |
+| <a id="ciinputsspecoptions"></a>`options` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Possible values that the input can take, if provided. |
+| <a id="ciinputsspecregex"></a>`regex` | [`String`](#string) | Regular expression pattern that the input value must match if provided. |
+| <a id="ciinputsspecrequired"></a>`required` | [`Boolean!`](#boolean) | Indicates whether the input is required. |
+| <a id="ciinputsspectype"></a>`type` | [`CiInputsType!`](#ciinputstype) | Input data type. |
 
 ### `CiInstanceVariable`
 
@@ -34649,7 +34636,7 @@ Inputs to create a pipeline.
 **Status**: Experiment.
 {{< /details >}}
 
-Returns [`[CiInputSpec!]`](#ciinputspec).
+Returns [`[CiInputsSpec!]`](#ciinputsspec).
 
 ###### Arguments
 
@@ -40431,6 +40418,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemdescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemduplicatedtoworkitemurl"></a>`duplicatedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item is marked as a duplicate of. |
+| <a id="workitemhidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the work item is hidden because the author has been banned. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
@@ -41150,16 +41138,28 @@ Represents a test reports widget.
 
 ### `WorkItemWidgetTimeTracking`
 
-Represents a time tracking widget.
+Represents the time tracking widget on the work item.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgettimetrackinghumanreadableattributes"></a>`humanReadableAttributes` | [`WorkItemWidgetTimeTrackingHumanReadableAttributes`](#workitemwidgettimetrackinghumanreadableattributes) | Human-readable attributes of the work item. |
 | <a id="workitemwidgettimetrackingtimeestimate"></a>`timeEstimate` | [`Int`](#int) | Time estimate of the work item. |
 | <a id="workitemwidgettimetrackingtimelogs"></a>`timelogs` | [`WorkItemTimelogConnection`](#workitemtimelogconnection) | Timelogs on the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgettimetrackingtotaltimespent"></a>`totalTimeSpent` | [`Int`](#int) | Total time (in seconds) reported as spent on the work item. |
 | <a id="workitemwidgettimetrackingtype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetTimeTrackingHumanReadableAttributes`
+
+Represents a time tracking human readable attributes.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgettimetrackinghumanreadableattributestimeestimate"></a>`timeEstimate` | [`String`](#string) | Human-readable time estimate of the work item. |
+| <a id="workitemwidgettimetrackinghumanreadableattributestotaltimespent"></a>`totalTimeSpent` | [`String`](#string) | Human-readable total time reported as spent on the work item. |
 
 ### `WorkItemWidgetVerificationStatus`
 
@@ -41687,17 +41687,6 @@ Status of a merge train's car.
 | <a id="carstatusskip_merged"></a>`SKIP_MERGED` | Car's status: skip_merged. |
 | <a id="carstatusstale"></a>`STALE` | Car's status: stale. |
 
-### `CiCatalogResourceComponentInputType`
-
-Available input types.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cicatalogresourcecomponentinputtypearray"></a>`ARRAY` | Array input. |
-| <a id="cicatalogresourcecomponentinputtypeboolean"></a>`BOOLEAN` | Boolean input. |
-| <a id="cicatalogresourcecomponentinputtypenumber"></a>`NUMBER` | Number input. |
-| <a id="cicatalogresourcecomponentinputtypestring"></a>`STRING` | String input. |
-
 ### `CiCatalogResourceScope`
 
 Values for scoping catalog resources.
@@ -41774,16 +41763,16 @@ Values for sorting inherited variables.
 | <a id="cigroupvariablessortkey_asc"></a>`KEY_ASC` | Key by ascending order. |
 | <a id="cigroupvariablessortkey_desc"></a>`KEY_DESC` | Key by descending order. |
 
-### `CiInputType`
+### `CiInputsType`
 
 Available input types.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="ciinputtypearray"></a>`ARRAY` | Array input. |
-| <a id="ciinputtypeboolean"></a>`BOOLEAN` | Boolean input. |
-| <a id="ciinputtypenumber"></a>`NUMBER` | Number input. |
-| <a id="ciinputtypestring"></a>`STRING` | String input. |
+| <a id="ciinputstypearray"></a>`ARRAY` | Array input. |
+| <a id="ciinputstypeboolean"></a>`BOOLEAN` | Boolean input. |
+| <a id="ciinputstypenumber"></a>`NUMBER` | Number input. |
+| <a id="ciinputstypestring"></a>`STRING` | String input. |
 
 ### `CiJobFailureReason`
 
@@ -47847,7 +47836,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="branchprotectioninputmergeaccesslevels"></a>`mergeAccessLevels` | [`[MergeAccessLevelInput!]`](#mergeaccesslevelinput) | Details about who can merge into the branch rule target. |
 | <a id="branchprotectioninputpushaccesslevels"></a>`pushAccessLevels` | [`[PushAccessLevelInput!]`](#pushaccesslevelinput) | Details about who can push to the branch rule target. |
 
-### `CiInputsInputType`
+### `CiInputsInput`
 
 Attributes for defining an input.
 
@@ -47855,9 +47844,9 @@ Attributes for defining an input.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="ciinputsinputtypedestroy"></a>`destroy` | [`Boolean`](#boolean) | Set to `true` to delete the input. |
-| <a id="ciinputsinputtypename"></a>`name` | [`String!`](#string) | Name of the input. |
-| <a id="ciinputsinputtypevalue"></a>`value` | [`CiInputsValueInputType!`](#ciinputsvalueinputtype) | Value of the input. |
+| <a id="ciinputsinputdestroy"></a>`destroy` | [`Boolean`](#boolean) | Set to `true` to delete the input. |
+| <a id="ciinputsinputname"></a>`name` | [`String!`](#string) | Name of the input. |
+| <a id="ciinputsinputvalue"></a>`value` | [`CiInputsValueInputType!`](#ciinputsvalueinputtype) | Value of the input. |
 
 ### `CiVariableInput`
 

@@ -28,70 +28,71 @@
   %h2.gl-heading-2= _('Instance overview')
   .gl-grid.md:gl-grid-cols-2.lg:gl-grid-cols-3.gl-gap-5
     - component_params = { card_options: { class: 'gl-h-full' }, header_options: { class: 'gl-flex gl-justify-between gl-items-start' }, body_options: { class: 'gl-h-full gl-pt-0' } }
-    = render Pajamas::CardComponent.new(**component_params) do |c|
-      - c.with_header do
-        %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
-          - approximate_projects_count = approximate_count_with_delimiters(@counts, Project)
-          = s_('AdminArea|Projects')
-          = render Pajamas::BadgeComponent.new(approximate_projects_count, variant: :muted, aria: { hidden: "true" })
-        - if current_user.can_admin_all_resources?
-          = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
-            = s_('AdminArea|New project')
-      - c.with_body do
-        .gl-flex.gl-flex-col.gl-h-full
-          - @projects.each do |project|
-            .gl-flex.gl-py-4{ class: ('gl-border-b' if @projects.last != project) }
-              .gl-mr-auto
-                = link_to project.full_name, admin_project_path(project)
-              %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
-                #{time_ago_with_tooltip(project.created_at)}
-          .gl-grow
-          .gl-pt-4
-            = render Pajamas::ButtonComponent.new(href: admin_projects_path(sort: 'created_desc'), block: true) do
-              = s_('AdminArea|View latest projects')
-    = render Pajamas::CardComponent.new(**component_params) do |c|
-      - c.with_header do
-        %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
-          = s_('AdminArea|Total Users')
-          = render Pajamas::BadgeComponent.new(approximate_count_with_delimiters(@counts, User), variant: :muted, aria: { hidden: "true" })
-        = render Pajamas::ButtonComponent.new(href: new_admin_user_path, size: :small) do
-          = s_('AdminArea|New user')
-      - c.with_body do
-        .gl-flex.gl-flex-col.gl-h-full
-          - @users.each do |user|
-            .gl-flex.gl-py-4{ class: ('gl-border-b' if @users.last != user) }
-              .gl-mr-auto
-                = link_to [:admin, user] do
-                  = user.name
-              %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
-                #{time_ago_with_tooltip(user.created_at)}
-          .gl-grow
-          .gl-flex.gl-pt-4.gl-gap-3
-            = render Pajamas::ButtonComponent.new(href: admin_users_path(sort: 'created_desc'), block: true) do
-              = s_('AdminArea|View latest users')
-            = render Pajamas::ButtonComponent.new(href: admin_dashboard_stats_path, block: true, button_options: { class: '!gl-mt-0'}) do
-              = s_('AdminArea|Users statistics')
-    = render Pajamas::CardComponent.new(**component_params) do |c|
-      - c.with_header do
-        %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
-          - approximate_groups_count = approximate_count_with_delimiters(@counts, Group)
-          = s_('AdminArea|Groups')
-          = render Pajamas::BadgeComponent.new(approximate_groups_count, variant: :muted, aria: { hidden: "true" })
-        = render Pajamas::ButtonComponent.new(href: new_admin_group_path, size: :small) do
-          = s_('AdminArea|New group')
-      - c.with_body do
-        .gl-flex.gl-flex-col.gl-h-full
-          - @groups.each do |group|
-            .gl-flex.gl-py-4{ class: ('gl-border-b' if @groups.last != group) }
-              .gl-mr-auto
-                = link_to [:admin, group] do
-                  = group.full_name
-              %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
-                #{time_ago_with_tooltip(group.created_at)}
-          .gl-grow
-          .gl-pt-4
-            = render Pajamas::ButtonComponent.new(href: admin_groups_path(sort: 'created_desc'), block: true) do
-              = s_('AdminArea|View latest groups')
+    - if current_user.can_admin_all_resources?
+      = render Pajamas::CardComponent.new(**component_params) do |c|
+        - c.with_header do
+          %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
+            - approximate_projects_count = approximate_count_with_delimiters(@counts, Project)
+            = s_('AdminArea|Projects')
+            = render Pajamas::BadgeComponent.new(approximate_projects_count, variant: :muted, aria: { hidden: "true" })
+          - if current_user.can_create_project?
+            = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
+              = s_('AdminArea|New project')
+        - c.with_body do
+          .gl-flex.gl-flex-col.gl-h-full
+            - @projects.each do |project|
+              .gl-flex.gl-py-4{ class: ('gl-border-b' if @projects.last != project) }
+                .gl-mr-auto
+                  = link_to project.full_name, admin_project_path(project)
+                %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
+                  #{time_ago_with_tooltip(project.created_at)}
+            .gl-grow
+            .gl-pt-4
+              = render Pajamas::ButtonComponent.new(href: admin_projects_path(sort: 'created_desc'), block: true) do
+                = s_('AdminArea|View latest projects')
+      = render Pajamas::CardComponent.new(**component_params) do |c|
+        - c.with_header do
+          %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
+            = s_('AdminArea|Total Users')
+            = render Pajamas::BadgeComponent.new(approximate_count_with_delimiters(@counts, User), variant: :muted, aria: { hidden: "true" })
+          = render Pajamas::ButtonComponent.new(href: new_admin_user_path, size: :small) do
+            = s_('AdminArea|New user')
+        - c.with_body do
+          .gl-flex.gl-flex-col.gl-h-full
+            - @users.each do |user|
+              .gl-flex.gl-py-4{ class: ('gl-border-b' if @users.last != user) }
+                .gl-mr-auto
+                  = link_to [:admin, user] do
+                    = user.name
+                %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
+                  #{time_ago_with_tooltip(user.created_at)}
+            .gl-grow
+            .gl-flex.gl-pt-4.gl-gap-3
+              = render Pajamas::ButtonComponent.new(href: admin_users_path(sort: 'created_desc'), block: true) do
+                = s_('AdminArea|View latest users')
+              = render Pajamas::ButtonComponent.new(href: admin_dashboard_stats_path, block: true, button_options: { class: '!gl-mt-0'}) do
+                = s_('AdminArea|Users statistics')
+      = render Pajamas::CardComponent.new(**component_params) do |c|
+        - c.with_header do
+          %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
+            - approximate_groups_count = approximate_count_with_delimiters(@counts, Group)
+            = s_('AdminArea|Groups')
+            = render Pajamas::BadgeComponent.new(approximate_groups_count, variant: :muted, aria: { hidden: "true" })
+          = render Pajamas::ButtonComponent.new(href: new_admin_group_path, size: :small) do
+            = s_('AdminArea|New group')
+        - c.with_body do
+          .gl-flex.gl-flex-col.gl-h-full
+            - @groups.each do |group|
+              .gl-flex.gl-py-4{ class: ('gl-border-b' if @groups.last != group) }
+                .gl-mr-auto
+                  = link_to [:admin, group] do
+                    = group.full_name
+                %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
+                  #{time_ago_with_tooltip(group.created_at)}
+            .gl-grow
+            .gl-pt-4
+              = render Pajamas::ButtonComponent.new(href: admin_groups_path(sort: 'created_desc'), block: true) do
+                = s_('AdminArea|View latest groups')
 
     #js-admin-statistics-container
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-h-full' }, body_options: { class: 'gl-h-full gl-py-0' }) do |c|
@@ -198,4 +199,5 @@
             = @redis_versions&.join(", ")
         %p.gl-py-4.gl-m-0
           = _("Gitaly servers")
-          = render Pajamas::ButtonComponent.new(icon: 'settings', category: :tertiary, size: :small, href: admin_gitaly_servers_path, button_options: { title: _('Configure'), class: 'gl-ml-2 has-tooltip gl-float-right', aria: { label: _('Configure') } })
+          - if current_user.can_admin_all_resources?
+            = render Pajamas::ButtonComponent.new(icon: 'settings', category: :tertiary, size: :small, href: admin_gitaly_servers_path, button_options: { title: _('Configure'), class: 'gl-ml-2 has-tooltip gl-float-right', aria: { label: _('Configure') } })

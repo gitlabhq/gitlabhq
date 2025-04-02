@@ -7,9 +7,13 @@ module Types
         # rubocop:disable Graphql/AuthorizeTypes -- we already authorize the work item itself
         class TimeTrackingType < BaseObject
           graphql_name 'WorkItemWidgetTimeTracking'
-          description 'Represents a time tracking widget'
+          description 'Represents the time tracking widget on the work item'
 
           implements ::Types::WorkItems::WidgetInterface
+
+          field :human_readable_attributes, ::Types::WorkItems::Widgets::TimeTracking::HumanReadableAttributesType,
+            null: true, resolver_method: :object,
+            description: 'Human-readable attributes of the work item.'
 
           field :time_estimate, GraphQL::Types::Int,
             null: true,

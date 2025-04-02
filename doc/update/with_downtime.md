@@ -38,7 +38,7 @@ At a high level, the process is:
 1. Upgrade the other back-end components:
    - Gitaly, Rails PostgreSQL, Redis, PgBouncer: these can be upgraded in any order.
    - If you use PostgreSQL or Redis from your cloud platform and upgrades are required,
-     substitute the instructions for Omnibus GitLab with your cloud provider's instructions.
+     substitute the instructions for the Linux package with your cloud provider's instructions.
 1. Upgrade the GitLab application (Sidekiq, Puma) and start the application up.
 
 ## Stop writes to the database

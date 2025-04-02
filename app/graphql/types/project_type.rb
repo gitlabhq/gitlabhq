@@ -40,7 +40,7 @@ module Types
         description: 'ID of the pipeline creation request.'
     end
 
-    field :ci_pipeline_creation_inputs, [Types::Ci::Inputs::InputSpecType],
+    field :ci_pipeline_creation_inputs, [Types::Ci::Inputs::SpecType],
       authorize: :create_pipeline,
       null: true,
       calls_gitaly: true,

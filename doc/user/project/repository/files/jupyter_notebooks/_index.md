@@ -50,8 +50,6 @@ Code Suggestions is not available on diffs and merge requests for `.ipynb` files
 
 Cleaner notebook diffs are not generated when the notebook is too large.
 
-![Jupyter Notebook Clean Diff](../img/jupyter_notebook_diff_v14_5.png)
-
 ## Jupyter Git integration
 
 Jupyter can be configured as an OAuth application with repository access, acting

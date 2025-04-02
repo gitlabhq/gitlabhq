@@ -97,7 +97,7 @@ for production. However, instructions on how to upgrade such an environment are 
 {{< tab title="Docker" >}}
 
 GitLab provides official Docker images for both Community and Enterprise
-editions, and they are based on the Omnibus package. See how to
+editions, and they are based on the Linux package. See how to
 [install GitLab using Docker](../install/docker/_index.md).
 
 {{< /tab >}}

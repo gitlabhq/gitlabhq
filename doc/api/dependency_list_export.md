@@ -46,7 +46,7 @@ POST /pipelines/:id/dependency_list_exports
 curl --request POST --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/pipelines/1/dependency_list_exports" --data "export_type=sbom"
 ```
 
-The created dependency list export is automatically deleted after 1 hour.
+The created dependency list export is automatically deleted at the time specified in the `expires_at` field.
 
 Example response:
 
@@ -57,6 +57,7 @@ Example response:
   "has_finished": false,
   "export_type": "sbom",
   "send_email": false,
+  "expires_at": "2025-04-06T09:35:38.746Z",
   "self": "http://gitlab.example.com/api/v4/dependency_list_exports/2",
   "download": "http://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 }

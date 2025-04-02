@@ -12,8 +12,12 @@ title: Package Signatures
 
 {{< /details >}}
 
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
+
 Linux packages produced by GitLab are created using [Omnibus](https://github.com/chef/omnibus), for which GitLab
 has added DEB signing using `debsigs` in [our own fork](https://gitlab.com/gitlab-org/omnibus).
+
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 
 Combined with the existing functionality of RPM signing, this addition allows GitLab to provide signed packages for all
 supported distributions using DEB or RPM.
