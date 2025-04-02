@@ -34,6 +34,7 @@ module Gitlab
                   pipeline_source: @command.source, pipeline_source_bridge: @command.bridge,
                   triggered_for_branch: @pipeline.branch?,
                   ref: @pipeline.ref,
+                  source_branch: @command.merge_request&.source_branch || @pipeline.ref,
                   pipeline_policy_context: @command.pipeline_policy_context,
                   inputs: ::Ci::PipelineCreation::Inputs.parse_params(@command.inputs)
                 )

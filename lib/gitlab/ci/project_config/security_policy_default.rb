@@ -5,11 +5,11 @@ module Gitlab
     class ProjectConfig
       class SecurityPolicyDefault < Gitlab::Ci::ProjectConfig::Source
         def initialize(
-          project:, pipeline_source: nil, triggered_for_branch: false, ref: nil, pipeline_policy_context: nil)
+          project:, pipeline_source: nil, triggered_for_branch: false, source_branch: nil, pipeline_policy_context: nil)
           @project = project
           @pipeline_source = pipeline_source
           @triggered_for_branch = triggered_for_branch
-          @ref = ref
+          @source_branch = source_branch
           @pipeline_policy_context = pipeline_policy_context
         end
 
