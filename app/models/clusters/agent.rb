@@ -37,6 +37,7 @@ module Clusters
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, ->(name) { where(name: name) }
     scope :has_vulnerabilities, ->(value = true) { where(has_vulnerabilities: value) }
+    scope :for_projects, ->(projects) { where(project: projects) }
 
     ignore_column :connection_mode, remove_with: '17.6', remove_after: '2024-11-01'
 

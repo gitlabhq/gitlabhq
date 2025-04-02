@@ -347,6 +347,13 @@ module Types
       method: :linked_to_subscription?,
       description: 'Indicates if group is linked to a subscription.'
 
+    field :cluster_agents,
+      ::Types::Clusters::AgentType.connection_type,
+      extras: [:lookahead],
+      null: true,
+      description: 'Cluster agents associated with projects in the group and its subgroups.',
+      resolver: ::Resolvers::Clusters::AgentsResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

@@ -3,6 +3,7 @@
   removal_milestone: "18.0"
   window: 3
   breaking_change: true
+  impact: medium
   body: |
     The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab.com user, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
 
@@ -12,7 +13,7 @@
     For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
     GitLab Self-Managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/update/deprecations/#self-managed-certificate-based-integration-with-kubernetes).
-  stage: Configure
+  stage: Deploy
   tiers: [Free, Premium, Ultimate]
   issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'
   documentation_url: 'https://docs.gitlab.com/user/infrastructure/clusters/#certificate-based-kubernetes-integration-deprecated'

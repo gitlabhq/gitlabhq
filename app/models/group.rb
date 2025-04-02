@@ -1171,6 +1171,10 @@ class Group < Namespace
     CustomerRelations::Organization.where(group_id: id).delete_all
   end
 
+  def cluster_agents
+    ::Clusters::Agent.for_projects(all_projects)
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)

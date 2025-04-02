@@ -4361,4 +4361,22 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe '#cluster_agents' do
+    let_it_be(:other_group) { create(:group) }
+    let_it_be(:other_project) { create(:project, namespace: other_group) }
+
+    let_it_be(:root_group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: root_group) }
+    let_it_be(:project_in_group) { create(:project, namespace: root_group) }
+    let_it_be(:project_in_subgroup) { create(:project, namespace: subgroup) }
+
+    let_it_be(:cluster_agent_for_other_project) { create(:cluster_agent, project: other_project) }
+    let_it_be(:cluster_agent_for_project) { create(:cluster_agent, project: project_in_group) }
+    let_it_be(:cluster_agent_for_project_in_subgroup) { create(:cluster_agent, project: project_in_subgroup) }
+
+    subject { root_group.cluster_agents }
+
+    it { is_expected.to contain_exactly(cluster_agent_for_project, cluster_agent_for_project_in_subgroup) }
+  end
 end

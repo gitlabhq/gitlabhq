@@ -75,6 +75,17 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
           end
         end
       end
+
+      describe '.for_projects' do
+        let_it_be(:agent_1) { create(:cluster_agent) }
+        let_it_be(:agent_2) { create(:cluster_agent) }
+
+        subject { described_class.for_projects([agent_1.project, agent_2.project]) }
+
+        it 'return agents for selected projects' do
+          is_expected.to contain_exactly(agent_1, agent_2)
+        end
+      end
     end
   end
 

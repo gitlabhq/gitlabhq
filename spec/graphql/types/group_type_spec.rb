@@ -29,7 +29,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       contact_state_counts contacts work_item_types
       recent_issue_boards ci_variables releases environment_scopes work_items autocomplete_users
       lock_math_rendering_limits_enabled math_rendering_limits_enabled created_at updated_at
-      organization_edit_path is_linked_to_subscription
+      organization_edit_path is_linked_to_subscription cluster_agents
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
