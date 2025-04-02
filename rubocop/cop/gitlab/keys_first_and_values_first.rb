@@ -9,15 +9,15 @@ module RuboCop
       #
       # @example
       #
-      # # bad
+      #   # bad
       #
-      # hash.keys.first
-      # hash.values.first
+      #   hash.keys.first
+      #   hash.values.first
       #
-      # # good
+      #   # good
       #
-      # hash.each_key.first
-      # hash.each_value.first
+      #   hash.each_key.first
+      #   hash.each_value.first
       #
       class KeysFirstAndValuesFirst < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector

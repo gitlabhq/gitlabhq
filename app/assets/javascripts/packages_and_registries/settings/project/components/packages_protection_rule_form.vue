@@ -117,14 +117,11 @@ export default {
       const packageTypeOptions = [
         { value: 'NPM', text: s__('PackageRegistry|Npm') },
         { value: 'PYPI', text: s__('PackageRegistry|PyPI') },
+        { value: 'MAVEN', text: s__('PackageRegistry|Maven') },
       ];
 
       if (this.glFeatures.packagesProtectedPackagesConan) {
         packageTypeOptions.push({ value: 'CONAN', text: s__('PackageRegistry|Conan') });
-      }
-
-      if (this.glFeatures.packagesProtectedPackagesMaven) {
-        packageTypeOptions.push({ value: 'MAVEN', text: s__('PackageRegistry|Maven') });
       }
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));

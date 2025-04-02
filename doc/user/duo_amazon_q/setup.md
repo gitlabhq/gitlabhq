@@ -8,6 +8,7 @@ title: Set up GitLab Duo with Amazon Q
 {{< details >}}
 
 - Tier: Ultimate
+- Add-on: GitLab Duo with Amazon Q
 - Offering: GitLab Self-Managed
 - Status: Preview/Beta
 

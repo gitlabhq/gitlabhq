@@ -131,14 +131,6 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
             .and not_change { Packages::Package.maven.count }
             .and not_change { Packages::PackageFile.count }
         end
-
-        context 'when feature flag :packages_protected_packages_maven is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_maven: false)
-          end
-
-          it_behaves_like 'valid package'
-        end
       end
 
       shared_examples 'an error service response for unauthorized' do

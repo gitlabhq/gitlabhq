@@ -1,52 +1,51 @@
 # frozen_string_literal: true
 
-# This cop checks for missing GraphQL descriptions and enforces the description style guide:
-# https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide
-#
-# @safety
-#   This cop is unsafe because not all cases of "this" can be substituted with
-#   "the". This will require a technical writer to assist with the alternative,
-#   proper grammar that can be used for that particular GraphQL descriptions.
-#
-# @examples
-#
-#   # bad
-#   class AwfulType
-#     field :some_field, GraphQL::Types::String
-#   end
-#
-#   class TerribleType
-#     argument :some_argument, GraphQL::Types::String
-#   end
-#
-#   class UngoodType
-#     field :some_argument,
-#       GraphQL::Types::String,
-#       description: "A description that does not end in a period"
-#   end
-#
-#   class BadEnum
-#     value "some_value"
-#   end
-#
-#   # good
-#   class GreatType
-#     argument :some_field,
-#       GraphQL::Types::String,
-#       description: "Well described - a superb description."
-#
-#     field :some_field,
-#       GraphQL::Types::String,
-#       description: "Thorough and compelling description."
-#   end
-#
-#   class GoodEnum
-#     value "some_value", "Good description."
-#   end
-
 module RuboCop
   module Cop
     module Graphql
+      # This cop checks for missing GraphQL descriptions and enforces the description style guide:
+      # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide
+      #
+      # @note
+      # This cop is unsafe because not all cases of "this" can be substituted with
+      # "the". This will require a technical writer to assist with the alternative,
+      # proper grammar that can be used for that particular GraphQL descriptions.
+      #
+      # @example
+      #
+      #   # bad
+      #   class AwfulType
+      #     field :some_field, GraphQL::Types::String
+      #   end
+      #
+      #   class TerribleType
+      #     argument :some_argument, GraphQL::Types::String
+      #   end
+      #
+      #   class UngoodType
+      #     field :some_argument,
+      #       GraphQL::Types::String,
+      #       description: "A description that does not end in a period"
+      #   end
+      #
+      #   class BadEnum
+      #     value "some_value"
+      #   end
+      #
+      #   # good
+      #   class GreatType
+      #     argument :some_field,
+      #       GraphQL::Types::String,
+      #       description: "Well described - a superb description."
+      #
+      #     field :some_field,
+      #       GraphQL::Types::String,
+      #       description: "Thorough and compelling description."
+      #   end
+      #
+      #   class GoodEnum
+      #     value "some_value", "Good description."
+      #   end
       class Descriptions < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 

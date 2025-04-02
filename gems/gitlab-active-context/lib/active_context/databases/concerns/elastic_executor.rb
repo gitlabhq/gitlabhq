@@ -33,7 +33,8 @@ module ActiveContext
         def create_partition(name, fields)
           body = {
             mappings: {
-              properties: build_field_mappings(fields)
+              dynamic: 'strict',
+              properties: mappings(fields)
             },
             settings: settings(fields)
           }
@@ -49,6 +50,13 @@ module ActiveContext
             }
           }]
           raw_client.indices.update_aliases(body: { actions: actions })
+        end
+
+        def mappings(fields)
+          build_field_mappings(fields).merge(
+            ref_id: { type: 'keyword' },
+            ref_version: { type: 'long' }
+          )
         end
 
         def build_field_mappings(fields)

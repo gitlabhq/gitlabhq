@@ -1637,7 +1637,7 @@ class MergeRequest < ApplicationRecord
     visible_notes = user.can?(:read_internal_note, project) ? notes : notes.not_internal
 
     messages = [title, description, *visible_notes.pluck(:note)]
-    messages += commits.map(&:safe_message) if merge_request_diff.persisted?
+    messages += commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, target_project)).map(&:safe_message) if merge_request_diff.persisted?
 
     ext = Gitlab::ReferenceExtractor.new(project, user)
     ext.analyze(messages.join("\n"))

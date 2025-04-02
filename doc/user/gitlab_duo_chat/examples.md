@@ -220,7 +220,7 @@ You can ask about a specific GitLab pipeline job. For example:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
@@ -396,7 +396,7 @@ You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-vie
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
@@ -432,7 +432,7 @@ You can include additional instructions to be considered. For example:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
@@ -466,7 +466,7 @@ You can include additional instructions to be considered. For example:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
@@ -542,7 +542,7 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)

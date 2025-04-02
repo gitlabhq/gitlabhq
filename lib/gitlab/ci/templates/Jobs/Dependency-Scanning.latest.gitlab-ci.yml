@@ -1,3 +1,7 @@
+# This template is for testing cutting-edge features.
+# It is not considered stable and might include breaking changes that are planned for the next major release.
+# For more information: https://docs.gitlab.com/user/application_security/detect/roll_out_security_scanning/#template-editions
+
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:

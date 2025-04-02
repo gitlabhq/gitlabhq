@@ -1,0 +1,9 @@
+---
+name: load_balancing_for_flush_counter_increments_worker
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/data-access/durability/team/-/issues/121
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186079
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/527277
+milestone: '17.11'
+group: group::durability
+type: worker
+default_enabled: false

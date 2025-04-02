@@ -82,6 +82,19 @@ type LocalWorkItemPayload {
   errors: [String!]
 }
 
+input LocalCustomFieldSelectOptionInput {
+  id: ID!
+  value: String
+}
+
+input LocalCustomFieldInput {
+  id: ID!
+  type: String!
+  numberValue: Float
+  textValue: String
+  selectedOptions: [LocalCustomFieldSelectOptionInput]
+}
+
 input LocalUpdateNewWorkItemInput {
   fullPath: String!
   workItemType: String!
@@ -97,6 +110,7 @@ input LocalUpdateNewWorkItemInput {
   rolledUpDates: [LocalRolledUpDatesInput]
   crmContacts: [LocalCrmContactsInput]
   weight: Int
+  customField: LocalCustomFieldInput
 }
 
 extend type Mutation {

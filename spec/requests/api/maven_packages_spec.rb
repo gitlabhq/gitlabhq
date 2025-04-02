@@ -1026,14 +1026,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message']).to eq '403 Forbidden - Package protected.'
         end
-
-        context 'when feature flag :packages_protected_packages_maven is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_maven: false)
-          end
-
-          it_behaves_like 'authorized package'
-        end
       end
 
       context 'for personal access token' do
@@ -1414,14 +1406,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
             expect(response).to have_gitlab_http_status(:forbidden)
             expect(json_response['message']).to eq '403 Forbidden - Package protected.'
-          end
-
-          context 'when feature flag :packages_protected_packages_maven is disabled' do
-            before do
-              stub_feature_flags(packages_protected_packages_maven: false)
-            end
-
-            it_behaves_like 'package workhorse uploads'
           end
         end
 

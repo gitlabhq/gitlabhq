@@ -53,6 +53,14 @@ module ActiveContext
           @refs = []
           # also reset anything that builds up from the refs array
         end
+
+        def unique_identifier(ref, index)
+          "#{ref.identifier}:#{index}"
+        end
+
+        def extract_identifier(string)
+          string.split(':').first
+        end
       end
     end
   end

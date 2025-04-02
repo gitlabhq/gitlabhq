@@ -21,10 +21,16 @@ module Test
         :upsert
       end
 
-      def as_indexed_json
-        {
-          id: identifier
-        }
+      def as_indexed_jsons
+        [{ id: identifier }]
+      end
+
+      def partition_name
+        'test'
+      end
+
+      def partition
+        "#{partition_name}_0"
       end
     end
   end

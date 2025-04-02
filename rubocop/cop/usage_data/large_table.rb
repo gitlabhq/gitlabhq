@@ -5,24 +5,24 @@ require_relative '../../usage_data_helpers'
 module RuboCop
   module Cop
     module UsageData
+      # This cop checks that batch count and distinct_count are used in usage_data.rb files in metrics based on ActiveRecord models.
+      #
+      # @example
+      #
+      #   # bad
+      #   Issue.count
+      #   List.assignee.count
+      #   ::Ci::Pipeline.auto_devops_source.count
+      #   ZoomMeeting.distinct.count(:issue_id)
+      #
+      #   # Good
+      #   count(Issue)
+      #   count(List.assignee)
+      #   count(::Ci::Pipeline.auto_devops_source)
+      #   distinct_count(ZoomMeeting, :issue_id)
       class LargeTable < RuboCop::Cop::Base
         include UsageDataHelpers
 
-        # This cop checks that batch count and distinct_count are used in usage_data.rb files in metrics based on ActiveRecord models.
-        #
-        # @example
-        #
-        # # bad
-        # Issue.count
-        # List.assignee.count
-        # ::Ci::Pipeline.auto_devops_source.count
-        # ZoomMeeting.distinct.count(:issue_id)
-        #
-        # # Good
-        # count(Issue)
-        # count(List.assignee)
-        # count(::Ci::Pipeline.auto_devops_source)
-        # distinct_count(ZoomMeeting, :issue_id)
         MSG = 'Use one of the %{count_methods} methods for counting on %{class_name}'
 
         # Match one level const as Issue, Gitlab

@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlIcon,
 } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
@@ -56,6 +57,7 @@ import {
   WORK_ITEM_TYPE_VALUE_MAP,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -98,7 +100,10 @@ export default {
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemCustomFields: () =>
+      import('ee_component/work_items/components/work_item_custom_fields.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'groupPath'],
   i18n: {
     suggestionTitle: s__('WorkItem|Similar items'),
@@ -505,6 +510,12 @@ export default {
     },
     shouldDatesRollup() {
       return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
+    },
+    workItemCustomFields() {
+      return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
+    },
+    showWorkItemCustomFields() {
+      return this.glFeatures.customFieldsFeature && this.workItemCustomFields;
     },
   },
   watch: {
@@ -981,6 +992,16 @@ export default {
               class="work-item-attributes-item"
               :work-item="workItem"
               :full-path="fullPath"
+              :can-update="canUpdate"
+              @error="$emit('error', $event)"
+            />
+            <work-item-custom-fields
+              v-if="showWorkItemCustomFields"
+              :work-item-id="workItemId"
+              :work-item-type="selectedWorkItemTypeName"
+              :custom-fields="workItemCustomFields"
+              :full-path="fullPath"
+              :is-group="isGroup"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
             />

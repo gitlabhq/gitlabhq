@@ -15,9 +15,7 @@ module Types
 
         value 'MAVEN',
           value: 'maven',
-          experiment: { milestone: '17.9' },
-          description: 'Packages of the Maven format. ' \
-            'Available only when feature flag `packages_protected_packages_maven` is enabled.'
+          description: 'Packages of the Maven format.'
 
         value 'NPM',
           value: 'npm',

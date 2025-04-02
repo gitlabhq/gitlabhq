@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.2 (2025-04-02)
+
+### Fixed (2 changes)
+
+- [Fix free push limit on non-saas](https://gitlab.com/gitlab-org/gitlab/-/commit/41d60e463f147b2cc76889e0f97a3192a9654ec9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186166))
+- [Ensure runner taggings are copied from taggings](https://gitlab.com/gitlab-org/gitlab/-/commit/225b22847600e53bcf83d26b85e0a5e80b38c470) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186279))
+
+### Other (1 change)
+
+- [No-op ci_runner_machines_687967fa8a table backfill migration](https://gitlab.com/gitlab-org/gitlab/-/commit/5e9c7c787a1fb500707fbbceea2dccd1fd86ab92) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185304))
+
 ## 17.10.1 (2025-03-26)
 
 ### Security (7 changes)

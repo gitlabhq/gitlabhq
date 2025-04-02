@@ -5885,6 +5885,7 @@ export const createWorkItemQueryResponse = {
             },
             __typename: 'WorkItemWidgetWeight',
           },
+          customFieldsWidgetResponseFactory(),
         ],
         __typename: 'WorkItem',
       },

@@ -171,7 +171,7 @@ To address the above two scenarios, it is advised to do the following prior to u
 1. Pause your runners, or block new jobs from starting by adding the following to your `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   nginx['custom_gitlab_server_config'] = "location ^~ /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+   nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
    ```
 
    And reconfigure GitLab with:

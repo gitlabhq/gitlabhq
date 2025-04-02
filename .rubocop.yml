@@ -461,6 +461,12 @@ Gitlab/EventStoreSubscriber:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/496562
+Gitlab/Ai/OrderConstants:
+  Enabled: true
+  Include:
+   - 'ee/lib/ai/context/dependencies/config_files/constants.rb'
+
 Gitlab/DocumentationLinks/HardcodedUrl:
   Enabled: true
   Exclude:

@@ -37,6 +37,7 @@ import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_LINKED_ITEMS,
   STATE_CLOSED,
+  WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
@@ -323,6 +324,7 @@ export const setNewWorkItemCache = async (
     WIDGET_TYPE_HEALTH_STATUS,
     WIDGET_TYPE_LINKED_ITEMS,
     WIDGET_TYPE_COLOR,
+    WIDGET_TYPE_CUSTOM_FIELDS,
     WIDGET_TYPE_HIERARCHY,
     WIDGET_TYPE_TIME_TRACKING,
     WIDGET_TYPE_PARTICIPANTS,
@@ -514,6 +516,18 @@ export const setNewWorkItemCache = async (
           },
           totalTimeSpent: 0,
           __typename: 'WorkItemWidgetTimeTracking',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
+        const customFieldsWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
+        );
+
+        widgets.push({
+          type: WIDGET_TYPE_CUSTOM_FIELDS,
+          customFieldValues: customFieldsWidgetData?.customFieldValues ?? [],
+          __typename: 'WorkItemWidgetCustomFields',
         });
       }
     }

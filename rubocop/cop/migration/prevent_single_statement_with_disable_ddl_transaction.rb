@@ -14,7 +14,7 @@ module RuboCop
       # This cop was introduced to clarify the need for disable_ddl_transaction!
       # and to avoid bike-shedding and review back-and-forth.
       #
-      # @examples
+      # @example
       #
       #   # bad
       #   class SomeMigration < Gitlab::Database::Migration[2.1]

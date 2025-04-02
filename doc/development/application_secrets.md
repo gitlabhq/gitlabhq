@@ -13,6 +13,8 @@ Use this guide to understand how different kinds of secrets are stored and manag
 
 Broadly speaking, there are two classes of secrets:
 
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
+
 1. **Application secrets.** The GitLab application uses these to implement a particular feature or function.
    An example would be access tokens or private keys to create cryptographic signatures. We store
    these secrets in the database in encrypted columns.
@@ -20,13 +22,17 @@ Broadly speaking, there are two classes of secrets:
 1. **Operational secrets.** Used to read and store other secrets or bootstrap the application. For this reason,
    they cannot be stored in the database.
    These secrets are stored as [Rails credentials](https://guides.rubyonrails.org/security.html#environmental-security)
-   in the `config/secrets.yml` file, directly for source installation, or through an installer like Omnibus or Helm (where
-   actual secrets can be stored in an external secrets container like
-   [Kubernetes secrets](https://kubernetes.io/docs/concepts/configuration/secret/) or [Vault](https://www.vaultproject.io/)).
+   in the `config/secrets.yml` file:
+
+   - Directly for self-compiled installations.
+   - Through an installer like Omnibus or Helm (where actual secrets can be stored in an external secrets container like
+     [Kubernetes secrets](https://kubernetes.io/docs/concepts/configuration/secret/) or [Vault](https://www.vaultproject.io/)).
+
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 
 ## Application secrets
 
-Application secrets should be stored in postgres using `ActiveRecord::Encryption`:
+Application secrets should be stored in PostgreSQL using `ActiveRecord::Encryption`:
 
 ```ruby
 class MyModel < ApplicationRecord

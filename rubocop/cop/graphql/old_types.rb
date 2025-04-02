@@ -1,24 +1,23 @@
 # frozen_string_literal: true
 
-# This cop checks for use of older GraphQL  types in GraphQL fields
-# and arguments.
-# GraphQL::ID_TYPE, GraphQL::INT_TYPE, GraphQL::STRING_TYPE, GraphQL::BOOLEAN_TYPE
-#
-# @example
-#
-#   # bad
-#   class AwfulClass
-#     field :some_field, GraphQL::STRING_TYPE
-#   end
-#
-#   # good
-#   class GreatClass
-#     field :some_field, GraphQL::Types::String
-#   end
-
 module RuboCop
   module Cop
     module Graphql
+      # This cop checks for use of older GraphQL  types in GraphQL fields
+      # and arguments.
+      # GraphQL::ID_TYPE, GraphQL::INT_TYPE, GraphQL::STRING_TYPE, GraphQL::BOOLEAN_TYPE
+      #
+      # @example
+      #
+      #   # bad
+      #   class AwfulClass
+      #     field :some_field, GraphQL::STRING_TYPE
+      #   end
+      #
+      #   # good
+      #   class GreatClass
+      #     field :some_field, GraphQL::Types::String
+      #   end
       class OldTypes < RuboCop::Cop::Base
         MSG_ID      = 'Avoid using GraphQL::ID_TYPE. Use GraphQL::Types::ID instead'
         MSG_INT     = 'Avoid using GraphQL::INT_TYPE. Use GraphQL::Types::Int instead'

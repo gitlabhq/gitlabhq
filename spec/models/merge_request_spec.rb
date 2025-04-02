@@ -1329,6 +1329,28 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       create(:note, :internal, noteable: merge_request, note: issue_referenced_in_internal_mr_note.to_reference)
     end
 
+    context 'feature flag: more_commits_from_gitaly' do
+      let_it_be(:user) { create(:user, guest_of: project) }
+
+      it 'loads commits from Gitaly' do
+        expect(merge_request).to receive(:commits).with(load_from_gitaly: true).and_call_original
+
+        related_issues
+      end
+
+      context 'when "more_commits_from_gitaly" is disabled' do
+        before do
+          stub_feature_flags(more_commits_from_gitaly: false)
+        end
+
+        it 'loads commits from DB' do
+          expect(merge_request).to receive(:commits).with(load_from_gitaly: false).and_call_original
+
+          related_issues
+        end
+      end
+    end
+
     context 'for guest' do
       let_it_be(:user) { create(:user, guest_of: project) }
 

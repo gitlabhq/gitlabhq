@@ -323,17 +323,17 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       let(:collection_name) { 'test_collection' }
       let(:operations) do
         [
-          { collection_name => { delete: 1 } }
+          { collection_name => { delete: { ref_id: 1 } } }
         ]
       end
 
       before do
-        allow(model_class).to receive(:where).with(id: [1]).and_return(model_class)
+        allow(model_class).to receive(:where).with(ref_id: [1]).and_return(model_class)
         allow(model_class).to receive(:delete_all).and_return(1)
       end
 
       it 'processes delete operations with the model' do
-        expect(model_class).to receive(:where).with(id: [1])
+        expect(model_class).to receive(:where).with(ref_id: [1])
         expect(model_class).to receive(:delete_all)
 
         result = client.bulk_process(operations)
@@ -654,15 +654,15 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
     context 'with delete operation' do
       let(:operation_type) { :delete }
-      let(:operation_data) { 1 }
+      let(:operation_data) { { ref_id: 1 } }
 
       before do
-        allow(model).to receive(:where).with(id: [operation_data]).and_return(model)
+        allow(model).to receive(:where).with(ref_id: [1]).and_return(model)
         allow(model).to receive(:delete_all).and_return(1)
       end
 
       it 'processes delete operations successfully' do
-        expect(model).to receive(:where).with(id: [operation_data])
+        expect(model).to receive(:where).with(ref_id: [1])
         expect(model).to receive(:delete_all)
 
         result = client.send(:perform_bulk_operation, operation_type, model, collection_name, operations)

@@ -4,22 +4,28 @@ RSpec.describe ActiveContext::BulkProcessor do
   let(:connection) { double('Connection') }
   let(:adapter) { ActiveContext::Databases::Elasticsearch::Adapter.new(connection, options: { url: 'http://localhost:9200' }) }
   let(:logger) { instance_double(Logger) }
-  let(:ref) { double }
+  let(:reference_class) { Test::References::MockWithDatabaseRecord }
+
+  let(:ref) { reference_class.new(collection_id: collection_id, routing: partition, args: 1) }
+  let(:mock_collection) { double(name: collection_name, partition_for: partition) }
+  let(:mock_object) { double(id: object_id) }
+  let(:mock_relation) { double(find_by: mock_object) }
+  let(:mock_connection) { double(id: connection_id) }
+
+  let(:connection_id) { 3 }
+  let(:partition) { 2 }
+  let(:collection_id) { 1 }
+  let(:object_id) { 5 }
+  let(:collection_name) { 'mock_collection' }
 
   before do
     allow(ActiveContext).to receive(:adapter).and_return(adapter)
     allow(ActiveContext::Config).to receive(:logger).and_return(logger)
+    allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(mock_collection)
+    allow(ActiveContext::Logger).to receive(:exception).and_return(nil)
+    allow(reference_class).to receive(:model_klass).and_return(mock_relation)
     allow(logger).to receive(:info)
     allow(logger).to receive(:error)
-    allow(ref).to receive_messages(
-      operation: :index,
-      id: 1,
-      as_indexed_json: { title: 'Test Issue' },
-      partition_name: 'issues',
-      partition: 'issues_0',
-      identifier: '1',
-      routing: 'group_1'
-    )
   end
 
   describe '#initialize' do
@@ -66,7 +72,7 @@ RSpec.describe ActiveContext::BulkProcessor do
     end
 
     it 'processes bulk and logs info' do
-      allow(adapter).to receive(:bulk).and_return({ 'items' => [] })
+      allow(adapter).to receive(:bulk).and_return([{ 'items' => [] }])
 
       expect(logger).to receive(:info).with(
         'message' => 'bulk_submitted',
@@ -78,7 +84,7 @@ RSpec.describe ActiveContext::BulkProcessor do
     end
 
     it 'resets the adapter after processing' do
-      allow(adapter).to receive(:bulk).and_return({ 'items' => [] })
+      allow(adapter).to receive(:bulk).and_return([{ 'items' => [] }])
       expect(adapter).to receive(:reset)
 
       processor.send(:send_bulk)
@@ -94,7 +100,7 @@ RSpec.describe ActiveContext::BulkProcessor do
 
     context 'when bulk processing succeeds' do
       it 'returns empty array' do
-        allow(adapter).to receive(:bulk).and_return({ 'items' => [] })
+        allow(adapter).to receive(:bulk).and_return([{ 'items' => [] }])
         expect(processor.send(:try_send_bulk)).to eq([])
       end
     end

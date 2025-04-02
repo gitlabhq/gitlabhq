@@ -8,20 +8,20 @@ module RuboCop
       #
       # @example
       #
-      # # bad, `conducts_electricity` returns a Rule object, not a boolean!
-      # rule { conducts_electricity && batteries }.enable :light_bulb
+      #   # bad, `conducts_electricity` returns a Rule object, not a boolean!
+      #   rule { conducts_electricity && batteries }.enable :light_bulb
       #
-      # # good
-      # rule { conducts_electricity & batteries }.enable :light_bulb
+      #   # good
+      #   rule { conducts_electricity & batteries }.enable :light_bulb
       #
       # @example
       #
-      # # bad, `conducts_electricity` returns a Rule object, so the ternary is always going to be true
-      # rule { conducts_electricity ? can?(:magnetize) : batteries }.enable :motor
+      #   # bad, `conducts_electricity` returns a Rule object, so the ternary is always going to be true
+      #   rule { conducts_electricity ? can?(:magnetize) : batteries }.enable :motor
       #
-      # # good
-      # rule { conducts_electricity & can?(:magnetize) }.enable :motor
-      # rule { ~conducts_electricity & batteries }.enable :motor
+      #   # good
+      #   rule { conducts_electricity & can?(:magnetize) }.enable :motor
+      #   rule { ~conducts_electricity & batteries }.enable :motor
       class PolicyRuleBoolean < RuboCop::Cop::Base
         def_node_search :has_and_operator?, <<~PATTERN
           (and ...)

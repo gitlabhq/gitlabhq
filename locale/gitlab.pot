@@ -66955,6 +66955,9 @@ msgstr ""
 msgid "WorkItemCustomFields|Failed to load custom fields."
 msgstr ""
 
+msgid "WorkItemCustomFields|Options could not be loaded for field: %{customFieldName}. Please try again."
+msgstr ""
+
 msgid "WorkItemCustomFields|Options could not be loaded for field: %{dropdownLabel}. Please try again."
 msgstr ""
 

@@ -11,7 +11,7 @@ module RuboCop
       #
       # @example
       #
-      # # bad
+      #   # bad
       #
       #   page.has_css?('[data-testid="begin-commit-button"]') ? find('[data-testid="begin-commit-button"]').click : nil
       #

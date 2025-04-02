@@ -85,8 +85,8 @@ Class methods required:
 Instance methods required:
 
 - `init`: reads from `serialized_args`
-- `as_indexed_json`: a hash containing the data representation of the object
-- `operation`: determines the operation which can be one of `index`, `upsert` or `delete`
+- `as_indexed_json` or `as_indexed_jsons`: a hash or array of hashes containing the data representation of the object
+- `operation`: determines the operation which can be one of `upsert` or `delete`
 - `identifier`: unique identifier
 
 Example for a reference reading from a database relation, with preloading and bulk embedding generation:
@@ -194,7 +194,7 @@ module Ai
           blob.data ? :upsert : :delete
         end
 
-        def as_indexed_json
+        def as_indexed_jsons
           {
             project_id: project_id,
             embeddings: embedding

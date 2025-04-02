@@ -9,7 +9,7 @@ title: Troubleshooting Code Suggestions
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}

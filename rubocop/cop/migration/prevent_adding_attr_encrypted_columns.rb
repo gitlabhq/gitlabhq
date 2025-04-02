@@ -7,7 +7,7 @@ module RuboCop
     module Migration
       # Cop that prevents introducing `encrypted_*` columns (used by the `attr_encrypted` gem).
       #
-      # @examples
+      # @example
       #
       #   # bad
       #   class CreateAuditEventsInstanceAmazonS3Configurations < ActiveRecord::Migration[6.0]

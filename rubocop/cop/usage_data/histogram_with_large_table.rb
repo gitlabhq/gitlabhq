@@ -10,9 +10,9 @@ module RuboCop
       #
       # @example
       #
-      # # bad
-      # histogram(Issue, buckets: 1..100)
-      # histogram(User.active, buckets: 1..100)
+      #   # bad
+      #   histogram(Issue, buckets: 1..100)
+      #   histogram(User.active, buckets: 1..100)
       class HistogramWithLargeTable < RuboCop::Cop::Base
         include UsageDataHelpers
 

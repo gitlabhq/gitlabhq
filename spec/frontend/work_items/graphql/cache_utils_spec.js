@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
+import { WIDGET_TYPE_HIERARCHY, WIDGET_TYPE_CUSTOM_FIELDS } from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
@@ -359,6 +359,11 @@ describe('work items graphql cache utils', () => {
                 timelogs: { __typename: 'WorkItemTimelogConnection', nodes: [] },
                 totalTimeSpent: 0,
               },
+              {
+                __typename: 'WorkItemWidgetCustomFields',
+                type: WIDGET_TYPE_CUSTOM_FIELDS,
+                customFieldValues: null,
+              },
             ],
           },
         },
@@ -446,6 +451,10 @@ describe('work items graphql cache utils', () => {
             type: 'WEIGHT',
             editable: false,
             rollUp: true,
+          },
+          {
+            __typename: 'WorkItemWidgetDefinitionCustomFields',
+            type: WIDGET_TYPE_CUSTOM_FIELDS,
           },
         ],
         'EPIC',

@@ -12,16 +12,16 @@ module RuboCop
       #
       # @example
       #
-      # # bad
-      # expect(response).to have_http_status(200)
-      # expect(response).to have_http_status(:ok)
-      # expect(response).to have_gitlab_http_status(200)
-      # expect(response.status).to eq(200)
-      # expect(response.status).not_to eq(200)
+      #   # bad
+      #   expect(response).to have_http_status(200)
+      #   expect(response).to have_http_status(:ok)
+      #   expect(response).to have_gitlab_http_status(200)
+      #   expect(response.status).to eq(200)
+      #   expect(response.status).not_to eq(200)
       #
-      # # good
-      # expect(response).to have_gitlab_http_status(:ok)
-      # expect(response).not_to have_gitlab_http_status(:ok)
+      #   # good
+      #   expect(response).to have_gitlab_http_status(:ok)
+      #   expect(response).not_to have_gitlab_http_status(:ok)
       #
       class HaveGitlabHttpStatus < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector

@@ -34,7 +34,6 @@ module Projects
 
       def set_feature_flag_packages_protected_packages
         push_frontend_feature_flag(:packages_protected_packages_conan, project)
-        push_frontend_feature_flag(:packages_protected_packages_maven, project)
         push_frontend_feature_flag(:packages_protected_packages_delete, project)
       end
 

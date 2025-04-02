@@ -48,8 +48,12 @@ module ActiveContext
                 add_column_from_field(table, field)
               end
 
-              # Add id column
+              # Add id columns
               table.string :id, null: false
+              table.string :ref_id, null: false
+
+              # Add ref_version column
+              table.bigint :ref_version, null: false
 
               # Add variable width columns last
               variable_columns.each do |field|
