@@ -82,7 +82,7 @@ eslint:
     - |
       function eslint_script() {
         yarn_install_script
-        yarn run lint:eslint:all --format gitlab
+        ./tooling/ci/changed_files.rb eslint
       }
 
       run_with_custom_exit_code eslint_script

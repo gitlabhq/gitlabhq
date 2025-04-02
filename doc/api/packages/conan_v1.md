@@ -68,9 +68,9 @@ for Conan recipes.
 | --------- | ---- | -------- | ----------- |
 | `id`      | string | yes | The project ID or full project path. |
 
-## Ping
+## Verify availability of a Conan repository
 
-Ping the GitLab Conan repository to verify availability:
+Verifies the availability of the GitLab Conan repository.
 
 ```plaintext
 GET <route-prefix>/ping
@@ -86,9 +86,9 @@ Example response:
 ""
 ```
 
-## Search
+## Search for a Conan package
 
-Search the instance for Conan packages by name:
+Searches the instance for a Conan package with a specified name.
 
 ```plaintext
 GET <route-prefix>/conans/search
@@ -118,9 +118,9 @@ Example response:
 }
 ```
 
-## Authenticate
+## Create an authentication token
 
-Returns a JWT to be used for Conan requests in a Bearer header:
+Creates a JSON Web Token (JWT) for use as a Bearer header in other requests.
 
 ```shell
 "Authorization: Bearer <token>
@@ -142,9 +142,9 @@ Example response:
 eyJhbGciOiJIUzI1NiIiheR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOjMyMTQyMzAsqaVzZXJfaWQiOjQwNTkyNTQsImp0aSI6IjdlNzBiZTNjLWFlNWQtNDEyOC1hMmIyLWZiOThhZWM0MWM2OSIsImlhd3r1MTYxNjYyMzQzNSwibmJmIjoxNjE2NjIzNDMwLCJleHAiOjE2MTY2MjcwMzV9.QF0Q3ZIB2GW5zNKyMSIe0HIFOITjEsZEioR-27Rtu7E
 ```
 
-## Check Credentials
+## Verify authentication credentials
 
-Checks the validity of Basic Auth credentials or a Conan JWT generated from [`/authenticate`](#authenticate).
+Verifies the validity of Basic Auth credentials or a Conan JWT generated from the [`/authenticate`](#create-an-authentication-token) endpoint.
 
 ```plaintext
 GET <route-prefix>/users/check_credentials
@@ -160,10 +160,10 @@ Example response:
 ok
 ```
 
-## Recipe Snapshot
+## Get a recipe snapshot
 
-This returns the snapshot of the recipe files for the specified Conan recipe. The snapshot is a list
-of filenames with their associated md5 hash.
+Gets a snapshot of the files for a specified Conan recipe. The snapshot is a list of filenames
+with their associated MD5 hash.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel
@@ -190,10 +190,10 @@ Example response:
 }
 ```
 
-## Package Snapshot
+## Get a package snapshot
 
-This returns the snapshot of the package files for the specified Conan recipe with the specified
-Conan reference. The snapshot is a list of filenames with their associated md5 hash.
+Gets a snapshot of the files for a specified Conan package and reference. The snapshot is a list of filenames
+with their associated MD5 hash.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference
@@ -221,9 +221,9 @@ Example response:
 }
 ```
 
-## Recipe Manifest
+## Get a recipe manifest
 
-The manifest is a list of recipe filenames with their associated download URLs.
+Gets a manifest that includes a list of files and associated download URLs for a specified recipe.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/digest
@@ -253,9 +253,9 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the project-level route, the returned URLs contain `/projects/:id`.
 
-## Package Manifest
+## Get a package manifest
 
-The manifest is a list of package filenames with their associated download URLs.
+Gets a manifest that includes a list of files and associated download URLs for a specified package.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
@@ -286,10 +286,10 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the project-level route, the returned URLs contain `/projects/:id`.
 
-## Recipe Download URLs
+## List all recipe download URLs
 
-Recipe download URLs return a list of recipe filenames with their associated download URLs.
-This attribute is the same payload as the [recipe manifest](#recipe-manifest) endpoint.
+Lists all files and associated download URLs for a specified recipe.
+Returns the same payload as the [recipe manifest](#get-a-recipe-manifest) endpoint.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/download_urls
@@ -319,10 +319,10 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the project-level route, the returned URLs contain `/projects/:id`.
 
-## Package Download URLs
+## List all package download URLs
 
-Package download URLs return a list of package filenames with their associated download URLs.
-This URL is the same payload as the [package manifest](#package-manifest) endpoint.
+Lists all files and associated download URLs for a specified package.
+Returns the same payload as the [package manifest](#get-a-package-manifest) endpoint.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls
@@ -353,9 +353,10 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the project-level route, the returned URLs contain `/projects/:id`.
 
-## Recipe Upload URLs
+## List all recipe upload URLs
 
-Given a list of recipe filenames and file sizes, a list of URLs to upload each file is returned.
+Lists the upload URLs for a specified collection of recipe files. The request must include a JSON object
+with the name and size of the individual files.
 
 ```plaintext
 POST <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls
@@ -369,6 +370,8 @@ POST <route-prefix>/conans/:package_name/:package_version/:package_username/:pac
 | `package_channel`   | string | yes | Channel of a package. |
 
 Example request JSON payload:
+
+The payload must include both the name and size of the file.
 
 ```json
 {
@@ -397,9 +400,10 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the project-level route, the returned URLs contain `/projects/:id`.
 
-## Package Upload URLs
+## List all package upload URLs
 
-Given a list of package filenames and file sizes, a list of URLs to upload each file is returned.
+Lists the upload URLs for a specified collection of package files. The request must include a JSON object
+with the name and size of the individual files.
 
 ```plaintext
 POST <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls
@@ -414,6 +418,8 @@ POST <route-prefix>/conans/:package_name/:package_version/:package_username/:pac
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
 
 Example request JSON payload:
+
+The payload must include both the name and size of the file.
 
 ```json
 {
@@ -444,11 +450,10 @@ Example response:
 The URLs in the response have the same route prefix used to request them. If you request them with
 the project-level route, the returned URLs contain `/projects/:id`.
 
-## Download a Recipe file
+## Get a recipe file
 
-Download a recipe file to the package registry. You must use a download URL that the
-[recipe download URLs endpoint](#recipe-download-urls)
-returned.
+Gets a recipe file from the package registry. You must use the download URL returned from the
+[recipe download URLs](#list-all-recipe-download-urls) endpoint.
 
 ```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
@@ -475,11 +480,10 @@ curl --header "Authorization: Bearer <authenticate_token>" "https://gitlab.examp
 
 This example writes to `conanfile.py` in the current directory.
 
-## Upload a Recipe file
+## Upload a recipe file
 
-Upload a recipe file to the package registry. You must use an upload URL that the
-[recipe upload URLs endpoint](#recipe-upload-urls)
-returned.
+Uploads a specified recipe file in the package registry. You must use the upload URL returned from the
+[recipe upload URLs](#list-all-recipe-upload-urls) endpoint.
 
 ```plaintext
 PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
@@ -503,11 +507,10 @@ curl --request PUT \
      "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conanfile.py"
 ```
 
-## Download a Package file
+## Get a package file
 
-Download a package file to the package registry. You must use a download URL that the
-[package download URLs endpoint](#package-download-urls)
-returned.
+Gets a package file from the package registry. You must use the download URL returned from the
+[package download URLs](#list-all-package-download-urls) endpoint.
 
 ```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
@@ -536,11 +539,10 @@ curl --header "Authorization: Bearer <authenticate_token>" "https://gitlab.examp
 
 This example writes to `conaninfo.txt` in the current directory.
 
-## Upload a Package file
+## Upload a package file
 
-Upload a package file to the package registry. You must use an upload URL that the
-[package upload URLs endpoint](#package-upload-urls)
-returned.
+Uploads a specified package file in the package registry. You must use the upload URL returned from the
+[package upload URLs](#list-all-package-upload-urls) endpoint.
 
 ```plaintext
 PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
@@ -566,9 +568,9 @@ curl --request PUT \
      "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conaninfo.txt"
 ```
 
-## Delete a Package (delete a Conan recipe)
+## Delete a recipe and package
 
-Delete the Conan recipe and package files from the registry:
+Deletes a specified Conan recipe and the associated package files from the package registry.
 
 ```plaintext
 DELETE <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel

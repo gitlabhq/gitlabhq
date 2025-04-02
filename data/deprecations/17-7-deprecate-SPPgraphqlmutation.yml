@@ -1,7 +1,7 @@
 - title: "Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`"
   removal_milestone: "18.0"
   announcement_milestone: "17.7"
-  breaking_change: true
+  breaking_change: false
   window: 3
   reporter: abellucci
   stage: application_security_testing

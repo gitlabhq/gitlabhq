@@ -1,0 +1,15 @@
+- project = local_assigns[:project].nil? || local_assigns[:project]
+- assigned = false unless local_assigns[:assigned] == true
+
+%li
+  .gl-flex.gl-gap-3
+    .gl-w-6
+      - if assigned
+        = sprite_icon('status-success', variant: 'success', css_class: 'gl-mt-3')
+    = render Pajamas::AvatarComponent.new(project, size: 32, avatar_options: { aria: { hidden: "true" } })
+    .gl-flex.gl-flex-col.gl-gap-1.gl-grow
+      %h3.gl-text-base.gl-mt-1.gl-mb-0
+        = project.full_name
+      %p.gl-text-sm.gl-text-subtle.gl-mb-0
+        = project.description
+    = yield

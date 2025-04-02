@@ -83,7 +83,6 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [GraphQL `target` field for to-do items replaced with `targetEntity`](https://gitlab.com/gitlab-org/gitlab/-/issues/484987) | Low | Foundations | Project |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
 | [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |
-| [Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`](https://gitlab.com/gitlab-org/gitlab/-/issues/514414) | Medium | Application_security_testing | Project |
 | [Updated tooling to release CI/CD components to the Catalog](https://gitlab.com/groups/gitlab-org/-/epics/12788) | High | Verify | Instance |
 | [Increased default security for use of pipeline variables](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) | Medium | Verify | Project |
 | [Amazon S3 Signature Version 2](https://gitlab.com/gitlab-org/container-registry/-/issues/1449) | Low | Package | Project |

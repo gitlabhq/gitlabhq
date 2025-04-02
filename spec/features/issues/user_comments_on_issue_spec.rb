@@ -63,6 +63,21 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
       expect(page).not_to have_content('Continue editing')
     end
+
+    context "with a user whose name contains XSS" do
+      let_it_be(:xss_user) { create(:user, name: "User <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;") }
+
+      before do
+        project.add_guest(xss_user)
+      end
+
+      it "escapes username when mentioning user" do
+        mention = "@#{xss_user.username} check this out"
+
+        expect { add_note(mention) }.not_to raise_error
+        expect(page).to have_content(mention)
+      end
+    end
   end
 
   context "when editing comments" do

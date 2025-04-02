@@ -480,7 +480,11 @@ export default {
       );
     },
     sortOptions() {
-      return getSortOptions({ hasManualSort: false, hasMergedDate: this.state === STATUS_MERGED });
+      return getSortOptions({
+        hasManualSort: false,
+        hasMergedDate: this.state === STATUS_MERGED,
+        hasDueDate: false,
+      });
     },
     tabCounts() {
       const { openedMergeRequests, closedMergeRequests, mergedMergeRequests, allMergeRequests } =

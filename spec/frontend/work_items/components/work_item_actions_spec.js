@@ -231,7 +231,7 @@ describe('WorkItemActions component', () => {
     expect(findDropdownItemsActual()).toEqual([
       {
         testId: 'notifications-toggle-form',
-        text: '',
+        text: 'Notifications',
       },
       {
         divider: true,
@@ -289,7 +289,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: 'truncation-toggle-action',
-        text: '',
+        text: 'Truncate descriptions',
       },
       {
         testId: 'sidebar-toggle-action',

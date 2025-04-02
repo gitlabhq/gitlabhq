@@ -53198,6 +53198,9 @@ msgstr ""
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
+msgid "SecurityInventory|Tool coverage: %{coverage}%%"
+msgstr ""
+
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group."
 msgstr ""
 
@@ -65425,6 +65428,9 @@ msgid "Vulnerabilities|This link will expire in %{number} days."
 msgstr ""
 
 msgid "Vulnerabilities|Vulnerability report export"
+msgstr ""
+
+msgid "Vulnerabilities|changed vulnerability status to Needs Triage because it was redetected in pipeline %{pipeline_link}"
 msgstr ""
 
 msgid "Vulnerability"

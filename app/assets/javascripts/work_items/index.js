@@ -90,7 +90,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   const feedback = {};
 
   if (gon.features.workItemViewForIssues) {
-    feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/463598';
+    feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/523713';
     feedback.feedbackIssueText = __('Provide feedback on the experience');
     feedback.content = __(
       'We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?',

@@ -28,9 +28,13 @@ export default {
   },
   computed: {
     alertInfoMessage() {
-      return sprintf(this.$options.i18n.alertInfoMessage, {
-        accessTokenType: this.accessTokenType,
-      });
+      return sprintf(
+        this.$options.i18n.alertInfoMessage,
+        {
+          accessTokenType: this.accessTokenType,
+        },
+        false,
+      );
     },
     alertDangerTitle() {
       return n__(
@@ -50,7 +54,13 @@ export default {
       };
     },
     label() {
-      return sprintf(this.$options.i18n.label, { accessTokenType: this.accessTokenType });
+      return sprintf(
+        this.$options.i18n.label,
+        {
+          accessTokenType: this.accessTokenType,
+        },
+        false,
+      );
     },
     isNameOrScopesSet() {
       const urlParams = new URLSearchParams(window.location.search);

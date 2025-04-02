@@ -1151,6 +1151,41 @@ As a workaround you can either:
 - If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/_index.md), or
   bring the file to the job through some other mechanism.
 
+### `Insufficient permissions to set pipeline variables` error for a downstream pipeline
+
+When triggering a downstream pipeline, you might get this error unexpectedly:
+
+```plaintext
+Failed - (downstream pipeline can not be created, Insufficient permissions to set pipeline variables)
+```
+
+This error occurs when a downstream project has [restricted pipeline variables](#restrict-pipeline-variables) and the trigger job either:
+
+- Has variables defined. For example:
+
+  ```yaml
+  trigger-job:
+    variables:
+      VAR_FOR_DOWNSTREAM: "test"
+    trigger: my-group/my-project
+  ```
+
+- Receives variables from [default variables](../yaml/_index.md#default-variables) defined in a top-level `variables` section. For example:
+
+  ```yaml
+  variables:
+    DEFAULT_VAR: "test"
+  
+  trigger-job:
+    trigger: my-group/my-project
+  ```
+
+Variables passed to a downstream pipeline in a trigger job are [pipeline variables](#use-pipeline-variables),
+so the workaround is to either:
+
+- Remove the `variables` defined in the trigger job to avoid passing variables.
+- [Prevent default variables from being passed to the downstream pipeline](../pipelines/downstream_pipelines.md#prevent-default-variables-from-being-passed).
+
 ### Default variable doesn't expand in job variable of the same name
 
 You cannot use a default variable's value in a job variable of the same name. A default variable

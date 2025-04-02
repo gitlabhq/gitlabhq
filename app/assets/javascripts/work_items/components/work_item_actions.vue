@@ -308,19 +308,29 @@ export default {
     },
     confidentialItem() {
       return {
-        text: this.isConfidential
-          ? this.$options.i18n.disableConfidentiality
-          : this.$options.i18n.enableConfidentiality,
-        extraAttrs: {
-          disabled: this.isParentConfidential,
-        },
+        text: this.confidentialItemText,
+        extraAttrs: { disabled: this.isParentConfidential },
       };
+    },
+    confidentialItemText() {
+      return this.isConfidential
+        ? this.$options.i18n.disableConfidentiality
+        : this.$options.i18n.enableConfidentiality;
+    },
+    confidentialItemIcon() {
+      return this.isConfidential ? 'eye' : 'eye-slash';
+    },
+    confidentialItemIconVariant() {
+      return this.isParentConfidential ? 'current' : 'subtle';
     },
     confidentialTooltip() {
       return this.isParentConfidential ? this.$options.i18n.confidentialParentTooltip : '';
     },
     lockDiscussionText() {
       return this.isDiscussionLocked ? __('Unlock discussion') : __('Lock discussion');
+    },
+    lockDiscussionIcon() {
+      return this.isDiscussionLocked ? 'lock-open' : 'lock';
     },
     objectiveWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_NAME_OBJECTIVE).id;
@@ -545,12 +555,20 @@ export default {
           <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
-              :label="$options.i18n.notifications"
               label-position="left"
               data-testid="notifications-toggle"
               class="work-item-dropdown-toggle gl-justify-between"
               @change="toggleNotifications($event)"
-            />
+            >
+              <template #label>
+                <span :title="$options.i18n.notifications" class="gl-flex gl-gap-3 gl-pt-1">
+                  <gl-icon name="notifications" variant="subtle" />
+                  <span class="gl-max-w-[154px] gl-truncate">{{
+                    $options.i18n.notifications
+                  }}</span>
+                </span>
+              </template>
+            </gl-toggle>
           </template>
         </gl-disclosure-dropdown-item>
         <gl-dropdown-divider />
@@ -575,7 +593,10 @@ export default {
         data-testid="new-related-work-item"
         @action="isCreateWorkItemModalVisible = true"
       >
-        <template #list-item>{{ newRelatedItemLabel }}</template>
+        <template #list-item>
+          <gl-icon name="plus" class="gl-mr-2" variant="subtle" />
+          {{ newRelatedItemLabel }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -583,7 +604,10 @@ export default {
         data-testid="promote-action"
         @action="promoteToObjective"
       >
-        <template #list-item>{{ __('Promote to objective') }}</template>
+        <template #list-item>
+          <gl-icon name="level-up" class="gl-mr-2" variant="subtle" />
+          {{ __('Promote to objective') }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -591,7 +615,10 @@ export default {
         data-testid="change-type-action"
         @action="showChangeTypeModal"
       >
-        <template #list-item>{{ $options.i18n.changeWorkItemType }}</template>
+        <template #list-item>
+          <gl-icon name="issue-type-issue" class="gl-mr-2" variant="subtle" />
+          {{ $options.i18n.changeWorkItemType }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -599,7 +626,10 @@ export default {
         data-testid="move-action"
         @action="isMoveWorkItemModalVisible = true"
       >
-        <template #list-item>{{ __('Move') }}</template>
+        <template #list-item>
+          <gl-icon name="long-arrow" class="gl-mr-2" variant="subtle" />
+          {{ __('Move') }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -608,7 +638,8 @@ export default {
         @action="toggleDiscussionLock"
       >
         <template #list-item>
-          <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-1" inline />
+          <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-2" inline />
+          <gl-icon :name="lockDiscussionIcon" class="gl-mr-2" variant="subtle" />
           {{ lockDiscussionText }}
         </template>
       </gl-disclosure-dropdown-item>
@@ -619,7 +650,16 @@ export default {
         :item="confidentialItem"
         data-testid="confidentiality-toggle-action"
         @action="handleToggleWorkItemConfidentiality"
-      />
+      >
+        <template #list-item>
+          <gl-icon
+            :name="confidentialItemIcon"
+            class="gl-mr-2"
+            :variant="confidentialItemIconVariant"
+          />
+          {{ confidentialItemText }}
+        </template>
+      </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
         data-testid="copy-reference-action"
@@ -627,7 +667,10 @@ export default {
         class="shortcut-copy-reference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
       >
-        <template #list-item>{{ $options.i18n.copyReference }}</template>
+        <template #list-item>
+          <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
+          {{ $options.i18n.copyReference }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -636,7 +679,10 @@ export default {
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
       >
-        <template #list-item>{{ i18n.copyCreateNoteEmail }}</template>
+        <template #list-item>
+          <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
+          {{ i18n.copyCreateNoteEmail }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-dropdown-divider />
@@ -646,7 +692,10 @@ export default {
         data-testid="report-abuse-action"
         @action="handleToggleReportAbuseModal"
       >
-        <template #list-item>{{ $options.i18n.reportAbuse }}</template>
+        <template #list-item>
+          <gl-icon name="review-warning" class="gl-mr-2" variant="subtle" />
+          {{ $options.i18n.reportAbuse }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -662,7 +711,10 @@ export default {
           @action="handleDelete"
         >
           <template #list-item>
-            <span>{{ i18n.deleteWorkItem }}</span>
+            <span>
+              <gl-icon name="remove" class="gl-mr-2" variant="current" />
+              {{ i18n.deleteWorkItem }}
+            </span>
           </template>
         </gl-disclosure-dropdown-item>
       </template>
@@ -686,10 +738,21 @@ export default {
           <template #list-item>
             <gl-toggle
               :value="truncationEnabled"
-              :label="s__('WorkItem|Truncate descriptions')"
               label-position="left"
               class="work-item-dropdown-toggle gl-justify-between"
-            />
+            >
+              <template #label>
+                <span
+                  :title="s__('WorkItem|Truncate descriptions')"
+                  class="gl-flex gl-gap-3 gl-pt-1"
+                >
+                  <gl-icon name="text-description" variant="subtle" />
+                  <span class="gl-max-w-[154px] gl-truncate">{{
+                    s__('WorkItem|Truncate descriptions')
+                  }}</span>
+                </span>
+              </template>
+            </gl-toggle>
           </template>
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
@@ -699,7 +762,10 @@ export default {
         >
           <template #list-item>
             <div class="gl-flex gl-items-center gl-justify-between">
-              <span>{{ toggleSidebarLabel }}</span>
+              <span>
+                <gl-icon name="sidebar-right" class="gl-mr-2" variant="subtle" />
+                {{ toggleSidebarLabel }}
+              </span>
               <kbd v-if="toggleSidebarKeys" class="flat">{{ toggleSidebarKeys }}</kbd>
             </div>
           </template>

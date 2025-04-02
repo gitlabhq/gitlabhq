@@ -1839,14 +1839,14 @@ In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may 
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="18.0">
+<div class="deprecation " data-milestone="18.0">
 
 ### Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.7</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">18.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/514414).
 
 </div>

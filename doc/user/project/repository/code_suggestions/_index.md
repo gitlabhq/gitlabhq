@@ -21,8 +21,8 @@ title: Code Suggestions
 - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
-- Subscription changed to require GitLab Duo Pro on February 15, 2024.
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
+- [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
 
 {{< /history >}}
@@ -42,9 +42,16 @@ you want to use to manage Code Suggestions requests:
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 
+## Prerequisites
+
+To use Code Suggestions, you need:
+
+- A Premium or Ultimate subscription with the GitLab Duo Pro or Enterprise add-on.
+- An assigned seat in your GitLab Duo subscription.
+
 {{< alert type="note" >}}
 
-GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
+GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however, the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
 
 {{< /alert >}}
 

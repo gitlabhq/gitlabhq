@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlDisclosureDropdownItem, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlButton,
+  GlDisclosureDropdownItem,
+  GlLoadingIcon,
+  GlModal,
+  GlLink,
+} from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __, s__ } from '~/locale';
@@ -22,6 +29,7 @@ import workItemOpenChildCountQuery from '../graphql/open_child_count.query.graph
 
 export default {
   components: {
+    GlIcon,
     GlButton,
     GlDisclosureDropdownItem,
     GlLoadingIcon,
@@ -169,6 +177,9 @@ export default {
       }
       return sprintfWorkItem(baseText, this.workItemType);
     },
+    toggleWorkItemStateIcon() {
+      return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
+    },
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -291,6 +302,7 @@ export default {
           {{ toggleInProgressText }}
         </template>
         <template v-else>
+          <gl-icon :name="toggleWorkItemStateIcon" class="gl-mr-2" variant="subtle" />
           {{ toggleWorkItemStateText }}
         </template>
       </template>

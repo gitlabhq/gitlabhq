@@ -151,7 +151,6 @@ spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/pypi_installation_spec.js
-spec/frontend/packages_and_registries/package_registry/components/list/packages_search_spec.js
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/cleanup_image_tags_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js

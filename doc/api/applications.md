@@ -8,7 +8,7 @@ title: Applications API
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

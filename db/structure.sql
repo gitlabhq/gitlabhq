@@ -20608,15 +20608,6 @@ CREATE SEQUENCE project_compliance_framework_settings_id_seq
 
 ALTER SEQUENCE project_compliance_framework_settings_id_seq OWNED BY project_compliance_framework_settings.id;
 
-CREATE SEQUENCE project_compliance_framework_settings_project_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE project_compliance_framework_settings_project_id_seq OWNED BY project_compliance_framework_settings.project_id;
-
 CREATE TABLE project_compliance_standards_adherence (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -27389,8 +27380,6 @@ ALTER TABLE ONLY project_build_artifacts_size_refreshes ALTER COLUMN id SET DEFA
 ALTER TABLE ONLY project_ci_cd_settings ALTER COLUMN id SET DEFAULT nextval('project_ci_cd_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY project_ci_feature_usages ALTER COLUMN id SET DEFAULT nextval('project_ci_feature_usages_id_seq'::regclass);
-
-ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN project_id SET DEFAULT nextval('project_compliance_framework_settings_project_id_seq'::regclass);
 
 ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN id SET DEFAULT nextval('project_compliance_framework_settings_id_seq'::regclass);
 

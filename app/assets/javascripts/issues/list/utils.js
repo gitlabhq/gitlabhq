@@ -129,6 +129,7 @@ export const getSortOptions = ({
   hasIssueWeightsFeature,
   hasManualSort = true,
   hasMergedDate = false,
+  hasDueDate = true,
 } = {}) => {
   const sortOptions = [
     {
@@ -171,7 +172,7 @@ export const getSortOptions = ({
         descending: MILESTONE_DUE_DESC,
       },
     },
-    {
+    hasDueDate && {
       id: 6,
       title: __('Due date'),
       sortDirection: {
