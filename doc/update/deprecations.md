@@ -486,6 +486,27 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.11</span>
+- End of Support in GitLab <span class="milestone">19.0</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/475152).
+
+</div>
+
+With the introduction of [custom stages](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in pipeline execution policies (available in GitLab 17.9), we've introduced the configuration option `inject_policy` to replace the deprecated `inject_ci`.
+
+This new strategy allows for a graceful rollout of the custom stages functionality for users with existing pipeline execution policies that use the `inject_ci` strategy.
+
+To prepare for the 19.0 removal, update all pipeline execution policies that use `inject_ci` to use `inject_policy` instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Pipeline subscriptions
 
 <div class="deprecation-notes">

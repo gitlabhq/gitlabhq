@@ -422,10 +422,10 @@ To automatically close an issue, use the following keywords followed by the issu
 
 Available keywords:
 
-- Close, Closes, Closed, Closing, close, closes, closed, closing
-- Fix, Fixes, Fixed, Fixing, fix, fixes, fixed, fixing
-- Resolve, Resolves, Resolved, Resolving, resolve, resolves, resolved, resolving
-- Implement, Implements, Implemented, Implementing, implement, implements, implemented, implementing
+- `Close`, `Closes`, `Closed`, `Closing`, `close`, `closes`, `closed`, `closing`
+- `Fix`, `Fixes`, `Fixed`, `Fixing`, `fix`, `fixes`, `fixed`, `fixing`
+- `Resolve`, `Resolves`, `Resolved`, `Resolving`, `resolve`, `resolves`, `resolved`, `resolving`
+- `Implement`, `Implements`, `Implemented`, `Implementing`, `implement`, `implements`, `implemented`, `implementing`
 
 Available issue reference formats:
 

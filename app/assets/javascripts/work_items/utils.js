@@ -394,19 +394,16 @@ export const createBranchMRApiPathHelper = {
       `/${fullPath}/-/issues/${workItemIid}/can_create_branch`,
     );
   },
-  createBranch({ fullPath, workItemIid, sourceBranch, targetBranch }) {
-    return joinPaths(
-      gon.relative_url_root || '',
-      `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`,
-    );
+  createBranch(fullPath) {
+    return joinPaths(gon.relative_url_root || '', `/${fullPath}/-/branches`);
   },
   createMR({ fullPath, workItemIid, sourceBranch, targetBranch }) {
     let url = joinPaths(
       gon.relative_url_root || '',
-      `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}`,
+      `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${encodeURIComponent(sourceBranch)}`,
     );
     if (targetBranch) {
-      url += `&merge_request%5Btarget_branch%5D=${targetBranch}`;
+      url += `&merge_request%5Btarget_branch%5D=${encodeURIComponent(targetBranch)}`;
     }
     return url;
   },

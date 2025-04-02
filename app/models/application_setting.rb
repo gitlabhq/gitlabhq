@@ -674,35 +674,6 @@ class ApplicationSetting < ApplicationRecord
 
   validates :clickhouse, json_schema: { filename: "application_setting_clickhouse" }
 
-  jsonb_accessor :rate_limits,
-    autocomplete_users_limit: [:integer, { default: 300 }],
-    autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
-    concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
-    concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
-    concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
-    concurrent_relation_batch_export_limit: [:integer, { default: 8 }],
-    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
-    group_api_limit: [:integer, { default: 400 }],
-    group_invited_groups_api_limit: [:integer, { default: 60 }],
-    group_projects_api_limit: [:integer, { default: 600 }],
-    group_shared_groups_api_limit: [:integer, { default: 60 }],
-    groups_api_limit: [:integer, { default: 200 }],
-    members_delete_limit: [:integer, { default: 60 }],
-    create_organization_api_limit: [:integer, { default: 10 }],
-    project_api_limit: [:integer, { default: 400 }],
-    project_invited_groups_api_limit: [:integer, { default: 60 }],
-    projects_api_limit: [:integer, { default: 2000 }],
-    user_contributed_projects_api_limit: [:integer, { default: 100 }],
-    user_projects_api_limit: [:integer, { default: 300 }],
-    user_starred_projects_api_limit: [:integer, { default: 100 }],
-    users_api_limit_followers: [:integer, { default: 100 }],
-    users_api_limit_following: [:integer, { default: 100 }],
-    users_api_limit_status: [:integer, { default: 240 }],
-    users_api_limit_ssh_keys: [:integer, { default: 120 }],
-    users_api_limit_ssh_key: [:integer, { default: 120 }],
-    users_api_limit_gpg_keys: [:integer, { default: 120 }],
-    users_api_limit_gpg_key: [:integer, { default: 120 }]
-
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }]
 
@@ -1077,6 +1048,42 @@ class ApplicationSetting < ApplicationRecord
   def self.human_attribute_name(attribute, *options)
     HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
   end
+
+  # overriden in EE
+  def self.rate_limits_definition
+    {
+      autocomplete_users_limit: [:integer, { default: 300 }],
+      autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
+      concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
+      concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
+      concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
+      concurrent_relation_batch_export_limit: [:integer, { default: 8 }],
+      downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
+      group_api_limit: [:integer, { default: 400 }],
+      group_invited_groups_api_limit: [:integer, { default: 60 }],
+      group_projects_api_limit: [:integer, { default: 600 }],
+      group_shared_groups_api_limit: [:integer, { default: 60 }],
+      groups_api_limit: [:integer, { default: 200 }],
+      members_delete_limit: [:integer, { default: 60 }],
+      create_organization_api_limit: [:integer, { default: 10 }],
+      project_api_limit: [:integer, { default: 400 }],
+      project_invited_groups_api_limit: [:integer, { default: 60 }],
+      projects_api_limit: [:integer, { default: 2000 }],
+      user_contributed_projects_api_limit: [:integer, { default: 100 }],
+      user_projects_api_limit: [:integer, { default: 300 }],
+      user_starred_projects_api_limit: [:integer, { default: 100 }],
+      users_api_limit_followers: [:integer, { default: 100 }],
+      users_api_limit_following: [:integer, { default: 100 }],
+      users_api_limit_status: [:integer, { default: 240 }],
+      users_api_limit_ssh_keys: [:integer, { default: 120 }],
+      users_api_limit_ssh_key: [:integer, { default: 120 }],
+      users_api_limit_gpg_keys: [:integer, { default: 120 }],
+      users_api_limit_gpg_key: [:integer, { default: 120 }]
+    }
+  end
+
+  # this statement has to come after the rate_limits_definition function
+  jsonb_accessor :rate_limits, rate_limits_definition
 
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled

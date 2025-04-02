@@ -9,3 +9,5 @@ module VirtualRegistries
     scopes - ::Gitlab::Auth.virtual_registry_scopes
   end
 end
+
+VirtualRegistries.prepend_mod

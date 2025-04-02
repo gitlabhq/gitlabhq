@@ -30,6 +30,8 @@
 
 = render_if_exists 'admin/application_settings/package_registry', expanded: expanded_by_default?
 
+= render_if_exists 'admin/application_settings/virtual_registry', expanded: expanded_by_default?
+
 - if Gitlab.config.registry.enabled
   = render ::Layouts::SettingsBlockComponent.new(_('Container registry'),
     id: 'js-registry-settings',

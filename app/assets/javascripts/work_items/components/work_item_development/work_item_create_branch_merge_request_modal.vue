@@ -216,20 +216,22 @@ export default {
     },
     async createBranch() {
       try {
-        const endpoint = createBranchMRApiPathHelper.createBranch({
-          fullPath: this.isConfidentialWorkItem
+        const endpoint = createBranchMRApiPathHelper.createBranch(
+          this.isConfidentialWorkItem
             ? confidentialMergeRequestState.selectedProject.pathWithNamespace
             : this.workItemFullPath,
-          workItemIid: this.workItemIid,
-          sourceBranch: this.sourceName,
-          targetBranch: this.branchName,
-        });
+        );
 
         this.creatingBranch = true;
+
         const { data } = await axios.post(endpoint, {
+          branch_name: this.branchName,
           confidential_issue_project_id: this.canCreateConfidentialMergeRequest
             ? this.projectId
             : null,
+          format: 'json',
+          issue_iid: this.workItemIid,
+          ref: this.sourceName,
         });
 
         this.$toast.show(__('Branch created.'), {

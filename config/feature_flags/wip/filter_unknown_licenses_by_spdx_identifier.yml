@@ -1,9 +1,0 @@
----
-name: filter_unknown_licenses_by_spdx_identifier
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/482764
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180677
-rollout_issue_url:
-milestone: '17.10'
-group: group::security insights
-type: wip
-default_enabled: false

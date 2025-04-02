@@ -19,57 +19,60 @@ To replicate data produced by these features with Geo, we use several strategies
 
 ## Data types
 
-We distinguish between three different data types:
+We distinguish between the following different data types:
 
 - [Git repositories](#git-repositories)
+- [Container repositories](#container-repositories)
 - [Blobs](#blobs)
-- [Database](#database)
+- [Databases](#databases)
 
 See the list below of each feature or component we replicate, its corresponding data type, replication, and
 verification methods:
 
-| Type     | Feature / component                             | Replication method                           | Verification method           |
-|:---------|:------------------------------------------------|:---------------------------------------------|:------------------------------|
-| Database | Application data in PostgreSQL                  | Native                                       | Native                        |
-| Database | Redis                                           | Not applicable <sup>1</sup>                  | Not applicable                |
-| Database | Elasticsearch                                   | Native                                       | Native                        |
-| Database | SSH public keys                                 | PostgreSQL Replication                       | PostgreSQL Replication        |
-| Git      | Project repository                              | Geo with Gitaly                              | Gitaly Checksum               |
-| Git      | Project wiki repository                         | Geo with Gitaly                              | Gitaly Checksum               |
-| Git      | Project designs repository                      | Geo with Gitaly                              | Gitaly Checksum               |
-| Git      | Project Snippets                                | Geo with Gitaly                              | Gitaly Checksum               |
-| Git      | Personal Snippets                               | Geo with Gitaly                              | Gitaly Checksum               |
-| Git      | Group wiki repository                           | Geo with Gitaly                              | Gitaly Checksum               |
-| Blob     | User uploads _(file system)_                    | Geo with API                                 | SHA256 checksum               |
-| Blob     | User uploads _(object storage)_                 | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | LFS objects _(file system)_                     | Geo with API                                 | SHA256 checksum               |
-| Blob     | LFS objects _(object storage)_                  | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | CI job artifacts _(file system)_                | Geo with API                                 | SHA256 checksum               |
-| Blob     | CI job artifacts _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Archived CI build traces _(file system)_        | Geo with API                                 | _Not implemented_             |
-| Blob     | Archived CI build traces _(object storage)_     | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
-| Blob     | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
-| Blob     | Package registry _(file system)_                | Geo with API                                 | SHA256 checksum               |
-| Blob     | Package registry _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Terraform Module Registry _(file system)_       | Geo with API                                 | SHA256 checksum               |
-| Blob     | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
-| Blob     | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
-| Blob     | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
-| Blob     | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |
-| Blob     | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
-| Blob     | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
-| Blob     | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
-| Blob     | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob     | Dependency Proxy Images_(file system)_          | Geo with API                                 | SHA256 checksum               |
-| Blob     | Dependency Proxy Images _(object storage)_      | Geo with API/managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Type                 | Feature / component                             | Replication method                           | Verification method           |
+|:---------------------|:------------------------------------------------|:---------------------------------------------|:------------------------------|
+| Database             | Application data in PostgreSQL                  | Native                                       | Native                        |
+| Database             | Redis                                           | Not applicable <sup>1</sup>                  | Not applicable                |
+| Database             | Elasticsearch                                   | Native                                       | Native                        |
+| Database             | SSH public keys                                 | PostgreSQL Replication                       | PostgreSQL Replication        |
+| Git                  | Project repository                              | Geo with Gitaly                              | Gitaly Checksum               |
+| Git                  | Project wiki repository                         | Geo with Gitaly                              | Gitaly Checksum               |
+| Git                  | Project designs repository                      | Geo with Gitaly                              | Gitaly Checksum               |
+| Git                  | Project Snippets                                | Geo with Gitaly                              | Gitaly Checksum               |
+| Git                  | Personal Snippets                               | Geo with Gitaly                              | Gitaly Checksum               |
+| Git                  | Group wiki repository                           | Geo with Gitaly                              | Gitaly Checksum               |
+| Blob                 | User uploads _(file system)_                    | Geo with API                                 | SHA256 checksum               |
+| Blob                 | User uploads _(object storage)_                 | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | LFS objects _(file system)_                     | Geo with API                                 | SHA256 checksum               |
+| Blob                 | LFS objects _(object storage)_                  | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | CI job artifacts _(file system)_                | Geo with API                                 | SHA256 checksum               |
+| Blob                 | CI job artifacts _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Archived CI build traces _(file system)_        | Geo with API                                 | _Not implemented_             |
+| Blob                 | Archived CI build traces _(object storage)_     | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
+| Blob                 | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Package registry _(file system)_                | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Package registry _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Terraform Module Registry _(file system)_       | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
+| Blob                 | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
+| Blob                 | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
+| Blob                 | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Dependency Proxy Images _(file system)_         | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Dependency Proxy Images _(object storage)_      | Geo with API/managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Container Repository | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
+| Container Repository | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
 
 **Footnotes:**
 
@@ -111,6 +114,11 @@ for Wiki and Design Repository cases.
 Besides that, there are snippet repositories. They can be connected to a project or to some specific user.
 Both types are synced to a secondary site.
 
+### Container repositories
+
+Container repositories are stored in the container registry. They are a
+GitLab-specific concept built on top of a container registry as the datastore.
+
 ### Blobs
 
 GitLab stores files and blobs such as Issue attachments or LFS objects into either:
@@ -131,7 +139,7 @@ With respect to replication and verification:
   - Use a cloud provider replication functionality.
   - Have GitLab replicate it for you.
 
-### Database
+### Databases
 
 GitLab relies on data stored in multiple databases, for different use-cases.
 PostgreSQL is the single point of truth for user-generated content in the Web interface, like issues content, comments

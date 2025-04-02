@@ -138,6 +138,11 @@
       "type": "integer",
       "minimum": 0,
       "description": "Number of requests allowed to the GET /users/:id/gpg_keys/:key_id endpoint."
+    },
+    "virtual_registries_endpoints_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to /api/v4/virtual_registries/packages/:package_format/:id/* endpoints."
     }
   }
 }

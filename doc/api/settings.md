@@ -188,6 +188,7 @@ these parameters:
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
 - `secret_push_protection_available`
+- `virtual_registries_endpoints_api_limit`
 
 ```json
 {
@@ -202,7 +203,8 @@ these parameters:
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
   "allow_all_integrations": true,
-  "allowed_integrations": []
+  "allowed_integrations": [],
+  "virtual_registries_endpoints_api_limit": 1000,
   ...
 }
 ```
@@ -382,6 +384,7 @@ these parameters:
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
+- `virtual_registries_endpoints_api_limit`
 
 Example responses:
 
@@ -391,7 +394,8 @@ Example responses:
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
   "allow_all_integrations": true,
-  "allowed_integrations": []
+  "allowed_integrations": [],
+  "virtual_registries_endpoints_api_limit": 1000
 ```
 
 ## Available settings
@@ -651,6 +655,7 @@ to configure other related settings. These requirements are
 | `users_api_limit_key`       | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
 | `users_api_limit_gpg_keys`  | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
 | `users_api_limit_gpg_key`   | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `virtual_registries_endpoints_api_limit`          | integer          | no                                   | Max number of requests on virtual registries endpoints, per IP address, per 15 seconds. Default: 1000. Set to `0` to disabled limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521692) in GitLab 17.11 |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |

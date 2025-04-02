@@ -6,7 +6,7 @@ import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import WorkItemCreateBranchMergeRequestModal from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { createAlert } from '~/alert';
@@ -98,7 +98,7 @@ describe('CreateBranchMergeRequestModal', () => {
       mock = new MockAdapter(axios);
       mock.onGet('/fullPath/-/issues/1/can_create_branch').reply(HTTP_STATUS_OK, {
         can_create_branch: true,
-        suggested_branch_name: 'suggested_branch_name',
+        suggested_branch_name: 'suggested_branch_name#with_hash',
       });
       return createWrapper();
     });
@@ -120,20 +120,19 @@ describe('CreateBranchMergeRequestModal', () => {
 
         jest.spyOn(axios, 'post');
         mock
-          .onPost(
-            '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=defaultBranch',
-          )
-          .reply(200, { data: { url: 'http://test.com/branch' } });
+          .onPost('/fullPath/-/branches')
+          .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
         firePrimaryEvent();
         await waitForPromises();
 
-        expect(axios.post).toHaveBeenCalledWith(
-          `/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master`,
-          {
-            confidential_issue_project_id: null,
-          },
-        );
+        expect(axios.post).toHaveBeenCalledWith(`/fullPath/-/branches`, {
+          branch_name: 'suggested_branch_name#with_hash',
+          confidential_issue_project_id: null,
+          format: 'json',
+          issue_iid: '1',
+          ref: 'master',
+        });
       });
 
       it('calls the create branch with correct source and target branch', async () => {
@@ -142,10 +141,8 @@ describe('CreateBranchMergeRequestModal', () => {
 
         jest.spyOn(axios, 'post');
         mock
-          .onPost(
-            '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=defaultBranch',
-          )
-          .reply(200, { data: { url: 'http://test.com/branch' } });
+          .onPost('/fullPath/-/branches')
+          .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
         findSourceBranch().vm.$emit('input', 'source');
         findTargetBranch().vm.$emit('input', 'target');
@@ -153,12 +150,13 @@ describe('CreateBranchMergeRequestModal', () => {
 
         await waitForPromises();
 
-        expect(axios.post).toHaveBeenCalledWith(
-          `/fullPath/-/branches?branch_name=target&format=json&issue_iid=1&ref=source`,
-          {
-            confidential_issue_project_id: null,
-          },
-        );
+        expect(axios.post).toHaveBeenCalledWith(`/fullPath/-/branches`, {
+          branch_name: 'target',
+          confidential_issue_project_id: null,
+          format: 'json',
+          issue_iid: '1',
+          ref: 'source',
+        });
       });
 
       it('shows a success toast message when branch is created', async () => {
@@ -166,10 +164,8 @@ describe('CreateBranchMergeRequestModal', () => {
         await waitForPromises();
 
         mock
-          .onPost(
-            '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master',
-          )
-          .reply(200, { data: { url: 'http://test.com/branch' } });
+          .onPost('/fullPath/-/branches')
+          .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
         firePrimaryEvent();
         await waitForPromises();
@@ -185,10 +181,8 @@ describe('CreateBranchMergeRequestModal', () => {
 
       it('shows an error alert when branch creation fails', async () => {
         mock
-          .onPost(
-            '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master',
-          )
-          .reply(422, { message: 'Error creating branch' });
+          .onPost('/fullPath/-/branches')
+          .reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, { message: 'Error creating branch' });
         createWrapper();
         await waitForPromises();
 
@@ -208,10 +202,8 @@ describe('CreateBranchMergeRequestModal', () => {
 
         jest.spyOn(axios, 'post');
         mock
-          .onPost(
-            '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master',
-          )
-          .reply(200, { data: { url: 'http://test.com/branch' } });
+          .onPost('/fullPath/-/branches')
+          .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
         findSourceBranch().vm.$emit('input', 'source_mr');
         findTargetBranch().vm.$emit('input', 'target_mr');
@@ -219,12 +211,13 @@ describe('CreateBranchMergeRequestModal', () => {
 
         await waitForPromises();
 
-        expect(axios.post).toHaveBeenCalledWith(
-          `/fullPath/-/branches?branch_name=target_mr&format=json&issue_iid=1&ref=source_mr`,
-          {
-            confidential_issue_project_id: null,
-          },
-        );
+        expect(axios.post).toHaveBeenCalledWith(`/fullPath/-/branches`, {
+          branch_name: 'target_mr',
+          confidential_issue_project_id: null,
+          format: 'json',
+          issue_iid: '1',
+          ref: 'source_mr',
+        });
 
         await waitForPromises();
 
@@ -265,27 +258,26 @@ describe('CreateBranchMergeRequestModal', () => {
         it('replaces the create branch and create merge request paths with forkPath with passing of work item project id', async () => {
           jest.spyOn(axios, 'post');
           mock
-            .onPost(
-              '/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master',
-            )
-            .reply(200, { data: { url: 'http://test.com/branch' } });
+            .onPost('/fullPath/-/branches')
+            .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
           firePrimaryEvent();
           await waitForPromises();
 
-          expect(axios.post).toHaveBeenCalledWith(
-            `/fullPath-fork-new/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master`,
-            {
-              confidential_issue_project_id: 'gid://gitlab/Project/2',
-            },
-          );
+          expect(axios.post).toHaveBeenCalledWith(`/fullPath-fork-new/-/branches`, {
+            branch_name: 'suggested_branch_name#with_hash',
+            confidential_issue_project_id: 'gid://gitlab/Project/2',
+            format: 'json',
+            issue_iid: '1',
+            ref: 'master',
+          });
 
           await waitForPromises();
 
           await nextTick();
 
           expect(visitUrl).toHaveBeenCalledWith(
-            '/fullPath-fork-new/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=suggested_branch_name&merge_request%5Btarget_branch%5D=master',
+            '/fullPath-fork-new/-/merge_requests/new?merge_request%5Bissue_iid%5D=1&merge_request%5Bsource_branch%5D=suggested_branch_name%23with_hash&merge_request%5Btarget_branch%5D=master',
           );
         });
       });
@@ -309,20 +301,19 @@ describe('CreateBranchMergeRequestModal', () => {
 
       jest.spyOn(axios, 'post');
       mock
-        .onPost(
-          '/gitlab/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=defaultBranch',
-        )
-        .reply(200, { data: { url: 'http://test.com/branch' } });
+        .onPost('/gitlab/fullPath/-/branches')
+        .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
       firePrimaryEvent();
       await waitForPromises();
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `/gitlab/fullPath/-/branches?branch_name=suggested_branch_name&format=json&issue_iid=1&ref=master`,
-        {
-          confidential_issue_project_id: null,
-        },
-      );
+      expect(axios.post).toHaveBeenCalledWith(`/gitlab/fullPath/-/branches`, {
+        branch_name: 'suggested_branch_name',
+        confidential_issue_project_id: null,
+        format: 'json',
+        issue_iid: '1',
+        ref: 'master',
+      });
     });
   });
 });

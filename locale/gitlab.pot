@@ -11909,6 +11909,9 @@ msgstr ""
 msgid "Cannot make the epic confidential if it contains non-confidential issues"
 msgstr ""
 
+msgid "Cannot mark group for deletion: feature not supported"
+msgstr ""
+
 msgid "Cannot mark the %{work_item_type} as duplicate of itself."
 msgstr ""
 
@@ -35076,6 +35079,9 @@ msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
 msgid "Limiting mode"
+msgstr ""
+
+msgid "Limits how many API requests an IP address can make to artifact manager endpoints within a 15-second window."
 msgstr ""
 
 msgid "Line"
@@ -65317,6 +65323,15 @@ msgid "Violates security policy"
 msgstr ""
 
 msgid "Violation"
+msgstr ""
+
+msgid "VirtualRegistries|API endpoints rate limit"
+msgstr ""
+
+msgid "VirtualRegistries|Configure Virtual Registries settings."
+msgstr ""
+
+msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"
