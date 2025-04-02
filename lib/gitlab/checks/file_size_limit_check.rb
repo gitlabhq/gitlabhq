@@ -8,6 +8,8 @@ module Gitlab
       LOG_MESSAGE = 'Checking for blobs over the file size limit'
 
       def validate!
+        return unless file_size_limit.present?
+
         Gitlab::AppJsonLogger.info(LOG_MESSAGE)
         logger.log_timed(LOG_MESSAGE) do
           oversized_blobs = Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBlobs.new(
@@ -46,9 +48,13 @@ module Gitlab
 
       private
 
+      # rubocop:disable Gitlab/NoCodeCoverageComment -- This is fully overriden in EE
+      # :nocov:
       def file_size_limit
-        project.actual_limits.file_size_limit_mb
+        nil
       end
+      # :nocov:
+      # rubocop:enable Gitlab/NoCodeCoverageComment
     end
   end
 end
