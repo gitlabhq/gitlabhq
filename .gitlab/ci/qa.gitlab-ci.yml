@@ -202,7 +202,8 @@ e2e:test-on-gdk:
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
 
-e2e:test-product-analytics:
+# Disabling PA tests as we're moving to decommission in FY26
+.e2e:test-product-analytics:
   extends:
     - .qa:rules:e2e:test-on-gdk
   stage: qa
