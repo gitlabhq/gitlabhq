@@ -400,6 +400,8 @@ Gemojione
 getter
 getters
 gettext
+gibibyte
+gibibytes
 GIDs
 gists
 Git
@@ -530,6 +532,8 @@ keystore
 keytab
 keytabs
 Kibana
+kibibyte
+kibibytes
 Kinesis
 Klar
 Knative
@@ -594,6 +598,8 @@ matchers
 Matomo
 Mattermost
 mbox
+mebibyte
+mebibytes
 memoization
 memoize
 memoized

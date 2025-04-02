@@ -210,7 +210,7 @@ To bulk edit to-do items:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17712) in GitLab 17.10.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17712) in GitLab 17.9.
 
 {{< /history >}}
 
@@ -233,7 +233,7 @@ When the snooze period ends, the to-do item automatically returns to your main T
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17712) in GitLab 17.10.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17712) in GitLab 17.9.
 
 {{< /history >}}
 

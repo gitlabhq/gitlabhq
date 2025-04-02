@@ -26,7 +26,7 @@ module Gitlab
               managed_resource.update!(status: :failed)
               raise ManagedResourceError, format_error_message(response.errors)
             else
-              managed_resource.update!(status: :completed)
+              managed_resource.update!(status: :completed, tracked_objects: response.objects.map(&:to_h))
             end
           end
 

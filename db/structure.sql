@@ -12555,6 +12555,7 @@ CREATE TABLE clusters_managed_resources (
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     template_name text,
+    tracked_objects jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_4f81a98847 CHECK ((char_length(template_name) <= 1024))
 );
 

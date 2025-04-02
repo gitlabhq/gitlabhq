@@ -16,6 +16,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { stubComponent } from 'helpers/stub_component';
+import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 import {
   MOCK_DEFAULT_SEARCH_OPTIONS,
@@ -80,6 +81,10 @@ describe('UserBar component', () => {
       },
     });
   };
+
+  afterEach(() => {
+    window.gon = {};
+  });
 
   describe('default', () => {
     beforeEach(() => {
@@ -316,40 +321,42 @@ describe('UserBar component', () => {
     });
   });
 
-  describe('when `ui_for_organizations` feature flag is enabled', () => {
-    describe('when logged in', () => {
-      beforeEach(() => {
-        isLoggedIn.mockReturnValue(true);
-      });
-
-      it('renders `OrganizationSwitcher component', async () => {
-        createWrapper({ provideOverrides: { glFeatures: { uiForOrganizations: true } } });
-        await waitForPromises();
-
-        expect(findOrganizationSwitcher().exists()).toBe(true);
-      });
+  describe('when `ui_for_organizations` feature flag is enabled, user is logged in and current organization is set', () => {
+    beforeEach(async () => {
+      window.gon.current_organization = currentOrganization;
+      isLoggedIn.mockReturnValue(true);
+      createWrapper({ provideOverrides: { glFeatures: { uiForOrganizations: true } } });
+      await waitForPromises();
     });
 
-    describe('when not logged in', () => {
-      beforeEach(() => {
-        isLoggedIn.mockReturnValue(false);
+    it('renders `OrganizationSwitcher component', () => {
+      expect(findOrganizationSwitcher().exists()).toBe(true);
+    });
+  });
+
+  describe.each`
+    featureFlagEnabled | isLoggedInValue | currentOrganizationValue
+    ${true}            | ${true}         | ${undefined}
+    ${true}            | ${false}        | ${currentOrganization}
+    ${true}            | ${false}        | ${undefined}
+    ${false}           | ${true}         | ${currentOrganization}
+    ${false}           | ${false}        | ${currentOrganization}
+    ${false}           | ${false}        | ${undefined}
+  `(
+    'when `ui_for_organizations` feature flag is $featureFlagEnabled, isLoggedIn is $isLoggedInValue, and current organization is $currentOrganizationValue',
+    ({ featureFlagEnabled, isLoggedInValue, currentOrganizationValue }) => {
+      beforeEach(async () => {
+        window.gon.current_organization = currentOrganizationValue;
+        isLoggedIn.mockReturnValue(isLoggedInValue);
+        createWrapper({
+          provideOverrides: { glFeatures: { uiForOrganizations: featureFlagEnabled } },
+        });
+        await waitForPromises();
       });
 
-      it('does not render `OrganizationSwitcher component', async () => {
-        createWrapper({ provideOverrides: { glFeatures: { uiForOrganizations: true } } });
-        await waitForPromises();
-
+      it('does not render `OrganizationSwitcher component', () => {
         expect(findOrganizationSwitcher().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('when `ui_for_organizations` feature flag is disabled', () => {
-    it('does not render `OrganizationSwitcher component', async () => {
-      createWrapper();
-      await waitForPromises();
-
-      expect(findOrganizationSwitcher().exists()).toBe(false);
-    });
-  });
+    },
+  );
 });

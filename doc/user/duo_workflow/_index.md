@@ -124,16 +124,19 @@ For more information about how to interact with Workflow, see [best practices](b
 
 ## The context Workflow is aware of
 
-When you ask Workflow for help with a task, it is aware of some files by default.
+When you ask Workflow for help with a task, it will refer to files available to Git in the current branch of the project in your VS Code workspace.
+
+You can ask about other projects, but they must meet the [prerequisites](#prerequisites).
+
 You can also provide it with additional context.
 
-| Area                          | How to use GitLab Workflow |
-|-------------------------------|--------------------------------|
-| Epics                         | Enter the epic ID and the name of the group the epic is in. The group must include a project that meets the project prerequisites. |
-| Issues                        | Enter the issue ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
-| Local files                   | Workflow is aware of all files available to Git in the project branch. You can also reference a specific file by its file path. |
-| Merge requests                | Enter the merge request ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
-| Merge request pipelines       | Enter the merge request ID that has the pipeline, if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
+| Area                    | Enter in Workflow      | Examples |
+|-------------------------|------------------------|----------|
+| Local files             | The file with path. |• Summarize the file `src/main.js`<br>• Review the code in `app/models/`<br>• List all JavaScript files in the project |
+| Epics                   | Either:<br>• The URL of the group or epic. <br>• The epic ID and the name of the group the epic is in. | Examples:<br>• List all epics in `https://gitlab.com/groups/namespace/group`<br>• Summarize the epic: `https://gitlab.com/groups/namespace/group/-/epics/42`<br>• `Summarize epic 42 in group namespace/group` |
+| Issues                  | Either:<br>• The URL of the project or issue. <br>• The issue ID in the current or another project. | Examples:<br>• List all issues in the project at `https://gitlab.com/namespace/project`<br>• Summarize the issue at `https://gitlab.com/namespace/project/-/issues/103`<br>• Review the comment with ID `42` in `https://gitlab.com/namespace/project/-/issues/103`<br>• List all comments on the issue at `https://gitlab.com/namespace/project/-/issues/103`<br>• Summarize issue `103` in this project |
+| Merge requests          | Either:<br>• The URL of the merge request. <br>• The merge request ID in the current or another project. |• Summarize `https://gitlab.com/namespace/project/-/merge_requests/103`<br>• Review the diffs in `https://gitlab.com/namespace/project/-/merge_requests/103`<br>• Summarize the comments on `https://gitlab.com/namespace/project/-/merge_requests/103`<br>• Summarize merge request `103` in this project |
+| Merge request pipelines | The merge request ID in the current or another project. |• Review the failures in merge request `12345`<br>• Can you identify the cause of the error in the merge request `54321` in project `gitlab-org/gitlab-qa` |
 
 Workflow also has access to the GitLab [Search API](../../api/search.md) to find related issues or merge requests.
 

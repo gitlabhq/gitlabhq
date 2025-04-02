@@ -11,6 +11,7 @@ module Clusters
       belongs_to :environment
 
       validates :template_name, length: { maximum: 1024 }
+      validates :tracked_objects, json_schema: { filename: 'clusters_agents_managed_resource_tracked_objects' }
 
       enum :status, {
         processing: 0,

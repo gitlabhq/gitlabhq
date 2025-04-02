@@ -14,7 +14,7 @@ End-to-end (e2e) testing is a strategy used to check whether your application wo
 To test GitLab, we:
 
 1. Use [CNG](https://gitlab.com/gitlab-org/build/CNG) to build GitLab Cloud Native packages.
-1. Deploy these packages using the [`gitlab-cng` orchestrator](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-cng?ref_type=heads) CLI tool to create
+1. Deploy these packages using the [orchestrator](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-orchestrator?ref_type=heads) CLI tool to create
    a running instance of GitLab to run E2E tests against.
 
 Additionally, we use the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK) as a test environment that can be deployed quickly for faster test feedback.

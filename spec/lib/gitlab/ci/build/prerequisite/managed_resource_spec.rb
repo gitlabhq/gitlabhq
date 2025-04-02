@@ -173,6 +173,36 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
 
         context 'when the build is valid for managed resources' do
           context 'when it successfully ensures the environment' do
+            let(:namespace_attributes) do
+              {
+                kind: 'Namespace',
+                name: 'production',
+                group: '',
+                version: 'v1',
+                namespace: ''
+              }.stringify_keys
+            end
+
+            let(:role_binding_attributes) do
+              {
+                kind: 'RoleBinding',
+                name: 'bind-production',
+                group: 'rbac.authorization.k8s.io',
+                version: 'v1',
+                namespace: 'production'
+              }.stringify_keys
+            end
+
+            let(:success_response) do
+              Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentResponse.new(
+                errors: [],
+                objects: [
+                  Gitlab::Agent::ManagedResources::Rpc::Object.new(**namespace_attributes),
+                  Gitlab::Agent::ManagedResources::Rpc::Object.new(**role_binding_attributes)
+                ]
+              )
+            end
+
             before do
               allow_next_instance_of(Gitlab::Kas::Client) do |kas_client|
                 allow(kas_client).to receive_messages(get_environment_template: double,
@@ -188,7 +218,6 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
                   .with(template: template, environment: environment, build: build)
                   .and_return(rendered_template)
 
-                success_response = Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentResponse.new(errors: [])
                 allow(kas_client).to receive(:ensure_environment)
                   .with(template: rendered_template, environment: environment, build: build)
                   .and_return(success_response)
@@ -199,6 +228,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
               expect { execute_complete }.to change { Clusters::Agents::ManagedResource.count }.by(1)
               managed_resource = Clusters::Agents::ManagedResource.find_by_build_id(build.id)
               expect(managed_resource.status).to eq("completed")
+              expect(managed_resource.tracked_objects).to contain_exactly(namespace_attributes, role_binding_attributes)
             end
           end
 

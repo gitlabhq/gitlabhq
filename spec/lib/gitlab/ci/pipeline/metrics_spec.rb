@@ -24,4 +24,17 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Metrics do
       described_class.pipeline_creation_step_duration_histogram
     end
   end
+
+  describe '.job_token_authorization_failures_counter' do
+    it 'returns a counter for job token authorization failures' do
+      expect(::Gitlab::Metrics).to receive(:counter)
+        .with(
+          :gitlab_ci_job_token_authorization_failures,
+          'Count of job token authorization failures',
+          { same_root_ancestor: false }
+        )
+
+      described_class.job_token_authorization_failures_counter
+    end
+  end
 end
