@@ -159,7 +159,9 @@ this should be set to `CASCADE`.
 When adding a foreign key in PostgreSQL the column is not indexed automatically,
 thus you must also add a concurrent index. Indexes are required for all foreign
 keys and they must be added in the same or earlier migration than the migration
-adding the foreign key.
+adding the foreign key. Conversely, foreign keys must be removed in
+the same or earlier migration than the migration
+removing indexes supporting these foreign keys.
 
 Without an index on the foreign key it forces Postgres to do a full table scan
 every time a record is deleted from the referenced table. In the past this has

@@ -4515,14 +4515,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it { is_expected.to be_a_kind_of(Blob) }
-
-      context 'when the blame_ignore_revs is not enabled' do
-        before do
-          stub_feature_flags(blame_ignore_revs: false)
-        end
-
-        it { is_expected.to be_nil }
-      end
     end
 
     it { is_expected.to be_nil }

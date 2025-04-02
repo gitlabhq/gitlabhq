@@ -9,6 +9,7 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
+import { linkedItems } from '~/graphql_shared/issuable_client';
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import {
   ISSUABLE_EPIC,
@@ -507,6 +508,13 @@ class GfmAutoComplete {
   }
 
   setupIssues($input) {
+    const instance = this;
+    const fetchData = this.fetchData.bind(this);
+    const MEMBER_COMMAND = {
+      UNLINK: '/unlink',
+    };
+    let command = '';
+
     $input.atwho({
       at: '#',
       alias: ISSUES_ALIAS,
@@ -538,6 +546,52 @@ class GfmAutoComplete {
               iconName: i.icon_name,
             };
           });
+        },
+        matcher(flag, subtext) {
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
+
+          // Check if # is followed by '/unlink' command.
+          command = subtextNodes.find((node) => {
+            if (Object.values(MEMBER_COMMAND).includes(node)) {
+              return node;
+            }
+            return null;
+          });
+
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          return match && match.length ? match[1] : null;
+        },
+        filter(query, data) {
+          // Limit enhanced /unlink to only Work Items for now.
+          const hasWorkItemIssuesEnabled =
+            gon.current_user_use_work_items_view || gon.features.workItemViewForIssues;
+          if (hasWorkItemIssuesEnabled && command === MEMBER_COMMAND.UNLINK) {
+            const { workItemFullPath, workItemIid } = this.$inputor
+              .get(0)
+              .closest('section')
+              .querySelector('#linkeditems').dataset;
+
+            // Only include items which are linked to the Issuable currently
+            // if `#` is followed by `/unlink` command.
+            const items = linkedItems()[`${workItemFullPath}:${workItemIid}`] || [];
+            return items.map((item) => ({
+              id: Number(item.iid),
+              title: item.title,
+              reference: item.reference,
+              search: `${item.iid} ${item.title}`,
+              iconName: item.workItemType.iconName,
+            }));
+          }
+
+          if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+            instance.previousQuery = query;
+
+            fetchData(this.$inputor, this.at, query);
+            return data;
+          }
+
+          // Return default data
+          return data;
         },
       },
     });

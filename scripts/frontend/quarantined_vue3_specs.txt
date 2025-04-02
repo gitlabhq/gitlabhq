@@ -34,7 +34,6 @@ ee/spec/frontend/iterations/components/iteration_form_spec.js
 ee/spec/frontend/iterations/components/iteration_report_issues_spec.js
 ee/spec/frontend/members/components/action_dropdowns/user_action_dropdown_spec.js
 ee/spec/frontend/members/components/modals/ldap_override_confirmation_modal_spec.js
-ee/spec/frontend/members/components/table/drawer/role_details_drawer_spec.js
 ee/spec/frontend/members/components/table/drawer/role_updater_spec.js
 ee/spec/frontend/members/components/table/max_role_spec.js
 ee/spec/frontend/members/components/table/members_table_spec.js
@@ -66,7 +65,6 @@ ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
-ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js

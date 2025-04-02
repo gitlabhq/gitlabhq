@@ -1,16 +1,6 @@
 import Vue from 'vue';
-import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
-
+import { parseBoolean } from '~/lib/utils/common_utils';
 import DismissibleAlert from '~/vue_shared/components/dismissible_alert.vue';
-
-const getCookieExpirationPeriod = (expirationPeriod) => {
-  const defaultExpirationPeriod = 30;
-  const alertExpirationPeriod = Number(expirationPeriod);
-
-  return !expirationPeriod || Number.isNaN(alertExpirationPeriod)
-    ? defaultExpirationPeriod
-    : alertExpirationPeriod;
-};
 
 const mountVueAlert = (el) => {
   const props = {
@@ -20,7 +10,6 @@ const mountVueAlert = (el) => {
     ...el.dataset,
     dismissible: parseBoolean(el.dataset.dismissible),
   };
-  const { dismissCookieName, dismissCookieExpire } = el.dataset;
 
   return new Vue({
     el,
@@ -28,16 +17,6 @@ const mountVueAlert = (el) => {
       return createElement(DismissibleAlert, {
         props,
         attrs,
-        on: {
-          alertDismissed() {
-            if (!dismissCookieName) {
-              return;
-            }
-            setCookie(dismissCookieName, true, {
-              expires: getCookieExpirationPeriod(dismissCookieExpire),
-            });
-          },
-        },
       });
     },
   });

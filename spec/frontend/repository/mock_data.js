@@ -54,18 +54,19 @@ export const userPermissionsMock = {
   forkProject: true,
   downloadCode: true,
   createMergeRequestIn: true,
-  adminPathLocks: true,
   __typename: 'ProjectPermissions',
 };
 
-export const projectMock = {
+export const getProjectMockWithOverrides = ({ userPermissionsOverride = {} } = {}) => ({
   __typename: 'Project',
   id: 'gid://gitlab/Project/7',
-  userPermissions: userPermissionsMock,
+  userPermissions: { ...userPermissionsMock, ...userPermissionsOverride },
   repository: {
     empty: false,
   },
-};
+});
+
+export const projectMock = getProjectMockWithOverrides();
 
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 

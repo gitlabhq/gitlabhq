@@ -18,12 +18,17 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { linkedItems } from '~/graphql_shared/issuable_client';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 
 const mockSpriteIcons = '/icons.svg';
+
+jest.mock('~/graphql_shared/issuable_client', () => ({
+  linkedItems: jest.fn(),
+}));
 
 describe('escape', () => {
   it.each`
@@ -55,6 +60,12 @@ describe('GfmAutoComplete', () => {
     $textarea.trigger('keyup');
 
     jest.runOnlyPendingTimers();
+  };
+
+  const getAutocompleteDropdownItems = (listSelector = '') => {
+    const dropdown = document.getElementById(listSelector);
+    const items = dropdown.getElementsByTagName('li');
+    return [].map.call(items, (item) => item.textContent.trim());
   };
 
   beforeEach(() => {
@@ -864,11 +875,7 @@ describe('GfmAutoComplete', () => {
       resetHTMLFixture();
     });
 
-    const getDropdownItems = () => {
-      const dropdown = document.getElementById('at-view-labels');
-      const items = dropdown.getElementsByTagName('li');
-      return [].map.call(items, (item) => item.textContent.trim());
-    };
+    const getDropdownItems = () => getAutocompleteDropdownItems('at-view-labels');
 
     const expectLabels = ({ input, output }) => {
       triggerDropdown($textarea, input);
@@ -1064,11 +1071,7 @@ describe('GfmAutoComplete', () => {
       resetHTMLFixture();
     });
 
-    const getDropdownItems = () => {
-      const dropdown = document.getElementById('at-view-contacts');
-      const items = dropdown.getElementsByTagName('li');
-      return [].map.call(items, (item) => item.textContent.trim());
-    };
+    const getDropdownItems = () => getAutocompleteDropdownItems('at-view-contacts');
 
     const expectContacts = ({ input, output }) => {
       triggerDropdown($textarea, input);
@@ -1125,6 +1128,104 @@ describe('GfmAutoComplete', () => {
           lastName: xssPayload,
         }),
       ).toBe(`<li><small>${escapedPayload} ${escapedPayload}</small> ${escapedPayload}</li>`);
+    });
+  });
+
+  describe('unlink', () => {
+    let autocomplete;
+    let $textarea;
+    const mockWorkItemFullPath = 'gitlab-test';
+    const mockWorkItemIid = '1';
+    const originalGon = window.gon;
+    const dataSources = {
+      issues: `${TEST_HOST}/autocomplete_sources/issues`,
+    };
+    const mockIssues = [
+      {
+        title: 'Issue 1',
+        iid: 1,
+        reference: 'group/project#1',
+        workItemType: { iconName: 'issues' },
+      },
+      {
+        title: 'Issue 2',
+        iid: 2,
+        reference: 'group/project#2',
+        workItemType: { iconName: 'issues' },
+      },
+    ];
+
+    const getDropdownItems = () => getAutocompleteDropdownItems('at-view-issues');
+
+    beforeEach(() => {
+      window.gon = {
+        current_user_use_work_items_view: true,
+      };
+      setHTMLFixture(`
+        <section>
+          <div id="linkeditems"
+              data-work-item-full-path="${mockWorkItemFullPath}"
+              data-work-item-iid="${mockWorkItemIid}"></div>
+          <textarea></textarea>
+        </section>
+      `);
+      $textarea = $('textarea');
+      linkedItems.mockImplementation(() => ({
+        [`${mockWorkItemFullPath}:${mockWorkItemIid}`]: [],
+      }));
+
+      autocomplete = new GfmAutoComplete(dataSources);
+      autocomplete.setup($textarea, { issues: true });
+      autocomplete.cachedData['#'] = {
+        // This looks odd but that's how GFMAutoComplete
+        // caches issues data internally.
+        '': [...mockIssues],
+      };
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+      window.gon = originalGon;
+    });
+
+    describe('without any linked issues present', () => {
+      it('using "#" shows all the issues', () => {
+        triggerDropdown($textarea, '#');
+
+        expect(getDropdownItems()).toHaveLength(mockIssues.length);
+        expect(getDropdownItems()).toEqual(mockIssues.map((i) => `${i.reference} ${i.title}`));
+      });
+
+      it('using "/unlink #" shows no issues', () => {
+        triggerDropdown($textarea, '/unlink #');
+
+        expect(getDropdownItems()).toHaveLength(0);
+        expect(linkedItems).toHaveBeenCalled();
+      });
+    });
+
+    describe('with linked issue present', () => {
+      beforeEach(() => {
+        linkedItems.mockImplementation(() => ({
+          [`${mockWorkItemFullPath}:${mockWorkItemIid}`]: [mockIssues[1]],
+        }));
+      });
+
+      it('using "#" shows all the issues', () => {
+        triggerDropdown($textarea, '#');
+
+        expect(getDropdownItems()).toHaveLength(mockIssues.length);
+        expect(getDropdownItems()).toEqual(mockIssues.map((i) => `${i.reference} ${i.title}`));
+      });
+
+      it('using "/unlink #" shows only linked issues', () => {
+        triggerDropdown($textarea, '/unlink #');
+
+        expect(getDropdownItems()).toHaveLength(1);
+        expect(getDropdownItems()).toEqual([mockIssues[1]].map((i) => `${i.reference} ${i.title}`));
+        expect(linkedItems).toHaveBeenCalled();
+      });
     });
   });
 

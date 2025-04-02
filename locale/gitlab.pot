@@ -26637,6 +26637,9 @@ msgstr ""
 msgid "Geo|Replication slots"
 msgstr ""
 
+msgid "Geo|Replication status"
+msgstr ""
+
 msgid "Geo|Replication summary"
 msgstr ""
 

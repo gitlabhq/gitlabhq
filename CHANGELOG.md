@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.3 (2025-04-02)
+
+No changes.
+
 ## 17.10.2 (2025-04-02)
 
 ### Fixed (2 changes)
@@ -821,6 +825,10 @@ entry.
 - [Validate NOT NULL on issue_links sharding key](https://gitlab.com/gitlab-org/gitlab/-/commit/88d10656deca31b2af41b3fcb20f5c56aa88af7e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180911))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/998d8028213da6bf0c3c1c08301797c8b3395c28) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180234))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/8ae69a3765cfb7561db95e43faa30cc60fac6444) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177662))
+
+## 17.9.5 (2025-04-02)
+
+No changes.
 
 ## 17.9.4 (2025-04-01)
 

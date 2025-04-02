@@ -8,7 +8,8 @@ import * as getters from './getters';
 export const useLegacyDiffs = defineStore('legacyDiffs', {
   syncWith: {
     store: mrNotes,
-    namespace: 'diffs',
+    name: 'diffs',
+    namespaced: true,
   },
   state() {
     return {

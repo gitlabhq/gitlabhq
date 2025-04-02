@@ -764,41 +764,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION sync_issues_correct_work_item_type_id_bidirectional() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-if NEW."work_item_type_id" IS NOT NULL
-AND (
-  NEW."correct_work_item_type_id" = OLD."correct_work_item_type_id"
-  OR (OLD."correct_work_item_type_id" IS NULL AND NEW."correct_work_item_type_id" IS NULL)
-) then
-SELECT
-  "correct_id" INTO NEW."correct_work_item_type_id"
-FROM
-  "work_item_types"
-WHERE
-  "work_item_types"."id" = NEW."work_item_type_id";
-end if;
-
-if NEW."correct_work_item_type_id" IS NOT NULL
-AND (
-  NEW."work_item_type_id" = OLD."work_item_type_id"
-  OR (OLD."work_item_type_id" IS NULL AND NEW."work_item_type_id" IS NULL)
-) then
-SELECT
-  "id" INTO NEW."work_item_type_id"
-FROM
-  "work_item_types"
-WHERE
-  "work_item_types"."correct_id" = NEW."correct_work_item_type_id";
-end if;
-
-RETURN NEW;
-
-END
-$$;
-
 CREATE FUNCTION sync_issues_dates_with_work_item_dates_sources() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16310,7 +16275,6 @@ CREATE TABLE issues (
     namespace_id bigint,
     start_date date,
     imported_from smallint DEFAULT 0 NOT NULL,
-    correct_work_item_type_id bigint NOT NULL,
     author_id_convert_to_bigint bigint,
     closed_by_id_convert_to_bigint bigint,
     duplicated_to_id_convert_to_bigint bigint,
@@ -20972,8 +20936,6 @@ ALTER SEQUENCE project_mirror_data_id_seq OWNED BY project_mirror_data.id;
 
 CREATE TABLE project_pages_metadata (
     project_id bigint NOT NULL,
-    deployed boolean DEFAULT false NOT NULL,
-    pages_deployment_id bigint,
     onboarding_complete boolean DEFAULT false NOT NULL
 );
 
@@ -25276,6 +25238,7 @@ CREATE TABLE web_hooks (
     encrypted_custom_headers_iv bytea,
     project_events boolean DEFAULT false NOT NULL,
     vulnerability_events boolean DEFAULT false NOT NULL,
+    member_approval_events boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1e4d5cbdc5 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_23a96ad211 CHECK ((char_length(description) <= 2048)),
     CONSTRAINT check_69ef76ee0c CHECK ((char_length(custom_webhook_template) <= 4096))
@@ -35979,8 +35942,6 @@ CREATE INDEX index_on_namespaces_namespaces_by_top_level_namespace ON namespaces
 
 CREATE INDEX index_on_oncall_schedule_escalation_rule ON incident_management_escalation_rules USING btree (oncall_schedule_id);
 
-CREATE INDEX index_on_pages_metadata_not_migrated ON project_pages_metadata USING btree (project_id) WHERE ((deployed = true) AND (pages_deployment_id IS NULL));
-
 CREATE UNIQUE INDEX index_on_project_id_escalation_policy_name_unique ON incident_management_escalation_policies USING btree (project_id, name);
 
 CREATE INDEX index_on_routes_lower_path ON routes USING btree (lower((path)::text));
@@ -36472,10 +36433,6 @@ CREATE INDEX index_project_mirror_data_on_last_update_at_and_retry_count ON proj
 CREATE UNIQUE INDEX index_project_mirror_data_on_project_id ON project_mirror_data USING btree (project_id);
 
 CREATE INDEX index_project_mirror_data_on_status ON project_mirror_data USING btree (status);
-
-CREATE INDEX index_project_pages_metadata_on_pages_deployment_id ON project_pages_metadata USING btree (pages_deployment_id);
-
-CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON project_pages_metadata USING btree (project_id) WHERE (deployed = true);
 
 CREATE INDEX index_project_relation_export_upload_id ON project_relation_export_uploads USING btree (project_relation_export_id);
 
@@ -38188,14 +38145,6 @@ CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, t
 CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHERE (theme_id = 11);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
-
-CREATE INDEX tmp_idx_issues_on_correct_type_project_created_at_state ON issues USING btree (correct_work_item_type_id, project_id, created_at, state_id);
-
-CREATE INDEX tmp_idx_issues_on_project_correct_type_closed_at_where_closed ON issues USING btree (project_id, correct_work_item_type_id, closed_at) WHERE (state_id = 2);
-
-CREATE INDEX tmp_idx_issues_on_project_health_id_asc_state_correct_type ON issues USING btree (project_id, health_status, id DESC, state_id, correct_work_item_type_id);
-
-CREATE INDEX tmp_idx_issues_on_project_health_id_desc_state_correct_type ON issues USING btree (project_id, health_status DESC NULLS LAST, id DESC, state_id, correct_work_item_type_id);
 
 CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
@@ -41377,8 +41326,6 @@ CREATE TRIGGER trigger_insert_or_update_vulnerability_reads_from_occurrences AFT
 
 CREATE TRIGGER trigger_insert_vulnerability_reads_from_vulnerability AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.present_on_default_branch IS NOT TRUE) AND (new.present_on_default_branch IS TRUE))) EXECUTE FUNCTION insert_vulnerability_reads_from_vulnerability();
 
-CREATE TRIGGER trigger_issues_work_item_type_id_bidirectional_sync BEFORE INSERT OR UPDATE OF work_item_type_id, correct_work_item_type_id ON issues FOR EACH ROW EXECUTE FUNCTION sync_issues_correct_work_item_type_id_bidirectional();
-
 CREATE TRIGGER trigger_namespaces_traversal_ids_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.traversal_ids IS DISTINCT FROM new.traversal_ids)) EXECUTE FUNCTION insert_namespaces_sync_event();
 
 CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION insert_projects_sync_event();
@@ -41565,9 +41512,6 @@ ALTER TABLE ONLY deployment_approvals
 ALTER TABLE ONLY project_relation_export_uploads
     ADD CONSTRAINT fk_0f7fad01a3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY project_pages_metadata
-    ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_105c1d6d08 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -41666,9 +41610,6 @@ ALTER TABLE ONLY analytics_devops_adoption_segments
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY issues
-    ADD CONSTRAINT fk_1adaba52b0 FOREIGN KEY (correct_work_item_type_id) REFERENCES work_item_types(correct_id);
 
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_1c78796d52 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;

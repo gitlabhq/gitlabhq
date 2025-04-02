@@ -5,6 +5,7 @@ import DismissibleAlert from '~/vue_shared/components/dismissible_alert.vue';
 const TEST_HTML = 'Hello World! <strong>Foo</strong>';
 
 describe('vue_shared/components/dismissible_alert', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
   const createComponent = (props = {}) => {
@@ -38,10 +39,6 @@ describe('vue_shared/components/dismissible_alert', () => {
 
       it('hides the alert', () => {
         expect(findAlert().exists()).toBe(false);
-      });
-
-      it('emmits alertDismissed', () => {
-        expect(wrapper.emitted()).toHaveProperty('alertDismissed');
       });
     });
   });

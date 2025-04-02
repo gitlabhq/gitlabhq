@@ -41,6 +41,7 @@ import {
   axiosMockResponse,
   FILE_SIZE_3MB,
   projectMock,
+  getProjectMockWithOverrides,
 } from 'ee_else_ce_jest/repository/mock_data';
 
 jest.mock('~/repository/components/blob_viewers');
@@ -94,15 +95,14 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
     },
   };
 
-  const projectInfo = {
-    ...projectMock,
-    userPermissions: {
+  const projectInfo = getProjectMockWithOverrides({
+    userPermissionsOverride: {
       pushCode,
       forkProject,
       downloadCode,
       createMergeRequestIn,
     },
-  };
+  });
 
   projectInfoMockResolver = jest.fn().mockResolvedValue({
     data: { project: projectInfo },

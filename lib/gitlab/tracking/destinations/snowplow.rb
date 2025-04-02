@@ -11,8 +11,7 @@ module Gitlab
         SNOWPLOW_NAMESPACE = 'gl'
 
         def initialize
-          return unless Feature.enabled?(:snowplow_tracking_post_method, :instance, type: :gitlab_com_derisk) &&
-            Feature.enabled?(:snowplow_buffer_events, :instance, type: :gitlab_com_derisk)
+          return if batching_disabled?
 
           Kernel.at_exit { tracker.flush(async: false) }
         end
@@ -90,21 +89,18 @@ module Gitlab
         end
 
         def emitter_options
-          options = {
+          {
             protocol: protocol,
             on_success: method(:increment_successful_events_emissions),
-            on_failure: method(:failure_callback)
+            on_failure: method(:failure_callback),
+            method: 'post',
+            buffer_size: batching_disabled? ? 1 : 10
           }
+        end
 
-          if Feature.enabled?(:snowplow_tracking_post_method, :instance, type: :gitlab_com_derisk)
-            # By default, Snowplow uses `get` method with buffer_size set to `1`.
-            # However, setting method to `post` changes default buffer_size to `10`
-            options[:method] = 'post'
-            buffer_size = Feature.enabled?(:snowplow_buffer_events, :instance, type: :gitlab_com_derisk) ? 10 : 1
-            options[:buffer_size] = buffer_size
-          end
-
-          options
+        def batching_disabled?
+          # disable batching to make local development and testing easier
+          Rails.env.development? || Rails.env.test?
         end
 
         def failure_callback(success_count, failures)

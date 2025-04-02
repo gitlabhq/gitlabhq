@@ -21,7 +21,21 @@ module Notes
       when 'MergeRequest'
         track_internal_event('create_merge_request_note', project: project, user: current_user)
       when 'WikiPage::Meta'
-        track_internal_event('create_wiki_page_note', project: project, user: current_user)
+        track_internal_event(
+          'create_wiki_page_note',
+          project: project,
+          namespace: note.noteable.namespace,
+          user: current_user
+        )
+
+        unless note.start_of_discussion?
+          track_internal_event(
+            'create_wiki_page_reply_note',
+            project: project,
+            namespace: note.noteable.namespace,
+            user: current_user
+          )
+        end
       end
     end
   end

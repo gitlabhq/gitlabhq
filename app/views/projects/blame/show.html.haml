@@ -37,8 +37,7 @@
         %span.right-label
           = s_("Blame|Older")
 
-      - if Feature.enabled?(:blame_ignore_revs, @project)
-        #js-blame-preferences{ data: blame_preferences(@project) }
+      #js-blame-preferences{ data: blame_preferences(@project) }
 
     .table-responsive.blame-table
       .blame-table-wrapper

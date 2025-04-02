@@ -7,7 +7,8 @@ import * as getters from './getters';
 export const useBatchComments = defineStore('batchComments', {
   syncWith: {
     store: mrNotes,
-    namespace: 'batchComments',
+    name: 'batchComments',
+    namespaced: true,
   },
   state() {
     return {

@@ -109,6 +109,18 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
     end
 
+    describe '#counts' do
+      where(:scope) do
+        %w[projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown]
+      end
+
+      with_them do
+        it 'returns an empty array' do
+          expect(results.counts(scope)).to be_empty
+        end
+      end
+    end
+
     context "when count_limit is lower than total amount" do
       before do
         allow(results).to receive(:count_limit).and_return(1)

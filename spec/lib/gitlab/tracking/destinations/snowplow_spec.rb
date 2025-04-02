@@ -10,20 +10,26 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   end
 
   before do
-    stub_application_setting(snowplow_collector_hostname: 'gitfoo.com')
-    stub_application_setting(snowplow_app_id: '_abc123_')
+    stub_application_setting(
+      snowplow_collector_hostname: 'gitfoo.com',
+      snowplow_app_id: '_abc123_',
+      snowplow_enabled: true
+    )
+
+    allow(Kernel).to receive(:at_exit)
   end
 
   around do |example|
     freeze_time { example.run }
   end
 
-  context 'when snowplow is enabled and POST and buffer are enabled' do
+  context 'when in production environment' do
     before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: true, snowplow_buffer_events: true)
+      allow(Rails.env).to receive_messages(
+        development?: false,
+        test?: false
+      )
 
-      allow(Kernel).to receive(:at_exit)
       expect(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
         .with(endpoint: 'gitfoo.com',
@@ -74,12 +80,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
-  context "when snowplow POST is enabled and buffer is disabled" do
-    before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: true, snowplow_buffer_events: false)
-    end
-
+  context "when in development or test environment" do
     it "initializes POST emitter with buffer_size 1" do
       allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
       allow(tracker).to receive(:track_struct_event).and_call_original
@@ -104,65 +105,11 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
-  context "when snowplow POST is disabled and buffer is enabled" do
-    before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: false, snowplow_buffer_events: true)
-    end
-
-    it "initializes emitter without specifying the buffer_size" do
-      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
-      allow(tracker).to receive(:track_struct_event).and_call_original
-
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
-
-    it "doesn't add Kernel.at_exit hook" do
-      expect(Kernel).not_to receive(:at_exit)
-
-      subject
-    end
-  end
-
-  context "when snowplow POST and buffer are disabled" do
-    before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: false, snowplow_buffer_events: false)
-    end
-
-    it "initializes emitter without specifying the buffer_size" do
-      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
-      allow(tracker).to receive(:track_struct_event).and_call_original
-
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
-
-    it "doesn't add Kernel.at_exit hook" do
-      expect(Kernel).not_to receive(:at_exit)
-
-      subject
-    end
-  end
-
   context 'when snowplow is disabled' do
     describe '#event' do
       it 'does not send event to tracker' do
+        stub_application_setting(snowplow_enabled: false)
+
         expect_any_instance_of(SnowplowTracker::Tracker).not_to receive(:track_struct_event)
 
         subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)

@@ -129,6 +129,11 @@ module Gitlab
       []
     end
 
+    # direct counts are only performed by Elasticsearch backed results
+    def counts(*)
+      {}
+    end
+
     def failed?(*)
       false
     end

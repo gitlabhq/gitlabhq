@@ -259,6 +259,25 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
   1. Retry running the failed migration. It should now succeed.
 
+## Issues to be aware of when upgrading to 17.9
+
+- Runner tags missing when upgrading to GitLab 17.9
+
+  When upgrading from 17.5 through a version older than the 17.8.6 or 17.9.3 patch releases, there is a chance of the
+  runner tags table becoming empty. Upgrading first to GitLab 17.6 sidesteps the issue.
+
+  The upcoming 17.9.4 patch release addresses the migration problem.
+
+  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
+  affected:
+
+  ```sql
+  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
+  ```
+
+  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
+  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
+
 ## 17.8.0
 
 - In GitLab 17.8.0, GitLab agent server for Kubernetes (KAS) does not start with the default settings on the GitLab Linux package (Omnibus) and Docker installations.

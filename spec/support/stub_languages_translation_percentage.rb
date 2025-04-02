@@ -9,9 +9,8 @@ module StubLanguagesTranslationPercentage
   def stub_languages_translation_percentage(list = {})
     return if list.blank?
 
-    expect(Gitlab::I18n)
+    allow(Gitlab::I18n)
       .to receive(:percentage_translated_for)
-      .at_least(:once)
       .and_wrap_original do |_original, code|
         list.with_indifferent_access[code].to_i
       end

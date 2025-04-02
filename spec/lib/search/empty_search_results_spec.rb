@@ -41,6 +41,12 @@ RSpec.describe ::Search::EmptySearchResults, feature_category: :global_search do
     end
   end
 
+  describe '#counts' do
+    it 'returns an empty array' do
+      expect(results.counts).to be_empty
+    end
+  end
+
   describe '#failed?' do
     [true, false].each do |failure|
       it "returns #{failure} when passed an error option" do

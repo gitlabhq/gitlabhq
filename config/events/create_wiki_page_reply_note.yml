@@ -1,0 +1,17 @@
+---
+description: Wiki page notes that are part of a discussion created
+internal_events: true
+action: create_wiki_page_reply_note
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+product_categories:
+- wiki
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186341
+tiers:
+- free
+- premium
+- ultimate

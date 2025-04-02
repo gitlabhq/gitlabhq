@@ -35,9 +35,12 @@ export const syncWithVuex = (context) => {
   if (!config) {
     return;
   }
-  const { store: vuexStore, namespace } =
-    /** @type {{ store: VuexStore, namespace: string }} */ config;
-  const getVuexState = namespace ? () => vuexStore.state[namespace] : () => vuexStore.state;
+  const {
+    store: vuexStore,
+    name: vuexName,
+    namespaced,
+  } = /** @type {{ store: VuexStore, [name]: string, [namespaced]: boolean }} */ config;
+  const getVuexState = vuexName ? () => vuexStore.state[vuexName] : () => vuexStore.state;
   if (!isEqual(context.store.$state, getVuexState())) {
     Object.entries(getVuexState()).forEach(([key, value]) => {
       // we can't use store.$patch here because it will merge state, but we need to overwrite it
@@ -52,25 +55,25 @@ export const syncWithVuex = (context) => {
     (mutation) => {
       if (committing) return;
       const { payload, type } = mutation;
-      const [prefixOrName, name] = type.split('/');
+      const [prefixOrName, mutationName] = type.split('/');
       committing = true;
-      if (!name && prefixOrName in context.store) {
+      if (!mutationName && prefixOrName in context.store) {
         context.store[prefixOrName](cloneDeep(payload));
-      } else if (prefixOrName === namespace && name in context.store) {
-        context.store[name](cloneDeep(payload));
+      } else if (prefixOrName === vuexName && mutationName in context.store) {
+        context.store[mutationName](cloneDeep(payload));
       }
       committing = false;
     },
     { prepend: true },
   );
 
-  context.store.$onAction(({ name, args }) => {
+  context.store.$onAction(({ name: mutationName, args }) => {
     if (committing) return;
-    const mutationName = namespace ? `${namespace}/${name}` : name;
+    const fullMutationName = namespaced ? `${vuexName}/${mutationName}` : mutationName;
     // eslint-disable-next-line no-underscore-dangle
-    if (!(mutationName in vuexStore._mutations)) return;
+    if (!(fullMutationName in vuexStore._mutations)) return;
     committing = true;
-    vuexStore.commit(mutationName, ...cloneDeep(args));
+    vuexStore.commit(fullMutationName, ...cloneDeep(args));
     committing = false;
   });
 };

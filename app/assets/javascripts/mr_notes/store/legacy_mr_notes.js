@@ -8,7 +8,7 @@ import mrNotes from '~/mr_notes/stores';
 export const useMrNotes = defineStore('legacyMrNotes', {
   syncWith: {
     store: mrNotes,
-    namespace: 'page',
+    name: 'page',
   },
   state() {
     return {

@@ -26,6 +26,10 @@ module Search
       []
     end
 
+    def counts(*)
+      {}
+    end
+
     def failed?(*)
       error.present?
     end

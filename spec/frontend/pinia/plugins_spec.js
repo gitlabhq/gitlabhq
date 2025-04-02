@@ -11,10 +11,12 @@ describe('Pinia plugins', () => {
   describe('syncWithVuex', () => {
     let vuexStore;
     let usePiniaStore;
-    let namespace;
+    let name;
+    let namespaced;
 
-    const getVuexName = (name) => (namespace ? `${namespace}/${name}` : name);
-    const getVuexState = () => (namespace ? vuexStore.state[namespace] : vuexStore.state);
+    const getVuexName = (unprefixedName) =>
+      namespaced ? `${name}/${unprefixedName}` : unprefixedName;
+    const getVuexState = () => (name ? vuexStore.state[name] : vuexStore.state);
 
     const createState = () => ({
       primitive: 'foo',
@@ -47,11 +49,11 @@ describe('Pinia plugins', () => {
       vuexStore = new Vuex.Store(createVuexStoreConfig());
     };
 
-    const createNamespacedVuexStore = () => {
+    const createVuexStoreWithModule = () => {
       vuexStore = new Vuex.Store({
         modules: {
-          [namespace]: {
-            namespaced: true,
+          [name]: {
+            namespaced,
             ...createVuexStoreConfig(),
           },
         },
@@ -62,7 +64,8 @@ describe('Pinia plugins', () => {
       usePiniaStore = defineStore('exampleStore', {
         syncWith: {
           store: vuexStore,
-          namespace,
+          name,
+          namespaced,
         },
         state() {
           return createState();
@@ -93,9 +96,20 @@ describe('Pinia plugins', () => {
       [
         'with a namespaced store',
         () => {
-          namespace = 'myStore';
-          createNamespacedVuexStore();
-          createPiniaStore(namespace);
+          name = 'myStore';
+          namespaced = true;
+          createVuexStoreWithModule();
+          createPiniaStore();
+          setActivePinia(createPinia().use(syncWithVuex));
+        },
+      ],
+      [
+        'with a non namespaced named store',
+        () => {
+          name = 'myStore';
+          namespaced = false;
+          createVuexStoreWithModule();
+          createPiniaStore();
           setActivePinia(createPinia().use(syncWithVuex));
         },
       ],
@@ -105,7 +119,8 @@ describe('Pinia plugins', () => {
       });
 
       afterEach(() => {
-        namespace = undefined;
+        name = undefined;
+        namespaced = undefined;
       });
 
       describe('primitives', () => {

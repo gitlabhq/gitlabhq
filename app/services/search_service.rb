@@ -72,6 +72,10 @@ class SearchService
     search_results.aggregations(scope)
   end
 
+  def search_counts
+    search_results.counts(scope)
+  end
+
   def abuse_detected?
     params.abusive? || pipe_abuse_detector.abusive?
   end

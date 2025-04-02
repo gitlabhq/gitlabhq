@@ -1452,10 +1452,8 @@ In 18.0, GitLab is updating the [pipeline variable restrictions](https://docs.gi
 As a result of this change, the ability to use pipeline CI/CD variables will be restricted for all users by default.
 If necessary, you can manually update this setting with a minimum role that is allowed to use pipeline variables, though it's recommended to keep this as restricted as possible.
 
-You can already start using a more secure-by-default experience for pipeline variables by enabling the current setting with the Project settings API, to increase the allowed role to Maintainers and above.
-You can also raise the minimum role to the recommended [Owner only, or no one](https://docs.gitlab.com/ci/variables/#restrict-pipeline-variables).
-Starting in 17.7, this will be the default for all new projects in new namespaces on GitLab.com.
-We also plan to make this easier to manage by adding an option to control this from the project settings UI.
+You can already start using a more secure-by-default experience for pipeline variables by raising the minimum role to the recommended [Owner only, or no one](https://docs.gitlab.com/ci/variables/#restrict-pipeline-variables).
+Starting in 17.7, this is the default for all new projects in new namespaces on GitLab.com.
 
 </div>
 
