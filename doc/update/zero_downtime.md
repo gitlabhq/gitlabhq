@@ -264,7 +264,7 @@ In addition to the above, Rails is where the main database migrations need to be
 
    1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
-   1. Configure regular migrations to by setting `gitlab_rails['auto_migrate'] = true` in the
+   1. Configure regular migrations to run by setting `gitlab_rails['auto_migrate'] = true` in the
       `/etc/gitlab/gitlab.rb` configuration file.
       - If the deploy node is currently going through PgBouncer to reach the database then
         you must [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)

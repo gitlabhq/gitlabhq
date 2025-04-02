@@ -300,6 +300,10 @@ dependency_list_exports:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+deployment_approvals:
+  - table: ci_builds
+    column: ci_build_id
+    on_delete: async_delete
 deployment_clusters:
   - table: clusters
     column: cluster_id

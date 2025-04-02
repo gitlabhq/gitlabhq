@@ -13618,6 +13618,7 @@ CREATE TABLE deployment_approvals (
     comment text,
     approval_rule_id bigint,
     project_id bigint,
+    ci_build_id bigint,
     CONSTRAINT check_692c1d1b90 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_e2eb6a17d8 CHECK ((char_length(comment) <= 255))
 );
@@ -21635,6 +21636,7 @@ CREATE TABLE protected_environment_deploy_access_levels (
     group_inheritance_type smallint DEFAULT 0 NOT NULL,
     protected_environment_project_id bigint,
     protected_environment_group_id bigint,
+    CONSTRAINT check_cee712b465 CHECK ((num_nonnulls(protected_environment_group_id, protected_environment_project_id) = 1)),
     CONSTRAINT check_deploy_access_levels_user_group_access_level_any_not_null CHECK ((num_nonnulls(user_id, group_id, access_level) = 1))
 );
 
@@ -34574,6 +34576,8 @@ CREATE INDEX index_deploy_tokens_on_project_id ON deploy_tokens USING btree (pro
 CREATE UNIQUE INDEX index_deploy_tokens_on_token_encrypted ON deploy_tokens USING btree (token_encrypted);
 
 CREATE INDEX index_deployment_approvals_on_approval_rule_id ON deployment_approvals USING btree (approval_rule_id);
+
+CREATE INDEX index_deployment_approvals_on_ci_build_id ON deployment_approvals USING btree (ci_build_id);
 
 CREATE INDEX index_deployment_approvals_on_created_at_and_id ON deployment_approvals USING btree (created_at, id);
 

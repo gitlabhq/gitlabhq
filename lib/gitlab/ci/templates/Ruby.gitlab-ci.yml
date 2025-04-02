@@ -23,6 +23,9 @@ variables:
 
 # Cache gems in between builds
 cache:
+  key:
+    files:
+      - Gemfile.lock
   paths:
     - vendor/ruby
 
@@ -32,7 +35,8 @@ before_script:
   - ruby -v  # Print out ruby version for debugging
   # Uncomment next line if your rails app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
-  - bundle config set --local deployment true  # Install dependencies into ./vendor/ruby
+  - bundle config set --local deployment true
+  - bundle config set --local path './vendor/ruby' # Install dependencies into ./vendor/ruby
   - bundle install -j $(nproc)
 
 # Optional - Delete if not using `rubocop`

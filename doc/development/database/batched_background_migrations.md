@@ -1189,6 +1189,43 @@ for more details.
    end
    ```
 
+1. If possible update the entire sub-batch in a single query
+   instead of updating each model separately.
+   This can be achieve in different ways, depending on the scenario.
+
+   - Generate an `UPDATE` query, and use `FROM` to join the tables
+   that provide the necessary values 
+   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
+   - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to
+   pass values calculated beforehand
+   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177993)).
+   - Pass all keys and values to `ActiveRelation#update`.
+
+   ```ruby
+   # good
+   def perform
+     each_sub_batch do |sub_batch|
+       connection.execute <<~SQL
+         UPDATE fork_networks
+         SET organization_id = projects.organization_id
+         FROM projects
+         WHERE fork_networks.id IN (#{sub_batch.pluck(:id)})
+         AND fork_networks.root_project_id = projects.id
+         AND fork_networks.organization_id IS NULL
+       SQL
+     end
+   end
+
+   # bad
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.each |fork_network|
+         fork_network.update!(organization_id: fork_network.root_project.organization_id)
+       end
+     end
+   end
+   ```
+
 ## Examples
 
 ### Routes use-case

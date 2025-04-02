@@ -6506,15 +6506,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe 'prepare' do
-    it 'calls NewMergeRequestWorker' do
-      expect(NewMergeRequestWorker).to receive(:perform_async)
-        .with(subject.id, subject.author_id)
-
-      subject.prepare
-    end
-  end
-
   describe '#check_for_spam?' do
     let_it_be(:project) { create(:project, :public) }
     let(:merge_request) { build_stubbed(:merge_request, source_project: project) }

@@ -2413,10 +2413,6 @@ class MergeRequest < ApplicationRecord
     prepared_at.present?
   end
 
-  def prepare
-    NewMergeRequestWorker.perform_async(id, author_id)
-  end
-
   def check_for_spam?(*)
     spammable_attribute_changed? && project.public?
   end
