@@ -489,5 +489,41 @@ describe('WorkItemTree', () => {
 
       expect(wrapper.emitted('show-modal')).toBeUndefined();
     });
+
+    it('emits `show-modal` event with child work item id on window `popstate` event', async () => {
+      const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
+      await createComponent();
+
+      expect(wrapper.emitted('show-modal')).toEqual([[{ modalWorkItem: null }]]);
+
+      setWindowLocation(`?show=${encodedWorkItemId}`);
+      window.dispatchEvent(new Event('popstate'));
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: null }],
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      ]);
+    });
+
+    it('emits `show-modal` event with `null` id on window `popstate` event when there is no show URL parameter', async () => {
+      const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
+      setWindowLocation(`?show=${encodedWorkItemId}`);
+      await createComponent();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      ]);
+
+      setWindowLocation('?otherThing=true');
+      window.dispatchEvent(new Event('popstate'));
+      await waitForPromises();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+        [{ modalWorkItem: null }],
+      ]);
+    });
   });
 });

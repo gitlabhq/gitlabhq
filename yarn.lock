@@ -1417,7 +1417,8 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.1":
+"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  name jackspeak
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1441,10 +1442,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.126.0.tgz#1c0bb95c11de808b78afd05dc95aca258c3b39f0"
   integrity sha512-7X8uzitNn7NDcVy+FVCw8npMNEUpLGHTO5Z+BJZqVILj/FD+0WveYdPxAEVa9hXYQn5qXWM0ZAknzB9LM6Id8w==
 
-"@gitlab/ui@111.10.1":
-  version "111.10.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-111.10.1.tgz#3229d7ed3a79256be407859e3ef973c98e37bee0"
-  integrity sha512-jYYFk/Srywa714tLKcSj6DlO/UziBBwQywfczorkoMiU7feykrVGJNFBFztUOeyf8S6nfce72AAbDDFFIKB0pA==
+"@gitlab/ui@111.10.2":
+  version "111.10.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-111.10.2.tgz#99d6afe9f9d065d9685ac2cb0f801086d5766c59"
+  integrity sha512-hWKwd2AvEi4vlpdm5BqZtdfdX5Dp6H5hvbct+oDgyyUUvBCAjHFcF1fZo1nL396iVLlBcadtF8+3bqOy7P0x3w==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -1469,10 +1470,10 @@
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-"@gitlab/web-ide@^0.0.1-dev-20250320115735":
-  version "0.0.1-dev-20250320115735"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250320115735.tgz#4357486b82fecfdc48fe620bb688a158f745ded2"
-  integrity sha512-aPgFLey49HmMkhhQfpFj1kGC81q9N+9uQhOsbnD/b6hnuMaUu5PZNrfor/d3kqFEl53ju4AQb5uerxUF8hwZ1Q==
+"@gitlab/web-ide@^0.0.1-dev-20250401183248":
+  version "0.0.1-dev-20250401183248"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250401183248.tgz#a2ed1fab68762f3e0f7857f6e1821f8039d5f671"
+  integrity sha512-7zGXrEwY66ozPWUDBxcgovbfkWMT4xAuovXbS791zPVC3Fq1jaM4Rek5QrtPFxkfxqkUb0USrTr/u585xp5WMw==
 
 "@gleam-lang/highlight.js-gleam@^1.5.0":
   version "1.5.0"
@@ -9486,11 +9487,6 @@ iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
-
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jed@^1.1.1:
   version "1.1.1"

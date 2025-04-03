@@ -132,6 +132,28 @@ describeSkipVue3(skipReason, () => {
     });
   };
 
+  const mountComponentWithShowParam = async (issue) => {
+    const showParams = {
+      id: getIdFromGraphQLId(issue.id),
+      iid: issue.iid,
+      full_path: issue.namespace.fullPath,
+    };
+    const show = btoa(JSON.stringify(showParams));
+    setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
+    getParameterByName.mockReturnValue(show);
+
+    mountComponent({
+      provide: {
+        workItemType: TYPE_ISSUE,
+        glFeatures: {
+          issuesListDrawer: true,
+        },
+      },
+    });
+    await waitForPromises();
+    await nextTick();
+  };
+
   it('renders loading icon when initially fetching work items', () => {
     mountComponent();
 
@@ -668,24 +690,8 @@ describeSkipVue3(skipReason, () => {
     describe('When the `show` parameter matches an item in the list', () => {
       it('displays the item in the drawer', async () => {
         const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
-        const showParams = {
-          id: getIdFromGraphQLId(issue.id),
-          iid: issue.iid,
-          full_path: issue.namespace.fullPath,
-        };
-        const show = btoa(JSON.stringify(showParams));
-        setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
-        getParameterByName.mockReturnValue(show);
-        mountComponent({
-          provide: {
-            workItemType: TYPE_ISSUE,
-            glFeatures: {
-              issuesListDrawer: true,
-            },
-          },
-        });
-        await waitForPromises();
-        await nextTick();
+        await mountComponentWithShowParam(issue);
+
         expect(findDrawer().props('open')).toBe(true);
         expect(findDrawer().props('activeItem')).toMatchObject(issue);
       });
@@ -712,6 +718,44 @@ describeSkipVue3(skipReason, () => {
       });
       it('calls `removeParams` to remove the `show` param', () => {
         expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+      });
+    });
+
+    describe('when window `popstate` event is triggered', () => {
+      it('closes the drawer if there is no `show` param', async () => {
+        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+        await mountComponentWithShowParam(issue);
+        expect(findDrawer().props('open')).toBe(true);
+        expect(findDrawer().props('activeItem')).toMatchObject(issue);
+
+        setWindowLocation('?');
+        window.dispatchEvent(new Event('popstate'));
+
+        await nextTick();
+        expect(findDrawer().props('open')).toBe(false);
+      });
+
+      it('updates the drawer with the new item if there is a `show` param', async () => {
+        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+        const nextIssue = groupWorkItemsQueryResponse.data.group.workItems.nodes[1];
+        await mountComponentWithShowParam(issue);
+
+        expect(findDrawer().props('open')).toBe(true);
+        expect(findDrawer().props('activeItem')).toMatchObject(issue);
+
+        const showParams = {
+          id: getIdFromGraphQLId(nextIssue.id),
+          iid: nextIssue.iid,
+          full_path: nextIssue.namespace.fullPath,
+        };
+        const show = btoa(JSON.stringify(showParams));
+        setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
+
+        window.dispatchEvent(new Event('popstate'));
+        await waitForPromises();
+
+        expect(findDrawer().props('open')).toBe(true);
+        expect(findDrawer().props('activeItem')).toMatchObject(issue);
       });
     });
   });

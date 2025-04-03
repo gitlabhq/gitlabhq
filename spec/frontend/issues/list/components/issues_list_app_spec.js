@@ -1112,7 +1112,7 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('when issue drawer is enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper = mountComponent({
         provide: {
           glFeatures: {
@@ -1120,6 +1120,7 @@ describe('CE IssuesListApp component', () => {
           },
         },
       });
+      await waitForPromises();
     });
 
     it('renders issuable drawer component', () => {
@@ -1394,6 +1395,20 @@ describe('CE IssuesListApp component', () => {
         );
         expect(findWorkItemDrawer().props('open')).toBe(true);
         await router.push({ query: { otherThing: true } });
+        expect(findWorkItemDrawer().props('open')).toBe(false);
+      });
+    });
+    describe('on window `popstate` event', () => {
+      it('sets the `activeIssuable` to null, closing the drawer if show parameter is not present', async () => {
+        findIssuableList().vm.$emit(
+          'select-issuable',
+          getIssuesQueryResponse.data.project.issues.nodes[0],
+        );
+        expect(findWorkItemDrawer().props('open')).toBe(true);
+
+        setWindowLocation('?otherThing=true');
+        window.dispatchEvent(new Event('popstate'));
+        await nextTick();
         expect(findWorkItemDrawer().props('open')).toBe(false);
       });
     });

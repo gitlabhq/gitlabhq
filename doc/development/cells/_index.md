@@ -25,17 +25,19 @@ Below are available schemas related to Cells and Organizations:
 
 Depending on the use case, your feature may be [organization-level, or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
-When you choose the appropriate [schema](../database/multiple_databases.md#gitlab-schema) for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
+When you choose the appropriate [schema](#available-cells--organization-schemas) for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
 
 - Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
 - Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group. This is crucial because it has scaling implications and may require reconsideration of the schema choice.
 
-Tables with `gitlab_main_clusterwide` schema will need additional work to be replicated to other / all cells.
-The replication strategy will likely be different for each case, but will involve internal APIs.
-The application may also need to be modified to restrict writes to prevent conflicts.
-We may also ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
+When proposing new tables with `gitlab_main_clusterwide` schema, be aware of the following:
 
-Do not use cluster-wide database tables to store [static data](#static-data).
+- Do not use cluster-wide database tables to store [static data](#static-data).
+- Must be able to be synchronized independently to other / all cells.
+- Should only have a tiny amount of rows. Larger tables with many rows are not suitable to be cluster-wide tables.
+- Must not have references to / from other tables that will cause data issues when synchronized to other cells.
+
+We may also ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
 
 To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
 

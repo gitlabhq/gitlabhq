@@ -631,6 +631,11 @@ export default {
       document.title = s__('404|Not found');
     },
     openContextualView({ event, modalWorkItem }) {
+      if (!modalWorkItem) {
+        this.activeChildItem = null;
+        return;
+      }
+
       if (
         !this.contextualViewEnabled ||
         modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||

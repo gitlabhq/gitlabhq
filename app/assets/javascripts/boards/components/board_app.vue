@@ -3,12 +3,7 @@ import { omit } from 'lodash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { historyPushState, parseBoolean } from '~/lib/utils/common_utils';
-import {
-  refreshCurrentPage,
-  queryToObject,
-  mergeUrlParams,
-  removeParams,
-} from '~/lib/utils/url_utility';
+import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
@@ -133,11 +128,7 @@ export default {
     },
   },
   created() {
-    window.addEventListener('popstate', refreshCurrentPage);
     this.initIsShowingEpicSwimlanes();
-  },
-  destroyed() {
-    window.removeEventListener('popstate', refreshCurrentPage);
   },
   methods: {
     refetchLists() {

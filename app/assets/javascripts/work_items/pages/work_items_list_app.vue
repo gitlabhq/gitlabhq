@@ -579,6 +579,10 @@ export default {
     this.updateData(this.initialSort);
     this.addStateToken();
     this.autocompleteCache = new AutocompleteCache();
+    window.addEventListener('popstate', this.checkDrawerParams);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.checkDrawerParams);
   },
   methods: {
     handleToggle(item) {
@@ -756,6 +760,7 @@ export default {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
       if (!queryParam) {
+        this.activeItem = null;
         return;
       }
 

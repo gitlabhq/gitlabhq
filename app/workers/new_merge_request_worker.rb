@@ -31,3 +31,5 @@ class NewMergeRequestWorker
     MergeRequest
   end
 end
+
+NewMergeRequestWorker.prepend_mod

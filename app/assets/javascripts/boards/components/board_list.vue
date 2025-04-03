@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { STATUS_CLOSED } from '~/issues/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __, s__ } from '~/locale';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
@@ -49,7 +50,7 @@ export default {
     GlIntersectionObserver,
     BoardCardMoveToPosition,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: [
     'isEpicBoard',
     'isIssueBoard',
@@ -132,26 +133,10 @@ export default {
         });
       },
       result({ data }) {
-        if (this.hasMadeDrawerAttempt) {
+        if (this.hasMadeDrawerAttempt || !data) {
           return;
         }
-        const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
-
-        if (!data || !queryParam) {
-          return;
-        }
-
-        const { iid, full_path: fullPath } = JSON.parse(atob(queryParam));
-        const boardItem = this.boardListItems.find(
-          (item) => item.iid === iid && item.referencePath.includes(fullPath),
-        );
-
-        if (boardItem) {
-          this.setActiveWorkItem(boardItem);
-        } else {
-          this.$emit('cannot-find-active-item');
-        }
-        this.hasMadeDrawerAttempt = true;
+        this.checkDrawerParams();
       },
     },
     toList: {
@@ -316,6 +301,12 @@ export default {
     shouldCloneCard() {
       return shouldCloneCard(this.list.listType, this.toList.listType);
     },
+    issuesDrawerEnabled() {
+      if (gon.current_user_use_work_items_view) return true;
+      return Boolean(
+        this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
+      );
+    },
   },
   watch: {
     boardListItems() {
@@ -323,6 +314,12 @@ export default {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());
       });
     },
+  },
+  created() {
+    window.addEventListener('popstate', this.checkDrawerParams);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.checkDrawerParams);
   },
   methods: {
     listHeight() {
@@ -683,6 +680,30 @@ export default {
           isIssue: this.isIssueBoard,
         },
       });
+    },
+    checkDrawerParams() {
+      if (!this.issuesDrawerEnabled) {
+        return;
+      }
+
+      const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+
+      if (!queryParam) {
+        this.setActiveWorkItem(null);
+        return;
+      }
+
+      const { iid, full_path: fullPath } = JSON.parse(atob(queryParam));
+      const boardItem = this.boardListItems.find(
+        (item) => item.iid === iid && item.referencePath.includes(fullPath),
+      );
+
+      if (boardItem) {
+        this.setActiveWorkItem(boardItem);
+      } else {
+        this.$emit('cannot-find-active-item');
+      }
+      this.hasMadeDrawerAttempt = true;
     },
   },
 };

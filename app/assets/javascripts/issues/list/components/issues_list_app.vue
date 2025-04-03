@@ -642,12 +642,14 @@ export default {
   created() {
     this.updateData(this.initialSort);
     this.cache = {};
+    window.addEventListener('popstate', this.checkDrawerParams);
   },
   mounted() {
     eventHub.$on('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   beforeDestroy() {
     eventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
+    window.removeEventListener('popstate', this.checkDrawerParams);
   },
   methods: {
     // eslint-disable-next-line max-params
@@ -971,7 +973,8 @@ export default {
     checkDrawerParams() {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
-      if (this.activeIssuable || !queryParam) {
+      if (!queryParam) {
+        this.activeIssuable = null;
         return;
       }
 

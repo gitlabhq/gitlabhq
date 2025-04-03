@@ -311,6 +311,12 @@ export default {
       },
     },
   },
+  created() {
+    window.addEventListener('popstate', this.checkDrawerParams);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.checkDrawerParams);
+  },
   mounted() {
     this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
     this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
@@ -376,6 +382,7 @@ export default {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
       if (!queryParam) {
+        this.$emit('show-modal', { modalWorkItem: null });
         return;
       }
 

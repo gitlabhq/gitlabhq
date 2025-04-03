@@ -5440,6 +5440,60 @@ export const groupWorkItemsQueryResponse = {
               name: 'Issue',
             },
           },
+          {
+            id: 'gid://gitlab/WorkItem/51',
+            iid: '21',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+              webPath: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
+            reference: 'javascriptjs/js#23',
+            state: 'OPEN',
+            title: 'a group level work item',
+            updatedAt: '',
+            webUrl: 'web/url',
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetAssignees',
+                assignees: {
+                  nodes: mockAssignees,
+                },
+                type: 'ASSIGNEES',
+              },
+              {
+                __typename: 'WorkItemWidgetLabels',
+                allowsScopedLabels: false,
+                labels: {
+                  nodes: [
+                    {
+                      __typename: 'Label',
+                      id: 'gid://gitlab/Label/7',
+                      color: '#f00',
+                      description: '',
+                      title: 'Label 7',
+                    },
+                  ],
+                },
+                type: 'LABELS',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
         ],
       },
     },
