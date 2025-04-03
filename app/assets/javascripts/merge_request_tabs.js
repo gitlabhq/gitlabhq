@@ -210,7 +210,7 @@ export default class MergeRequestTabs {
     this.pageLayout = document.querySelector('.layout-page');
     this.expandSidebar = document.querySelectorAll('.js-expand-sidebar, .js-sidebar-toggle');
     this.paddingTop = 16;
-    this.actionRegex = /\/(commits|diffs|pipelines|reports(\/(.*))?)(\.html)?\/?$/;
+    this.actionRegex = /\/(commits|diffs|pipelines|reports(?:\/[^/]+)?)(\.html)?\/?$/;
 
     this.scrollPositions = {};
 
@@ -446,7 +446,7 @@ export default class MergeRequestTabs {
     if (
       this.currentAction !== 'show' &&
       this.currentAction !== 'new' &&
-      !/reports\/(.*)$/.test(pathname)
+      !newStatePathname.endsWith(`/${this.currentAction}`)
     ) {
       newStatePathname += `/${this.currentAction}`;
     }
