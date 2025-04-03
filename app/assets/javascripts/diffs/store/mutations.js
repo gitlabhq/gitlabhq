@@ -411,7 +411,7 @@ export default {
     state.mrReviews = newReviews;
   },
   [types.DISABLE_VIRTUAL_SCROLLING](state) {
-    state.disableVirtualScroller = true;
+    state.virtualScrollerDisabled = true;
   },
   [types.TOGGLE_FILE_COMMENT_FORM](state, filePath) {
     const file = findDiffFile(state.diffFiles, filePath, 'file_path');

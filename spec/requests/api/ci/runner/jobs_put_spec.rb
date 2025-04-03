@@ -255,23 +255,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
-      context 'when job is canceling and the FF disabled' do
-        before do
-          stub_feature_flags(ci_read_runner_manager_features: false)
-          job.set_cancel_gracefully
-          job.cancel!
-        end
-
-        it 'returns :ok with the job status' do
-          update_job(state: 'running')
-
-          job.reload
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.header['Job-Status']).to eq 'canceling'
-          expect(job).to be_canceling
-        end
-      end
-
       context 'when job is canceling' do
         before do
           attributes = attributes_for(:ci_runner_machine, :cancel_gracefully_feature).slice(:runtime_features)

@@ -275,6 +275,10 @@ module Ci
       end
     end
 
+    def cancel_gracefully?
+      false
+    end
+
     private
 
     def dependencies

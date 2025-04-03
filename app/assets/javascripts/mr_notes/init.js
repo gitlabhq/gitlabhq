@@ -1,5 +1,5 @@
 import { parseBoolean, getCookie } from '~/lib/utils/common_utils';
-import mrNotes from '~/mr_notes/stores';
+import store from '~/mr_notes/stores';
 import { getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { initReviewBar } from '~/batch_comments';
@@ -14,7 +14,7 @@ import { useBatchComments } from '~/batch_comments/store';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { pinia } from '~/pinia/instance';
 
-function setupMrNotesState(store, notesDataset, diffsDataset = {}) {
+function setupMrNotesState(notesDataset, diffsDataset = {}) {
   const noteableData = JSON.parse(notesDataset.noteableData);
   noteableData.noteableType = notesDataset.noteableType;
   noteableData.targetType = notesDataset.targetType;
@@ -49,7 +49,7 @@ function setupMrNotesState(store, notesDataset, diffsDataset = {}) {
   });
 }
 
-export function initMrStateLazyLoad(store = mrNotes) {
+export function initMrStateLazyLoad() {
   // Pinia stores must be initialized manually during migration, otherwise they won't sync with Vuex
   useNotes(pinia);
   useLegacyDiffs(pinia);
@@ -68,7 +68,7 @@ export function initMrStateLazyLoad(store = mrNotes) {
   stop = store.watch(
     (state) => state.page.activeTab,
     (activeTab) => {
-      setupMrNotesState(store, discussionsEl.dataset, diffsEl?.dataset);
+      setupMrNotesState(discussionsEl.dataset, diffsEl?.dataset);
 
       // prevent loading MR state on commits and pipelines pages
       // this is due to them having a shared controller with the Overview page

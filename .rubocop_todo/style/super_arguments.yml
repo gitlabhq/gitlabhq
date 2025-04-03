@@ -4,17 +4,8 @@ Style/SuperArguments:
   Details: grace period
   Exclude:
     - 'app/finders/merge_requests_finder.rb'
-    - 'app/finders/packages/composer/packages_finder.rb'
     - 'app/finders/work_items/work_items_finder.rb'
     - 'app/graphql/gitlab_schema.rb'
-    - 'app/graphql/mutations/notes/create/diff_note.rb'
-    - 'app/graphql/mutations/notes/create/discussion.rb'
-    - 'app/graphql/mutations/notes/create/image_diff_note.rb'
-    - 'app/graphql/mutations/notes/create/note.rb'
-    - 'app/graphql/mutations/notes/update/image_diff_note.rb'
-    - 'app/graphql/resolvers/ci/group_runners_resolver.rb'
-    - 'app/graphql/resolvers/concerns/work_items/shared_filter_arguments.rb'
-    - 'app/graphql/resolvers/environments/nested_environments_resolver.rb'
     - 'app/graphql/resolvers/issues/base_resolver.rb'
     - 'app/graphql/resolvers/merge_requests/assignee_or_reviewer_merge_requests_resolver.rb'
     - 'app/graphql/resolvers/work_items_resolver.rb'

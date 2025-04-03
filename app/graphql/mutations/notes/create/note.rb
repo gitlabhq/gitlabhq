@@ -31,7 +31,7 @@ module Mutations
             discussion_id = discussion.id
           end
 
-          super(noteable, args).merge({
+          super.merge({
             in_reply_to_discussion_id: discussion_id,
             merge_request_diff_head_sha: args[:merge_request_diff_head_sha]
           })

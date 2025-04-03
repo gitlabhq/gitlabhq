@@ -6,6 +6,7 @@ import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -37,10 +38,18 @@ import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/c
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import waitForPromises from 'helpers/wait_for_promises';
-import { diffMetadata } from 'jest/diffs/mock_data/diff_metadata';
 import { removeCookie, setCookie } from '~/lib/utils/common_utils';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { DynamicScroller } from 'vendor/vue-virtual-scroller';
+import * as mergeRequestUtils from '~/diffs/utils/merge_request';
+import {
+  keysFor,
+  MR_NEXT_FILE_IN_DIFF,
+  MR_PREVIOUS_FILE_IN_DIFF,
+} from '~/behaviors/shortcuts/keybindings';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -52,6 +61,7 @@ const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
+Vue.use(PiniaVuePlugin);
 
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.findComponent(CollapsedFilesWarning);
@@ -63,17 +73,11 @@ describe('diffs/components/app', () => {
   let wrapper;
   let mock;
   let fakeApollo;
+  let pinia;
 
   const codeQualityAndSastQueryHandlerSuccess = jest.fn().mockResolvedValue({});
 
-  const createComponent = ({
-    props = {},
-    extendStore = () => {},
-    provisions = {},
-    baseConfig = {},
-    actions = {},
-  } = {}) => {
-    const pinia = createTestingPinia({ stubActions: false });
+  const createComponent = ({ props = {}, provisions = {} } = {}) => {
     fakeApollo = createMockApollo([
       [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
     ]);
@@ -85,13 +89,32 @@ describe('diffs/components/app', () => {
       },
     };
 
-    store = createDiffsStore({ actions });
-    store.state.diffs.isLoading = false;
-    store.state.diffs.isTreeLoaded = true;
+    wrapper = shallowMount(App, {
+      apolloProvider: fakeApollo,
+      propsData: {
+        shouldShow: true,
+        endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
+        endpointCodequality: '',
+        sastReportAvailable: false,
+        projectPath: 'namespace/project',
+        currentUser: {},
+        changesEmptyStateIllustration: '',
+        ...props,
+      },
+      provide,
+      store: createDiffsStore(),
+      pinia,
+    });
+  };
 
-    extendStore(store);
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
 
-    store.dispatch('diffs/setBaseConfig', {
+    store = useLegacyDiffs();
+    store.isLoading = false;
+    store.isTreeLoaded = true;
+
+    store.setBaseConfig({
       endpoint: TEST_ENDPOINT,
       endpointMetadata: ENDPOINT_METADATA_URL,
       endpointBatch: ENDPOINT_BATCH_URL,
@@ -102,27 +125,12 @@ describe('diffs/components/app', () => {
       mrReviews: {},
       diffViewType: 'inline',
       viewDiffsFileByFile: false,
-      ...baseConfig,
     });
 
-    wrapper = shallowMount(App, {
-      apolloProvider: fakeApollo,
-      propsData: {
-        endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
-        endpointCodequality: '',
-        sastReportAvailable: false,
-        projectPath: 'namespace/project',
-        currentUser: {},
-        changesEmptyStateIllustration: '',
-        ...props,
-      },
-      provide,
-      store,
-      pinia,
-    });
-  };
+    store.fetchDiffFilesMeta.mockResolvedValue({ real_size: '20' });
+    store.fetchDiffFilesBatch.mockResolvedValue();
+    store.assignDiscussionsToDiff.mockResolvedValue();
 
-  beforeEach(() => {
     stubPerformanceWebAPI();
     // setup globals (needed for component to mount :/)
     window.mrTabs = {
@@ -141,45 +149,28 @@ describe('diffs/components/app', () => {
   });
 
   describe('fetch diff methods', () => {
-    it('calls batch methods if diffsBatchLoad is enabled', async () => {
+    it('calls batch methods if diffsBatchLoad is enabled', () => {
       jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
       createComponent({});
-      jest.spyOn(store, 'dispatch');
-      await wrapper.vm.fetchData(false);
 
-      expect(store.dispatch.mock.calls).toEqual([
-        ['diffs/fetchDiffFilesMeta', undefined],
-        ['diffs/fetchDiffFilesBatch', false],
-        ['diffs/fetchCoverageFiles', undefined],
-      ]);
+      expect(store.fetchDiffFilesMeta).toHaveBeenCalled();
+      expect(store.fetchDiffFilesBatch).toHaveBeenCalledWith(false);
+      expect(store.fetchCoverageFiles).toHaveBeenCalled();
     });
 
-    it('diff counter to update after fetch with changes', async () => {
-      createComponent({
-        actions: {
-          diffs: {
-            fetchDiffFilesMeta: jest.fn().mockResolvedValue({ real_size: 100 }),
-          },
-        },
-      });
-      expect(wrapper.vm.diffFilesLength).toEqual(0);
-      await wrapper.vm.fetchData(false);
+    it('updates diff counter', async () => {
+      const spy = jest.spyOn(mergeRequestUtils, 'updateChangesTabCount');
+      createComponent();
       await waitForPromises();
-      expect(wrapper.vm.diffFilesLength).toEqual(100);
+      expect(spy).toHaveBeenCalledWith({ count: 20 });
     });
 
-    it('diff counter to update after fetch with no changes', async () => {
-      createComponent({
-        actions: {
-          diffs: {
-            fetchDiffFilesMeta: jest.fn().mockResolvedValue({ real_size: null }),
-          },
-        },
-      });
-      expect(wrapper.vm.diffFilesLength).toEqual(0);
-      await wrapper.vm.fetchData(false);
+    it('sets diff counter to 0 without changes', async () => {
+      const spy = jest.spyOn(mergeRequestUtils, 'updateChangesTabCount');
+      store.fetchDiffFilesMeta.mockResolvedValue();
+      createComponent();
       await waitForPromises();
-      expect(wrapper.vm.diffFilesLength).toEqual(0);
+      expect(spy).toHaveBeenCalledWith({ count: 0 });
     });
   });
 
@@ -197,22 +188,18 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('displays loading icon on loading', () => {
-    createComponent({
-      extendStore: ({ state }) => {
-        state.diffs.isLoading = true;
-      },
-    });
+  it('displays loading icon on loading', async () => {
+    createComponent();
+    store.isLoading = true;
+    await nextTick();
 
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('displays loading icon on batch loading', () => {
-    createComponent({
-      extendStore: ({ state }) => {
-        state.diffs.batchLoadingState = 'loading';
-      },
-    });
+  it('displays loading icon on batch loading', async () => {
+    createComponent();
+    store.batchLoadingState = 'loading';
+    await nextTick();
 
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
@@ -224,32 +211,14 @@ describe('diffs/components/app', () => {
     expect(wrapper.find('#diffs').exists()).toBe(true);
   });
 
-  it('does not show commit info', () => {
-    createComponent({});
-
-    expect(wrapper.find('.blob-commit-info').exists()).toBe(false);
-  });
-
   describe('row highlighting', () => {
     beforeEach(() => {
       window.location.hash = 'ABC_123';
     });
 
-    it('sets highlighted row if hash exists in location object', async () => {
-      createComponent({ props: { shouldShow: true } });
-
-      // Component uses $nextTick so we wait until that has finished
-      await nextTick();
-
-      expect(store.state.diffs.highlightedRow).toBe('ABC_123');
-    });
-
-    it('marks current diff file based on currently highlighted row', async () => {
-      createComponent({ props: { shouldShow: true } });
-
-      // Component uses $nextTick so we wait until that has finished
-      await nextTick();
-      expect(store.state.diffs.currentDiffFileId).toBe('ABC');
+    it('sets highlighted row if hash exists in location object', () => {
+      createComponent();
+      expect(store.setHighlightedRow).toHaveBeenCalledWith({ lineCode: 'ABC_123' });
     });
 
     it('renders findings-drawer', () => {
@@ -258,36 +227,22 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('marks current diff file based on currently highlighted row', async () => {
-    window.location.hash = 'ABC_123';
-
-    createComponent({ props: { shouldShow: true } });
-
-    // Component uses nextTick so we wait until that has finished
-    await nextTick();
-
-    expect(store.state.diffs.currentDiffFileId).toBe('ABC');
-  });
-
   describe('empty state', () => {
     it('renders empty state when no diff files exist', () => {
-      createComponent({});
+      createComponent();
 
       expect(wrapper.findComponent(NoChanges).exists()).toBe(true);
     });
 
-    it('does not render empty state when diff files exist', () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.diffFiles = ['anything'];
-          state.diffs.treeEntries['1'] = { type: 'blob', id: 1 };
-        },
-      });
+    it('does not render empty state when diff files exist', async () => {
+      createComponent();
+      store.diffFiles = [{ id: 1 }];
+      store.treeEntries = { 1: { type: 'blob', id: 1 } };
+
+      await nextTick();
 
       expect(wrapper.findComponent(NoChanges).exists()).toBe(false);
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toStrictEqual(
-        store.state.diffs.diffFiles,
-      );
+      expect(wrapper.findComponent(DynamicScroller).props('items')).toStrictEqual(store.diffFiles);
     });
   });
 
@@ -299,9 +254,6 @@ describe('diffs/components/app', () => {
     function setup(componentProps) {
       createComponent({
         props: componentProps,
-        extendStore: ({ state }) => {
-          state.diffs.commit = { id: 'SHA123' };
-        },
       });
 
       moveSpy = jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
@@ -374,66 +326,43 @@ describe('diffs/components/app', () => {
   });
 
   describe('jumpToFile', () => {
-    let spy;
+    const nextFile = () => Mousetrap.trigger(keysFor(MR_NEXT_FILE_IN_DIFF)[0]);
+    const prevFile = () => Mousetrap.trigger(keysFor(MR_PREVIOUS_FILE_IN_DIFF)[0]);
 
     beforeEach(() => {
-      createComponent({
-        extendStore: () => {
-          store.state.diffs.treeEntries = [
-            { type: 'blob', fileHash: '111', path: '111.js' },
-            { type: 'blob', fileHash: '222', path: '222.js' },
-            { type: 'blob', fileHash: '333', path: '333.js' },
-          ];
-        },
-      });
-      spy = jest.spyOn(store, 'dispatch');
+      store.treeEntries = [
+        { type: 'blob', fileHash: '111', path: '111.js' },
+        { type: 'blob', fileHash: '222', path: '222.js' },
+        { type: 'blob', fileHash: '333', path: '333.js' },
+      ];
+      createComponent();
     });
 
-    it('jumps to next and previous files in the list', async () => {
-      await nextTick();
+    it('jumps to next and previous files in the list', () => {
+      nextFile();
 
-      wrapper.vm.jumpToFile(+1);
+      expect(store.goToFile).toHaveBeenNthCalledWith(1, { path: '222.js' });
+      store.currentDiffFileId = '222';
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual([
-        'diffs/scrollToFile',
-        { path: '222.js' },
-      ]);
-      store.state.diffs.currentDiffFileId = '222';
-      wrapper.vm.jumpToFile(+1);
+      nextFile();
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual([
-        'diffs/scrollToFile',
-        { path: '333.js' },
-      ]);
-      store.state.diffs.currentDiffFileId = '333';
-      wrapper.vm.jumpToFile(-1);
+      expect(store.goToFile).toHaveBeenNthCalledWith(2, { path: '333.js' });
+      store.currentDiffFileId = '333';
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual([
-        'diffs/scrollToFile',
-        { path: '222.js' },
-      ]);
+      prevFile();
+
+      expect(store.goToFile).toHaveBeenNthCalledWith(3, { path: '222.js' });
     });
 
-    it('does not jump to previous file from the first one', async () => {
-      await nextTick();
-      store.state.diffs.currentDiffFileId = '333';
-
-      expect(wrapper.vm.currentDiffIndex).toBe(2);
-
-      wrapper.vm.jumpToFile(+1);
-
-      expect(wrapper.vm.currentDiffIndex).toBe(2);
-      expect(spy).not.toHaveBeenCalled();
+    it('does not jump to previous file from the first one', () => {
+      store.currentDiffFileId = '333';
+      nextFile();
+      expect(store.goToFile).not.toHaveBeenCalled();
     });
 
-    it('does not jump to next file from the last one', async () => {
-      await nextTick();
-      expect(wrapper.vm.currentDiffIndex).toBe(0);
-
-      wrapper.vm.jumpToFile(-1);
-
-      expect(wrapper.vm.currentDiffIndex).toBe(0);
-      expect(spy).not.toHaveBeenCalled();
+    it('does not jump to next file from the last one', () => {
+      prevFile();
+      expect(store.goToFile).not.toHaveBeenCalled();
     });
   });
 
@@ -448,24 +377,16 @@ describe('diffs/components/app', () => {
     });
 
     it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', async () => {
-      const fetchDiffFilesMetaSpy = jest.fn();
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.commit = { ...state.diffs.commit, id: 'OLD' };
-        },
-        actions: { diffs: { fetchDiffFilesMeta: fetchDiffFilesMetaSpy } },
-      });
-      jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
-
-      expect(fetchDiffFilesMetaSpy).not.toHaveBeenCalled();
-      store.state.diffs.commit = { id: 'NEW' };
+      store.commit = { ...store.commit, id: 'OLD' };
+      createComponent();
+      expect(store.fetchDiffFilesMeta).toHaveBeenCalledTimes(1);
+      store.commit = { id: 'NEW' };
       await nextTick();
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         title: document.title,
         url: UPDATED_COMMIT_URL,
       });
-      expect(fetchDiffFilesMetaSpy).toHaveBeenCalled();
-      expect(wrapper.vm.adjustView).toHaveBeenCalled();
+      expect(store.fetchDiffFilesMeta).toHaveBeenCalledTimes(2);
     });
 
     it.each`
@@ -475,23 +396,14 @@ describe('diffs/components/app', () => {
     `(
       'given `{ "isLoading": $isLoading, "oldSha": "$oldSha", "newSha": "$newSha" }`, nothing should happen',
       async ({ isLoading, oldSha, newSha }) => {
-        const fetchDiffFilesMetaSpy = jest.fn();
-        createComponent({
-          extendStore: ({ state }) => {
-            state.diffs.isLoading = isLoading;
-            state.diffs.commit = { ...state.diffs.commit, id: oldSha };
-          },
-
-          actions: { diffs: { fetchDiffFilesMeta: fetchDiffFilesMetaSpy } },
-        });
-        jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
-
-        expect(fetchDiffFilesMetaSpy).not.toHaveBeenCalled();
-        store.state.diffs.commit = { id: newSha };
+        store.isLoading = isLoading;
+        store.commit = { ...store.commit, id: oldSha };
+        createComponent();
+        expect(store.fetchDiffFilesMeta).toHaveBeenCalledTimes(1);
+        store.commit = { id: newSha };
         await nextTick();
         expect(urlUtils.updateHistory).not.toHaveBeenCalled();
-        expect(fetchDiffFilesMetaSpy).not.toHaveBeenCalled();
-        expect(wrapper.vm.adjustView).not.toHaveBeenCalled();
+        expect(store.fetchDiffFilesMeta).toHaveBeenCalledTimes(1);
       },
     );
   });
@@ -506,11 +418,8 @@ describe('diffs/components/app', () => {
     });
 
     it('should render file tree toggle in compare versions', () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.diffFiles = [getDiffFileMock()];
-        },
-      });
+      store.diffFiles = [getDiffFileMock()];
+      createComponent();
 
       expect(wrapper.findComponent(CompareVersions).props()).toMatchObject({
         toggleFileTreeVisible: true,
@@ -518,14 +427,11 @@ describe('diffs/components/app', () => {
     });
 
     it('should render app controls component', () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.diffFiles = diffsMockData;
-          state.diffs.realSize = '10';
-          state.diffs.addedLines = 15;
-          state.diffs.removedLines = 20;
-        },
-      });
+      store.diffFiles = diffsMockData;
+      store.realSize = '10';
+      store.addedLines = 15;
+      store.removedLines = 20;
+      createComponent();
 
       expect(wrapper.findComponent(DiffAppControls).exists()).toBe(true);
       expect(wrapper.findComponent(DiffAppControls).props()).toEqual(
@@ -543,54 +449,46 @@ describe('diffs/components/app', () => {
 
     it('collapses all files', async () => {
       createComponent();
-      const spy = jest.spyOn(store, 'dispatch');
       await wrapper.findComponent(DiffAppControls).vm.$emit('collapseAllFiles');
-      expect(spy).toHaveBeenCalledWith('diffs/collapseAllFiles', undefined);
+      expect(store.collapseAllFiles).toHaveBeenCalled();
     });
 
     it('expands all files', async () => {
       createComponent();
-      jest.spyOn(store, 'dispatch');
       await wrapper.findComponent(DiffAppControls).vm.$emit('expandAllFiles');
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/expandAllFiles', undefined);
+      expect(store.expandAllFiles).toHaveBeenCalled();
     });
 
     it('switches whitespace mode', async () => {
       createComponent();
-      const spy = jest.spyOn(store, 'dispatch');
       await wrapper.findComponent(DiffAppControls).vm.$emit('toggleWhitespace', false);
-      expect(spy).toHaveBeenCalledWith('diffs/setShowWhitespace', { showWhitespace: false });
+      expect(store.setShowWhitespace).toHaveBeenCalledWith({ showWhitespace: false });
     });
 
     it('switches view mode', async () => {
       createComponent();
-      const spy = jest.spyOn(store, 'dispatch');
       await wrapper.findComponent(DiffAppControls).vm.$emit('updateDiffViewType', 'parallel');
-      expect(spy).toHaveBeenCalledWith('diffs/setDiffViewType', 'parallel');
+      expect(store.setDiffViewType).toHaveBeenCalledWith('parallel');
     });
 
     it('enables file by file mode', async () => {
       createComponent();
-      const spy = jest.spyOn(store, 'dispatch').mockImplementation(() => {});
       await wrapper.findComponent(DiffAppControls).vm.$emit('toggleFileByFile');
-      expect(spy).toHaveBeenCalledWith('diffs/setFileByFile', { fileByFile: true });
+      expect(store.setFileByFile).toHaveBeenCalledWith({ fileByFile: true });
     });
 
     describe('warnings', () => {
       describe('hidden files', () => {
         it('should render hidden files warning if render overflow warning is present', () => {
-          createComponent({
-            extendStore: ({ state }) => {
-              state.diffs.renderOverflowWarning = true;
-              state.diffs.realSize = '5';
-              state.diffs.plainDiffPath = 'plain diff path';
-              state.diffs.emailPatchPath = 'email patch path';
-              state.diffs.size = 1;
-              state.diffs.treeEntries = {
-                111: { type: 'blob', fileHash: '111', path: '111.js' },
-              };
-            },
-          });
+          store.renderOverflowWarning = true;
+          store.realSize = '5';
+          store.plainDiffPath = 'plain diff path';
+          store.emailPatchPath = 'email patch path';
+          store.size = 1;
+          store.treeEntries = {
+            111: { type: 'blob', fileHash: '111', path: '111.js' },
+          };
+          createComponent();
 
           expect(wrapper.findComponent(HiddenFilesWarning).exists()).toBe(true);
           expect(wrapper.findComponent(HiddenFilesWarning).props()).toEqual(
@@ -606,24 +504,17 @@ describe('diffs/components/app', () => {
 
       describe('collapsed files', () => {
         it('should render the collapsed files warning if there are any automatically collapsed files', () => {
-          createComponent({
-            extendStore: ({ state }) => {
-              state.diffs.diffFiles = [{ viewer: { automaticallyCollapsed: true } }];
-            },
-          });
-
+          store.diffFiles = [{ viewer: { automaticallyCollapsed: true } }];
+          createComponent();
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
         });
 
         it('should not render the collapsed files warning if there are no automatically collapsed files', () => {
-          createComponent({
-            extendStore: ({ state }) => {
-              state.diffs.diffFiles = [
-                { viewer: { automaticallyCollapsed: false, manuallyCollapsed: true } },
-                { viewer: { automaticallyCollapsed: false, manuallyCollapsed: false } },
-              ];
-            },
-          });
+          store.diffFiles = [
+            { viewer: { automaticallyCollapsed: false, manuallyCollapsed: true } },
+            { viewer: { automaticallyCollapsed: false, manuallyCollapsed: false } },
+          ];
+          createComponent();
 
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
         });
@@ -631,61 +522,43 @@ describe('diffs/components/app', () => {
     });
 
     it('should display commit widget if store has a commit', () => {
-      createComponent({
-        extendStore: () => {
-          store.state.diffs.commit = { author: 'John Doe' };
-        },
-      });
-
+      store.commit = { author: 'John Doe' };
+      createComponent();
       expect(wrapper.findComponent(CommitWidget).exists()).toBe(true);
     });
 
     it('should display diff file if there are diff files', () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
-          state.diffs.treeEntries = {
-            111: { type: 'blob', fileHash: '111', path: '111.js' },
-            123: { type: 'blob', fileHash: '123', path: '123.js' },
-            312: { type: 'blob', fileHash: '312', path: '312.js' },
-          };
-        },
-      });
+      store.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+      store.treeEntries = {
+        111: { type: 'blob', fileHash: '111', path: '111.js' },
+        123: { type: 'blob', fileHash: '123', path: '123.js' },
+        312: { type: 'blob', fileHash: '312', path: '312.js' },
+      };
+      createComponent();
 
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).exists()).toBe(true);
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toStrictEqual(
-        store.state.diffs.diffFiles,
-      );
+      expect(wrapper.findComponent(DynamicScroller).exists()).toBe(true);
+      expect(wrapper.findComponent(DynamicScroller).props('items')).toStrictEqual(store.diffFiles);
     });
 
     describe('File browser', () => {
       it('should render file browser when files are present', () => {
-        createComponent({
-          props: { shouldShow: true },
-          extendStore: ({ state }) => {
-            state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-          },
-        });
+        store.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+        createComponent();
         expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
       });
 
       it('should not render file browser without files', async () => {
-        createComponent({ props: { shouldShow: true } });
+        createComponent();
         await nextTick();
         expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(false);
       });
 
       it('should handle clickFile events', () => {
         const file = { path: '111.js' };
-        createComponent({
-          props: { shouldShow: true },
-          extendStore: ({ state }) => {
-            state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-          },
-        });
-        jest.spyOn(store, 'dispatch');
+        store.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+        createComponent();
         wrapper.findComponent(DiffsFileTree).vm.$emit('clickFile', file);
-        expect(store.dispatch).toHaveBeenCalledWith('diffs/goToFile', { path: file.path });
+        expect(store.goToFile).toHaveBeenCalledWith({ path: file.path });
       });
     });
   });
@@ -696,29 +569,19 @@ describe('diffs/components/app', () => {
     });
 
     it('hides files browser with only 1 file', async () => {
-      createComponent({
-        props: { shouldShow: true },
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
-        },
-      });
+      store.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
+      createComponent();
       await waitForPromises();
-
       expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(false);
     });
 
     it('shows file browser with more than 1 file', async () => {
-      createComponent({
-        props: { shouldShow: true },
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries = {
-            111: { type: 'blob', fileHash: '111', path: '111.js' },
-            123: { type: 'blob', fileHash: '123', path: '123.js' },
-          };
-        },
-      });
+      store.treeEntries = {
+        111: { type: 'blob', fileHash: '111', path: '111.js' },
+        123: { type: 'blob', fileHash: '123', path: '123.js' },
+      };
+      createComponent();
       await waitForPromises();
-
       expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(true);
     });
 
@@ -730,13 +593,8 @@ describe('diffs/components/app', () => {
       'sets browser visibility from cookie value: $fileBrowserVisible',
       async ({ fileBrowserVisible }) => {
         setCookie(FILE_BROWSER_VISIBLE, fileBrowserVisible);
-
-        createComponent({
-          props: { shouldShow: true },
-          extendStore: ({ state }) => {
-            state.diffs.treeEntries['123'] = { sha: '123' };
-          },
-        });
+        store.treeEntries['123'] = { sha: '123' };
+        createComponent();
         await waitForPromises();
 
         expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(fileBrowserVisible);
@@ -752,16 +610,13 @@ describe('diffs/components/app', () => {
     });
 
     it('renders a single diff', async () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries = {
-            123: { type: 'blob', fileHash: '123' },
-            312: { type: 'blob', fileHash: '312' },
-          };
-          state.diffs.diffFiles.push({ file_hash: '312' });
-        },
-        baseConfig: { viewDiffsFileByFile: true },
-      });
+      store.treeEntries = {
+        123: { type: 'blob', fileHash: '123' },
+        312: { type: 'blob', fileHash: '312' },
+      };
+      store.diffFiles.push({ file_hash: '312' });
+      store.viewDiffsFileByFile = true;
+      createComponent();
 
       await nextTick();
 
@@ -775,12 +630,9 @@ describe('diffs/components/app', () => {
       };
 
       it('re-checks one time after the file finishes loading', () => {
-        createComponent({
-          extendStore: ({ state }) => {
-            state.diffs.diffFiles = [{ isLoadingFullFile: true }];
-          },
-          baseConfig: { viewDiffsFileByFile: true },
-        });
+        store.diffFiles = [{ isLoadingFullFile: true }];
+        store.viewDiffsFileByFile = true;
+        createComponent();
 
         // The hash check is not called if the file is still marked as loading
         expect(hashSpy).toHaveBeenCalledTimes(0);
@@ -789,7 +641,7 @@ describe('diffs/components/app', () => {
         eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
         advanceAndCheckCalls();
         // Once the file has finished loading, it calls through to check the hash
-        store.state.diffs.diffFiles[0].isLoadingFullFile = false;
+        store.diffFiles[0].isLoadingFullFile = false;
         eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
         advanceAndCheckCalls(1);
         // No further scrolls happen after one hash check / scroll
@@ -800,7 +652,7 @@ describe('diffs/components/app', () => {
       });
 
       it('does not re-check when not in single-file mode', () => {
-        createComponent({});
+        createComponent();
 
         eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
 
@@ -813,15 +665,12 @@ describe('diffs/components/app', () => {
       const paginator = () => fileByFileNav().findComponent(GlPagination);
 
       it('sets previous button as disabled', async () => {
-        createComponent({
-          extendStore: ({ state }) => {
-            state.diffs.treeEntries = {
-              123: { type: 'blob', fileHash: '123' },
-              312: { type: 'blob', fileHash: '312' },
-            };
-          },
-          baseConfig: { viewDiffsFileByFile: true },
-        });
+        store.treeEntries = {
+          123: { type: 'blob', fileHash: '123' },
+          312: { type: 'blob', fileHash: '312' },
+        };
+        store.viewDiffsFileByFile = true;
+        createComponent();
 
         await nextTick();
 
@@ -830,16 +679,13 @@ describe('diffs/components/app', () => {
       });
 
       it('sets next button as disabled', async () => {
-        createComponent({
-          extendStore: ({ state }) => {
-            state.diffs.treeEntries = {
-              123: { type: 'blob', fileHash: '123' },
-              312: { type: 'blob', fileHash: '312' },
-            };
-            state.diffs.currentDiffFileId = '312';
-          },
-          baseConfig: { viewDiffsFileByFile: true },
-        });
+        store.treeEntries = {
+          123: { type: 'blob', fileHash: '123' },
+          312: { type: 'blob', fileHash: '312' },
+        };
+        store.currentDiffFileId = '312';
+        store.viewDiffsFileByFile = true;
+        createComponent();
 
         await nextTick();
 
@@ -848,13 +694,10 @@ describe('diffs/components/app', () => {
       });
 
       it("doesn't display when there's fewer than 2 files", async () => {
-        createComponent({
-          extendStore: ({ state }) => {
-            state.diffs.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
-            state.diffs.currentDiffFileId = '123';
-          },
-          baseConfig: { viewDiffsFileByFile: true },
-        });
+        store.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
+        store.currentDiffFileId = '123';
+        store.viewDiffsFileByFile = true;
+        createComponent();
 
         await nextTick();
 
@@ -868,66 +711,43 @@ describe('diffs/components/app', () => {
       `(
         'calls navigateToDiffFileIndex with $index when $link is clicked',
         async ({ currentDiffFileId, targetFile }) => {
-          const navigateToDiffFileIndexSpy = jest.fn();
-          createComponent({
-            extendStore: ({ state }) => {
-              state.diffs.treeEntries = {
-                123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
-                312: { type: 'blob', fileHash: '312', filePaths: { old: '3124', new: '312' } },
-              };
-              state.diffs.currentDiffFileId = currentDiffFileId;
-            },
-            baseConfig: { viewDiffsFileByFile: true },
-            actions: { diffs: { navigateToDiffFileIndex: navigateToDiffFileIndexSpy } },
-          });
+          store.treeEntries = {
+            123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
+            312: { type: 'blob', fileHash: '312', filePaths: { old: '3124', new: '312' } },
+          };
+          store.currentDiffFileId = currentDiffFileId;
+          store.viewDiffsFileByFile = true;
+          createComponent();
 
           await nextTick();
           paginator().vm.$emit('input', targetFile);
           await nextTick();
-          expect(navigateToDiffFileIndexSpy).toHaveBeenLastCalledWith(
-            expect.anything(),
-            targetFile - 1,
-          );
+          expect(store.navigateToDiffFileIndex).toHaveBeenLastCalledWith(targetFile - 1);
         },
       );
     });
 
     describe('non-UI navigation', () => {
       describe('in single-file review mode', () => {
-        let currentHash;
-        let fetchFbf;
-
         beforeEach(() => {
-          currentHash = jest.fn();
-          fetchFbf = jest.fn();
           window.location.hash = '123';
-
-          createComponent({
-            actions: {
-              diffs: {
-                setCurrentFileHash: currentHash,
-                fetchFileByFile: fetchFbf,
-              },
+          store.treeEntries = {
+            123: {
+              type: 'blob',
+              fileHash: '123',
+              filePaths: { old: '1234', new: '123' },
+              parentPath: '/',
             },
-            extendStore: ({ state }) => {
-              state.diffs.treeEntries = {
-                123: {
-                  type: 'blob',
-                  fileHash: '123',
-                  filePaths: { old: '1234', new: '123' },
-                  parentPath: '/',
-                },
-                312: {
-                  type: 'blob',
-                  fileHash: '312',
-                  filePaths: { old: '3124', new: '312' },
-                  parentPath: '/',
-                },
-              };
-              state.diffs.diffFiles = [{ file_hash: '123' }, { file_hash: '312' }];
+            312: {
+              type: 'blob',
+              fileHash: '312',
+              filePaths: { old: '3124', new: '312' },
+              parentPath: '/',
             },
-            baseConfig: { viewDiffsFileByFile: true },
-          });
+          };
+          store.diffFiles = [{ file_hash: '123' }, { file_hash: '312' }];
+          store.viewDiffsFileByFile = true;
+          createComponent();
         });
 
         it.each`
@@ -942,46 +762,31 @@ describe('diffs/components/app', () => {
 
             await nextTick();
 
-            expect(currentHash).toHaveBeenCalledWith(expect.anything(), updated);
-            expect(fetchFbf).toHaveBeenCalled();
+            expect(store.setCurrentFileHash).toHaveBeenCalledWith(updated);
+            expect(store.fetchFileByFile).toHaveBeenCalled();
           },
         );
       });
 
       describe('in "normal" (multi-file) mode', () => {
-        let currentHash;
-        let fetchFbf;
-
         beforeEach(() => {
-          currentHash = jest.fn();
-          fetchFbf = jest.fn();
           window.location.hash = '123';
-
-          createComponent({
-            actions: {
-              diffs: {
-                setCurrentFileHash: currentHash,
-                fetchFileByFile: fetchFbf,
-              },
+          store.treeEntries = {
+            123: {
+              type: 'blob',
+              fileHash: '123',
+              filePaths: { old: '1234', new: '123' },
+              parentPath: '/',
             },
-            extendStore: ({ state }) => {
-              state.diffs.treeEntries = {
-                123: {
-                  type: 'blob',
-                  fileHash: '123',
-                  filePaths: { old: '1234', new: '123' },
-                  parentPath: '/',
-                },
-                312: {
-                  type: 'blob',
-                  fileHash: '312',
-                  filePaths: { old: '3124', new: '312' },
-                  parentPath: '/',
-                },
-              };
-              state.diffs.diffFiles = [{ file_hash: '123' }, { file_hash: '312' }];
+            312: {
+              type: 'blob',
+              fileHash: '312',
+              filePaths: { old: '3124', new: '312' },
+              parentPath: '/',
             },
-          });
+          };
+          store.diffFiles = [{ file_hash: '123' }, { file_hash: '312' }];
+          createComponent();
         });
 
         it('does not react to the hash changing when in regular (multi-file) mode', async () => {
@@ -990,82 +795,83 @@ describe('diffs/components/app', () => {
 
           await nextTick();
 
-          expect(currentHash).not.toHaveBeenCalled();
-          expect(fetchFbf).not.toHaveBeenCalled();
+          expect(store.setCurrentFileHash).not.toHaveBeenCalled();
+          expect(store.fetchFileByFile).not.toHaveBeenCalled();
         });
       });
     });
   });
 
   describe('autoscroll', () => {
-    let loadCollapsedDiffSpy;
-
     beforeEach(() => {
-      loadCollapsedDiffSpy = jest.fn().mockResolvedValue();
-      createComponent({
-        extendStore: () => {},
-        actions: { diffs: { loadCollapsedDiff: loadCollapsedDiffSpy } },
-      });
-
-      store.state.diffs.diffFiles = [
+      store.loadCollapsedDiff.mockResolvedValue();
+      store.diffFiles = [
         {
           file_hash: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a',
           highlighted_diff_lines: [],
           viewer: { manuallyCollapsed: true },
         },
       ];
+      createComponent();
     });
 
     it('does nothing if the location hash does not include a file hash', () => {
       window.location.hash = 'not_a_file_hash';
       eventHub.$emit('doneLoadingBatches');
-      expect(loadCollapsedDiffSpy).not.toHaveBeenCalled();
+      expect(store.loadCollapsedDiff).not.toHaveBeenCalled();
     });
 
     it('requests that the correct file be loaded', () => {
-      store.state.diffs.mergeRequestDiff = {};
+      store.mergeRequestDiff = {};
       window.location.hash = '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_0_1';
-      expect(loadCollapsedDiffSpy).toHaveBeenCalledTimes(0);
+      expect(store.loadCollapsedDiff).toHaveBeenCalledTimes(0);
       eventHub.$emit('doneLoadingBatches');
-      expect(loadCollapsedDiffSpy).toHaveBeenCalledTimes(1);
-      expect(loadCollapsedDiffSpy).toHaveBeenLastCalledWith(expect.anything(), {
-        file: store.state.diffs.diffFiles[0],
+      expect(store.loadCollapsedDiff).toHaveBeenCalledTimes(1);
+      expect(store.loadCollapsedDiff).toHaveBeenLastCalledWith({
+        file: store.diffFiles[0],
       });
     });
 
     it('does nothing when file is not collapsed', () => {
-      store.state.diffs.diffFiles[0].viewer.manuallyCollapsed = false;
+      store.diffFiles[0].viewer.manuallyCollapsed = false;
       window.location.hash = '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_0_1';
       eventHub.$emit('doneLoadingBatches');
-      expect(loadCollapsedDiffSpy).not.toHaveBeenCalled();
+      expect(store.loadCollapsedDiff).not.toHaveBeenCalled();
     });
   });
 
   describe('linked file', () => {
     const linkedFileUrl = 'http://localhost.test/linked-file';
-    let linkedFile;
 
     beforeEach(() => {
-      linkedFile = getDiffFileMock();
-      mock.onGet(linkedFileUrl).reply(HTTP_STATUS_OK, { diff_files: [linkedFile] });
-      mock
-        .onGet(new RegExp(ENDPOINT_BATCH_URL))
-        .reply(HTTP_STATUS_OK, { diff_files: [], pagination: {} });
-      mock.onGet(new RegExp(ENDPOINT_METADATA_URL)).reply(HTTP_STATUS_OK, diffMetadata);
-
-      createComponent({ props: { shouldShow: true, linkedFileUrl } });
+      store.treeEntries = { 1: { type: 'blob', id: 1 } };
+      store.fetchLinkedFile.mockResolvedValue();
     });
 
     it('fetches and displays the file', async () => {
+      const linkedFile = getDiffFileMock();
+      store.diffFiles = [linkedFile];
+      store.linkedFilehash = linkedFile.file_hash;
+      createComponent({ props: { linkedFileUrl } });
       await waitForPromises();
 
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')[0].file_hash).toBe(
+      expect(wrapper.findComponent(DynamicScroller).props('items')[0].file_hash).toBe(
         linkedFile.file_hash,
       );
     });
 
-    it('shows a spinner during loading', () => {
+    it('shows a spinner during loading', async () => {
+      let res;
+      store.fetchLinkedFile.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            res = resolve;
+          }),
+      );
+      createComponent({ props: { linkedFileUrl } });
+      await nextTick();
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      res();
     });
   });
 
@@ -1078,7 +884,7 @@ describe('diffs/components/app', () => {
 
     describe('when adding a new comment to an existing review', () => {
       it('sends the correct tracking event', () => {
-        createComponent({ props: { shouldShow: true } });
+        createComponent();
         notesEventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
 
         expect(trackingSpy).toHaveBeenCalledWith(
@@ -1091,7 +897,7 @@ describe('diffs/components/app', () => {
 
     describe('when adding a comment to a new review', () => {
       it('sends the correct tracking event', () => {
-        createComponent({ props: { shouldShow: true } });
+        createComponent();
         notesEventHub.$emit('noteFormStartReview', { name: 'noteFormStartReview' });
 
         expect(trackingSpy).toHaveBeenCalledWith(
@@ -1111,7 +917,7 @@ describe('diffs/components/app', () => {
     };
 
     it('hides tooltips on scroll', () => {
-      createComponent({ props: { shouldShow: true } });
+      createComponent();
       const rootWrapper = createWrapper(wrapper.vm.$root);
       scroll();
       expect(rootWrapper.emitted(BV_HIDE_TOOLTIP)).toStrictEqual([[]]);
@@ -1149,7 +955,7 @@ describe('diffs/components/app', () => {
     it('should not track metrics if keydownTime is not set', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      createComponent({ props: { shouldShow: true } });
+      createComponent();
 
       await nextTick();
       window.dispatchEvent(new Event('blur'));
@@ -1160,7 +966,7 @@ describe('diffs/components/app', () => {
     it('should track metrics if delta is between 0 and 1000ms', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      createComponent({ props: { shouldShow: true } });
+      createComponent();
 
       // delta 500 ms
       await simulateKeydown('mod+f', 1000);
@@ -1174,7 +980,7 @@ describe('diffs/components/app', () => {
     it('should not track metrics if delta is greater than or equal to 1000ms', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      createComponent({ props: { shouldShow: true } });
+      createComponent();
 
       // delta 1050 ms
       await simulateKeydown('mod+f', 1000);
@@ -1188,7 +994,7 @@ describe('diffs/components/app', () => {
     it('should not track metrics if delta is negative', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      createComponent({ props: { shouldShow: true } });
+      createComponent();
 
       // delta -500 ms
       await simulateKeydown('mod+f', 1500);

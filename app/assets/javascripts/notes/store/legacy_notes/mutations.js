@@ -37,11 +37,10 @@ export default {
         discussion.truncated_diff_lines = utils.prepareDiffLines(discussion.truncated_diff_lines);
       }
 
-      // note.base_discussion = undefined; // No point keeping a reference to this
-      delete note.base_discussion;
-      discussion.notes = [note];
+      const notes = [{ ...note }];
+      delete notes[0].base_discussion;
 
-      this.discussions.push(discussion);
+      this.discussions.push({ ...discussion, notes });
     }
   },
 

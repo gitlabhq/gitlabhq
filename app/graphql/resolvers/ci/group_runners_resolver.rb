@@ -13,7 +13,7 @@ module Resolvers
       protected
 
       def runners_finder_params(params)
-        super(params).merge(membership: params[:membership])
+        super.merge(membership: params[:membership])
       end
 
       def parent_param

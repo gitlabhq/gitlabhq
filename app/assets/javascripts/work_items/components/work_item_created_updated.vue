@@ -136,6 +136,7 @@ export default {
             :title="author.name"
             :data-user-id="authorId"
             :href="author.webUrl"
+            data-testid="work-item-author"
           >
             {{ author.name }}
           </gl-avatar-link>

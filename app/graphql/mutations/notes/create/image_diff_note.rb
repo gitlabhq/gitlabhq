@@ -14,7 +14,7 @@ module Mutations
         private
 
         def create_note_params(noteable, args)
-          super(noteable, args).merge({
+          super.merge({
             type: 'DiffNote',
             position: position(noteable, args)
           })

@@ -52514,7 +52514,13 @@ msgstr ""
 msgid "SearchError|A problem has occurred"
 msgstr ""
 
+msgid "SearchError|No results found"
+msgstr ""
+
 msgid "SearchError|To resolve the problem, check the query syntax and try again."
+msgstr ""
+
+msgid "SearchError|To resolve the problem, check the query syntax and try again. %{linkStart}What is the supported syntax%{linkEnd}"
 msgstr ""
 
 msgid "SearchResults|Showing %{count} %{scope} for %{term_element}"
@@ -71321,6 +71327,9 @@ msgid "must match %{association}.project_id"
 msgstr ""
 
 msgid "must match one of the following file types: %{extension_list}"
+msgstr ""
+
+msgid "must match the bulk import organization's ID"
 msgstr ""
 
 msgid "must match the parent organization's ID"

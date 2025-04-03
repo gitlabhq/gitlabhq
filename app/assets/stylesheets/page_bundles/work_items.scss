@@ -6,14 +6,6 @@ $work-item-overview-right-sidebar-width: px-to-rem(290px);
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
-.hide-unfocused-input-decoration:not(:focus, :hover),
-.hide-unfocused-input-decoration:disabled {
-  background-color: transparent;
-  border-color: transparent;
-  background-image: none;
-  box-shadow: none;
-}
-
 // sticky error placement for errors in modals, by default it is 83px for full view
 #work-item-detail-modal {
   .flash-container.flash-container-page.sticky {

@@ -59,14 +59,6 @@ module Ci
       update(timeout: timeout.value, timeout_source: timeout.source)
     end
 
-    def set_cancel_gracefully
-      runtime_runner_features[:cancel_gracefully] = true
-    end
-
-    def cancel_gracefully?
-      runtime_runner_features[:cancel_gracefully] == true
-    end
-
     def enable_debug_trace!
       self.debug_trace_enabled = true
       save! if changes.any?

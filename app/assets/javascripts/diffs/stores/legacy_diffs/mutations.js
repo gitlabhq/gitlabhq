@@ -404,7 +404,7 @@ export default {
     this.mrReviews = newReviews;
   },
   [types.DISABLE_VIRTUAL_SCROLLING]() {
-    this.disableVirtualScroller = true;
+    this.virtualScrollerDisabled = true;
   },
   [types.TOGGLE_FILE_COMMENT_FORM](filePath) {
     const file = findDiffFile(this.diffFiles, filePath, 'file_path');

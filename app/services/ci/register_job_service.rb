@@ -298,7 +298,6 @@ module Ci
         @logger.instrument(:assign_runner_run) do
           build.run!
         end
-        persist_runtime_features(build, params)
 
         build.runner_manager = runner_manager if runner_manager
       end
@@ -336,15 +335,6 @@ module Ci
         pipeline_id: build.pipeline_id,
         project_id: build.project_id
       )
-    end
-
-    def persist_runtime_features(build, params)
-      return if Feature.enabled?(:ci_read_runner_manager_features, build.project)
-      return unless params.dig(:info, :features, :cancel_gracefully)
-
-      build.set_cancel_gracefully
-
-      build.save
     end
 
     def pre_assign_runner_checks

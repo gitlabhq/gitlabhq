@@ -73,7 +73,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     context 'when not associated with a group or project or organization' do
       it 'is not valid' do
-        entity = build(:bulk_import_entity, group: nil, project: nil, organization: nil)
+        entity = build(:bulk_import_entity, :without_organization, group: nil, project: nil)
 
         expect(entity).not_to be_valid
 
@@ -142,7 +142,10 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     end
 
     context 'when associated with an organization and no group or project' do
-      let(:associations) { { project: nil, group: nil, organization: build(:organization) } }
+      let_it_be(:organization) { build(:organization) }
+      let_it_be(:bulk_import) { build(:bulk_import, organization:) }
+
+      let(:associations) { { project: nil, group: nil, organization: organization, bulk_import: bulk_import } }
 
       it 'is valid as a project_entity' do
         entity = build(:bulk_import_entity, :project_entity, **associations)
@@ -239,6 +242,59 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
     context 'when source_type is a project_entity' do
       it 'is valid' do
         entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity).to be_valid
+      end
+    end
+
+    context 'when the organization does not match the bulk_import organization' do
+      let(:organization) { build(:organization) }
+      let(:second_organization) { build(:organization) }
+
+      let(:bulk_import) { build(:bulk_import, organization:) }
+
+      it 'is not valid' do
+        # Set the organization manually, rather than with the factory, which would ensure the orgs match
+        entity = build(:bulk_import_entity, :without_organization, organization: second_organization, bulk_import: bulk_import)
+
+        expect(entity).not_to be_valid
+
+        expect(entity.errors[:organization_id])
+          .to include("must match the bulk import organization's ID")
+      end
+    end
+
+    context 'when the entity does not have an organization' do
+      let(:organization) { build(:organization) }
+
+      let(:bulk_import) { build(:bulk_import, organization:) }
+
+      it 'does not add an exception relating to the incorrect organization_id' do
+        entity = build(:bulk_import_entity, organization: nil, bulk_import: bulk_import)
+
+        entity.validate
+
+        expect(entity.errors).not_to include(:organization_id)
+      end
+    end
+
+    context 'when the entity does not have a bulk_import' do
+      it 'does not add an exception relating to the incorrect organization_id' do
+        entity = build(:bulk_import_entity, bulk_import: nil)
+
+        entity.validate
+
+        expect(entity.errors).not_to include(:organization_id)
+      end
+    end
+
+    context 'when the organization matches the bulk_import organization' do
+      let(:organization) { build(:organization) }
+
+      let(:bulk_import) { build(:bulk_import, organization:) }
+
+      it 'is valid' do
+        entity = build(:bulk_import_entity, organization:, bulk_import:)
 
         expect(entity).to be_valid
       end

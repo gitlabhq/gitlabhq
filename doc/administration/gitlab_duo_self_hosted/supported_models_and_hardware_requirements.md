@@ -31,7 +31,7 @@ needs and use cases.
 
 ## Supported models
 
-Support for the following GitLab-supported large language models (LLMs) is generally available.
+Support for the following GitLab-supported large language models (LLMs) is generally available. If the model you want to use is not in this documentation, provide feedback in the [model request issue (issue 526751)](https://gitlab.com/gitlab-org/gitlab/-/issues/526751).
 
 - Fully compatible: The model can likely handle the feature without any loss of quality.
 - Largely compatible: The model supports the feature, but there might be compromises or limitations.

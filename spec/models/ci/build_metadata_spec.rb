@@ -185,22 +185,6 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
     end
   end
 
-  describe 'set_cancel_gracefully' do
-    before do
-      stub_feature_flags(ci_read_runner_manager_features: false)
-    end
-
-    it 'sets cancel_gracefully' do
-      job.set_cancel_gracefully
-
-      expect(job.cancel_gracefully?).to be true
-    end
-
-    it 'returns false' do
-      expect(job.cancel_gracefully?).to be false
-    end
-  end
-
   context 'loose foreign key on ci_builds_metadata.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { project }

@@ -250,6 +250,8 @@ module Ai
 end
 ```
 
+## Adding documents to the vector store
+
 Adding references to the queue can be done a few ways:
 
 The prefered method:
@@ -311,6 +313,46 @@ To clear a queue:
 
 ```ruby
 Ai::Context::Queues::MergeRequest.clear_tracking!
+```
+
+## Synchronising data
+
+The [`track!`](#adding-documents-to-the-vector-store) method adds documents to the vector stores and can be called from anywhere: a service, a callback, event, etc.
+
+The `::ActiveContext::Concerns::Syncable` concern can be added to ActiveRecord models to update a collection on callbacks.
+
+For example, we can add the concern to the MergeRequest model to track merge request refs on create, update and destroy:
+
+```ruby
+include ::ActiveContext::Concerns::Syncable
+
+sync_with_active_context on: :create, using: ->(record) { record.track_merge_request! }
+
+sync_with_active_context on: :update, condition: -> { (saved_change_to_title? || saved_change_to_description?) }, using: ->(record) { record.track_merge_request! }
+
+sync_with_active_context on: :destroy, using: ->(record) { record.track_merge_request! }
+
+def track_merge_request!
+  Ai::Context::Collections::MergeRequest.track!(self)
+end
+
+def syncable?
+  # some condition to determine whether to track an MR record
+end
+```
+
+We can also keep merge requests up to date if an associated record is updated using the same approach. Say a merge request document contains `project.visibility_level`, we can add the following to the projects model to update its associated merge requests:
+
+```ruby
+include ::ActiveContext::Concerns::Syncable
+
+sync_with_active_context on: :update,
+  condition: -> { saved_change_to_visibility_level? },
+  using: ->(project) { Ai::Context::Collections::MergeRequest.track!(project.merge_requests) }
+
+def syncable?
+  # some condition to determine whether or not the project is being indexed
+end
 ```
 
 ## Performing a search

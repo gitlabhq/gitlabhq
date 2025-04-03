@@ -89,7 +89,9 @@ module BulkImports
           user: current_user,
           source_type: 'gitlab',
           source_version: client.instance_version,
-          source_enterprise: client.instance_enterprise
+          source_enterprise: client.instance_enterprise,
+          # All imported groups must have the same organization, so we can safely fetch from the first
+          organization: organization(params.dig(0, :destination_namespace))
         )
         bulk_import.create_configuration!(credentials.slice(:url, :access_token))
 

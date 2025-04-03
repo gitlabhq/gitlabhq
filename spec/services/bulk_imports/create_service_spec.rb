@@ -278,6 +278,76 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
         end
 
+        context 'when different destination namespaces belonging to different organizations are provided' do
+          before do
+            second_org_group.add_owner(user)
+          end
+
+          let_it_be(:second_organization) { create(:organization, path: 'second-org') }
+          let_it_be(:second_org_group) { create(:group, organization: second_organization, path: 'second-org') }
+
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destination-group-1',
+                destination_namespace: '',
+                migrate_projects: migrate_projects
+              },
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destination-group-1',
+                destination_namespace: second_org_group.path,
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'returns unsuccessful ServiceResponse' do
+            result = subject.execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result).to be_error
+            expect(result.message).to eq("Validation failed: Organization must match the bulk import organization's ID")
+          end
+        end
+
+        context 'when different destination namespaces belonging to the same organization are provided' do
+          before do
+            second_group.add_owner(user)
+          end
+
+          let(:second_group) { create(:group, path: 'second-group', organization: fallback_organization) }
+
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destination-group-1',
+                destination_namespace: '',
+                migrate_projects: migrate_projects
+              },
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destination-group-1',
+                destination_namespace: second_group.path,
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'returns success ServiceResponse' do
+            result = subject.execute
+
+            expect(result).to be_a(ServiceResponse)
+            expect(result).to be_success
+          end
+        end
+
         context 'on the same instance' do
           before do
             allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')

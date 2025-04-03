@@ -39,6 +39,6 @@ export default () => ({
   defaultSuggestionCommitMessage: '',
   mrReviews: {},
   latestDiff: true,
-  disableVirtualScroller: false,
+  virtualScrollerDisabled: false,
   linkedFileHash: null,
 });

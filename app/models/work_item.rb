@@ -28,7 +28,9 @@ class WorkItem < Issue
     foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> {
-    includes(:author, :work_item_type, project: :project_feature)
+    includes(
+      :author, :work_item_type, { project: [:project_feature, { namespace: :route }, :group] }, { namespace: [:route] }
+    )
   }
 
   scope :within_timeframe, ->(start_date, due_date) do

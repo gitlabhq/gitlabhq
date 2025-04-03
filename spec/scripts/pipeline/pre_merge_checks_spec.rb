@@ -17,6 +17,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
   let(:latest_mr_pipeline_ref)        { "refs/merge-requests/1/merge" }
   let(:latest_mr_pipeline_status)     { "success" }
   let(:latest_mr_pipeline_created_at) { "2024-05-29T07:15:00 UTC" }
+  let(:latest_mr_pipeline_project_id) { project_id.to_i } # We get an integer from the API
   let(:latest_mr_pipeline_web_url)    { "https://gitlab.com/gitlab-org/gitlab/-/pipelines/1310472835" }
   let(:latest_mr_pipeline_name)       { "Ruby 3.2 MR [tier:3, gdk]" }
   let(:latest_mr_pipeline_short) do
@@ -24,6 +25,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
       id: 1309901620,
       ref: latest_mr_pipeline_ref,
       status: latest_mr_pipeline_status,
+      project_id: latest_mr_pipeline_project_id,
       source: "merge_request_event",
       created_at: latest_mr_pipeline_created_at,
       web_url: latest_mr_pipeline_web_url
@@ -40,6 +42,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         id: 1309903340,
         ref: "refs/merge-requests/1/train",
         status: "success",
+        project_id: project_id,
         source: "merge_request_event",
         created_at: "2024-05-29T07:30:00 UTC"
       },
@@ -47,6 +50,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         id: 1309903341,
         ref: "refs/merge-requests/1/train",
         status: "success",
+        project_id: project_id,
         source: "merge_request_event",
         created_at: "2024-05-29T07:15:00 UTC"
       },
@@ -55,20 +59,23 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         id: 1309753047,
         ref: "refs/merge-requests/1/train",
         status: "failed",
+        project_id: project_id,
         source: "merge_request_event",
         created_at: "2024-05-29T06:30:00 UTC"
       },
       {
         id: 1308929843,
-        ref: "refs/merge-requests/1/merge",
+        ref: "refs/merge-requests/1/train",
         status: "success",
+        project_id: project_id,
         source: "merge_request_event",
         created_at: "2024-05-29T05:30:00 UTC"
       },
       {
         id: 1308699353,
-        ref: "refs/merge-requests/1/head",
+        ref: "refs/merge-requests/1/train",
         status: "failed",
+        project_id: project_id,
         source: "merge_request_event",
         created_at: "2024-05-29T04:30:00 UTC"
       }
@@ -273,6 +280,18 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
             expect(instance.execute).to be_success
           end
         end
+
+        context 'and was run in a different project' do
+          let(:latest_mr_pipeline_project_id) { 5678 }
+
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message).to include(
+              "Expected to have a latest pipeline that ran in project ##{project_id} but got none!"
+            )
+          end
+        end
       end
 
       context 'when we do not have a latest pipeline' do
@@ -291,7 +310,9 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         it 'returns a failed PreMergeChecksStatus' do
           expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
           expect(instance.execute).not_to be_success
-          expect(instance.execute.message).to include("Expected to have a latest pipeline but got none")
+          expect(instance.execute.message).to include(
+            "Expected to have a latest pipeline that ran in project ##{project_id} but got none!"
+          )
         end
       end
     end

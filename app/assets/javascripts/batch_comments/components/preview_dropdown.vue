@@ -2,13 +2,10 @@
 import { GlIcon, GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { mapState, mapActions } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import {
-  mapActions as mapVuexActions,
-  mapGetters as mapVuexGetters,
-  mapState as mapVuexState,
-} from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import PreviewItem from './preview_item.vue';
 import DraftsCount from './drafts_count.vue';
 
@@ -21,7 +18,7 @@ export default {
     GlButton,
   },
   computed: {
-    ...mapVuexState('diffs', ['viewDiffsFileByFile']),
+    ...mapState(useLegacyDiffs, ['viewDiffsFileByFile']),
     ...mapState(useBatchComments, ['draftsCount', 'sortedDrafts']),
     ...mapVuexGetters(['getNoteableData']),
     listItems() {
@@ -37,7 +34,7 @@ export default {
     },
   },
   methods: {
-    ...mapVuexActions('diffs', ['goToFile']),
+    ...mapActions(useLegacyDiffs, ['goToFile']),
     ...mapActions(useBatchComments, ['scrollToDraft']),
     isOnLatestDiff(draft) {
       return draft.position?.head_sha === this.getNoteableData.diff_head_sha;

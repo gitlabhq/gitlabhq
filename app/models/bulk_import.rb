@@ -10,6 +10,7 @@ class BulkImport < ApplicationRecord
   MIN_MINOR_VERSION_FOR_PROJECT = 4
 
   belongs_to :user, optional: false
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_one :configuration, class_name: 'BulkImports::Configuration'
   has_many :entities, class_name: 'BulkImports::Entity'

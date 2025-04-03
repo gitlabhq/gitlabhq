@@ -1,9 +1,0 @@
----
-name: ci_read_runner_manager_features
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519966
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184327
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524630
-milestone: '17.11'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false

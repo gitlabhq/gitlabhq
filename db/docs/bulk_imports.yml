@@ -9,5 +9,6 @@ description: Used to store and track the status of a bulk import request of grou
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
 milestone: '13.5'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499829
+sharding_key:
+   organization_id: organizations
 table_size: small

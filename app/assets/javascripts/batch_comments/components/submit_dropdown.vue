@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters, mapState as mapVuexState } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -21,6 +21,7 @@ import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { updateText } from '~/lib/utils/text_markdown';
 import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 export default {
@@ -87,7 +88,7 @@ export default {
       'getCurrentUserLastNote',
     ]),
     ...mapState(useBatchComments, ['shouldAnimateReviewButton']),
-    ...mapVuexState('diffs', ['projectPath']),
+    ...mapState(useLegacyDiffs, ['projectPath']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },

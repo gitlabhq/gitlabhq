@@ -106,7 +106,7 @@ module WorkItems
 
     override :prepare_finder_params
     def prepare_finder_params(args)
-      params = super(args)
+      params = super
 
       rewrite_param_name(params, :assignee_usernames, :assignee_username)
       rewrite_param_name(params[:or], :assignee_usernames, :assignee_username)

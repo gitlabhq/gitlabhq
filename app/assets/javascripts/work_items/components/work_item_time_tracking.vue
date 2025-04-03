@@ -131,7 +131,7 @@ export default {
       />
     </div>
 
-    <div class="gl-flex gl-items-center gl-gap-2 gl-text-sm" data-testid="time-tracking-body">
+    <div class="gl-flex gl-items-center gl-gap-2" data-testid="time-tracking-body">
       <template v-if="totalTimeSpent || timeEstimate">
         <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
         <gl-button
@@ -139,7 +139,6 @@ export default {
           v-gl-modal="timeTrackingModalId"
           v-gl-tooltip="s__('TimeTracking|View time tracking report')"
           variant="link"
-          class="!gl-text-sm"
           data-testid="view-time-spent-button"
         >
           {{ humanTotalTimeSpent }}
@@ -160,7 +159,6 @@ export default {
             v-gl-modal="setTimeEstimateModalId"
             v-gl-tooltip="s__('TimeTracking|Set estimate')"
             variant="link"
-            class="!gl-text-sm"
             data-testid="set-estimate-button"
           >
             {{ humanTimeEstimate }}
@@ -172,7 +170,7 @@ export default {
         <gl-button
           v-else-if="canUpdate"
           v-gl-modal="setTimeEstimateModalId"
-          class="gl-ml-auto !gl-text-sm"
+          class="gl-ml-auto"
           variant="link"
           data-testid="add-estimate-button"
         >
@@ -184,7 +182,7 @@ export default {
           <template #estimate="{ content }">
             <gl-button
               v-gl-modal="setTimeEstimateModalId"
-              class="gl-align-baseline !gl-text-sm"
+              class="gl-align-baseline"
               variant="link"
               data-testid="add-estimate-button"
             >
@@ -194,7 +192,7 @@ export default {
           <template #timeSpent="{ content }">
             <gl-button
               v-gl-modal="createTimelogModalId"
-              class="gl-align-baseline !gl-text-sm"
+              class="gl-align-baseline"
               variant="link"
               data-testid="add-time-spent-button"
             >

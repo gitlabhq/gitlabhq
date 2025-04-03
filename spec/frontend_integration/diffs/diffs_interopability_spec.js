@@ -4,7 +4,13 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import initDiffsApp from '~/diffs';
 import { initMrStateLazyLoad } from '~/mr_notes/init';
-import { createStore } from '~/mr_notes/stores';
+import mrNotes from '~/mr_notes/stores';
+import diffState from '~/diffs/store/modules/diff_state';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { pinia } from '~/pinia/instance';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useBatchComments } from '~/batch_comments/store';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import {
   getDiffCodePart,
   getLineNumberFromCodeElement,
@@ -45,6 +51,11 @@ const EXPECT_PARALLEL_RIGHT_SIDE = [
 ];
 
 const startDiffsApp = () => {
+  mrNotes.state.diffs = diffState();
+  useNotes(pinia).$reset();
+  useLegacyDiffs(pinia).$reset();
+  useBatchComments(pinia).$reset();
+  useMrNotes(pinia).$reset();
   const el = document.createElement('div');
   el.id = 'js-diffs-app';
   document.body.appendChild(el);
@@ -80,10 +91,9 @@ const startDiffsApp = () => {
       $off() {},
     },
   };
-  const store = createStore();
-  initMrStateLazyLoad(store);
+  initMrStateLazyLoad();
 
-  return initDiffsApp(store);
+  return initDiffsApp();
 };
 
 describe('diffs third party interoperability', () => {

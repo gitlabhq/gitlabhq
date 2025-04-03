@@ -10629,6 +10629,7 @@ CREATE TABLE bulk_imports (
     source_version text,
     source_enterprise boolean DEFAULT true NOT NULL,
     has_failures boolean DEFAULT false,
+    organization_id bigint NOT NULL,
     CONSTRAINT check_ea4e58775a CHECK ((char_length(source_version) <= 63))
 );
 
@@ -33714,6 +33715,8 @@ CREATE INDEX index_bulk_import_trackers_on_organization_id ON bulk_import_tracke
 
 CREATE INDEX index_bulk_import_trackers_on_project_id ON bulk_import_trackers USING btree (project_id);
 
+CREATE INDEX index_bulk_imports_on_organization_id ON bulk_imports USING btree (organization_id);
+
 CREATE INDEX index_bulk_imports_on_updated_at_and_id_for_stale_status ON bulk_imports USING btree (updated_at, id) WHERE (status = ANY (ARRAY[0, 1]));
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
@@ -42447,6 +42450,9 @@ ALTER TABLE ONLY merge_requests_approval_rules_approver_users
 
 ALTER TABLE ONLY push_rules
     ADD CONSTRAINT fk_83b29894de FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_imports
+    ADD CONSTRAINT fk_843a1a583d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY organization_users
     ADD CONSTRAINT fk_8471abad75 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE RESTRICT NOT VALID;

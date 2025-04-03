@@ -396,18 +396,45 @@ especially in combination with [assignee lists](#assignee-lists).
 
 {{< /details >}}
 
-You can set a work in progress (WIP) limit for each issue list on an issue board. When a limit is
-set, the list's header shows the number of issues in the list and the soft limit of issues. A line in the list separates items within the limit from those in excess of the limit.
+{{< history >}}
+
+- Setting limits by weight [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119208/) in GitLab 17.11.
+
+{{< /history >}}
+
+You can set a work in progress (WIP) limit for each issue list on an issue board.
+When a limit is set, the current state and configured limit are shown in the board list header.
+
+A line in the list separates items within the limit from those in excess of the limit.
 You cannot set a WIP limit on the default lists (**Open** and **Closed**).
+
+#### Types of limits
+
+GitLab supports two types of WIP limits:
+
+- **Items**: Limits the number of issues in a list regardless of their weight.
+  The board header shows the number of issues in the list and the item limit.
+
+  For example, if there are 4 issues and an item limit of 3, the header shows **4/3**.
+
+  ![Work-in-progress item limit on an issue board](img/issue_board_wip_items_limit_v17_11.png)
+
+- **Weight**: Limits the total weight of issues in a list.
+  The board header shows the total weight of issues in the list and the weight limit.
+
+  For example, if there are issues with weights adding up to 8 and a weight limit of 5, the header shows **8/5**.
+
+  ![Work-in-progress weight limit on an issue board](img/issue_board_wip_weight_limit_v17_11.png)
 
 Examples:
 
-- When you have a list with four issues and a limit of five, the header shows **4/5**.
+- When you have a list with four issues and an item limit of five, the header shows **4/5**.
   If you exceed the limit, the current number of issues is shown in red.
-- You have a list with five issues with a limit of five. When you move another issue to that list,
-  the list's header displays **6/5**, with the six shown in red. The work in progress line is shown before the sixth issue.
+- You have a list with five issues with an item limit of five. When you move another issue to that list,
+  the list's header displays **6/5**, with the six shown in red. The work in progress limit line is shown before the sixth issue.
+- When using weight limits, if you have three issues with weights of 1, 2, and 5 (total weight of 8) and a weight limit of 5, the header shows **8/5** with the 8 in red. The work in progress limit line appears after the issues whose combined weight is within the limit, separating them from issues that exceed the limit.
 
-![Work-in-progress limit on an issue board](img/issue_board_wip_limit_v17_9.png)
+#### Set work in progress limit
 
 Prerequisites:
 
@@ -418,8 +445,13 @@ To set a WIP limit for a list, in an issue board:
 1. On the top of the list you want to edit, select **Edit list settings** ({{< icon name="settings" >}}).
    The list settings sidebar opens on the right.
 1. Next to **Work in progress limit**, select **Edit**.
-1. Enter the maximum number of issues.
+1. Choose the limit type from the dropdown list:
+   - **Items**: To limit by the number of issues.
+   - **Weight**: To limit by the total weight of issues.
+1. Enter the maximum number of items or maximum weight.
 1. Press <kbd>Enter</kbd> to save.
+
+To remove a WIP limit, select **Remove limit**.
 
 ### Blocked issues
 

@@ -5,15 +5,15 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
-import notesStore from '~/mr_notes/stores';
-import { pinia as piniaStore } from '~/pinia/instance';
+import store from '~/mr_notes/stores';
+import { pinia } from '~/pinia/instance';
 
 import eventHub from '../notes/event_hub';
 import DiffsApp from './components/app.vue';
 
 import { TREE_LIST_STORAGE_KEY, DIFF_WHITESPACE_COOKIE_NAME } from './constants';
 
-export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
+export default function initDiffsApp() {
   const el = document.getElementById('js-diffs-app');
   const { dataset } = el;
 

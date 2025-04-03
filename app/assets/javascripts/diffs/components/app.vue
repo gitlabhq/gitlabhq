@@ -28,6 +28,7 @@ import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -218,12 +219,12 @@ export default {
     },
   },
   computed: {
-    ...mapState('diffs', {
+    ...mapPiniaState(useLegacyDiffs, {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
     ...mapState('findingsDrawer', ['activeDrawer']),
-    ...mapState('diffs', [
+    ...mapPiniaState(useLegacyDiffs, [
       'isLoading',
       'diffViewType',
       'commit',
@@ -246,8 +247,6 @@ export default {
       'branchName',
       'addedLines',
       'removedLines',
-    ]),
-    ...mapGetters('diffs', [
       'whichCollapsedTypes',
       'isParallelView',
       'currentDiffIndex',
@@ -442,7 +441,7 @@ export default {
   },
   methods: {
     ...mapActions(['startTaskList']),
-    ...mapActions('diffs', [
+    ...mapPiniaActions(useLegacyDiffs, [
       'moveToNeighboringCommit',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',

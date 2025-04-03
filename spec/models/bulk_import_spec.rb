@@ -14,6 +14,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to have_one(:configuration) }
     it { is_expected.to have_many(:entities) }
   end
@@ -194,20 +195,22 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe '#destination_group_roots' do
-    subject(:import) do
-      create(:bulk_import, :started, entities: [
-        root_project_entity,
-        root_group_entity,
-        create(:bulk_import_entity, parent: root_group_entity)
-      ])
-    end
+    let_it_be(:import) { create(:bulk_import, :started) }
 
     let_it_be(:project_namespace) { create(:group) }
     let_it_be(:project) { create(:project, namespace: project_namespace) }
-    let_it_be(:root_project_entity) { create(:bulk_import_entity, :project_entity, project: project) }
+    let_it_be(:root_project_entity) do
+      create(:bulk_import_entity, :project_entity, project: project, bulk_import: import)
+    end
 
     let_it_be(:top_level_group) { create(:group) }
-    let_it_be(:root_group_entity) { create(:bulk_import_entity, :group_entity, group: top_level_group) }
+    let_it_be(:root_group_entity) do
+      create(:bulk_import_entity, :group_entity, group: top_level_group, bulk_import: import)
+    end
+
+    let_it_be(:child_group_entity) do
+      create(:bulk_import_entity, parent: root_group_entity, bulk_import: import)
+    end
 
     it 'returns the topmost group nodes of the import entity tree' do
       expect(import.destination_group_roots).to match_array([project_namespace, top_level_group])

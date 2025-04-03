@@ -90,7 +90,7 @@ module QA
           end
 
           def has_comment_author?(author_username)
-            within_element('work-item-note-body') do
+            within_element('note-wrapper') do
               has_element?('author-name', text: author_username, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
             end
           end

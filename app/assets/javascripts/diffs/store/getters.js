@@ -203,7 +203,7 @@ export function suggestionCommitMessage(state, _, rootState) {
 }
 
 export const isVirtualScrollingEnabled = (state) => {
-  if (state.disableVirtualScroller || getParameterValues('virtual_scrolling')[0] === 'false') {
+  if (state.virtualScrollerDisabled || getParameterValues('virtual_scrolling')[0] === 'false') {
     return false;
   }
 

@@ -51,7 +51,7 @@ export const useLegacyDiffs = defineStore('legacyDiffs', {
       defaultSuggestionCommitMessage: '',
       mrReviews: {},
       latestDiff: true,
-      disableVirtualScroller: false,
+      virtualScrollerDisabled: false,
       linkedFileHash: null,
     };
   },

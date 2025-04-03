@@ -234,7 +234,7 @@ export function suggestionCommitMessage() {
 }
 
 export function isVirtualScrollingEnabled() {
-  if (this.disableVirtualScroller || getParameterValues('virtual_scrolling')[0] === 'false') {
+  if (this.virtualScrollerDisabled || getParameterValues('virtual_scrolling')[0] === 'false') {
     return false;
   }
 

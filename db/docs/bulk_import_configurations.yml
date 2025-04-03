@@ -9,5 +9,13 @@ description: Used to store the configuration details of a bulk import of groups 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
 milestone: '13.5'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499829
+desired_sharding_key:
+  organization_id:
+    references: organizations
+    backfill_via:
+      parent:
+        foreign_key: bulk_import_id
+        table: bulk_imports
+        sharding_key: organization_id
+        belongs_to: bulk_import
 table_size: small

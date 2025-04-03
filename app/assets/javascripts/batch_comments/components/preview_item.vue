@@ -2,6 +2,7 @@
 import { GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
@@ -10,6 +11,7 @@ import {
   getEndLineNumber,
   getLineClasses,
 } from '~/notes/components/multiline_comment_utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import resolvedStatusMixin from '../mixins/resolved_status';
 
 export default {
@@ -26,7 +28,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['getDiffFileByHash']),
+    ...mapState(useLegacyDiffs, ['getDiffFileByHash']),
     ...mapGetters(['getDiscussion']),
     iconName() {
       return this.isDiffDiscussion || this.draft.line_code ? 'doc-text' : 'comment';

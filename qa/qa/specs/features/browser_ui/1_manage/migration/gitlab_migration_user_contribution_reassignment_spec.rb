@@ -49,7 +49,10 @@ module QA
 
           page.visit imported_issue[:web_url]
 
-          Page::Project::Issue::Show.perform do |issue|
+          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+          page_type.perform do |issue|
             expect(issue).to have_author(placeholder_user.name)
             expect(issue).to have_comment_author(placeholder_user.name)
           end
@@ -102,7 +105,10 @@ module QA
 
           page.visit imported_issue[:web_url]
 
-          Page::Project::Issue::Show.perform do |issue|
+          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+          page_type.perform do |issue|
             expect(issue).to have_author(user.name)
             expect(issue).to have_comment_author(user.name)
           end

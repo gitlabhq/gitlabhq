@@ -2,7 +2,8 @@
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters as mapVuexGetters, mapActions as mapVuexActions } from 'vuex';
+import { mapState } from 'pinia';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -15,6 +16,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import { __, s__, sprintf } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -126,8 +128,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('diffs', ['getDiffFileByHash']),
-    ...mapGetters(['targetNoteHash', 'getNoteableData', 'getUserData', 'commentsDisabled']),
+    ...mapState(useLegacyDiffs, ['getDiffFileByHash']),
+    ...mapVuexGetters(['targetNoteHash', 'getNoteableData', 'getUserData', 'commentsDisabled']),
     isEditing: {
       get() {
         return this.note.isEditing ?? this.isEditingLocal;
@@ -269,7 +271,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
+    ...mapVuexActions([
       'deleteNote',
       'removeNote',
       'updateNote',

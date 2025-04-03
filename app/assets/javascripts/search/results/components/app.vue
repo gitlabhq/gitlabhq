@@ -1,14 +1,13 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
-import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT } from '~/search/sidebar/constants/index';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import EmptyResult from './result_empty.vue';
+import ErrorResult from './result_error.vue';
 import StatusBar from './status_bar.vue';
 
 import ZoektBlobResults from './zoekt_blob_results.vue';
@@ -24,8 +23,8 @@ export default {
   components: {
     ZoektBlobResults,
     StatusBar,
-    GlAlert,
     EmptyResult,
+    ErrorResult,
   },
   data() {
     return {
@@ -69,24 +68,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(['searchType', 'query']),
-    ...mapGetters(['currentScope']),
+    ...mapState(['query']),
     currentPage() {
       return this.query?.page ? parseInt(this.query?.page, 10) : 1;
     },
-    isBlobScope() {
-      return this.currentScope === SCOPE_BLOB;
-    },
-    isZoektSearch() {
-      return this.searchType === SEARCH_TYPE_ZOEKT;
-    },
     isLoading() {
       return this.$apollo.queries.blobSearch.loading;
-    },
-  },
-  methods: {
-    clearErrors() {
-      this.hasError = false;
     },
   },
 };
@@ -94,18 +81,16 @@ export default {
 
 <template>
   <div>
-    <gl-alert v-if="hasError" variant="danger" @dismiss="clearErrors">
-      {{ $options.i18n.blobDataFetchError }}
-    </gl-alert>
-    <section v-else-if="isBlobScope && isZoektSearch">
-      <status-bar v-if="!isLoading && !hasError" :blob-search="blobSearch" />
+    <error-result v-if="hasError" />
+    <section v-else>
+      <empty-result v-if="!hasResults && !isLoading" />
+      <status-bar v-if="!isLoading" :blob-search="blobSearch" />
       <zoekt-blob-results
         v-if="hasResults"
         :blob-search="blobSearch"
         :has-results="hasResults"
         :is-loading="isLoading"
       />
-      <empty-result v-if="!hasResults && !isLoading" />
     </section>
   </div>
 </template>

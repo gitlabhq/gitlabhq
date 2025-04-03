@@ -32,7 +32,7 @@ module Mutations
               'body or position arguments are required'
           end
 
-          super(**args)
+          super
         end
 
         private
@@ -44,7 +44,7 @@ module Mutations
         end
 
         def note_params(note, args)
-          super(note, args).merge(
+          super.merge(
             position: position_params(note, args)
           ).compact
         end

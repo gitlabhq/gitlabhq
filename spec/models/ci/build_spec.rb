@@ -70,7 +70,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to respond_to(:set_cancel_gracefully) }
   it { is_expected.to respond_to(:cancel_gracefully?) }
 
   it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
@@ -5806,29 +5805,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       include_context 'when canceling support'
 
       specify { expect(job.supports_force_cancel?).to be true }
-    end
-  end
-
-  describe '#runtime_runner_features' do
-    before do
-      stub_feature_flags(ci_read_runner_manager_features: false)
-    end
-
-    subject do
-      build.save!
-      build.reload.cancel_gracefully?
-    end
-
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-
-    it 'cannot cancel gracefully' do
-      expect(subject).to be false
-    end
-
-    it 'can cancel gracefully' do
-      build.set_cancel_gracefully
-
-      expect(subject).to be true
     end
   end
 

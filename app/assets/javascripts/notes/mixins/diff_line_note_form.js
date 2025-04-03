@@ -1,10 +1,6 @@
 import { mapState, mapActions } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import {
-  mapActions as mapVuexActions,
-  mapGetters as mapVuexGetters,
-  mapState as mapVuexState,
-} from 'vuex';
+import { mapState as mapVuexState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
 import {
   TEXT_DIFF_POSITION_TYPE,
@@ -17,6 +13,7 @@ import { sprintf } from '~/locale';
 import { formatLineRange } from '~/notes/components/multiline_comment_utils';
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 export default {
   computed: {
@@ -24,16 +21,15 @@ export default {
       noteableData: (state) => state.notes.noteableData,
       notesData: (state) => state.notes.notesData,
     }),
-    ...mapVuexGetters('diffs', ['getDiffFileByHash']),
+    ...mapState(useLegacyDiffs, ['getDiffFileByHash', 'commit', 'showWhitespace']),
     ...mapState(useBatchComments, [
       'shouldRenderDraftRowInDiscussion',
       'draftForDiscussion',
       'isMergeRequest',
     ]),
-    ...mapVuexState('diffs', ['commit', 'showWhitespace']),
   },
   methods: {
-    ...mapVuexActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
+    ...mapActions(useLegacyDiffs, ['cancelCommentForm', 'toggleFileCommentForm']),
     ...mapActions(useBatchComments, ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
     // eslint-disable-next-line max-params
     addReplyToReview(noteText, isResolving, parentElement, errorCallback) {

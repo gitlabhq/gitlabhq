@@ -4,8 +4,16 @@ FactoryBot.define do
   factory :bulk_import_entity, class: 'BulkImports::Entity' do
     bulk_import
 
-    organization do |entity|
-      association(:organization) unless [entity.group, entity.project, entity.project_id, entity.namespace_id].any?
+    transient { uses_without_organization_trait? { false } }
+
+    after(:build) do |entity, evaluator|
+      next if evaluator.uses_without_organization_trait? || entity.bulk_import.nil?
+
+      entity.organization ||= entity.bulk_import.organization unless [entity.group, entity.project].any?
+
+      entity.bulk_import.organization =
+        entity.organization || entity.group&.organization || entity.project&.organization
+      entity.bulk_import.save! if entity.bulk_import.persisted?
     end
 
     source_type { :group_entity }
@@ -24,6 +32,12 @@ FactoryBot.define do
     trait(:project_entity) do
       source_type { :project_entity }
       sequence(:source_full_path) { |n| "root/source-path-#{n}" }
+    end
+
+    trait :without_organization do
+      transient { uses_without_organization_trait? { true } }
+
+      organization { nil }
     end
 
     trait :created do

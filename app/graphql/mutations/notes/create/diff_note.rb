@@ -24,13 +24,13 @@ module Mutations
               'position oldLine or newLine arguments are required'
           end
 
-          super(**args)
+          super
         end
 
         private
 
         def create_note_params(noteable, args)
-          super(noteable, args).merge({
+          super.merge({
             type: 'DiffNote',
             position: position(noteable, args),
             merge_request_diff_head_sha: args[:position][:head_sha]

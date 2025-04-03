@@ -449,6 +449,8 @@ export function assignDiscussionsToDiff(discussions) {
   Vue.nextTick(() => {
     eventHub.$emit(EVT_DISCUSSIONS_ASSIGNED);
   });
+
+  return Promise.resolve();
 }
 
 export function removeDiscussionsFromDiff(removeDiscussion) {
