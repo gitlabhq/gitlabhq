@@ -158,6 +158,7 @@ export default {
       this.$el.parentElement.dispatchEvent(new Event('assignYourself'));
 
       this.mediator.addSelfReview();
+      this.trackEvent('assign_self_as_reviewer_in_mr');
       this.saveReviewers();
     },
     saveReviewers() {

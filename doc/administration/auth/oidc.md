@@ -260,6 +260,10 @@ you need the following information:
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
+When you register a Microsoft Azure application, you must grant API permissions to allow GitLab to 
+retrieve required details. You must provide at least the `openid`, `profile`, and `email` permissions.
+For more information, see the [Microsoft documentation for configuring app permissions for a web API](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-access-web-apis#add-permissions-to-access-microsoft-graph).
+
 {{< alert type="note" >}}
 
 All accounts provisioned by Azure must have an email address defined. If an email address is not defined, Azure assigns a randomly generated address. If you've configured [domain sign-up restrictions](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains), this random address might prevent the account from being created.

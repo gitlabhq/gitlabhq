@@ -1375,7 +1375,6 @@ Gitlab/BoundedContexts:
     - 'app/services/authorized_project_update/project_recalculate_per_user_service.rb'
     - 'app/services/authorized_project_update/project_recalculate_service.rb'
     - 'app/services/auto_merge/base_service.rb'
-    - 'app/services/auto_merge/merge_when_pipeline_succeeds_service.rb'
     - 'app/services/auto_merge_service.rb'
     - 'app/services/award_emojis/add_service.rb'
     - 'app/services/award_emojis/base_service.rb'

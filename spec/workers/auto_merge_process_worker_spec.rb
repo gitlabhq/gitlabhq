@@ -32,21 +32,19 @@ RSpec.describe AutoMergeProcessWorker, feature_category: :continuous_delivery do
 
     context 'when a pipeline is passed with auto mergeable MRs', :aggregate_failures do
       let(:merge_service) { instance_double(AutoMergeService, process: true) }
-      let(:mwps_merge_request) { create(:merge_request, :with_head_pipeline, :merge_when_pipeline_succeeds) }
       let(:mwcp_merge_request) { create(:merge_request, :with_head_pipeline, :merge_when_checks_pass) }
 
       let(:args) do
         {
           'merge_request_id' => merge_request.id,
-          'pipeline_id' => [mwps_merge_request.head_pipeline.id, mwcp_merge_request.head_pipeline.id]
+          'pipeline_id' => [mwcp_merge_request.head_pipeline.id]
         }
       end
 
       it 'initializes and executes AutoMergeService for the passed MR and those attached to the passed pipeline' do
-        expect(AutoMergeService).to receive(:new).exactly(3).times.and_return(merge_service)
+        expect(AutoMergeService).to receive(:new).twice.and_return(merge_service)
 
         expect(merge_service).to receive(:process).with(merge_request)
-        expect(merge_service).to receive(:process).with(mwps_merge_request)
         expect(merge_service).to receive(:process).with(mwcp_merge_request)
 
         subject

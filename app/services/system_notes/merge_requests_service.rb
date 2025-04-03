@@ -26,30 +26,6 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
     end
 
-    # Called when 'merge when pipeline succeeds' is executed
-    def merge_when_pipeline_succeeds(sha)
-      body = "enabled an automatic merge when the pipeline for #{sha} succeeds"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
-    end
-
-    # Called when 'merge when pipeline succeeds' is canceled
-    def cancel_merge_when_pipeline_succeeds
-      body = 'canceled the automatic merge'
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
-    end
-
-    # Called when 'merge when pipeline succeeds' is aborted
-    def abort_merge_when_pipeline_succeeds(reason)
-      body = "aborted the automatic merge because #{format_reason(reason)}"
-
-      ##
-      # TODO: Abort message should be sent by the system, not a particular user.
-      # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63187.
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
-    end
-
     def handle_merge_request_draft
       action = noteable.draft? ? "draft" : "ready"
 

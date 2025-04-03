@@ -124,6 +124,7 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         workItemType: null,
         hasIssueDateFilterFeature: false,
+        timeTrackingLimitToHours: false,
         ...provide,
       },
       propsData: {

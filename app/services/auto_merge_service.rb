@@ -3,11 +3,10 @@
 class AutoMergeService < BaseService
   include Gitlab::Utils::StrongMemoize
 
-  STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS = 'merge_when_pipeline_succeeds'
   STRATEGY_MERGE_WHEN_CHECKS_PASS = 'merge_when_checks_pass'
   # Only used in EE
   STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS = 'add_to_merge_train_when_checks_pass'
-  STRATEGIES = [STRATEGY_MERGE_WHEN_CHECKS_PASS, STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS].freeze
+  STRATEGIES = [STRATEGY_MERGE_WHEN_CHECKS_PASS].freeze
 
   class << self
     def all_strategies_ordered_by_preference
@@ -22,7 +21,6 @@ class AutoMergeService < BaseService
 
     def strategy_to_class_map
       {
-        STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS => AutoMerge::MergeWhenPipelineSucceedsService,
         STRATEGY_MERGE_WHEN_CHECKS_PASS => AutoMerge::MergeWhenChecksPassService
       }
     end

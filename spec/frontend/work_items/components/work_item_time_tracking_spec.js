@@ -17,7 +17,12 @@ describe('WorkItemTimeTracking component', () => {
   const findTimeTrackingBody = () => wrapper.findByTestId('time-tracking-body');
   const getProgressBarTooltip = () => getBinding(findProgressBar().element, 'gl-tooltip');
 
-  const createComponent = ({ canUpdate = true, timeEstimate = 0, totalTimeSpent = 0 } = {}) => {
+  const createComponent = ({
+    canUpdate = true,
+    timeEstimate = 0,
+    totalTimeSpent = 0,
+    provide = {},
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemTimeTracking, {
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -33,6 +38,8 @@ describe('WorkItemTimeTracking component', () => {
       },
       provide: {
         fullPath: 'gitlab-org/gitlab',
+        timeTrackingLimitToHours: false,
+        ...provide,
       },
       stubs: {
         GlSprintf,
@@ -183,6 +190,21 @@ describe('WorkItemTimeTracking component', () => {
         });
         expect(getProgressBarTooltip().value).toContain('2h over');
       });
+    });
+  });
+
+  describe('when global time tracking hours only preference is turned on', () => {
+    beforeEach(() => {
+      createComponent({
+        timeEstimate: 0,
+        totalTimeSpent: 60 * 60 * 24 * 3 + 60 * 60 * 3,
+        provide: { timeTrackingLimitToHours: true },
+      });
+    });
+
+    it('shows time spent in hours', () => {
+      expect(findTimeTrackingBody().text()).toMatchInterpolatedText('Spent 75h Add estimate');
+      expect(findProgressBar().exists()).toBe(false);
     });
   });
 

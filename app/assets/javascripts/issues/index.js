@@ -19,6 +19,7 @@ import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
 import { __ } from '~/locale';
+import { NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY } from '~/work_items/constants';
 import { issuableInitialDataById, isLegacyIssueType } from './show/utils/issuable_data';
 
 const feedback = {};
@@ -31,6 +32,7 @@ if (gon.features?.workItemViewForIssues) {
   );
   feedback.title = __('New issue look');
   feedback.featureName = 'work_item_epic_feedback';
+  feedback.expiry = NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY;
 }
 
 export function initForm() {

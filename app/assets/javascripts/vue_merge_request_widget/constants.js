@@ -12,19 +12,13 @@ export const SUCCESS = 'success';
 export const WARNING = 'warning';
 export const INFO = 'info';
 
-export const MWPS_MERGE_STRATEGY = 'merge_when_pipeline_succeeds';
 export const MWCP_MERGE_STRATEGY = 'merge_when_checks_pass';
 export const MTWCP_MERGE_STRATEGY = 'add_to_merge_train_when_checks_pass';
 export const MT_MERGE_STRATEGY = 'merge_train';
 
 export const PIPELINE_FAILED_STATE = 'failed';
 
-export const AUTO_MERGE_STRATEGIES = [
-  MWPS_MERGE_STRATEGY,
-  MTWCP_MERGE_STRATEGY,
-  MT_MERGE_STRATEGY,
-  MWCP_MERGE_STRATEGY,
-];
+export const AUTO_MERGE_STRATEGIES = [MTWCP_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWCP_MERGE_STRATEGY];
 
 // SP - "Suggest Pipelines"
 export const SP_TRACK_LABEL = 'no_pipeline_noticed';

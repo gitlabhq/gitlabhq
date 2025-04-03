@@ -46,26 +46,27 @@ export default {
       required: false,
       default: null,
     },
-    sortableFields: {
-      type: Object,
+    enableSortableFields: {
+      type: Boolean,
       required: true,
     },
   },
   created() {
     this.fields = [
       { key: 'name', label: __('Project') },
-      { key: 'storage', label: __('Total'), sortable: this.sortableFields.storage },
-      { key: 'repository', label: __('Repository') },
-      { key: 'snippets', label: __('Snippets') },
-      { key: 'buildArtifacts', label: __('Job artifacts') },
-      { key: 'lfsObjects', label: __('LFS') },
-      { key: 'packages', label: __('Packages') },
-      { key: 'wiki', label: __('Wiki') },
+      { key: 'storage', label: __('Total'), sortable: this.enableSortableFields },
+      { key: 'repository', label: __('Repository'), sortable: this.enableSortableFields },
+      { key: 'snippets', label: __('Snippets'), sortable: this.enableSortableFields },
+      { key: 'buildArtifacts', label: __('Job artifacts'), sortable: this.enableSortableFields },
+      { key: 'lfsObjects', label: __('LFS'), sortable: this.enableSortableFields },
+      { key: 'packages', label: __('Packages'), sortable: this.enableSortableFields },
+      { key: 'wiki', label: __('Wiki'), sortable: this.enableSortableFields },
       {
         key: 'containerRegistry',
         label: __('Containers'),
         thClass: '!gl-border-l',
         tdClass: '!gl-border-l',
+        sortable: this.enableSortableFields,
       },
     ].map((f) => ({
       ...f,

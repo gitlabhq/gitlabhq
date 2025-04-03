@@ -129,7 +129,7 @@ export default {
             <span class="gl-block">{{ getAuthorName(item.author) }}</span>
             <time-ago
               v-if="item.createdAt"
-              class="text-1"
+              class="gl-text-sm"
               :time="item.createdAt"
               tooltip-placement="bottom"
             />

@@ -2,6 +2,7 @@ import { initForm } from 'ee_else_ce/issues';
 import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/mount_markdown_editor';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 import { initWorkItemsRoot } from '~/work_items';
+import { NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY } from '~/work_items/constants';
 import { __ } from '~/locale';
 
 initForm();
@@ -20,6 +21,7 @@ if (gon.features.workItemViewForIssues) {
   );
   feedback.title = __('New issue look');
   feedback.featureName = 'work_item_epic_feedback';
+  feedback.expiry = NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY;
 }
 
 if (gon.features.workItemsViewPreference || gon.features.workItemViewForIssues) {

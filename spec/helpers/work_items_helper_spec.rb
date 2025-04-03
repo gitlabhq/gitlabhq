@@ -30,7 +30,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             report_abuse_path: add_category_abuse_reports_path,
             default_branch: project.default_branch_or_main,
             initial_sort: current_user&.user_preference&.issues_sort,
-            is_signed_in: current_user.present?.to_s
+            is_signed_in: current_user.present?.to_s,
+            time_tracking_limit_to_hours: "false"
           }
         )
       end

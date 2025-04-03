@@ -65,58 +65,6 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
     end
   end
 
-  describe '.merge_when_pipeline_succeeds' do
-    let(:pipeline) { build(:ci_pipeline) }
-
-    subject { service.merge_when_pipeline_succeeds(pipeline.sha) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to match(%r{enabled an automatic merge when the pipeline for (\w+/\w+@)?\h{40} succeeds})
-    end
-  end
-
-  describe '.cancel_merge_when_pipeline_succeeds' do
-    subject { service.cancel_merge_when_pipeline_succeeds }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to eq "canceled the automatic merge"
-    end
-  end
-
-  describe '.abort_merge_when_pipeline_succeeds' do
-    subject { service.abort_merge_when_pipeline_succeeds('merge request was closed') }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
-    end
-
-    context "when reason is upcased" do
-      subject { service.abort_merge_when_pipeline_succeeds(::Ci::Pipeline.workflow_rules_failure_message) }
-
-      let(:expected_note) do
-        reason = ::Ci::Pipeline.workflow_rules_failure_message
-        reason[0] = reason[0].downcase
-        "aborted the automatic merge because #{reason}"
-      end
-
-      it "formats the system note correctly" do
-        expect(subject.note).to eq expected_note
-      end
-    end
-  end
-
   describe '.handle_merge_request_draft' do
     context 'adding draft note' do
       let(:noteable) { create(:merge_request, source_project: project, title: 'Draft: Lorem ipsum') }

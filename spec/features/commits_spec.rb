@@ -111,18 +111,27 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           end
         end
 
-        describe 'Cancel all builds' do
-          it 'cancels commit', :js, :sidekiq_might_not_need_inline do
-            visit pipeline_path(pipeline)
-            click_on 'Cancel pipeline'
-            expect(page).to have_content 'Canceled'
+        describe 'Cancel jobs' do
+          let!(:pipeline) do
+            create(
+              :ci_pipeline,
+              project: project,
+              user: creator,
+              ref: project.default_branch,
+              sha: project.commit.sha,
+              status: :running,
+              created_at: 5.months.ago
+            )
           end
-        end
 
-        describe 'Cancel build' do
-          it 'cancels build', :js, :sidekiq_might_not_need_inline do
+          before do
             visit pipeline_path(pipeline)
-            find_by_testid('cancel-pipeline').click
+            wait_for_requests
+            click_on 'Cancel pipeline'
+            wait_for_requests
+          end
+
+          it 'cancels pipeline and jobs', :js, :sidekiq_might_not_need_inline do
             expect(page).to have_content 'Canceled'
           end
         end

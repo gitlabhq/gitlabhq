@@ -1,6 +1,7 @@
 import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { createMockSubscription } from 'mock-apollo-client';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,6 +14,8 @@ import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry
 import HeaderActions from '~/ci/pipeline_details/header/components/header_actions.vue';
 import HeaderBadges from '~/ci/pipeline_details/header/components/header_badges.vue';
 import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
+import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
+
 import {
   pipelineHeaderSuccess,
   pipelineHeaderRunning,
@@ -24,12 +27,15 @@ import {
   pipelineRetryMutationResponseFailed,
   pipelineCancelMutationResponseFailed,
   pipelineDeleteMutationResponseFailed,
+  mockPipelineStatusUpdatedResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
 
 describe('Pipeline header', () => {
   let wrapper;
+  let mockedSubscription;
+  let apolloProvider;
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
@@ -84,9 +90,13 @@ describe('Pipeline header', () => {
     identityVerificationRequired: false,
     identityVerificationPath: '#',
     pipelineIid: 1,
+    pipelineId: 100,
     paths: {
       pipelinesPath: '/namespace/my-project/-/pipelines',
       fullProject: '/namespace/my-project',
+    },
+    glFeatures: {
+      ciPipelineStatusRealtime: true,
     },
   };
 
@@ -95,10 +105,18 @@ describe('Pipeline header', () => {
   };
 
   const createComponent = (handlers = defaultHandlers) => {
+    mockedSubscription = createMockSubscription();
+    apolloProvider = createMockApolloProvider(handlers);
+
+    apolloProvider.defaultClient.setRequestHandler(
+      pipelineCiStatusUpdatedSubscription,
+      () => mockedSubscription,
+    );
+
     wrapper = shallowMountExtended(PipelineHeader, {
       provide: defaultProvideOptions,
       stubs: { GlSprintf },
-      apolloProvider: createMockApolloProvider(handlers),
+      apolloProvider,
     });
 
     return waitForPromises();
@@ -401,6 +419,37 @@ describe('Pipeline header', () => {
         await waitForPromises();
 
         expect(findHeaderActions().props('isDeleting')).toBe(false);
+      });
+    });
+
+    describe('subscription', () => {
+      it('updates pipeline status when subscription updates', async () => {
+        await createComponent([
+          [getPipelineDetailsQuery, runningHandler],
+          [cancelPipelineMutation, cancelMutationHandlerFailed],
+        ]);
+
+        const {
+          data: {
+            project: {
+              pipeline: { detailedStatus },
+            },
+          },
+        } = pipelineHeaderRunning;
+
+        expect(findStatus().props('status')).toStrictEqual(detailedStatus);
+
+        mockedSubscription.next(mockPipelineStatusUpdatedResponse);
+
+        await waitForPromises();
+
+        expect(findStatus().props('status')).toStrictEqual({
+          __typename: 'DetailedStatus',
+          detailsPath: '/root/simple-ci-project/-/pipelines/1257',
+          icon: 'status_success',
+          id: 'success-1255-1255',
+          text: 'Passed',
+        });
       });
     });
   });

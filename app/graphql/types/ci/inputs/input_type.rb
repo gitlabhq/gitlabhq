@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# This class represents a GraphQL `Input` object that allows users to set CI inputs values when running a pipeline or
+# configuring a pipeline schedule. The `Inputs` namespace refers to CI inputs, and the `InputType` class name refers to
+# a GraphQL `Input` object.
+
 module Types
   module Ci
     module Inputs
@@ -13,7 +17,7 @@ module Types
           description: 'Name of the input.'
 
         argument :value,
-          Inputs::ValueInputType,
+          Inputs::ValueType,
           required: true,
           description: 'Value of the input.'
 

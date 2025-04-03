@@ -6,12 +6,12 @@
 <%= safe_format(s_('BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_open: '', strong_close: '', group: @group.name) %>
 <% end %>
 
-- <%= safe_format(s_('BulkImport|%{count} placeholder users matched to users.'), count: @success_count) %>
+- <%= safe_format(ns_('BulkImport|%{count} placeholder user matched to user.', 'BulkImport|%{count} placeholder users matched to users.', @success_count), count: @success_count) %>
 <% if @has_errors %>
-- <%= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count) %>
+- <%= safe_format(ns_('BulkImport|%{count} placeholder user not matched to user.', 'BulkImport|%{count} placeholder users not matched to users.', @failed_count), count: @failed_count) %>
 <% end %>
 <% if @skipped_count > 0 %>
-- <%= safe_format(s_('BulkImport|%{count} placeholder users skipped.'), count: @skipped_count) %>
+- <%= safe_format(ns_('BulkImport|%{count} placeholder user skipped.', 'BulkImport|%{count} placeholder users skipped.', @skipped_count), count: @skipped_count) %>
 <% end %>
 
 <% if @has_errors %>

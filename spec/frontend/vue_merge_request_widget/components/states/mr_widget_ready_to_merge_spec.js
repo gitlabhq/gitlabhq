@@ -15,7 +15,7 @@ import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
-import { MWPS_MERGE_STRATEGY, MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import { MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -55,8 +55,8 @@ const createTestMr = (customConfig) => {
     shouldRemoveSourceBranch: true,
     canRemoveSourceBranch: false,
     targetBranch: 'main',
-    preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY,
-    availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+    preferredAutoMergeStrategy: MWCP_MERGE_STRATEGY,
+    availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
     mergeImmediatelyDocsPath: 'path/to/merge/immediately/docs',
     transitionStateMachine: (transition) => eventHub.$emit('StateMachineValueChanged', transition),
     translateStateToMachine: () => this.transitionStateMachine(),
@@ -216,31 +216,24 @@ describe('ReadyToMerge', () => {
       expect(findMergeButton().text()).toBe('Merge');
     });
 
-    it('should return Set to auto-merge in the button and Merge when pipeline succeeds in the helper text', () => {
-      createComponent({ mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY } });
-
-      expect(findMergeButton().text()).toBe('Set to auto-merge');
-      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
-    });
-
     it('should return Set to auto-merge in the button and Merge when checks pass in the helper text', () => {
       createComponent({ mr: { preferredAutoMergeStrategy: MWCP_MERGE_STRATEGY } });
 
       expect(findMergeButton().text()).toBe('Set to auto-merge');
-      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
+      expect(findMergeHelperText().text()).toBe('Merge when all merge checks pass');
     });
 
     it('should show merge help text when pipeline has failed and has an auto merge strategy', () => {
       createComponent({
         mr: {
           pipeline: { status: 'FAILED' },
-          availableAutoMergeStrategies: MWPS_MERGE_STRATEGY,
+          availableAutoMergeStrategies: MWCP_MERGE_STRATEGY,
           hasCI: true,
         },
       });
 
       expect(findMergeButton().text()).toBe('Set to auto-merge');
-      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
+      expect(findMergeHelperText().text()).toBe('Merge when all merge checks pass');
     });
   });
 
@@ -248,7 +241,7 @@ describe('ReadyToMerge', () => {
     it('dropdown should be visible if auto merge is available', () => {
       createComponent({
         mr: {
-          availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+          availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
           mergeable: true,
           headPipeline: { active: false },
           onlyAllowMergeIfPipelineSucceeds: false,
@@ -274,7 +267,7 @@ describe('ReadyToMerge', () => {
     it('dropdown should be hidden if the MR is not mergeable', () => {
       createComponent({
         mr: {
-          availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+          availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
           mergeable: false,
           headPipeline: { active: true },
           onlyAllowMergeIfPipelineSucceeds: false,
@@ -389,11 +382,11 @@ describe('ReadyToMerge', () => {
         );
     });
 
-    it('should handle merge when pipeline succeeds', async () => {
+    it('should handle auto merge', async () => {
       createComponent({ mr: { shouldRemoveSourceBranch: false } }, true);
 
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-      jest.spyOn(service, 'merge').mockResolvedValue(response('merge_when_pipeline_succeeds'));
+      jest.spyOn(service, 'merge').mockResolvedValue(response(MWCP_MERGE_STRATEGY));
 
       findMergeButton().vm.$emit('click');
 
@@ -410,7 +403,7 @@ describe('ReadyToMerge', () => {
         expect.objectContaining({
           sha: '12345678',
           should_remove_source_branch: false,
-          auto_merge_strategy: 'merge_when_pipeline_succeeds',
+          auto_merge_strategy: 'merge_when_checks_pass',
         }),
       );
     });

@@ -142,7 +142,6 @@ RSpec/ReturnFromStub:
     - 'spec/serializers/merge_request_poll_cached_widget_entity_spec.rb'
     - 'spec/services/application_settings/update_service_spec.rb'
     - 'spec/services/auto_merge/base_service_spec.rb'
-    - 'spec/services/auto_merge/merge_when_pipeline_succeeds_service_spec.rb'
     - 'spec/services/captcha/captcha_verification_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service/logger_spec.rb'
     - 'spec/services/ci/pipeline_artifacts/destroy_all_expired_service_spec.rb'

@@ -32,6 +32,8 @@ The package registry supports the following formats:
 | [Generic packages](../../user/packages/generic_packages/_index.md) | 13.5+          |
 | [Helm Charts](../../user/packages/helm_repository/_index.md)       | 14.1+          |
 
+The package registry is also used to store [model registry data](../../user/project/ml/model_registry/_index.md).
+
 ## Accepting contributions
 
 The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages/_index.md)

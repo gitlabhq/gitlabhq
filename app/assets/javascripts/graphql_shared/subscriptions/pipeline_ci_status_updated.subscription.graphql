@@ -3,8 +3,9 @@
 subscription pipelineCiStatusUpdatedSubscription($pipelineId: CiPipelineID!) {
   ciPipelineStatusUpdated(pipelineId: $pipelineId) {
     id
+    retryable
+    cancelable
     detailedStatus {
-      label
       ...CiIcon
     }
   }

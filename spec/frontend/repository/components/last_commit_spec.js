@@ -8,115 +8,54 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LastCommit from '~/repository/components/last_commit.vue';
 import CommitInfo from '~/repository/components/commit_info.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
-import PipelineCiStatus from '~/vue_shared/components/ci_status/pipeline_ci_status.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import eventHub from '~/repository/event_hub';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
-import projectPathQuery from '~/repository/queries/project_path.query.graphql';
+import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
 import { FORK_UPDATED_EVENT } from '~/repository/constants';
+import { mockPipelineStatusUpdatedResponse, createCommitData } from '../mock_data';
 
-let wrapper;
-let commitData;
-let mockResolver;
-
-const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
-const findHistoryButton = () => wrapper.findByTestId('last-commit-history');
-const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-const findStatusBox = () => wrapper.findComponent(SignatureBadge);
-const findCommitInfo = () => wrapper.findComponent(CommitInfo);
-const findPipeline = () => wrapper.findComponent(PipelineCiStatus);
+Vue.use(VueApollo);
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-const defaultPipelineEdges = [
-  {
-    __typename: 'PipelineEdge',
-    node: {
-      __typename: 'Pipeline',
-      id: 'gid://gitlab/Ci::Pipeline/167',
-    },
-  },
-];
+describe('Repository last commit component', () => {
+  let wrapper;
+  let commitData;
+  let mockResolver;
+  let apolloProvider;
 
-const createCommitData = ({ pipelineEdges = defaultPipelineEdges, signature = null }) => {
-  return {
-    data: {
-      project: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/6',
-        repository: {
-          __typename: 'Repository',
-          paginatedTree: {
-            __typename: 'TreeConnection',
-            nodes: [
-              {
-                __typename: 'Tree',
-                lastCommit: {
-                  __typename: 'Commit',
-                  id: 'gid://gitlab/CommitPresenter/123456789',
-                  sha: '123456789',
-                  title: 'Commit title',
-                  titleHtml: 'Commit title',
-                  descriptionHtml: '',
-                  message: '',
-                  webPath: '/commit/123',
-                  authoredDate: '2019-01-01',
-                  authorName: 'Test',
-                  authorGravatar: 'https://test.com',
-                  author: {
-                    __typename: 'UserCore',
-                    id: 'gid://gitlab/User/1',
-                    name: 'Test',
-                    avatarUrl: 'https://test.com',
-                    webPath: '/test',
-                  },
-                  signature,
-                  pipelines: {
-                    __typename: 'PipelineConnection',
-                    edges: pipelineEdges,
-                  },
-                },
-              },
-            ],
-          },
+  const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
+  const findHistoryButton = () => wrapper.findByTestId('last-commit-history');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findStatusBox = () => wrapper.findComponent(SignatureBadge);
+  const findCommitInfo = () => wrapper.findComponent(CommitInfo);
+  const findPipelineStatus = () => wrapper.findComponent(CiIcon);
+
+  const subscriptionHandler = jest.fn().mockResolvedValue(mockPipelineStatusUpdatedResponse);
+
+  const createComponent = (data = {}, pipelineSubscriptionHandler = subscriptionHandler) => {
+    const currentPath = 'path';
+
+    commitData = createCommitData(data);
+    mockResolver = jest.fn().mockResolvedValue(commitData);
+
+    apolloProvider = createMockApollo([
+      [pathLastCommitQuery, mockResolver],
+      [pipelineCiStatusUpdatedSubscription, pipelineSubscriptionHandler],
+    ]);
+
+    wrapper = shallowMountExtended(LastCommit, {
+      apolloProvider,
+      propsData: { currentPath, historyUrl: '/history' },
+      provide: {
+        glFeatures: {
+          ciPipelineStatusRealtime: true,
         },
       },
-    },
+    });
   };
-};
 
-const createComponent = (data = {}) => {
-  Vue.use(VueApollo);
-
-  const currentPath = 'path';
-
-  commitData = createCommitData(data);
-  mockResolver = jest.fn().mockResolvedValue(commitData);
-
-  const apolloProvider = createMockApollo([[pathLastCommitQuery, mockResolver]]);
-
-  apolloProvider.clients.defaultClient.cache.writeQuery({
-    query: projectPathQuery,
-    data: {
-      projectPath: 'gitlab-org/gitlab-foss',
-    },
-  });
-
-  wrapper = shallowMountExtended(LastCommit, {
-    apolloProvider,
-    propsData: { currentPath, historyUrl: '/history' },
-    provide: {
-      glFeatures: {
-        ciPipelineStatusRealtime: false,
-      },
-    },
-  });
-};
-
-afterEach(() => {
-  mockResolver = null;
-});
-
-describe('Repository last commit component', () => {
   it.each`
     loading  | label
     ${true}  | ${'shows'}
@@ -182,7 +121,7 @@ describe('Repository last commit component', () => {
 
     await waitForPromises();
 
-    expect(findPipeline().exists()).toBe(false);
+    expect(findPipelineStatus().exists()).toBe(false);
   });
 
   it('renders pipeline components when pipeline exists', async () => {
@@ -190,7 +129,7 @@ describe('Repository last commit component', () => {
 
     await waitForPromises();
 
-    expect(findPipeline().exists()).toBe(true);
+    expect(findPipelineStatus().exists()).toBe(true);
   });
 
   describe('created', () => {
@@ -231,5 +170,17 @@ describe('Repository last commit component', () => {
     await waitForPromises();
 
     expect(findStatusBox().props()).toMatchObject({ signature: signatureResponse });
+  });
+
+  describe('subscription', () => {
+    it('calls subscription with correct variables', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledWith({
+        pipelineId: 'gid://gitlab/Ci::Pipeline/167',
+      });
+    });
   });
 });

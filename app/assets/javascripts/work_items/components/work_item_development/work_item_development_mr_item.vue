@@ -118,9 +118,9 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-w-full gl-items-start gl-justify-between">
+  <div class="gl-flex gl-w-full gl-items-start gl-justify-between gl-gap-3">
     <div
-      class="flex-xl-nowrap gl-flex gl-min-w-0 gl-grow gl-flex-wrap gl-items-center gl-justify-between gl-gap-2 gl-pr-2"
+      class="gl-flex gl-min-w-0 gl-grow gl-flex-wrap gl-items-center gl-justify-between gl-gap-3 xl:gl-flex-nowrap"
     >
       <div class="item-title gl-flex gl-min-w-0 gl-items-center gl-gap-3">
         <gl-icon
@@ -141,7 +141,7 @@ export default {
           {{ itemContent.title }}
         </gl-link>
       </div>
-      <div class="item-info-area gl-flex gl-shrink-0 gl-grow gl-gap-3">
+      <div class="item-info-area gl-mt-1 gl-flex gl-shrink-0 gl-grow gl-gap-3">
         <div class="item-meta gl-flex gl-grow gl-flex-wrap-reverse gl-gap-3 sm:gl-justify-between">
           <div class="item-path-area item-path-id gl-flex gl-flex-wrap gl-items-center gl-gap-3">
             <span class="gl-font-sm gl-text-subtle"> !{{ itemContent.iid }} </span>

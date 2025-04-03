@@ -85,7 +85,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-w-full gl-justify-between">
+  <div class="gl-flex gl-w-full gl-justify-between gl-gap-3">
     <div class="flex-xl-nowrap gl-flex gl-w-19/20 gl-flex-wrap gl-items-center gl-gap-3">
       <gl-icon
         v-gl-tooltip

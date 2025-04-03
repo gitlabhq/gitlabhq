@@ -56,26 +56,11 @@ RSpec.describe Gitlab::Git::User, feature_category: :source_code_management do
     it { expect(subject).not_to eq_other(username, name, email, gl_id + 'x', timezone) }
     it { expect(subject).not_to eq_other(username, name, email, gl_id, 'Etc/UTC') }
 
-    context 'when add_timezone_to_web_operations is disabled' do
-      before do
-        stub_feature_flags(add_timezone_to_web_operations: false)
-      end
-
-      it 'ignores timezone arg and sets Etc/UTC by default' do
-        expect(user.timezone).to eq('Etc/UTC')
-      end
-    end
-
-    context 'when add_timezone_to_web_operations is enabled' do
-      before do
-        stub_feature_flags(add_timezone_to_web_operations: true)
-      end
-
+    context 'when handling different timezone inputs' do
       using RSpec::Parameterized::TableSyntax
 
       where(:input_timezone, :expected_timezone) do
-        'Belgrade'          | 'Europe/Belgrade'
-        'Europe/Belgrade'   | 'Europe/Belgrade'
+        'Europe/Belgrade' | 'Europe/Belgrade'
         'pug/pug'          | 'Etc/UTC'
         'Edinburgh'        | "Europe/London"
         nil                | 'Etc/UTC'

@@ -115,9 +115,11 @@ The **Add status check** form is then shown.
 
 Filling in the form and selecting the **Add status check** button creates a new status check.
 
+The status check is applied to all new merge requests, but does not apply retroactively to existing merge requests.
+
 ### Update a status check service
 
-Within the **Status checks** sub-section, select **Edit** ({{< icon name="pencil" >}})
+In the **Status checks** sub-section, select **Edit** ({{< icon name="pencil" >}})
 next to the status check you want to edit.
 The **Update status check** form is then shown.
 
@@ -129,7 +131,9 @@ You cannot see or modify the value of the HMAC shared secret. To change the shar
 
 {{< /alert >}}
 
-Changing the values in the form and selecting the **Update status check** button updates the status check.
+To update the status check, change the values in the form and select **Update status check**.
+
+Status check updates are applied to all new merge requests, but do not apply retroactively to existing merge requests.
 
 ### Form values
 

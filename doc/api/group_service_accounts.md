@@ -224,7 +224,7 @@ Supported attributes:
 | `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
 | `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
 | `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
-| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_before_asc`, `expires_after_desc`, `last_used_before_asc`, `last_used_after_desc`, `name_asc`, `name_desc`. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
 | `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
 
 Example request:
@@ -259,7 +259,7 @@ Example response:
 Example of unsuccessful responses:
 
 - `401: Unauthorized`
-- `404 Personal access token(s) Not Found`
+- `404 Group Not Found`
 
 ## Create a personal access token for a service account user
 

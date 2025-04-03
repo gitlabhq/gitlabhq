@@ -29,11 +29,11 @@ module Types
           description: 'Indicates whether the input is required.',
           method: :required?
 
-        field :default, Types::Ci::Inputs::ValueInputType,
+        field :default, Types::Ci::Inputs::ValueType,
           null: true,
           description: 'Default value for the input, if provided.'
 
-        field :options, Types::Ci::Inputs::ValueInputType,
+        field :options, Types::Ci::Inputs::ValueType,
           null: true,
           description: 'Possible values that the input can take, if provided.'
 

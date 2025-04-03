@@ -55,12 +55,13 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     let(:group) { build_stubbed(:group) }
     let(:failed_count) { 0 }
     let(:skipped_count) { 25 }
+    let(:success_count) { 689 }
 
     subject do
       Notify.bulk_import_csv_user_mapping(
         'user_id',
         'group_id',
-        success_count: 689,
+        success_count: success_count,
         failed_count: failed_count,
         skipped_count: skipped_count
       )
@@ -72,43 +73,26 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     context 'when bulk_import does not have errors' do
-      context 'with skipped rows' do
-        let(:skipped_count) { 25 }
+      context 'with skipped row and singular success count' do
+        let(:skipped_count) { 1 }
+        let(:success_count) { 1 }
 
         it 'sends success email with skipped rows info' do
           is_expected.to have_subject("#{group.name} | Placeholder reassignments completed successfully")
-          is_expected.to have_content('Placeholder reassignments completed successfully')
-          is_expected.to have_content(
-            "Items assigned to placeholder users were reassigned to users in #{group.name}"
-          )
-          is_expected.to have_content('689 placeholder users matched to users.')
-          is_expected.to have_content('25 placeholder users skipped.')
+          is_expected.to have_content("Items assigned to placeholder users were reassigned to users in #{group.name}")
+          is_expected.to have_content('1 placeholder user matched to user.')
+          is_expected.to have_content('1 placeholder user skipped.')
           is_expected.not_to have_content('placeholder users not matched to users.')
-          is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders'))
-        end
-      end
-
-      context 'without skipped rows' do
-        let(:skipped_count) { 0 }
-
-        it 'sends success email without skipped rows info' do
-          is_expected.to have_subject("#{group.name} | Placeholder reassignments completed successfully")
-          is_expected.to have_content('Placeholder reassignments completed successfully')
-          is_expected.to have_content(
-            "All items assigned to placeholder users were reassigned to users in #{group.name}"
-          )
-          is_expected.to have_content('689 placeholder users matched to users.')
-          is_expected.not_to have_content('placeholder users skipped.')
           is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders'))
         end
       end
     end
 
     context 'when bulk_import has errors' do
-      let(:failed_count) { 362 }
+      let(:success_count) { 689 }
 
-      context 'with skipped rows' do
-        let(:skipped_count) { 25 }
+      context 'with singular failure' do
+        let(:failed_count) { 1 }
 
         it 'sends failed email with skipped rows info' do
           is_expected.to have_subject("#{group.name} | Placeholder reassignments completed with errors")
@@ -117,7 +101,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
             "Items assigned to placeholder users were reassigned to users in #{group.name}"
           )
           is_expected.to have_content('689 placeholder users matched to users.')
-          is_expected.to have_content('362 placeholder users not matched to users.')
+          is_expected.to have_content('1 placeholder user not matched to user.')
           is_expected.to have_content('25 placeholder users skipped.')
           is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders', status: 'failed'))
         end
@@ -125,6 +109,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
       context 'without skipped rows' do
         let(:skipped_count) { 0 }
+        let(:failed_count) { 362 }
 
         it 'sends failed email without skipped rows info' do
           is_expected.to have_subject("#{group.name} | Placeholder reassignments completed with errors")

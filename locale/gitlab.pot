@@ -640,12 +640,21 @@ msgstr ""
 msgid "%{board_target} not found"
 msgstr ""
 
+msgid "%{boldStart}Created by:%{boldEnd} %{value}"
+msgstr ""
+
 msgid "%{boldStart}Merge blocked:%{boldEnd} %{count} check failed"
 msgid_plural "%{boldStart}Merge blocked:%{boldEnd} %{count} checks failed"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{boldStart}Merge with caution%{boldEnd}: Override added"
+msgstr ""
+
+msgid "%{boldStart}Pipeline:%{boldEnd} %{value}"
+msgstr ""
+
+msgid "%{boldStart}Project:%{boldEnd} %{value}"
 msgstr ""
 
 msgid "%{boldStart}Ready to be merged with caution%{boldEnd}: Override added"
@@ -655,6 +664,9 @@ msgid "%{boldStart}Ready to merge by members who can write to the target branch.
 msgstr ""
 
 msgid "%{boldStart}Ready to merge!%{boldEnd}"
+msgstr ""
+
+msgid "%{boldStart}Status:%{boldEnd} %{value}"
 msgstr ""
 
 msgid "%{bold_start}%{count}%{bold_end} issue"
@@ -6652,9 +6664,6 @@ msgstr ""
 msgid "An error occurred fetching the dropdown data."
 msgstr ""
 
-msgid "An error occurred fetching the pipeline status."
-msgstr ""
-
 msgid "An error occurred fetching the project authors."
 msgstr ""
 
@@ -11037,14 +11046,20 @@ msgstr ""
 msgid "BulkImport| %{host} is running outdated GitLab version (v%{version})"
 msgstr ""
 
-msgid "BulkImport|%{count} placeholder users matched to users."
-msgstr ""
+msgid "BulkImport|%{count} placeholder user matched to user."
+msgid_plural "BulkImport|%{count} placeholder users matched to users."
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "BulkImport|%{count} placeholder users not matched to users."
-msgstr ""
+msgid "BulkImport|%{count} placeholder user not matched to user."
+msgid_plural "BulkImport|%{count} placeholder users not matched to users."
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "BulkImport|%{count} placeholder users skipped."
-msgstr ""
+msgid "BulkImport|%{count} placeholder user skipped."
+msgid_plural "BulkImport|%{count} placeholder users skipped."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr ""
@@ -17933,9 +17948,6 @@ msgid "Created at"
 msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
-msgstr ""
-
-msgid "Created by %{job}"
 msgstr ""
 
 msgid "Created by me"
@@ -30496,7 +30508,13 @@ msgstr ""
 msgid "If this was a mistake, you can %{link_start}retain the group%{link_end} before %{deletion_date}."
 msgstr ""
 
+msgid "If this was a mistake, you can %{link_start}retain the project%{link_end} before %{deletion_date}."
+msgstr ""
+
 msgid "If this was a mistake, you can retain the group before %{deletion_date}: %{retention_url}"
+msgstr ""
+
+msgid "If this was a mistake, you can retain the project before %{deletion_date}: %{retention_url}"
 msgstr ""
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
@@ -39827,9 +39845,6 @@ msgid "NotificationEvent|Merge request is reassigned"
 msgstr ""
 
 msgid "NotificationEvent|Merge request is reopened"
-msgstr ""
-
-msgid "NotificationEvent|Merge request is set to auto-merge"
 msgstr ""
 
 msgid "NotificationEvent|Merge request receives a push"
@@ -65322,6 +65337,9 @@ msgstr ""
 msgid "View your group: %{group_url}"
 msgstr ""
 
+msgid "View your project: %{project_url}"
+msgstr ""
+
 msgid "Viewed"
 msgstr ""
 
@@ -69394,6 +69412,9 @@ msgid "Your personal access tokens will expire in %{days_to_expire} days or less
 msgstr ""
 
 msgid "Your profile"
+msgstr ""
+
+msgid "Your project %{project_name} has been marked for deletion and will be removed in %{days}."
 msgstr ""
 
 msgid "Your projects"

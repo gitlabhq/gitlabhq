@@ -282,3 +282,86 @@ export const currentUserDataMock = {
 };
 
 export const applicationInfoMock = { gitpodEnabled: true };
+
+export const mockPipelineStatusUpdatedResponse = {
+  data: {
+    ciPipelineStatusUpdated: {
+      id: 'gid://gitlab/Ci::Pipeline/1257',
+      retryable: false,
+      cancelable: false,
+      __typename: 'Pipeline',
+      detailedStatus: {
+        detailsPath: '/root/simple-ci-project/-/pipelines/1257',
+        icon: 'status_success',
+        id: 'success-1255-1255',
+        label: 'passed',
+        text: 'Passed',
+        __typename: 'DetailedStatus',
+      },
+    },
+  },
+};
+
+const defaultPipelineEdges = [
+  {
+    __typename: 'PipelineEdge',
+    node: {
+      __typename: 'Pipeline',
+      id: 'gid://gitlab/Ci::Pipeline/167',
+      detailedStatus: {
+        __typename: 'DetailedStatus',
+        id: 'id',
+        detailsPath: 'https://test.com/pipeline',
+        icon: 'status_running',
+        text: 'failed',
+      },
+    },
+  },
+];
+
+export const createCommitData = ({ pipelineEdges = defaultPipelineEdges, signature = null }) => {
+  return {
+    data: {
+      project: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/6',
+        repository: {
+          __typename: 'Repository',
+          paginatedTree: {
+            __typename: 'TreeConnection',
+            nodes: [
+              {
+                __typename: 'Tree',
+                lastCommit: {
+                  __typename: 'Commit',
+                  id: 'gid://gitlab/CommitPresenter/123456789',
+                  sha: '123456789',
+                  title: 'Commit title',
+                  titleHtml: 'Commit title',
+                  descriptionHtml: '',
+                  message: '',
+                  webPath: '/commit/123',
+                  authoredDate: '2019-01-01',
+                  authorName: 'Test',
+                  authorGravatar: 'https://test.com',
+                  author: {
+                    __typename: 'UserCore',
+                    id: 'gid://gitlab/User/1',
+                    name: 'Test',
+                    avatarUrl: 'https://test.com',
+                    webPath: '/test',
+                  },
+                  signature,
+                  pipelines: {
+                    __typename: 'PipelineConnection',
+                    edges: pipelineEdges,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+};

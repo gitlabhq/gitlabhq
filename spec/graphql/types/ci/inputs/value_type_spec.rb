@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['CiInputsValueInputType'], feature_category: :pipeline_composition do
-  specify { expect(described_class.graphql_name).to eq('CiInputsValueInputType') }
+RSpec.describe GitlabSchema.types['CiInputsValue'], feature_category: :pipeline_composition do
+  specify { expect(described_class.graphql_name).to eq('CiInputsValue') }
 
   describe '.coerce_input' do
     subject(:coerce_input) { described_class.coerce_isolated_input(value) }

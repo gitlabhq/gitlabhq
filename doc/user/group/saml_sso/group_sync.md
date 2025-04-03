@@ -86,6 +86,102 @@ If through group sync the user was assigned:
 - A higher role, they are a direct member of the group.
 - A role that is the same as or lower, they are an inherited member of the group.
 
+## Automatic member removal
+
+After a group sync, users who are not members of a mapped SAML group are removed from the group.
+On GitLab.com, users in the top-level group are assigned the
+default membership role instead of being removed.
+
+For example, in the following diagram:
+
+- Alex Garcia signs into GitLab and is removed from GitLab Group C because they don't belong
+  to SAML Group C.
+- Sidney Jones belongs to SAML Group C, but is not added to GitLab Group C because they have
+  not yet signed in.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TB
+accTitle: Automatic member removal
+accDescr: How group membership of users is determined before sign in if group sync is set up.
+
+   subgraph SAML users
+      SAMLUserA[Sidney Jones]
+      SAMLUserB[Zhang Wei]
+      SAMLUserC[Alex Garcia]
+      SAMLUserD[Charlie Smith]
+   end
+
+   subgraph SAML groups
+      SAMLGroupA["Group A"] --> SAMLGroupB["Group B"]
+      SAMLGroupA --> SAMLGroupC["Group C"]
+      SAMLGroupA --> SAMLGroupD["Group D"]
+   end
+
+   SAMLGroupB --> |Member|SAMLUserA
+   SAMLGroupB --> |Member|SAMLUserB
+
+   SAMLGroupC --> |Member|SAMLUserA
+   SAMLGroupC --> |Member|SAMLUserB
+
+   SAMLGroupD --> |Member|SAMLUserD
+   SAMLGroupD --> |Member|SAMLUserC
+```
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TB
+accTitle: Automatic member removal
+accDescr: User membership for Sidney when she has not signed into group C, and group B has not configured group links.
+
+    subgraph GitLab users
+      GitLabUserA[Sidney Jones]
+      GitLabUserB[Zhang Wei]
+      GitLabUserC[Alex Garcia]
+      GitLabUserD[Charlie Smith]
+    end
+
+   subgraph GitLab groups
+      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
+   end
+
+   GitLabGroupB --> |Member|GitLabUserA
+
+   GitLabGroupC --> |Member|GitLabUserB
+   GitLabGroupC --> |Member|GitLabUserC
+
+   GitLabGroupD --> |Member|GitLabUserC
+   GitLabGroupD --> |Member|GitLabUserD
+```
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TB
+accTitle: Automatic member removal
+accDescr: How membership of Alex Garcia works once she has signed into a group that has group links enabled.
+
+   subgraph GitLab users
+      GitLabUserA[Sidney Jones]
+      GitLabUserB[Zhang Wei]
+      GitLabUserC[Alex Garcia]
+      GitLabUserD[Charlie Smith]
+   end
+
+   subgraph GitLab groups after Alex Garcia signs in
+      GitLabGroupA[Group A]
+      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
+   end
+
+   GitLabGroupB --> |Member|GitLabUserA
+   GitLabGroupC --> |Member|GitLabUserB
+   GitLabGroupD --> |Member|GitLabUserC
+   GitLabGroupD --> |Member|GitLabUserD
+```
+
 ## Configure SAML Group Sync
 
 Adding or changing a group sync configuration may remove users from the mapped GitLab group,
@@ -232,33 +328,33 @@ Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of group sync using Microsoft Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
 
-Azure AD sends up to 150 groups in the groups claim. When users are members of more than 150 groups Azure AD sends a
-group overage claim attribute in the SAML response. Then group memberships must be obtained using the Microsoft Graph API.
+Azure AD sends up to 150 groups in the `groups` claim.
+When using Azure AD with SAML Group Sync, if a user in your organization is a member of more than 150 groups,
+Azure AD sends a `groups` claim attribute in the SAML response for [group overages](https://learn.microsoft.com/en-us/security/zero-trust/develop/configure-tokens-group-claims-app-roles#group-overages),
+and the user may be automatically removed from groups.
 
-The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) supports only a
-[user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
-[userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
-as the [configured](_index.md#azure) Unique User Identifier (Name identifier) attribute.
+To avoid this issue, you can use the Azure AD integration, which:
 
-When the integration processes Group Sync, only Group Links configured with
-group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`) are supported.
+- Is not limited to 150 groups.
+- Uses the Microsoft Graph API to obtain all user memberships.
+  The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) accepts only a
+  [user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
+  [userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
+  as the [Azure-configured](_index.md#azure) Unique User Identifier (Name identifier) attribute.
+- Supports only Group Links configured with group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`)
+  when it processes Group Sync.
 
-To integrate Microsoft Azure AD, you must:
+Alternatively, you can change the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims#configure-the-microsoft-entra-application-registration-for-group-attributes) to use the **Groups assigned to the application** option.
 
-1. Configure Azure AD to enable GitLab to communicate with the Microsoft Graph API.
-1. Configure GitLab.
-
-The following table lists the GitLab settings and the corresponding Azure AD fields for the configuration:
-
-| GitLab setting | Azure field                                |
-| -------------- | ------------------------------------------ |
-| Tenant ID      | Directory (tenant) ID                      |
-| Client ID      | Application (client) ID                    |
-| Client Secret  | Value (on **Certificates & secrets** page) |
+![Manage Group Claims](img/Azure-manage-group-claims_v15_9.png)
 
 ### Configure Azure AD
 
+As part of the integration, you must allow GitLab to communicate with the Microsoft Graph API.
+
 <!-- vale gitlab_base.SentenceSpacing = NO -->
+
+To configure Azure AD:
 
 1. In the [Azure Portal](https://portal.azure.com), go to **Microsoft Entra ID > App registrations > All applications**, and select your GitLab SAML application.
 1. Under **Essentials**, the **Application (client) ID** and **Directory (tenant) ID** values are displayed. Copy these values, because you need them for the GitLab configuration.
@@ -278,9 +374,19 @@ The following table lists the GitLab settings and the corresponding Azure AD fie
 
 ### Configure GitLab
 
-With this configuration, if a user signs in with SAML and Azure sends a group overage claim in the response,
+After you configure Azure AD, you must configure GitLab to communicate with Azure AD.
+
+With this configuration, if a user signs in with SAML and Azure sends a `group` claim in the response,
 GitLab initiates a Group Sync job to call the Microsoft Graph API and retrieve the user's group membership.
 Then the GitLab group membership is updated according to SAML Group Links.
+
+The following table lists the GitLab settings and the corresponding Azure AD fields for the configuration:
+
+| GitLab setting | Azure field                                |
+| -------------- | ------------------------------------------ |
+| Tenant ID      | Directory (tenant) ID                      |
+| Client ID      | Application (client) ID                    |
+| Client Secret  | Value (on **Certificates & secrets** page) |
 
 {{< tabs >}}
 
@@ -358,113 +464,3 @@ To enable global group memberships lock:
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Ensure that **Lock memberships to SAML Group Links synchronization** is selected.
-
-## Automatic member removal
-
-After a group sync, users who are not members of a mapped SAML group are removed from the group.
-On GitLab.com, users in the top-level group are assigned the
-default membership role instead of being removed.
-
-For example, in the following diagram:
-
-- Alex Garcia signs into GitLab and is removed from GitLab Group C because they don't belong
-  to SAML Group C.
-- Sidney Jones belongs to SAML Group C, but is not added to GitLab Group C because they have
-  not yet signed in.
-
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TB
-accTitle: Automatic member removal
-accDescr: How group membership of users is determined before sign in if group sync is set up.
-
-   subgraph SAML users
-      SAMLUserA[Sidney Jones]
-      SAMLUserB[Zhang Wei]
-      SAMLUserC[Alex Garcia]
-      SAMLUserD[Charlie Smith]
-   end
-
-   subgraph SAML groups
-      SAMLGroupA["Group A"] --> SAMLGroupB["Group B"]
-      SAMLGroupA --> SAMLGroupC["Group C"]
-      SAMLGroupA --> SAMLGroupD["Group D"]
-   end
-
-   SAMLGroupB --> |Member|SAMLUserA
-   SAMLGroupB --> |Member|SAMLUserB
-
-   SAMLGroupC --> |Member|SAMLUserA
-   SAMLGroupC --> |Member|SAMLUserB
-
-   SAMLGroupD --> |Member|SAMLUserD
-   SAMLGroupD --> |Member|SAMLUserC
-```
-
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TB
-accTitle: Automatic member removal
-accDescr: User membership for Sidney when she has not signed into group C, and group B has not configured group links.
-
-    subgraph GitLab users
-      GitLabUserA[Sidney Jones]
-      GitLabUserB[Zhang Wei]
-      GitLabUserC[Alex Garcia]
-      GitLabUserD[Charlie Smith]
-    end
-
-   subgraph GitLab groups
-      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
-   end
-
-   GitLabGroupB --> |Member|GitLabUserA
-
-   GitLabGroupC --> |Member|GitLabUserB
-   GitLabGroupC --> |Member|GitLabUserC
-
-   GitLabGroupD --> |Member|GitLabUserC
-   GitLabGroupD --> |Member|GitLabUserD
-```
-
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-graph TB
-accTitle: Automatic member removal
-accDescr: How membership of Alex Garcia works once she has signed into a group that has group links enabled.
-
-   subgraph GitLab users
-      GitLabUserA[Sidney Jones]
-      GitLabUserB[Zhang Wei]
-      GitLabUserC[Alex Garcia]
-      GitLabUserD[Charlie Smith]
-   end
-
-   subgraph GitLab groups after Alex Garcia signs in
-      GitLabGroupA[Group A]
-      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
-   end
-
-   GitLabGroupB --> |Member|GitLabUserA
-   GitLabGroupC --> |Member|GitLabUserB
-   GitLabGroupD --> |Member|GitLabUserC
-   GitLabGroupD --> |Member|GitLabUserD
-```
-
-### User that belongs to many SAML groups automatically removed from GitLab group
-
-When using Azure AD with SAML, if any user in your organization is a member of more than 150 groups and you use SAML Group Sync,
-that user may lose their group memberships.
-For more information, see
-[Microsoft Group overages](https://learn.microsoft.com/en-us/security/zero-trust/develop/configure-tokens-group-claims-app-roles#group-overages).
-
-The Microsoft Azure AD integration uses the Microsoft Graph API to obtain all user memberships and is
-not limited to 150 groups.
-
-Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims#configure-the-microsoft-entra-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
-
-![Manage Group Claims](img/Azure-manage-group-claims_v15_9.png)

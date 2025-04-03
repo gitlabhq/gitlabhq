@@ -202,7 +202,6 @@ Layout/LineLength:
     - 'app/serializers/note_entity.rb'
     - 'app/services/application_settings/update_service.rb'
     - 'app/services/auth/container_registry_authentication_service.rb'
-    - 'app/services/auto_merge/merge_when_pipeline_succeeds_service.rb'
     - 'app/services/boards/base_items_list_service.rb'
     - 'app/services/boards/issues/create_service.rb'
     - 'app/services/boards/issues/move_service.rb'

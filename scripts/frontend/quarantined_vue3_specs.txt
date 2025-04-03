@@ -141,7 +141,6 @@ spec/frontend/members/components/table/members_pagination_spec.js
 spec/frontend/members/components/table/members_table_spec.js
 spec/frontend/milestones/components/milestone_combobox_spec.js
 spec/frontend/ml/model_registry/apps/show_ml_model_spec.js
-spec/frontend/ml/model_registry/components/candidate_detail_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/ml/model_registry/components/model_version_create_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js

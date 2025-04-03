@@ -55,7 +55,6 @@ export const i18n = {
     reassign_merge_request: s__('NotificationEvent|Merge request is reassigned'),
     reopen_issue: s__('NotificationEvent|Issue is reopened'),
     reopen_merge_request: s__('NotificationEvent|Merge request is reopened'),
-    merge_when_pipeline_succeeds: s__('NotificationEvent|Merge request is set to auto-merge'),
     success_pipeline: s__('NotificationEvent|Pipeline is successful'),
     approver: s__('NotificationEvent|You are added as an approver on a merge request'),
   },

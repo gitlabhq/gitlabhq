@@ -71,7 +71,6 @@ Style/IfUnlessModifier:
     - 'app/serializers/merge_request_diff_entity.rb'
     - 'app/services/application_settings/update_service.rb'
     - 'app/services/authorized_project_update/find_records_due_for_refresh_service.rb'
-    - 'app/services/auto_merge/merge_when_pipeline_succeeds_service.rb'
     - 'app/services/award_emojis/destroy_service.rb'
     - 'app/services/badges/update_service.rb'
     - 'app/services/boards/issues/list_service.rb'

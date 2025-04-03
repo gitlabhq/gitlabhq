@@ -226,7 +226,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
-  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key' do
+  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527615' do
     loose_foreign_keys = Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table)
 
     sql = <<~SQL

@@ -9,6 +9,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { __ } from '~/locale';
+import { NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY } from '~/work_items/constants';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
@@ -59,6 +60,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canCreateProjects,
     newProjectPath,
     hasIssueDateFilterFeature,
+    timeTrackingLimitToHours,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -97,6 +99,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     );
     feedback.title = __('New issue look');
     feedback.featureName = 'work_item_epic_feedback';
+    feedback.expiry = NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY;
   }
 
   if (
@@ -151,6 +154,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       newIssuePath: '',
       newProjectPath,
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
+      timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
     },
     mounted() {
       performanceMarkAndMeasure({
