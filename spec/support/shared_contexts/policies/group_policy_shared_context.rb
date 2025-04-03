@@ -21,7 +21,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:public_permissions) do
     %i[
-      read_group read_counts read_issue read_namespace
+      read_group read_group_metadata read_counts read_issue read_namespace
       read_label read_issue_board_list read_milestone read_issue_board
       read_group_activity read_group_issues read_group_boards read_group_labels
       read_group_milestones read_group_merge_requests
@@ -30,7 +30,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:guest_permissions) do
     %i[
-      read_label read_group upload_file read_namespace_via_membership read_group_activity
+      read_label read_group read_group_metadata upload_file read_namespace_via_membership read_group_activity
       read_group_issues read_group_boards read_group_labels read_group_milestones
       read_group_merge_requests
     ]

@@ -188,7 +188,7 @@ The code flow information is shown the **Code flow** tab and includes:
 
 ## Troubleshooting
 
-If you encounter issues while using GitLab Advanced SAST, refer to the [troubleshooting guide](troubleshooting.md).
+If you encounter issues while using GitLab Advanced SAST, refer to the [troubleshooting guide](troubleshooting.md#slow-scans-or-timeouts-with-advanced-sast).
 
 ### Locate the GitLab Advanced SAST analyzer version
 

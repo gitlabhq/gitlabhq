@@ -25,7 +25,6 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_filter_by_name, only: [:index]
   before_action :push_populate_and_use_build_source_table, only: [:index]
-  before_action :push_force_cancel_build, only: [:cancel, :show]
   layout 'project'
 
   feature_category :continuous_integration
@@ -112,11 +111,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def cancel
-    service_response = if Feature.enabled?(:force_cancel_build, current_user)
-                         Ci::BuildCancelService.new(@build, current_user, force_param).execute
-                       else
-                         Ci::BuildCancelService.new(@build, current_user).execute
-                       end
+    service_response = Ci::BuildCancelService.new(@build, current_user, force_param).execute
 
     if service_response.success?
       destination = continue_params[:to].presence || builds_project_pipeline_path(@project, @build.pipeline.id)
@@ -306,10 +301,6 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_populate_and_use_build_source_table
     push_frontend_feature_flag(:populate_and_use_build_source_table, @project)
-  end
-
-  def push_force_cancel_build
-    push_frontend_feature_flag(:force_cancel_build, current_user)
   end
 end
 

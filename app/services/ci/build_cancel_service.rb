@@ -5,7 +5,7 @@ module Ci
     def initialize(build, user, force = false)
       @build = build
       @user = user
-      @force = force && Feature.enabled?(:force_cancel_build, user)
+      @force = force
     end
 
     def execute

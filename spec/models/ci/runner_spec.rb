@@ -1898,13 +1898,23 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     shared_examples 'an encrypted routable token for resource' do |prefix|
+      let(:resource_payload) do
+        case resource
+        when Group
+          { g: resource.id.to_s(36), o: resource.organization_id.to_s(36) }
+        when Project
+          { p: resource.id.to_s(36), o: resource.organization_id.to_s(36) }
+        else
+          {}
+        end
+      end
+
       let(:routing_payload) do
         {
           c: 1,
-          **(resource.is_a?(Group) ? { g: resource.id.to_s(36) } : { p: resource.id.to_s(36) }),
-          o: resource.organization_id.to_s(36),
           u: creator.id.to_s(36),
-          t: described_class.runner_types[runner_type].to_s(36)
+          t: described_class.runner_types[runner_type].to_s(36),
+          **resource_payload
         }.sort.to_h
       end
 
@@ -1937,12 +1947,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:runner_type) { :instance_type }
 
       it_behaves_like 'an encrypted non-routable token', prefix
-
-      it_behaves_like 'an encrypted token' do
-        let(:expected_token) { token }
-        let(:expected_token_payload) { devise_token }
-        let(:expected_token_prefix) { prefix }
-        let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+      it_behaves_like 'an encrypted routable token for resource', prefix do
+        let(:resource) { nil }
       end
     end
 

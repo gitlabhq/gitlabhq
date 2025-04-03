@@ -7,7 +7,6 @@
 module WorkItems
   class Type < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
-    include SafelyChangeColumnDefault
 
     DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
 
@@ -56,7 +55,7 @@ module WorkItems
 
     EE_BASE_TYPES = %w[objective epic key_result requirement].freeze
 
-    columns_changing_default :id
+    ignore_column :correct_id, remove_with: '18.1', remove_after: '2025-05-15'
 
     cache_markdown_field :description, pipeline: :single_line
 

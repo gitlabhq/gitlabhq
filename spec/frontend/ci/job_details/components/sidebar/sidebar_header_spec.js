@@ -110,26 +110,17 @@ describe('Sidebar Header', () => {
     });
 
     describe(`a build with force_cancel_path`, () => {
-      it.each([
-        ['does not', false],
-        ['does', true],
-      ])(
-        '%s render a force cancel button with flag :force_cancel_build=%s',
-        async (label, flagValue) => {
-          const provide = {
-            ...defaultProvide,
-            glFeatures: { forceCancelBuild: flagValue },
-          };
-          await createComponentWithApollo({
-            restJob: { force_cancel_path: 'force_cancel/path' },
-            provide,
-          });
-          expect(findForceCancelButton().exists()).toBe(flagValue);
-          if (flagValue) {
-            expect(findForceCancelButton().attributes('href')).toBe('force_cancel/path');
-          }
-        },
-      );
+      it('renders a force cancel button with flag', async () => {
+        const provide = {
+          ...defaultProvide,
+        };
+        await createComponentWithApollo({
+          restJob: { force_cancel_path: 'force_cancel/path' },
+          provide,
+        });
+        expect(findForceCancelButton().exists()).toBe(true);
+        expect(findForceCancelButton().attributes('href')).toBe('force_cancel/path');
+      });
     });
   });
 });

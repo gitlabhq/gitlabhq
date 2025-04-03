@@ -4,6 +4,9 @@ module ActiveContext
   class Reference
     extend Concerns::ReferenceUtils
     extend Concerns::Preprocessor
+    include Preprocessors::Chunking
+    include Preprocessors::Embeddings
+    include Preprocessors::Preload
 
     DELIMITER = '|'
 
@@ -36,6 +39,7 @@ module ActiveContext
     end
 
     attr_reader :collection_id, :collection, :routing, :serialized_args, :ref_version
+    attr_writer :documents
 
     def initialize(collection_id:, routing:, args: [])
       @collection_id = collection_id.to_i
@@ -62,8 +66,19 @@ module ActiveContext
       raise NotImplementedError
     end
 
+    def documents
+      @documents ||= []
+    end
+
     def jsons
-      as_indexed_jsons.map do |json|
+      docs = documents.empty? ? as_indexed_jsons : documents
+
+      if respond_to?(:shared_attributes)
+        base = shared_attributes
+        docs = docs.map { |doc| base.merge(doc) }
+      end
+
+      docs.map do |json|
         json.merge(
           ref_id: identifier,
           ref_version: ref_version

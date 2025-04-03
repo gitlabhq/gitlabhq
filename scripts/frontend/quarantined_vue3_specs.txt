@@ -185,7 +185,6 @@ spec/frontend/snippets/components/snippet_description_edit_spec.js
 spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
-spec/frontend/todos/components/filtered_search_tokens/group_token_spec.js
 spec/frontend/todos/components/filtered_search_tokens/project_token_spec.js
 spec/frontend/tooltips/index_spec.js
 spec/frontend/vue_alerts_spec.js

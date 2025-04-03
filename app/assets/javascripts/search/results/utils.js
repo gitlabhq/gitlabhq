@@ -12,6 +12,7 @@ import {
   MAXIMUM_LINE_LENGTH,
   ELLIPSIS,
   MAX_GAP,
+  HIGHLIGHT_CLASSES,
 } from './constants';
 
 /**
@@ -66,7 +67,6 @@ export const highlightSearchTerm = (highlightedString) => {
   if (!highlightedString || highlightedString.length === 0) {
     return '';
   }
-
   const pattern = new RegExp(`${HIGHLIGHT_MARK_REGEX}(.+?)${HIGHLIGHT_MARK_REGEX}`, 'g');
   return highlightedString.replace(pattern, `${HIGHLIGHT_HTML_START}$1${HIGHLIGHT_HTML_END}`);
 };
@@ -81,146 +81,25 @@ const sortHighlights = (highlights) => {
 };
 
 /**
- * Checks if highlights are close enough to be in the same cluster
- * @param {Array} prevHighlight - Previous highlight [start, end]
- * @param {Array} currentHighlight - Current highlight [start, end]
- * @param {number} maxGap - Maximum gap between highlights
- * @returns {boolean} - True if highlights are close
+ * Determines start and end positions for truncation based on context before
+ * @param {Number} remainingSpace - calculated number of characters remaining
+ * @param {string} text - Original text
+ * @param {Number} start - start position character index
+ * @returns {Object} - start, end posotions and booleans for adding ellipsis
  */
-const areHighlightsClose = (prevHighlight, currentHighlight, maxGap) => {
-  return currentHighlight[0] - prevHighlight[1] <= maxGap;
+const getTextRegionsByContextBefore = (remainingSpace, text, start) => {
+  const contextBefore = Math.min(remainingSpace / 2, start);
+
+  return {
+    startPos: Math.max(0, start - contextBefore),
+    endPos: Math.min(text.length, start - contextBefore + MAXIMUM_LINE_LENGTH),
+    addLeadingEllipsis: start - contextBefore > 0,
+    addTrailingEllipsis: start - contextBefore + MAXIMUM_LINE_LENGTH < text.length,
+  };
 };
 
 /**
- * Groups highlights into clusters based on proximity
- * @param {Array} highlights - Array of highlight positions
- * @param {number} maxGap - Maximum gap between highlights
- * @returns {Array} - Array of highlight clusters
- */
-const findHighlightClusters = (highlights, maxGap = MAX_GAP) => {
-  if (!highlights?.length) {
-    return [];
-  }
-
-  const sortedHighlights = sortHighlights(highlights);
-  const clusters = [];
-  let currentCluster = [sortedHighlights[0]];
-
-  for (let i = 1; i < sortedHighlights.length; i += 1) {
-    const prevHighlight = currentCluster[currentCluster.length - 1];
-    const currentHighlight = sortedHighlights[i];
-
-    if (areHighlightsClose(prevHighlight, currentHighlight, maxGap)) {
-      currentCluster.push(currentHighlight);
-    } else {
-      clusters.push(currentCluster);
-      currentCluster = [currentHighlight];
-    }
-  }
-
-  clusters.push(currentCluster);
-  return clusters;
-};
-
-/**
- * Calculates the total highlighted text length in a cluster
- * @param {Array} highlights - Array of highlight positions
- * @returns {number} - Total highlighted length
- */
-const getTotalHighlightLength = (highlights) => {
-  return highlights.reduce((sum, [start, end]) => sum + (end - start), 0);
-};
-
-/**
- * Compares two clusters to find the better one
- * @param {Array} best - Current best cluster
- * @param {Array} current - Cluster to compare
- * @returns {Array} - Better cluster
- */
-const compareClusters = (best, current) => {
-  if (current.length > best.length) {
-    return current;
-  }
-  if (current.length === best.length) {
-    const currentTotal = getTotalHighlightLength(current);
-    const bestTotal = getTotalHighlightLength(best);
-    return currentTotal > bestTotal ? current : best;
-  }
-  return best;
-};
-
-/**
- * Finds the best cluster of highlights
- * @param {Array} clusters - Array of highlight clusters
- * @returns {Array} - Best cluster
- */
-const findBestCluster = (clusters) => {
-  return clusters.reduce(compareClusters, clusters[0]);
-};
-
-/**
- * Calculates the center position of a highlight cluster
- * @param {Array} cluster - Cluster of highlights
- * @returns {number} - Center position
- */
-const calculateClusterCenter = (cluster) => {
-  return cluster.reduce((sum, [start, end]) => sum + (start + end) / 2, 0) / cluster.length;
-};
-
-/**
- * Adjusts truncation boundaries to not break highlights
- * @param {number} startPos - Initial start position
- * @param {number} endPos - Initial end position
- * @param {Array} highlights - Array of highlight positions
- * @returns {Object} - Adjusted boundaries
- */
-const adjustBoundariesForHighlights = (startPos, endPos, highlights) => {
-  let adjustedStart = startPos;
-  let adjustedEnd = endPos;
-
-  highlights.forEach(([start, end]) => {
-    if (adjustedStart > start && adjustedStart < end) {
-      adjustedStart = start;
-    }
-    if (adjustedEnd > start && adjustedEnd < end) {
-      adjustedEnd = end;
-    }
-  });
-
-  return { adjustedStart, adjustedEnd };
-};
-
-/**
- * Determines the optimal starting position for truncation based on highlights
- * @param {string} text - The full text
- * @param {Array} highlights - Array of highlight positions
- * @returns {Object} - Initial start and end positions
- */
-const initialPosForHighlights = (text, highlights) => {
-  const clusters = findHighlightClusters(highlights);
-  const bestCluster = findBestCluster(clusters);
-  const clusterCenter = calculateClusterCenter(bestCluster);
-
-  const halfLength = Math.floor(MAXIMUM_LINE_LENGTH / 2);
-  let initialStartPos;
-  let initialEndPos;
-
-  if (clusterCenter > text.length - halfLength) {
-    initialEndPos = text.length;
-    initialStartPos = Math.max(0, text.length - MAXIMUM_LINE_LENGTH);
-  } else if (clusterCenter < halfLength) {
-    initialStartPos = 0;
-    initialEndPos = Math.min(text.length, MAXIMUM_LINE_LENGTH);
-  } else {
-    initialStartPos = Math.max(0, Math.floor(clusterCenter - halfLength));
-    initialEndPos = Math.min(text.length, Math.floor(clusterCenter + halfLength));
-  }
-
-  return { initialStartPos, initialEndPos };
-};
-
-/**
- * Determines the optimal text region to keep based on highlights
+ * Determines the optimal text region to keep based on highlights, strictly enforcing max length
  * @param {string} text - Original text
  * @param {Array} highlights - Array of highlight positions
  * @returns {Object} - Boundaries and flags for truncation
@@ -235,11 +114,7 @@ const determineOptimalTextRegion = (text, highlights) => {
     };
   }
 
-  const hasHighlightsNearEnd = highlights?.some(([, end]) => {
-    return end >= text.length - MAXIMUM_LINE_LENGTH;
-  });
-
-  if (!hasHighlightsNearEnd && (!highlights || highlights.length <= 2)) {
+  if (!highlights || highlights.length === 0) {
     return {
       startPos: 0,
       endPos: MAXIMUM_LINE_LENGTH,
@@ -248,30 +123,132 @@ const determineOptimalTextRegion = (text, highlights) => {
     };
   }
 
-  const { initialStartPos, initialEndPos } = initialPosForHighlights(text, highlights);
-  const { adjustedStart, adjustedEnd } = adjustBoundariesForHighlights(
-    initialStartPos,
-    initialEndPos,
-    highlights,
-  );
+  const sortedHighlights = sortHighlights(highlights);
 
-  return {
-    startPos: adjustedStart,
-    endPos: adjustedEnd,
-    addLeadingEllipsis: adjustedStart > 0,
-    addTrailingEllipsis: adjustedEnd < text.length,
+  const clusters = [];
+  let currentCluster = [sortedHighlights[0]];
+
+  for (let i = 1; i < sortedHighlights.length; i += 1) {
+    const prevHighlight = currentCluster[currentCluster.length - 1];
+    const currentHighlight = sortedHighlights[i];
+
+    if (
+      currentHighlight[0] - prevHighlight[1] <= MAX_GAP &&
+      currentHighlight[1] - currentCluster[0][0] <= MAXIMUM_LINE_LENGTH
+    ) {
+      currentCluster.push(currentHighlight);
+    } else {
+      clusters.push([...currentCluster]);
+      currentCluster = [currentHighlight];
+    }
+  }
+
+  if (currentCluster.length > 0) {
+    clusters.push(currentCluster);
+  }
+
+  for (const cluster of clusters) {
+    const clusterStart = cluster[0][0];
+    const clusterEnd = cluster[cluster.length - 1][1];
+    const clusterLength = clusterEnd - clusterStart;
+
+    if (clusterLength <= MAXIMUM_LINE_LENGTH) {
+      const remainingSpace = MAXIMUM_LINE_LENGTH - clusterLength;
+      return getTextRegionsByContextBefore(remainingSpace, text, clusterStart);
+    }
+  }
+
+  const firstHighlight = sortedHighlights[0];
+  const [start, end] = firstHighlight;
+  const highlightLength = end - start;
+
+  if (highlightLength >= MAXIMUM_LINE_LENGTH) {
+    return {
+      startPos: start,
+      endPos: start + MAXIMUM_LINE_LENGTH,
+      addLeadingEllipsis: start > 0,
+      addTrailingEllipsis: true,
+    };
+  }
+
+  const remainingSpace = MAXIMUM_LINE_LENGTH - highlightLength;
+
+  return getTextRegionsByContextBefore(remainingSpace, text, start);
+};
+
+const getTextOffsetToNode = (container, node) => {
+  let offset = 0;
+  const traverse = (current, target) => {
+    if (current === target) return true;
+
+    if (current.nodeType === Node.TEXT_NODE) {
+      offset += current.textContent.length;
+    } else {
+      for (const child of current.childNodes) {
+        if (traverse(child, target)) return true;
+      }
+    }
+    return false;
   };
+
+  traverse(container, node);
+  return offset;
+};
+
+const collectTextNodes = (node, textNodes = []) => {
+  if (node.nodeType === Node.TEXT_NODE) {
+    textNodes.push(node);
+  } else {
+    Array.from(node.childNodes).forEach((child) => collectTextNodes(child, textNodes));
+  }
+  return textNodes;
+};
+
+const removeEmptyNodes = (node) => {
+  const childNodes = Array.from(node.childNodes);
+  for (const child of childNodes) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      removeEmptyNodes(child);
+
+      // We don't want to remove these nodes even if they are empty
+      // as they are still important to the meaning or structure
+      const containsHighlightClasses = [...child.classList].some((className) =>
+        HIGHLIGHT_CLASSES.includes(className),
+      );
+
+      if (
+        !child.textContent.trim() &&
+        !child.querySelector('img, svg, canvas') &&
+        !containsHighlightClasses
+      ) {
+        child.parentNode.removeChild(child);
+      }
+    }
+  }
+};
+
+const getSearchHighlights = (container) => {
+  const highlightedSpans = container.querySelectorAll('b.hll');
+  const searchHighlights = [];
+
+  for (const span of highlightedSpans) {
+    const spanStart = getTextOffsetToNode(container, span);
+    const spanEnd = spanStart + span.textContent.length;
+    searchHighlights.push([spanStart, spanEnd, span]);
+  }
+
+  return searchHighlights;
 };
 
 /**
- *  * Truncates HTML content while preserving HTML structure using DOMParser
- * @param {string} html - HTML content to truncate
+ * Truncates HTML content while preserving HTML structure and all highlighting
+ * @param {string} html - HTML content to truncate (with syntax and search highlighting)
  * @param {string} originalText - Original text before highlighting
- * @param {Array} highlights - Array of highlight positions
+ * @param {Array} highlights - Array of search term highlight positions
  * @returns {string} - Truncated HTML content
  */
 export const truncateHtml = (html, originalText, highlights) => {
-  if (!html || !html.trim() || html.length <= MAXIMUM_LINE_LENGTH) return html;
+  if (!html || !html.trim() || originalText.length <= MAXIMUM_LINE_LENGTH) return html;
 
   const { startPos, endPos, addLeadingEllipsis, addTrailingEllipsis } = determineOptimalTextRegion(
     originalText,
@@ -281,75 +258,110 @@ export const truncateHtml = (html, originalText, highlights) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html');
   const container = doc.body.firstChild;
+  const searchHighlights = getSearchHighlights(container);
+  const textNodes = collectTextNodes(container);
 
-  const textNodes = [];
-  function collectTextNodes(node) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      textNodes.push(node);
-    } else {
-      Array.from(node.childNodes).forEach((child) => collectTextNodes(child));
-    }
-  }
-  collectTextNodes(container);
-
-  let textLength = 0;
+  let currentPos = 0;
+  let outputLength = 0;
   let hasStartedTruncating = false;
   let hasFinishedTruncating = false;
+  const trailingChar = addTrailingEllipsis ? ELLIPSIS : '';
 
   for (let i = 0; i < textNodes.length; i += 1) {
     const node = textNodes[i];
     const text = node.textContent;
+    const nodeLength = text.length;
 
-    if (!hasStartedTruncating && textLength < startPos) {
-      if (textLength + text.length > startPos) {
-        const offset = startPos - textLength;
-        node.textContent = (addLeadingEllipsis ? ELLIPSIS : '') + text.substring(offset);
-        hasStartedTruncating = true;
-      } else {
-        node.textContent = '';
-      }
-      textLength += text.length;
+    if (!hasStartedTruncating && currentPos + nodeLength <= startPos) {
+      node.textContent = '';
+      currentPos += nodeLength;
       // eslint-disable-next-line no-continue
       continue;
     }
 
-    hasStartedTruncating = true;
+    if (!hasStartedTruncating) {
+      hasStartedTruncating = true;
+      const offset = startPos - currentPos;
 
-    if (textLength + text.length > endPos) {
-      const remainingLength = endPos - textLength;
-      node.textContent = text.substring(0, remainingLength) + (addTrailingEllipsis ? ELLIPSIS : '');
-      hasFinishedTruncating = true;
+      let newContent = '';
+      if (addLeadingEllipsis) {
+        newContent += ELLIPSIS;
+        outputLength += 1;
+      }
 
+      newContent += text.substring(offset);
+
+      if (outputLength + newContent.length > MAXIMUM_LINE_LENGTH) {
+        const maxToAdd = MAXIMUM_LINE_LENGTH - outputLength;
+        node.textContent = newContent.substring(0, maxToAdd) + trailingChar;
+        hasFinishedTruncating = true;
+      } else {
+        node.textContent = newContent;
+        outputLength += newContent.length;
+      }
+
+      currentPos += nodeLength;
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    if (!hasFinishedTruncating) {
+      if (currentPos + nodeLength > endPos) {
+        const remainingLength = endPos - currentPos;
+
+        if (outputLength + remainingLength > MAXIMUM_LINE_LENGTH) {
+          const maxToAdd = MAXIMUM_LINE_LENGTH - outputLength;
+          node.textContent = text.substring(0, maxToAdd) + trailingChar;
+        } else {
+          node.textContent = text.substring(0, remainingLength) + trailingChar;
+        }
+
+        hasFinishedTruncating = true;
+      } else if (outputLength + nodeLength > MAXIMUM_LINE_LENGTH) {
+        const maxToAdd = MAXIMUM_LINE_LENGTH - outputLength;
+        node.textContent = text.substring(0, maxToAdd) + trailingChar;
+        hasFinishedTruncating = true;
+      } else {
+        outputLength += nodeLength;
+      }
+    } else {
+      node.textContent = '';
+    }
+
+    currentPos += nodeLength;
+
+    if (hasFinishedTruncating) {
       for (let j = i + 1; j < textNodes.length; j += 1) {
         textNodes[j].textContent = '';
       }
       break;
     }
-
-    textLength += text.length;
   }
 
-  if (!hasFinishedTruncating && addTrailingEllipsis) {
-    if (textNodes.length > 0) {
-      const lastNode = textNodes[textNodes.length - 1];
-      lastNode.textContent += ELLIPSIS;
+  if (!hasFinishedTruncating && addTrailingEllipsis && textNodes.length > 0) {
+    const lastNode = textNodes[textNodes.length - 1];
+    lastNode.textContent += ELLIPSIS;
+  }
+
+  for (const [, , span] of searchHighlights) {
+    if (!span.textContent.trim()) {
+      span.parentNode.removeChild(span);
     }
   }
 
-  function removeEmptyNodes(node) {
-    const childNodes = Array.from(node.childNodes);
-
-    for (const child of childNodes) {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        removeEmptyNodes(child);
-
-        if (!child.textContent.trim() && !child.querySelector('img, svg, canvas')) {
-          child.parentNode.removeChild(child);
-        }
-      }
-    }
-  }
   removeEmptyNodes(container);
+
+  const plainTextLength = container.textContent.length;
+  if (plainTextLength > MAXIMUM_LINE_LENGTH + 2) {
+    const rootElement = container.querySelector('*') || container;
+    const tagName = rootElement.tagName.toLowerCase();
+    const classNames = rootElement.className ? ` class="${rootElement.className}"` : '';
+
+    const simpleText =
+      originalText.substring(startPos, startPos + MAXIMUM_LINE_LENGTH) +
+      (originalText.length > startPos + MAXIMUM_LINE_LENGTH ? ELLIPSIS : '');
+    return `<${tagName}${classNames}>${simpleText}</${tagName}>`;
+  }
 
   return container.innerHTML;
 };
@@ -372,14 +384,12 @@ export const initLineHighlight = async (linesData) => {
 
   const cleanedLine = cleanLineAndMark(line);
 
+  let highlightedHtml;
   if (isUnsupportedLanguage(language)) {
-    const highlightedSearchTerm = highlightSearchTerm(cleanedLine);
-    return truncateHtml(highlightedSearchTerm, originalText, highlights);
+    highlightedHtml = highlightSearchTerm(cleanedLine);
+  } else {
+    const resultData = await highlight(null, cleanedLine, language);
+    highlightedHtml = highlightSearchTerm(resultData[0].highlightedContent);
   }
-
-  const resultData = await highlight(null, cleanedLine, language);
-
-  const withHighlightedSearchTerm = highlightSearchTerm(resultData[0].highlightedContent);
-
-  return truncateHtml(withHighlightedSearchTerm, originalText, highlights);
+  return truncateHtml(highlightedHtml, originalText, highlights);
 };

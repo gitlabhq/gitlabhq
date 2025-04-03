@@ -6501,7 +6501,7 @@ Input type: `GroupUpdateInput`
 | <a id="mutationgroupupdatelockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` | [`Boolean`](#boolean) | Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. Introduced in GitLab 16.10: **Status**: Experiment. |
 | <a id="mutationgroupupdatelockmathrenderinglimitsenabled"></a>`lockMathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are locked for all descendant groups. |
 | <a id="mutationgroupupdatemathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for the group. |
-| <a id="mutationgroupupdatename"></a>`name` | [`String`](#string) | Name of the namespace. |
+| <a id="mutationgroupupdatename"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="mutationgroupupdatepath"></a>`path` | [`String`](#string) | Path of the namespace. |
 | <a id="mutationgroupupdatesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="mutationgroupupdatevisibility"></a>`visibility` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility of the namespace. |
@@ -16014,6 +16014,29 @@ The edge type for [`Group`](#group).
 | <a id="groupedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="groupedgenode"></a>`node` | [`Group`](#group) | The item at the end of the edge. |
 
+#### `GroupInterfaceConnection`
+
+The connection type for [`GroupInterface`](#groupinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupinterfaceconnectionedges"></a>`edges` | [`[GroupInterfaceEdge]`](#groupinterfaceedge) | A list of edges. |
+| <a id="groupinterfaceconnectionnodes"></a>`nodes` | [`[GroupInterface]`](#groupinterface) | A list of nodes. |
+| <a id="groupinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupInterfaceEdge`
+
+The edge type for [`GroupInterface`](#groupinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupinterfaceedgenode"></a>`node` | [`GroupInterface`](#groupinterface) | The item at the end of the edge. |
+
 #### `GroupMemberConnection`
 
 The connection type for [`GroupMember`](#groupmember).
@@ -22661,7 +22684,7 @@ CI/CD variables for a project.
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
 | <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
 | <a id="cirunnerephemeralregisterurl"></a>`ephemeralRegisterUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration. |
-| <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
+| <a id="cirunnergroups"></a>`groups` | [`GroupInterfaceConnection`](#groupinterfaceconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` {{< icon name="warning-solid" >}} | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in GitLab 15.7. **Status**: Experiment. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
@@ -26982,11 +27005,11 @@ GPG signature for a signed commit.
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` {{< icon name="warning-solid" >}} | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
-| <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
+| <a id="groupfullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of the group. |
-| <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
+| <a id="groupid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed group deletion is enabled. |
 | <a id="groupislinkedtosubscription"></a>`isLinkedToSubscription` | [`Boolean`](#boolean) | Indicates if group is linked to a subscription. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
@@ -26996,7 +27019,7 @@ GPG signature for a signed commit.
 | <a id="groupmathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for the group. |
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
-| <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
+| <a id="groupname"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="grouporganizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Path for editing group at the organization level. |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
@@ -28834,6 +28857,20 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
+### `GroupMinimalAccess`
+
+Limited group data accessible to users without full group read access (e.g. non-members with READ_ADMIN_CICD admin custom role).
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="groupminimalaccessfullname"></a>`fullName` | [`String!`](#string) | Full name of the group. |
+| <a id="groupminimalaccessid"></a>`id` | [`ID`](#id) | ID of the group. |
+| <a id="groupminimalaccessname"></a>`name` | [`String!`](#string) | Name of the group. |
+| <a id="groupminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
 
 ### `GroupPermissions`
 
@@ -46864,6 +46901,25 @@ Implementations:
 | <a id="googlecloudloggingconfigurationinterfacelogidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
 | <a id="googlecloudloggingconfigurationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
+#### `GroupInterface`
+
+Returns either a "Group" type for users with :read_group permission, or a "GroupMinimalAccess" type for users with only :read_group_metadata permission.
+
+Implementations:
+
+- [`Group`](#group)
+- [`GroupMinimalAccess`](#groupminimalaccess)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="groupinterfacefullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
+| <a id="groupinterfaceid"></a>`id` | [`ID`](#id) | ID of the group. |
+| <a id="groupinterfacename"></a>`name` | [`String`](#string) | Name of the group. |
+| <a id="groupinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
+
 #### `LabelInterface`
 
 Implementations:
@@ -48296,6 +48352,7 @@ A year and month input for querying product analytics usage data.
 | <a id="negatedworkitemfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |
 | <a id="negatedworkitemfilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji not applied by the current user. |
+| <a id="negatedworkitemfilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filters out work items by the given types. |
 
 ### `OncallRotationActivePeriodInputType`
 

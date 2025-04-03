@@ -26,13 +26,10 @@ module Ci
       format_with_prefix: :prefix_for_new_and_legacy_runner,
       routable_token: {
         if: ->(token_owner_record) {
-          (token_owner_record.group_type? || token_owner_record.project_type?) &&
-            token_owner_record.owner &&
-            Feature.enabled?(:routable_runner_token, token_owner_record.owner)
+          token_owner_record.owner && Feature.enabled?(:routable_runner_token, token_owner_record.owner)
         },
         payload: {
-          # Will only be set when `runner_type == :group_type` or `runner_type == :project_type`
-          o: ->(token_owner_record) { token_owner_record.owner.organization_id },
+          o: ->(token_owner_record) { token_owner_record.owner.try(:organization_id) },
           g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
           p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
           u: ->(token_owner_record) { token_owner_record.creator_id },

@@ -11,24 +11,25 @@
   %td{ role: 'cell', data: { label: _('Status') } }
     = gl_badge_tag migration.status_name.to_s.humanize, { variant: batched_migration_status_badge_variant(migration) }
   %td{ role: 'cell', data: { label: _('Action') } }
-    - if migration.active?
-      = render Pajamas::ButtonComponent.new(icon: 'pause',
-        method: :post,
-        href: pause_admin_background_migration_path(migration, database: params[:database]),
-        button_options: { class: 'has-tooltip', title: _('Pause'), 'aria-label' => _('Pause') })
-    - elsif migration.paused?
-      = render Pajamas::ButtonComponent.new(icon: 'play',
-        method: :post,
-        href: resume_admin_background_migration_path(migration, database: params[:database]),
-        button_options: { class: 'has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') })
-    - elsif migration.failed?
-      = render Pajamas::ButtonComponent.new(category: :tertiary,
-        size: :small,
-        icon: 'ellipsis_v',
-        button_options: { class: 'js-label-options-dropdown gl-ml-3', 'aria_label': _('Label actions dropdown'), title: _('Label actions dropdown'), data: { toggle: 'dropdown' } })
-      .dropdown-menu.dropdown-menu-right
-        %ul
-          %li
-            = link_button_to _('Retry'), retry_admin_background_migration_path(migration, database: params[:database]), method: :post, icon: 'retry', category: :tertiary, title: _('Retry')
-          %li
-            = clipboard_button text: migration.finalize_command, variant: :default, size: :medium, title: _('Copy command to finalize manually'), category: :tertiary, button_text: _('Copy command to finalize manually')
+    - if current_user.can_admin_all_resources?
+      - if migration.active?
+        = render Pajamas::ButtonComponent.new(icon: 'pause',
+          method: :post,
+          href: pause_admin_background_migration_path(migration, database: params[:database]),
+          button_options: { class: 'has-tooltip', title: _('Pause'), 'aria-label' => _('Pause') })
+      - elsif migration.paused?
+        = render Pajamas::ButtonComponent.new(icon: 'play',
+          method: :post,
+          href: resume_admin_background_migration_path(migration, database: params[:database]),
+          button_options: { class: 'has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') })
+      - elsif migration.failed?
+        = render Pajamas::ButtonComponent.new(category: :tertiary,
+          size: :small,
+          icon: 'ellipsis_v',
+          button_options: { class: 'js-label-options-dropdown gl-ml-3', 'aria_label': _('Label actions dropdown'), title: _('Label actions dropdown'), data: { toggle: 'dropdown' } })
+        .dropdown-menu.dropdown-menu-right
+          %ul
+            %li
+              = link_button_to _('Retry'), retry_admin_background_migration_path(migration, database: params[:database]), method: :post, icon: 'retry', category: :tertiary, title: _('Retry')
+            %li
+              = clipboard_button text: migration.finalize_command, variant: :default, size: :medium, title: _('Copy command to finalize manually'), category: :tertiary, button_text: _('Copy command to finalize manually')

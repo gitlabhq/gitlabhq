@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projects do
   include GraphqlHelpers
 
+  it 'implements the Types::Namespaces::GroupInterface' do
+    expect(described_class.interfaces).to include(::Types::Namespaces::GroupInterface)
+  end
+
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
 
   specify { expect(described_class.graphql_name).to eq('Group') }

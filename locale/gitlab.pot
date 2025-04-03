@@ -7107,6 +7107,9 @@ msgstr ""
 msgid "Analytics| Last updated: %{recordedAt}"
 msgstr ""
 
+msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
+msgstr ""
+
 msgid "Analytics|A dashboard with that name already exists."
 msgstr ""
 
@@ -61344,6 +61347,9 @@ msgid "Timeago|just now"
 msgstr ""
 
 msgid "Timeago|right now"
+msgstr ""
+
+msgid "Timeframe cannot exceed %{limit} years for work item queries"
 msgstr ""
 
 msgid "Timeline"

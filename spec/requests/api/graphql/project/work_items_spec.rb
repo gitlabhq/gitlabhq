@@ -1053,6 +1053,28 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         end
       end
     end
+
+    context 'when filtering by types' do
+      let(:item_filter_params) { { types: [:TASK] } }
+
+      let_it_be(:task) { create(:work_item, :task, project: project) }
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'returns items with selected types' do
+        expect(item_ids).to contain_exactly(task.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { types: [:ISSUE] } } }
+
+        it 'returns items without selected types' do
+          expect(item_ids).to contain_exactly(task.to_global_id.to_s)
+        end
+      end
+    end
   end
 
   def item_ids

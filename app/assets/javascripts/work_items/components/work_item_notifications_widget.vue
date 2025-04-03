@@ -108,7 +108,7 @@ export default {
     <gl-icon
       :name="notificationIcon"
       :size="16"
-      :class="{ '!gl-fill-blue-500': subscribedToNotifications }"
+      :class="{ '!gl-text-status-info': subscribedToNotifications }"
     />
   </gl-button>
 </template>

@@ -175,6 +175,7 @@ Prerequisites:
 1. Under **IAM role's ARN**, paste the ARN.
 1. To determine which groups and projects can use GitLab Duo with Amazon Q, choose an option:
    - To turn it on for the instance, but let groups and projects turn it off, select **On by default**.
+     - Optional. To configure Amazon Q to automatically review code in merge requests, select **Have Amazon Q review code in merge requests automatically**.
    - To turn it off for the instance, but let groups and projects turn it on, select **Off by default**.
    - To turn it off for the instance, and to prevent groups or projects from ever turning it on, select **Always off**.
 

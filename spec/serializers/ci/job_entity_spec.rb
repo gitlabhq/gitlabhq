@@ -124,16 +124,6 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
         expect(subject).to include(:force_cancel_path)
       end
     end
-
-    context 'when force_cancel_build flag is disabled' do
-      before do
-        stub_feature_flags(force_cancel_build: false)
-      end
-
-      it 'does not contain force cancel path' do
-        expect(subject).not_to include(:force_cancel_path)
-      end
-    end
   end
 
   context 'when job is a regular job' do

@@ -1088,23 +1088,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
             expect(job.reload).to be_canceled
           end
         end
-
-        context 'a canceling job force canceled with flag :force_cancel_build disabled' do
-          let(:job) { create(:ci_build, :canceling, pipeline: pipeline) }
-
-          before do
-            stub_feature_flags(force_cancel_build: false)
-            post_cancel force: "true"
-          end
-
-          it 'returns unprocessable_entity' do
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          end
-
-          it 'cannot be forced to cancel' do
-            expect(job.reload).to be_canceling
-          end
-        end
       end
 
       context 'when continue url is present' do

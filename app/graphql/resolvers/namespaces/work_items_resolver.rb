@@ -23,6 +23,8 @@ module Resolvers
         experiment: { milestone: '17.5' }
 
       def ready?(**args)
+        validate_timeframe_limit!(args[:timeframe]) if args[:timeframe]
+
         super && resource_parent.namespace_work_items_enabled?
       end
 

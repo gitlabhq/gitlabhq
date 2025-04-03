@@ -158,7 +158,8 @@ export default {
           {
             key: 'checkbox',
             label: I18N_CHECKBOX,
-            thClass: 'gl-w-1/20',
+            thClass: 'md:gl-w-0 md:gl-min-w-6 md:!gl-pr-0',
+            tdClass: 'md:!gl-pr-0',
           },
           ...this.$options.fields,
         ];
@@ -400,25 +401,23 @@ export default {
     {
       key: 'job',
       label: I18N_JOB,
-      thClass: 'gl-w-7/20',
     },
     {
       key: 'size',
       label: I18N_SIZE,
       thAlignRight: true,
-      thClass: 'gl-w-3/20',
+      thClass: 'gl-w-3/20 gl-text-right',
       tdClass: 'gl-text-right',
     },
     {
       key: 'created',
       label: I18N_CREATED,
-      thClass: 'gl-w-1/8 gl-text-center',
-      tdClass: 'gl-text-center',
+      thClass: 'gl-w-1/8',
     },
     {
       key: 'actions',
       label: '',
-      thClass: 'gl-w-4/20',
+      thClass: 'gl-w-1/4',
       tdClass: 'gl-text-right',
     },
   ],
@@ -460,7 +459,7 @@ export default {
       :items="jobArtifacts"
       :fields="fields"
       :busy="$apollo.queries.jobArtifacts.loading"
-      stacked="sm"
+      stacked="md"
       details-td-class="!gl-bg-subtle !gl-p-0 gl-overflow-auto"
       :tbody-tr-attr="$options.TBODY_TR_ATTR"
     >
@@ -481,6 +480,7 @@ export default {
           :checked="isAnyVisibleArtifactSelected"
           :indeterminate="isAnyVisibleArtifactSelected && !areAllVisibleArtifactsSelected"
           :disabled="isSelectedArtifactsLimitReached && !isAnyVisibleArtifactSelected"
+          class="gl-min-h-4 gl-w-0"
           data-testid="select-all-artifacts-checkbox"
           @change="handleSelectAllChecked"
         />
@@ -489,17 +489,19 @@ export default {
         v-if="canBulkDestroyArtifacts"
         #cell(checkbox)="{ item: { hasArtifacts, artifacts } }"
       >
-        <job-checkbox
-          :has-artifacts="hasArtifacts"
-          :selected-artifacts="
-            artifacts.nodes.filter((node) => selectedArtifacts.includes(node.id))
-          "
-          :unselected-artifacts="
-            artifacts.nodes.filter((node) => !selectedArtifacts.includes(node.id))
-          "
-          :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
-          @selectArtifact="selectArtifact"
-        />
+        <div class="gl-flex gl-flex-grow gl-justify-end">
+          <job-checkbox
+            :has-artifacts="hasArtifacts"
+            :selected-artifacts="
+              artifacts.nodes.filter((node) => selectedArtifacts.includes(node.id))
+            "
+            :unselected-artifacts="
+              artifacts.nodes.filter((node) => !selectedArtifacts.includes(node.id))
+            "
+            :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
+            @selectArtifact="selectArtifact"
+          />
+        </div>
       </template>
       <template
         #cell(artifacts)="{ item: { id, artifacts, hasArtifacts }, toggleDetails, detailsShowing }"

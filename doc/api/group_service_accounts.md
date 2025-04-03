@@ -206,10 +206,16 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Lists all personal access tokens for a service account user in a top-level group.
 
+```plaintext
+GET /groups/:id/service_accounts/:user_id/personal_access_tokens
+```
+
 Supported attributes:
 
 | Attribute          | Type                | Required | Description |
 | ------------------ | ------------------- | -------- | ----------- |
+| `id`      | integer/string | yes  | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `user_id` | integer | yes      | ID of service account user. |
 | `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
 | `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
 | `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
@@ -220,14 +226,13 @@ Supported attributes:
 | `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
 | `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_before_asc`, `expires_after_desc`, `last_used_before_asc`, `last_used_after_desc`, `name_asc`, `name_desc`. |
 | `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
-| `user_id`          | integer or string   | No       | If defined, returns tokens owned by the specified user. |
 
 Example request:
 
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/personal_access_tokens?sort=id_desc&search=token2b&created_before=2025-03-27"
+  --url "https://gitlab.example.com/api/v4/groups/187/service_accounts/195/personal_access_tokens?sort=id_desc&search=token2b&created_before=2025-03-27"
 ```
 
 Example response:

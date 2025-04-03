@@ -65,6 +65,7 @@ export default {
     :disabled="disabled"
     :checked="checked"
     :indeterminate="indeterminate"
+    class="gl-w-0"
     @change="handleChange"
   />
 </template>

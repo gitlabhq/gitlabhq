@@ -875,55 +875,48 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   [
-    [:job, false, 'success', true, :user, :created],
-    [:running_job, false, 'canceled', true, :user, :created],
-    [:canceling_job, false, 'canceling', true, :user, :created],
-    [:job, true, 'success', true, :user, :forbidden],
-    [:running_job, true, 'running', true, :user, :forbidden],
-    [:running_job, true, 'running', true, :maintainer, :created], # Force cancel does not default to regular cancel
-    [:canceling_job, true, 'canceling', true, :user, :forbidden],
-    [:canceling_job, true, 'canceled', true, :maintainer, :created],
-    [:running_job, true, 'canceled', false, :user, :created],          # With flag disabled, force flag is ignored,
-    [:running_job, true, 'canceled', false, :maintainer, :created],    # so behaves as if force=false
-    [:canceling_job, true, 'canceling', false, :user, :created],
-    [:canceling_job, true, 'canceling', false, :maintainer, :created]
-  ].each do |job, force_param, expected_job_status, flag_state, user_sym, http_status|
+    [:job, false, 'success', :user, :created],
+    [:running_job, false, 'canceled', :user, :created],
+    [:canceling_job, false, 'canceling', :user, :created],
+    [:job, true, 'success', :user, :forbidden],
+    [:running_job, true, 'running', :user, :forbidden],
+    [:running_job, true, 'running', :maintainer, :created], # Force cancel does not default to regular cancel
+    [:canceling_job, true, 'canceling', :user, :forbidden],
+    [:canceling_job, true, 'canceled', :maintainer, :created]
+  ].each do |job, force_param, expected_job_status, user_sym, http_status|
     describe "POST /projects/:id/jobs/:#{job}_id/cancel?force=#{force_param}" do
-      context "with :force_cancel_build flag #{flag_state ? 'enabled' : 'disabled'}" do
-        let(:api_user) { send(user_sym) }
+      let(:api_user) { send(user_sym) }
 
-        before do
-          stub_feature_flags(force_cancel_build: flag_state)
-          post api("/projects/#{project.id}/jobs/#{send(job).id}/cancel?force=#{force_param}", api_user)
-        end
+      before do
+        post api("/projects/#{project.id}/jobs/#{send(job).id}/cancel?force=#{force_param}", api_user)
+      end
 
-        context 'authorized user' do
-          context "#{user_sym} with :cancel_build permission" do
-            it "cancels :#{job}" do
-              expect(response).to have_gitlab_http_status(http_status)
+      context 'authorized user' do
+        context "#{user_sym} with :cancel_build permission" do
+          it "cancels :#{job}" do
+            expect(response).to have_gitlab_http_status(http_status)
 
-              if http_status != :forbidden
-                json_response = Gitlab::Json.parse(response.body)
-                expect(json_response['status']).to eq(expected_job_status)
-              end
-            end
-          end
-
-          context 'user without :cancel_build permission' do
-            let(:api_user) { reporter }
-
-            it 'does not cancel job' do
-              expect(response).to have_gitlab_http_status(:forbidden)
+            if http_status != :forbidden
+              json_response = Gitlab::Json.parse(response.body)
+              expect(json_response['status']).to eq(expected_job_status)
             end
           end
         end
 
-        context 'unauthorized user' do
-          let(:api_user) { nil }
+        context 'user without :cancel_build permission' do
+          let(:api_user) { reporter }
 
           it 'does not cancel job' do
-            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
+        end
+      end
+
+      context 'unauthorized user' do
+        let(:api_user) { nil }
+
+        it 'does not cancel job' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
     end

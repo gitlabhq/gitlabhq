@@ -19,7 +19,6 @@ These features may not be ready for production use and follow the [Experimental 
 |---------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|---------------|------------------|
 | [GitLab Duo Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                    | [Beta](../development_stages_support.md#beta)             | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476553) |
 | [GitLab Duo Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | [Experiment](../development_stages_support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409844) |
-| [GitLab Duo Product Analytics](../../user/analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)                | [Experiment](../development_stages_support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/455363) |
 | [Gitaly on K8s](../../administration/gitaly/kubernetes.md)                                                                                  | [Beta](../development_stages_support.md#beta)             | 2025-02-25    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/520544) |
 
 Would you like to use a paid feature but don't have a subscription?

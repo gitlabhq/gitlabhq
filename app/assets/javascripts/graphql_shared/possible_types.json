@@ -107,6 +107,10 @@
     "GoogleCloudLoggingConfigurationType",
     "InstanceGoogleCloudLoggingConfigurationType"
   ],
+  "GroupInterface": [
+    "Group",
+    "GroupMinimalAccess"
+  ],
   "Issuable": [
     "Epic",
     "Issue",

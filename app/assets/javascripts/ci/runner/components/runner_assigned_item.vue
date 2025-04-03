@@ -11,7 +11,8 @@ export default {
   props: {
     href: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     name: {
       type: String,
@@ -37,24 +38,34 @@ export default {
       default: false,
     },
   },
+  computed: {
+    avatarProps() {
+      return {
+        shape: AVATAR_SHAPE_OPTION_RECT,
+        entityName: this.name,
+        alt: this.name,
+        src: this.avatarUrl,
+        size: 48,
+      };
+    },
+  },
   AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
 <template>
   <div class="gl-flex gl-items-center gl-py-5">
-    <gl-link :href="href" data-testid="item-avatar" class="gl-mr-3 !gl-no-underline">
-      <gl-avatar
-        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-        :entity-name="name"
-        :alt="name"
-        :src="avatarUrl"
-        :size="48"
-      />
+    <gl-link v-if="href" :href="href" class="gl-mr-3 !gl-no-underline">
+      <gl-avatar v-bind="avatarProps" />
     </gl-link>
+    <gl-avatar v-else v-bind="avatarProps" class="gl-mr-3" />
     <div>
       <div class="gl-mb-1">
-        <gl-link :href="href" class="gl-font-bold !gl-text-default">{{ fullName }}</gl-link>
+        <gl-link v-if="href" :href="href" class="gl-font-bold !gl-text-default">{{
+          fullName
+        }}</gl-link>
+        <span v-else class="gl-font-bold !gl-text-default">{{ fullName }}</span>
+
         <gl-badge v-if="isOwner" variant="info">{{ s__('Runners|Owner') }}</gl-badge>
       </div>
       <div v-if="description">{{ description }}</div>

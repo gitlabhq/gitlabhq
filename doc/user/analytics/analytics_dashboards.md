@@ -22,8 +22,8 @@ title: Analytics dashboards
 
 {{< /history >}}
 
-Analytics dashboards help you visualize the collected data.
-You can use built-in dashboards by GitLab or create your own dashboards with custom visualizations.
+Analytics dashboards help you visualize collected data.
+You can use built-in dashboards by GitLab or create your own custom dashboards.
 
 ## Data sources
 
@@ -49,8 +49,7 @@ The following built-in dashboards are available:
 
 ## Custom dashboards
 
-Use custom dashboards to design and create visualizations for the metrics that are most relevant to your use case.
-You can create custom dashboards with the dashboard designer.
+You can [create custom dashboards](#create-a-dashboard-by-configuration) to visualize the metrics that are most relevant to your case.
 
 - Each project can have an unlimited number of dashboards.
   The only limitation might be the [repository size limit](../project/repository/repository_size.md#size-and-storage-limits).
@@ -59,51 +58,6 @@ You can create custom dashboards with the dashboard designer.
 
 Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/_index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
 Your dashboard files are versioned in source control with the rest of a project's code.
-
-## Dashboard designer
-
-{{< history >}}
-
-- Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
-
-{{< /history >}}
-
-You can use the dashboard designer to:
-
-- [Create custom dashboards](#create-a-custom-dashboard).
-- [Edit custom dashboards](#edit-a-custom-dashboard) to:
-  - Rename the dashboard.
-  - Add and remove visualizations.
-  - Resize or move panels.
-
-<!--- start_remove The following content will be removed on remove_date: '2025-03-20' -->
-
-## Data explorer (deprecated)
-
-{{< history >}}
-
-- Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/470875) from "Visualization designer" to "Data explorer" in GitLab 17.6.
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-This feature is only compatible with the product analytics data source.
-
-{{< /alert >}}
-
-You can use the data explorer to explore available data.
-
-<!--- end_remove -->
 
 ## View project dashboards
 
@@ -185,129 +139,9 @@ To change the location of project dashboards:
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 
-## Create a custom dashboard
-
-To create a custom dashboard:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. Select **New dashboard**.
-1. In the **New dashboard** input, enter the name of the dashboard.
-1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
-1. Optional. Drag or resize the selected panel how you prefer.
-1. Select **Save**.
-
-## Edit a custom dashboard
-
-You can edit your custom dashboard's title and add or resize visualizations in the dashboard designer.
-
-To edit an existing custom dashboard:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. From the list of available dashboards, select a custom dashboard (one without the `By GitLab` label) you want to edit.
-1. Select **Edit**.
-1. Optional. Change the title of the dashboard.
-1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
-1. Optional. In the dashboard, select a panel and drag or resize it how you prefer.
-1. Select **Save**.
-
-<!--- start_remove The following content will be removed on remove_date: '2025-03-20' -->
-
-## Create a custom visualization (deprecated)
-
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
-
-{{< /alert >}}
-
-To create a custom visualization:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. Select **Data explorer**.
-1. In the **Visualization title** field, enter the name of your visualization.
-1. From the **Visualization type** dropdown list, select a visualization type.
-1. In the **What metric do you want to visualize?** section, select a [measure or a dimension](#visualization-query-builder).
-1. Select **Save**.
-
-After you save a visualization, you can add it to a new or existing custom dashboard in the same project.
-
-### Generate a custom visualization with GitLab Duo
-
-{{< details >}}
-
-- Tier: Ultimate
-- Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com
-- Status: Experiment
-
-{{< /details >}}
-
-{{< history >}}
-
-- Introduced in GitLab 16.11 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-
-{{< /history >}}
-
-Prerequisites:
-
-- The top-level group of the project must have GitLab Duo
-  [experiment and beta features enabled](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-
-To generate a custom visualization with GitLab Duo using a natural language query:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. Select **Data explorer**.
-1. In the **Visualization title** field, enter the name of your visualization.
-1. From the **Visualization type** dropdown list, select a visualization type.
-1. In the **Generate with GitLab Duo** section, enter your prompt. For example:
-
-   - _Daily sessions_
-   - _Number of unique users, grouped weekly_
-   - _Which are the most popular pages?_
-   - _How many unique users does each browser have?_
-
-1. Select **Generate with GitLab Duo**.
-1. Select **Save**.
-
-After you save a visualization, you can add it to a new or existing custom dashboard in the same project.
-
-Provide feedback on this experimental feature in [issue 455363](https://gitlab.com/gitlab-org/gitlab/-/issues/455363).
-
-### Visualization query builder
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469461) in GitLab 17.2. Feature flag `analytics_visualization_designer_filtering` removed.
-
-{{< /history >}}
-
-You can use measures and dimensions to filter and refine the results of a custom visualization:
-
-- Measures: Properties that can be calculated. Measures are aggregated by default.
-- Dimensions: Attributes related to a measure. You can add multiple dimensions to a measure.
-
-You can filter by custom event names with select measures:
-
-- `Tracked events count`
-- `Tracked events unique user count`
-
-{{< alert type="note" >}}
-
-When you change or remove a measure then dependent dimensions may also be removed.
-
-{{< /alert >}}
-
-<!--- end_remove -->
-
 ## Create a dashboard by configuration
 
-For more complex use cases, you can also create dashboards manually by configuration.
+You can create dashboards manually by configuration.
 
 To define a dashboard:
 
@@ -404,6 +238,53 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
+
+## Dashboard designer
+
+{{< history >}}
+
+- Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/525203) to experiment in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `customizable_dashboards`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can use the dashboard designer to create and edit custom dashboards in the UI.
+
+### Create a custom dashboard
+
+To create a custom dashboard:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. Select **New dashboard**.
+1. In the **New dashboard** input, enter the name of the dashboard.
+1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
+1. Optional. Drag or resize the selected panel how you prefer.
+1. Select **Save**.
+
+### Edit a custom dashboard
+
+You can edit your custom dashboard's title and add or resize and move panels in the dashboard designer.
+
+To edit an existing custom dashboard:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select a custom dashboard (one without the `By GitLab` label) you want to edit.
+1. Select **Edit**.
+1. Optional. Change the title of the dashboard.
+1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
+1. Optional. In the dashboard, select a panel and drag or resize it how you prefer.
+1. Select **Save**.
 
 ## Troubleshooting
 

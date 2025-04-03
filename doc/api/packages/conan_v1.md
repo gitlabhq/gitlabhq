@@ -18,7 +18,9 @@ For Conan v2 operations, see [Conan v2 API](conan_v2.md).
 
 {{< /alert >}}
 
-Use this API to interact with the Conan v1 package manager. For more information, see [Conan packages in the package registry](../../user/packages/conan_repository/_index.md).
+Use this API to interact with the Conan v1 package manager. These endpoints work for both
+projects and instances. For more information,
+see [Conan packages in the package registry](../../user/packages/conan_repository/_index.md).
 
 Generally, these endpoints are used by the [Conan 1 package manager client](https://docs.conan.io/en/latest/)
 and are not meant for manual consumption.
@@ -37,44 +39,21 @@ See each route for details on how credentials are expected to be passed. Undocum
 
 The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
 These endpoints will all return 404 Not Found.
+
 {{< /alert >}}
-
-## Route prefix
-
-There are two sets of identical routes that each make requests in different scopes:
-
-- Use the instance-level prefix to make requests in the entire GitLab instance's scope.
-- Use the project-level prefix to make requests in a single project's scope.
-
-The examples in this document all use the instance-level prefix.
-
-### Instance-level
-
-```plaintext
-/packages/conan/v1
-```
-
-When using the instance-level routes, be aware that there is a
-[naming restriction](../../user/packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)
-for Conan recipes.
-
-### Project-level
-
-```plaintext
-/projects/:id/packages/conan/v1
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | string | yes | The project ID or full project path. |
 
 ## Verify availability of a Conan repository
 
 Verifies the availability of the GitLab Conan repository.
 
 ```plaintext
-GET <route-prefix>/ping
+GET /packages/conan/v1/ping
+GET /projects/:id/packages/conan/v1/ping
 ```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/packages/conan/v1/ping"
@@ -91,11 +70,13 @@ Example response:
 Searches the instance for a Conan package with a specified name.
 
 ```plaintext
-GET <route-prefix>/conans/search
+GET /packages/conan/v1/conans/search
+GET /projects/:id/packages/conan/v1/conans/search
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`      | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `q`       | string | yes | Search query. You can use `*` as a wildcard. |
 
 ```shell
@@ -129,8 +110,13 @@ Creates a JSON Web Token (JWT) for use as a Bearer header in other requests.
 The Conan package manager client automatically uses this token.
 
 ```plaintext
-GET <route-prefix>/users/authenticate
+GET /packages/conan/v1/users/authenticate
+GET /projects/:id/packages/conan/v1/users/authenticate
 ```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/packages/conan/v1/users/authenticate"
@@ -147,8 +133,13 @@ eyJhbGciOiJIUzI1NiIiheR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOjMyMTQyMzAsqaVzZXJfaWQ
 Verifies the validity of Basic Auth credentials or a Conan JWT generated from the [`/authenticate`](#create-an-authentication-token) endpoint.
 
 ```plaintext
-GET <route-prefix>/users/check_credentials
+GET /packages/conan/v1/users/check_credentials
+GET /projects/:id/packages/conan/v1/users/check_credentials
 ```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" "https://gitlab.example.com/api/v4/packages/conan/v1/users/check_credentials
@@ -166,11 +157,13 @@ Gets a snapshot of the files for a specified Conan recipe. The snapshot is a lis
 with their associated MD5 hash.
 
 ```plaintext
-GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
+GET /projects/:id/packages/conan/v1/conans/:package_version/:package_username/:package_channel
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -196,11 +189,13 @@ Gets a snapshot of the files for a specified Conan package and reference. The sn
 with their associated MD5 hash.
 
 ```plaintext
-GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference
+GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -226,11 +221,13 @@ Example response:
 Gets a manifest that includes a list of files and associated download URLs for a specified recipe.
 
 ```plaintext
-GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/digest
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest
+GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -258,11 +255,13 @@ the project-level route, the returned URLs contain `/projects/:id`.
 Gets a manifest that includes a list of files and associated download URLs for a specified package.
 
 ```plaintext
-GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
+GET /projects/:id/packages/conan/v1/conans/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -292,11 +291,13 @@ Lists all files and associated download URLs for a specified recipe.
 Returns the same payload as the [recipe manifest](#get-a-recipe-manifest) endpoint.
 
 ```plaintext
-GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/download_urls
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls
+GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -325,11 +326,13 @@ Lists all files and associated download URLs for a specified package.
 Returns the same payload as the [package manifest](#get-a-package-manifest) endpoint.
 
 ```plaintext
-GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls
+GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -359,11 +362,13 @@ Lists the upload URLs for a specified collection of recipe files. The request mu
 with the name and size of the individual files.
 
 ```plaintext
-POST <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls
+POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls
+POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -406,11 +411,13 @@ Lists the upload URLs for a specified collection of package files. The request m
 with the name and size of the individual files.
 
 ```plaintext
-POST <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls
+POST /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls
+POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -457,10 +464,12 @@ Gets a recipe file from the package registry. You must use the download URL retu
 
 ```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+GET projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -487,10 +496,12 @@ Uploads a specified recipe file in the package registry. You must use the upload
 
 ```plaintext
 PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+PUT projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -514,10 +525,12 @@ Gets a package file from the package registry. You must use the download URL ret
 
 ```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+GET projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -546,10 +559,12 @@ Uploads a specified package file in the package registry. You must use the uploa
 
 ```plaintext
 PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+PUT projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
@@ -573,11 +588,13 @@ curl --request PUT \
 Deletes a specified Conan recipe and the associated package files from the package registry.
 
 ```plaintext
-DELETE <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel
+DELETE packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
+DELETE projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
 | `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |

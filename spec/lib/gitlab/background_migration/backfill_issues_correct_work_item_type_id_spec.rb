@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillIssuesCorrectWorkItemTypeId,
-  feature_category: :team_planning,
-  schema: 20241030165330 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillIssuesCorrectWorkItemTypeId, feature_category: :team_planning do
   around do |example|
     columns = missing_bigint_columns
     add_missing_columns(columns)

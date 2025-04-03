@@ -192,6 +192,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_work_item
     enable :read_namespace
     enable :read_upload
+    enable :read_group_metadata
   end
 
   rule { ~achievements_enabled }.policy do

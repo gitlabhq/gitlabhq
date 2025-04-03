@@ -70,8 +70,6 @@ module Ci
     end
 
     def force_cancelable?
-      return false unless Feature.enabled?(:force_cancel_build, request.current_user)
-
       job.force_cancelable? && authorized_to_force_cancel?
     end
 

@@ -4,6 +4,8 @@ module Types
   class GroupType < NamespaceType
     graphql_name 'Group'
 
+    implements ::Types::Namespaces::GroupInterface
+
     authorize :read_group
 
     expose_permissions Types::PermissionTypes::Group

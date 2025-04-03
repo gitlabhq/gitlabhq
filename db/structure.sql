@@ -23169,7 +23169,8 @@ CREATE TABLE subscription_seat_assignments (
     last_activity_on timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    organization_id bigint DEFAULT 1 NOT NULL
+    organization_id bigint DEFAULT 1 NOT NULL,
+    seat_type smallint
 );
 
 CREATE SEQUENCE subscription_seat_assignments_id_seq
@@ -37740,8 +37741,6 @@ CREATE INDEX index_work_item_type_user_preferences_on_namespace_id ON work_item_
 CREATE INDEX index_work_item_type_user_preferences_on_work_item_type_id ON work_item_type_user_preferences USING btree (work_item_type_id);
 
 CREATE INDEX index_work_item_types_on_base_type_and_id ON work_item_types USING btree (base_type, id);
-
-CREATE UNIQUE INDEX index_work_item_types_on_correct_id_unique ON work_item_types USING btree (correct_id);
 
 CREATE UNIQUE INDEX index_work_item_types_on_name_unique ON work_item_types USING btree (TRIM(BOTH FROM lower(name)));
 

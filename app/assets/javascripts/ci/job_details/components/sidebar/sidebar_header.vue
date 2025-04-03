@@ -174,7 +174,7 @@ export default {
             rel="nofollow"
           />
           <gl-button
-            v-if="restJob.force_cancel_path && glFeatures.forceCancelBuild"
+            v-if="restJob.force_cancel_path"
             v-gl-tooltip.bottom
             :title="$options.i18n.forceCancelJobButtonTooltip"
             :aria-label="$options.i18n.forceCancelJobButtonTooltip"

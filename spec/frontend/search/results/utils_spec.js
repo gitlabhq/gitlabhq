@@ -3,6 +3,7 @@ import {
   HIGHLIGHT_MARK,
   HIGHLIGHT_HTML_START,
   HIGHLIGHT_HTML_END,
+  HIGHLIGHT_CLASSES,
 } from '~/search/results/constants';
 
 import {
@@ -180,7 +181,7 @@ describe('Global Search Results Utils', () => {
 
       const result = truncateHtml(html, longText, highlights);
 
-      expect(result).toContain('HIGHLIGHT');
+      expect(result).toContain('HIGHLIGH');
       expect(result.length).toBeLessThan(html.length);
     });
 
@@ -198,18 +199,17 @@ describe('Global Search Results Utils', () => {
       expect(result).toContain('HIGHLIGHT');
     });
 
-    it('preserves HTML structure when truncating', () => {
+    it.each(HIGHLIGHT_CLASSES)('preserves HTML structure when truncating', (highlightClass) => {
       const longText = `${'A'.repeat(500)}HIGHLIGHT${'B'.repeat(500)}`;
-      const html = `<div><span class="c1">${longText}</span></div>`;
+      const html = `<div><span class="${highlightClass}1">${longText}</span></div>`;
       const highlights = [[500, 508]];
 
       const result = truncateHtml(html, longText, highlights);
 
-      expect(result).toContain('<span class="c1">');
+      expect(result).toContain(`<span class="${highlightClass}1">`);
       expect(result).toContain('</span>');
       expect(result).toContain('</div>');
     });
-
     it('handles empty or null input', () => {
       expect(truncateHtml('', '', [])).toBe('');
       expect(truncateHtml(null, '', [])).toBe(null);
@@ -221,14 +221,143 @@ describe('Global Search Results Utils', () => {
       const longText = text1 + text2;
       const html = `<span>${longText}</span>`;
       const highlights = [
-        [100, 105], // FIRST
-        [305, 311], // SECOND
+        [100, 105],
+        [305, 311],
       ];
 
       const result = truncateHtml(html, longText, highlights);
 
       expect(result).toContain('FIRST');
       expect(result).toContain('SECOND');
+    });
+  });
+
+  describe('truncateHtml edge cases', () => {
+    it('properly handles a single highlight longer than maximum length', () => {
+      const prefix = 'PREFIX-';
+      const longHighlight = 'HIGHLIGHTED-'.repeat(400);
+      const suffix = '-SUFFIX';
+      const longText = prefix + longHighlight + suffix;
+
+      const highlightedText = `${prefix}<b class="hll">${longHighlight}</b>${suffix}`;
+      const html = `<span class="line">${highlightedText}</span>`;
+
+      const highlightStart = prefix.length;
+      const highlightEnd = prefix.length + longHighlight.length;
+      const highlights = [[highlightStart, highlightEnd]];
+
+      const result = truncateHtml(html, longText, highlights);
+
+      expect(result.length).toBeLessThan(html.length);
+
+      expect(result).toContain('HIGHLIGHTED-');
+      expect(result.length).toBe(3045);
+
+      expect(result).toMatch(/…/);
+    });
+
+    it('prperly handle cluster with 3 highlights all longer than limit', () => {
+      const longText = `${'A'.repeat(100)}FIRST${'B'.repeat(100)}
+      ${'C'.repeat(100)}${'SECOND-'.repeat(600)}${'D'.repeat(100)}
+      ${'E'.repeat(100)}${'THIRD-'.repeat(600)}${'F'.repeat(100)}`;
+      const html = `<span>${longText}</span>`;
+      const highlights = [
+        [100, 105],
+        [305, 3611],
+        [3711, 3716],
+      ];
+
+      const result = truncateHtml(html, longText, highlights);
+
+      expect(result).toContain('FIRST');
+      expect(result).toContain('SECOND');
+      expect(result).not.toContain('THIRD');
+      expect(result.length).toBe(3014);
+    });
+
+    it('properly handles string with many highlights with no apparent clusters', () => {
+      const longText = `
+      ${'A'.repeat(100)}${'FIRST-'.repeat(3)}${'B'.repeat(200)}${'C'.repeat(200)}${'SECOND-'.repeat(10)}${'D'.repeat(200)}${'E'.repeat(200)}${'THIRD-'.repeat(8)}${'F'.repeat(200)}${'G'.repeat(200)}${'FOUR-'.repeat(7)}${'H'.repeat(200)}${'I'.repeat(200)}${'FIVE-'.repeat(10)}${'J'.repeat(200)}${'K'.repeat(200)}${'SIX-'.repeat(4)}${'L'.repeat(200)}${'M'.repeat(200)}${'SEVEN-'.repeat(6)}${'N'.repeat(200)}${'O'.repeat(200)}${'EIGHT-'.repeat(3)}${'P'.repeat(200)}${'Q'.repeat(200)}${'NINE-'.repeat(2)}${'R'.repeat(200)}${'S'.repeat(200)}${'TEN-'.repeat(5)}${'T'.repeat(200)}`;
+      const html = `<span>${longText}</span>`;
+      const highlights = [
+        [107, 113],
+        [113, 119],
+        [119, 125],
+        [532, 539],
+        [539, 546],
+        [546, 553],
+        [553, 560],
+        [560, 567],
+        [567, 574],
+        [574, 581],
+        [581, 588],
+        [588, 595],
+        [595, 602],
+        [1009, 1015],
+        [1015, 1021],
+        [1021, 1027],
+        [1027, 1033],
+        [1033, 1039],
+        [1039, 1045],
+        [1045, 1051],
+        [1051, 1057],
+        [1464, 1469],
+        [1469, 1474],
+        [1474, 1479],
+        [1479, 1484],
+        [1484, 1489],
+        [1489, 1494],
+        [1494, 1499],
+        [1906, 1911],
+        [1911, 1916],
+        [1916, 1921],
+        [1921, 1926],
+        [1926, 1931],
+        [1931, 1936],
+        [1936, 1941],
+        [1941, 1946],
+        [1946, 1951],
+        [1951, 1956],
+        [2363, 2367],
+        [2367, 2371],
+        [2371, 2375],
+        [2375, 2379],
+        [2786, 2792],
+        [2792, 2798],
+        [2798, 2804],
+        [2804, 2810],
+        [2810, 2816],
+        [2816, 2822],
+        [3229, 3235],
+        [3235, 3241],
+        [3241, 3247],
+        [3654, 3659],
+        [3659, 3664],
+        [4071, 4075],
+        [4075, 4079],
+        [4079, 4083],
+        [4083, 4087],
+        [4087, 4091],
+      ];
+
+      const result = truncateHtml(html, longText, highlights);
+      expect(result).toContain('FIRST');
+      // this results has too many highlight tags
+      // to measure the trim correctly we have
+      // to strip away the html tags
+      const cleanText = result.replace(/<[^>]*>/g, '');
+      expect(cleanText.length).toBe(3001);
+    });
+
+    it('properly handles string with NO highlights', () => {
+      const longText = `
+      ${'A'.repeat(100)}${'FIRST-'.repeat(3)}${'B'.repeat(200)}${'C'.repeat(200)}${'SECOND-'.repeat(10)}${'D'.repeat(200)}${'E'.repeat(200)}${'THIRD-'.repeat(8)}${'F'.repeat(200)}${'G'.repeat(200)}${'FOUR-'.repeat(7)}${'H'.repeat(200)}${'I'.repeat(200)}${'FIVE-'.repeat(10)}${'J'.repeat(200)}${'K'.repeat(200)}${'SIX-'.repeat(4)}${'L'.repeat(200)}${'M'.repeat(200)}${'SEVEN-'.repeat(6)}${'N'.repeat(200)}${'O'.repeat(200)}${'EIGHT-'.repeat(3)}${'P'.repeat(200)}${'Q'.repeat(200)}${'NINE-'.repeat(2)}${'R'.repeat(200)}${'S'.repeat(200)}${'TEN-'.repeat(5)}${'T'.repeat(200)}`;
+      const html = `<span>${longText}</span>`;
+      const highlights = [];
+
+      const result = truncateHtml(html, longText, highlights);
+      expect(result).toContain('FIRST');
+      expect(result).toHaveLength(3014);
     });
   });
 });
