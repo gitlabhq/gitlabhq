@@ -20,10 +20,6 @@ class ProjectNoteEntity < NoteEntity
   expose :path, if: ->(note, _) { note.id } do |note|
     project_note_path(note.project, note)
   end
-
-  expose :delete_attachment_path, if: ->(note, _) { note.attachment? } do |note|
-    delete_attachment_project_note_path(note.project, note)
-  end
 end
 
 ProjectNoteEntity.prepend_mod_with('ProjectNoteEntity')

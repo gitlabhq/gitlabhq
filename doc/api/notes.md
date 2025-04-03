@@ -77,7 +77,6 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
   {
     "id": 302,
     "body": "closed",
-    "attachment": null,
     "author": {
       "id": 1,
       "username": "pipin",
@@ -102,7 +101,6 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
   {
     "id": 305,
     "body": "Text of the comment\r\n",
-    "attachment": null,
     "author": {
       "id": 1,
       "username": "pipin",
@@ -266,7 +264,6 @@ Parameters:
 {
   "id": 302,
   "body": "closed",
-  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -404,7 +401,6 @@ Parameters:
 {
   "id": 301,
   "body": "Comment for MR",
-  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -573,7 +569,6 @@ Parameters:
 {
   "id": 302,
   "body": "Epic note",
-  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",

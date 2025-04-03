@@ -34,6 +34,7 @@ RSpec.describe Packages::Conan::PackageRevision, type: :model, feature_category:
     it 'has unique revision scoped to package_id and package_reference_id' do
       # ignore case, same revision string with different case are converted to same hexa binary
       is_expected.to validate_uniqueness_of(:revision).scoped_to([:package_id, :package_reference_id]).case_insensitive
+        .on(%i[create update])
     end
 
     context 'when validating hex format and length' do

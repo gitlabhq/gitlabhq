@@ -147,7 +147,11 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 
 When configuring GitLab Duo Chat sub-features, if you do not select a specific self-hosted model for a sub-feature, that sub-feature automatically falls back to using the self-hosted model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own self-hosted model.
 
-### Disabling GitLab Duo features
+### Self-host the GitLab documentation
+
+If your setup of GitLab Duo Self-Hosted stops you from accessing the GitLab documentation at `docs.gitlab.com`, you can self-host the documentation instead. For more information, see how to [host the GitLab product documentation](../../administration/docs_self_host.md).
+
+### Disable GitLab Duo features
 
 To disable a feature, you must explicitly select **Disabled** when configuring a feature or sub-feature.
 

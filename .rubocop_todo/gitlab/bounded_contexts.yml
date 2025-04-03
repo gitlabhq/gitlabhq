@@ -1980,7 +1980,6 @@ Gitlab/BoundedContexts:
     - 'app/workers/incident_management/pager_duty/process_incident_worker.rb'
     - 'app/workers/incident_management/process_alert_worker_v2.rb'
     - 'app/workers/invalid_gpg_signature_update_worker.rb'
-    - 'app/workers/issuable/create_reminder_worker.rb'
     - 'app/workers/issuable/label_links_destroy_worker.rb'
     - 'app/workers/issuable/related_links_create_worker.rb'
     - 'app/workers/issuable_export_csv_worker.rb'

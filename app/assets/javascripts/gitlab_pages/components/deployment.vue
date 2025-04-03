@@ -55,7 +55,6 @@ export default {
       showDetail: false,
       deleteInProgress: false,
       restoreInProgress: false,
-      stateChanged: false,
       detailContainerHeight: 0,
     };
   },

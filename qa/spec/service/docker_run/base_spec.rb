@@ -3,12 +3,12 @@
 module QA
   RSpec.describe Service::DockerRun::Base do
     context 'when authenticating' do
-      let(:instance_one) { Service::DockerRun::Base.new }
-      let(:instance_two) { Service::DockerRun::Base.new }
+      let(:instance_one) { described_class.new }
+      let(:instance_two) { described_class.new }
 
       before do
         # reset singleton registry state
-        Service::DockerRun::Base.authenticated_registries.transform_values! { |_v| false }
+        described_class.authenticated_registries.transform_values! { |_v| false }
       end
 
       it 'caches the the registry' do

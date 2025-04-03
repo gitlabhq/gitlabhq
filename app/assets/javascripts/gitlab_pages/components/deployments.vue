@@ -36,12 +36,6 @@ export default {
         first: this.requestBatchSize,
       };
     },
-    hasMultipleDeployments() {
-      return (
-        this.primaryDeployments?.nodes.length > 1 ||
-        (this.primaryDeployments?.nodes.length && this.parallelDeployments?.nodes.length > 0)
-      );
-    },
     primaryDeploymentsNotLoaded() {
       if (!this.primaryDeployments) return undefined;
       return this.primaryDeployments.count - this.primaryDeployments.nodes.length;
@@ -90,9 +84,6 @@ export default {
     },
   },
   methods: {
-    toggleShowInactive() {
-      this.showInactive = !this.showInactive;
-    },
     fetchMorePrimaryDeployments() {
       this.$apollo.queries.primaryDeployments.fetchMore({
         variables: {

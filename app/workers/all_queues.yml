@@ -3958,16 +3958,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
-- :name: issuable_create_reminder
-  :worker_name: Issuable::CreateReminderWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
 - :name: issuable_export_csv
   :worker_name: IssuableExportCsvWorker
   :feature_category: :team_planning

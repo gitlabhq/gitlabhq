@@ -55,9 +55,9 @@ namespace. Code Owners is an EE-only feature, so the files only exist in the `./
 - `Gitlab::CodeOwners::GroupsLoader`: finds the correct `CODEOWNER` file and loads
   the content into a `Gitlab::CodeOwners::File` instance.
   - Defined in `./ee/lib/gitlab/code_owners/groups_loader.rb`.
-- `Gitlab::CodeOwners::Validator`: validates no files in the `CODEOWNERS` entries
+- `Gitlab::Checks::Diffs::CodeOwnersCheck`: validates no files in the `CODEOWNERS` entries
   have been changed when a user pushes to a protected branch with `require_code_owner_approval` enabled.
-  - Defined in `./ee/lib/gitlab/code_owners/validator.rb`.
+  - Defined in `./ee/lib/gitlab/checks/diffs/code_owners_check.rb`.
 
 ## Where Code Owners sits in the Git access check execution order
 
@@ -113,7 +113,7 @@ Defined in `app/controllers/repositories/git_http_controller.rb`.
 ### `EE::Gitlab::Checks::DiffCheck`
 
 This module extends the CE `Gitlab::Checks::DiffChecks` class and adds code owner
-validation. It uses the `Gitlab::CodeOwner::Validator` class to verify users are
+validation. It uses the `Gitlab::Checks::Diffs::CodeOwnersCheck` class to verify users are
 not pushing files listed in `CODEOWNER` directly to a protected branch while the
 branch requires code owner approval.
 
@@ -138,9 +138,9 @@ A lot of the Code Owners implementations exist in the `EE` variants of the class
 graph TD
   Api::Internal::Base --> Gitlab::GitAccess
   Gitlab::GitAccess --> Gitlab::Checks::DiffCheck
-  Gitlab::Checks::DiffCheck --> Gitlab::CodeOwners::Validator
-  Gitlab::CodeOwners::Validator --> ProtectedBranch
-  Gitlab::CodeOwners::Validator --> Gitlab::CodeOwners::Loader
+  Gitlab::Checks::DiffCheck --> Gitlab::Checks::Diffs::CodeOwnersCheck
+  Gitlab::Checks::Diffs::CodeOwnersCheck --> ProtectedBranch
+  Gitlab::Checks::Diffs::CodeOwnersCheck --> Gitlab::CodeOwners::Loader
   Gitlab::CodeOwners::Loader --> Gitlab::CodeOwners::Entry
 ```
 
@@ -152,9 +152,9 @@ graph TD
   Repositories::GitHttpController --> Gitlab::GlRepository
   Gitlab::GlRepository --> Gitlab::GitAccessProject
   Gitlab::GitAccessProject --> Gitlab::Checks::DiffCheck
-  Gitlab::Checks::DiffCheck --> Gitlab::CodeOwners::Validator
-  Gitlab::CodeOwners::Validator --> ProtectedBranch
-  Gitlab::CodeOwners::Validator --> Gitlab::CodeOwners::Loader
+  Gitlab::Checks::DiffCheck --> Gitlab::Checks::Diffs::CodeOwnersCheck
+  Gitlab::Checks::Diffs::CodeOwnersCheck --> ProtectedBranch
+  Gitlab::Checks::Diffs::CodeOwnersCheck --> Gitlab::CodeOwners::Loader
   Gitlab::CodeOwners::Loader --> Gitlab::CodeOwners::Entry
 ```
 

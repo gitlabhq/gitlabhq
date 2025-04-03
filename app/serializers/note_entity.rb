@@ -93,8 +93,6 @@ class NoteEntity < API::Entities::Note
     new_project_issue_path(note.project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id)
   end
 
-  expose :attachment, using: NoteAttachmentEntity, if: ->(note, _) { note.attachment? }
-
   expose :cached_markdown_version
 
   # Correctly rendering a note requires some background information about any

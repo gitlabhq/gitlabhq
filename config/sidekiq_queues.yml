@@ -521,8 +521,6 @@
   - 1
 - - invalid_gpg_signature_update
   - 2
-- - issuable_create_reminder
-  - 1
 - - issuable_export_csv
   - 1
 - - issuable_label_links_destroy

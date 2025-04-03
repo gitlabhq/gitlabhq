@@ -8,14 +8,6 @@ description: Persists information about escalation rules for incident management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60685
 milestone: '13.12'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: policy_id
-        table: incident_management_escalation_policies
-        sharding_key: project_id
-        belongs_to: policy
-desired_sharding_key_migration_job_name: BackfillIncidentManagementEscalationRulesProjectId
+sharding_key:
+  project_id: projects
 table_size: small

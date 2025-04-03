@@ -65,6 +65,7 @@ The following table lists the GitLab Duo features, and whether they are availabl
 | [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes)          | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
 | [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [Summarize a Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)          | {{< icon name="check-circle-dashed" >}} Experiment      | GitLab 17.11 and later |
 | [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | {{< icon name="dash-circle" >}} No      | Not applicable |
 | [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                                          | {{< icon name="dash-circle" >}} No      | Not applicable |
 

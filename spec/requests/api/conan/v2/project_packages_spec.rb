@@ -122,11 +122,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       let(:headers) { job_basic_auth_header(target_job) }
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages,
-      allow_public_access_for_enabled_project_features: :package_registry do
-      let(:headers) { job_basic_auth_header(target_job) }
-    end
-
     describe 'parameter validation for recipe file endpoints' do
       using RSpec::Parameterized::TableSyntax
 
@@ -154,6 +149,8 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     include_context 'for conan file upload endpoints'
     let(:file_name) { 'conanfile.py' }
     let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'valid_recipe_revision') }
+    let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'valid_package_reference') }
+    let(:package_revision) { OpenSSL::Digest.hexdigest('MD5', 'valid_package_revision') }
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
       ':package_channel/revisions/:recipe_revision/files/:file_name' do
@@ -163,7 +160,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
-      it_behaves_like 'workhorse recipe file upload endpoint', recipe_revision: true
+      it_behaves_like 'workhorse recipe file upload endpoint', revision: true
     end
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
@@ -174,6 +171,38 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         put api(url),
           headers: headers_with_token
       end
+
+      it_behaves_like 'conan package revisions feature flag check'
+      it_behaves_like 'packages feature check'
+      it_behaves_like 'workhorse authorize endpoint'
+    end
+
+    describe 'PUT /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+      ':package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/' \
+      'files/:file_name' do
+      let(:file_name) { 'conaninfo.txt' }
+      let(:url_suffix) do
+        "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/revisions/" \
+          "#{package_revision}/files/#{file_name}"
+      end
+
+      subject(:request) { put api(url), headers: headers_with_token }
+
+      it_behaves_like 'conan package revisions feature flag check'
+      it_behaves_like 'packages feature check'
+      it_behaves_like 'workhorse package file upload endpoint', revision: true
+    end
+
+    describe 'PUT /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+      ':package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/' \
+      'files/:file_name/authorize' do
+      let(:file_name) { 'conaninfo.txt' }
+      let(:url_suffix) do
+        "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/revisions/" \
+          "#{package_revision}/files/#{file_name}/authorize"
+      end
+
+      subject(:request) { put api(url), headers: headers_with_token }
 
       it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
@@ -202,7 +231,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     end
 
     context 'when package has no revisions' do
-      let_it_be(:package) { create(:conan_package, project: project, without_recipe_revisions: true) }
+      let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
 
       it 'returns 404' do
         request

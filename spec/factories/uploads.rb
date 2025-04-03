@@ -62,8 +62,8 @@ FactoryBot.define do
     end
 
     trait :attachment_upload do
-      mount_point { :attachment }
-      model { association(:note) }
+      mount_point { :logo }
+      model { association(:appearance) }
       uploader { "AttachmentUploader" }
     end
 

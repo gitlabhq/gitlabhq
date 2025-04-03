@@ -6,7 +6,6 @@ RSpec.shared_examples 'note entity' do
   context 'basic note' do
     it 'exposes correct elements' do
       expect(subject).to include(
-        :attachment,
         :author,
         :award_emoji,
         :base_discussion,

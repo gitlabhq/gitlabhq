@@ -208,21 +208,20 @@ end
 
 This step [queues a batched background migration](../batched_background_migrations.md#enqueue-a-batched-background-migration) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer [Batched Background migrations guide](../batched_background_migrations.md) for more details.
 
-### Step 3: Post-backfill cleanup (Release N+1)
+### Step 3: Post-backfill cleanup (Release after a required stop post Step 2)
 
-This step must occur at least one release after the release that
-includes step (2). This gives time for the background
-migration to execute properly in GitLab Self-Managed instances. In this step,
+{{< alert type="warning" >}}
+
+A [required stop](../required_stops.md) must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully
+in GitLab Self-Managed instances.
+
+{{< /alert >}}
+
+In this step,
 add another post-deployment migration that cleans up after the
 background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or
 failed jobs.
-
-{{< alert type="warning" >}}
-
-A required stop must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully.
-
-{{< /alert >}}
 
 Once again, continuing the example, this migration would look like:
 

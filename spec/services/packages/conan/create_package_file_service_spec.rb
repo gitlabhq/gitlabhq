@@ -11,6 +11,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
     let(:file_name) { 'foo.tgz' }
     let(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
     let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'recipe_revision') }
+    let(:package_revision) { OpenSSL::Digest.hexdigest('MD5', 'package_revision') }
 
     subject(:response) { described_class.new(package, file, params).execute }
 
@@ -32,13 +33,15 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect(package_file.conan_file_metadatum.package_reference_value).to eq(params[:conan_package_reference])
       end
 
-      context 'with default recipe revision' do
+      context 'with default revision' do
         let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+        let(:package_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
 
-        it 'does not create recipe revision' do
+        it 'does not create recipe and package revision' do
           package_file = response[:package_file]
 
           expect(package_file.conan_file_metadatum.recipe_revision).to be_nil
+          expect(package_file.conan_file_metadatum.package_revision).to be_nil
         end
       end
 
@@ -72,7 +75,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
           'file.size': '128',
           'file.type': 'txt',
           recipe_revision: recipe_revision,
-          package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
+          package_revision: package_revision,
           conan_package_reference: conan_package_reference,
           conan_file_type: :package_file
         }.with_indifferent_access
@@ -165,7 +168,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         let(:params) do
           {
             file_name: file_name,
-            package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
+            package_revision: package_revision,
             recipe_revision: recipe_revision,
             conan_file_type: :package_file,
             conan_package_reference: conan_package_reference
@@ -181,6 +184,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
           expect { response }.not_to change { Packages::PackageFile.count }
           expect { response }.not_to change { Packages::Conan::FileMetadatum.count }
           expect { response }.not_to change { Packages::Conan::PackageReference.count }
+          expect { response }.not_to change { Packages::Conan::PackageRevision.count }
         end
       end
     end
@@ -196,7 +200,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
           'file.size': '128',
           'file.type': 'txt',
           recipe_revision: recipe_revision,
-          package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
+          package_revision: package_revision,
           conan_package_reference: 'invalid_reference',
           conan_file_type: :package_file
         }.with_indifferent_access
@@ -211,6 +215,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect { response }.not_to change { Packages::PackageFile.count }
         expect { response }.not_to change { Packages::Conan::FileMetadatum.count }
         expect { response }.not_to change { Packages::Conan::PackageReference.count }
+        expect { response }.not_to change { Packages::Conan::PackageRevision.count }
       end
     end
 
@@ -240,27 +245,10 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
           fixture_file_upload('spec/fixtures/packages/conan/package_files/conaninfo.txt', 'text/plain')
         end
 
-        context 'when the feature flag is enabled' do
-          before do
-            stub_feature_flags(parse_conan_metadata_on_upload: true)
-          end
-
-          it 'queues the Conan package file processing worker' do
-            expect(response).to be_success
-            expect(::Packages::Conan::ProcessPackageFileWorker).to have_received(:perform_async)
-              .with(response[:package_file].id)
-          end
-        end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(parse_conan_metadata_on_upload: false)
-          end
-
-          it 'does not queue the Conan package file processing worker' do
-            expect(response).to be_success
-            expect(::Packages::Conan::ProcessPackageFileWorker).not_to have_received(:perform_async)
-          end
+        it 'queues the Conan package file processing worker' do
+          expect(response).to be_success
+          expect(::Packages::Conan::ProcessPackageFileWorker).to have_received(:perform_async)
+            .with(response[:package_file].id)
         end
       end
 

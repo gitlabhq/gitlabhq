@@ -10,12 +10,12 @@ FactoryBot.define do
 
     transient do
       without_package_files { false }
-      without_recipe_revisions { false }
+      without_revisions { false }
       without_package_references { false }
     end
 
     conan_recipe_revisions do
-      next [] if without_recipe_revisions
+      next [] if without_revisions
 
       [association(:conan_recipe_revision, package: instance)]
     end
@@ -24,6 +24,13 @@ FactoryBot.define do
       next [] if without_package_references
 
       [association(:conan_package_reference, package: instance, recipe_revision: instance.conan_recipe_revisions.first)]
+    end
+
+    conan_package_revisions do
+      next [] if without_revisions || without_package_references
+
+      [association(:conan_package_revision, package: instance,
+        package_reference: instance.conan_package_references.first)]
     end
 
     after :build do |package|
@@ -45,7 +52,8 @@ FactoryBot.define do
           package_file_traits.each do |file|
             create :conan_package_file, file, package: package,
               conan_package_reference: package.conan_package_references.first,
-              conan_recipe_revision: package.conan_recipe_revisions.first
+              conan_recipe_revision: package.conan_recipe_revisions.first,
+              conan_package_revision: package.conan_package_revisions.first
           end
         end
       end

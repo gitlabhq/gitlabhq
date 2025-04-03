@@ -4,11 +4,11 @@ RSpec.describe QA::Support::Loglinking do
   describe '.failure_metadata' do
     context 'when correlation_id does not exist' do
       it 'returns nil when correlation_id is empty' do
-        expect(QA::Support::Loglinking.failure_metadata('')).to eq(nil)
+        expect(described_class.failure_metadata('')).to eq(nil)
       end
 
       it 'returns nil when correlation_id is nil' do
-        expect(QA::Support::Loglinking.failure_metadata(nil)).to eq(nil)
+        expect(described_class.failure_metadata(nil)).to eq(nil)
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe QA::Support::Loglinking do
         end
 
         it 'returns both Sentry and Kibana URLs' do
-          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
+          expect(described_class.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
           Sentry Url: #{sentry_url}
           Kibana - Discover Url: #{discover_url}
@@ -54,7 +54,7 @@ RSpec.describe QA::Support::Loglinking do
         end
 
         it 'returns only Sentry URL' do
-          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
+          expect(described_class.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
           Sentry Url: #{sentry_url}
           ERROR
@@ -72,7 +72,7 @@ RSpec.describe QA::Support::Loglinking do
         end
 
         it 'returns only Kibana Discover and Dashboard URLs' do
-          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
+          expect(described_class.failure_metadata(correlation_id)).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
           Kibana - Discover Url: #{discover_url}
           Kibana - Dashboard Url: #{dashboard_url}
@@ -85,7 +85,7 @@ RSpec.describe QA::Support::Loglinking do
         let(:kibana) { instance_double(QA::Support::SystemLogs::Kibana, discover_url: nil, dashboard_url: nil) }
 
         it 'returns only the correlation ID' do
-          expect(QA::Support::Loglinking.failure_metadata(correlation_id)).to eql("Correlation Id: #{correlation_id}")
+          expect(described_class.failure_metadata(correlation_id)).to eql("Correlation Id: #{correlation_id}")
         end
       end
     end
@@ -125,7 +125,7 @@ RSpec.describe QA::Support::Loglinking do
       logging_env_array.each do |logging_env_hash|
         allow(QA::Runtime::Scenario).to receive(:attributes).and_return({ gitlab_address: logging_env_hash[:address] })
 
-        expect(QA::Support::Loglinking.logging_environment).to eq(logging_env_hash[:expected_env])
+        expect(described_class.logging_environment).to eq(logging_env_hash[:expected_env])
       end
     end
   end

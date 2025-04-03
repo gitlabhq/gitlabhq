@@ -5491,7 +5491,7 @@ Input type: `DestroyPackagesInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroypackagesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroypackagesids"></a>`ids` | [`[PackagesPackageID!]!`](#packagespackageid) | Global IDs of the Packages. Max 20. |
+| <a id="mutationdestroypackagesids"></a>`ids` | [`[PackagesPackageID!]!`](#packagespackageid) | Global IDs of the Packages. Max 100. |
 
 #### Fields
 
@@ -41448,6 +41448,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | <a id="aifeaturesgenerate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | <a id="aifeaturesresolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | <a id="aifeaturessummarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Summarize new merge request feature setting. |
+| <a id="aifeaturessummarize_review"></a>`SUMMARIZE_REVIEW` | Summarize review feature setting. |
 
 ### `AiMessageRole`
 

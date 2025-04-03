@@ -592,7 +592,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
-          delete :delete_attachment # rubocop:todo Cop/PutProjectRoutesUnderScope
           post :resolve # rubocop:todo Cop/PutProjectRoutesUnderScope
           delete :resolve, action: :unresolve # rubocop:todo Cop/PutProjectRoutesUnderScope
           get :outdated_line_change # rubocop:todo Cop/PutProjectRoutesUnderScope

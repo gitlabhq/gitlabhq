@@ -45,7 +45,6 @@ they are still not 100% standardized. You can see them below:
 | Project avatars                       | yes    | `uploads/-/system/project/avatar/:id/:filename`               | `AvatarUploader`       | Project    |
 | Topic avatars                         | yes    | `uploads/-/system/projects/topic/avatar/:id/:filename`        | `AvatarUploader`       | Topic      |
 | Issues/MR/Notes Markdown attachments  | yes    | `uploads/:hash_project_id/:random_hex/:filename`  | `FileUploader`         | Project    |
-| Issues/MR/Notes Legacy Markdown attachments | no | `uploads/-/system/note/attachment/:id/:filename`            | `AttachmentUploader`   | Note       |
 | Design Management design thumbnails   | yes | `uploads/-/system/design_management/action/image_v432x230/:id/:filename` | `DesignManagement::DesignV432x230Uploader` | DesignManagement::Action |
 | CI Artifacts (CE)                     | yes    | `shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id` (`:disk_hash` is SHA256 digest of `project_id`) | `JobArtifactUploader`  | Ci::JobArtifact  |
 | LFS Objects (CE)                      | yes    | `shared/lfs-objects/:hex/:hex/:object_hash`                   | `LfsObjectUploader`    | LfsObject  |

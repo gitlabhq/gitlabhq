@@ -15529,6 +15529,7 @@ CREATE TABLE incident_management_escalation_rules (
     is_removed boolean DEFAULT false NOT NULL,
     user_id bigint,
     project_id bigint,
+    CONSTRAINT check_a54b79b2fa CHECK ((project_id IS NOT NULL)),
     CONSTRAINT escalation_rules_one_of_oncall_schedule_or_user CHECK ((num_nonnulls(oncall_schedule_id, user_id) = 1))
 );
 
@@ -20637,7 +20638,8 @@ CREATE TABLE project_control_compliance_statuses (
     project_id bigint NOT NULL,
     namespace_id bigint NOT NULL,
     compliance_requirement_id bigint NOT NULL,
-    status smallint NOT NULL
+    status smallint NOT NULL,
+    requirement_status_id bigint
 );
 
 CREATE SEQUENCE project_control_compliance_statuses_id_seq
@@ -33026,6 +33028,8 @@ CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_a
 
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
 
+CREATE INDEX idx_project_control_compliance_status_on_requirement_status_id ON project_control_compliance_statuses USING btree (requirement_status_id);
+
 CREATE INDEX idx_project_control_statuses_on_namespace_id ON project_control_compliance_statuses USING btree (namespace_id);
 
 CREATE INDEX idx_project_control_statuses_on_project_id ON project_control_compliance_statuses USING btree (project_id);
@@ -43466,6 +43470,9 @@ ALTER TABLE ONLY abuse_report_events
 
 ALTER TABLE ONLY approval_merge_request_rule_sources
     ADD CONSTRAINT fk_fea41830d0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_ff66375d64 FOREIGN KEY (requirement_status_id) REFERENCES project_requirement_compliance_statuses(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY import_placeholder_memberships
     ADD CONSTRAINT fk_ffae4107ac FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

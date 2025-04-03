@@ -474,7 +474,6 @@ included_attributes:
     - :created_at
     - :updated_at
     - :project_id
-    - :attachment
     - :line_code
     - :commit_id
     - :system

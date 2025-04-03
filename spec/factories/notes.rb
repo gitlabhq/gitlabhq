@@ -206,18 +206,6 @@ FactoryBot.define do
       note { AwardEmoji::THUMBS_UP }
     end
 
-    trait :with_attachment do
-      attachment { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
-    end
-
-    trait :with_svg_attachment do
-      attachment { fixture_file_upload("spec/fixtures/unsanitized.svg", "image/svg+xml") }
-    end
-
-    trait :with_pdf_attachment do
-      attachment { fixture_file_upload("spec/fixtures/sample.pdf", "application/pdf") }
-    end
-
     trait :confidential do
       confidential { true }
     end

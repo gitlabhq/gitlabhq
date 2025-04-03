@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
 
   shared_examples 'repo' do
     subject(:tree) do
-      Gitlab::Git::Tree.tree_entries(
+      described_class.tree_entries(
         repository: repository,
         sha: sha,
         path: path,
@@ -53,14 +53,14 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
         expect(entries.map(&:path)).to include('files/html',
           'files/markdown/ruby-style-guide.md')
         expect(entries.count).to be >= 10
-        expect(entries).to all(be_a(Gitlab::Git::Tree))
+        expect(entries).to all(be_a(described_class))
       end
     end
 
     describe '#dir?' do
       let(:dir) { entries.find(&:dir?) }
 
-      it { expect(dir).to be_kind_of Gitlab::Git::Tree }
+      it { expect(dir).to be_kind_of described_class }
       it { expect(dir.id).to eq('3c122d2b7830eca25235131070602575cf8b41a1') }
       it { expect(dir.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(dir.name).to eq('encoding') }
@@ -68,12 +68,12 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
       it { expect(dir.mode).to eq('40000') }
       it { expect(dir.flat_path).to eq('encoding') }
 
-      context :subdir do
+      context 'when subdir' do
         # This is not ActiveRecord where..first
         let(:path) { 'files' }
         let(:subdir) { entries.first }
 
-        it { expect(subdir).to be_kind_of Gitlab::Git::Tree }
+        it { expect(subdir).to be_kind_of described_class }
         it { expect(subdir.id).to eq('a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba') }
         it { expect(subdir.commit_id).to eq(SeedRepo::Commit::ID) }
         it { expect(subdir.name).to eq('html') }
@@ -81,12 +81,12 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
         it { expect(subdir.flat_path).to eq('files/html') }
       end
 
-      context :subdir_file do
+      context 'with subdir_file' do
         # This is not ActiveRecord where..first
         let(:path) { 'files/ruby' }
         let(:subdir_file) { entries.first }
 
-        it { expect(subdir_file).to be_kind_of Gitlab::Git::Tree }
+        it { expect(subdir_file).to be_kind_of described_class }
         it { expect(subdir_file.id).to eq('7e3e39ebb9b2bf433b4ad17313770fbe4051649c') }
         it { expect(subdir_file.commit_id).to eq(SeedRepo::Commit::ID) }
         it { expect(subdir_file.name).to eq('popen.rb') }
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
         it { expect(subdir_file.flat_path).to eq('files/ruby/popen.rb') }
       end
 
-      context :flat_path do
+      context 'with flat_path' do
         let(:project) { create(:project, :repository) }
         let(:repository) { project.repository.raw }
         let(:filename) { 'files/flat/path/correct/content.txt' }
@@ -127,7 +127,7 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
     describe '#file?' do
       let(:file) { entries.find(&:file?) }
 
-      it { expect(file).to be_kind_of Gitlab::Git::Tree }
+      it { expect(file).to be_kind_of described_class }
       it { expect(file.id).to eq('dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82') }
       it { expect(file.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(file.name).to eq('.gitignore') }
@@ -136,21 +136,21 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
     describe '#readme?' do
       let(:file) { entries.find(&:readme?) }
 
-      it { expect(file).to be_kind_of Gitlab::Git::Tree }
+      it { expect(file).to be_kind_of described_class }
       it { expect(file.name).to eq('README.md') }
     end
 
     describe '#contributing?' do
       let(:file) { entries.find(&:contributing?) }
 
-      it { expect(file).to be_kind_of Gitlab::Git::Tree }
+      it { expect(file).to be_kind_of described_class }
       it { expect(file.name).to eq('CONTRIBUTING.md') }
     end
 
     describe '#submodule?' do
       let(:submodule) { entries.find(&:submodule?) }
 
-      it { expect(submodule).to be_kind_of Gitlab::Git::Tree }
+      it { expect(submodule).to be_kind_of described_class }
       it { expect(submodule.id).to eq('79bceae69cb5750d6567b223597999bfa91cb3b9') }
       it { expect(submodule.commit_id).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
       it { expect(submodule.name).to eq('gitlab-shell') }

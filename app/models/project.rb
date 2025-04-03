@@ -277,9 +277,7 @@ class Project < ApplicationRecord
   has_one :forked_from_project, through: :fork_network_member
 
   # Projects with a very large number of notes may time out destroying them
-  # through the foreign key. Additionally, the deprecated attachment uploader
-  # for notes requires us to use dependent: :destroy to avoid orphaning uploaded
-  # files.
+  # through the foreign key.
   #
   # https://gitlab.com/gitlab-org/gitlab/-/issues/207222
   # Order of this association is important for project deletion.

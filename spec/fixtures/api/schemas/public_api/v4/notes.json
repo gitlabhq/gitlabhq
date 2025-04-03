@@ -15,12 +15,6 @@
       "body": {
         "type": "string"
       },
-      "attachment": {
-        "type": [
-          "string",
-          "null"
-        ]
-      },
       "imported": {
         "type": "boolean"
       },
@@ -123,7 +117,6 @@
     "required": [
       "id",
       "body",
-      "attachment",
       "author",
       "created_at",
       "updated_at",

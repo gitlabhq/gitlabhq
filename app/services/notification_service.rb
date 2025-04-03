@@ -971,11 +971,9 @@ class NotificationService
   end
 
   def send_bot_rat_expiry_to_inherited?(group_or_project)
-    root_ancestor = group_or_project.root_ancestor
     namespace = group_or_project.is_a?(Namespace) ? group_or_project : group_or_project.namespace
 
-    Feature.enabled?(:pat_expiry_inherited_members_notification, root_ancestor) &&
-      namespace.resource_access_token_notify_inherited?
+    namespace.resource_access_token_notify_inherited?
   end
 
   def notifiable?(...)

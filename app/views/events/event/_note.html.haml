@@ -21,12 +21,3 @@
   .event-note
     .md
       = first_line_in_markdown(event.target, :note, 150, project: event.project)
-    - note = event.target
-    - if note.attachment.url
-      - if note.attachment.image?
-        = link_to note.attachment.url, target: '_blank' do
-          = image_tag note.attachment.url, class: 'note-image-attach col-lg-4'
-      - else
-        = link_to note.attachment.url, target: '_blank', class: 'note-file-attach' do
-          = sprite_icon("paperclip")
-          = note.attachment_identifier

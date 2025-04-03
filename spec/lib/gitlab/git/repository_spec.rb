@@ -2699,7 +2699,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
   describe '#replicate' do
     let(:new_repository) do
-      Gitlab::Git::Repository.new('test_second_storage', repository.relative_path, '', 'group/project')
+      described_class.new('test_second_storage', repository.relative_path, '', 'group/project')
     end
 
     subject { new_repository.replicate(repository) }

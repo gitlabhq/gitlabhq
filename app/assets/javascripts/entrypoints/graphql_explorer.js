@@ -107,7 +107,11 @@ function apolloFetcher(graphQLParams, { headers }) {
 }
 
 createRoot(graphiqlContainer).render(
-  React.createElement(GraphiQL, { defaultQuery, fetcher: apolloFetcher }, GraphiQLLogo),
+  React.createElement(
+    GraphiQL,
+    { defaultQuery, fetcher: apolloFetcher, inputValueDeprecation: true },
+    GraphiQLLogo,
+  ),
 );
 
 Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);

@@ -160,14 +160,9 @@ To add additional text to deactivation emails:
 
 - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
+- Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of emails to inherited project and group members is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 In GitLab 17.7 and later, the following inherited group and project members can receive emails about group and project access tokens that are expiring soon, in addition to direct group and project members:
 

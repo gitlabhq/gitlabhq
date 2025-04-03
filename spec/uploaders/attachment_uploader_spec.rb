@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe AttachmentUploader do
-  let(:note) { create(:note, :with_attachment) }
-  let(:uploader) { note.attachment }
+  let(:appearance) { create(:appearance, :with_logo) }
+  let(:uploader) { appearance.logo }
   let(:upload) { create(:upload, :attachment_upload, model: uploader.model) }
 
   subject { uploader }
 
   it_behaves_like 'builds correct paths',
-    store_dir: %r{uploads/-/system/note/attachment/},
-    upload_path: %r{uploads/-/system/note/attachment/},
-    absolute_path: %r{#{CarrierWave.root}/uploads/-/system/note/attachment/}
+    store_dir: %r{uploads/-/system/appearance/logo/},
+    upload_path: %r{uploads/-/system/appearance/logo/},
+    absolute_path: %r{#{CarrierWave.root}/uploads/-/system/appearance/logo/}
 
   context "object_store is REMOTE" do
     before do
@@ -22,8 +22,8 @@ RSpec.describe AttachmentUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths',
-      store_dir: %r{note/attachment/},
-      upload_path: %r{note/attachment/}
+      store_dir: %r{appearance/logo/},
+      upload_path: %r{appearance/logo/}
   end
 
   describe "#migrate!" do

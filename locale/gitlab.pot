@@ -8288,9 +8288,6 @@ msgstr ""
 msgid "Are you sure you want to remove %{topic_name}?"
 msgstr ""
 
-msgid "Are you sure you want to remove the attachment?"
-msgstr ""
-
 msgid "Are you sure you want to remove the license?"
 msgstr ""
 
@@ -20068,9 +20065,6 @@ msgid "Delete table"
 msgstr ""
 
 msgid "Delete the pipeline"
-msgstr ""
-
-msgid "Delete this attachment"
 msgstr ""
 
 msgid "Delete this epic and release all child items?"
@@ -53843,6 +53837,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} approver actions"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} rule schedules"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy has reached the maximum of %{actionsCount} %{actions}"
 msgstr ""
 
@@ -71269,6 +71266,12 @@ msgstr ""
 msgid "must be owned by the user's enterprise group"
 msgstr ""
 
+msgid "must be present when package revision exists"
+msgstr ""
+
+msgid "must be present when recipe revision exists"
+msgstr ""
+
 msgid "must be set for a project namespace"
 msgstr ""
 
@@ -71288,6 +71291,9 @@ msgid "must belong to same project of the work item."
 msgstr ""
 
 msgid "must belong to the compliance requirement."
+msgstr ""
+
+msgid "must belong to the same compliance requirement."
 msgstr ""
 
 msgid "must belong to the same namespace."

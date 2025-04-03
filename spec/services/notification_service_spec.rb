@@ -538,14 +538,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             end
           end
 
-          context 'when pat_expiry_inherited_members_notification FF is disabled' do
-            before do
-              stub_feature_flags(pat_expiry_inherited_members_notification: false)
-            end
-
-            it_behaves_like 'does not email inherited members'
-          end
-
           context 'when instance setting resource_access_token_notify_inherited is enforced' do
             before do
               stub_application_setting(
@@ -714,14 +706,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
                 )
               )
             end
-          end
-
-          context 'when pat_expiry_inherited_members_notification FF is disabled' do
-            before do
-              stub_feature_flags(pat_expiry_inherited_members_notification: false)
-            end
-
-            it_behaves_like 'does not email inherited members'
           end
 
           context 'when instance setting resource_access_token_notify_inherited is enforced' do
