@@ -1,4 +1,6 @@
 ---
+asdf:
+  opt_out: true
 hostname: gdk.test
 sshd:
   additional_config: 'AcceptEnv GIT_PROTOCOL'
@@ -45,4 +47,6 @@ tracer:
     enabled: false
 # https://gitlab.com/gitlab-org/gitlab/-/issues/471172
 gitlab_http_router:
+  enabled: true
+mise:
   enabled: true

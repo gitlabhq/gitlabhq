@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_by_default do
   let(:emitter) { SnowplowTracker::Emitter.new(endpoint: 'localhost', options: { buffer_size: 1 }) }
+  let(:event_eligibility_checker) { instance_double(Gitlab::Tracking::EventEligibilityChecker) }
+  let(:event_eligible) { true }
   let(:tracker) do
     SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
       app_id: 'app_id')
@@ -17,6 +19,8 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     )
 
     allow(Kernel).to receive(:at_exit)
+    allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:new).and_return(event_eligibility_checker)
+    allow(event_eligibility_checker).to receive(:eligible?).and_return(event_eligible)
   end
 
   around do |example|
@@ -29,24 +33,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         development?: false,
         test?: false
       )
-
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     method: 'post',
-                     buffer_size: 10,
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      expect(SnowplowTracker::Tracker)
-        .to receive(:new)
-              .with(emitters: [emitter],
-                subject: an_instance_of(SnowplowTracker::Subject),
-                namespace: described_class::SNOWPLOW_NAMESPACE,
-                app_id: '_abc123_')
-              .and_return(tracker)
     end
 
     it "adds Kernel.at_exit hook" do
@@ -55,27 +41,67 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
 
     describe '#event' do
-      it 'sends event to tracker' do
-        allow(tracker).to receive(:track_struct_event).and_call_original
+      context 'when event is eligible' do
+        before do
+          expect(SnowplowTracker::AsyncEmitter)
+            .to receive(:new)
+                  .with(endpoint: 'gitfoo.com',
+                    options: { protocol: 'https',
+                               method: 'post',
+                               buffer_size: 10,
+                               on_success: subject.method(:increment_successful_events_emissions),
+                               on_failure: subject.method(:failure_callback) })
+                  .and_return(emitter)
 
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+          expect(SnowplowTracker::Tracker)
+            .to receive(:new)
+                  .with(emitters: [emitter],
+                    subject: an_instance_of(SnowplowTracker::Subject),
+                    namespace: described_class::SNOWPLOW_NAMESPACE,
+                    app_id: '_abc123_')
+                  .and_return(tracker)
 
-        expect(tracker)
-          .to have_received(:track_struct_event)
-          .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5, context: nil,
-            tstamp: (Time.now.to_f * 1000).to_i)
+          allow(tracker).to receive(:track_struct_event).and_call_original
+        end
+
+        it 'sends event to tracker' do
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+          expect(tracker)
+            .to have_received(:track_struct_event)
+                  .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5,
+                    context: nil, tstamp: (Time.now.to_f * 1000).to_i)
+        end
+
+        it 'increase total snowplow events counter' do
+          counter = double
+
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter)
+                                       .with(:gitlab_snowplow_events_total,
+                                         'Number of Snowplow events')
+                                       .and_return(counter)
+
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
       end
 
-      it 'increase total snowplow events counter' do
-        counter = double
+      context 'when event is ineligible' do
+        let(:event_eligible) { false }
 
-        expect(counter).to receive(:increment)
-        expect(Gitlab::Metrics).to receive(:counter)
-                                     .with(:gitlab_snowplow_events_total,
-                                       'Number of Snowplow events')
-                                     .and_return(counter)
+        it 'does not sends event to tracker' do
+          allow(tracker).to receive(:track_struct_event).and_call_original
 
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+          expect(tracker).not_to have_received(:track_struct_event)
+        end
+
+        it 'does not increase total snowplow events counter' do
+          expect(Gitlab::Metrics).not_to receive(:counter)
+
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
       end
     end
   end

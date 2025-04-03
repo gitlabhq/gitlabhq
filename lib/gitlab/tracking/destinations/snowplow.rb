@@ -11,6 +11,8 @@ module Gitlab
         SNOWPLOW_NAMESPACE = 'gl'
 
         def initialize
+          @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
+
           return if batching_disabled?
 
           Kernel.at_exit { tracker.flush(async: false) }
@@ -19,6 +21,7 @@ module Gitlab
         override :event
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
           return unless enabled?
+          return unless @event_eligibility_checker.eligible?(action)
 
           tracker.track_struct_event(
             category: category,

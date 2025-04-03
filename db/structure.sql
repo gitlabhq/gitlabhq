@@ -12560,6 +12560,7 @@ CREATE TABLE compliance_framework_security_policies (
     policy_index smallint NOT NULL,
     project_id bigint,
     namespace_id bigint,
+    security_policy_id bigint,
     CONSTRAINT check_473e5b2da9 CHECK ((num_nonnulls(namespace_id, project_id) = 1))
 );
 
@@ -32771,7 +32772,11 @@ CREATE INDEX idx_compliance_requirements_controls_on_namespace_id ON compliance_
 
 CREATE INDEX idx_compliance_requirements_controls_on_requirement_id ON compliance_requirements_controls USING btree (compliance_requirement_id);
 
+CREATE INDEX idx_compliance_security_policies_on_framework_id ON compliance_framework_security_policies USING btree (framework_id);
+
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
+
+CREATE INDEX idx_compliance_security_policies_on_security_policy_id ON compliance_framework_security_policies USING btree (security_policy_id);
 
 CREATE INDEX idx_component_usages_on_catalog_resource_used_by_proj_used_date ON ONLY p_catalog_resource_component_usages USING btree (catalog_resource_id, used_by_project_id, used_date);
 
@@ -38239,7 +38244,9 @@ CREATE UNIQUE INDEX unique_batched_background_migrations_queued_migration_versio
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
 
-CREATE UNIQUE INDEX unique_compliance_framework_security_policies_framework_id ON compliance_framework_security_policies USING btree (framework_id, policy_configuration_id, policy_index);
+CREATE UNIQUE INDEX unique_compliance_security_policies_framework_id_policy_index ON compliance_framework_security_policies USING btree (framework_id, policy_configuration_id, policy_index) WHERE (security_policy_id IS NULL);
+
+CREATE UNIQUE INDEX unique_compliance_security_policies_security_policy_id ON compliance_framework_security_policies USING btree (security_policy_id, framework_id) WHERE (security_policy_id IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_name ON audit_events_external_audit_event_destinations USING btree (namespace_id, name);
 
@@ -41818,6 +41825,9 @@ ALTER TABLE ONLY protected_branch_unprotect_access_levels
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_32782a175e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY compliance_framework_security_policies
+    ADD CONSTRAINT fk_32fbe15af3 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY design_management_repositories
     ADD CONSTRAINT fk_335d4698e2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

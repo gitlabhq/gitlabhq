@@ -15,14 +15,20 @@ module EventForward
     private
 
     def process_events
-      payload = Gitlab::Json.parse(request.raw_post)
       tracker = Gitlab::Tracking.tracker
+      event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
 
-      payload['data'].each do |event|
+      payload = Gitlab::Json.parse(request.raw_post)
+
+      events_to_forward = payload['data'].select do |event|
+        event_eligibility_checker.eligible?(event['se_ac'])
+      end
+
+      events_to_forward.each do |event|
         tracker.emit_event_payload(event)
       end
 
-      logger.info("Enqueued events for forwarding. Count: #{payload['data'].size}")
+      logger.info("Enqueued events for forwarding. Count: #{events_to_forward.size}")
     end
 
     def logger

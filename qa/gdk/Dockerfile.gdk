@@ -2,10 +2,11 @@ ARG GDK_SHA=e71df04fc9595c5cf6ab2ecc0fee703164f7b132
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 
-FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main:${GDK_BASE_TAG_PREFIX}${GDK_SHA} AS base
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-verify/main:${GDK_BASE_TAG_PREFIX}${GDK_SHA} AS base
 
 ENV GITLAB_LICENSE_MODE=test \
-    GDK_KILL_CONFIRM=true
+    GDK_KILL_CONFIRM=true \
+    TOOL_VERSION_MANAGER=mise
 
 # Clone GDK at specific sha and bootstrap packages
 #
@@ -29,7 +30,7 @@ COPY --chown=gdk:gdk GITLAB_SHELL_VERSION ./gitlab/
 RUN make gitlab-shell-setup \
     && cd gitlab-shell \
     && go clean -cache -modcache -r \
-    && rm -rf /home/gdk/.asdf/installs/ruby/*/lib/ruby/gems/*/cache
+    && rm -rf /home/gdk/.local/share/mise/installs/ruby/*/lib/ruby/gems/*/cache
 
 # Build gitlab-workhorse
 #
@@ -60,10 +61,11 @@ FROM base AS gitlab-gems
 COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
-RUN make gitlab-asdf-install \
+RUN set -x \
+    && make gitlab-asdf-install \
     && make .gitlab-bundle \
     && cd gitlab \
-    && rm -rf /home/gdk/.asdf/installs/ruby/*/lib/ruby/gems/*/cache
+    && rm -rf /home/gdk/.local/share/mise/installs/ruby/*/lib/ruby/gems/*/cache
 
 # Install gitlab npm dependencies
 #
@@ -87,7 +89,7 @@ RUN git config --global init.defaultBranch master \
 COPY --from=gitlab-shell --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab-shell ./gitlab-shell/
 COPY --from=gitaly --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitaly ./gitaly/
 COPY --from=workhorse --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab/workhorse ./gitlab/workhorse/
-COPY --from=gitlab-gems --chown=gdk:gdk /home/gdk/.asdf/installs/ruby /home/gdk/.asdf/installs/ruby/
+COPY --from=gitlab-gems --chown=gdk:gdk /home/gdk/.local/share/mise/installs/ruby /home/gdk/.local/share/mise/installs/ruby/
 COPY --from=gitlab-node-modules --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab/node_modules ./gitlab/node_modules/
 
 # Copy code

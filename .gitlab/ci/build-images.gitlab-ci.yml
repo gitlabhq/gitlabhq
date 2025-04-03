@@ -33,7 +33,7 @@ retag-gdk-image:
   script:
     - echo "$RETAG_GDK_IMAGE_TOKEN" | docker login "$CI_REGISTRY" -u "$RETAG_GDK_IMAGE_TOKEN_NAME" --password-stdin
     - |
-      image="registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main"
+      image="registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-verify/main"
       tag=$(awk '/ARG GDK_SHA=/ {print $2}' qa/gdk/Dockerfile.gdk | sed 's/.*=//g')
       docker buildx imagetools create --tag "${image}:stable-${tag}" "${image}:${tag}"
 

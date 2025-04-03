@@ -27,6 +27,16 @@ module Gitlab
               raise ManagedResourceError, format_error_message(response.errors)
             else
               managed_resource.update!(status: :completed, tracked_objects: response.objects.map(&:to_h))
+              Gitlab::InternalEvents.track_event(
+                'ensure_environment_for_managed_resource',
+                user: build.user,
+                project: build.project,
+                additional_properties: {
+                  label: build.project.namespace.actual_plan_name,
+                  property: environment.tier,
+                  value: environment.id
+                }
+              )
             end
           end
 
