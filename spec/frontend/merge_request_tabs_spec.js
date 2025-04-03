@@ -292,6 +292,30 @@ describe('MergeRequestTabs', () => {
 
       expect(testContext.subject('show')).toBe('/foo/bar/-/merge_requests/1');
     });
+
+    it.each`
+      pathname                                                | action       | expected
+      ${'/group/reports/project/-/merge_requests/1'}          | ${'show'}    | ${'/group/reports/project/-/merge_requests/1'}
+      ${'/group/reports/project/-/merge_requests/1'}          | ${'reports'} | ${'/group/reports/project/-/merge_requests/1/reports'}
+      ${'/group/reports/project/-/merge_requests/1/reports'}  | ${'reports'} | ${'/group/reports/project/-/merge_requests/1/reports'}
+      ${'/group/reports/project/-/merge_requests/1/reports'}  | ${'show'}    | ${'/group/reports/project/-/merge_requests/1'}
+      ${'/group/project/-/merge_requests/1/diffs'}            | ${'commits'} | ${'/group/project/-/merge_requests/1/commits'}
+      ${'/group/project/-/merge_requests/1/commits'}          | ${'diffs'}   | ${'/group/project/-/merge_requests/1/diffs'}
+      ${'/group/project/-/merge_requests/1/reports/security'} | ${'show'}    | ${'/group/project/-/merge_requests/1'}
+      ${'/group/project/-/merge_requests/1/reports/security'} | ${'reports'} | ${'/group/project/-/merge_requests/1/reports'}
+      ${'/group/project/-/merge_requests/1/commits'}          | ${'commits'} | ${'/group/project/-/merge_requests/1/commits'}
+      ${'/group/project/-/merge_requests/1/diffs/'}           | ${'show'}    | ${'/group/project/-/merge_requests/1'}
+      ${'/group/project/-/merge_requests/1/commits.html'}     | ${'show'}    | ${'/group/project/-/merge_requests/1'}
+    `(
+      'updates URL to $expected if current URL is $pathname and new action is $action',
+      ({ pathname, action, expected }) => {
+        setLocation({
+          pathname,
+        });
+
+        expect(testContext.subject(action)).toBe(expected);
+      },
+    );
   });
 
   describe('expandViewContainer', () => {
@@ -502,13 +526,14 @@ describe('MergeRequestTabs', () => {
 
   describe('getActionFromHref', () => {
     it.each`
-      pathName                                        | action
-      ${'/user/pipelines/-/merge_requests/1/diffs'}   | ${'diffs'}
-      ${'/user/diffs/-/merge_requests/1/pipelines'}   | ${'pipelines'}
-      ${'/user/pipelines/-/merge_requests/1/commits'} | ${'commits'}
-      ${'/user/pipelines/1/-/merge_requests/1/diffs'} | ${'diffs'}
-      ${'/user/pipelines/-/merge_requests/1'}         | ${'show'}
-      ${'/user/pipelines/-/merge_requests/1/reports'} | ${'reports'}
+      pathName                                               | action
+      ${'/user/pipelines/-/merge_requests/1/diffs'}          | ${'diffs'}
+      ${'/user/diffs/-/merge_requests/1/pipelines'}          | ${'pipelines'}
+      ${'/user/pipelines/-/merge_requests/1/commits'}        | ${'commits'}
+      ${'/user/pipelines/1/-/merge_requests/1/diffs'}        | ${'diffs'}
+      ${'/user/pipelines/-/merge_requests/1'}                | ${'show'}
+      ${'/user/pipelines/-/merge_requests/1/reports'}        | ${'reports'}
+      ${'/group/reports/project/-/merge_requests/1/reports'} | ${'reports'}
     `('returns $action for $location', ({ pathName, action }) => {
       expect(getActionFromHref(pathName)).toBe(action);
     });
