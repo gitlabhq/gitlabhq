@@ -37978,8 +37978,6 @@ CREATE INDEX packages_packages_needs_verification ON packages_package_files USIN
 
 CREATE INDEX packages_packages_pending_verification ON packages_package_files USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
-CREATE INDEX pages_deployments_deleted_at_index ON pages_deployments USING btree (id, project_id, path_prefix) WHERE (deleted_at IS NULL);
-
 CREATE INDEX pages_deployments_deleted_at_null_index ON pages_deployments USING btree (project_id, path_prefix, id) WHERE (deleted_at IS NULL);
 
 CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_group_user_and_relation ON bulk_import_exports USING btree (group_id, relation, user_id) WHERE ((group_id IS NOT NULL) AND (user_id IS NOT NULL));

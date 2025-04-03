@@ -16159,6 +16159,9 @@ msgstr ""
 msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr ""
 
+msgid "Container scanning"
+msgstr ""
+
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
 msgstr ""
 
@@ -20227,9 +20230,6 @@ msgstr ""
 msgid "Dependencies|+%{remainingLicensesCount} more"
 msgstr ""
 
-msgid "Dependencies|All"
-msgstr ""
-
 msgid "Dependencies|Component"
 msgstr ""
 
@@ -20350,9 +20350,6 @@ msgstr ""
 msgid "Dependencies|Vulnerabilities"
 msgstr ""
 
-msgid "Dependencies|Vulnerable components"
-msgstr ""
-
 msgid "Dependencies|unknown"
 msgstr ""
 
@@ -20363,6 +20360,9 @@ msgid "Dependency Scanning"
 msgstr ""
 
 msgid "Dependency list"
+msgstr ""
+
+msgid "Dependency scanning"
 msgstr ""
 
 msgid "DependencyListExport|License Identifiers"
@@ -22607,6 +22607,9 @@ msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use
 msgstr ""
 
 msgid "Dynamic Application Security Testing (DAST)"
+msgstr ""
+
+msgid "Dynamic application security testing (DAST)"
 msgstr ""
 
 msgid "E-mail:"
@@ -31442,6 +31445,9 @@ msgid "Infrastructure"
 msgstr ""
 
 msgid "Infrastructure as Code (IaC) Scanning"
+msgstr ""
+
+msgid "Infrastructure as code scanning (IaC)"
 msgstr ""
 
 msgid "InfrastructureRegistry|Copy Terraform Command"
@@ -52641,6 +52647,9 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
+msgid "Secret detection"
+msgstr ""
+
 msgid "Secret push protection"
 msgstr ""
 
@@ -57488,6 +57497,9 @@ msgid "State your message to activate"
 msgstr ""
 
 msgid "Static Application Security Testing (SAST)"
+msgstr ""
+
+msgid "Static application security testing (SAST)"
 msgstr ""
 
 msgid "Statistics"

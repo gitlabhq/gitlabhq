@@ -2,10 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request rebasing', product_group: :code_review, quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527224',
-      type: :investigating
-    } do
+    describe 'Merge request rebasing', product_group: :code_review do
       let!(:merge_request) { create(:merge_request) }
 
       before do

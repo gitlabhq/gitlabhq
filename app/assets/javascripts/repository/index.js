@@ -9,7 +9,7 @@ import createStore from '~/code_navigation/store';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
-import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
+import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import App from './components/app.vue';
 import Breadcrumbs from './components/header_area/breadcrumbs.vue';
 import ForkInfo from './components/fork_info.vue';
@@ -185,8 +185,15 @@ export default function setupVueRepositoryList() {
 
     if (!codeDropdownEl) return false;
 
-    const { sshUrl, httpUrl, kerberosUrl, xcodeUrl, directoryDownloadLinks } =
-      codeDropdownEl.dataset;
+    const {
+      sshUrl,
+      httpUrl,
+      kerberosUrl,
+      xcodeUrl,
+      directoryDownloadLinks,
+      newWorkspacePath,
+      projectId,
+    } = codeDropdownEl.dataset;
 
     const CodeDropdownComponent =
       gon.features.directoryCodeDropdownUpdates && gon.features.blobRepositoryVueHeaderApp
@@ -196,6 +203,7 @@ export default function setupVueRepositoryList() {
     return new Vue({
       el: codeDropdownEl,
       router,
+      apolloProvider,
       render(createElement) {
         return createElement(CodeDropdownComponent, {
           props: {
@@ -205,6 +213,9 @@ export default function setupVueRepositoryList() {
             xcodeUrl,
             currentPath: this.$route.params.path,
             directoryDownloadLinks: JSON.parse(directoryDownloadLinks),
+            projectId,
+            projectPath,
+            newWorkspacePath,
           },
         });
       },

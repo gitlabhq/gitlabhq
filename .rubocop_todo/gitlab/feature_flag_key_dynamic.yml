@@ -1,0 +1,32 @@
+---
+# Cop supports --autocorrect.
+Gitlab/FeatureFlagKeyDynamic:
+  Details: grace period
+  Exclude:
+    - 'app/graphql/resolvers/app_config/gitlab_instance_feature_flags_resolver.rb'
+    - 'app/graphql/resolvers/feature_flag_resolver.rb'
+    - 'app/services/concerns/measurable.rb'
+    - 'app/services/service_desk_settings/update_service.rb'
+    - 'app/workers/concerns/worker_attributes.rb'
+    - 'app/workers/loose_foreign_keys/cleanup_worker.rb'
+    - 'ee/app/controllers/remote_development/workspaces_feature_flag_controller.rb'
+    - 'ee/app/graphql/resolvers/ai/user_available_features_resolver.rb'
+    - 'ee/app/graphql/resolvers/ai/user_code_suggestions_contexts_resolver.rb'
+    - 'ee/app/models/concerns/geo/verifiable_replicator.rb'
+    - 'ee/app/services/search/zoekt/info_service.rb'
+    - 'ee/lib/gitlab/ai_gateway.rb'
+    - 'ee/lib/gitlab/geo/replicator.rb'
+    - 'ee/lib/gitlab/llm/chain/concerns/use_ai_gateway_agent_prompt.rb'
+    - 'ee/lib/gitlab/llm/completions_factory.rb'
+    - 'ee/lib/tasks/gitlab/nav/variant_generator.rb'
+    - 'ee/spec/graphql/resolvers/ai/user_available_features_resolver_spec.rb'
+    - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
+    - 'lib/feature/gitaly.rb'
+    - 'lib/gitlab/gon_helper.rb'
+    - 'lib/gitlab/redis/multi_store.rb'
+    - 'lib/gitlab/sidekiq_middleware/skip_jobs.rb'
+    - 'lib/gitlab/sidekiq_sharding/router.rb'
+    - 'lib/web_ide/extension_marketplace.rb'
+    - 'spec/lib/feature_spec.rb'
+    - 'spec/requests/api/features_spec.rb'
+    - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'

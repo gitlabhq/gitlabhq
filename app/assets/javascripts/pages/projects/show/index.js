@@ -13,7 +13,8 @@ import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/i
 import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
+import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
+import apolloProvider from '~/repository/graphql';
 import { initHomePanel } from '../home_panel';
 
 // Project show page loads different overview content based on user preferences
@@ -70,7 +71,8 @@ const initCodeDropdown = () => {
 
   if (!codeDropdownEl) return false;
 
-  const { sshUrl, httpUrl, kerberosUrl } = codeDropdownEl.dataset;
+  const { sshUrl, httpUrl, kerberosUrl, newWorkspacePath, projectId, projectPath } =
+    codeDropdownEl.dataset;
 
   const CodeDropdownComponent =
     gon.features.directoryCodeDropdownUpdates && gon.features.blobRepositoryVueHeaderApp
@@ -79,12 +81,16 @@ const initCodeDropdown = () => {
 
   return new Vue({
     el: codeDropdownEl,
+    apolloProvider,
     render(createElement) {
       return createElement(CodeDropdownComponent, {
         props: {
           sshUrl,
           httpUrl,
           kerberosUrl,
+          projectId,
+          projectPath,
+          newWorkspacePath,
         },
       });
     },

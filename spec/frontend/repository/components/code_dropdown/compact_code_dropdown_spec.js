@@ -11,7 +11,7 @@ import {
   expectedDirectoryDownloadItems,
 } from 'jest/repository/components/code_dropdown/mock_data';
 
-describe('Compact Code Dropdown coomponent', () => {
+describe('Compact Code Dropdown component', () => {
   let wrapper;
   const sshUrl = 'ssh://foo.bar';
   const httpUrl = 'http://foo.bar';

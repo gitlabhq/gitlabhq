@@ -16,7 +16,6 @@ import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
-import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
@@ -36,7 +35,8 @@ export default {
     RepositoryOverflowMenu,
     BlobControls,
     CodeDropdown,
-    CompactCodeDropdown,
+    CompactCodeDropdown: () =>
+      import('ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue'),
     SourceCodeDownloadDropdown,
     CloneCodeDropdown,
     AddToTree,
@@ -333,6 +333,8 @@ export default {
               :gitpod-url="gitpodUrl"
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
+              :project-id="projectId"
+              :project-path="projectPath"
               :show-web-ide-button="showWebIdeButton"
               :show-gitpod-button="isGitpodEnabledForInstance"
             />

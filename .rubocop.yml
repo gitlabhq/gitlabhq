@@ -643,6 +643,9 @@ Cop/ActiveModelErrorsDirectManipulation:
 Gitlab/AvoidFeatureGet:
   Enabled: true
 
+Gitlab/FeatureFlagKeyDynamic:
+  Enabled: true
+
 RSpec/WebMockEnable:
   Enabled: true
   Include:

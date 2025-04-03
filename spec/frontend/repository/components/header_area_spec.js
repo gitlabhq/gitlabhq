@@ -4,7 +4,6 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import HeaderArea from '~/repository/components/header_area.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
-import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -14,6 +13,7 @@ import BlobControls from '~/repository/components/header_area/blob_controls.vue'
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
+import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 
 const defaultMockRoute = {
   params: {
@@ -35,9 +35,9 @@ describe('HeaderArea', () => {
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
   const findCodeDropdown = () => wrapper.findComponent(CodeDropdown);
-  const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
   const findSourceCodeDownloadDropdown = () => wrapper.findComponent(SourceCodeDownloadDropdown);
   const findCloneCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
+  const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
   const findAddToTreeDropdown = () => wrapper.findComponent(AddToTree);
   const findPageHeading = () => wrapper.findByTestId('repository-heading');
   const findFileIcon = () => wrapper.findComponent(FileIcon);
@@ -46,7 +46,11 @@ describe('HeaderArea', () => {
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-  const createComponent = (props = {}, route = { name: 'blobPathDecoded' }, provided = {}) => {
+  const createComponent = ({
+    props = {},
+    route = { name: 'blobPathDecoded' },
+    provided = {},
+  } = {}) => {
     return shallowMountExtended(HeaderArea, {
       provide: {
         ...headerAppInjected,
@@ -62,6 +66,7 @@ describe('HeaderArea', () => {
       },
       stubs: {
         RouterLink: RouterLinkStub,
+        CompactCodeDropdown,
       },
       mocks: {
         $route: {
@@ -94,7 +99,9 @@ describe('HeaderArea', () => {
 
   describe('when rendered for tree view', () => {
     beforeEach(() => {
-      wrapper = createComponent({}, { name: 'treePathDecoded', params: { path: 'project' } });
+      wrapper = createComponent({
+        route: { name: 'treePathDecoded', params: { path: 'project' } },
+      });
     });
 
     describe('PageHeading', () => {
@@ -168,7 +175,15 @@ describe('HeaderArea', () => {
 
   describe('when rendered for tree view and directory_code_dropdown_updates flag is true', () => {
     beforeEach(() => {
-      wrapper = createComponent({}, {}, { glFeatures: { directoryCodeDropdownUpdates: true } });
+      wrapper = createComponent({
+        route: { name: 'treePathDecoded' },
+        provided: {
+          glFeatures: {
+            directoryCodeDropdownUpdates: true,
+          },
+          newWorkspacePath: '/workspaces/new',
+        },
+      });
     });
 
     describe('Add to tree dropdown', () => {
@@ -199,7 +214,10 @@ describe('HeaderArea', () => {
       });
 
       it('renders RepositoryOverflowMenu component with correct props when on ref different than default branch', () => {
-        wrapper = createComponent({}, 'treePathDecoded', { comparePath: 'test/project/compare' });
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded' },
+          provided: { comparePath: 'test/project/compare' },
+        });
         expect(findRepositoryOverflowMenu().exists()).toBe(true);
         expect(findRepositoryOverflowMenu().props('comparePath')).toBe(
           headerAppInjected.comparePath,
@@ -210,7 +228,7 @@ describe('HeaderArea', () => {
 
   describe('when rendered for blob view', () => {
     it('renders BlobControls component with correct props', () => {
-      wrapper = createComponent({ refType: 'branch' });
+      wrapper = createComponent({ props: { refType: 'branch' } });
       expect(findBlobControls().exists()).toBe(true);
       expect(findBlobControls().props('projectPath')).toBe('test/project');
       expect(findBlobControls().props('refType')).toBe('');
@@ -235,7 +253,10 @@ describe('HeaderArea', () => {
 
   describe('when rendered for readme project overview', () => {
     beforeEach(() => {
-      wrapper = createComponent({}, { name: 'treePathDecoded' }, { isReadmeView: true });
+      wrapper = createComponent({
+        route: { name: 'treePathDecoded' },
+        provided: { isReadmeView: true },
+      });
     });
 
     it('does not render directory name and icon', () => {
@@ -260,7 +281,7 @@ describe('HeaderArea', () => {
 
   describe('when rendered for full project overview', () => {
     beforeEach(() => {
-      wrapper = createComponent({}, { name: 'projectRoot' });
+      wrapper = createComponent({ route: { name: 'projectRoot' } });
     });
 
     it('does not render directory name and icon', () => {

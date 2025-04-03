@@ -377,10 +377,10 @@ module QA
             # merge button, in such case we must retry loop otherwise find_element will raise ElementNotFound error
             next false unless has_element?('merge-button', wait: 1)
 
-            break true unless find_element('merge-button').disabled?
-
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
             next false if merge_blocked_by_new_changes?
+
+            break true unless find_element('merge-button').disabled?
 
             QA::Runtime::Logger.debug("MR widget text: \"#{mr_widget_text}\"")
 

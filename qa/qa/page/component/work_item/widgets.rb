@@ -126,7 +126,7 @@ module QA
           end
 
           def select_label(label)
-            select_labels([label])
+            select_labels([label.title])
           end
 
           def has_label?(label)
