@@ -98,12 +98,19 @@ To configure this extension:
        -- For the full list of default languages, see the 'auto_filetypes' array in
        -- https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/lua/gitlab/config/defaults.lua
        auto_filetypes = { 'ruby', 'javascript' }, -- Default is { 'ruby' }
+       ghost_text = {
+         enabled = false, -- ghost text is an experimental feature
+         toggle_enabled = "<C-h>",
+         accept_suggestion = "<C-l>",
+         clear_suggestions = "<C-k>",
+         stream = true,
+       },
      }
    })
    ```
 
 1. [Configure Omni Completion](#configure-omni-completion) to set up the key mapping to trigger Code Suggestions.
-1. Optional. [Configure `<Plug>` key mappings](_index.md#configure-plug-key-mappings).
+1. Optional. [Configure `<Plug>` key mappings](#configure-plug-key-mappings).
 1. Optional. Set up helptags using `:helptags ALL` for access to
    [`:help gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
 
@@ -113,7 +120,9 @@ To enable [Omni Completion](https://neovim.io/doc/user/insert.html#compl-omni-fi
 with Code Suggestions:
 
 1. Create a [personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) with the `api` scope.
-1. Install the Code Suggestions [language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp).
+1. Add the token to your shell as `GITLAB_TOKEN` environment variable.
+1. Install the Code Suggestions [language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) by running the `:GitLabCodeSuggestionsInstallLanguageServer` vim command.
+1. Start the Language Server by running the `:GitLabCodeSuggestionsStart` vim command. Optionally, [Configure `<Plug>` key mappings](#configure-plug-key-mappings) to toggle the language server.
 1. Optional. Consider configuring Omni Completion's dialog even for a single suggestion:
 
    ```lua
@@ -122,6 +131,16 @@ with Code Suggestions:
 
 When working in a supported file type, open the Omni Completion menu by pressing <kbd>Ctrl</kbd>+<kbd>x</kbd>
 then <kbd>Ctrl</kbd>+<kbd>o</kbd>.
+
+## Configure `<Plug>` key mappings
+
+For convenience, this plugin provides `<Plug>` key mappings. To use the `<Plug>(GitLab...)` key mapping,
+you must include your own key mapping that references it:
+
+```lua
+-- Toggle Code Suggestions on/off with CTRL-g in normal mode:
+vim.keymap.set('n', '<C-g>', '<Plug>(GitLabToggleCodeSuggestions)')
+```
 
 ## Uninstall the extension
 

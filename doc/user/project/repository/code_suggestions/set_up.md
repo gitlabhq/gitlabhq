@@ -107,7 +107,7 @@ Code Suggestions provides a LSP (Language Server Protocol) server, to support th
 | Mode     | Key mappings                          | Type      | Description |
 |----------|---------------------------------------|-----------|-------------|
 | `INSERT` | <kbd>Control</kbd>+<kbd>x</kbd>, <kbd>Control</kbd>+<kbd>o</kbd> | Built-in | Requests completions from GitLab Duo Code Suggestions through the language server. |
-| `NORMAL` | `<Plug>(GitLabToggleCodeSuggestions)` | `<Plug>`  | Toggles Code Suggestions on or off for the current buffer. Requires [configuration](../../../../editor_extensions/neovim/_index.md#configure-plug-key-mappings). |
+| `NORMAL` | `<Plug>(GitLabToggleCodeSuggestions)` | `<Plug>`  | Toggles Code Suggestions on or off for the current buffer. Requires [configuration](../../../../editor_extensions/neovim/setup.md#configure-plug-key-mappings). |
 
 ## Verify that Code Suggestions is on
 

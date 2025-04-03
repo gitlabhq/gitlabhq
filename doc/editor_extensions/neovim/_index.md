@@ -11,16 +11,6 @@ that integrates GitLab with Neovim.
 
 [Install and configure the extension](setup.md).
 
-## Configure `<Plug>` key mappings
-
-For convenience, this plugin provides `<Plug>` key mappings. To use the `<Plug>(GitLab...)` key mapping,
-you must include your own key mapping that references it:
-
-```lua
--- Toggle Code Suggestions on/off with CTRL-g in normal mode:
-vim.keymap.set('n', '<C-g>', '<Plug>(GitLabToggleCodeSuggestions)')
-```
-
 ## Disable `gitlab.statusline`
 
 By default, this plugin enables `gitlab.statusline`, which uses the built-in `statusline`

@@ -494,7 +494,7 @@ database to help you troubleshoot issues. Where you run this command depends on 
 
 Modify the command as needed:
 
-- **Default path** - To run the command with the default folder path (`tmp/sos`), run `gitlab-rake gitlab:db:sos`.
+- **Default path** - To run the command with the default folder path (`tmp/sos.zip`), run `gitlab-rake gitlab:db:sos`.
 - **Custom path** - To change the folder path, run `gitlab-rake gitlab:db:sos["custom/path/to/folder"]`.
 - **Zsh users** - If you have not modified your Zsh configuration, you must add quotation marks
   around the entire command, like this: `gitlab-rake "gitlab:db:sos[custom/path/to/folder]"`

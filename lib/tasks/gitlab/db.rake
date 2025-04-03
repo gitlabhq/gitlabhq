@@ -21,7 +21,7 @@ namespace :gitlab do
 
     desc 'Gitlab | DB | Troubleshoot issues with the database'
     task :sos, [:output_path] => :environment do |_, args|
-      output_path = args[:output_path] || "tmp/sos"
+      output_path = args[:output_path] || "tmp/sos.zip"
       Gitlab::AppLogger.info("Starting DB SOS and saving to: #{output_path}")
       Gitlab::Database::Sos.run(output_path)
       Gitlab::AppLogger.info("Finished running DB SOS")

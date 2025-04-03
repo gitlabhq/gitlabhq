@@ -39,7 +39,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     context 'when an output path is not provided' do
       it 'executes Gitlab::Database::Sos.run with the default output path' do
-        expect(Gitlab::Database::Sos).to receive(:run).with("tmp/sos")
+        expect(Gitlab::Database::Sos).to receive(:run).with("tmp/sos.zip")
         expect { Rake::Task['gitlab:db:sos'].invoke }.not_to raise_error
       end
     end

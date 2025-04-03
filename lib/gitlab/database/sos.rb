@@ -8,6 +8,7 @@ module Gitlab
       SAMPLING_INTERVAL = 3.seconds
 
       SINGLE_TASKS = [
+        Sos::PlatformConfigInfo,
         Sos::ArSchemaDump,
         Sos::DbStatsActivity
       ].freeze

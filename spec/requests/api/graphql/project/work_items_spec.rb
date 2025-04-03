@@ -510,7 +510,9 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         post_graphql(query, current_user: current_user)
       end
 
-      [item1, item2].each do |item|
+      item3 = create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1])
+
+      [item1, item2, item3].each do |item|
         create(:work_item_link, source: item, target: related_items[1], link_type: 'relates_to')
         create(:work_item_link, source: item, target: related_items[2], link_type: 'relates_to')
       end
