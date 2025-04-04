@@ -7,6 +7,10 @@ ai_conversation_messages:
   - table: ai_conversation_threads
     column: thread_id
     on_delete: async_delete
+analyzer_namespace_statuses:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 analyzer_project_statuses:
   - table: projects
     column: project_id

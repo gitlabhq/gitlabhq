@@ -268,7 +268,7 @@ RSpec.describe 'Database schema',
     {
       approval_merge_request_rules: 17,
       ci_builds: 27,
-      ci_pipelines: 25, # TODO: will change it back to 24 when duplicated index is removed
+      ci_pipelines: 24,
       ci_runners: 16,
       ci_runners_archived: 17,
       deployments: 18,
@@ -281,7 +281,7 @@ RSpec.describe 'Database schema',
       merge_requests: 33,
       namespaces: 26,
       p_ci_builds: 27,
-      p_ci_pipelines: 25, # TODO: will change it back to 24 when duplicated index is removed
+      p_ci_pipelines: 24,
       packages_package_files: 16,
       packages_packages: 27,
       project_type_ci_runners: 17,

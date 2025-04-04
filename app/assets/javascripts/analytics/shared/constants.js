@@ -83,6 +83,7 @@ export const UNITS = {
   DAYS: 'DAYS',
   PER_DAY: 'PER_DAY',
   PERCENT: 'PERCENT',
+  TIME_INTERVAL: 'TIME_INTERVAL',
 };
 
 export const NUMBER_OF_DAYS_SELECTED = (numDays) => {

@@ -25,12 +25,13 @@ including:
 - Severity
 
 For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
-catalog you can also retrieve the following by using the GraphQL API:
+catalog, these details also include:
 
-- EPSS score
-- KEV status
+- CVSS score
+- [EPSS score](risk_assessment_data.md#epss)
+- [KEV status](risk_assessment_data.md#kev)
 
-For details on how to retrieve this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
+For further details on this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.

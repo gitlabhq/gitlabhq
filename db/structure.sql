@@ -8381,6 +8381,26 @@ CREATE SEQUENCE analytics_usage_trends_measurements_id_seq
 
 ALTER SEQUENCE analytics_usage_trends_measurements_id_seq OWNED BY analytics_usage_trends_measurements.id;
 
+CREATE TABLE analyzer_namespace_statuses (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    analyzer_type smallint NOT NULL,
+    success bigint DEFAULT 0 NOT NULL,
+    failure bigint DEFAULT 0 NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+);
+
+CREATE SEQUENCE analyzer_namespace_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE analyzer_namespace_statuses_id_seq OWNED BY analyzer_namespace_statuses.id;
+
 CREATE TABLE analyzer_project_statuses (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -26512,6 +26532,8 @@ ALTER TABLE ONLY analytics_devops_adoption_snapshots ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY analytics_usage_trends_measurements ALTER COLUMN id SET DEFAULT nextval('analytics_usage_trends_measurements_id_seq'::regclass);
 
+ALTER TABLE ONLY analyzer_namespace_statuses ALTER COLUMN id SET DEFAULT nextval('analyzer_namespace_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY analyzer_project_statuses ALTER COLUMN id SET DEFAULT nextval('analyzer_project_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY appearances ALTER COLUMN id SET DEFAULT nextval('appearances_id_seq'::regclass);
@@ -28538,6 +28560,9 @@ ALTER TABLE ONLY analytics_language_trend_repository_languages
 
 ALTER TABLE ONLY analytics_usage_trends_measurements
     ADD CONSTRAINT analytics_usage_trends_measurements_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY analyzer_namespace_statuses
+    ADD CONSTRAINT analyzer_namespace_statuses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY analyzer_project_statuses
     ADD CONSTRAINT analyzer_project_statuses_pkey PRIMARY KEY (id);
@@ -33258,10 +33283,6 @@ CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports U
 
 CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
 
-CREATE INDEX p_ci_pipelines_trigger_id_idx ON ONLY p_ci_pipelines USING btree (trigger_id);
-
-CREATE INDEX index_ac3541b851 ON ci_pipelines USING btree (trigger_id);
-
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));
 
 CREATE UNIQUE INDEX index_active_context_connections_single_active ON ai_active_context_connections USING btree (active) WHERE (active = true);
@@ -33425,6 +33446,10 @@ CREATE INDEX index_analytics_cycle_analytics_value_stream_settings_on_namesp ON 
 CREATE UNIQUE INDEX index_analytics_dashboards_pointers_on_namespace_id ON analytics_dashboards_pointers USING btree (namespace_id);
 
 CREATE INDEX index_analytics_dashboards_pointers_on_target_project_id ON analytics_dashboards_pointers USING btree (target_project_id);
+
+CREATE UNIQUE INDEX index_analyzer_namespace_statuses_status ON analyzer_namespace_statuses USING btree (namespace_id, analyzer_type);
+
+CREATE INDEX index_analyzer_namespace_statuses_traversal_ids ON analyzer_namespace_statuses USING btree (traversal_ids);
 
 CREATE UNIQUE INDEX index_analyzer_project_statuses_status ON analyzer_project_statuses USING btree (project_id, analyzer_type);
 
@@ -40323,8 +40348,6 @@ ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928
 ALTER INDEX tmp_p_ci_builds_trigger_request_id_idx ATTACH PARTITION index_437b1804fb;
 
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
-
-ALTER INDEX p_ci_pipelines_trigger_id_idx ATTACH PARTITION index_ac3541b851;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 
