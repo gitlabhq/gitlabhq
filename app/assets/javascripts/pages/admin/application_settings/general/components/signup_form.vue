@@ -7,11 +7,11 @@ import {
   GlFormRadioGroup,
   GlSprintf,
   GlLink,
-  GlModal,
 } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
-import { __, n__, s__, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import BeforeSubmitApproveUsersModal from './before_submit_approve_users_modal.vue';
 import SignupCheckbox from './signup_checkbox.vue';
 
 const DENYLIST_TYPE_RAW = 'raw';
@@ -23,6 +23,7 @@ export default {
   DENYLIST_TYPE_RAW,
   DENYLIST_TYPE_FILE,
   components: {
+    BeforeSubmitApproveUsersModal,
     GlButton,
     GlFormGroup,
     GlFormInput,
@@ -31,7 +32,6 @@ export default {
     GlSprintf,
     GlLink,
     SignupCheckbox,
-    GlModal,
     SeatControlSection: () =>
       import(
         'ee_component/pages/admin/application_settings/general/components/seat_control_section.vue'
@@ -42,6 +42,14 @@ export default {
       ),
   },
   mixins: [glFeatureFlagMixin()],
+  provide() {
+    return {
+      beforeSubmitHook: this.addBeforeSubmitHook,
+      beforeSubmitHookContexts: {
+        [this.approveUsersModalId]: { shouldPreventSubmit: () => this.shouldShowUserApprovalModal },
+      },
+    };
+  },
   inject: [
     'host',
     'settingsPath',
@@ -64,7 +72,7 @@ export default {
   ],
   data() {
     return {
-      showModal: false,
+      beforeSubmitHooks: [],
       canUsersBeAccidentallyApproved: false,
       form: {
         signupEnabled: this.signupEnabled,
@@ -89,10 +97,12 @@ export default {
     };
   },
   computed: {
+    approveUsersModalId() {
+      return 'before-submit-approve-users-modal';
+    },
     shouldShowUserApprovalModal() {
       if (!this.hasPendingUsers) return false;
       if (this.hasSignupApprovalBeenToggledOff) return true;
-
       return this.canUsersBeAccidentallyApproved;
     },
     hasPendingUsers() {
@@ -119,56 +129,14 @@ export default {
         },
       );
     },
-    approveUsersModal() {
-      const { pendingUserCount } = this;
-
-      return {
-        id: 'signup-settings-modal',
-        text: n__(
-          'ApplicationSettings|By changing this setting, you can also automatically approve %d user who is pending approval.',
-          'ApplicationSettings|By changing this setting, you can also automatically approve %d users who are pending approval.',
-          pendingUserCount,
-        ),
-        actionPrimary: {
-          text: n__(
-            'ApplicationSettings|Proceed and approve %d user',
-            'ApplicationSettings|Proceed and approve %d users',
-            pendingUserCount,
-          ),
-          attributes: {
-            variant: 'confirm',
-          },
-        },
-        actionSecondary: {
-          text: s__('ApplicationSettings|Proceed without auto-approval'),
-          attributes: {
-            category: 'secondary',
-            variant: 'confirm',
-          },
-        },
-        actionCancel: {
-          text: __('Cancel'),
-        },
-      };
-    },
-  },
-  watch: {
-    showModal(value) {
-      if (value === true) {
-        this.$refs[this.approveUsersModal.id].show();
-      } else {
-        this.$refs[this.approveUsersModal.id].hide();
-      }
-    },
   },
   methods: {
-    submitButtonHandler() {
-      if (this.shouldShowUserApprovalModal) {
-        this.showModal = true;
-
-        return;
-      }
-
+    addBeforeSubmitHook(hook) {
+      this.beforeSubmitHooks.push(hook);
+    },
+    handleFormSubmit() {
+      const shouldPreventSubmit = this.beforeSubmitHooks.some((hook) => hook());
+      if (shouldPreventSubmit) return;
       this.submitForm();
     },
     setFormValue({ name, value }) {
@@ -192,9 +160,6 @@ export default {
     submitFormWithoutAutoApproval() {
       this.form.shouldProceedWithAutoApproval = false;
       this.submitForm();
-    },
-    modalHideHandler() {
-      this.showModal = false;
     },
   },
   i18n: {
@@ -286,7 +251,6 @@ export default {
         >
           <gl-form-radio value="off">
             {{ $options.i18n.emailConfirmationSettingsOffLabel }}
-
             <template #help> {{ $options.i18n.emailConfirmationSettingsOffHelpText }} </template>
           </gl-form-radio>
 
@@ -298,7 +262,6 @@ export default {
 
           <gl-form-radio value="hard">
             {{ $options.i18n.emailConfirmationSettingsHardLabel }}
-
             <template #help> {{ $options.i18n.emailConfirmationSettingsHardHelpText }} </template>
           </gl-form-radio>
         </gl-form-radio-group>
@@ -466,23 +429,14 @@ export default {
     <gl-button
       data-testid="save-changes-button"
       variant="confirm"
-      @click.prevent="submitButtonHandler"
+      @click.prevent="handleFormSubmit"
+      >{{ $options.i18n.buttonText }}</gl-button
     >
-      {{ $options.i18n.buttonText }}
-    </gl-button>
 
-    <gl-modal
-      :ref="approveUsersModal.id"
-      :modal-id="approveUsersModal.id"
-      :action-cancel="approveUsersModal.actionCancel"
-      :action-primary="approveUsersModal.actionPrimary"
-      :action-secondary="approveUsersModal.actionSecondary"
-      :title="s__('ApplicationSettings|Change setting and approve pending users?')"
+    <before-submit-approve-users-modal
+      :id="approveUsersModalId"
       @primary="submitFormWithAutoApproval"
       @secondary="submitFormWithoutAutoApproval"
-      @hide="modalHideHandler"
-    >
-      {{ approveUsersModal.text }}
-    </gl-modal>
+    />
   </form>
 </template>

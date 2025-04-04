@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink, GlButtonGroup, GlButton, GlSprintf } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import {
@@ -12,6 +11,7 @@ import {
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 
 export default {
@@ -35,11 +35,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', [
+    ...mapState(useLegacyDiffs, [
+      'commit',
+      'startVersion',
+      'latestVersionPath',
       'diffCompareDropdownTargetVersions',
       'diffCompareDropdownSourceVersions',
     ]),
-    ...mapState('diffs', ['commit', 'startVersion', 'latestVersionPath']),
     hasSourceVersions() {
       return this.diffCompareDropdownSourceVersions.length > 0;
     },
@@ -92,7 +94,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['moveToNeighboringCommit']),
+    ...mapActions(useLegacyDiffs, ['moveToNeighboringCommit']),
   },
 };
 </script>

@@ -281,7 +281,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
 | Attribute           | Type             | Required   | Description |
 | ------------------- | ---------------- | ---------- | ------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`        | integer          | yes        | The ID of an snippet. |
+| `snippet_id`        | integer          | yes        | The ID of a snippet. |
 
 ```json
 [
@@ -384,7 +384,7 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `discussion_id` | integer        | yes      | The ID of a discussion item. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 
 ```shell
 curl --request POST \
@@ -407,7 +407,7 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `body`          | string         | yes      | The content of a discussion. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 ```shell
@@ -432,7 +432,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a thread. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `note_id`       | integer        | yes      | The ID of a thread note. |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 ```shell
@@ -457,7 +457,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a thread. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `note_id`       | integer        | yes      | The ID of a thread note. |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 
 ```shell
 curl --request PUT \
@@ -480,7 +480,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `note_id`       | integer        | yes      | The ID of a discussion note. |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 
 ```shell
 curl --request DELETE \
@@ -976,7 +976,7 @@ curl --request POST \
   changes in the file changed the line number. For the discussion about a fix, see
   [issue 32516](https://gitlab.com/gitlab-org/gitlab/-/issues/325161).
 - If you specify incorrect `base`, `head`, `start`, or `SHA` parameters, you might run
-  into the bug described in [issue #296829)](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
+  into the bug described in [issue #296829](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
 
 To create a new thread:
 

@@ -5,6 +5,7 @@ import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import StickyHeader from '~/merge_requests/components/sticky_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 
 Vue.use(Vuex);
 
@@ -70,6 +71,16 @@ describe('Merge requests sticky header component', () => {
       });
 
       expect(findImportedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('submit review', () => {
+    it('renders submit review button', () => {
+      createComponent({
+        provide: { glFeatures: { improvedReviewExperience: true } },
+      });
+
+      expect(wrapper.findComponent(SubmitReviewButton).exists()).toBe(true);
     });
   });
 });

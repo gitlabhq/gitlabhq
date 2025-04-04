@@ -1,0 +1,37 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "./merge_request.fragment.graphql"
+
+query requestingReviewAuthorOrAssignee(
+  $state: MergeRequestState = opened
+  $reviewState: MergeRequestReviewState
+  $reviewStates: [MergeRequestReviewState!]
+  $reviewerWildcardId: ReviewerWildcardId
+  $mergedAfter: Time
+  $not: MergeRequestsResolverNegatedParams
+  $perPage: Int!
+  $afterCursor: String
+  $sort: MergeRequestSort = UPDATED_DESC
+) {
+  currentUser {
+    id
+    mergeRequests: authoredMergeRequests(
+      includeAssigned: true
+      state: $state
+      reviewState: $reviewState
+      reviewStates: $reviewStates
+      reviewerWildcardId: $reviewerWildcardId
+      mergedAfter: $mergedAfter
+      not: $not
+      first: $perPage
+      after: $afterCursor
+      sort: $sort
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        ...MergeRequestDashboardFragment
+      }
+    }
+  }
+}

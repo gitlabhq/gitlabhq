@@ -977,6 +977,6 @@ Example response:
 
 {{< alert type="note" >}}
 
-The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+The `health_status` parameter can only be in a "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
 
 {{< /alert >}}

@@ -24,9 +24,6 @@ export default {
             userId: this.currentUserId,
           };
         },
-        skip() {
-          return !this.realtimeEnabled;
-        },
         result({ data: { userMergeRequestUpdated: mergeRequest } }) {
           if (!mergeRequest) return;
 
@@ -52,7 +49,7 @@ export default {
     CollapsibleSection,
     MergeRequest,
   },
-  inject: ['mergeRequestsSearchDashboardPath', 'realtimeEnabled'],
+  inject: ['mergeRequestsSearchDashboardPath'],
   props: {
     tabs: {
       type: Array,

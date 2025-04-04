@@ -132,7 +132,10 @@ By default, GitLab uses `gl` as the instance prefix.
 
 {{< alert type="note" >}}
 
-Custom token prefixes apply only to feed tokens.
+Custom token prefixes apply only to the following tokens:
+
+- [Feed tokens](../../security/tokens/_index.md#feed-token)
+- [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 
 {{< /alert >}}
 

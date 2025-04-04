@@ -1,9 +1,9 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 export default {
   components: {
@@ -38,7 +38,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleFileDiscussion']),
+    ...mapActions(useLegacyDiffs, ['toggleFileDiscussion']),
     isExpanded(discussion) {
       return this.shouldCollapseDiscussions ? discussion.expandedOnDiff : true;
     },

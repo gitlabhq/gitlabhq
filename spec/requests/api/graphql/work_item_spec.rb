@@ -1385,6 +1385,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               ... on WorkItemWidgetDevelopment {
                 willAutoCloseByMergeRequest
                 closingMergeRequests {
+                  count
                   nodes {
                     id
                     fromMrDescription
@@ -1429,6 +1430,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'type' => 'DEVELOPMENT',
                   'willAutoCloseByMergeRequest' => true,
                   'closingMergeRequests' => {
+                    'count' => 2,
                     'nodes' => containing_exactly(
                       hash_including(
                         'id' => mr_closing_issue1.to_gid.to_s,

@@ -24,8 +24,9 @@ import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
+import { badgeState } from '~/merge_requests/badge_state';
 import titleSubscription from '../queries/title.subscription.graphql';
-import { badgeState } from './merge_request_header.vue';
 
 export default {
   TYPE_MERGE_REQUEST,
@@ -53,6 +54,7 @@ export default {
     },
   },
   components: {
+    SubmitReviewButton,
     GlIntersectionObserver,
     GlLink,
     GlSprintf,
@@ -257,6 +259,7 @@ export default {
           </ul>
           <div class="gl-ml-auto gl-hidden gl-items-center lg:gl-flex">
             <discussion-counter :blocks-merge="blocksMerge" hide-options />
+            <submit-review-button v-if="glFeatures.improvedReviewExperience" class="gl-mr-3" />
             <div v-if="isSignedIn" :class="{ 'gl-flex gl-gap-3': isNotificationsTodosButtons }">
               <todo-widget
                 :issuable-id="issuableId"

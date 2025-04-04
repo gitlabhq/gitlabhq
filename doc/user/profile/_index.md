@@ -32,7 +32,7 @@ To access your user settings:
 
 ## Generate or change your Support PIN
 
-GitLab Support may ask for an personal identification number (PIN) to validate your identity.
+GitLab Support may ask for a personal identification number (PIN) to validate your identity.
 The PIN expires seven days after creation.
 
 To generate a new Support PIN:

@@ -1,7 +1,8 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
@@ -14,6 +15,7 @@ import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_prev
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import eventHub from '~/notes/event_hub';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 import { getDiffMode } from '../store/utils';
@@ -62,9 +64,13 @@ export default {
     },
   },
   computed: {
-    ...mapState('diffs', ['projectPath']),
-    ...mapGetters('diffs', ['isInlineView', 'getCommentFormForDiffFile', 'diffLines']),
-    ...mapGetters(['getNoteableData', 'noteableType', 'getUserData']),
+    ...mapState(useLegacyDiffs, [
+      'projectPath',
+      'isInlineView',
+      'getCommentFormForDiffFile',
+      'diffLines',
+    ]),
+    ...mapVuexGetters(['getNoteableData', 'noteableType', 'getUserData']),
     diffMode() {
       return getDiffMode(this.diffFile);
     },
@@ -132,7 +138,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions('diffs', ['saveDiffDiscussion', 'closeDiffFileCommentForm']),
+    ...mapActions(useLegacyDiffs, ['saveDiffDiscussion', 'closeDiffFileCommentForm']),
     handleSaveNote(note, parentElement, errorCallback) {
       this.saveDiffDiscussion({
         note,

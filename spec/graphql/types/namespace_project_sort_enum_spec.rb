@@ -12,6 +12,8 @@ RSpec.describe GitlabSchema.types['NamespaceProjectSort'], feature_category: :gr
         ACTIVITY_DESC
         STORAGE_SIZE_ASC
         STORAGE_SIZE_DESC
+        PATH_ASC
+        PATH_DESC
         REPOSITORY_SIZE_ASC
         REPOSITORY_SIZE_DESC
         SNIPPETS_SIZE_ASC

@@ -12,7 +12,7 @@ class that we use for all of our database migrations. This subclass is `Gitlab::
 includes all the helpers that developers can use. You can see many use cases of helpers built
 in-house in [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md).
 
-Sometimes, we need to add or modify existing an helper's functionality without having a reverse effect on all the
+Sometimes, we need to add or modify existing a helper's functionality without having a reverse effect on all the
 previous database migrations. That's why we introduced versioning to `Gitlab::Database::Migration`. Now,
 each database migration can inherit the latest version of this class at the time of the writing the database migration.
 After we add a new feature, those old database migrations are no longer affected. We usually

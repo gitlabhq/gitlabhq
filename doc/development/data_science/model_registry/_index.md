@@ -60,7 +60,7 @@ Some terms on MLflow are named differently in GitLab:
 
 ### Setting up for testing
 
-To test the an script with MLflow with GitLab as the backend:
+To test the script with MLflow with GitLab as the backend:
 
 1. Install MLflow:
 

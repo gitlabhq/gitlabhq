@@ -779,7 +779,7 @@ To create a new Git tag to rebuild the analyzer, follow these steps:
 
 This should be done on the **18th of each month**. Though, this is a soft deadline and there is no harm in doing it within a few days after.
 
-First, create an new issue for a release with a script from this repo: `./scripts/release_issue.rb MAJOR.MINOR`.
+First, create a new issue for a release with a script from this repo: `./scripts/release_issue.rb MAJOR.MINOR`.
 This issue will guide you through the whole release process. In general, you have to perform the following tasks:
 
 - Check the list of supported technologies in GitLab documentation.

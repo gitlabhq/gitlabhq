@@ -99,12 +99,12 @@ module API
           source = find_source(source_type, params[:id])
 
           access_requester = source.requesters.find_by!(user_id: params[:user_id])
-          member = ::Members::ApproveAccessRequestService
+          result = ::Members::ApproveAccessRequestService
             .new(current_user, declared_params)
             .execute(access_requester)
 
           status :created
-          present member, with: Entities::Member
+          present result[:member], with: Entities::Member
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

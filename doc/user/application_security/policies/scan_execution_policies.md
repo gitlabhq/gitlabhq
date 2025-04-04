@@ -378,7 +378,7 @@ Some scanners behave differently in a `scan` action than they do in a regular CI
 scan.
 
 - Static Application Security Testing (SAST): Runs only if the repository contains
-  [files supported by SAST)](../sast/_index.md#supported-languages-and-frameworks).
+  [files supported by SAST](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
   - Only rules with the default ruleset are supported.
     [Replacing](../secret_detection/pipeline/configure.md#replace-the-default-ruleset) or [extending](../secret_detection/pipeline/configure.md#extend-the-default-ruleset)

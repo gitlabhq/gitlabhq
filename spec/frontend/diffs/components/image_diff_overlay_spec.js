@@ -1,26 +1,31 @@
-import { GlIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
-import { createStore } from '~/mr_notes/stores';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
+import store from '~/mr_notes/stores';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
+
+Vue.use(PiniaVuePlugin);
 
 describe('Diffs image diff overlay component', () => {
   const dimensions = {
     width: 99.9,
     height: 199.5,
   };
+
   let wrapper;
-  let dispatch;
-  const getAllImageBadges = () => wrapper.findAll('.js-image-badge');
+  let pinia;
 
-  function createComponent(props = {}, extendStore = () => {}) {
-    const store = createStore();
+  const getAllImageBadges = () => wrapper.findAllComponents(DesignNotePin);
 
-    extendStore(store);
-    dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
-
-    wrapper = mount(ImageDiffOverlay, {
+  function createComponent(props = {}) {
+    wrapper = shallowMount(ImageDiffOverlay, {
       store,
+      pinia,
       parentComponent: {
         data() {
           return dimensions;
@@ -36,6 +41,12 @@ describe('Diffs image diff overlay component', () => {
     });
   }
 
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    jest.spyOn(store, 'dispatch').mockResolvedValue();
+  });
+
   it('renders comment badges', () => {
     createComponent();
 
@@ -46,22 +57,22 @@ describe('Diffs image diff overlay component', () => {
     createComponent();
     const imageBadges = getAllImageBadges();
 
-    expect(imageBadges.at(0).text().trim()).toBe('1');
-    expect(imageBadges.at(1).text().trim()).toBe('2');
+    expect(imageBadges.at(0).props('label')).toBe(1);
+    expect(imageBadges.at(1).props('label')).toBe(2);
   });
 
-  it('renders icon when showCommentIcon is true', () => {
+  it('sets empty label when showCommentIcon is true', () => {
     createComponent({ showCommentIcon: true });
 
-    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
+    expect(getAllImageBadges().at(0).props('label')).toBe(null);
   });
 
   it('sets badge comment positions', () => {
     createComponent();
     const imageBadges = getAllImageBadges();
 
-    expect(imageBadges.at(0).attributes('style')).toBe('left: 10%; top: 5%;');
-    expect(imageBadges.at(1).attributes('style')).toBe('left: 5%; top: 2.5%;');
+    expect(imageBadges.at(0).props('position')).toStrictEqual({ left: '10%', top: '5%' });
+    expect(imageBadges.at(1).props('position')).toStrictEqual({ left: '5%', top: '2.5%' });
   });
 
   it('renders single badge for discussion object', () => {
@@ -78,60 +89,55 @@ describe('Diffs image diff overlay component', () => {
     createComponent({ canComment: true });
     wrapper.find('.js-add-image-diff-note-button').trigger('click', { offsetX: 1.2, offsetY: 3.8 });
 
-    expect(dispatch).toHaveBeenCalledWith('diffs/openDiffFileCommentForm', {
+    expect(useLegacyDiffs().openDiffFileCommentForm).toHaveBeenCalledWith({
       fileHash: 'ABC',
       x: 1,
       y: 4,
       width: 100,
       height: 200,
-      xPercent: expect.any(Number),
-      yPercent: expect.any(Number),
+      xPercent: expect.closeTo(0.6),
+      yPercent: expect.closeTo(1.9),
     });
-
-    const { xPercent, yPercent } = dispatch.mock.calls[0][1];
-    expect(xPercent).toBeCloseTo(0.6);
-    expect(yPercent).toBeCloseTo(1.9);
   });
 
   describe('toggle discussion', () => {
-    const getImageBadge = () => wrapper.find('.js-image-badge');
-
     it('disables buttons when shouldToggleDiscussion is false', () => {
       createComponent({ shouldToggleDiscussion: false });
 
-      expect(getImageBadge().attributes('disabled')).toEqual('disabled');
+      expect(getAllImageBadges().at(0).attributes('disabled')).toBe('true');
     });
 
     it('dispatches toggleDiscussion when clicking image badge', () => {
       createComponent();
-      getImageBadge().trigger('click');
+      getAllImageBadges().at(0).vm.$emit('click');
 
-      expect(dispatch).toHaveBeenCalledWith('toggleDiscussion', {
+      expect(store.dispatch).toHaveBeenCalledWith('toggleDiscussion', {
         discussionId: '1',
       });
     });
   });
 
   describe('comment form', () => {
-    const getCommentIndicator = () => wrapper.find('.comment-indicator');
     beforeEach(() => {
-      createComponent({ canComment: true }, (store) => {
-        store.state.diffs.commentForms.push({
-          fileHash: 'ABC',
-          x: 20,
-          y: 10,
-          xPercent: 10,
-          yPercent: 10,
-        });
+      useLegacyDiffs().commentForms.push({
+        fileHash: 'ABC',
+        x: 20,
+        y: 10,
+        xPercent: 10,
+        yPercent: 10,
       });
+      createComponent({ canComment: true });
     });
 
     it('renders comment form badge', () => {
-      expect(getCommentIndicator().exists()).toBe(true);
+      expect(getAllImageBadges().at(-1).exists()).toBe(true);
     });
 
     it('sets comment form badge position', () => {
-      expect(getCommentIndicator().attributes('style')).toBe('left: 10%; top: 10%;');
+      expect(getAllImageBadges().at(-1).props('position')).toStrictEqual({
+        left: '10%',
+        top: '10%',
+      });
     });
   });
 });

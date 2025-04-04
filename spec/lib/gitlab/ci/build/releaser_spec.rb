@@ -206,14 +206,14 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       links = { links: [{ name: 'asset1', url: 'https://example.com/assets/1', link_type: 'other', filepath: '/pretty/asset/1' }] }
 
       where(:node_name, :node_value, :result) do
-        :name        | 'Release $CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "" --name "Release $CI_COMMIT_SHA"'
-        :description | 'Release-cli $EXTRA_DESCRIPTION' | 'glab -R $CI_PROJECT_PATH release create "" --experimental-notes-text-or-file "Release-cli $EXTRA_DESCRIPTION"'
-        :tag_name    | 'release-$CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA"'
-        :tag_message | 'Annotated tag message'          | 'glab -R $CI_PROJECT_PATH release create "" --tag-message "Annotated tag message"'
-        :ref         | '$CI_COMMIT_SHA'                 | 'glab -R $CI_PROJECT_PATH release create "" --ref "$CI_COMMIT_SHA"'
-        :milestones  | %w[m1 m2 m3]                     | 'glab -R $CI_PROJECT_PATH release create "" --milestone "m1,m2,m3"'
-        :released_at | '2020-07-15T08:00:00Z'           | 'glab -R $CI_PROJECT_PATH release create "" --released-at "2020-07-15T08:00:00Z"'
-        :assets      | links                            | "glab -R $CI_PROJECT_PATH release create \"\" --assets-links #{links[:links].to_json.to_json}"
+        :name        | 'Release $CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --name "Release $CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'
+        :description | 'Release-cli $EXTRA_DESCRIPTION' | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --experimental-notes-text-or-file "Release-cli $EXTRA_DESCRIPTION" --ref "$CI_COMMIT_SHA"'
+        :tag_name    | 'release-$CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'
+        :tag_message | 'Annotated tag message'          | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --tag-message "Annotated tag message"'
+        :ref         | '$CI_COMMIT_SHA'                 | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA"'
+        :milestones  | %w[m1 m2 m3]                     | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --milestone "m1,m2,m3" --ref "$CI_COMMIT_SHA"'
+        :released_at | '2020-07-15T08:00:00Z'           | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z"'
+        :assets      | links                            | "glab -R $CI_PROJECT_PATH release create \"$CI_COMMIT_TAG\" --assets-links #{links[:links].to_json.to_json} --ref \"$CI_COMMIT_SHA\""
       end
 
       with_them do

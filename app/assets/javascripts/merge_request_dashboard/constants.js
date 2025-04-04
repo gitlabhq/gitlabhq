@@ -4,6 +4,8 @@ import assigneeQuery from './queries/assignee.query.graphql';
 import assigneeCountQuery from './queries/assignee_count.query.graphql';
 import assigneeOrReviewerQuery from './queries/assignee_or_reviewer.query.graphql';
 import assigneeOrReviewerCountQuery from './queries/assignee_or_reviewer_count.query.graphql';
+import authorOrAssigneeQuery from './queries/author_or_assignee.query.graphql';
+import authorOrAssigneeCountQuery from './queries/author_or_assignee_count.query.graphql';
 
 export const QUERIES = {
   reviewRequestedMergeRequests: { dataQuery: reviewerQuery, countQuery: reviewerCountQuery },
@@ -11,5 +13,9 @@ export const QUERIES = {
   assigneeOrReviewerMergeRequests: {
     dataQuery: assigneeOrReviewerQuery,
     countQuery: assigneeOrReviewerCountQuery,
+  },
+  authorOrAssigneeMergeRequests: {
+    dataQuery: authorOrAssigneeQuery,
+    countQuery: authorOrAssigneeCountQuery,
   },
 };

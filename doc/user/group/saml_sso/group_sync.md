@@ -281,13 +281,10 @@ To link the SAML groups:
 1. Select **Save**.
 1. Repeat to add additional group links if required.
 
-![SAML Group Links](img/saml_group_links_v17_8.png)
-
 ## Manage GitLab Duo seat assignment
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Offering: GitLab.com
 
 {{< /details >}}
@@ -344,9 +341,7 @@ To avoid this issue, you can use the Azure AD integration, which:
 - Supports only Group Links configured with group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`)
   when it processes Group Sync.
 
-Alternatively, you can change the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims#configure-the-microsoft-entra-application-registration-for-group-attributes) to use the **Groups assigned to the application** option.
-
-![Manage Group Claims](img/Azure-manage-group-claims_v15_9.png)
+Alternatively, you can change the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims) to use the **Groups assigned to the application** option.
 
 ### Configure Azure AD
 
@@ -426,7 +421,6 @@ To configure for GitLab Self-Managed:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}

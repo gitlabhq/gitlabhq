@@ -13,6 +13,7 @@ import {
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_DESIGNS,
+  WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LABELS,
@@ -52,6 +53,9 @@ export const findDescriptionWidget = (workItem) =>
 
 export const findDesignsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
+
+export const findErrorTrackingWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ERROR_TRACKING);
 
 export const findHealthStatusWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS);

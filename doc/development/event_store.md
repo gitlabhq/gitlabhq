@@ -468,7 +468,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
     let(:event) { pipeline_created_event }
   end
 
-  # This shared example ensures that an published event is ignored. This might be useful for
+  # This shared example ensures that a published event is ignored. This might be useful for
   # conditional dispatch testing.
   it_behaves_like 'ignores the published event' do
     let(:event) { pipeline_created_event }

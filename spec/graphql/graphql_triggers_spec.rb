@@ -191,6 +191,10 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
     let_it_be(:user) { create(:user) }
     let_it_be(:merge_request) { create(:merge_request) }
 
+    before do
+      stub_feature_flags(merge_request_dashboard: true)
+    end
+
     it 'triggers the user_merge_request_updated subscription' do
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(
         :user_merge_request_updated,
@@ -201,9 +205,9 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       described_class.user_merge_request_updated(user, merge_request)
     end
 
-    describe 'when merge_request_dashboard_realtime is disabled' do
+    describe 'when merge_request_dashboard is disabled' do
       before do
-        stub_feature_flags(merge_request_dashboard_realtime: false)
+        stub_feature_flags(merge_request_dashboard: false)
       end
 
       it 'does not trigger the user_merge_request_updated subscription' do

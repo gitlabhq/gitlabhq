@@ -1254,7 +1254,7 @@ or completely separately.
 
       {{< /tabs >}}
 
-   1. [Deprecated in GitLab 16.0 and planned for removal in 19.0)](../../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
+   1. [Deprecated in GitLab 16.0 and planned for removal in 19.0](../../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
       If you experience issues with the `webhook` setup, use `sidekiq` to deliver the email payload directly to GitLab Sidekiq using Redis.
 
       {{< tabs >}}

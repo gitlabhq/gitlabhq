@@ -24,23 +24,17 @@ describe('DiffView', () => {
   const DiffExpansionCell = { template: `<div/>` };
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
-  const showCommentForm = jest.fn();
   const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
   const createWrapper = ({ props } = {}) => {
-    const diffs = {
-      actions: { showCommentForm },
-      getters: { commitId: () => 'abc123', fileLineCoverage: () => ({}) },
-      namespaced: true,
-    };
     const notes = {
       actions: { setSelectedCommentPosition },
       state: { selectedCommentPosition: null, selectedCommentPositionHover: null },
     };
 
     const store = new Vuex.Store({
-      modules: { diffs, notes },
+      modules: { notes },
     });
 
     const propsData = {
@@ -73,7 +67,7 @@ describe('DiffView', () => {
         })),
       ],
     });
-    useLegacyDiffs();
+    useLegacyDiffs().commit = { id: 'abc123' };
     useNotes();
   });
 
@@ -156,7 +150,7 @@ describe('DiffView', () => {
 
       diffRow.$emit('stopdragging');
       expect(wrapper.vm.idState.dragStart).toBeNull();
-      expect(showCommentForm).toHaveBeenCalled();
+      expect(useLegacyDiffs().showCommentForm).toHaveBeenCalled();
     });
 
     it('throttles multiple calls to enterdragging', () => {

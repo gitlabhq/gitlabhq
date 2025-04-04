@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
@@ -9,11 +8,7 @@ import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/cons
 import { fetchPolicies } from '~/lib/graphql';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
-
-export const badgeState = Vue.observable({
-  state: '',
-  updateStatus: null,
-});
+import { badgeState } from '~/merge_requests/badge_state';
 
 export default {
   TYPE_ISSUE,

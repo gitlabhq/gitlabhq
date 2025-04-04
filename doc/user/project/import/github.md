@@ -246,7 +246,7 @@ open and watch updates in real time or you can return to it later.
 To cancel imports that are pending or in progress, next to the imported project, select **Cancel**.
 If the import has already started, the imported files are kept.
 
-To open an repository in GitLab URL after it has been imported, select its GitLab path.
+To open a repository in GitLab URL after it has been imported, select its GitLab path.
 
 Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 

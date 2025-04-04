@@ -33,7 +33,7 @@ Sign in with an existing Amazon account or create a new one.
 
 ## Create a Kubernetes cluster
 
-To create an new cluster on Amazon EKS:
+To create a new cluster on Amazon EKS:
 
 - Follow the steps in [Create an Amazon EKS cluster](../../../user/infrastructure/clusters/connect/new_eks_cluster.md).
 

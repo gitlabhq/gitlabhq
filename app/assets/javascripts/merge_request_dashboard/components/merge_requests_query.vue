@@ -148,7 +148,8 @@ export default {
       });
     },
     updateCurrentMergeRequestIds() {
-      this.currentMergeRequestIds = this.mergeRequests.nodes.map((mergeRequest) => mergeRequest.id);
+      this.currentMergeRequestIds =
+        this.mergeRequests?.nodes?.map((mergeRequest) => mergeRequest.id) ?? [];
     },
     resetNewMergeRequestIds() {
       this.updateCurrentMergeRequestIds();

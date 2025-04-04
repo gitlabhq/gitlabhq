@@ -2045,6 +2045,22 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(1)
       end
+
+      context 'when per_page is greater than the max_per_page' do
+        before do
+          allow(Kaminari.config).to receive(:max_per_page).and_return(1)
+        end
+
+        it 'returns the correct amount of diffs' do
+          get(
+            api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user),
+            params: { per_page: 2 }
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(1)
+        end
+      end
     end
   end
 

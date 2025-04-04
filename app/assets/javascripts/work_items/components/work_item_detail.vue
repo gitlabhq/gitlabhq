@@ -79,7 +79,6 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
-import WorkItemErrorTracking from './work_item_error_tracking.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -90,6 +89,8 @@ import DesignWidget from './design_management/design_management_widget.vue';
 import DesignUploadButton from './design_management/upload_button.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development/work_item_create_branch_merge_request_split_button.vue';
+
+const WorkItemErrorTracking = () => import('~/work_items/components/work_item_error_tracking.vue');
 
 const defaultWorkspacePermissions = {
   createDesign: false,
@@ -413,8 +414,8 @@ export default {
     workItemAwardEmoji() {
       return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
     },
-    workItemErrorTrackingIdentifier() {
-      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING)?.identifier;
+    workItemErrorTracking() {
+      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -1147,9 +1148,9 @@ export default {
             </aside>
 
             <work-item-error-tracking
-              v-if="workItemErrorTrackingIdentifier"
+              v-if="workItemErrorTracking.identifier"
               :full-path="workItemFullPath"
-              :identifier="workItemErrorTrackingIdentifier"
+              :iid="iid"
             />
 
             <design-widget

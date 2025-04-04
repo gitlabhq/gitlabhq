@@ -6337,3 +6337,69 @@ export const workItemEmailParticipantsEmptyResponse = {
     },
   },
 };
+
+export const getErrorTrackingQueryResponse = ({ nodes = [], status = 'SUCCESS' }) => ({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Project/1',
+      workItem: {
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/10',
+        widgets: [
+          {
+            __typename: 'WorkItemWidgetErrorTracking',
+            type: 'ERROR_TRACKING',
+            identifier: '1',
+            stackTrace: {
+              nodes,
+            },
+            status,
+          },
+        ],
+      },
+    },
+  },
+});
+
+export const errorTrackingQueryResponseWithStackTrace = getErrorTrackingQueryResponse({
+  nodes: [
+    {
+      absolutePath: 'test.rb',
+      columnNumber: null,
+      context: [
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">end</span></span>',
+          lineNumber: 13,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"></span>',
+          lineNumber: 14,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">begin</span></span>',
+          lineNumber: 15,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby">  <span class="mi">1</span> <span class="o">/</span> <span class="mi">0</span></span>',
+          lineNumber: 16,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">rescue</span> <span class="no">ZeroDivisionError</span> <span class="o">=&gt;</span> <span class="n">exception</span></span>',
+          lineNumber: 17,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby">  <span class="no">Sentry</span><span class="p">.</span><span class="nf">capture_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></span>',
+          lineNumber: 18,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">end</span></span>',
+          lineNumber: 19,
+        },
+      ],
+      filename: 'test.rb',
+      function: '<main>',
+      lineNumber: 16,
+    },
+  ],
+});

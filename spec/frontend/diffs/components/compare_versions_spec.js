@@ -7,12 +7,11 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
-import store from '~/mr_notes/stores';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import diffsMockData from '../mock_data/merge_request_diffs';
-
-jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
 const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
@@ -25,24 +24,20 @@ Vue.use(PiniaVuePlugin);
 
 describe('CompareVersions', () => {
   let wrapper;
+  let pinia;
   const targetBranchName = 'tmp-wine-dev';
   const { commit } = getDiffWithCommit;
 
   const createWrapper = ({ props = {}, commitArgs = {}, createCommit = true } = {}) => {
     if (createCommit) {
-      store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
+      useLegacyDiffs().commit = { ...useLegacyDiffs().commit, ...commitArgs };
     }
-
-    const pinia = createTestingPinia();
     // force Vue 2 mode by eager store creation
     useFileBrowser();
     wrapper = mount(CompareVersionsComponent, {
       propsData: {
         toggleFileTreeVisible: true,
         ...props,
-      },
-      mocks: {
-        $store: store,
       },
       pinia,
     });
@@ -56,32 +51,16 @@ describe('CompareVersions', () => {
     getCommitNavButtonsElement().find('.btn-group > *:first-child');
 
   beforeEach(() => {
-    store.reset();
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
 
     const mergeRequestDiff = diffsMockData[0];
-    const version = {
-      ...mergeRequestDiff,
-      href: `${TEST_HOST}/latest/version`,
-      versionName: 'latest version',
-    };
-    store.getters['diffs/diffCompareDropdownSourceVersions'] = [version];
-    store.getters['diffs/diffCompareDropdownTargetVersions'] = [
-      {
-        ...version,
-        selected: true,
-        versionName: targetBranchName,
-      },
-    ];
-    store.getters['diffs/whichCollapsedTypes'] = { any: false };
-    store.getters['diffs/isInlineView'] = false;
-    store.getters['diffs/isParallelView'] = false;
 
-    store.state.diffs.addedLines = 10;
-    store.state.diffs.removedLines = 20;
-    store.state.diffs.diffFiles.push('test');
-    store.state.diffs.targetBranchName = targetBranchName;
-    store.state.diffs.mergeRequestDiff = mergeRequestDiff;
-    store.state.diffs.mergeRequestDiffs = diffsMockData;
+    useLegacyDiffs().addedLines = 10;
+    useLegacyDiffs().removedLines = 20;
+    useLegacyDiffs().diffFiles.push('test');
+    useLegacyDiffs().targetBranchName = targetBranchName;
+    useLegacyDiffs().mergeRequestDiff = mergeRequestDiff;
+    useLegacyDiffs().mergeRequestDiffs = diffsMockData;
   });
 
   describe('template', () => {
@@ -106,7 +85,7 @@ describe('CompareVersions', () => {
 
   describe('commit', () => {
     beforeEach(() => {
-      store.state.diffs.commit = commit;
+      useLegacyDiffs().commit = commit;
       createWrapper();
     });
 
@@ -127,7 +106,7 @@ describe('CompareVersions', () => {
 
   describe('with no versions', () => {
     beforeEach(() => {
-      store.state.diffs.mergeRequestDiffs = [];
+      useLegacyDiffs().mergeRequestDiffs = [];
       createWrapper();
     });
 
@@ -186,7 +165,7 @@ describe('CompareVersions', () => {
 
         link.trigger('click');
         await nextTick();
-        expect(store.dispatch).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
+        expect(useLegacyDiffs().moveToNeighboringCommit).toHaveBeenCalledWith({
           direction: 'previous',
         });
       });
@@ -216,7 +195,7 @@ describe('CompareVersions', () => {
 
         link.trigger('click');
         await nextTick();
-        expect(store.dispatch).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
+        expect(useLegacyDiffs().moveToNeighboringCommit).toHaveBeenCalledWith({
           direction: 'next',
         });
       });

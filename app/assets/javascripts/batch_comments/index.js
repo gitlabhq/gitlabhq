@@ -37,7 +37,7 @@ export const initReviewBar = () => {
       ...mapActions(useBatchComments, ['fetchDrafts']),
     },
     render(createElement) {
-      if (this.draftsCount === 0) return null;
+      if (window.gon?.features?.improvedReviewExperience || this.draftsCount === 0) return null;
 
       return createElement('review-bar');
     },

@@ -96,7 +96,6 @@ describe('Merge requests app component', () => {
         ],
       },
       provide: {
-        realtimeEnabled: true,
         mergeRequestsSearchDashboardPath: '/search',
       },
       stubs: {

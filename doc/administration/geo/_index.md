@@ -180,7 +180,7 @@ To simplify the diagram, some necessary components are omitted.
 A **secondary** site needs two different PostgreSQL databases:
 
 - A read-only database instance that streams data from the main GitLab database.
-- A [read/write database instance(tracking database)](#geo-tracking-database) used internally by the **secondary** site to record what data has been replicated.
+- A [read/write database instance (tracking database)](#geo-tracking-database) used internally by the **secondary** site to record what data has been replicated.
 
 The **secondary** sites also run an additional daemon: [Geo Log Cursor](#geo-log-cursor).
 

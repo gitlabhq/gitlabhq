@@ -1,4 +1,4 @@
-export default [
+export const createMrVersionsMock = () => [
   {
     base_version_path: '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37',
     version_index: 4,
@@ -44,3 +44,5 @@ export default [
       '/gnuwget/wget2/-/merge_requests/6/diffs?diff_id=37&start_sha=47bac2ed972c5bee344c1cea159a22cd7f711dc0',
   },
 ];
+
+export default createMrVersionsMock();

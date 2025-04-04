@@ -14,6 +14,7 @@ import { __ } from '~/locale';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
+import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
 import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
@@ -45,6 +46,21 @@ Vue.use(VueApollo);
 
 function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-options')) {
   return JSON.parse(sidebarOptEl.innerHTML);
+}
+
+function mountSubmitReviewButton(pinia) {
+  if (!window.gon?.features?.improvedReviewExperience) return;
+
+  const el = document.querySelector('#js-submit-review-button');
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    pinia,
+    render(h) {
+      return h(SubmitReviewButton, { attrs: { class: 'gl-mr-3' } });
+    },
+  });
 }
 
 function mountSidebarTodoWidget() {
@@ -126,7 +142,7 @@ function mountSidebarAssigneesWidget() {
   });
 }
 
-function mountSidebarReviewers(mediator) {
+function mountSidebarReviewers(mediator, pinia) {
   const el = document.querySelector('.js-sidebar-reviewers-root');
 
   if (!el) {
@@ -145,6 +161,7 @@ function mountSidebarReviewers(mediator) {
     el,
     name: 'SidebarReviewersRoot',
     apolloProvider,
+    pinia,
     provide: {
       issuableIid: String(iid),
       issuableId: String(id),
@@ -725,7 +742,7 @@ export function mountAssigneesDropdown() {
 export function mountSidebar(mediator, store, pinia) {
   mountSidebarTodoWidget();
   mountSidebarAssigneesWidget();
-  mountSidebarReviewers(mediator);
+  mountSidebarReviewers(mediator, pinia);
   mountSidebarCrmContacts();
   mountSidebarLabelsWidget();
   mountSidebarMilestoneWidget();
@@ -739,6 +756,7 @@ export function mountSidebar(mediator, store, pinia) {
   mountSidebarSeverityWidget();
   mountSidebarEscalationStatus();
   mountMoveIssueButton();
+  mountSubmitReviewButton(pinia);
 }
 
 export { getSidebarOptions };

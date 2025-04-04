@@ -148,7 +148,7 @@ See the Vuex documentation for examples of [committing mutations from components
 
 When a request is made we often want to show a loading state to the user.
 
-Instead of creating an mutation to toggle the loading state, we should:
+Instead of creating a mutation to toggle the loading state, we should:
 
 1. A mutation with type `REQUEST_SOMETHING`, to toggle the loading state
 1. A mutation with type `RECEIVE_SOMETHING_SUCCESS`, to handle the success callback

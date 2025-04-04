@@ -1,73 +1,87 @@
+import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemErrorTracking from '~/work_items/components/work_item_error_tracking.vue';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import workItemErrorTrackingQuery from '~/work_items/graphql/work_item_error_tracking.query.graphql';
+import {
+  errorTrackingQueryResponseWithStackTrace,
+  getErrorTrackingQueryResponse,
+} from '../mock_data';
 
-jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
+
+Vue.use(VueApollo);
 
 describe('WorkItemErrorTracking component', () => {
-  let axiosMock;
   let wrapper;
 
-  const successResponse = {
-    error: {
-      stack_trace_entries: [{ id: 1 }, { id: 2 }],
-    },
-  };
+  const queryHandler = jest.fn().mockResolvedValue(errorTrackingQueryResponseWithStackTrace);
 
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findStacktrace = () => wrapper.findComponent(Stacktrace);
 
-  const createComponent = () => {
+  const createComponent = ({ handler = queryHandler } = {}) => {
     wrapper = shallowMount(WorkItemErrorTracking, {
+      apolloProvider: createMockApollo([[workItemErrorTrackingQuery, handler]]),
       propsData: {
         fullPath: 'group/project',
-        identifier: '12345',
+        iid: '12345',
       },
     });
   };
 
-  beforeEach(() => {
-    axiosMock = new MockAdapter(axios);
-  });
-
-  afterEach(() => {
-    axiosMock.restore();
-  });
-
-  it('renders h2 heading', () => {
+  it('renders title', () => {
     createComponent();
 
-    expect(wrapper.find('h2').text()).toBe('Stack trace');
+    expect(findCrudComponent().props('title')).toBe('Stack trace');
   });
 
-  it('makes call to stack trace endpoint', async () => {
+  it('makes call to stack trace endpoint', () => {
     createComponent();
-    await waitForPromises();
 
-    expect(axiosMock.history.get[0].url).toBe(
-      '/group/project/-/error_tracking/12345/stack_trace.json',
-    );
+    expect(queryHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '12345' });
   });
 
   it('renders Stacktrace component when we get data', async () => {
-    axiosMock.onGet().reply(HTTP_STATUS_OK, successResponse);
     createComponent();
     await waitForPromises();
 
     expect(findStacktrace().props('entries')).toEqual(
-      successResponse.error.stack_trace_entries.toReversed(),
+      errorTrackingQueryResponseWithStackTrace.data.namespace.workItem.widgets[0].stackTrace.nodes,
     );
   });
 
-  it('renders alert when we fail to get data', async () => {
-    axiosMock.onGet().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    createComponent();
+  it('renders error message when there is a query error', async () => {
+    const error = new Error('error');
+    createComponent({ handler: jest.fn().mockRejectedValue(error) });
     await waitForPromises();
 
-    expect(createAlert).toHaveBeenCalledWith({ message: 'Failed to load stacktrace.' });
+    expect(findAlert().text()).toBe('Failed to load stack trace.');
+    expect(Sentry.captureException).toHaveBeenCalledWith(error);
+  });
+
+  it('renders "not found" message when query returns a NOT_FOUND status', async () => {
+    createComponent({
+      handler: jest.fn().mockResolvedValue(getErrorTrackingQueryResponse({ status: 'NOT_FOUND' })),
+    });
+    await waitForPromises();
+
+    expect(findAlert().text()).toBe('Sentry issue not found.');
+  });
+
+  it('renders "error" message when query returns an ERROR status', async () => {
+    createComponent({
+      handler: jest.fn().mockResolvedValue(getErrorTrackingQueryResponse({ status: 'ERROR' })),
+    });
+    await waitForPromises();
+
+    expect(findAlert().text()).toBe('Error tracking service responded with an error.');
   });
 });

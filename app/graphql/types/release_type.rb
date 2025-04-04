@@ -24,7 +24,7 @@ module Types
     field :evidences, Types::EvidenceType.connection_type, null: true,
       description: 'Evidence for the release.'
     field :historical_release, GraphQL::Types::Boolean, null: true, method: :historical_release?,
-      description: 'Indicates the release is an historical release.'
+      description: 'Indicates the release is a historical release.'
     field :id, ::Types::GlobalIDType[Release],
       null: false,
       description: 'Global ID of the release.'

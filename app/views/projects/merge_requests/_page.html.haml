@@ -23,6 +23,7 @@
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
   = render "projects/merge_requests/mr_title"
+  #js-review-drawer
   #js-merge-sticky-header{ data: { data: sticky_header_data(@project, @merge_request).to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
@@ -50,6 +51,7 @@
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
         .gl-flex.gl-flex-wrap.gl-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
+          #js-submit-review-button
           - if !!@issuable_sidebar.dig(:current_user, :id)
             .gl-flex.gl-gap-3
               .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }

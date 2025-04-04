@@ -11,6 +11,9 @@ module Types
       value 'STORAGE_SIZE_ASC',  'Sort by total storage size, ascending order.', value: :storage_size_asc
       value 'STORAGE_SIZE_DESC', 'Sort by total storage size, descending order.', value: :storage_size_desc
 
+      value 'PATH_ASC', 'Sort by path, ascending order.', value: :path_asc
+      value 'PATH_DESC', 'Sort by path, descending order.', value: :path_desc
+
       value 'REPOSITORY_SIZE_ASC',  'Sort by total repository size, ascending order.', value: :repository_size_asc
       value 'REPOSITORY_SIZE_DESC', 'Sort by total repository size, descending order.', value: :repository_size_desc
 

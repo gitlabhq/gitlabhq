@@ -73,11 +73,10 @@ describe('DiffDiscussions', () => {
       const discussions = getDiscussionsMockData();
       discussions[0].expandedOnDiff = true;
       createComponent({ shouldCollapseDiscussions: true }, discussions);
-      jest.spyOn(store, 'dispatch').mockImplementation();
 
       findDiffNotesToggle().trigger('click');
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/toggleFileDiscussion', discussions[0]);
+      expect(useLegacyDiffs().toggleFileDiscussion).toHaveBeenCalledWith(discussions[0]);
     });
 
     it('renders expand button when discussion is collapsed', () => {

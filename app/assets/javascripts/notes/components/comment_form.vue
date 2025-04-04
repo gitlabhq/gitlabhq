@@ -13,7 +13,6 @@ import {
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -21,6 +20,7 @@ import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
+import { badgeState } from '~/merge_requests/badge_state';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';

@@ -1,8 +1,13 @@
+import Vue from 'vue';
 import { mount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { getPreviousLineIndex } from '~/diffs/store/utils';
 import { createStore } from '~/mr_notes/stores';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 const EXPAND_UP_CLASS = '.js-unfold';
@@ -50,12 +55,17 @@ function getLine(file, type, index) {
   return handler(file[source][index]);
 }
 
+Vue.use(PiniaVuePlugin);
+
 describe('DiffExpansionCell', () => {
   let mockFile;
   let mockLine;
   let store;
+  let pinia;
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs().loadMoreLines.mockResolvedValue();
     mockFile = getDiffFileMock();
     mockLine = getLine(mockFile, INLINE_DIFF_VIEW_TYPE, 8);
     store = createStore();
@@ -74,7 +84,7 @@ describe('DiffExpansionCell', () => {
     };
     const propsData = { ...defaults, ...options };
 
-    return mount(DiffExpansionCell, { store, propsData });
+    return mount(DiffExpansionCell, { store, propsData, pinia });
   };
 
   const findExpandUp = (wrapper) => wrapper.find(EXPAND_UP_CLASS);
@@ -141,8 +151,7 @@ describe('DiffExpansionCell', () => {
 
             findExpandAll(wrapper).trigger('click');
 
-            expect(store.dispatch).toHaveBeenCalledWith(
-              'diffs/loadMoreLines',
+            expect(useLegacyDiffs().loadMoreLines).toHaveBeenCalledWith(
               makeLoadMoreLinesPayload({
                 fileHash: mockFile.file_hash,
                 toLine: newLineNumber - 1,
@@ -163,8 +172,7 @@ describe('DiffExpansionCell', () => {
 
             findExpandUp(wrapper).trigger('click');
 
-            expect(store.dispatch).toHaveBeenCalledWith(
-              'diffs/loadMoreLines',
+            expect(useLegacyDiffs().loadMoreLines).toHaveBeenCalledWith(
               makeLoadMoreLinesPayload({
                 fileHash: mockFile.file_hash,
                 toLine: newLineNumber - 1,
@@ -190,7 +198,7 @@ describe('DiffExpansionCell', () => {
 
             findExpandDown(wrapper).trigger('click');
 
-            expect(store.dispatch).toHaveBeenCalledWith('diffs/loadMoreLines', {
+            expect(useLegacyDiffs().loadMoreLines).toHaveBeenCalledWith({
               endpoint: mockFile.context_lines_path,
               params: {
                 since: 1,

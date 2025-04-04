@@ -1,0 +1,9 @@
+---
+name: merge_request_dashboard_author_or_assignee
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520163
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185925
+rollout_issue_url:
+milestone: '17.11'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

@@ -2,8 +2,8 @@ import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_ke
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
 import { formatDate, getTimeago, newDate, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
-import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import { badgeState } from '~/merge_requests/badge_state';
 import {
   MT_MERGE_STRATEGY,
   MWCP_MERGE_STRATEGY,

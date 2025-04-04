@@ -6,11 +6,13 @@ module Members
       validate_access!(access_requester) unless skip_authorization
 
       access_requester.access_level = params[:access_level] if params[:access_level]
+      limit_to_guest_if_billable_promotion_restricted(access_requester)
+
       access_requester.accept_request(current_user)
 
       after_execute(member: access_requester, skip_log_audit_event: skip_log_audit_event)
 
-      access_requester
+      success({ member: access_requester })
     end
 
     private
@@ -28,6 +30,10 @@ module Members
           cannot_assign_owner_responsibilities_to_member_in_project?(access_requester)
         raise Gitlab::Access::AccessDeniedError
       end
+    end
+
+    def limit_to_guest_if_billable_promotion_restricted(access_requester)
+      # override in EE
     end
 
     def can_approve_access_requester?(access_requester)

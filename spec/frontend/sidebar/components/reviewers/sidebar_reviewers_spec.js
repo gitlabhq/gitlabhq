@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,12 +13,17 @@ import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
 import Mock from '../../mock_data';
 
 jest.mock('~/super_sidebar/user_counts_fetch');
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 Vue.use(VueApollo);
+Vue.use(PiniaVuePlugin);
 
 describe('sidebar reviewers', () => {
   const apolloMock = createMockApollo();
@@ -24,6 +31,7 @@ describe('sidebar reviewers', () => {
   let mediator;
   let axiosMock;
   let trackEventSpy;
+  let pinia;
 
   const findAssignButton = () => wrapper.findByTestId('sidebar-reviewers-assign-button');
   const findReviewers = () => wrapper.findComponent(Reviewers);
@@ -31,6 +39,7 @@ describe('sidebar reviewers', () => {
   const createComponent = ({ props, stubs, data } = {}) => {
     wrapper = shallowMountExtended(SidebarReviewers, {
       apolloProvider: apolloMock,
+      pinia,
       propsData: {
         issuableIid: '1',
         issuableId: 1,
@@ -63,6 +72,10 @@ describe('sidebar reviewers', () => {
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+    useBatchComments();
     axiosMock = new AxiosMockAdapter(axios);
     mediator = new SidebarMediator(Mock.mediator);
 

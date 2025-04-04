@@ -512,7 +512,7 @@ Troubleshooting sections.
 
 #### 422 error with non-allowed email
 
-You might get an 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
+You might get a 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
 
 This message might indicate that you must add or remove a domain from your domain allowlist or denylist settings.
 

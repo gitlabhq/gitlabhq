@@ -60,7 +60,7 @@ Each dashboard provides a unique viewpoint of your security posture.
 ### Project Security Dashboard
 
 The Project Security Dashboard shows the total number of vulnerabilities detected over time,
-with up to 365 days of historical data for a given project. The dashboard is an historical view of open vulnerabilities in the default branch. Open vulnerabilities are those of only `Needs triage` or `Confirmed` status (`Dismissed` or `Resolved` vulnerabilities are excluded).
+with up to 365 days of historical data for a given project. The dashboard is a historical view of open vulnerabilities in the default branch. Open vulnerabilities are those of only `Needs triage` or `Confirmed` status (`Dismissed` or `Resolved` vulnerabilities are excluded).
 
 To view a project's security dashboard:
 

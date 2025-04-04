@@ -93,7 +93,7 @@ We use pytest for testing Python code. To learn more about writing and running t
 1. **[Python Testing with pytest (Book)](https://pragprog.com/titles/bopytest2/python-testing-with-pytest-second-edition/)**
    This book is a comprehensive guide to testing Python code with pytest. It covers everything from the basics of writing tests to advanced topics like fixtures, plugins, and test organization.
 
-1. **[Python Function to flowchart)](https://gitlab.com/srayner/funcgraph/)**
+1. **[Python Function to flowchart](https://gitlab.com/srayner/funcgraph/)**
    This project takes any Python function and automatically creates a visual flowchart showing how the code works.
 
 ---

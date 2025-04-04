@@ -1,0 +1,21 @@
+query requestingReviewAuthorOrAssigneeCount(
+  $state: MergeRequestState = opened
+  $reviewState: MergeRequestReviewState
+  $reviewStates: [MergeRequestReviewState!]
+  $reviewerWildcardId: ReviewerWildcardId
+  $mergedAfter: Time
+) {
+  currentUser {
+    id
+    mergeRequests: authoredMergeRequests(
+      includeAssigned: true
+      state: $state
+      reviewState: $reviewState
+      reviewStates: $reviewStates
+      reviewerWildcardId: $reviewerWildcardId
+      mergedAfter: $mergedAfter
+    ) {
+      count
+    }
+  }
+}

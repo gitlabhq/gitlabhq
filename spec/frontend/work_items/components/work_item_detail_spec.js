@@ -202,6 +202,7 @@ describe('WorkItemDetail component', () => {
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
+        WorkItemErrorTracking,
       },
       mocks: {
         $router: router,
@@ -298,7 +299,7 @@ describe('WorkItemDetail component', () => {
     it('renders error tracking widget', () => {
       expect(findErrorTrackingWidget().props()).toEqual({
         fullPath: 'group/project',
-        identifier: '1',
+        iid: '1',
       });
     });
   });

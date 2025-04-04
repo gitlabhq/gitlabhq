@@ -20,7 +20,7 @@ that can provide useful signals.
 ### CPU and Memory
 
 There are two main RPCs that handle clones/fetches. The following log entry
-fields an be used to inspect how much system resources are consumed by
+fields can be used to inspect how much system resources are consumed by
 clones/fetches for a given repository.
 
 The following are log entry fields in the Gitaly logs that can be filtered on:

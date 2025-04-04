@@ -1,10 +1,10 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { UNFOLD_COUNT, INLINE_DIFF_LINES_KEY } from '../constants';
 import * as utils from '../store/utils';
 
@@ -76,7 +76,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadMoreLines']),
+    ...mapActions(useLegacyDiffs, ['loadMoreLines']),
     getPrevLineNumber(oldLineNumber, newLineNumber) {
       const index = utils.getPreviousLineIndex(this.file, {
         oldLineNumber,

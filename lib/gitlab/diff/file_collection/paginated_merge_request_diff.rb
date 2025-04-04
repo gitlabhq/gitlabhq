@@ -27,7 +27,7 @@ module Gitlab
           page ||= DEFAULT_PAGE
           per_page ||= DEFAULT_PER_PAGE
 
-          relation.page(page).per([per_page.to_i, DEFAULT_PER_PAGE].min)
+          relation.page(page).per(per_page.to_i)
         end
       end
     end

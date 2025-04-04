@@ -69,7 +69,7 @@ module Gitlab
             if ([version]"#{GLAB_REQUIRED_VERSION}" -le [version]$glabVersion) {
               #{GLAB_ENV_SET_WINDOWS}
               #{GLAB_LOGIN_WINDOWS}
-              #{glab_create_command(GLAB_CREATE_WINDOWS)}
+              #{glab_create_command('windows')}
             }
             else {
               Write-Output "#{GLAB_WARNING_MESSAGE}"
@@ -89,7 +89,7 @@ module Gitlab
             if [ "$(printf "%s\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
               #{GLAB_ENV_SET_UNIX}
               #{GLAB_LOGIN_UNIX}
-              #{glab_create_command(GLAB_CREATE_UNIX)}
+              #{glab_create_command('unix')}
             else
               echo "#{GLAB_WARNING_MESSAGE}"
 
@@ -116,9 +116,22 @@ module Gitlab
           command.freeze
         end
 
-        def glab_create_command(base_command)
-          command = base_command.dup
-          command.concat(" \"#{config[:tag_name]}\"")
+        def glab_create_command(platform) # rubocop:disable Metrics/ -- It's more readable this way
+          if platform == 'windows'
+            command = GLAB_CREATE_WINDOWS.dup
+
+            # More information: https://gitlab.com/groups/gitlab-org/-/epics/15437#note_2432564707
+            tag_name = config[:tag_name].presence || '$env:CI_COMMIT_TAG'
+            ref = config[:ref].presence || '$env:CI_COMMIT_SHA'
+          else
+            command = GLAB_CREATE_UNIX.dup
+
+            # More information: https://gitlab.com/groups/gitlab-org/-/epics/15437#note_2432564707
+            tag_name = config[:tag_name].presence || '$CI_COMMIT_TAG'
+            ref = config[:ref].presence || '$CI_COMMIT_SHA'
+          end
+
+          command.concat(" \"#{tag_name}\"")
           command.concat(" --assets-links #{stringified_json(create_asset_links)}") if create_asset_links.present?
           command.concat(" --milestone \"#{config[:milestones].join(',')}\"") if config[:milestones].present?
           command.concat(" --name \"#{config[:name]}\"") if config[:name].present?
@@ -128,7 +141,7 @@ module Gitlab
             command.concat(" --experimental-notes-text-or-file \"#{config[:description]}\"")
           end
 
-          command.concat(" --ref \"#{config[:ref]}\"") if config[:ref].present?
+          command.concat(" --ref \"#{ref}\"") if ref.present?
           command.concat(" --tag-message \"#{config[:tag_message]}\"") if config[:tag_message].present?
           command.concat(" --released-at \"#{config[:released_at]}\"") if config[:released_at].present?
 

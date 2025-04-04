@@ -13,20 +13,20 @@ import {
 } from '@gitlab/ui';
 import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
 import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
 import { reviewable } from '../utils/file_reviews';
-
 import DiffStats from './diff_stats.vue';
 
 export default {
@@ -99,9 +99,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('diffs', ['latestDiff']),
-    ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
-    ...mapGetters(['getNoteableData']),
+    ...mapState(useLegacyDiffs, ['latestDiff', 'diffHasExpandedDiscussions', 'diffHasDiscussions']),
+    ...mapVuexGetters(['getNoteableData']),
     diffContentIDSelector() {
       return fileContentsId(this.diffFile);
     },
@@ -204,7 +203,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', [
+    ...mapActions(useLegacyDiffs, [
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
       'setCurrentFileHash',

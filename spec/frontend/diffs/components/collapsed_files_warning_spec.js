@@ -1,12 +1,12 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import { EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
-import createStore from '~/diffs/store/modules';
-
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 const propsData = {
@@ -15,18 +15,11 @@ const propsData = {
   resolutionPath: 'a-path',
 };
 
-async function files(store, count) {
-  const copies = Array(count).fill(getDiffFileMock());
-  store.state.diffs.diffFiles.push(...copies);
-
-  await nextTick();
-}
+Vue.use(PiniaVuePlugin);
 
 describe('CollapsedFilesWarning', () => {
-  let store;
   let wrapper;
-
-  Vue.use(Vuex);
+  let pinia;
 
   const getAlertActionButton = () =>
     wrapper.findComponent(CollapsedFilesWarning).find('button.gl-alert-action:first-child');
@@ -34,17 +27,22 @@ describe('CollapsedFilesWarning', () => {
 
   const createComponent = (props = {}, { full } = { full: false }) => {
     const mounter = full ? mount : shallowMount;
-    store = new Vuex.Store({
-      modules: {
-        diffs: createStore(),
-      },
-    });
-
     wrapper = mounter(CollapsedFilesWarning, {
       propsData: { ...propsData, ...props },
-      store,
+      pinia,
     });
   };
+
+  async function files(count) {
+    const copies = Array(count).fill(getDiffFileMock());
+    useLegacyDiffs().diffFiles.push(...copies);
+    await nextTick();
+  }
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+  });
 
   describe('when there is more than one file', () => {
     it.each`
@@ -53,14 +51,14 @@ describe('CollapsedFilesWarning', () => {
       ${true}  | ${false}
     `('toggles the alert when dismissed is $dismissed', async ({ present, dismissed }) => {
       createComponent({ dismissed });
-      await files(store, 2);
+      await files(2);
 
       expect(wrapper.find('[data-testid="root"]').exists()).toBe(present);
     });
 
     it('dismisses the component when the alert "x" is clicked', async () => {
       createComponent({}, { full: true });
-      await files(store, 2);
+      await files(2);
 
       expect(wrapper.find('[data-testid="root"]').exists()).toBe(true);
 
@@ -73,7 +71,7 @@ describe('CollapsedFilesWarning', () => {
 
     it(`emits the \`${EVT_EXPAND_ALL_FILES}\` event when the alert action button is clicked`, async () => {
       createComponent({}, { full: true });
-      await files(store, 2);
+      await files(2);
 
       jest.spyOn(eventHub, '$emit');
 
@@ -86,7 +84,7 @@ describe('CollapsedFilesWarning', () => {
   describe('when there is a single file', () => {
     it('should not display', async () => {
       createComponent();
-      await files(store, 1);
+      await files(1);
 
       expect(wrapper.find('[data-testid="root"]').exists()).toBe(false);
     });

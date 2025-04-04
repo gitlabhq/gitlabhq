@@ -603,7 +603,7 @@ module API
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
+        present merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page]).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
       end
 
       desc 'Get the merge request raw diffs' do

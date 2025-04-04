@@ -53,7 +53,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 Pipeline secret detection is optimized to balance coverage and run time.
 Only the current state of the repository and future commits are scanned for secrets.
-To identify secrets already present in the repository's history, run an historic scan once
+To identify secrets already present in the repository's history, run a historic scan once
 after enabling pipeline secret detection. Scan results are available only after the pipeline is completed.
 
 Exactly what is scanned for secrets depends on the type of pipeline,

@@ -2,8 +2,8 @@ import { flattenDeep, clone } from 'lodash';
 import { match } from '~/diffs/utils/diff_file';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
-import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import { useBatchComments } from '~/batch_comments/store';
+import { badgeState } from '~/merge_requests/badge_state';
 import * as constants from '../../constants';
 import { collapseSystemNotes } from '../../stores/collapse_utils';
 

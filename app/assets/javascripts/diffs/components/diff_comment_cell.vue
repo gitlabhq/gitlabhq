@@ -1,6 +1,6 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import DiffDiscussionReply from './diff_discussion_reply.vue';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffLineNoteForm from './diff_line_note_form.vue';
@@ -42,7 +42,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['showCommentForm']),
+    ...mapActions(useLegacyDiffs, ['showCommentForm']),
   },
 };
 </script>
