@@ -15470,6 +15470,12 @@ msgstr ""
 msgid "ComplianceFramework|No compliance frameworks are set up yet"
 msgstr ""
 
+msgid "ComplianceManagement|Framework"
+msgstr ""
+
+msgid "ComplianceManagement|Requirement"
+msgstr ""
+
 msgid "ComplianceReport|Apply frameworks to selected projects"
 msgstr ""
 
@@ -15661,6 +15667,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Framework"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Frameworks"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Group by"
 msgstr ""
 
@@ -15740,6 +15749,9 @@ msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. 
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Requirement"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Requirements"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|SAST scan"
@@ -24986,6 +24998,9 @@ msgstr ""
 msgid "Failed to assign a user because no user was found."
 msgstr ""
 
+msgid "Failed to assign the framework to project %{project_name}"
+msgstr ""
+
 msgid "Failed to assign the framework to the project"
 msgstr ""
 
@@ -25211,6 +25226,9 @@ msgstr ""
 msgid "Failed to remove mirror."
 msgstr ""
 
+msgid "Failed to remove the framework from project %{project_name}"
+msgstr ""
+
 msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
@@ -25326,6 +25344,9 @@ msgid "Feature disabled"
 msgstr ""
 
 msgid "Feature flag"
+msgstr ""
+
+msgid "Feature flag `custom_admin_roles` is not enabled for the instance"
 msgstr ""
 
 msgid "Feature flag status"
@@ -41193,6 +41214,9 @@ msgid "Only SSH"
 msgstr ""
 
 msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted."
+msgstr ""
+
+msgid "Only admin custom roles can be assigned"
 msgstr ""
 
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
@@ -70288,6 +70312,9 @@ msgid "created by"
 msgstr ""
 
 msgid "created pipeline for commit %{linkStart}%{shortId}%{linkEnd}"
+msgstr ""
+
+msgid "custom_roles licensed feature must be available"
 msgstr ""
 
 msgid "daily"

@@ -400,6 +400,13 @@ describe('date_format_utility.js', () => {
     });
   });
 
+  describe('toISOStringWithoutMilliseconds', () => {
+    it('should format a Date object into ISO string without milliseconds', () => {
+      const date = new Date('2020-01-29:12:34:56.789');
+      expect(utils.toISOStringWithoutMilliseconds(date)).toBe('2020-01-29T12:34:56Z');
+    });
+  });
+
   describe('prettyTime methods', () => {
     // eslint-disable-next-line max-params
     const assertTimeUnits = (obj, minutes, hours, days, weeks) => {

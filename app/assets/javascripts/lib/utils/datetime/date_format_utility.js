@@ -349,6 +349,18 @@ export const toISODateFormat = (date) => {
 };
 
 /**
+ * Formats a date into an ISO string without milliseconds.
+ *
+ * @example
+ * // returns '2020-01-29T00:00:00Z'
+ * toISOStringWithoutMilliseconds(new Date('2020-01-29:00:00:00.123'))
+ *
+ * @param {Date} date The date to be formatted
+ * @returns {string} The ISO string without milliseconds.
+ */
+export const toISOStringWithoutMilliseconds = (date) => date.toISOString().replace(/\.\d+Z$/, 'Z');
+
+/**
  * This combines a date and a time and returns the computed Date's ISO string representation.
  *
  * @param   {Date}   date Date object representing the base date.

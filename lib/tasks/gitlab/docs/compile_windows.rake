@@ -63,13 +63,13 @@ def write_windows_content(file)
 
       This window takes place on #{data[:date]} from #{data[:time]}.
 
-      | Deprecation | Impact | Stage | Scope |
-      |-------------|--------|-------|-------|
+      | Deprecation | Impact | Stage | Scope | Check potential impact |
+      |-------------|--------|-------|-------|------------------------|
     WINDOW
 
     data[:changes].each do |deprecation|
       file.puts "| [#{deprecation[:title]}](#{deprecation[:issue_url]}) | #{deprecation[:impact]&.capitalize} | " \
-        "#{deprecation[:stage]&.capitalize} | #{deprecation[:scope]&.capitalize} |"
+        "#{deprecation[:stage]&.capitalize} | #{deprecation[:scope]&.capitalize} | #{deprecation[:check_impact]} |"
     end
 
     file.puts unless index == WINDOWS.size - 1

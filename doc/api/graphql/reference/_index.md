@@ -7679,6 +7679,35 @@ Input type: `LabelCreateInput`
 | <a id="mutationlabelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
 
+### `Mutation.ldapAdminRoleLinkCreate`
+
+Creates an instance-level custom admin role LDAP link.
+
+{{< details >}}
+**Introduced** in GitLab 17.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LdapAdminRoleLinkCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationldapadminrolelinkcreateadminmemberroleid"></a>`adminMemberRoleId` | [`MemberRoleID!`](#memberroleid) | Global ID of the custom admin role to be assigned to a user. |
+| <a id="mutationldapadminrolelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationldapadminrolelinkcreatecn"></a>`cn` | [`String`](#string) | Common Name (CN) of the LDAP group. |
+| <a id="mutationldapadminrolelinkcreatefilter"></a>`filter` | [`String`](#string) | Search filter for the LDAP group. |
+| <a id="mutationldapadminrolelinkcreateprovider"></a>`provider` | [`String!`](#string) | LDAP provider for the LDAP link. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationldapadminrolelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationldapadminrolelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationldapadminrolelinkcreateldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Created instance-level LDAP link. |
+
 ### `Mutation.markAsSpamSnippet`
 
 Input type: `MarkAsSpamSnippetInput`

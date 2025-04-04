@@ -22,70 +22,70 @@ To update this file, run: bin/rake gitlab:docs:compile_windows
 
 This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 
-| Deprecation | Impact | Stage | Scope |
-|-------------|--------|-------|-------|
-| [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |
-| [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
-| [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) | Low | Secure | Project |
-| [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Deploy | Project |
-| [CodeClimate-based Code Quality scanning will be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471677) | High | Secure |  |
-| [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low | Fulfillment | Instance, group |
-| [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low | Fulfillment | Instance, group |
-| [Public use of Secure container registries is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) | Low | Secure | Instance |
-| [Limit number of scan execution policy actions allowed per policy](https://gitlab.com/gitlab-org/gitlab/-/issues/510897) | Low | Security risk management | Instance, group, project |
-| [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |
-| [Pipeline job limits extended to the Commits API](https://gitlab.com/gitlab-org/gitlab/-/issues/436361) | Low | Verify | Project |
-| [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |
-| [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |
-| [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |
-| [Fix typo in user profile visibility updated audit event type](https://gitlab.com/gitlab-org/gitlab/-/issues/474386) | Low | Software supply chain security | Instance |
-| [DAST `dast_devtools_api_timeout` will have a lower default value](https://gitlab.com/gitlab-org/gitlab/-/issues/517254) | Low | Application security testing | Project |
-| [API Discovery will use branch pipelines by default](https://gitlab.com/gitlab-org/gitlab/-/issues/515487) | Low | Application_security_testing | Project |
-| [Container Scanning default severity threshold set to `medium`](https://gitlab.com/gitlab-org/gitlab/-/issues/515358) | Low | Application security testing | Project |
-| [Subscription related API endpoints in the public API are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251) | Low | Fulfillment | Instance |
-| [`maxHoursBeforeTermination` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
-| [`RemoteDevelopmentAgentConfig` GraphQL type is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
-| [`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
-| [GitLab Advanced SAST will be enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/513685) | Medium | Application security testing | Instance |
-| [The `agentk` container registry is moving to Cloud Native GitLab](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630) | Medium | Deploy | Instance |
-| [SAST jobs no longer use global cache settings](https://gitlab.com/gitlab-org/gitlab/-/issues/512564) | Medium | Application security testing | Instance |
-| [End-of-Support SAST jobs will be removed from the CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/issues/519133) | High | Application security testing | Project |
-| [Application Security Testing analyzers major version update](https://gitlab.com/gitlab-org/gitlab/-/issues/513417) | Low | Application security testing | Project |
+| Deprecation | Impact | Stage | Scope | Check potential impact |
+|-------------|--------|-------|-------|------------------------|
+| [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |  |
+| [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project | Use the [Authentication Log](../ci/jobs/ci_job_token.md#job-token-authentication-log) to verify which projects are authenticating with your project. |
+| [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) | Low | Secure | Project |  |
+| [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Deploy | Project |  |
+| [CodeClimate-based Code Quality scanning will be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471677) | High | Secure |  |  |
+| [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low | Fulfillment | Instance, group |  |
+| [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low | Fulfillment | Instance, group |  |
+| [Public use of Secure container registries is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) | Low | Secure | Instance |  |
+| [Limit number of scan execution policy actions allowed per policy](https://gitlab.com/gitlab-org/gitlab/-/issues/510897) | Low | Security risk management | Instance, group, project |  |
+| [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |  |
+| [Pipeline job limits extended to the Commits API](https://gitlab.com/gitlab-org/gitlab/-/issues/436361) | Low | Verify | Project |  |
+| [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |  |
+| [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |  |
+| [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |  |
+| [Fix typo in user profile visibility updated audit event type](https://gitlab.com/gitlab-org/gitlab/-/issues/474386) | Low | Software supply chain security | Instance |  |
+| [DAST `dast_devtools_api_timeout` will have a lower default value](https://gitlab.com/gitlab-org/gitlab/-/issues/517254) | Low | Application security testing | Project |  |
+| [API Discovery will use branch pipelines by default](https://gitlab.com/gitlab-org/gitlab/-/issues/515487) | Low | Application_security_testing | Project |  |
+| [Container Scanning default severity threshold set to `medium`](https://gitlab.com/gitlab-org/gitlab/-/issues/515358) | Low | Application security testing | Project |  |
+| [Subscription related API endpoints in the public API are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251) | Low | Fulfillment | Instance |  |
+| [`maxHoursBeforeTermination` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |  |
+| [`RemoteDevelopmentAgentConfig` GraphQL type is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |  |
+| [`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |  |
+| [GitLab Advanced SAST will be enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/513685) | Medium | Application security testing | Instance |  |
+| [The `agentk` container registry is moving to Cloud Native GitLab](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630) | Medium | Deploy | Instance |  |
+| [SAST jobs no longer use global cache settings](https://gitlab.com/gitlab-org/gitlab/-/issues/512564) | Medium | Application security testing | Instance |  |
+| [End-of-Support SAST jobs will be removed from the CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/issues/519133) | High | Application security testing | Project |  |
+| [Application Security Testing analyzers major version update](https://gitlab.com/gitlab-org/gitlab/-/issues/513417) | Low | Application security testing | Project |  |
 
 ## Window 2
 
 This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 
-| Deprecation | Impact | Stage | Scope |
-|-------------|--------|-------|-------|
-| [Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions](https://gitlab.com/gitlab-org/gitlab/-/issues/391941) | Low | Verify | Project |
-| [The `heroku/builder:22` image is deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79) | Medium | Deploy | Project |
-| [`ciMinutesUsed` GraphQL field renamed to `ciDuration`](https://gitlab.com/gitlab-org/gitlab/-/issues/497364) | Medium | Verify | Instance |
-| [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |
-| [Behavior change for Upcoming and Started milestone filters](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) | Low | Plan | Group, project |
-| [`kpt`-based `agentk` is deprecated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656) | Low | Deploy | Project |
-| [Updating CI/CD job tokens to JWT standard](https://gitlab.com/gitlab-org/gitlab/-/issues/509578) | Low | Software supply chain security | Project |
+| Deprecation | Impact | Stage | Scope | Check potential impact |
+|-------------|--------|-------|-------|------------------------|
+| [Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions](https://gitlab.com/gitlab-org/gitlab/-/issues/391941) | Low | Verify | Project |  |
+| [The `heroku/builder:22` image is deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79) | Medium | Deploy | Project |  |
+| [`ciMinutesUsed` GraphQL field renamed to `ciDuration`](https://gitlab.com/gitlab-org/gitlab/-/issues/497364) | Medium | Verify | Instance |  |
+| [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |  |
+| [Behavior change for Upcoming and Started milestone filters](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) | Low | Plan | Group, project |  |
+| [`kpt`-based `agentk` is deprecated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656) | Low | Deploy | Project |  |
+| [Updating CI/CD job tokens to JWT standard](https://gitlab.com/gitlab-org/gitlab/-/issues/509578) | Low | Software supply chain security | Project |  |
 
 ## Window 3
 
 This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 
-| Deprecation | Impact | Stage | Scope |
-|-------------|--------|-------|-------|
-| [GitLab.com certificate-based integration with Kubernetes](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) | Medium | Deploy |  |
-| [Runner `active` GraphQL fields replaced by `paused`](https://gitlab.com/gitlab-org/gitlab/-/issues/351109) | Low | Verify | Instance, group, project |
-| [ZenTao integration](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) | Low | Foundations | Instance |
-| [GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field](https://gitlab.com/gitlab-org/gitlab/-/issues/414236) | Low | Package | Group |
-| [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |
-| [Deprecate license metadata format V1](https://gitlab.com/gitlab-org/gitlab/-/issues/438477) | Low | Secure | Instance |
-| [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |
-| [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |
-| [GraphQL `target` field for to-do items replaced with `targetEntity`](https://gitlab.com/gitlab-org/gitlab/-/issues/484987) | Low | Foundations | Project |
-| [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
-| [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |
-| [Updated tooling to release CI/CD components to the Catalog](https://gitlab.com/groups/gitlab-org/-/epics/12788) | High | Verify | Instance |
-| [Increased default security for use of pipeline variables](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) | Medium | Verify | Project |
-| [Amazon S3 Signature Version 2](https://gitlab.com/gitlab-org/container-registry/-/issues/1449) | Low | Package | Project |
-| [Dependency Proxy token scope enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/426887) | High | Package | Group |
-| [Remove duoProAssignedUsersCount GraphQL field](https://gitlab.com/gitlab-org/gitlab/-/issues/498671) | Low | Plan | Group, project |
-| [Remove `previousStageJobsOrNeeds` from GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/424417) | Low | Verify | Instance |
+| Deprecation | Impact | Stage | Scope | Check potential impact |
+|-------------|--------|-------|-------|------------------------|
+| [GitLab.com certificate-based integration with Kubernetes](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) | Medium | Deploy |  |  |
+| [Runner `active` GraphQL fields replaced by `paused`](https://gitlab.com/gitlab-org/gitlab/-/issues/351109) | Low | Verify | Instance, group, project |  |
+| [ZenTao integration](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) | Low | Foundations | Instance |  |
+| [GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field](https://gitlab.com/gitlab-org/gitlab/-/issues/414236) | Low | Package | Group |  |
+| [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |  |
+| [Deprecate license metadata format V1](https://gitlab.com/gitlab-org/gitlab/-/issues/438477) | Low | Secure | Instance |  |
+| [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |  |
+| [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |  |
+| [GraphQL `target` field for to-do items replaced with `targetEntity`](https://gitlab.com/gitlab-org/gitlab/-/issues/484987) | Low | Foundations | Project |  |
+| [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |  |
+| [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |  |
+| [Updated tooling to release CI/CD components to the Catalog](https://gitlab.com/groups/gitlab-org/-/epics/12788) | High | Verify | Instance |  |
+| [Increased default security for use of pipeline variables](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) | Medium | Verify | Project |  |
+| [Amazon S3 Signature Version 2](https://gitlab.com/gitlab-org/container-registry/-/issues/1449) | Low | Package | Project |  |
+| [Dependency Proxy token scope enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/426887) | High | Package | Group |  |
+| [Remove duoProAssignedUsersCount GraphQL field](https://gitlab.com/gitlab-org/gitlab/-/issues/498671) | Low | Plan | Group, project |  |
+| [Remove `previousStageJobsOrNeeds` from GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/424417) | Low | Verify | Instance |  |

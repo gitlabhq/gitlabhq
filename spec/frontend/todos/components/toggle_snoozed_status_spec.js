@@ -32,7 +32,7 @@ describe('ToggleSnoozedStatus', () => {
       todoSnooze: {
         todo: {
           ...mockTodo,
-          snoozedUntil: mockCurrentTime,
+          snoozedUntil: '2024-12-18T13:24:00Z',
         },
         errors: [],
       },
@@ -41,7 +41,7 @@ describe('ToggleSnoozedStatus', () => {
   const unSnoozeTodoMutationSuccessHandler = jest.fn().mockResolvedValue({
     data: {
       todoUnSnooze: {
-        todo: { ...mockTodo, snoozedUntil: mockCurrentTime },
+        todo: { ...mockTodo, snoozedUntil: null },
         errors: [],
       },
     },
@@ -108,7 +108,7 @@ describe('ToggleSnoozedStatus', () => {
     findSnoozeTimePicker().vm.$emit('snooze-until', mockCurrentTime);
 
     expect(snoozeTodoMutationSuccessHandler).toHaveBeenCalledWith({
-      snoozeUntil: mockCurrentTime,
+      snoozeUntil: '2024-12-18T13:24:00Z',
       todoId: mockTodo.id,
     });
     expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
