@@ -217,7 +217,7 @@ PATH
 PATH
   remote: vendor/gems/sidekiq-reliable-fetch
   specs:
-    gitlab-sidekiq-fetcher (0.12.0)
+    gitlab-sidekiq-fetcher (0.12.1)
       json (>= 2.5)
       sidekiq (~> 7.0)
 

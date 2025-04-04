@@ -692,13 +692,13 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def get_stage(name, params = {})
       get :stage, params: {
-**params.merge(
-  namespace_id: project.namespace,
-  project_id: project,
-  id: pipeline.id,
-  stage: name,
-  format: :json)
-}
+        **params.merge(
+          namespace_id: project.namespace,
+          project_id: project,
+          id: pipeline.id,
+          stage: name,
+          format: :json)
+      }
     end
   end
 
@@ -1349,10 +1349,10 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def delete_pipeline
       delete :destroy, params: {
-                         namespace_id: project.namespace,
-                         project_id: project,
-                         id: pipeline.id
-                       }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: pipeline.id
+      }
     end
   end
 

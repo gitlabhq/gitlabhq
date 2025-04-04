@@ -367,10 +367,10 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
 from the **Admin** area:
 
+<!-- vale gitlab_base.CurrentStatus = NO -->
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-<!-- vale gitlab_base.CurrentStatus = NO -->
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of instance-level CI/CD variables**
    - **Maximum size of a dotenv artifact in bytes**

@@ -19,6 +19,27 @@ When working with dependency scanning, you might encounter the following issues.
 Debug-level logging can help when troubleshooting. For details, see
 [debug-level logging](../troubleshooting_application_security.md#debug-level-logging).
 
+## Run the analyzer in a local environment
+
+You can run a dependency scanning analyzer locally to debug issues or verify behavior without running a pipeline.
+
+For example, to run the Python analyzer:
+
+```shell
+cd project-git-repository
+
+docker run \
+   --interactive --tty --rm \
+   --volume "$PWD":/tmp/app \
+   --env CI_PROJECT_DIR=/tmp/app \
+   --env SECURE_LOG_LEVEL=debug \
+   -w /tmp/app \
+   registry.gitlab.com/security-products/gemnasium-python:5 /analyzer run
+```
+
+This command runs the analyzer with debug-level logging and mounts your local repository to analyze the dependencies.
+You can replace `registry.gitlab.com/security-products/gemnasium-python:5` with the appropriate scanner `image:tag` combination for your project's language and dependency manager.
+
 ### Working around missing support for certain languages or package managers
 
 As noted in the ["Supported languages" section](_index.md#supported-languages-and-package-managers)

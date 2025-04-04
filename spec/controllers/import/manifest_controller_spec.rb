@@ -18,9 +18,9 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
     context 'with a valid manifest' do
       it 'saves the manifest and redirects to the status page', :aggregate_failures do
         post :upload, params: {
-               group_id: group.id,
-               manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
-             }
+          group_id: group.id,
+          manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+        }
 
         metadata = Gitlab::ManifestImport::Metadata.new(user)
 
@@ -68,9 +68,9 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
         sign_in(create(:user))
 
         post :upload, params: {
-               group_id: group.id,
-               manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
-             }
+          group_id: group.id,
+          manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+        }
 
         expect(assigns(:errors)).to be_present
       end

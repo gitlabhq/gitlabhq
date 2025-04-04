@@ -1,14 +1,8 @@
-import ActionCard, { VARIANTS } from './action_card.vue';
+import ActionCard from './action_card.vue';
 
 export default {
   component: ActionCard,
   title: 'vue_shared/action_card',
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: Object.values(VARIANTS),
-    },
-  },
 };
 
 const Template = (args, { argTypes }) => ({
@@ -25,6 +19,5 @@ Default.args = {
   description:
     'Projects are where you store your code, access issues, wiki, and other features of GitLab.',
   icon: 'project',
-  variant: VARIANTS.default,
   href: 'gitlab.com',
 };

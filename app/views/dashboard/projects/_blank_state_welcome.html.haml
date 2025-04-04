@@ -6,24 +6,20 @@
       description: _('Projects are where you store your code, access issues, wiki, and other features of GitLab.'),
       icon: 'project',
       href: new_project_path,
-      variant: 'default',
       link_options: { data: { testid: 'new-project-button' }})
 
   = render Onboarding::ActionCardComponent.new(title: _('Explore public projects'),
     description: _('Public projects are an easy way to allow everyone to have read-only access.'),
     icon: 'earth',
-    href: trending_explore_projects_path,
-    variant: 'default')
+    href: trending_explore_projects_path)
 
   - if current_user.can_create_group?
     = render Onboarding::ActionCardComponent.new(title: _('Create a group'),
       description: _('Groups are the best way to manage projects and members.'),
       icon: 'group',
-      href: new_group_path,
-      variant: 'default')
+      href: new_group_path)
 
   = render Onboarding::ActionCardComponent.new(title: _('Learn more about GitLab'),
     description: _('Take a look at the documentation to discover all of GitLab’s capabilities.'),
     icon: 'bulb',
-    href: Gitlab::Saas::doc_url,
-    variant: 'default')
+    href: Gitlab::Saas::doc_url)

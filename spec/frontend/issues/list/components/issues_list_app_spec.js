@@ -461,6 +461,18 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('sort', () => {
+      describe('when sort is specified in the url params', () => {
+        getParameterByName.mockImplementation((args) =>
+          jest.requireActual('~/lib/utils/url_utility').getParameterByName(args),
+        );
+        it.each(Object.keys(urlSortParams))('sort is set to value %s', (sort) => {
+          setWindowLocation(`?sort=${sort}`);
+          wrapper = mountComponent();
+
+          expect(findIssuableList().props('initialSortBy')).toBe(sort);
+        });
+      });
+
       describe('when initial sort value uses old enum values', () => {
         const oldEnumSortValues = Object.values(urlSortParams);
 

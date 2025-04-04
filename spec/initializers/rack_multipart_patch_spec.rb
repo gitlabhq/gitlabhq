@@ -49,11 +49,11 @@ EOF
         expect(described_class).to receive(:log_large_multipart?).and_return(true)
         expect(described_class).to receive(:log_multipart_warning).and_call_original
         expect(described_class).to receive(:log_warn).with({
-                                                             message: 'Large multipart body detected',
-                                                             path: '/',
-                                                             content_length: anything,
-                                                             correlation_id: anything
-                                                           })
+          message: 'Large multipart body detected',
+          path: '/',
+          content_length: anything,
+          correlation_id: anything
+        })
         params = described_class.parse_multipart(env)
 
         expect(params.keys).to include(*%w[reply fileupload])

@@ -42,12 +42,12 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it do
       expect(data[:user]).to eq(
         {
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            avatar_url: user.avatar_url(only_path: false),
-            email: user.email
-            })
+          id: user.id,
+          name: user.name,
+          username: user.username,
+          avatar_url: user.avatar_url(only_path: false),
+          email: user.email
+        })
     end
 
     it { expect(data[:commit][:id]).to eq(ci_build.pipeline.id) }

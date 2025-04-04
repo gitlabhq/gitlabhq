@@ -185,6 +185,43 @@ describe Sidekiq::BaseReliableFetch do
     end
   end
 
+  describe '#queues_cmd' do
+    let(:queues) { %w[foo bar baz] }
+
+    context 'when strictly ordered queues are enabled' do
+      before do
+        config.queues = queues
+        config[:strict] = true
+      end
+
+      it 'returns queues in order' do
+        fetcher = described_class.new(capsule)
+        expect(fetcher.queues_cmd).to eq(queues.map { |q| "queue:#{q}" })
+      end
+    end
+
+    context 'when strictly ordered queues are disabled' do
+      let(:queues) { %w[foo foo bar bar baz] }
+
+      before do
+        config.queues = queues
+        config[:strict] = false
+      end
+
+      it 'returns a shuffled and unique list of queues' do
+        fetcher = described_class.new(capsule)
+
+        # Verify the result is not in original order (shuffle was called)
+        expect(fetcher.queues).to receive(:shuffle).and_call_original
+
+        result = fetcher.queues_cmd
+
+        # Verify the result has no duplicates (uniq! was called)
+        expect(result.sort).to eq(queues.uniq.map { |q| "queue:#{q}" }.sort)
+      end
+    end
+  end
+
   it 'sets heartbeat' do
     config = double(:sidekiq_config, options: { queues: %w[foo bar] })
 

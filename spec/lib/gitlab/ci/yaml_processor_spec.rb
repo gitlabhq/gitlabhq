@@ -1955,11 +1955,11 @@ module Gitlab
 
         it "returns cache when defined globally" do
           config = YAML.dump({
-                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
-                              rspec: {
-                                script: "rspec"
-                              }
-                            })
+            cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
+            rspec: {
+              script: "rspec"
+            }
+          })
 
           config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
@@ -2045,10 +2045,10 @@ module Gitlab
           config = YAML.dump(
             rspec: {
               cache: {
-                  paths: ['binaries/'],
-                  untracked: true,
-                  key: { files: ['file'] }
-                },
+                paths: ['binaries/'],
+                untracked: true,
+                key: { files: ['file'] }
+              },
               script: 'rspec'
             }
           )
@@ -2217,11 +2217,11 @@ module Gitlab
 
         it "returns artifacts with expire_in never keyword" do
           config = YAML.dump({
-                                rspec: {
-                                  script: "rspec",
-                                  artifacts: { paths: ["releases/"], expire_in: "never" }
-                                }
-                              })
+            rspec: {
+              script: "rspec",
+              artifacts: { paths: ["releases/"], expire_in: "never" }
+            }
+          })
 
           config_processor = described_class.new(config).execute
           builds = config_processor.builds
@@ -2233,11 +2233,11 @@ module Gitlab
         %w[on_success on_failure always].each do |when_state|
           it "returns artifacts for when #{when_state}  defined" do
             config = YAML.dump({
-                                 rspec: {
-                                   script: "rspec",
-                                   artifacts: { paths: ["logs/", "binaries/"], when: when_state }
-                                 }
-                               })
+              rspec: {
+                script: "rspec",
+                artifacts: { paths: ["logs/", "binaries/"], when: when_state }
+              }
+            })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
             builds = config_processor.builds
@@ -3062,9 +3062,9 @@ module Gitlab
         context 'when hidden job have a script definition' do
           let(:config) do
             YAML.dump({
-                        '.hidden_job' => { image: 'image:1.0', script: 'test' },
-                        'normal_job' => { script: 'test' }
-                      })
+              '.hidden_job' => { image: 'image:1.0', script: 'test' },
+              'normal_job' => { script: 'test' }
+            })
           end
 
           it_behaves_like 'hidden_job_handling'
@@ -3073,9 +3073,9 @@ module Gitlab
         context "when hidden job doesn't have a script definition" do
           let(:config) do
             YAML.dump({
-                        '.hidden_job' => { image: 'image:1.0' },
-                        'normal_job' => { script: 'test' }
-                      })
+              '.hidden_job' => { image: 'image:1.0' },
+              'normal_job' => { script: 'test' }
+            })
           end
 
           it_behaves_like 'hidden_job_handling'

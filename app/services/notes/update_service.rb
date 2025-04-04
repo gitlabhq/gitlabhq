@@ -55,6 +55,15 @@ module Notes
         end
       end
 
+      if note.for_wiki_page?
+        track_internal_event(
+          'update_wiki_page_note',
+          project: project,
+          namespace: note.noteable.namespace,
+          user: current_user
+        )
+      end
+
       note
     end
 

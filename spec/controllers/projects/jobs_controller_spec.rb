@@ -1018,11 +1018,11 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     def post_play
       post :play, params: {
-                    namespace_id: project.namespace,
-                    project_id: project,
-                    id: job.id,
-                    job_variables_attributes: variable_attributes
-                  }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id,
+        job_variables_attributes: variable_attributes
+      }
     end
   end
 
@@ -1342,20 +1342,20 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     def post_erase
       post :erase, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: job.id
-                   }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id
+      }
     end
   end
 
   describe 'GET raw' do
     subject do
       post :raw, params: {
-                   namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id
-                 }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id
+      }
     end
 
     context 'when job has a trace artifact' do

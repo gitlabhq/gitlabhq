@@ -27,6 +27,8 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -131,6 +133,12 @@ export default {
         (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
           this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE) &&
         this.issuable?.author?.username === SUPPORT_BOT_USERNAME
+      );
+    },
+    isTestCase() {
+      return (
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TEST_CASE ||
+        this.issuable?.type === WORK_ITEM_TYPE_ENUM_TEST_CASE
       );
     },
     author() {
@@ -266,6 +274,7 @@ export default {
         // incidents and Service Desk issues
         !this.isIncident &&
         !this.isServiceDeskIssue &&
+        !this.isTestCase &&
         (this.glFeatures.workItemViewForIssues ||
           (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view))
       );
@@ -306,7 +315,7 @@ export default {
       e.preventDefault();
       // Unsupported types incidents and Service Desk issues
       // should not open in drawer
-      if (this.isIncident || this.isServiceDeskIssue || !this.preventRedirect) {
+      if (this.isIncident || this.isServiceDeskIssue || this.isTestCase || !this.preventRedirect) {
         this.navigateToIssuable();
         return;
       }

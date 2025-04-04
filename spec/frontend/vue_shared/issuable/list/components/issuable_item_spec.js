@@ -796,6 +796,13 @@ describe('IssuableItem', () => {
         },
       },
       {
+        type: 'Work item test case',
+        item: {
+          ...mockIssuable,
+          workItemType: { name: 'Test Case' },
+        },
+      },
+      {
         type: 'Legacy incident',
         item: {
           ...mockIssuable,
@@ -808,6 +815,13 @@ describe('IssuableItem', () => {
           ...mockIssuable,
           type: 'ISSUE',
           author: { username: 'support-bot' },
+        },
+      },
+      {
+        type: 'Legacy test case',
+        item: {
+          ...mockIssuable,
+          type: 'TEST_CASE',
         },
       },
     ];

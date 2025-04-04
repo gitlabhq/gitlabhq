@@ -91,9 +91,9 @@ RSpec.describe Projects::BoardsController do
 
     def list_boards
       get :index, params: {
-                    namespace_id: project.namespace,
-                    project_id: project
-                  }
+        namespace_id: project.namespace,
+        project_id: project
+      }
     end
   end
 

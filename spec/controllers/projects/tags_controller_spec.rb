@@ -148,12 +148,12 @@ RSpec.describe Projects::TagsController do
 
     subject(:request) do
       post(:create, params: {
-             namespace_id: project.namespace.to_param,
-             project_id: project,
-             tag_name: '1.0',
-             ref: 'master',
-             release_description: release_description
-           })
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        tag_name: '1.0',
+        ref: 'master',
+        release_description: release_description
+      })
     end
 
     it 'creates tag' do

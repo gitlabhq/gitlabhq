@@ -341,7 +341,7 @@
 {"name":"io-console","version":"0.8.0","platform":"ruby","checksum":"cd6a9facbc69871d69b2cb8b926fc6ea7ef06f06e505e81a64f14a470fddefa2"},
 {"name":"io-event","version":"1.9.0","platform":"ruby","checksum":"4c262b6610ad643a2be75e892135aca4fa67edc67d1944c0ae6b6e5dd73f4fc1"},
 {"name":"ipaddress","version":"0.8.3","platform":"ruby","checksum":"85640c4f9194c26937afc8c78e3074a8e7c97d5d1210358d1440f01034d006f5"},
-{"name":"irb","version":"1.15.1","platform":"ruby","checksum":"d9bca745ac4207a8b728a52b98b766ca909b86ff1a504bcde3d6f8c84faae890"},
+{"name":"irb","version":"1.15.2","platform":"ruby","checksum":"222f32952e278da34b58ffe45e8634bf4afc2dc7aa9da23fed67e581aa50fdba"},
 {"name":"jaeger-client","version":"1.1.0","platform":"ruby","checksum":"cb5e9b9bbee6ee8d6a82d03d947a5b04543d8c0a949c22e484254f18d8a458a8"},
 {"name":"jaro_winkler","version":"1.5.6","platform":"java","checksum":"3262aea433861fec3179184e9adc1933cca8bc15665957a143b56816f1a22f74"},
 {"name":"jaro_winkler","version":"1.5.6","platform":"ruby","checksum":"007db7805527ada1cc12f2547676181d63b0a504ec4dd7a9a2eb2424521ccd81"},

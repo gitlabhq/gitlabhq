@@ -8,24 +8,20 @@
     description: _('Projects are where you store your code, access issues, wiki, and other features of GitLab.'),
     icon: 'project',
     href: new_project_path,
-    variant: 'default',
     link_options: { data: { testid: 'new-project-button' }})
 
   - if current_user.can_create_group?
     = render Onboarding::ActionCardComponent.new(title: _('Create a group'),
       description: _('Groups are a great way to organize projects and people.'),
       icon: 'group',
-      href: new_group_path,
-      variant: 'default')
+      href: new_group_path)
 
     = render Onboarding::ActionCardComponent.new(title: _('Add people'),
       description: _('Add your team members and others to GitLab.'),
       icon: 'user',
-      href: new_admin_user_path,
-      variant: 'default')
+      href: new_admin_user_path)
 
   = render Onboarding::ActionCardComponent.new(title: _('Configure GitLab'),
     description: _('Make adjustments to how your GitLab instance is set up.'),
     icon: 'tanuki',
-    href: admin_root_path,
-    variant: 'default')
+    href: admin_root_path)

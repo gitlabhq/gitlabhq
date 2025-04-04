@@ -1373,20 +1373,20 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
       it 'renders JSON body with state filter for issues' do
         post :preview_markdown, params: {
-                                  namespace_id: public_project.namespace,
-                                  project_id: public_project,
-                                  text: issue.to_reference
-                                }
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          text: issue.to_reference
+        }
 
         expect(json_response['body']).to match(/\##{issue.iid} \(closed\)/)
       end
 
       it 'renders JSON body with state filter for MRs' do
         post :preview_markdown, params: {
-                                  namespace_id: public_project.namespace,
-                                  project_id: public_project,
-                                  text: merge_request.to_reference
-                                }
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          text: merge_request.to_reference
+        }
 
         expect(json_response['body']).to match(/!#{merge_request.iid} \(closed\)/)
       end

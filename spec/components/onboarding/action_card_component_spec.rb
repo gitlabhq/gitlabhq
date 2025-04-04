@@ -9,14 +9,12 @@ RSpec.describe Onboarding::ActionCardComponent, type: :component, feature_catego
   let(:href) { nil }
   let(:link_options) { {} }
   let(:html_options) { {} }
-  let(:variant) { :default }
 
   before do
     render_inline described_class.new(icon: icon,
       title: title,
       description: description,
       href: href,
-      variant: variant,
       **link_options,
       **html_options
     )
@@ -33,34 +31,6 @@ RSpec.describe Onboarding::ActionCardComponent, type: :component, feature_catego
 
     it 'has description' do
       expect(page).to have_css ".action-card-text"
-    end
-  end
-
-  describe 'variants' do
-    context 'when variant is default' do
-      it 'renders the card in correct variant' do
-        expect(page).to have_css ".action-card-default"
-      end
-    end
-
-    context 'when variant is success' do
-      let(:variant) { :success }
-
-      it 'renders the card in correct variant' do
-        expect(page).to have_css ".action-card-success"
-      end
-
-      it 'renders the check-mark icon' do
-        expect(page).to have_css "svg[data-testid='check-icon']"
-      end
-    end
-
-    context 'when variant is promo' do
-      let(:variant) { :promo }
-
-      it 'renders the card in correct variant' do
-        expect(page).to have_css ".action-card-promo"
-      end
     end
   end
 
