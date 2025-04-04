@@ -212,6 +212,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.not_only_reviewer' do
+      subject(:merge_requests) { described_class.not_only_reviewer(user1) }
+
+      it { expect(merge_requests).to match_array([merge_request2]) }
+    end
+
+    describe '.no_review_requested_or_only_user' do
+      subject(:merge_requests) { described_class.no_review_requested_or_only_user(user1) }
+
+      it { expect(merge_requests).to match_array([merge_request1, merge_request3, merge_request4]) }
+    end
+
     describe '.by_blob_path' do
       let(:path) { 'bar/branch-test.txt' }
 

@@ -63,20 +63,20 @@ export default {
     actions() {
       const actions = [];
 
-      if (this.mr.canRevertInCurrentMR) {
-        actions.push({
-          text: this.revertLabel,
-          tooltipText: this.revertTitle,
-          testId: 'revert-button',
-          onClick: () => this.openRevertModal(),
-        });
-      } else if (this.mr.revertInForkPath) {
+      if (this.mr.revertInForkPath) {
         actions.push({
           text: this.revertLabel,
           tooltipText: this.revertTitle,
           href: this.mr.revertInForkPath,
           testId: 'revert-button',
           dataMethod: 'post',
+        });
+      } else {
+        actions.push({
+          text: this.revertLabel,
+          tooltipText: this.revertTitle,
+          testId: 'revert-button',
+          onClick: () => this.openRevertModal(),
         });
       }
 

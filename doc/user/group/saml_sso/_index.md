@@ -315,7 +315,7 @@ After you set up your identity provider to work with GitLab, you must configure 
    - In GitLab 16.6 and earlier, group Owners can set a default membership role other than **Guest**.
      as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
-1. Optional. Select:
+1. Recommended. Select:
    - In GitLab 17.4 and later, **Disable password authentication for enterprise users**.
      For more information, see the [Disable password authentication for enterprise users documentation](#disable-password-authentication-for-enterprise-users).
    - **Enforce SSO-only authentication for web activity for this group**.

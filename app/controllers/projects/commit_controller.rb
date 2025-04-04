@@ -122,6 +122,7 @@ class Projects::CommitController < Projects::ApplicationController
     return render_404 unless @commit
 
     assign_change_commit_vars
+    @commit_params[:revert] = true
 
     return render_404 if @start_branch.blank?
 

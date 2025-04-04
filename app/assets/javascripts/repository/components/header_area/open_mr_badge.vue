@@ -1,6 +1,13 @@
 <script>
-import { GlBadge, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlSkeletonLoader,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
+import { visitUrl } from '~/lib/utils/url_utility';
 import getOpenMrCountForBlobPath from '~/repository/queries/open_mr_count.query.graphql';
 import getOpenMrsForBlobPath from '~/repository/queries/open_mrs.query.graphql';
 import { nDaysBefore } from '~/lib/utils/datetime/date_calculation_utility';
@@ -14,10 +21,12 @@ const OPEN_MR_AGE_LIMIT_DAYS = 30;
 export default {
   components: {
     GlBadge,
-    GlPopover,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlSkeletonLoader,
     MergeRequestListItem,
   },
+  directives: { GlTooltip: GlTooltipDirective },
   inject: ['currentRef'],
   props: {
     projectPath: {
@@ -33,12 +42,17 @@ export default {
     return {
       openMrsCount: null,
       openMrs: [],
-      isPopoverOpen: false,
+      isDropdownOpen: false,
     };
   },
   computed: {
+    badgeTitle() {
+      return s__(
+        'OpenMrBadge|Open merge requests created in the past 30 days that target this branch and modify this file.',
+      );
+    },
     openMRsCountText() {
-      return sprintf(s__('OpenMrBadge|%{count} open'), { count: this.openMrsCount });
+      return sprintf(s__('OpenMrBadge|%{count} Open'), { count: this.openMrsCount });
     },
     createdAfter() {
       const lookbackDate = nDaysBefore(new Date(), OPEN_MR_AGE_LIMIT_DAYS - 1, { utc: true });
@@ -82,7 +96,7 @@ export default {
         return this.queryVariables;
       },
       skip() {
-        return !this.isPopoverOpen;
+        return !this.isDropdownOpen;
       },
       update: (data) => data?.project?.mergeRequests?.nodes || [],
       error(error) {
@@ -94,34 +108,62 @@ export default {
       },
     },
   },
+  methods: {
+    handleMergeRequestClick(webUrl) {
+      visitUrl(webUrl);
+    },
+  },
 };
 </script>
 
 <template>
-  <div id="open-mr-badge">
-    <gl-badge v-if="showBadge" variant="success" icon="merge-request">
-      {{ openMRsCountText }}
-    </gl-badge>
-    <gl-popover
-      target="open-mr-badge"
-      boundary="viewport"
-      placement="bottomleft"
-      @show.once="isPopoverOpen = true"
-      @hide.once="isPopoverOpen = false"
-    >
-      <gl-skeleton-loader v-if="!openMrs.length || isLoading" :height="15">
+  <gl-disclosure-dropdown
+    v-if="showBadge"
+    :aria-label="openMRsCountText"
+    :fluid-width="true"
+    :loading="isLoading"
+    placement="bottom-end"
+    @shown="isDropdownOpen = true"
+    @hidden="isDropdownOpen = false"
+  >
+    <template #toggle>
+      <button class="gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0 gl-leading-0">
+        <gl-badge
+          v-gl-tooltip
+          data-testid="open-mr-badge"
+          variant="success"
+          icon="merge-request"
+          class="gl-h-full"
+          :title="badgeTitle"
+          :aria-label="badgeTitle"
+        >
+          {{ openMRsCountText }}
+        </gl-badge>
+      </button>
+    </template>
+
+    <template #header>
+      <div class="gl-border-b-1 gl-border-gray-100 gl-p-4 gl-font-bold gl-border-b-solid">
+        {{ s__('OpenMrBadge|Open merge requests') }}
+        <gl-badge>{{ openMrsCount }}</gl-badge>
+      </div>
+    </template>
+
+    <div v-if="!openMrs.length || isLoading" class="gl-w-34 gl-px-5 gl-py-3 md:gl-w-48">
+      <gl-skeleton-loader :height="15">
         <rect width="250" height="15" rx="4" />
       </gl-skeleton-loader>
-      <ul v-else class="flex-column gl-m-0 gl-flex gl-list-none gl-gap-4 gl-p-0">
-        <li
-          v-for="(mergeRequest, index) in openMrs"
-          :key="mergeRequest.iid"
-          class="gl-p-0"
-          :class="{ 'gl-border-t gl-pt-4': index !== 0 }"
-        >
+    </div>
+    <ul v-else class="gl-m-0 gl-w-34 gl-p-0 md:gl-w-48">
+      <gl-disclosure-dropdown-item
+        v-for="mergeRequest in openMrs"
+        :key="mergeRequest.iid"
+        @action="handleMergeRequestClick(mergeRequest.webUrl)"
+      >
+        <template #list-item>
           <merge-request-list-item :merge-request="mergeRequest" />
-        </li>
-      </ul>
-    </gl-popover>
-  </div>
+        </template>
+      </gl-disclosure-dropdown-item>
+    </ul>
+  </gl-disclosure-dropdown>
 </template>

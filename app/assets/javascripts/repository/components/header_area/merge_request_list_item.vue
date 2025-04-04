@@ -1,13 +1,16 @@
 <script>
-import { GlBadge, GlIcon } from '@gitlab/ui';
+import { GlIcon, GlAvatar, GlAvatarsInline, GlTooltipDirective } from '@gitlab/ui';
 import { getTimeago } from '~/lib/utils/datetime/timeago_utility';
+import { n__ } from '~/locale';
 
 export default {
   name: 'MergeRequestListItem',
   components: {
-    GlBadge,
     GlIcon,
+    GlAvatar,
+    GlAvatarsInline,
   },
+  directives: { GlTooltip: GlTooltipDirective },
   props: {
     mergeRequest: {
       type: Object,
@@ -18,40 +21,53 @@ export default {
     formattedTime() {
       return getTimeago().format(this.mergeRequest.createdAt);
     },
-    mrMetaInfo() {
-      return `${this.mergeRequest.project.fullPath} !${this.mergeRequest.iid}`;
+    assignees() {
+      const assignees = this.mergeRequest.assignees?.nodes;
+      return assignees.length ? assignees : [this.mergeRequest.author];
+    },
+    assigneesBadgeSrOnlyText() {
+      return n__(
+        '%d additional assignee',
+        '%d additional assignees',
+        this.assignees.length - this.$options.MAX_VISIBLE_ASSIGNEES,
+      );
     },
   },
+  MAX_VISIBLE_ASSIGNEES: 3,
 };
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-col gl-gap-1 gl-p-2">
-    <div class="gl-flex gl-items-center gl-justify-between">
-      <div class="gl-inline-flex gl-items-center gl-gap-2">
-        <gl-badge class="gl-mr-2" variant="success">
-          <gl-icon name="merge-request" />
-          {{ s__('OpenMrBadge|Open') }}
-        </gl-badge>
-        <span class="gl-text-subtle">
+  <div class="gl-flex">
+    <div class="gl-flex">
+      <gl-icon name="merge-request" class="gl-mr-3 gl-flex-shrink-0" />
+      <div class="gl-flex-grow">
+        <div class="gl-mb-1 gl-mr-2 gl-line-clamp-2">
+          {{ mergeRequest.title }}
+        </div>
+        <span class="gl-text-sm gl-text-secondary">
           {{ s__('OpenMrBadge|Opened') }} <time v-text="formattedTime"></time
         ></span>
       </div>
     </div>
-    <h5 class="my-2">{{ mergeRequest.title }}</h5>
-    <div class="gl-flex gl-flex-col gl-gap-1 gl-text-subtle" data-testid="project-info">
-      <div class="gl-flex gl-gap-1"><gl-icon name="project" />{{ mrMetaInfo }}</div>
-      <div
-        v-for="assignee in mergeRequest.assignees.nodes"
-        :key="assignee.id"
-        class="gl-flex gl-gap-1"
-        data-testid="assignee-info"
+    <div class="gl-ml-auto">
+      <gl-avatars-inline
+        :avatars="assignees"
+        :collapsed="true"
+        :avatar-size="24"
+        :max-visible="$options.MAX_VISIBLE_ASSIGNEES"
+        :badge-sr-only-text="assigneesBadgeSrOnlyText"
       >
-        <gl-icon name="user" />{{ assignee.name }}
-      </div>
-      <div class="gl-flex gl-gap-1" data-testid="source-branch-info">
-        <gl-icon name="branch" />{{ mergeRequest.sourceBranch }}
-      </div>
+        <template #avatar="{ avatar }">
+          <gl-avatar
+            v-gl-tooltip
+            :size="24"
+            :src="avatar.avatarUrl"
+            :alt="avatar.name"
+            :title="avatar.name"
+          />
+        </template>
+      </gl-avatars-inline>
     </div>
   </div>
 </template>

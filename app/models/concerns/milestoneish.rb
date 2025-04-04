@@ -62,15 +62,23 @@ module Milestoneish
   end
 
   def sorted_issues(user)
-    # This method is used on milestone view to filter opened assigned, opened unassigned and closed issues columns.
-    # We want a limit of DISPLAY_ISSUES_LIMIT for total issues present on all columns.
-    limited_ids =
-      issues_visible_to_user(user).sort_by_attribute('label_priority').limit(DISPLAY_ISSUES_LIMIT)
+    work_items_finder_params = issues_finder_params
+    work_items_finder_params[:include_descendants] = true if work_items_finder_params[:include_subgroups]
 
-    Issue
-      .where(id: Issue.select(:id).from(limited_ids))
-      .preload_associated_models
-      .sort_by_attribute('label_priority')
+    container = project || group
+    work_items_finder_params[:issue_types] =
+      container.work_items_alpha_feature_flag_enabled? ? %w[issue epic] : %w[issue]
+
+    work_item_ids = ::WorkItems::WorkItemsFinder.new(user, work_items_finder_params)
+    .execute.preload_associated_models
+    .where(milestone_id: milestoneish_id)
+    .limit(DISPLAY_ISSUES_LIMIT)
+    .sort_by_attribute('label_priority')
+
+    WorkItem.where(id: WorkItem.select(:id).from(work_item_ids))
+    .preload_associated_models
+    .sort_by_attribute('label_priority')
+    .preload(namespace: :route)
   end
 
   def sorted_merge_requests(user)

@@ -15434,6 +15434,9 @@ msgstr ""
 msgid "ComplianceFrameworks|You can create a maximum of %{maxControlsNumber} controls"
 msgstr ""
 
+msgid "ComplianceFrameworks|You can create a maximum of %{maxRequirementsNumber} requirements"
+msgstr ""
+
 msgid "ComplianceFrameworks|You must create compliance frameworks in top-level group %{linkStart}namespace%{linkEnd}"
 msgstr ""
 
@@ -41335,10 +41338,13 @@ msgstr ""
 msgid "OpenAPI Specification file path or URL"
 msgstr ""
 
-msgid "OpenMrBadge|%{count} open"
+msgid "OpenMrBadge|%{count} Open"
 msgstr ""
 
-msgid "OpenMrBadge|Open"
+msgid "OpenMrBadge|Open merge requests"
+msgstr ""
+
+msgid "OpenMrBadge|Open merge requests created in the past 30 days that target this branch and modify this file."
 msgstr ""
 
 msgid "OpenMrBadge|Opened"

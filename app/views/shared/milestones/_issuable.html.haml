@@ -1,24 +1,28 @@
 -# @project is present when viewing Project's milestone
 - project = @project || issuable.project
+- container = project || milestone_issuable_group(issuable)
 - labels = issuable.labels
 - assignees = issuable.assignees
-- base_url_args = [project]
-- issuable_type_args = base_url_args + [issuable.class.table_name.to_sym]
-- issuable_url_args = base_url_args + [issuable]
+- is_epic = issuable.respond_to?(:epic_work_item?) && issuable.epic_work_item?
+- is_merge_request = issuable.is_a?(MergeRequest)
+- base_url_args = [container]
+- issuable_type = is_merge_request ? :merge_requests : (is_epic ? :epics : :issues)
+- issuable_type_args = base_url_args + [issuable_type]
+
 
 %li.issuable-row
   %span
-    - if show_project_name
+    - if show_project_name && project
       %strong #{project.name} &middot;
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
-    = link_to issuable.title, issuable_url_args, title: issuable.title
+    = link_to issuable.title, ::Gitlab::UrlBuilder.build(issuable), title: issuable.title
   .issuable-detail
-    = link_to issuable_url_args, class: 'issue-link' do
+    = link_to ::Gitlab::UrlBuilder.build(issuable), class: 'issue-link' do
       %span.issuable-number= issuable.to_reference
 
     - labels.each do |label|
-      = render_label(label.present(issuable_subject: project), link: polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }))
+      = render_label(label.present(issuable_subject: container), link: polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }))
 
     %span.assignee-icon
       - assignees.each do |assignee|
@@ -27,3 +31,4 @@
           - image_tag(avatar_icon_for_user(assignee, 16), class: "avatar s16", alt: '')
 
     = render_if_exists "shared/milestones/issuable_weight", issuable: issuable
+

@@ -282,6 +282,7 @@ export default {
       v-if="glFeatures.filterBlobPath"
       :project-path="projectPath"
       :blob-path="filePath"
+      class="!gl-ml-auto"
     />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
@@ -324,7 +325,7 @@ export default {
     <web-ide-link
       v-if="glFeatures.blobOverflowMenu && showWebIdeLink"
       :show-edit-button="!isBinaryFileType"
-      class="!gl-ml-auto gl-mr-0"
+      class="!gl-m-0"
       :edit-url="blobInfo.editBlobPath"
       :web-ide-url="blobInfo.ideEditPath"
       :needs-to-fork="shouldShowSingleFileEditorForkSuggestion"

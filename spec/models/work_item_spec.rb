@@ -85,6 +85,23 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe ".with_enabled_widget_definition" do
+    let_it_be(:issue) { create(:work_item, :issue) }
+    let_it_be(:task) { create(:work_item, :task) }
+    let_it_be(:epic) { create(:work_item, :epic) }
+
+    before do
+      # Ensure that the widget definition does not exists.
+      WorkItems::WidgetDefinition.where(widget_type: "iteration", work_item_type: epic.work_item_type).delete_all
+    end
+
+    subject(:with_enabled_widget_definition) { described_class.with_enabled_widget_definition(:iteration) }
+
+    it "returns the items with widget iteration enabled" do
+      expect(with_enabled_widget_definition).not_to include(epic)
+    end
+  end
+
   describe '#create_dates_source_from_current_dates' do
     let_it_be(:start_date) { nil }
     let_it_be(:due_date) { nil }

@@ -167,12 +167,42 @@ module API
         present paginate_with_strategies(groups), options
       end
 
+      def immediately_delete_subgroup_error(group)
+        if !group.subgroup?
+          '`permanently_remove` option is only available for subgroups.'
+        elsif !group.marked_for_deletion_on.present?
+          'Group must be marked for deletion first.'
+        elsif group.full_path != params[:full_path]
+          '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+        end
+      end
+
       def delete_group(group)
-        destroy_conditionally!(group) do |group|
-          ::Groups::DestroyService.new(group, current_user).async_execute
+        permanently_remove = ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+
+        if permanently_remove && group.adjourned_deletion?
+          error = immediately_delete_subgroup_error(group)
+
+          render_api_error!(error, 400) if error
         end
 
-        accepted!
+        if permanently_remove || !group.adjourned_deletion?
+          destroy_conditionally!(group) do
+            ::Groups::DestroyService.new(group, current_user).async_execute
+          end
+
+          return accepted!
+        end
+
+        result = destroy_conditionally!(group) do |group|
+          ::Groups::MarkForDeletionService.new(group, current_user).execute
+        end
+
+        if result[:status] == :success
+          accepted!
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       def reorder_projects_with_order_support(projects, group, order_by)

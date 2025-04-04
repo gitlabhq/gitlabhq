@@ -920,6 +920,13 @@ describe('Settings Panel', () => {
     });
 
     describe('Auto review settings', () => {
+      it('hides auto review toggle within Duo settings when Amazon Q is not available', () => {
+        wrapper = mountComponent({ amazonQAvailable: false });
+
+        const autoReviewToggle = wrapper.findByTestId('amazon_q_auto_review_enabled');
+        expect(autoReviewToggle.exists()).toBe(false);
+      });
+
       it('shows auto review toggle within Duo settings', () => {
         wrapper = mountComponent({ amazonQAvailable: true });
 

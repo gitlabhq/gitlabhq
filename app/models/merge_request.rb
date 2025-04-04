@@ -477,6 +477,18 @@ class MergeRequest < ApplicationRecord
     where(reviewers_subquery.exists.not)
   end
 
+  scope :no_review_requested_or_only_user, ->(user) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    where.not(
+      MergeRequestReviewer
+        .where(reviewers[:merge_request_id].eq(Arel.sql('merge_requests.id')))
+        .where(reviewers[:user_id].not_eq(user.id))
+        .arel
+        .exists
+    )
+  end
+
   scope :review_requested_to, ->(user, states = nil) do
     scope = reviewers_subquery.where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
     scope = scope.where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states)) if states
@@ -499,6 +511,19 @@ class MergeRequest < ApplicationRecord
         .where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states))
         .exists
     )
+  end
+
+  scope :not_only_reviewer, ->(user) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    subquery = reviewers
+      .project(Arel.sql('1'))
+      .where(reviewers[:merge_request_id].eq(Arel.sql('merge_requests.id')))
+      .group(reviewers[:merge_request_id])
+      .having(reviewers[:id].count.eq(1))
+      .having(reviewers[:user_id].maximum.eq(user.id))
+
+    review_requested.where.not(subquery.exists)
   end
 
   scope :no_review_states, ->(states) do

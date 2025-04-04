@@ -21980,7 +21980,9 @@ CREATE TABLE resource_iteration_events (
     merge_request_id bigint,
     iteration_id bigint,
     created_at timestamp with time zone NOT NULL,
-    action smallint NOT NULL
+    action smallint NOT NULL,
+    automated boolean DEFAULT false NOT NULL,
+    triggered_by_id bigint
 );
 
 CREATE SEQUENCE resource_iteration_events_id_seq
@@ -32739,6 +32741,8 @@ CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_nam ON 
 
 CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_pro ON protected_branch_unprotect_access_levels USING btree (protected_branch_project_id);
 
+CREATE INDEX i_resource_iteration_events_on_triggered_by_id ON resource_iteration_events USING btree (triggered_by_id);
+
 CREATE UNIQUE INDEX i_sbom_occurrences_vulnerabilities_on_occ_id_and_vuln_id ON sbom_occurrences_vulnerabilities USING btree (sbom_occurrence_id, vulnerability_id);
 
 CREATE INDEX i_software_license_policies_on_custom_software_license_id ON software_license_policies USING btree (custom_software_license_id);
@@ -42419,6 +42423,9 @@ ALTER TABLE ONLY ssh_signatures
 
 ALTER TABLE ONLY sent_notifications
     ADD CONSTRAINT fk_7d7663e36a FOREIGN KEY (issue_email_participant_id) REFERENCES issue_email_participants(id) ON DELETE SET NULL NOT VALID;
+
+ALTER TABLE ONLY resource_iteration_events
+    ADD CONSTRAINT fk_7d9260dbfb FOREIGN KEY (triggered_by_id) REFERENCES issues(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

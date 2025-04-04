@@ -18,6 +18,15 @@
     - elsif value == I18n.t('devise.failure.unconfirmed')
       = render 'shared/confirm_your_email_alert'
     - elsif value
+      - is_value_hash = value.is_a?(Hash)
       = render Pajamas::AlertComponent.new(variant: type_to_variant[key], dismissible: closable.include?(key), alert_options: {class: "flash-#{key}", data: { testid: "alert-#{type_to_variant[key]}" }}) do |c|
-        = c.with_body { value }
+        = c.with_body do
+          - if is_value_hash
+            = value[:message]
+          - else
+            = value
+        - if is_value_hash && value[:button_text] && value[:button_path]
+          = c.with_actions do
+            = render Pajamas::ButtonComponent.new(variant: :confirm, href: value[:button_path]) do
+              = value[:button_text]
   #js-global-alerts

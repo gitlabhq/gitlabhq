@@ -108,8 +108,9 @@
       .loading.hide
         = gl_loading_icon(size: 'lg')
 
-- if @merge_request.can_be_reverted?(current_user)
+- if @merge_request.commit_to_revert
   = render "projects/commit/change", type: 'revert', commit: @merge_request.commit_to_revert
+
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.commit_to_cherry_pick
 

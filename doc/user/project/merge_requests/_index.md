@@ -103,6 +103,24 @@ If your group contains subgroups, this view also displays merge requests from th
 
 {{< /tab >}}
 
+{{< tab title="For a file" >}}
+
+When viewing a file in your repository, GitLab shows a badge with the number of open merge requests that target the current branch and modify the file. This helps you identify files that have pending changes.
+
+The availability of this feature is controlled by a feature flag.
+For more information, see [View open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
+
+To view the open merge requests for a file:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to view.
+1. At the top right of the screen, next to the filename, look for the green badge with the number
+   of {{< icon name="merge-request-open" >}} **Open** merge requests.
+1. Select the badge to see a list of open merge requests created in the past 30 days.
+1. Select any merge request in the list to go to that merge request.
+
+{{< /tab >}}
+
 {{< /tabs >}}
 
 ## Filter the list of merge requests

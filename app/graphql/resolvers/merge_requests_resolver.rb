@@ -188,6 +188,10 @@ module Resolvers
       argument :my_reaction_emoji, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to those without the given reaction from the authenticated user.'
+      argument :only_reviewer, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Filters out merge requests to those that do not have the reviewer as the only assigned reviewer.',
+        experiment: { milestone: '17.11' }
       argument :release_tag, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to those without the given release tag.'

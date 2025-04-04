@@ -47,6 +47,11 @@ class WorkItem < Issue
     joins("INNER JOIN (#{date_filtered_issue_ids.to_sql}) AS filtered_dates ON issues.id = filtered_dates.issue_id")
   end
 
+  scope :with_enabled_widget_definition, ->(type) do
+    joins(work_item_type: :enabled_widget_definitions)
+      .merge(::WorkItems::WidgetDefinition.by_enabled_widget_type(type))
+  end
+
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
       find_by!(namespace: namespace, iid: iid)

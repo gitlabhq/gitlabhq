@@ -12,6 +12,10 @@ module MilestonesHelper
     primary ? 'gl-text-white' : 'gl-text-subtle'
   end
 
+  def milestone_issuable_group(issuable)
+    (issuable.respond_to?(:namespace) && issuable.namespace.is_a?(Group) ? issuable.namespace : nil)
+  end
+
   private
 
   def milestone_header_color(primary: false)

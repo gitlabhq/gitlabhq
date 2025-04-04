@@ -22,6 +22,7 @@ module Commits
       @branch_name = params[:branch_name]
       @force = params[:force] || false
       @dry_run = params[:dry_run] || false
+      @revert = params[:revert] || false
     end
 
     def execute
@@ -100,7 +101,13 @@ module Commits
 
     def validate_branch_existence!
       if !project.empty_repo? && different_branch? && repository.branch_exists?(@branch_name) && !force?
-        raise_error("A branch called '#{@branch_name}' already exists. Switch to that branch in order to make changes")
+        if @revert
+          raise_error("A branch called '#{@branch_name}' already exists. Create merge request with that branch?")
+        else
+          raise_error(
+            "A branch called '#{@branch_name}' already exists. Switch to that branch in order to make changes"
+          )
+        end
       end
     end
 

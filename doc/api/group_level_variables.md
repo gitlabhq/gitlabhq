@@ -25,7 +25,9 @@ GET /groups/:id/variables
 | `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/variables"
 ```
 
 ```json
@@ -77,7 +79,9 @@ GET /groups/:id/variables/:key
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables/TEST_VARIABLE_1"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/variables/TEST_VARIABLE_1"
 ```
 
 ```json
@@ -122,8 +126,11 @@ POST /groups/:id/variables
 | `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/variables" \
+  --form "key=NEW_VARIABLE" \
+  --form "value=new value"
 ```
 
 ```json
@@ -169,8 +176,10 @@ PUT /groups/:id/variables/:key
 | `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/1/variables/NEW_VARIABLE" --form "value=updated value"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/variables/NEW_VARIABLE" \
+  --form "value=updated value"
 ```
 
 ```json
@@ -209,8 +218,9 @@ DELETE /groups/:id/variables/:key
 | `filter`  | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/1/variables/VARIABLE_1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/variables/VARIABLE_1"
 ```
 
 ## The `filter` parameter
@@ -242,20 +252,26 @@ For example:
 - GET:
 
   ```shell
-  curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" \
-       "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
+  curl \
+    --globoff \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
   ```
 
 - PUT:
 
   ```shell
-  curl --request PUT --globoff --header "PRIVATE-TOKEN: <your_access_token>" \
-       "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?value=scoped-variable-updated-value&environment_scope=production&filter[environment_scope]=production"
+  curl --request PUT \
+    --globoff \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?value=scoped-variable-updated-value&environment_scope=production&filter[environment_scope]=production"
   ```
 
 - DELETE:
 
   ```shell
-  curl --request DELETE --globoff --header "PRIVATE-TOKEN: <your_access_token>" \
-       "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
+  curl --request DELETE \
+    --globoff \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/groups/1/variables/SCOPED_VARIABLE_1?filter[environment_scope]=production"
   ```

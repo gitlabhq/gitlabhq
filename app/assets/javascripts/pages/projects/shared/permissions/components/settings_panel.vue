@@ -1110,7 +1110,10 @@ export default {
           name="project[project_setting_attributes][duo_features_enabled]"
           data-testid="duo_features_enabled_toggle"
         />
-        <div class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7">
+        <div
+          v-if="amazonQAvailable"
+          class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7"
+        >
           <project-setting-row
             :label="s__('AI|Enable Auto Review')"
             class="gl-mt-5"
