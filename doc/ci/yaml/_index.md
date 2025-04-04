@@ -1344,11 +1344,7 @@ link outside it.
 **Supported values**:
 
 - An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-  patterns and:
-  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
 - For [GitLab Pages job](#pages):
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
     the [`pages.publish`](#pagespublish) path is automatically appended to `artifacts:paths`,
@@ -1787,12 +1783,8 @@ Use the `cache:paths` keyword to choose which files or directories to cache.
 **Supported values**:
 
 - An array of paths relative to the project directory (`$CI_PROJECT_DIR`).
-  You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-  patterns:
-  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-  - In GitLab Runner 12.10 and earlier,
-    [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+  You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) and
+  [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
 
 [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file) are supported.
 
@@ -6113,7 +6105,7 @@ The description displays with [the prefilled variable name when running a pipeli
 
 **Supported values**:
 
-- A string.
+- A string. You can use Markdown.
 
 **Example of `variables:description`**:
 

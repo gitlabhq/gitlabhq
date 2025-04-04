@@ -20,11 +20,6 @@ export default {
       required: false,
       default: false,
     },
-    hasReplies: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isUpdating: {
       type: Boolean,
       required: false,

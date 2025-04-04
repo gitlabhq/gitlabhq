@@ -1,24 +1,29 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, removeCookie, setCookie } from '~/lib/utils/common_utils';
 import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import store from '~/mr_notes/stores';
 import * as types from '~/diffs/store/mutation_types';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
-describe('DiffsFileTree', () => {
-  useLocalStorageSpy();
+Vue.use(PiniaVuePlugin);
 
+describe('DiffsFileTree', () => {
+  let pinia;
   let wrapper;
+
+  useLocalStorageSpy();
 
   const createComponent = (propsData = {}) => {
     wrapper = extendedWrapper(
       shallowMount(DiffsFileTree, {
-        store,
+        pinia,
         propsData,
       }),
     );
@@ -32,6 +37,11 @@ describe('DiffsFileTree', () => {
     global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
   });
 
+  beforeEach(() => {
+    pinia = createTestingPinia();
+    useLegacyDiffs();
+  });
+
   it('re-emits clickFile event', () => {
     const obj = {};
     createComponent();
@@ -40,15 +50,10 @@ describe('DiffsFileTree', () => {
   });
 
   it('sets current file on click', () => {
-    const spy = jest.spyOn(store, 'commit');
     const file = { fileHash: 'foo' };
     createComponent();
     wrapper.findComponent(TreeList).vm.$emit('clickFile', file);
-    expect(spy).toHaveBeenCalledWith(
-      `diffs/${types.SET_CURRENT_DIFF_FILE}`,
-      file.fileHash,
-      undefined,
-    );
+    expect(useLegacyDiffs()[types.SET_CURRENT_DIFF_FILE]).toHaveBeenCalledWith(file.fileHash);
   });
 
   describe('size', () => {

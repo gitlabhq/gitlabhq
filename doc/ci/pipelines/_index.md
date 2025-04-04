@@ -104,10 +104,17 @@ The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
+{{< history >}}
+
+- Markdown rendering on the **Run pipeline** page [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441474) in GitLab 17.11.
+
+{{< /history >}}
+
 You can use the [`description` and `value`](../yaml/_index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
 information such as what the variable is used for, and what the acceptable values are.
+You can use Markdown in the description.
 
 Job-level variables cannot be pre-filled.
 

@@ -85,12 +85,40 @@ module API
         end
       end
 
+      def immediately_delete_project_error(project)
+        if !project.marked_for_deletion_at?
+          'Project must be marked for deletion first.'
+        elsif project.full_path != params[:full_path]
+          '`full_path` is incorrect. You must enter the complete path for the project.'
+        end
+      end
+
       def delete_project(user_project)
-        destroy_conditionally!(user_project) do
-          ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+        permanently_remove = ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+
+        if permanently_remove && user_project.adjourned_deletion_configured?
+          error = immediately_delete_project_error(user_project)
+
+          return render_api_error!(error, 400) if error
         end
 
-        accepted!
+        if permanently_remove || !user_project.adjourned_deletion_configured?
+          destroy_conditionally!(user_project) do
+            ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+          end
+
+          return accepted!
+        end
+
+        result = destroy_conditionally!(user_project) do
+          ::Projects::MarkForDeletionService.new(user_project, current_user, {}).execute
+        end
+
+        if result[:status] == :success
+          accepted!
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       def validate_projects_api_rate_limit_for_unauthenticated_users!

@@ -5425,6 +5425,104 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         subject(:request) { api("/projects/#{project.id}", admin, admin_mode: true) }
       end
     end
+
+    shared_examples 'deletes project immediately' do
+      it :aggregate_failures do
+        expect(::Projects::DestroyService).to receive(:new).with(project, user, {}).and_call_original
+
+        delete api(path, user), params: params
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+
+    shared_examples 'immediately delete project error' do
+      it :aggregate_failures do
+        expect(::Projects::DestroyService).not_to receive(:new)
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
+
+        delete api(path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(Gitlab::Json.parse(response.body)['message']).to eq(error_message)
+      end
+    end
+
+    shared_examples 'marks project for deletion' do
+      it :aggregate_failures do
+        expect(::Projects::MarkForDeletionService).to receive(:new).with(project, user, {}).and_call_original
+
+        delete api(path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:accepted)
+        expect(project.reload.marked_for_deletion?).to be_truthy
+      end
+    end
+
+    context 'for delayed deletion' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, group: group, owners: user) }
+      let(:params) { {} }
+
+      before do
+        stub_licensed_features(adjourned_deletion_for_projects_and_groups: false)
+      end
+
+      context 'when the downtier_delayed_deletion feature flag is enabled' do
+        it_behaves_like 'marks project for deletion'
+
+        context 'when permanently_remove param is true' do
+          before do
+            params.merge!(permanently_remove: true)
+          end
+
+          context 'when project is already marked for deletion' do
+            before do
+              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+            end
+
+            context 'with correct project full path' do
+              before do
+                params.merge!(full_path: project.full_path)
+              end
+
+              it_behaves_like 'deletes project immediately'
+            end
+
+            context 'with incorrect project full path' do
+              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+
+              before do
+                params.merge!(full_path: "#{project.full_path}-wrong-path")
+              end
+
+              it_behaves_like 'immediately delete project error'
+            end
+          end
+
+          context 'when project is not marked for deletion' do
+            let(:error_message) { 'Project must be marked for deletion first.' }
+
+            it_behaves_like 'immediately delete project error'
+          end
+        end
+      end
+
+      context 'when the downtier_delayed_deletion feature flag is disabled' do
+        before do
+          stub_feature_flags(downtier_delayed_deletion: false)
+        end
+
+        it_behaves_like 'deletes project immediately'
+
+        context 'when permanently_remove param is true' do
+          before do
+            params.merge!(permanently_remove: true)
+          end
+
+          it_behaves_like 'deletes project immediately'
+        end
+      end
+    end
   end
 
   describe 'POST /projects/:id/fork' do

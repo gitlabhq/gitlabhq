@@ -29,6 +29,8 @@ query: label = "AI Model Migration" AND opened = true
 
 LLM models are constantly evolving, and GitLab needs to regularly update our AI features to support newer models. This guide provides a structured approach for migrating AI features to new models while maintaining stability and reliability.
 
+*Note: GitLab strives to leverage the latest AI model capabilities to help provide optimal performance and features, which means model updates from existing GitLab subprocessors might occur without specific customer notifications beyond documentation updates.*
+
 ## Model Migration Timelines
 
 Model migrations typically follow these general timelines:

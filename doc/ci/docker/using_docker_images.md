@@ -249,23 +249,12 @@ To define which option should be used, the runner process reads the configuratio
 
 ### Requirements and limitations
 
-- Available for [Docker executor](https://docs.gitlab.com/runner/executors/docker/)
-  in GitLab Runner 12.0 and later.
-- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)
-  in GitLab Runner 13.1 and later.
 - [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
   require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
   these features are not available on instance runners, or any other runner where the user does not
   have access to the environment where the runner is installed.
 
 ### Use statically-defined credentials
-
-{{< history >}}
-
-- Introduced in GitLab Runner 1.8 for Docker executor.
-- Introduced in GitLab Runner 13.1 for Kubernetes executor.
-
-{{< /history >}}
 
 You can access a private registry using two approaches. Both require setting the CI/CD variable
 `DOCKER_AUTH_CONFIG` with appropriate authentication information.
@@ -411,13 +400,6 @@ To add `DOCKER_AUTH_CONFIG` to a runner:
 
 ### Use a Credentials Store
 
-{{< history >}}
-
-- Introduced in GitLab Runner 9.5 for Docker executor.
-- Introduced in GitLab Runner 13.1 for Kubernetes executor.
-
-{{< /history >}}
-
 To configure a Credentials Store:
 
 1. To use a Credentials Store, you need an external helper program to interact with a specific keychain or external store.
@@ -445,13 +427,6 @@ If you use both images from a private registry and public images from Docker Hub
 pulling from Docker Hub fails. Docker daemon tries to use the same credentials for **all** the registries.
 
 ### Use Credential Helpers
-
-{{< history >}}
-
-- Introduced in GitLab Runner 12.0 for Docker executor.
-- Introduced in GitLab Runner 13.1 for Kubernetes executor.
-
-{{< /history >}}
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.

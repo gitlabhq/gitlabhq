@@ -1,7 +1,7 @@
 const path = require('path');
 const IS_EE = require('../../config/helpers/is_ee_env');
 
-module.exports = {
+const config = {
   stories: [
     '../../app/assets/javascripts/**/*.stories.js',
     IS_EE && '../../ee/app/assets/javascripts/**/*.stories.js',
@@ -13,6 +13,14 @@ module.exports = {
     '@storybook/addon-viewport',
     'storybook-dark-mode',
   ],
+  framework: {
+    name: '@storybook/vue-webpack5',
+    options: {
+      builder: {
+        disableTelemetry: Boolean(process.env.CI),
+      },
+    },
+  },
   docs: {
     autodocs: true,
   },
@@ -23,3 +31,5 @@ module.exports = {
     },
   ],
 };
+
+module.exports = config;

@@ -14,6 +14,10 @@ module QA
               element 'work-item-title', required: true
             end
 
+            base.view 'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue' do
+              element 'markdown-editor-form-field'
+            end
+
             base.view 'app/assets/javascripts/work_items/components/work_item_created_updated.vue' do
               element 'work-item-author'
             end

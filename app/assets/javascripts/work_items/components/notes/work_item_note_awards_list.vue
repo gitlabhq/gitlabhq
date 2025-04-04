@@ -21,11 +21,6 @@ export default {
       type: Object,
       required: true,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     awards() {

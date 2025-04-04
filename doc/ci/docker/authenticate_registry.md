@@ -106,8 +106,6 @@ to include the file.
     [[runners.kubernetes.volumes.config_map]]
       name = "docker-client-config"
       mount_path = "/root/.docker/config.json"
-      # If you are running GitLab Runner 13.5
-      # or lower you can remove this
       sub_path = "config.json"
 ```
 

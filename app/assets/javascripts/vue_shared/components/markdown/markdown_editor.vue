@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import Autosize from 'autosize';
+import MarkdownComposer from 'ee_component/vue_shared/components/markdown/composer.vue';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
@@ -36,11 +37,13 @@ export default {
     GlAlert,
     MarkdownField,
     LocalStorageSync,
+    MarkdownComposer,
     ContentEditor: () =>
       import(
         /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
       ),
   },
+  inject: { canUseComposer: { default: false } },
   props: {
     value: {
       type: String,
@@ -179,6 +182,9 @@ export default {
     },
     isDefaultEditorEnabled() {
       return ['plain_text_editor', 'rich_text_editor'].includes(window.gon?.text_editor);
+    },
+    composerComponent() {
+      return this.canUseComposer ? 'markdown-composer' : 'div';
     },
   },
   watch: {
@@ -375,6 +381,7 @@ export default {
     >
       {{ alert.message }}
     </gl-alert>
+    <!-- <markdown-composer v-if="!isContentEditorActive && canUseComposer"  /> -->
     <markdown-field
       v-if="!isContentEditorActive"
       ref="markdownField"
@@ -402,20 +409,23 @@ export default {
       <template #header-buttons><slot name="header-buttons"></slot></template>
       <template #toolbar><slot name="toolbar"></slot></template>
       <template #textarea>
-        <textarea
-          v-bind="formFieldProps"
-          ref="textarea"
-          :value="markdown"
-          class="note-textarea js-gfm-input markdown-area"
-          dir="auto"
-          :data-can-suggest="codeSuggestionsConfig.canSuggest"
-          :data-noteable-type="noteableType"
-          :data-supports-quick-actions="supportsQuickActions"
-          :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
-          :disabled="disabled"
-          @input="updateMarkdownFromMarkdownField"
-          @keydown="$emit('keydown', $event)"
-        ></textarea>
+        <component :is="composerComponent" :markdown="canUseComposer ? markdown : null">
+          <textarea
+            v-bind="formFieldProps"
+            ref="textarea"
+            :value="markdown"
+            class="note-textarea js-gfm-input markdown-area"
+            :class="[{ 'gl-relative gl-z-3 !gl-pl-7': canUseComposer }, formFieldProps.class || '']"
+            dir="auto"
+            :data-can-suggest="codeSuggestionsConfig.canSuggest"
+            :data-noteable-type="noteableType"
+            :data-supports-quick-actions="supportsQuickActions"
+            :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
+            :disabled="disabled"
+            @input="updateMarkdownFromMarkdownField"
+            @keydown="$emit('keydown', $event)"
+          ></textarea>
+        </component>
       </template>
     </markdown-field>
     <div v-else>

@@ -184,6 +184,10 @@ module MergeRequestsHelper
     Feature.enabled?(:notifications_todos_buttons, current_user)
   end
 
+  def can_use_description_composer(_user, _merge_request)
+    false
+  end
+
   def diffs_tab_pane_data(project, merge_request, params)
     {
       "is-locked": merge_request.discussion_locked?,

@@ -28,6 +28,7 @@
                                autofocus: 'false',
                                form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description',
                                project_id: @project.id,
+                               can_use_composer: is_merge_request ? can_use_description_composer(current_user, model).to_s : nil,
                                source_branch: is_merge_request ? @merge_request.source_branch : nil,
                                target_branch: is_merge_request ? @merge_request.target_branch : nil,
                                can_summarize: is_merge_request ? can?(current_user, :access_summarize_new_merge_request, @project).to_s : nil } }

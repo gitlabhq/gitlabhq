@@ -6,13 +6,13 @@ import {
   GlButton,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import micromatch from 'micromatch';
 import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { isElementClipped } from '~/lib/utils/common_utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import DiffFileRow from './diff_file_row.vue';
 import TreeListHeight from './tree_list_height.vue';
 
@@ -48,8 +48,15 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds', 'realSize']),
-    ...mapGetters('diffs', ['fileTree', 'allBlobs', 'linkedFile']),
+    ...mapState(useLegacyDiffs, [
+      'renderTreeList',
+      'currentDiffFileId',
+      'viewedDiffFileIds',
+      'realSize',
+      'fileTree',
+      'allBlobs',
+      'linkedFile',
+    ]),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
@@ -153,8 +160,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
-
+    ...mapActions(useLegacyDiffs, ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
     scrollVirtualScrollerToFileHash(hash) {
       const item = document.querySelector(`[data-file-row="${hash}"]`);
       if (item && !isElementClipped(item, this.$refs.scroller.$el)) return;

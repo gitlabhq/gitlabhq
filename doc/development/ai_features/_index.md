@@ -186,6 +186,34 @@ The [subscription for Chat](duo_chat.md#graphql-subscription) behaves differentl
 
 To not have many concurrent subscriptions, you should also only subscribe to the subscription once the mutation is sent by using [`skip()`](https://apollo.vuejs.org/guide-option/subscriptions.html#skipping-the-subscription).
 
+##### Clarifying different ID parameters
+
+When working with the `aiAction` mutation, several ID parameters are used for routing requests and responses correctly. Here's what each parameter does:
+
+- **user_id** (required)
+  - Purpose: Identifies and authenticates the requesting user
+  - Used for: Permission checks, request attribution, and response routing
+  - Example: `gid://gitlab/User/123`
+  - Note: This ID is automatically included by the GraphQL API framework
+
+- **client_subscription_id** (recommended for streaming or multiple features)
+  - Client-generated UUID for tracking specific request/response pairs
+  - Required when using streaming responses or when multiple AI features share the same page
+  - Example: `"9f5dedb3-c58d-46e3-8197-73d653c71e69"`
+  - Can be omitted for simple, isolated requests with no streaming
+
+- **resource_id** (contextual - required for some features)
+  - Purpose: References a specific GitLab entity (project, issue, MR) that provides context for the AI operation
+  - Used for: Permission verification and contextual information gathering
+  - Real example: `"gid://gitlab/Issue/164723626"`
+  - Note: Some features may not require a specific resource
+
+- **project_id** (contextual - required for some features)
+  - Purpose: Identifies the project context for the AI operation
+  - Used for: Project-specific permission checks and context
+  - Real example: `"gid://gitlab/Project/278964"`
+  - Note: Some features may not require a specific project
+
 #### Current abstraction layer flow
 
 The following graph uses VertexAI as an example. You can use different providers.

@@ -13,7 +13,6 @@ Vue.use(VueApollo);
 
 describe('Work Item Note Actions', () => {
   let wrapper;
-  const noteId = '1';
   const showSpy = jest.fn();
 
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
@@ -54,7 +53,6 @@ describe('Work Item Note Actions', () => {
         showEdit,
         workItemIid: '1',
         note: {},
-        noteId,
         showAwardEmoji,
         showAssignUnassign,
         canReportAbuse,

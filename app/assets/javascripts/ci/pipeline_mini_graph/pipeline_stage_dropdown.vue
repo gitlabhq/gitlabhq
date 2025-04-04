@@ -2,7 +2,7 @@
 import {
   GlButton,
   GlDisclosureDropdown,
-  GlDropdownDivider,
+  GlDisclosureDropdownGroup,
   GlLoadingIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -23,7 +23,7 @@ export default {
     CiIcon,
     GlButton,
     GlDisclosureDropdown,
-    GlDropdownDivider,
+    GlDisclosureDropdownGroup,
     GlLoadingIcon,
     JobDropdownItem,
   },
@@ -161,22 +161,27 @@ export default {
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
-      <span v-if="hasFailedJobs" class="gl-flex gl-px-4 gl-py-3 gl-text-sm gl-font-bold">
-        {{ s__('Pipelines|Failed jobs') }}
-      </span>
-      <job-dropdown-item
-        v-for="job in failedJobs"
-        :key="job.id"
-        :job="job"
-        @jobActionExecuted="$emit('jobActionExecuted')"
-      />
-      <gl-dropdown-divider v-if="hasPassedJobs && hasFailedJobs" />
-      <job-dropdown-item
-        v-for="job in passedJobs"
-        :key="job.id"
-        :job="job"
-        @jobActionExecuted="$emit('jobActionExecuted')"
-      />
+      <gl-disclosure-dropdown-group v-if="hasFailedJobs">
+        <template #group-label>{{ s__('Pipelines|Failed jobs') }}</template>
+        <job-dropdown-item
+          v-for="job in failedJobs"
+          :key="job.id"
+          :job="job"
+          @jobActionExecuted="$emit('jobActionExecuted')"
+        />
+      </gl-disclosure-dropdown-group>
+      <gl-disclosure-dropdown-group
+        v-if="hasPassedJobs"
+        :bordered="hasFailedJobs"
+        data-testid="passed-jobs"
+      >
+        <job-dropdown-item
+          v-for="job in passedJobs"
+          :key="job.id"
+          :job="job"
+          @jobActionExecuted="$emit('jobActionExecuted')"
+        />
+      </gl-disclosure-dropdown-group>
     </ul>
 
     <template #footer>

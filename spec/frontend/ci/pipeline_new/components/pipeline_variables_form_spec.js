@@ -12,6 +12,7 @@ import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_
 import { VARIABLE_TYPE } from '~/ci/pipeline_new/constants';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 
 Vue.use(VueApollo);
 jest.mock('~/ci/utils');
@@ -46,6 +47,19 @@ describe('PipelineVariablesForm', () => {
       value: 'simple-value',
       description: 'Simple variable',
       valueOptions: [],
+    },
+  ];
+
+  const configVariablesWithMarkdown = [
+    {
+      key: 'VAR_WITH_MARKDOWN',
+      value: 'some-value',
+      description: 'Variable with **Markdown** _description_',
+    },
+    {
+      key: 'SIMPLE_VAR',
+      value: 'simple-value',
+      description: 'Simple variable',
     },
   ];
 
@@ -85,6 +99,7 @@ describe('PipelineVariablesForm', () => {
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
   const findRemoveButton = () => wrapper.findByTestId('remove-ci-variable-row');
+  const findMarkdown = () => wrapper.findComponent(Markdown);
 
   beforeEach(() => {
     mockCiConfigVariables = jest.fn().mockResolvedValue({
@@ -185,6 +200,23 @@ describe('PipelineVariablesForm', () => {
       // At least the empty row should exist
       const emptyRowExists = keyInputs.wrappers.some((w) => w.props('value') === '');
       expect(emptyRowExists).toBe(true);
+    });
+
+    it('renders markdown if variable has description', async () => {
+      await createComponent({ configVariables: configVariablesWithMarkdown });
+
+      expect(findMarkdown().exists()).toBe(true);
+      expect(findMarkdown().props('markdown')).toBe('Variable with **Markdown** _description_');
+    });
+
+    it('does not render anything when description is missing', async () => {
+      await createComponent({
+        props: {
+          variableParams: { CUSTOM_VAR: 'custom-value' },
+        },
+      });
+
+      expect(findMarkdown().exists()).toBe(false);
     });
   });
 

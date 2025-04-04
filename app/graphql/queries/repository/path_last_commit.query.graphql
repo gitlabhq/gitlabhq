@@ -4,68 +4,62 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!, $refType: 
     id
     repository {
       __typename
-      paginatedTree(path: $path, ref: $ref, refType: $refType) {
+      lastCommit(path: $path, ref: $ref, refType: $refType) {
         __typename
-        nodes {
+        id
+        sha
+        title
+        titleHtml
+        descriptionHtml
+        message
+        webPath
+        authoredDate
+        authorName
+        authorGravatar
+        author {
           __typename
-          lastCommit {
+          id
+          name
+          avatarUrl
+          webPath
+        }
+        signature {
+          __typename
+          ... on GpgSignature {
+            gpgKeyPrimaryKeyid
+            verificationStatus
+          }
+          ... on X509Signature {
+            verificationStatus
+            x509Certificate {
+              id
+              subject
+              subjectKeyIdentifier
+              x509Issuer {
+                id
+                subject
+                subjectKeyIdentifier
+              }
+            }
+          }
+          ... on SshSignature {
+            verificationStatus
+            keyFingerprintSha256
+          }
+        }
+        pipelines(ref: $ref, first: 1) {
+          __typename
+          edges {
             __typename
-            id
-            sha
-            title
-            titleHtml
-            descriptionHtml
-            message
-            webPath
-            authoredDate
-            authorName
-            authorGravatar
-            author {
+            node {
               __typename
               id
-              name
-              avatarUrl
-              webPath
-            }
-            signature {
-              __typename
-              ... on GpgSignature {
-                gpgKeyPrimaryKeyid
-                verificationStatus
-              }
-              ... on X509Signature {
-                verificationStatus
-                x509Certificate {
-                  id
-                  subject
-                  subjectKeyIdentifier
-                  x509Issuer {
-                    id
-                    subject
-                    subjectKeyIdentifier
-                  }
-                }
-              }
-              ... on SshSignature {
-                verificationStatus
-                keyFingerprintSha256
-              }
-            }
-            pipelines(ref: $ref, first: 1) {
-              __typename
-              edges {
+              detailedStatus {
                 __typename
-                node {
-                  __typename
-                  id
-                  detailedStatus {
-                    __typename
-                    id
-                    detailsPath
-                    icon
-                    text
-                  }
-                }
+                id
+                detailsPath
+                icon
+                text
               }
             }
           }

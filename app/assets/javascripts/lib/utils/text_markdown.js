@@ -592,11 +592,20 @@ export function insertMarkdownText({
   }
 }
 
-export function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
+export function updateText({
+  textArea,
+  tag,
+  cursorOffset,
+  blockTag,
+  wrap,
+  select,
+  tagContent,
+  replaceText = false,
+}) {
   const $textArea = $(textArea);
   textArea = $textArea.get(0);
   const text = $textArea.val();
-  const selected = selectedText(text, textArea) || tagContent;
+  const selected = replaceText ? '' : selectedText(text, textArea) || tagContent;
   textArea.focus();
   insertMarkdownText({
     textArea,

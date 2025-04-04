@@ -50,6 +50,7 @@ export default {
     editorAiActions: { default: () => [] },
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
+    canUseComposer: { default: false },
   },
   props: {
     previewMarkdown: {
@@ -677,7 +678,7 @@ export default {
             :new-comment-template-paths="commentTemplatePaths"
             @select="insertSavedReply"
           />
-          <template v-if="!previewMarkdown && canSummarizeChanges">
+          <template v-if="!previewMarkdown && canSummarizeChanges && !canUseComposer">
             <header-divider />
             <summarize-code-changes />
           </template>

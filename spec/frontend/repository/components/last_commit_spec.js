@@ -183,4 +183,12 @@ describe('Repository last commit component', () => {
       });
     });
   });
+
+  describe('polling', () => {
+    it('polls for last commit and pipeline data', () => {
+      createComponent();
+
+      expect(LastCommit.apollo.commit.pollInterval).toBe(30000);
+    });
+  });
 });

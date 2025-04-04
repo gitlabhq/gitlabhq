@@ -28,6 +28,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
   let(:scope) { nil }
   let(:project_path) { nil }
   let(:verification_level) { nil }
+  let(:topics) { [] }
 
   let(:args) do
     {
@@ -35,7 +36,8 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
       sort: sort,
       search: search,
       scope: scope,
-      verification_level: verification_level
+      verification_level: verification_level,
+      topics: topics
     }.compact
   end
 
@@ -105,6 +107,95 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
 
         it 'returns published catalog resources that match the verification level' do
           expect(result.items.pluck(:name)).to contain_exactly('public')
+        end
+      end
+
+      context 'with topics argument' do
+        let_it_be(:topic_ruby) { create(:topic, name: 'ruby') }
+        let_it_be(:topic_rails) { create(:topic, name: 'rails') }
+        let_it_be(:topic_gitlab) { create(:topic, name: 'gitlab') }
+
+        before_all do
+          create(:project_topic, project: public_namespace_project, topic: topic_ruby)
+          create(:project_topic, project: public_namespace_project, topic: topic_rails)
+          create(:project_topic, project: internal_project, topic: topic_gitlab)
+        end
+
+        context 'when filtering by multiple topics' do
+          let(:topics) { %w[ruby gitlab] }
+
+          it 'returns resources with projects matching any of the given topic names' do
+            ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+            expect(ordered_names).to eq(%w[public internal])
+          end
+        end
+
+        context 'when filtering by a single topic' do
+          let(:topics) { %w[ruby] }
+
+          it 'returns resources with projects matching the topic name' do
+            ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+            expect(ordered_names).to contain_exactly('public')
+          end
+        end
+
+        context 'when combining with other filters' do
+          context 'with search' do
+            let(:topics) { %w[ruby] }
+            let(:search) { 'Test' }
+
+            it 'returns resources matching both filters' do
+              ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+              expect(ordered_names).to contain_exactly('public')
+            end
+          end
+
+          context 'with verification level' do
+            let(:topics) { %w[ruby] }
+            let(:verification_level) { :gitlab_maintained }
+
+            it 'returns resources matching both filters' do
+              ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+              expect(ordered_names).to contain_exactly('public')
+            end
+          end
+
+          context 'with scope' do
+            let(:topics) { %w[ruby] }
+            let(:scope) { 'NAMESPACES' }
+
+            it 'returns resources matching both filters' do
+              ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+              expect(ordered_names).to contain_exactly('public')
+            end
+          end
+
+          context 'with sort' do
+            let(:topics) { %w[ruby gitlab] }
+            let(:sort) { 'NAME_DESC' }
+
+            it 'returns filtered resources in sorted order' do
+              ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+              expect(ordered_names).to eq(%w[public internal])
+            end
+          end
+        end
+
+        context 'when filtering by non-existent topics' do
+          let(:topics) { %w[nonexistent] }
+
+          it 'returns no resources' do
+            expect(result.items).to be_empty
+          end
+        end
+
+        context 'when topics argument is empty' do
+          let(:topics) { [] }
+
+          it 'returns all visible resources' do
+            ordered_names = result.items.reorder('catalog_resources.name DESC').pluck(:name)
+            expect(ordered_names).to contain_exactly('public', 'internal', 'z private test')
+          end
         end
       end
     end

@@ -31,7 +31,7 @@ describe('PipelineInputsForm', () => {
   let wrapper;
   let pipelineInputsHandler;
 
-  const createComponent = ({ props = {}, provide = {} } = {}) => {
+  const createComponent = async ({ props = {}, provide = {} } = {}) => {
     const handlers = [[getPipelineInputsQuery, pipelineInputsHandler]];
     const mockApollo = createMockApollo(handlers);
     wrapper = shallowMountExtended(PipelineInputsForm, {
@@ -45,6 +45,7 @@ describe('PipelineInputsForm', () => {
       },
       apolloProvider: mockApollo,
     });
+    await waitForPromises();
   };
 
   const findSkeletonLoader = () => wrapper.findComponent(InputsTableSkeletonLoader);
@@ -104,12 +105,21 @@ describe('PipelineInputsForm', () => {
             options: [],
             regex: null,
           },
+          {
+            name: 'tags',
+            description: 'Tags for deployment',
+            default: '',
+            type: 'ARRAY',
+            required: false,
+            options: [],
+            regex: null,
+          },
         ];
         expect(findInputsTable().props('inputs')).toEqual(expectedInputs);
       });
 
       it('updates the count in the crud component', () => {
-        expect(findCrudComponent().props('count')).toBe(2);
+        expect(findCrudComponent().props('count')).toBe(3);
       });
     });
 
@@ -135,7 +145,6 @@ describe('PipelineInputsForm', () => {
 
       it('handles GraphQL error', async () => {
         await createComponent();
-        await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
           message: 'There was a problem fetching the pipeline inputs.',
@@ -161,7 +170,6 @@ describe('PipelineInputsForm', () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       const savedInputs = [{ name: 'deploy_environment', value: 'saved-value' }];
       await createComponent({ props: { savedInputs } });
-      await waitForPromises();
 
       const updatedInput = findInputsTable()
         .props('inputs')
@@ -174,7 +182,6 @@ describe('PipelineInputsForm', () => {
     it('processes and emits update events from the table component', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
-      await waitForPromises();
 
       const updatedInput = { ...wrapper.vm.inputs[0], value: 'updated-value' };
       findInputsTable().vm.$emit('update', updatedInput);
@@ -189,6 +196,50 @@ describe('PipelineInputsForm', () => {
         value: input.default,
       }));
       expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
+    });
+
+    it('converts string values to arrays for ARRAY type inputs', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+
+      // Get the array input from the current inputs prop of the table
+      const inputs = findInputsTable().props('inputs');
+      const arrayInput = inputs.find((input) => input.type === 'ARRAY');
+
+      const updatedInput = {
+        ...arrayInput,
+        default: '[1,2,3]',
+      };
+
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      // Check that the emitted value contains the converted array
+      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
+
+      expect(Array.isArray(emittedArrayValue)).toBe(true);
+      expect(emittedArrayValue).toEqual([1, 2, 3]);
+    });
+
+    it('converts complex object arrays correctly', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+
+      const inputs = findInputsTable().props('inputs');
+      const arrayInput = inputs.find((input) => input.type === 'ARRAY');
+
+      const updatedInput = {
+        ...arrayInput,
+        default: '[{"key": "value"}, {"another": "object"}]',
+      };
+
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
+
+      expect(Array.isArray(emittedArrayValue)).toBe(true);
+      expect(emittedArrayValue).toEqual([{ key: 'value' }, { another: 'object' }]);
     });
   });
 });

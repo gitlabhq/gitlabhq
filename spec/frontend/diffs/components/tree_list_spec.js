@@ -1,8 +1,7 @@
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import TreeList from '~/diffs/components/tree_list.vue';
-import createStore from '~/diffs/store/modules';
 import DiffFileRow from '~/diffs/components//diff_file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -10,22 +9,24 @@ import { SET_LINKED_FILE_HASH, SET_TREE_DATA, SET_DIFF_FILES } from '~/diffs/sto
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
 import { isElementClipped } from '~/lib/utils/common_utils';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 
 jest.mock('~/lib/utils/common_utils');
 
+Vue.use(PiniaVuePlugin);
+
 describe('Diffs tree list component', () => {
   let wrapper;
-  let store;
-  let setRenderTreeListMock;
+  let pinia;
   const getScroller = () => wrapper.findComponent({ name: 'RecycleScroller' });
   const getFileRow = () => wrapper.findComponent(DiffFileRow);
   const findDiffTreeSearch = () => wrapper.findByTestId('diff-tree-search');
 
-  Vue.use(Vuex);
-
   const createComponent = ({ hideFileStats = false, ...rest } = {}) => {
     wrapper = shallowMountExtended(TreeList, {
-      store,
+      pinia,
       propsData: { hideFileStats, ...rest },
       stubs: {
         // eslint will fail if we import the real component
@@ -46,39 +47,14 @@ describe('Diffs tree list component', () => {
   };
 
   beforeEach(() => {
-    const { getters, mutations, actions, state } = createStore();
-
-    setRenderTreeListMock = jest.fn();
-
-    store = new Vuex.Store({
-      modules: {
-        diffs: {
-          namespaced: true,
-          state: {
-            isTreeLoaded: true,
-            diffFiles: ['test'],
-            addedLines: 10,
-            removedLines: 20,
-            mergeRequestDiff: {},
-            realSize: 20,
-            ...state,
-          },
-          getters: {
-            allBlobs: getters.allBlobs,
-            flatBlobsList: getters.flatBlobsList,
-            linkedFile: getters.linkedFile,
-            fileTree: getters.fileTree,
-          },
-          mutations: { ...mutations },
-          actions: {
-            toggleTreeOpen: actions.toggleTreeOpen,
-            setTreeOpen: actions.setTreeOpen,
-            goToFile: actions.goToFile,
-            setRenderTreeList: setRenderTreeListMock,
-          },
-        },
-      },
-    });
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useLegacyDiffs().isTreeLoaded = true;
+    useLegacyDiffs().diffFiles = [getDiffFileMock()];
+    useLegacyDiffs().addedLines = 10;
+    useLegacyDiffs().addedLines = 20;
+    useLegacyDiffs().mergeRequestDiff = {};
+    useLegacyDiffs().realSize = '20';
+    useLegacyDiffs().setTreeOpen.mockReturnValue();
   });
 
   const setupFilesInState = () => {
@@ -166,16 +142,14 @@ describe('Diffs tree list component', () => {
       },
     };
 
-    Object.assign(store.state.diffs, {
-      treeEntries,
-      tree: [
-        treeEntries.LICENSE,
-        {
-          ...treeEntries.app,
-          tree: [treeEntries.javascript, treeEntries['index.js'], treeEntries['test.rb']],
-        },
-      ],
-    });
+    useLegacyDiffs().treeEntries = treeEntries;
+    useLegacyDiffs().tree = [
+      treeEntries.LICENSE,
+      {
+        ...treeEntries.app,
+        tree: [treeEntries.javascript, treeEntries['index.js'], treeEntries['test.rb']],
+      },
+    ];
 
     return treeEntries;
   };
@@ -247,32 +221,28 @@ describe('Diffs tree list component', () => {
     });
 
     it('calls toggleTreeOpen when clicking folder', () => {
-      jest.spyOn(store, 'dispatch').mockReturnValue(undefined);
-
       getFileRow().vm.$emit('toggleTreeOpen', 'app');
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/toggleTreeOpen', 'app');
+      expect(useLegacyDiffs().toggleTreeOpen).toHaveBeenCalledWith('app');
     });
 
     it('renders when renderTreeList is false', async () => {
-      store.state.diffs.renderTreeList = false;
+      useLegacyDiffs().renderTreeList = false;
 
       await nextTick();
       expect(getScroller().props('items')).toHaveLength(5);
     });
 
     it('dispatches setTreeOpen with all paths for the current diff file', async () => {
-      jest.spyOn(store, 'dispatch').mockReturnValue(undefined);
-
-      store.state.diffs.currentDiffFileId = 'appjavascriptfile';
+      useLegacyDiffs().currentDiffFileId = 'appjavascriptfile';
 
       await nextTick();
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setTreeOpen', {
+      expect(useLegacyDiffs().setTreeOpen).toHaveBeenCalledWith({
         opened: true,
         path: 'app',
       });
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setTreeOpen', {
+      expect(useLegacyDiffs().setTreeOpen).toHaveBeenCalledWith({
         opened: true,
         path: 'app/javascript',
       });
@@ -284,7 +254,7 @@ describe('Diffs tree list component', () => {
 
     beforeEach(() => {
       setupFilesInState();
-      store.state.diffs.viewedDiffFileIds = viewedDiffFileIds;
+      useLegacyDiffs().viewedDiffFileIds = viewedDiffFileIds;
     });
 
     it('passes the viewedDiffFileIds to the FileTree', async () => {
@@ -312,7 +282,7 @@ describe('Diffs tree list component', () => {
 
     const setupFiles = (diffFiles) => {
       const { treeEntries, tree } = generateTreeList(diffFiles);
-      store.commit(`diffs/${SET_TREE_DATA}`, {
+      useLegacyDiffs()[SET_TREE_DATA]({
         treeEntries,
         tree: sortTree(tree),
       });
@@ -327,7 +297,7 @@ describe('Diffs tree list component', () => {
       wrapper.element.insertAdjacentHTML('afterbegin', `<div data-file-row="05.txt"><div>`);
       isElementClipped.mockReturnValueOnce(true);
       wrapper.vm.$refs.scroller.scrollToItem = jest.fn();
-      store.state.diffs.currentDiffFileId = '05.txt';
+      useLegacyDiffs().currentDiffFileId = '05.txt';
       await nextTick();
 
       expect(wrapper.vm.currentDiffFileId).toBe('05.txt');
@@ -349,13 +319,13 @@ describe('Diffs tree list component', () => {
     ];
 
     const linkFile = (fileHash) => {
-      store.commit(`diffs/${SET_LINKED_FILE_HASH}`, fileHash);
+      useLegacyDiffs()[SET_LINKED_FILE_HASH](fileHash);
     };
 
     const setupFiles = (diffFiles) => {
       const { treeEntries, tree } = generateTreeList(diffFiles);
-      store.commit(`diffs/${SET_DIFF_FILES}`, diffFiles);
-      store.commit(`diffs/${SET_TREE_DATA}`, {
+      useLegacyDiffs()[SET_DIFF_FILES](diffFiles);
+      useLegacyDiffs()[SET_TREE_DATA]({
         treeEntries,
         tree: sortTree(tree),
       });
@@ -396,13 +366,13 @@ describe('Diffs tree list component', () => {
       ${'list-view-toggle'} | ${false}
       ${'tree-view-toggle'} | ${true}
     `(
-      'calls setRenderTreeListMock with `$renderTreeList` when clicking $toggle clicked',
+      'calls setRenderTreeList with `$renderTreeList` when clicking $toggle clicked',
       ({ toggle, renderTreeList }) => {
         createComponent();
 
         wrapper.findByTestId(toggle).vm.$emit('click');
 
-        expect(setRenderTreeListMock).toHaveBeenCalledWith(expect.anything(), {
+        expect(useLegacyDiffs().setRenderTreeList).toHaveBeenCalledWith({
           renderTreeList,
         });
       },
@@ -415,7 +385,7 @@ describe('Diffs tree list component', () => {
     `(
       'sets $selectedToggle as selected when renderTreeList is $renderTreeList',
       ({ selectedToggle, deselectedToggle, renderTreeList }) => {
-        store.state.diffs.renderTreeList = renderTreeList;
+        useLegacyDiffs().renderTreeList = renderTreeList;
 
         createComponent();
 
@@ -427,10 +397,12 @@ describe('Diffs tree list component', () => {
 
   describe('loading state', () => {
     const getLoadedFiles = (offset = 1) =>
-      store.state.diffs.tree.slice(offset).reduce((acc, el) => {
-        acc[el.fileHash] = true;
-        return acc;
-      }, {});
+      useLegacyDiffs()
+        .tree.slice(offset)
+        .reduce((acc, el) => {
+          acc[el.fileHash] = true;
+          return acc;
+        }, {});
 
     beforeEach(() => {
       setupFilesInState();

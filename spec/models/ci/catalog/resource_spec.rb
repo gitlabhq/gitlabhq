@@ -177,6 +177,33 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
+  describe '.with_topics' do
+    let_it_be(:topic_ruby) { create(:topic, name: 'ruby') }
+    let_it_be(:topic_rails) { create(:topic, name: 'rails') }
+    let_it_be(:topic_gitlab) { create(:topic, name: 'gitlab') }
+
+    before_all do
+      create(:project_topic, project: project_a, topic: topic_ruby)
+      create(:project_topic, project: project_a, topic: topic_rails)
+      create(:project_topic, project: project_b, topic: topic_gitlab)
+    end
+
+    it 'returns resources with projects matching any of the given topic names' do
+      expect(described_class.with_topics(%w[ruby gitlab]))
+        .to contain_exactly(resource_a, resource_b)
+    end
+
+    it 'returns a resource only once even if it matches multiple topics' do
+      expect(described_class.with_topics(%w[ruby rails]))
+        .to contain_exactly(resource_a)
+    end
+
+    it 'returns no resources when searching for non-existent topics' do
+      expect(described_class.with_topics(%w[nonexistent]))
+        .to be_empty
+    end
+  end
+
   describe 'authorized catalog resources' do
     let_it_be(:namespace) { create(:group) }
     let_it_be(:other_namespace) { create(:group) }

@@ -13,21 +13,8 @@ module QA
             element 'crud-loading'
           end
 
-          view 'app/assets/javascripts/work_items/components/work_item_relationships/work_item_relationships.vue' do
-            element 'link-item-add-button'
-          end
-
           view 'app/assets/javascripts/work_items/components/shared/work_item_token_input.vue' do
             element 'work-item-token-select-input'
-          end
-
-          view "app/assets/javascripts/work_items/components/" \
-            "work_item_relationships/work_item_add_relationship_form.vue" do
-            element 'link-work-item-button'
-          end
-
-          view 'app/assets/javascripts/work_items/components/work_item_relationships/work_item_relationship_list.vue' do
-            element 'work-item-linked-items-list'
           end
 
           view 'app/assets/javascripts/work_items/components/shared/work_item_link_child_contents.vue' do
@@ -40,12 +27,54 @@ module QA
             element 'state-toggle-action'
           end
 
+          view 'app/assets/javascripts/work_items/components/work_item_description.vue' do
+            element 'save-description'
+            element 'work-item-description-wrapper'
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_item_description_rendered.vue' do
+            element 'work-item-description'
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_item_detail.vue' do
+            element 'work-item-edit-form-button'
+          end
+
+          view "app/assets/javascripts/work_items/components/" \
+            "work_item_relationships/work_item_add_relationship_form.vue" do
+            element 'link-work-item-button'
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_item_relationships/work_item_relationships.vue' do
+            element 'link-item-add-button'
+          end
+
+          view 'app/assets/javascripts/work_items/components/work_item_relationships/work_item_relationship_list.vue' do
+            element 'work-item-linked-items-list'
+          end
+
           view 'app/assets/javascripts/work_items/components/work_item_title.vue' do
             element 'work-item-title'
           end
 
           view 'app/assets/javascripts/work_items_feedback/components/work_item_feedback.vue' do
             element 'work-item-feedback-popover'
+          end
+
+          def edit_description(new_description)
+            close_new_issue_popover if has_element?('work-item-feedback-popover')
+            wait_for_requests
+
+            click_element('work-item-edit-form-button')
+
+            within_element('work-item-description-wrapper') do
+              fill_element('markdown-editor-form-field', new_description)
+              click_element('save-description')
+            end
+          end
+
+          def has_description?(description)
+            find_element('work-item-description').text.include?(description)
           end
 
           def has_delete_issue_button?

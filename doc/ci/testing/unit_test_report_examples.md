@@ -78,9 +78,6 @@ java:
       junit: build/test-results/test/**/TEST-*.xml
 ```
 
-In [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620)
-and later, you can use `**`.
-
 ### Maven
 
 For parsing [Surefire](https://maven.apache.org/surefire/maven-surefire-plugin/)

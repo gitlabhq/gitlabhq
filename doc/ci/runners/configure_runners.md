@@ -691,12 +691,6 @@ Where `$REFSPECS` is a value provided to the runner internally by GitLab.
 
 ### Sync or exclude specific submodules from CI jobs
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
-
-{{< /history >}}
-
 Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
 You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 

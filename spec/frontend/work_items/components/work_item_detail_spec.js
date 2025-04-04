@@ -194,7 +194,6 @@ describe('WorkItemDetail component', () => {
         hasSubepicsFeature,
         fullPath: 'group/project',
         groupPath: 'group',
-        reportAbusePath: '/report/abuse/path',
         hasLinkedItemsEpicsFeature,
       },
       stubs: {

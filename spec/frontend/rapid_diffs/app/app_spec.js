@@ -11,6 +11,8 @@ import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import { StreamingError } from '~/rapid_diffs/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
+jest.mock('~/lib/graphql');
+jest.mock('~/awards_handler');
 jest.mock('~/mr_notes/stores');
 jest.mock('~/rapid_diffs/app/view_settings');
 jest.mock('~/rapid_diffs/app/init_hidden_files_warning');

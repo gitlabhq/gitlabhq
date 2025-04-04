@@ -277,7 +277,7 @@ export default {
 <template>
   <div class="col-lg-8 gl-pl-0">
     <gl-loading-icon v-if="loading && editing" size="lg" />
-    <gl-form v-else>
+    <gl-form v-else @submit.prevent="scheduleHandler">
       <!--Description-->
       <gl-form-group :label="$options.i18n.description" label-for="schedule-description">
         <gl-form-input
@@ -344,10 +344,10 @@ export default {
       </gl-form-checkbox>
       <div class="gl-flex gl-flex-wrap gl-gap-3">
         <gl-button
+          type="submit"
           variant="confirm"
           data-testid="schedule-submit-button"
           class="gl-w-full sm:gl-w-auto"
-          @click="scheduleHandler"
         >
           {{ buttonText }}
         </gl-button>

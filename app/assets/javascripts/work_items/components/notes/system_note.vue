@@ -56,10 +56,6 @@ export default {
   },
   data() {
     return {
-      expanded: false,
-      lines: [],
-      showLines: false,
-      loadingDiff: false,
       isLoadingDescriptionVersion: false,
       descriptionVersions: {},
     };
@@ -79,9 +75,6 @@ export default {
     },
     isTargetNote() {
       return this.targetNoteHash === this.noteAnchorId;
-    },
-    toggleIcon() {
-      return this.expanded ? 'chevron-up' : 'chevron-down';
     },
     actionTextHtml() {
       return $(this.note.bodyHtml).unwrap().html();

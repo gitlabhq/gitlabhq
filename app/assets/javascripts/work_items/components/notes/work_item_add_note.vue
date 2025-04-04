@@ -4,7 +4,6 @@ import { uniqueId } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
-import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
@@ -63,11 +62,6 @@ export default {
     workItemType: {
       type: String,
       required: true,
-    },
-    sortOrder: {
-      type: String,
-      required: false,
-      default: ASC,
     },
     markdownPreviewPath: {
       type: String,
@@ -147,7 +141,6 @@ export default {
       workItem: {},
       isEditing: this.isNewDiscussion,
       isSubmitting: false,
-      isSubmittingWithKeydown: false,
     };
   },
   apollo: {
@@ -181,6 +174,7 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return this.discussionId ? `${this.discussionId}-comment` : `${this.workItemId}-comment`;
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,

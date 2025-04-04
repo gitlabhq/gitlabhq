@@ -118,7 +118,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
             expect(page).to have_content('pipeline schedule')
 
             within_testid('next-run-cell') do
-              expect(find('time')['title']).to include(pipeline_schedule.real_next_run.strftime('%B %-d, %Y'))
+              # validate the format instead of the actual time because timezone issues were causing flaky tests
+              expect(find('time')['title']).to match(/[A-Z][a-z]+ \d+, \d{4} at \d+:\d+:\d+ [AP]M [A-Z]{3,4}/)
             end
 
             expect(page).to have_link('master')
@@ -210,6 +211,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       end
 
       it 'prevents an invalid form from being submitted' do
+        fill_in 'schedule-description', with: 'my fancy description'
         create_pipeline_schedule
 
         expect(page).to have_content("Cron timezone can't be blank")

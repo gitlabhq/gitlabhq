@@ -8,9 +8,10 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level mod
       return error(_('Cannot mark group for deletion: feature not supported')) unless licensed || feature_downtiered?
 
       result = create_deletion_schedule
-      log_event if result[:status] == :success
-
-      send_group_deletion_notification
+      if result[:status] == :success
+        log_event
+        send_group_deletion_notification
+      end
 
       result
     end

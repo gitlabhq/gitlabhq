@@ -57,10 +57,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    noteId: {
-      type: String,
-      required: true,
-    },
     showAwardEmoji: {
       type: Boolean,
       required: false,
@@ -111,11 +107,6 @@ export default {
       default: '',
     },
     canResolve: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    resolvable: {
       type: Boolean,
       required: false,
       default: false,

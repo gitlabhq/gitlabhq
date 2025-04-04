@@ -54,6 +54,22 @@ module QA
         end
       end
 
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/526755
+      it(
+        'creates an issue and updates the description',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/533855'
+      ) do
+        resource, _, show_page_type = create_new_issue
+        updated_description = "Updated issue description"
+
+        resource.visit!
+        show_page_type.perform do |show|
+          show.edit_description(updated_description)
+
+          expect(show).to have_description(updated_description)
+        end
+      end
+
       context 'when using attachments in comments', :object_storage do
         let(:png_file_name) { 'testfile.png' }
         let(:file_to_attach) { Runtime::Path.fixture('designs', png_file_name) }

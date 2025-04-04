@@ -38,6 +38,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
   queryToObject: jest.fn().mockReturnValue({ id: '1' }),
 }));
 
+const preventDefault = jest.fn();
+
 const {
   data: {
     project: {
@@ -287,8 +289,7 @@ describe('Pipeline schedules form', () => {
       findPipelineVariables().vm.$emit('update-variables', updatedVariables);
       findPipelineInputsForm().vm.$emit('update-inputs', updatedInputs);
 
-      findSubmitButton().vm.$emit('click');
-
+      findForm().vm.$emit('submit', { preventDefault });
       await waitForPromises();
 
       expect(createMutationHandlerSuccess).toHaveBeenCalledWith({
@@ -311,7 +312,7 @@ describe('Pipeline schedules form', () => {
       createComponent({
         requestHandlers: [[createPipelineScheduleMutation, createMutationHandlerFailed]],
       });
-      findSubmitButton().vm.$emit('click');
+      findForm().vm.$emit('submit', { preventDefault });
 
       await waitForPromises();
 
@@ -327,7 +328,7 @@ describe('Pipeline schedules form', () => {
 
       await waitForPromises();
 
-      await findSubmitButton().vm.$emit('click');
+      findForm().vm.$emit('submit', { preventDefault });
 
       expect(createMutationHandlerSuccess).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -437,7 +438,7 @@ describe('Pipeline schedules form', () => {
       findPipelineVariables().vm.$emit('update-variables', updatedVariables);
       findPipelineInputsForm().vm.$emit('update-inputs', updatedInputs);
 
-      findSubmitButton().vm.$emit('click');
+      findForm().vm.$emit('submit', { preventDefault });
 
       await waitForPromises();
 
@@ -466,7 +467,7 @@ describe('Pipeline schedules form', () => {
 
       await waitForPromises();
 
-      findSubmitButton().vm.$emit('click');
+      findForm().vm.$emit('submit', { preventDefault });
 
       await waitForPromises();
 
@@ -483,7 +484,7 @@ describe('Pipeline schedules form', () => {
 
       await waitForPromises();
 
-      await findSubmitButton().vm.$emit('click');
+      findForm().vm.$emit('submit', { preventDefault });
 
       expect(updateMutationHandlerSuccess).toHaveBeenCalledWith(
         expect.objectContaining({

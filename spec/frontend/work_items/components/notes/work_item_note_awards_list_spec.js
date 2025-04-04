@@ -65,7 +65,6 @@ describe('Work Item Note Awards List', () => {
         fullPath,
         workItemIid,
         note,
-        isModal: false,
       },
       apolloProvider,
     });

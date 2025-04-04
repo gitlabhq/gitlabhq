@@ -18,10 +18,20 @@ module QA
             element 'remove-related-issue-button'
           end
 
+          view 'app/assets/javascripts/issues/show/components/description.vue' do
+            element 'gfm-content'
+          end
+
+          view 'app/assets/javascripts/issues/show/components/edit_actions.vue' do
+            element 'issuable-save-button'
+          end
+
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
-            element 'toggle-issue-state-button'
-            element 'desktop-dropdown'
             element 'delete-issue-button'
+            element 'desktop-dropdown'
+            element 'edit-button'
+            element 'issue-header'
+            element 'toggle-issue-state-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
@@ -35,6 +45,15 @@ module QA
 
           def work_item_enabled?
             Page::Project::Issue::Index.perform(&:work_item_enabled?)
+          end
+
+          def edit_description(new_description)
+            within_element('issue-header') do
+              click_element('edit-button')
+            end
+
+            fill_element('markdown-editor-form-field', new_description)
+            click_element('issuable-save-button')
           end
 
           def relate_issue(issue)
@@ -61,6 +80,10 @@ module QA
           def click_close_issue_button
             open_actions_dropdown
             click_element('toggle-issue-state-button', text: 'Close issue')
+          end
+
+          def has_description?(description)
+            find_element('gfm-content').text.include?(description)
           end
 
           def has_reopen_issue_button?

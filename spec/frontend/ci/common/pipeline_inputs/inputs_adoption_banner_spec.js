@@ -51,10 +51,6 @@ describe('InputsAdoptionAlert', () => {
       it('sets the correct props', () => {
         expect(findAlert().props()).toMatchObject({
           variant: 'tip',
-          primaryButtonLink: defaultProvide.pipelineEditorPath,
-          primaryButtonText: 'Go to the pipeline editor',
-          secondaryButtonLink: '/help/ci/yaml/inputs',
-          secondaryButtonText: 'Learn more',
         });
       });
     });

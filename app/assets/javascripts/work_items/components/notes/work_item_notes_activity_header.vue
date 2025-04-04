@@ -59,14 +59,6 @@ export default {
       return this.smallHeaderStyle ? 'gl-text-base gl-m-0' : 'gl-text-size-h1 gl-m-0';
     },
   },
-  methods: {
-    changeNotesSortOrder(direction) {
-      this.$emit('changeSort', direction);
-    },
-    filterDiscussions(filterValue) {
-      this.$emit('changeFilter', filterValue);
-    },
-  },
   WORK_ITEM_ACTIVITY_FILTER_OPTIONS,
   WORK_ITEM_NOTES_FILTER_KEY,
   WORK_ITEM_NOTES_FILTER_ALL_NOTES,
@@ -93,28 +85,26 @@ export default {
       <work-item-activity-sort-filter
         :work-item-type="workItemType"
         :loading="disableActivityFilterSort"
-        :sort-filter-prop="discussionFilter"
+        :sort-filter="discussionFilter"
         :items="$options.WORK_ITEM_ACTIVITY_FILTER_OPTIONS"
         :storage-key="$options.WORK_ITEM_NOTES_FILTER_KEY"
-        :default-sort-filter-prop="$options.WORK_ITEM_NOTES_FILTER_ALL_NOTES"
+        :default-sort-filter="$options.WORK_ITEM_NOTES_FILTER_ALL_NOTES"
         tracking-action="work_item_notes_filter_changed"
         tracking-label="item_track_notes_filtering"
-        filter-event="changeFilter"
         data-testid="work-item-filter"
-        @changeFilter="filterDiscussions"
+        @select="$emit('changeFilter', $event)"
       />
       <work-item-activity-sort-filter
         :work-item-type="workItemType"
         :loading="disableActivityFilterSort"
-        :sort-filter-prop="sortOrder"
+        :sort-filter="sortOrder"
         :items="$options.WORK_ITEM_ACTIVITY_SORT_OPTIONS"
         :storage-key="$options.WORK_ITEM_NOTES_SORT_ORDER_KEY"
-        :default-sort-filter-prop="$options.ASC"
+        :default-sort-filter="$options.ASC"
         tracking-action="work_item_notes_sort_order_changed"
         tracking-label="item_track_notes_sorting"
-        filter-event="changeSort"
         data-testid="work-item-sort"
-        @changeSort="changeNotesSortOrder"
+        @select="$emit('changeSort', $event)"
       />
     </div>
   </div>

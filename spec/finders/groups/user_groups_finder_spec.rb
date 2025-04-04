@@ -67,6 +67,110 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
       end
     end
 
+    context 'when sorting results' do
+      context 'when sorting by name' do
+        context 'in ascending order' do
+          let(:arguments) { { sort: :name_asc } }
+
+          it 'sorts the groups by name in ascending order' do
+            is_expected.to eq(
+              [
+                public_maintainer_group,
+                public_owner_group,
+                private_maintainer_group,
+                public_developer_group,
+                guest_group
+              ]
+            )
+          end
+        end
+
+        context 'in descending order' do
+          let(:arguments) { { sort: :name_desc } }
+
+          it 'sorts the groups by name in descending order' do
+            is_expected.to eq(
+              [
+                guest_group,
+                public_developer_group,
+                private_maintainer_group,
+                public_owner_group,
+                public_maintainer_group
+              ]
+            )
+          end
+        end
+      end
+
+      context 'when sorting by path' do
+        context 'in ascending order' do
+          let(:arguments) { { sort: :path_asc } }
+
+          it 'sorts the groups by path in ascending order' do
+            is_expected.to eq(
+              [
+                public_maintainer_group,
+                public_owner_group,
+                private_maintainer_group,
+                public_developer_group,
+                guest_group
+              ]
+            )
+          end
+        end
+
+        context 'in descending order' do
+          let(:arguments) { { sort: :path_desc } }
+
+          it 'sorts the groups by path in descending order' do
+            is_expected.to eq(
+              [
+                guest_group,
+                public_developer_group,
+                private_maintainer_group,
+                public_owner_group,
+                public_maintainer_group
+              ]
+            )
+          end
+        end
+      end
+
+      context 'when sorting by ID' do
+        context 'in ascending order' do
+          let(:arguments) { { sort: :id_asc } }
+
+          it 'sorts the groups by ID in ascending order' do
+            is_expected.to eq(
+              [
+                guest_group,
+                private_maintainer_group,
+                public_developer_group,
+                public_maintainer_group,
+                public_owner_group
+              ]
+            )
+          end
+        end
+
+        context 'in descending order' do
+          let(:arguments) { { sort: :id_desc } }
+
+          it 'sorts the groups by ID in descending order' do
+            is_expected.to eq(
+              [
+                public_owner_group,
+                public_maintainer_group,
+                public_developer_group,
+                private_maintainer_group,
+                guest_group
+              ]
+            )
+          end
+        end
+      end
+    end
+
     it 'returns all groups where the user is a direct member' do
       is_expected.to contain_exactly(
         public_maintainer_group,

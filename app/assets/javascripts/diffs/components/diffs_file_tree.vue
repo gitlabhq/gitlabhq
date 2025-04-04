@@ -1,10 +1,10 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapMutations } from 'vuex';
 import { debounce } from 'lodash';
+import { mapActions } from 'pinia';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import * as types from '~/diffs/store/mutation_types';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -65,7 +65,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('diffs', {
+    ...mapActions(useLegacyDiffs, {
       setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
     }),
     onFileClick(file) {

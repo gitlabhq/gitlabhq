@@ -18,6 +18,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import { fetchPolicies } from '~/lib/graphql';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import filterVariables from '../utils/filter_variables';
 import {
   CI_VARIABLE_TYPE_FILE,
@@ -46,6 +47,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     InputsAdoptionBanner,
+    Markdown,
     VariableValuesListbox,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -361,9 +363,11 @@ export default {
               />
             </template>
           </div>
-          <div v-if="descriptions[variable.key]" class="gl-text-subtle">
-            {{ descriptions[variable.key] }}
-          </div>
+          <markdown
+            v-if="descriptions[variable.key]"
+            class="gl-text-subtle"
+            :markdown="descriptions[variable.key]"
+          />
         </div>
         <template #description>
           <gl-sprintf

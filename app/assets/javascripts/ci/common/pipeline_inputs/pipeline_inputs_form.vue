@@ -7,6 +7,8 @@ import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skel
 import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
 
+const ARRAY_TYPE = 'ARRAY';
+
 export default {
   name: 'PipelineInputsForm',
   components: {
@@ -78,10 +80,21 @@ export default {
         input.name === updatedInput.name ? updatedInput : input,
       );
 
-      const nameValuePairs = this.inputs.map((input) => ({
-        name: input.name,
-        value: input.default,
-      }));
+      const nameValuePairs = this.inputs.map((input) => {
+        let value = input.default;
+
+        // Convert string to array for ARRAY type inputs
+        if (input.type === ARRAY_TYPE && typeof value === 'string' && value) {
+          try {
+            value = JSON.parse(value);
+            if (!Array.isArray(value)) value = [value];
+          } catch (e) {
+            value = value.split(',').map((item) => item.trim());
+          }
+        }
+
+        return { name: input.name, value };
+      });
 
       this.$emit('update-inputs', nameValuePairs);
     },

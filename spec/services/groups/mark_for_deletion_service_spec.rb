@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let(:licensed) { false }
+  let(:service) { described_class.new(group, user, {}) }
 
-  subject(:result) { described_class.new(group, user, {}).execute(licensed: licensed) }
+  subject(:result) { service.execute(licensed: licensed) }
 
   context 'when marking the group for deletion' do
     context 'with user that can admin the group' do
@@ -22,6 +23,12 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
 
         it 'returns success' do
           expect(result).to eq({ status: :success })
+        end
+
+        it 'calls send_group_deletion_notification when successful' do
+          expect(service).to receive(:send_group_deletion_notification)
+
+          result
         end
 
         it 'logs the event' do
@@ -45,6 +52,12 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
 
           it 'returns error' do
             expect(result).to eq({ status: :error, message: 'error message' })
+          end
+
+          it 'does not call send_group_deletion_notification' do
+            expect(service).not_to receive(:send_group_deletion_notification)
+
+            result
           end
         end
 

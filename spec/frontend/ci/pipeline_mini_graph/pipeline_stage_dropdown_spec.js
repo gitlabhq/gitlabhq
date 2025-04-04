@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlDisclosureDropdown, GlDropdownDivider, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlLoadingIcon } from '@gitlab/ui';
 
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
@@ -46,7 +46,7 @@ describe('PipelineStageDropdown', () => {
 
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdownButton = () => wrapper.findComponent(GlButton);
-  const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
+  const findDropdownGroupJobs = () => wrapper.findByTestId('passed-jobs');
   const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findStageDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -175,7 +175,7 @@ describe('PipelineStageDropdown', () => {
     });
 
     it('renders divider', () => {
-      expect(findDropdownDivider().exists()).toBe(true);
+      expect(findDropdownGroupJobs().attributes('class')).toContain('gl-border-t-dropdown-divider');
     });
   });
 
@@ -197,7 +197,7 @@ describe('PipelineStageDropdown', () => {
     });
 
     it('does not render divider', () => {
-      expect(findDropdownDivider().exists()).toBe(false);
+      expect(findDropdownGroupJobs().props('bordered')).toBe(false);
     });
   });
 

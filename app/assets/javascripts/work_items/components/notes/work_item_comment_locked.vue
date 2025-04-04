@@ -32,9 +32,6 @@ export default {
     projectArchivedWarning: __('This project is archived and cannot be commented on.'),
   },
   computed: {
-    issuableDisplayName() {
-      return this.workItemType.replace(/_/g, ' ');
-    },
     lockedIssueWarning() {
       return sprintf(__('The discussion in this %{noteableTypeText} is locked.'), {
         noteableTypeText: this.noteableTypeText,

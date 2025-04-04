@@ -2,7 +2,7 @@ import PromoPageLink from './promo_page_link.vue';
 
 export default {
   component: PromoPageLink,
-  title: 'vue_shared/help_page_link',
+  title: 'vue_shared/promo_page_link',
 };
 
 const Template = (args, { argTypes }) => ({

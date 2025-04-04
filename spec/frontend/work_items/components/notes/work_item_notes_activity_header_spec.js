@@ -58,7 +58,7 @@ describe('WorkItemNotesActivityHeader component', () => {
     it('emits `changeFilter` when filtering discussions', () => {
       createComponent();
 
-      findActivityFilterDropdown().vm.$emit('changeFilter', WORK_ITEM_NOTES_FILTER_ONLY_HISTORY);
+      findActivityFilterDropdown().vm.$emit('select', WORK_ITEM_NOTES_FILTER_ONLY_HISTORY);
 
       expect(wrapper.emitted('changeFilter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_HISTORY]]);
     });
@@ -68,7 +68,7 @@ describe('WorkItemNotesActivityHeader component', () => {
     it('emits `changeSort` when sorting discussions/activity', () => {
       createComponent();
 
-      findActivitySortDropdown().vm.$emit('changeSort', ASC);
+      findActivitySortDropdown().vm.$emit('select', ASC);
 
       expect(wrapper.emitted('changeSort')).toEqual([[ASC]]);
     });

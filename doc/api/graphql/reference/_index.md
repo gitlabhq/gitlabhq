@@ -390,6 +390,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="querycicatalogresourcesscope"></a>`scope` | [`CiCatalogResourceScope`](#cicatalogresourcescope) | Scope of the returned catalog resources. |
 | <a id="querycicatalogresourcessearch"></a>`search` | [`String`](#string) | Search term to filter the catalog resources by name or description. |
 | <a id="querycicatalogresourcessort"></a>`sort` | [`CiCatalogResourceSort`](#cicatalogresourcesort) | Sort catalog resources by given criteria. |
+| <a id="querycicatalogresourcestopics"></a>`topics` | [`[String!]`](#string) | Filter catalog resources by project topic names. |
 | <a id="querycicatalogresourcesverificationlevel"></a>`verificationLevel` | [`CiCatalogResourceVerificationLevel`](#cicatalogresourceverificationlevel) | Filter catalog resources by verification level. |
 
 ### `Query.ciConfig`
@@ -27569,6 +27570,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupdescendantgroupsincludeparentdescendants"></a>`includeParentDescendants` | [`Boolean`](#boolean) | List of descendant groups of the parent group. |
 | <a id="groupdescendantgroupsowned"></a>`owned` | [`Boolean`](#boolean) | Limit result to groups owned by authenticated user. |
 | <a id="groupdescendantgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+| <a id="groupdescendantgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `Group.doraPerformanceScoreCounts`
 
@@ -43006,6 +43008,12 @@ Values for sorting groups.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="groupsortid_asc"></a>`ID_ASC` | Sort by ID, ascending order. |
+| <a id="groupsortid_desc"></a>`ID_DESC` | Sort by ID, descending order. |
+| <a id="groupsortname_asc"></a>`NAME_ASC` | Sort by name, ascending order. |
+| <a id="groupsortname_desc"></a>`NAME_DESC` | Sort by name, descending order. |
+| <a id="groupsortpath_asc"></a>`PATH_ASC` | Sort by path, ascending order. |
+| <a id="groupsortpath_desc"></a>`PATH_DESC` | Sort by path, descending order. |
 | <a id="groupsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
 
 ### `GroupingEnum`

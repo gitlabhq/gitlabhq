@@ -18,6 +18,8 @@ import CommitInfo from './commit_info.vue';
 import CollapsibleCommitInfo from './collapsible_commit_info.vue';
 
 const trackingMixin = InternalEvents.mixin();
+const POLL_INTERVAL = 30000;
+
 export default {
   components: {
     CiIcon,
@@ -49,7 +51,7 @@ export default {
         };
       },
       update: (data) => {
-        const lastCommit = data.project?.repository?.paginatedTree?.nodes[0]?.lastCommit;
+        const lastCommit = data.project?.repository?.lastCommit ?? {};
         const pipelines = lastCommit?.pipelines?.edges;
 
         return {
@@ -60,6 +62,7 @@ export default {
       error(error) {
         throw error;
       },
+      pollInterval: POLL_INTERVAL,
       subscribeToMore: {
         document() {
           return pipelineCiStatusUpdatedSubscription;

@@ -60,11 +60,13 @@ module Groups
     end
 
     def sort(items)
+      return super unless params[:sort]
+
       if params[:sort] == :similarity && params[:search].present?
         return items.sorted_by_similarity_desc(params[:search])
       end
 
-      super
+      items.sort_by_attribute(params[:sort])
     end
   end
 end

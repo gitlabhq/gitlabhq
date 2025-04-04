@@ -1055,6 +1055,9 @@ msgstr ""
 msgid "%{labelStart}Project:%{labelEnd} %{project}"
 msgstr ""
 
+msgid "%{labelStart}Reachable:%{labelEnd} %{reachability}"
+msgstr ""
+
 msgid "%{labelStart}Report type:%{labelEnd} %{reportType}"
 msgstr ""
 
@@ -6388,9 +6391,6 @@ msgstr ""
 msgid "AmazonQ|Audience"
 msgstr ""
 
-msgid "AmazonQ|Automatic code reviews can only be enabled when Amazon Q is set to \"On by default\""
-msgstr ""
-
 msgid "AmazonQ|Availability"
 msgstr ""
 
@@ -6430,9 +6430,6 @@ msgstr ""
 msgid "AmazonQ|Delete the IAM role."
 msgstr ""
 
-msgid "AmazonQ|Enable automatic code reviews"
-msgstr ""
-
 msgid "AmazonQ|Enter the IAM role's ARN."
 msgstr ""
 
@@ -6455,6 +6452,9 @@ msgid "AmazonQ|GitLab Duo with Amazon Q has been successfully disconnected"
 msgstr ""
 
 msgid "AmazonQ|GitLab Duo with Amazon Q is ready to go! 🎉"
+msgstr ""
+
+msgid "AmazonQ|Have Amazon Q review code in merge requests automatically"
 msgstr ""
 
 msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services. Amazon Q Developer processes data across all US Regions and makes cross-region API calls when your requests require it."
@@ -9420,6 +9420,9 @@ msgstr ""
 msgid "Best Regards,"
 msgstr ""
 
+msgid "Best practices"
+msgstr ""
+
 msgid "Beta"
 msgstr ""
 
@@ -10408,6 +10411,9 @@ msgid "Branch not loaded - %{branchId}"
 msgstr ""
 
 msgid "Branch rules"
+msgstr ""
+
+msgid "Branch settings"
 msgstr ""
 
 msgid "Branch target"
@@ -15619,6 +15625,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|A rule is configured to require two approvals."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|API Security testing identifies vulnerabilities specific to your application APIs before they can be exploited"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|All attached frameworks"
 msgstr ""
 
@@ -15628,10 +15637,34 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Change your project visibility settings to comply with organizational security requirements"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Check"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Checks"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Code quality scanning identifies maintainability issues that could lead to increased security risks over time"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure DAST in your CI/CD pipeline to automatically test your application for security issues"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure DAST scanning"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure approval requirements"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure your project settings to prevent merge request authors from approving their own changes"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure your project to require at least two approvals on merge requests to improve code quality and security"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Container scanning checks your container images for known vulnerabilities to prevent exploitation in production"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|DAST scan"
@@ -15646,6 +15679,15 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Default branch protection prevents direct commits and ensures changes are reviewed through merge requests"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Dependency scanning identifies vulnerable dependencies in your project that could be exploited by attackers"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Dynamic Application Security Testing (DAST) identifies runtime vulnerabilities by analyzing your application while it runs"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Enable DAST scanner"
 msgstr ""
 
@@ -15658,10 +15700,40 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Enable SAST scanner in the project's security configuration to satisfy this requirement."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Enable code quality scanning"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enable code quality scanning to improve code maintainability and reduce technical debt"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enable dependency scanning"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enable dependency scanning to automatically detect vulnerable libraries in your application"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Enforcing minimum approval requirements ensures code changes are properly reviewed before merging"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensuring that code committers cannot approve their contributed merge requests maintains separation of duties"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|External control"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Failed"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Failed controls: %{failed}"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Failure reason"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Filter by"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Fix available"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Fix suggestions"
@@ -15671,6 +15743,9 @@ msgid "ComplianceStandardsAdherence|Framework"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Frameworks"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Fuzz testing automatically generates random inputs to find unexpected behavior and potential security issues"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Group by"
@@ -15697,7 +15772,31 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|How to fix"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Implement API security testing"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Implement API security testing to protect your application interfaces from attacks"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Implement secret detection"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Implement secret detection scanning in your CI/CD pipeline to identify and remove exposed credentials"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Infrastructure as Code (IaC) scanning detects misconfigurations in your infrastructure definitions before deployment"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Last scanned"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Learn about code review best practices"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Learn more about implementing effective code review practices to enhance security"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|License compliance scanning identifies potentially problematic open source licenses that could create legal issues"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
@@ -15724,19 +15823,37 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|None"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Organization policy requires that projects are not set to internal visibility to protect sensitive data"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Passed"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Passed controls: %{passed}"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Pending"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Pending controls: %{pending}"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Prevent author approvals"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Prevent committer approvals"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Preventing authors from approving their own merge requests ensures independent code review"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Project"
@@ -15757,6 +15874,12 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Requirements"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Review best practices for secure container deployments"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Review container security practices"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|SAST scan"
 msgstr ""
 
@@ -15766,10 +15889,37 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeline configuration for the default branch."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Secret detection prevents sensitive information like API keys from being accidentally committed to your repository"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set up branch protection"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set up branch protection rules for your default branch to enforce quality standards"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set up container scanning"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set up container scanning in your pipeline to identify vulnerabilities in your container images"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set up fuzz testing"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Set up fuzz testing in your pipeline to identify edge cases and potential crashes"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Single Sign-On authentication improves security by centralizing user access management"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Standard"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Standards"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Static Application Security Testing (SAST) scans your code for vulnerabilities that may lead to exploits"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Status"
@@ -15781,10 +15931,19 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|This is an external control for %{link}"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Unable to load the standards adherence report. Refresh the page and try again."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Update approval settings in the project's merge request settings to satisfy this requirement."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Update project visibility"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Update your approval settings to prevent committers from approving merge requests containing their commits"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details"
@@ -15851,6 +16010,9 @@ msgid "Confidentiality controls have moved to the issue actions menu (%{icon}) a
 msgstr ""
 
 msgid "Configuration help"
+msgstr ""
+
+msgid "Configuration options"
 msgstr ""
 
 msgid "Configure"
@@ -15928,6 +16090,9 @@ msgstr ""
 msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings."
 msgstr ""
 
+msgid "Configure approval rules"
+msgstr ""
+
 msgid "Configure checkin reminder frequency"
 msgstr ""
 
@@ -15941,6 +16106,9 @@ msgid "Configure import sources and settings related to import and export featur
 msgstr ""
 
 msgid "Configure it later"
+msgstr ""
+
+msgid "Configure now"
 msgstr ""
 
 msgid "Configure pipeline"
@@ -23326,6 +23494,9 @@ msgstr ""
 msgid "Enter a number from 0 to 100."
 msgstr ""
 
+msgid "Enter a prompt"
+msgstr ""
+
 msgid "Enter a search query to find more branches, or use * to create a wildcard."
 msgstr ""
 
@@ -26279,6 +26450,9 @@ msgstr ""
 msgid "General settings"
 msgstr ""
 
+msgid "Generate"
+msgstr ""
+
 msgid "Generate API key at %{site}"
 msgstr ""
 
@@ -28101,6 +28275,9 @@ msgid "Go to the group’s 'Settings &gt; General' page, and check 'Restrict mem
 msgstr ""
 
 msgid "Go to the milestone list"
+msgstr ""
+
+msgid "Go to the pipeline editor"
 msgstr ""
 
 msgid "Go to the project's activity feed"
@@ -30661,6 +30838,12 @@ msgstr ""
 msgid "Impersonation tokens"
 msgstr ""
 
+msgid "Implementation details"
+msgstr ""
+
+msgid "Implementation guide"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -31563,6 +31746,9 @@ msgid "Insert a quote"
 msgstr ""
 
 msgid "Insert code"
+msgstr ""
+
+msgid "Insert code change summary"
 msgstr ""
 
 msgid "Insert column left"
@@ -35603,6 +35789,9 @@ msgid "Manage two-factor authentication"
 msgstr ""
 
 msgid "Manage usage"
+msgstr ""
+
+msgid "Manage visibility"
 msgstr ""
 
 msgid "Manage your subscription"
@@ -44568,6 +44757,9 @@ msgstr ""
 msgid "Please follow the Let's Encrypt troubleshooting instructions to re-obtain your Let's Encrypt certificate: %{docs_url}."
 msgstr ""
 
+msgid "Please match the requested format."
+msgstr ""
+
 msgid "Please provide a name"
 msgstr ""
 
@@ -46170,6 +46362,9 @@ msgid "Project security status"
 msgstr ""
 
 msgid "Project security status help page"
+msgstr ""
+
+msgid "Project settings"
 msgstr ""
 
 msgid "Project settings were successfully updated."
@@ -48701,6 +48896,15 @@ msgstr ""
 msgid "Re-request review"
 msgstr ""
 
+msgid "Reachability|Not available"
+msgstr ""
+
+msgid "Reachability|Not found"
+msgstr ""
+
+msgid "Reachability|Yes"
+msgstr ""
+
 msgid "Read documentation"
 msgstr ""
 
@@ -48833,6 +49037,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Refreshing…"
+msgstr ""
+
+msgid "Regenerate"
 msgstr ""
 
 msgid "Regenerate export"
@@ -52942,6 +53149,9 @@ msgstr ""
 msgid "Security reports last updated"
 msgstr ""
 
+msgid "Security settings"
+msgstr ""
+
 msgid "SecurityApprovals|A merge request approval is required when test coverage declines."
 msgstr ""
 
@@ -56030,6 +56240,9 @@ msgid "Settings|Unable to load the merge request options settings. Try reloading
 msgstr ""
 
 msgid "Settings|What is experiment?"
+msgstr ""
+
+msgid "Setup guide"
 msgstr ""
 
 msgid "Severity"
@@ -62939,6 +63152,9 @@ msgstr ""
 msgid "UTC"
 msgstr ""
 
+msgid "Ultimate"
+msgstr ""
+
 msgid "Unable to apply suggestions to a deleted line."
 msgstr ""
 
@@ -65382,6 +65598,9 @@ msgstr ""
 msgid "View trigger token usage examples"
 msgstr ""
 
+msgid "View tutorial"
+msgstr ""
+
 msgid "View usage details"
 msgstr ""
 
@@ -66003,6 +66222,9 @@ msgstr ""
 msgid "Vulnerability|Stacktrace snippet:"
 msgstr ""
 
+msgid "Vulnerability|Static reachability is a factor of dependencies (and the relevant CVEs) which indicates that there is a high probability that the package is in use, and therefore the risk of it is higher."
+msgstr ""
+
 msgid "Vulnerability|Status"
 msgstr ""
 
@@ -66067,6 +66289,9 @@ msgid "Vulnerability|What is CVSS?"
 msgstr ""
 
 msgid "Vulnerability|What is EPSS?"
+msgstr ""
+
+msgid "Vulnerability|What is Reachability?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
@@ -68305,6 +68530,9 @@ msgid "Write milestone description..."
 msgstr ""
 
 msgid "Write milestone description…"
+msgstr ""
+
+msgid "Write with GitLab Duo"
 msgstr ""
 
 msgid "Write your release notes or drag your files here…"
