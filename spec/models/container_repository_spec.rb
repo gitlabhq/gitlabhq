@@ -1267,14 +1267,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       allow(repository).to receive(:has_tags?).and_return(has_tags)
     end
 
-    context 'when the feature container_registry_protected_tags is disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_tags: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
     context 'when the project does not have tag protection rules' do
       it { is_expected.to be_falsey }
     end

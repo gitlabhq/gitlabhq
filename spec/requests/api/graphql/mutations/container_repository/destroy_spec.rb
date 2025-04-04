@@ -138,19 +138,6 @@ RSpec.describe 'Destroying a container repository', feature_category: :container
 
         it_behaves_like 'destroying the container repository'
       end
-
-      context 'when the feature container_registry_protected_tags is disabled' do
-        %i[owner maintainer developer].each do |user_role|
-          context "with the role of #{user_role}" do
-            before do
-              stub_feature_flags(container_registry_protected_tags: false)
-              project.send("add_#{user_role}", current_user)
-            end
-
-            it_behaves_like 'destroying the container repository'
-          end
-        end
-      end
     end
   end
 end

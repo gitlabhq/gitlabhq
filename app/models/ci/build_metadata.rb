@@ -14,6 +14,8 @@ module Ci
     self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
 
+    ignore_column :runtime_runner_features, remove_with: '18.1', remove_after: '2025-05-22'
+
     query_constraints :id, :partition_id
     partitionable scope: :build, partitioned: true
 
@@ -32,7 +34,6 @@ module Ci
 
     attribute :config_options, ::Gitlab::Database::Type::SymbolizedJsonb.new
     attribute :config_variables, ::Gitlab::Database::Type::SymbolizedJsonb.new
-    attribute :runtime_runner_features, ::Gitlab::Database::Type::SymbolizedJsonb.new
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 

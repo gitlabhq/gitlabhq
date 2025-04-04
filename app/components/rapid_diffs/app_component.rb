@@ -13,7 +13,7 @@ module RapidDiffs
       update_user_endpoint:,
       metadata_endpoint:,
       diff_files_endpoint:,
-      preload: true
+      lazy: false
     )
       @diffs_slice = diffs_slice
       @reload_stream_url = reload_stream_url
@@ -23,7 +23,11 @@ module RapidDiffs
       @update_user_endpoint = update_user_endpoint
       @metadata_endpoint = metadata_endpoint
       @diff_files_endpoint = diff_files_endpoint
-      @preload = preload
+      @lazy = lazy
+    end
+
+    def empty_diff?
+      @diffs_slice.nil? || @diffs_slice.empty?
     end
 
     def browser_visible?

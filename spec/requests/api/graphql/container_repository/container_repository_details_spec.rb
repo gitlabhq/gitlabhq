@@ -721,18 +721,6 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       )
     end
 
-    context 'when the feature container_registry_protected_tags is disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_tags: false)
-      end
-
-      it 'returns nil' do
-        subject
-
-        expect(tag_permissions_response).to be_nil
-      end
-    end
-
     context 'when there is an immutable rule' do
       before_all do
         create(

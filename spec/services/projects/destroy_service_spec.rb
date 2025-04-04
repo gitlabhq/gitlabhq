@@ -538,14 +538,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
               .to receive(:remove_legacy_registry_tags).and_return(true)
           end
 
-          context 'when the feature container_registry_protected_tags is disabled' do
-            before do
-              stub_feature_flags(container_registry_protected_tags: false)
-            end
-
-            it { is_expected.to be true }
-          end
-
           context 'when the current user is an admin', :enable_admin_mode do
             let(:user) { build_stubbed(:admin) }
 

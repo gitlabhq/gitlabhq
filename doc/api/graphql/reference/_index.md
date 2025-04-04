@@ -4123,7 +4123,7 @@ Input type: `CreateContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.createContainerProtectionTagRule`
 
-Creates a protection rule to control which user roles can modify container image tags matching a specified pattern. Available only when feature flag `container_registry_protected_tags` is enabled.
+Creates a protection rule to control which user roles can modify container image tags matching a specified pattern.
 
 {{< details >}}
 **Introduced** in GitLab 17.8.
@@ -5044,7 +5044,7 @@ Input type: `DeleteContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.deleteContainerProtectionTagRule`
 
-Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern. Available only when feature flag `container_registry_protected_tags` is enabled.
+Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
 {{< details >}}
 **Introduced** in GitLab 17.8.
@@ -11316,7 +11316,7 @@ Input type: `UpdateContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.updateContainerProtectionTagRule`
 
-Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern. Available only when feature flag `container_registry_protected_tags` is enabled.
+Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
 {{< details >}}
 **Introduced** in GitLab 17.8.
@@ -34315,7 +34315,7 @@ Project-level settings for product analytics provider.
 | <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
 | <a id="projectcontainerprotectionrepositoryrules"></a>`containerProtectionRepositoryRules` {{< icon name="warning-solid" >}} | [`ContainerProtectionRepositoryRuleConnection`](#containerprotectionrepositoryruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
-| <a id="projectcontainerprotectiontagrules"></a>`containerProtectionTagRules` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleConnection`](#containerprotectiontagruleconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Container repository tag protection rules for the project. Returns an empty array if the `container_registry_protected_tags` feature flag is disabled. |
+| <a id="projectcontainerprotectiontagrules"></a>`containerProtectionTagRules` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleConnection`](#containerprotectiontagruleconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Container repository tag protection rules for the project. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy of the project. |
@@ -39727,6 +39727,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
+| <a id="vulnerabilityreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType!`](#reachabilitytype) | **Introduced** in GitLab 17.11. **Status**: Experiment. Reachability status of the vulnerability. |
 | <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, GENERIC). `Scan Type` in the UI. |
 | <a id="vulnerabilityrepresentationinformation"></a>`representationInformation` {{< icon name="warning-solid" >}} | [`VulnerabilityRepresentationInformation`](#vulnerabilityrepresentationinformation) | **Introduced** in GitLab 17.7. **Status**: Experiment. Information about the representation of the vulnerability, such as resolved commit SHA. |
 | <a id="vulnerabilityresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to resolved. |
@@ -44228,7 +44229,8 @@ Dependency reachability status.
 | Value | Description |
 | ----- | ----------- |
 | <a id="reachabilitytypein_use"></a>`IN_USE` | Dependency is imported and in use. |
-| <a id="reachabilitytypeunknown"></a>`UNKNOWN` | Dependency reachability status is unknown. |
+| <a id="reachabilitytypenot_found"></a>`NOT_FOUND` | Dependency is not in use. |
+| <a id="reachabilitytypeunknown"></a>`UNKNOWN` | Dependency reachability status is not available. |
 
 ### `RefType`
 

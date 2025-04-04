@@ -134,7 +134,6 @@ module Auth
 
     def self.tag_deny_access_patterns(project, user, actions)
       return if project.nil? || user.nil?
-      return unless Feature.enabled?(:container_registry_protected_tags, project)
 
       rules = project.container_registry_protection_tag_rules
       return unless rules.mutable.any?

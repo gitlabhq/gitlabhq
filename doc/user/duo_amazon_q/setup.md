@@ -50,8 +50,6 @@ To set up GitLab Duo with Amazon Q, you must:
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
-- GitLab Duo features [must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-  (Experimental and beta features are off by default.)
 
 ### Create an IAM identity provider
 

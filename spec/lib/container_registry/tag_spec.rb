@@ -476,14 +476,6 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           )
         end
 
-        context 'when the feature container_registry_protected_tags is disabled' do
-          before do
-            stub_feature_flags(container_registry_protected_tags: false)
-          end
-
-          it { is_expected.to be_nil }
-        end
-
         context 'when there are no protection rules that match the tag name' do
           let(:tag) { described_class.new(repository, 'newname') }
 
@@ -503,7 +495,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
 
           context 'when the feature container_registry_immutable_tags is disabled' do
             before do
-              stub_feature_flags(container_registry_protected_tags: false)
+              stub_feature_flags(container_registry_immutable_tags: false)
             end
 
             it { is_expected.to be_nil }
@@ -527,14 +519,6 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           tag_name_pattern: 'tag',
           minimum_access_level_for_delete: Gitlab::Access::OWNER
         )
-      end
-
-      context 'when the feature container_registry_protected_tags is disabled' do
-        before do
-          stub_feature_flags(container_registry_protected_tags: false)
-        end
-
-        it { is_expected.to be_falsey }
       end
 
       context 'when there is an immutable tag rule' do

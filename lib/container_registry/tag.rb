@@ -154,8 +154,6 @@ module ContainerRegistry
     end
 
     def protection_rule
-      return if Feature.disabled?(:container_registry_protected_tags, project)
-
       result = nil
       project.container_registry_protection_tag_rules.each do |rule|
         next unless Gitlab::UntrustedRegexp.new(rule.tag_name_pattern).match?(name)

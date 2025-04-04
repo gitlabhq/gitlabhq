@@ -57,11 +57,19 @@ module StreamDiffs
   def stream_diff_files(options)
     return unless resource
 
+    diffs = resource.diffs_for_streaming(options)
+
+    if params.permit(:offset)[:offset].blank? && diffs.diff_files.empty?
+      empty_state_component = ::RapidDiffs::EmptyStateComponent.new
+      response.stream.write empty_state_component.render_in(view_context)
+      return
+    end
+
     # NOTE: This is a temporary flag to test out the new diff_blobs
     if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
       stream_diff_blobs(options)
     else
-      resource.diffs_for_streaming(options).diff_files.each do |diff_file|
+      diffs.diff_files.each do |diff_file|
         response.stream.write(render_diff_file(diff_file))
       end
     end

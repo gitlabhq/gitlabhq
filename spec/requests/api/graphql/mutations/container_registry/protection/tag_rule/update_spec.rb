@@ -140,6 +140,5 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
   end
 
   include_examples 'when user does not have permission'
-  include_examples 'when feature flag container_registry_protected_tags is disabled'
   include_examples 'when the GitLab API is not supported'
 end

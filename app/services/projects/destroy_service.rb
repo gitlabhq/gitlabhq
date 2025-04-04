@@ -329,7 +329,6 @@ module Projects
     end
 
     def protected_by_tag_protection_rules?
-      return false if Feature.disabled?(:container_registry_protected_tags, project)
       return false if current_user.can_admin_all_resources?
 
       return false unless project.has_container_registry_protected_tag_rules?(

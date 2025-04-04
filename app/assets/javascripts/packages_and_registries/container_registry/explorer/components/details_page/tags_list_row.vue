@@ -16,7 +16,6 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,
@@ -55,7 +54,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -164,9 +162,8 @@ export default {
     },
     isProtected() {
       return (
-        (this.tag.protection?.minimumAccessLevelForDelete != null ||
-          this.tag.protection?.minimumAccessLevelForPush != null) &&
-        this.glFeatures.containerRegistryProtectedTags
+        this.tag.protection?.minimumAccessLevelForDelete != null ||
+        this.tag.protection?.minimumAccessLevelForPush != null
       );
     },
     tagRowId() {

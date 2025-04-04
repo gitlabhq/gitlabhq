@@ -24,10 +24,8 @@ module Projects
         def execute
           return success(deleted: []) if tag_names.empty?
 
-          if Feature.enabled?(:container_registry_protected_tags, project)
-            filter_out_protected!
-            return error(PROTECTED_TAGS_ERROR_MESSAGE, pass_back: { deleted: [] }) if tag_names.empty?
-          end
+          filter_out_protected!
+          return error(PROTECTED_TAGS_ERROR_MESSAGE, pass_back: { deleted: [] }) if tag_names.empty?
 
           delete_tags
         rescue TimeoutError, ::Faraday::Error => e

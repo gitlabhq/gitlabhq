@@ -22,8 +22,6 @@ module Projects
       end
 
       def filter_out_protected!(tags)
-        return if Feature.disabled?(:container_registry_protected_tags, project)
-
         tag_rules = ::ContainerRegistry::Protection::TagRule.tag_name_patterns_for_project(project.id)
 
         if current_user

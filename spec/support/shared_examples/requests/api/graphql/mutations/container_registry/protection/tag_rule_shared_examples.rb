@@ -40,16 +40,6 @@ RSpec.shared_examples 'when user does not have permission' do
   end
 end
 
-RSpec.shared_examples 'when feature flag container_registry_protected_tags is disabled' do
-  context "when feature flag ':container_registry_protected_tags' disabled" do
-    before do
-      stub_feature_flags(container_registry_protected_tags: false)
-    end
-
-    it_behaves_like 'returning a GraphQL error', /'container_registry_protected_tags' feature flag is disabled/
-  end
-end
-
 RSpec.shared_examples 'when the GitLab API is not supported' do
   context 'when the GitLab API is not supported' do
     before do

@@ -1,4 +1,4 @@
-- if @preload
+- if !@lazy
   - helpers.add_page_startup_api_call @metadata_endpoint
   - helpers.add_page_startup_api_call @diff_files_endpoint
   - if @stream_url
@@ -23,6 +23,10 @@
         = helpers.gl_loading_icon(size: 'sm')
     .rd-app-content
       .rd-app-content-header{ data: { hidden_files_warning: true } }
+
+      - if empty_diff? && !@lazy
+        = render RapidDiffs::EmptyStateComponent.new
+
       .code{ class: helpers.user_color_scheme }
         %div{ data: { diffs_list: true } }
           = javascript_tag nonce: content_security_policy_nonce do
@@ -30,7 +34,7 @@
               requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
           - if diffs_list?
             = diffs_list
-          - else
+          - elsif !empty_diff?
             = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
           - if @stream_url
             #js-stream-container{ data: { diffs_stream_url: @stream_url } }

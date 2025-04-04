@@ -310,8 +310,6 @@ class ContainerRepository < ApplicationRecord
   end
 
   def has_protected_tag_rules_for_delete?(user)
-    return false if Feature.disabled?(:container_registry_protected_tags, project)
-
     return true if user.nil?
     return false if user.can_admin_all_resources?
 

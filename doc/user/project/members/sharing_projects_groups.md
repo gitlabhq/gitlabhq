@@ -65,15 +65,14 @@ When you invite a group to a project, the following members get access to the pr
 - Inherited group members.
 - Members of other [groups that are shared](sharing_projects_groups.md#invite-a-group-to-a-group) with the invited group.
 
-Each member's access is based on the:
+Each member's access depends on:
 
-- Role they're assigned in the group.
-- Maximum role you choose when you invite the group.
+- Their role in the group.
+- The maximum role you choose when you invite the group.
 
-If a group member has a role for the group with fewer permissions than the maximum project role,
-the member keeps the permissions of their group role.
-For example, if you add a member with the Guest role to a project with a maximum role of Maintainer,
-the member has only the permissions of the Guest role for the project.
+Invited members keep the lower of these two roles. For example, if a member has the Guest
+role in their group, and you add their group to a project with a maximum role of Maintainer,
+they keep the Guest role in the project.
 
 In addition:
 
@@ -133,7 +132,11 @@ To invite a group to a project:
 1. Select **Manage > Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
-1. From the **Select maximum role** list, select the highest [role](../../permissions.md) the invited group's members can have in the project. Group members with a higher role are limited to this role, while members with a lower role keep their existing role.
+1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the project. Invited members receive the lower of:
+   - The maximum role you select
+   - Their existing role in the group
+
+   Invited group members cannot have a higher role in the project than they have in the group. For more information, see [member access and roles](#member-access-and-roles).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the invited group can no longer access the project.
 1. Select **Invite**.
@@ -237,14 +240,14 @@ The following table provides an overview of the group members that get access to
 
 ### Member access and roles
 
-Each member's access is based on the:
+Each member's access depends on:
 
-- Role they're assigned in the invited group.
-- Maximum role you choose when you invite the group.
+- Their role in the invited group.
+- The maximum role you choose when you invite the group.
 
-If a group member has a role for the invited group with fewer permissions than the maximum role for your group,
-the member keeps the permissions of their invited group role.
-The least access is granted between the access in the invited group and the access in the inviting group.
+Invited members keep the lower of these two roles. For example, if a member has the Guest
+role in their group, and you invite their group to another group with a maximum role of Maintainer,
+they keep the Guest role in the new group.
 
 After you invite a group to your group:
 
@@ -297,6 +300,11 @@ To invite a group to your group:
 1. Select **Manage > Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
+1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the group. Invited members receive the lower of:
+   - The maximum role you select
+   - Their existing role in the invited group
+
+   Invited members cannot have a higher role than they have in the invited group. For more information, see [member access and roles](#member-access-and-roles-1).
 1. Select the highest [role](../../permissions.md) or [custom role](../../custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) for users in the group.
 1. Optional. Select an **Access expiration date**.
    From that date onward, the invited group can no longer access the group.

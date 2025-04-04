@@ -18,9 +18,6 @@ describe('Container registry project settings section', () => {
   const findContainerProtectionTagRules = () => wrapper.findComponent(ContainerProtectionTagRules);
 
   const defaultProvide = {
-    glFeatures: {
-      containerRegistryProtectedTags: true,
-    },
     isContainerRegistryMetadataDatabaseEnabled: true,
   };
 
@@ -74,21 +71,6 @@ describe('Container registry project settings section', () => {
 
     it('sets settings block `defaultExpanded` prop to true', () => {
       expect(findSettingsBlock().props('defaultExpanded')).toBe(true);
-    });
-  });
-
-  describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
-    it('container protection tag rules settings is hidden', () => {
-      mountComponent({
-        provide: {
-          ...defaultProvide,
-          glFeatures: { containerRegistryProtectedTags: false },
-        },
-      });
-
-      expect(findContainerExpirationPolicy().exists()).toBe(true);
-      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
-      expect(findContainerProtectionTagRules().exists()).toBe(false);
     });
   });
 

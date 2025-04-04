@@ -7,8 +7,7 @@ module Mutations
         class Delete < ::Mutations::BaseMutation
           graphql_name 'DeleteContainerProtectionTagRule'
           description 'Deletes a protection rule that controls which user ' \
-            'roles can modify container image tags matching a specified pattern. ' \
-            'Available only when feature flag `container_registry_protected_tags` is enabled.'
+            'roles can modify container image tags matching a specified pattern.'
 
           authorize :admin_container_image
 
@@ -25,10 +24,6 @@ module Mutations
 
           def resolve(id:, **_kwargs)
             container_protection_tag_rule = authorized_find!(id:)
-
-            if Feature.disabled?(:container_registry_protected_tags, container_protection_tag_rule.project)
-              raise_resource_not_available_error!("'container_registry_protected_tags' feature flag is disabled")
-            end
 
             response = ::ContainerRegistry::Protection::DeleteTagRuleService.new(container_protection_tag_rule,
               current_user: current_user).execute

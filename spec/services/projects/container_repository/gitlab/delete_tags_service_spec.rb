@@ -56,15 +56,6 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
           stub_delete_reference_requests(tag_names)
         end
 
-        context 'when container_registry_protected_tags is disabled' do
-          before do
-            stub_feature_flags(container_registry_protected_tags: false)
-            expect_delete_tags(tag_names)
-          end
-
-          it { is_expected.to include(status: :success) }
-        end
-
         context 'when not all tags are protected' do
           before do
             expect_delete_tags(%w[Ba Bb C D])

@@ -1,6 +1,5 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
@@ -16,7 +15,6 @@ export default {
     ContainerProtectionTagRules,
     SettingsBlock,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['isContainerRegistryMetadataDatabaseEnabled'],
   props: {
     expanded: {
@@ -27,10 +25,7 @@ export default {
   },
   computed: {
     showContainerProtectedTagsSettings() {
-      return (
-        this.glFeatures.containerRegistryProtectedTags &&
-        this.isContainerRegistryMetadataDatabaseEnabled
-      );
+      return this.isContainerRegistryMetadataDatabaseEnabled;
     },
   },
   containerRegistryHelpPath: helpPagePath('user/packages/container_registry/_index.md'),

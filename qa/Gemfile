@@ -43,7 +43,7 @@ gem 'deprecation_toolkit', '~> 2.2.2', require: false
 gem 'factory_bot', '~> 6.5.1'
 
 group :development do
-  gem 'pry-byebug', '~> 3.10.1', platform: :mri
+  gem 'pry-byebug', '~> 3.11.0', platform: :mri
   gem "ruby-debug-ide", "~> 0.7.5"
 end
 

@@ -57,21 +57,6 @@ RSpec.describe ContainerRepositoryPolicy, feature_category: :container_registry 
         end
 
         it_behaves_like 'not allowing anonymous user'
-
-        context 'when the feature container_registry_protected_tags is disabled' do
-          %i[owner maintainer developer].each do |user_role|
-            context "with the role of #{user_role}" do
-              before do
-                stub_feature_flags(container_registry_protected_tags: false)
-                project.send(:"add_#{user_role}", user)
-              end
-
-              it { expect_allowed(:destroy_container_image) }
-            end
-          end
-
-          it_behaves_like 'not allowing anonymous user'
-        end
       end
 
       context 'when the container repository does not have tags' do

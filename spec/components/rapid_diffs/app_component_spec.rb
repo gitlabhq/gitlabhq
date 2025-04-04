@@ -90,7 +90,22 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(vc_test_controller.view_context.content_for?(:startup_js)).not_to be_nil
   end
 
-  def create_instance
+  context "when there are no diffs" do
+    let(:diffs_slice) { [] }
+
+    it "renders empty state component" do
+      render_component
+      expect(page).to have_text("There are no changes")
+    end
+
+    it "does not render empty state when lazy is true" do
+      instance = create_instance(lazy: true)
+      render_inline(instance)
+      expect(page).not_to have_text("There are no changes")
+    end
+  end
+
+  def create_instance(lazy: false)
     described_class.new(
       diffs_slice:,
       stream_url:,
@@ -99,7 +114,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       diff_view:,
       update_user_endpoint:,
       metadata_endpoint:,
-      diff_files_endpoint:
+      diff_files_endpoint:,
+      lazy:
     )
   end
 
