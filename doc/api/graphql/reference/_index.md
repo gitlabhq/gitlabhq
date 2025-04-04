@@ -1337,6 +1337,27 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 | <a id="queryrunnersversionprefix"></a>`versionPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
+### `Query.secretPermissions`
+
+List secret permissions.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`SecretPermissionConnection`](#secretpermissionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysecretpermissionsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secret permission belong to. |
+
 ### `Query.selfManagedAddOnEligibleUsers`
 
 Users within the self-managed instance who are eligible for add-ons.
@@ -10227,6 +10248,48 @@ Input type: `ScanExecutionPolicyCommitInput`
 | <a id="mutationscanexecutionpolicycommiterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationscanexecutionpolicycommitvalidationerrors"></a>`validationErrors` | [`[SecurityPolicyValidationError!]`](#securitypolicyvalidationerror) | Validation errors encountered during execution of the mutation. |
 
+### `Mutation.secretPermissionDelete`
+
+Input type: `SecretPermissionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecretpermissiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecretpermissiondeleteprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | Whose permission to be deleted. |
+| <a id="mutationsecretpermissiondeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | Project permissions for the secret. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecretpermissiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecretpermissiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecretpermissiondeletesecretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Deleted Secret Permission. |
+
+### `Mutation.secretPermissionUpdate`
+
+Input type: `SecretPermissionUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecretpermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecretpermissionupdateexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
+| <a id="mutationsecretpermissionupdatepermissions"></a>`permissions` | [`[String!]!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
+| <a id="mutationsecretpermissionupdateprincipal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role/Group that is provided access. |
+| <a id="mutationsecretpermissionupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the permissions are added. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecretpermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecretpermissionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecretpermissionupdatesecretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Secret Permission that was created. |
+
 ### `Mutation.securityFindingCreateIssue`
 
 Input type: `SecurityFindingCreateIssueInput`
@@ -18756,6 +18819,29 @@ The edge type for [`ScannedResource`](#scannedresource).
 | ---- | ---- | ----------- |
 | <a id="scannedresourceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="scannedresourceedgenode"></a>`node` | [`ScannedResource`](#scannedresource) | The item at the end of the edge. |
+
+#### `SecretPermissionConnection`
+
+The connection type for [`SecretPermission`](#secretpermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretpermissionconnectionedges"></a>`edges` | [`[SecretPermissionEdge]`](#secretpermissionedge) | A list of edges. |
+| <a id="secretpermissionconnectionnodes"></a>`nodes` | [`[SecretPermission]`](#secretpermission) | A list of nodes. |
+| <a id="secretpermissionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SecretPermissionEdge`
+
+The edge type for [`SecretPermission`](#secretpermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretpermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="secretpermissionedgenode"></a>`node` | [`SecretPermission`](#secretpermission) | The item at the end of the edge. |
 
 #### `SentryErrorConnection`
 
@@ -34272,6 +34358,17 @@ Represents generic policy violation information.
 | <a id="previewbillableuserchangeseatsinsubscription"></a>`seatsInSubscription` | [`Int`](#int) | Number of seats in subscription. |
 | <a id="previewbillableuserchangewillincreaseoverage"></a>`willIncreaseOverage` | [`Boolean`](#boolean) | If the group will have an increased overage after change. |
 
+### `Principal`
+
+Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="principalid"></a>`id` | [`ID!`](#id) | ID of the principal (User, MemberRole, Role, Group). |
+| <a id="principaltype"></a>`type` | [`String!`](#string) | Name of the principal (User, MemberRole, Role, Group). |
+
 ### `ProductAnalyticsProjectSettings`
 
 Project-level settings for product analytics provider.
@@ -37881,6 +37978,20 @@ JSON structure of each line in a matched chunk.
 | <a id="searchbloblinehighlights"></a>`highlights` {{< icon name="warning-solid" >}} | [`[[Int!]!]`](#int) | **Introduced** in GitLab 17.8. **Status**: Experiment. Column numbers of the first and last highlighted characters on a line. |
 | <a id="searchbloblinelinenumber"></a>`lineNumber` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Line number of the blob. |
 | <a id="searchbloblinetext"></a>`text` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Text content of the blob. |
+
+### `SecretPermission`
+
+Representation of a secrets permission.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretpermissionexpiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
+| <a id="secretpermissiongrantedby"></a>`grantedBy` | [`String`](#string) | User who created the Secret Permission (optional). |
+| <a id="secretpermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
+| <a id="secretpermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
+| <a id="secretpermissionproject"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |
 
 ### `SecurityPolicyValidationError`
 
@@ -44144,6 +44255,17 @@ Types of security policy project created status.
 | <a id="policyviolationstatusrunning"></a>`RUNNING` | Represents a running policy violation. |
 | <a id="policyviolationstatuswarning"></a>`WARNING` | Represents a policy violation warning. |
 
+### `PrincipalType`
+
+Types of principal that can have secret permissions.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="principaltypegroup"></a>`GROUP` | group. |
+| <a id="principaltypemember_role"></a>`MEMBER_ROLE` | member role. |
+| <a id="principaltyperole"></a>`ROLE` | predefined role. |
+| <a id="principaltypeuser"></a>`USER` | user. |
+
 ### `ProductAnalyticsState`
 
 Current state of the product analytics stack.
@@ -48454,6 +48576,17 @@ Attributes for the pipeline schedule variable.
 | <a id="pipelineschedulevariableinputkey"></a>`key` | [`String!`](#string) | Name of the variable. |
 | <a id="pipelineschedulevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
 | <a id="pipelineschedulevariableinputvariabletype"></a>`variableType` | [`CiVariableType!`](#civariabletype) | Type of the variable. |
+
+### `PrincipalInput`
+
+Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="principalinputid"></a>`id` | [`Int!`](#int) | ID of the principal. |
+| <a id="principalinputtype"></a>`type` | [`PrincipalType!`](#principaltype) | Type of the principal. |
 
 ### `ProjectComplianceControlStatusInput`
 

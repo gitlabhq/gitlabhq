@@ -970,4 +970,4 @@ If you see this page when trying to set a password via the web interface, make s
 
 When the GitLab deployment is scaled up to more than one node, some job logs may not be uploaded to [object storage](../../administration/object_storage.md) properly. [Incremental logging is required](../../administration/object_storage.md#alternatives-to-file-system-storage) for CI to use object storage.
 
-Enable [incremental logging](../../administration/cicd/job_logs.md#enable-or-disable-incremental-logging) if it has not already been enabled.
+Enable [incremental logging](../../administration/cicd/job_logs.md#incremental-logging) if it has not already been enabled.

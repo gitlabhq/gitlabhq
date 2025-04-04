@@ -11,12 +11,10 @@ REST API resources are documented in Markdown under
 resource has its own Markdown file, which is linked from
 [`api_resources.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/api_resources.md).
 
-When modifying the Markdown, also update the corresponding
-[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi)
-if one exists for the resource. If not, consider creating one. Match the latest
-[OpenAPI 3.0.x specification](https://swagger.io/specification/). (For more
-information, see the discussion in this
-[issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16023#note_370901810).)
+When modifying the Markdown or API code, also update the corresponding
+[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi), by running `bin/rake gitlab:openapi:generate`.
+To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:check_docs`.
+This is also checked by the `openapi-doc-check` CI/CD job that runs for commits that modify API code or documentation.
 
 In the Markdown doc for a resource (AKA endpoint):
 

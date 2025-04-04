@@ -402,6 +402,33 @@ for all projects from the **Admin** area.
 1. Enable **Enable and enforce job token allowlist for all projects** setting to
    require all projects to control job token access with the allowlist.
 
+## Job logs
+
+### Incremental logging
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350883) in GitLab 17.11.
+
+{{< /history >}}
+
+Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+When turned on, archived job logs are incrementally uploaded to object storage.
+For more information, see [incremental logging](../../administration/cicd/job_logs.md#incremental-logging).
+
+Prerequisites:
+
+- You must [configure object storage](../cicd/job_artifacts.md#using-object-storage)
+  for CI/CD artifacts, logs, and builds.
+
+To turn on incremental logging for all projects:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Job logs**.
+1. Select the **Turn on incremental logging** checkbox.
+1. Select **Save changes**.
+
 ## Disable the pipeline suggestion banner
 
 By default, a banner displays in merge requests with no pipeline suggesting a

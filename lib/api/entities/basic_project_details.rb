@@ -3,7 +3,7 @@
 module API
   module Entities
     class BasicProjectDetails < Entities::ProjectIdentity
-      include ::API::ProjectsRelationBuilder
+      extend ::API::ProjectsRelationBuilder
       include Gitlab::Utils::StrongMemoize
 
       expose :default_branch_or_main, documentation: { type: 'string', example: 'main' }, as: :default_branch, if: ->(project, options) { Ability.allowed?(options[:current_user], :read_code, project) }

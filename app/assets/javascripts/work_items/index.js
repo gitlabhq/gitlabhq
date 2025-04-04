@@ -8,8 +8,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { __ } from '~/locale';
-import { NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY } from '~/work_items/constants';
+import { ISSUE_WIT_FEEDBACK_BADGE } from '~/work_items/constants';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
@@ -89,17 +88,12 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     },
   });
 
-  const feedback = {};
+  let feedback = {};
 
   if (gon.features.workItemViewForIssues) {
-    feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/523713';
-    feedback.feedbackIssueText = __('Provide feedback on the experience');
-    feedback.content = __(
-      'We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?',
-    );
-    feedback.title = __('New issue look');
-    feedback.featureName = 'work_item_epic_feedback';
-    feedback.expiry = NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY;
+    feedback = {
+      ...ISSUE_WIT_FEEDBACK_BADGE,
+    };
   }
 
   if (

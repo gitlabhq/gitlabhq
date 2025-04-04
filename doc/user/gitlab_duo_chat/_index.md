@@ -77,7 +77,7 @@ In addition, Chat is aware of different information, depending on where you use 
 
 ### In the GitLab UI
 
-| Area | What Chat knows | GitLab Duo Pro | GitLab Duo Enterprise | How to ask Chat |
+| Area | Available context | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
 |------|----------------|----------------|----------------------|-----------------|
 | Code files | File content | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | From the single file, ask about `this code` or `this file`. |
 | Epics | Epic details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
@@ -88,7 +88,7 @@ In addition, Chat is aware of different information, depending on where you use 
 
 ### In IDEs
 
-| Area | What Chat knows | GitLab Duo Pro | GitLab Duo Enterprise | How to ask Chat |
+| Area | Available context | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
 |------|----------------|----------------|----------------------|-----------------|
 | Selected lines in editor | Selected code | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
 | Epics | Epic details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |

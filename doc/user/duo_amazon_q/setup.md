@@ -46,7 +46,10 @@ To set up GitLab Duo with Amazon Q, you must:
 
 - You must have GitLab Self-Managed:
   - On GitLab 17.8 or later.
-  - On an instance in AWS.
+  - On an instance in AWS. The instance must allow incoming network access to Amazon Q services originating from these IP addresses:
+    - `34.228.181.128`
+    - `44.219.176.187`
+    - `54.226.244.221`
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
@@ -246,3 +249,8 @@ To turn off GitLab Duo with Amazon Q for a project:
 1. Select **Settings > General**.
 1. Under **Amazon Q**, turn the toggle off.
 1. Select **Save changes**.
+
+## Troubleshooting
+
+If you experience issues connecting GitLab to Amazon Q,
+ensure your GitLab installation meets [all the prerequisites](#prerequisites).

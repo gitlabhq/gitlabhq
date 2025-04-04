@@ -55,7 +55,6 @@ ee/spec/frontend/requirements/components/requirements_root_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
 ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
-ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
@@ -139,7 +138,6 @@ spec/frontend/members/components/modals/leave_modal_spec.js
 spec/frontend/members/components/table/max_role_spec.js
 spec/frontend/members/components/table/members_pagination_spec.js
 spec/frontend/members/components/table/members_table_spec.js
-spec/frontend/milestones/components/milestone_combobox_spec.js
 spec/frontend/ml/model_registry/apps/show_ml_model_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/ml/model_registry/components/model_version_create_spec.js

@@ -49,6 +49,10 @@ export default {
     text: s__('ProjectTemplates|Pages/Jekyll'),
     icon: '.template-option .icon-jekyll',
   },
+  nuxt: {
+    text: s__('ProjectTemplates|Pages/Nuxt'),
+    icon: '.template-option .icon-nuxt',
+  },
   plainhtml: {
     text: s__('ProjectTemplates|Pages/Plain HTML'),
     icon: '.template-option .icon-plainhtml',

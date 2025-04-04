@@ -269,6 +269,18 @@ export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY = '2025-04-25';
 export const FEATURE_NAME = 'work_item_epic_feedback';
 
+export const ISSUE_WIT_FEEDBACK_BADGE = {
+  feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523713',
+  feedbackIssueText: __('Provide feedback on the experience'),
+  featureName: 'work_item_epic_feedback',
+  badgeTitle: __('New look'),
+  badgePopoverTitle: __('New look for issues and epics'),
+  badgeContent: __(
+    'We’ve introduced improvements to issues and epics such as the ability to view full details from within lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?',
+  ),
+  expiry: '2025-04-25',
+};
+
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 export const ROUTES = {

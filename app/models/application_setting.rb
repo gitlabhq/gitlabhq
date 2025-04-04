@@ -516,6 +516,11 @@ class ApplicationSetting < ApplicationRecord
     pass: :external_auth_client_key_pass,
     if: ->(setting) { setting.external_auth_client_cert.present? }
 
+  jsonb_accessor :ci_cd_settings,
+    ci_job_live_trace_enabled: [:boolean, { default: false }]
+
+  validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
+
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)}, message: N_('cannot include leading slash or directory traversal.') },
     length: { maximum: 255 },
@@ -957,6 +962,13 @@ class ApplicationSetting < ApplicationRecord
     previous_changes.key?('performance_bar_allowed_group_id')
   }
   after_commit :reset_deletion_warning_redis_key, if: :should_reset_inactive_project_deletion_warning?
+
+  def validate_object_storage_for_live_trace_configuration
+    return if Gitlab.config.artifacts.object_store.enabled
+
+    errors.add(:ci_job_live_trace_enabled,
+      'Incremental logging cannot be turned on without configuring object storage for artifacts.')
+  end
 
   def validate_grafana_url
     validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)

@@ -13,6 +13,12 @@
 - help_link_timed = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/cicd_variables.md', anchor: 'timed-incremental-rollout-to-production'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_incremental = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/cicd_variables.md', anchor: 'incremental-rollout-to-production'), target: '_blank', rel: 'noopener noreferrer'
 
+- settings_message = nil
+- if @project.all_clusters.empty?
+  - settings_message = s_('CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable.').html_safe % { kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
+- elsif !has_base_domain
+  - settings_message = s_('CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
+
 .row
   .col-lg-12
     = gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
@@ -29,12 +35,12 @@
                   checkbox_options: { class: 'js-toggle-extra-settings', checked: auto_devops_enabled, data: { testid: 'enable-autodevops-checkbox' } },
                   help_text: (s_('CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found.') + ' ' + autodevops_help_link).html_safe
               - c.with_footer do
-                - if @project.all_clusters.empty?
-                  %p.settings-message.text-center
-                    = s_('CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable.').html_safe % { kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
-                - elsif !has_base_domain
-                  %p.settings-message.text-center
-                    = s_('CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
+                - unless settings_message.nil?
+                  = render Pajamas::AlertComponent.new(variant: :warning,
+                    dismissible: false,
+                    alert_options: { class: 'gl-mb-3' }) do |c|
+                    - c.with_body do
+                      = settings_message
                 %label.gl-mt-3
                   %strong= s_('CICD|Deployment strategy')
                 = form.gitlab_ui_radio_component :deploy_strategy, 'continuous', (s_('CICD|Continuous deployment to production') + ' ' + help_link_continouos).html_safe

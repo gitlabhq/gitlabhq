@@ -86,6 +86,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         lock_maven_package_requests_forwarding: false,
         pypi_package_requests_forwarding: true,
         lock_pypi_package_requests_forwarding: false,
+        ci_job_live_trace_enabled: false,
         sign_in_restrictions: {
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
@@ -1429,6 +1430,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it { is_expected.not_to allow_value(invalid_anti_abuse_settings_1).for(:anti_abuse_settings) }
       it { is_expected.not_to allow_value(invalid_anti_abuse_settings_2).for(:anti_abuse_settings) }
       it { is_expected.not_to allow_value(invalid_anti_abuse_settings_3).for(:anti_abuse_settings) }
+    end
+
+    describe 'ci_cd_settings' do
+      context 'when enabling ci_job_live_trace_enabled' do
+        context 'when object storage enabled' do
+          before do
+            allow(Gitlab.config.artifacts.object_store).to receive(:enabled).and_return(true)
+          end
+
+          it { is_expected.to allow_value(true).for(:ci_job_live_trace_enabled) }
+        end
+
+        context 'when object storage not enabled' do
+          before do
+            allow(Gitlab.config.artifacts.object_store).to receive(:enabled).and_return(false)
+          end
+
+          it { is_expected.not_to allow_value(true).for(:ci_job_live_trace_enabled) }
+        end
+      end
     end
   end
 

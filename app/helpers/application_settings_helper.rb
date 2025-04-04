@@ -260,6 +260,7 @@ module ApplicationSettingsHelper
       :auto_devops_domain,
       :autocomplete_users_limit,
       :autocomplete_users_unauthenticated_limit,
+      :ci_job_live_trace_enabled,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,

@@ -9756,6 +9756,11 @@ msgstr ""
 msgid "Billings|Free tier and trial groups can invite a maximum of 20 members per day."
 msgstr ""
 
+msgid "Billings|Groups in the Free tier are limited to %d seat"
+msgid_plural "Billings|Groups in the Free tier are limited to %d seats"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Billings|In a seat"
 msgstr ""
 
@@ -9794,6 +9799,9 @@ msgid "Billing|%{value} user selected"
 msgid_plural "Billing|%{value} users selected"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Billing|Add additional seats"
+msgstr ""
 
 msgid "Billing|Add seats"
 msgstr ""
@@ -9870,16 +9878,14 @@ msgstr ""
 msgid "Billing|Explore paid plans"
 msgstr ""
 
+msgid "Billing|Explore plans"
+msgstr ""
+
 msgid "Billing|Export list"
 msgstr ""
 
 msgid "Billing|Group invite"
 msgstr ""
-
-msgid "Billing|Groups in the Free tier are limited to %d seat"
-msgid_plural "Billing|Groups in the Free tier are limited to %d seats"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Billing|Invited group"
 msgstr ""
@@ -9923,6 +9929,9 @@ msgstr ""
 msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
+msgid "Billing|Start a free 60-day trial or upgrade to a paid tier to get an unlimited number of seats."
+msgstr ""
+
 msgid "Billing|There are not enough seats to assign the GitLab Duo add-on to all selected members."
 msgstr ""
 
@@ -9939,16 +9948,10 @@ msgstr[1] ""
 msgid "Billing|This user is scheduled for removal."
 msgstr ""
 
-msgid "Billing|To ensure all members can access the group when your trial ends, you can upgrade to a paid tier."
-msgstr ""
-
 msgid "Billing|Toggle seat details"
 msgstr ""
 
 msgid "Billing|Type %{username} to confirm"
-msgstr ""
-
-msgid "Billing|Unlimited members during your trial"
 msgstr ""
 
 msgid "Billing|User successfully scheduled for removal. This process might take some time. Refresh the page to see the changes."
@@ -11444,6 +11447,9 @@ msgstr ""
 msgid "CICDAnalytics|What is instance runner duration?"
 msgstr ""
 
+msgid "CICD| Incremental logging configuration"
+msgstr ""
+
 msgid "CICD|%{policy} to %{resource}"
 msgstr ""
 
@@ -11525,6 +11531,9 @@ msgstr ""
 msgid "CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job."
 msgstr ""
 
+msgid "CICD|Configure CI job log settings for all projects."
+msgstr ""
+
 msgid "CICD|Configure CI/CD job token settings for all projects."
 msgstr ""
 
@@ -11568,6 +11577,9 @@ msgid "CICD|Group or project"
 msgstr ""
 
 msgid "CICD|Groups and projects on the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. Entries added from the authentication log can be removed later if needed."
+msgstr ""
+
+msgid "CICD|Job logs"
 msgstr ""
 
 msgid "CICD|Job token permissions"
@@ -11651,6 +11663,9 @@ msgstr ""
 msgid "CICD|This action removes all groups and projects that were auto-added from the authentication log."
 msgstr ""
 
+msgid "CICD|Turn on incremental logging"
+msgstr ""
+
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
 msgstr ""
 
@@ -11660,6 +11675,9 @@ msgstr ""
 msgid "CICD|When enabled, all projects must use their allowlist to control CI/CD job token access between projects. The option to allow access from all groups and projects is hidden. %{link_start}Learn More.%{link_end}"
 msgstr ""
 
+msgid "CICD|When turned on, archived job logs are incrementally uploaded to object storage. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. This will also update the Job Token setting to %{codeStart}This project and any groups and projects in the allowlist%{codeEnd}, if not already set. Duplicate entries will be ignored."
 msgstr ""
 
@@ -11667,9 +11685,6 @@ msgid "CICD|group enabled"
 msgstr ""
 
 msgid "CICD|instance enabled"
-msgstr ""
-
-msgid "CID|Job token permissions"
 msgstr ""
 
 msgid "CODEOWNERS rule violation"
@@ -18624,6 +18639,9 @@ msgstr ""
 msgid "CycleAnalytics|Date"
 msgstr ""
 
+msgid "CycleAnalytics|Failed to parse stage events."
+msgstr ""
+
 msgid "CycleAnalytics|If you have recently upgraded your GitLab license from a tier without this feature, it can take up to 30 minutes for data to collect and display."
 msgstr ""
 
@@ -20461,6 +20479,9 @@ msgstr ""
 msgid "Dependencies|Location"
 msgstr ""
 
+msgid "Dependencies|Locations of dependencies. The locations of transitive dependencies (child dependencies of other dependencies) are shown as the complete set of all paths that import the dependency."
+msgstr ""
+
 msgid "Dependencies|No components found."
 msgstr ""
 
@@ -20489,9 +20510,6 @@ msgid "Dependencies|The dependency list was successfully exported for %{exportab
 msgstr ""
 
 msgid "Dependencies|The dependency list was successfully exported."
-msgstr ""
-
-msgid "Dependencies|The location includes the lock file. For transitive dependencies a list of its direct dependents is shown."
 msgstr ""
 
 msgid "Dependencies|There was a problem fetching the licenses for this group."
@@ -24703,6 +24721,9 @@ msgid "Everything you need to create a GitLab Pages site using Jekyll"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Middleman"
+msgstr ""
+
+msgid "Everything you need to create a GitLab Pages site using Nuxt"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Pelican"
@@ -39195,9 +39216,6 @@ msgid_plural "New issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "New issue look"
-msgstr ""
-
 msgid "New issue title"
 msgstr ""
 
@@ -39214,6 +39232,9 @@ msgid "New look"
 msgstr ""
 
 msgid "New look (Beta)"
+msgstr ""
+
+msgid "New look for issues and epics"
 msgstr ""
 
 msgid "New merge request"
@@ -47457,6 +47478,9 @@ msgid "ProjectTemplates|Pages/Jekyll"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Middleman"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Nuxt"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Pelican"
@@ -66840,13 +66864,13 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr ""
 
+msgid "We’ve introduced improvements to issues and epics such as the ability to view full details from within lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
+
 msgid "We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr ""
 
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
-msgstr ""
-
-msgid "We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr ""
 
 msgid "What are some examples?"

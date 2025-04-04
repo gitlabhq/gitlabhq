@@ -46,6 +46,7 @@ module ApplicationSettingImplementation
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
+        ci_job_live_trace_enabled: false,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,

@@ -12,9 +12,12 @@
   - c.with_body do
     = render 'ci/variables/attributes'
     - if ci_variable_protected_by_default?
-      %p.settings-message.gl-text-center
-        - help_link = link_to('', help_page_path('ci/variables/_index.md', anchor: 'protect-a-cicd-variable', target: '_blank', rel: 'noopener noreferrer'))
-        = safe_format(s_('Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default.'), tag_pair(help_link, :help_link_start, :help_link_end))
+      = render Pajamas::AlertComponent.new(variant: :warning,
+        dismissible: false,
+        alert_options: { class: 'gl-mb-3' }) do |c|
+        - c.with_body do
+          - help_link = link_to('', help_page_path('ci/variables/_index.md', anchor: 'protect-a-cicd-variable', target: '_blank', rel: 'noopener noreferrer'))
+          = safe_format(s_('Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default.'), tag_pair(help_link, :help_link_start, :help_link_end))
     #js-instance-variables{ data: { endpoint: admin_ci_variables_path, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 
 = render ::Layouts::SettingsBlockComponent.new(_('Continuous Integration and Deployment'),
@@ -51,7 +54,7 @@
   - c.with_body do
     = render 'runner_registrars_form'
 
-= render ::Layouts::SettingsBlockComponent.new(s_('CID|Job token permissions'),
+= render ::Layouts::SettingsBlockComponent.new(s_('CICD|Job token permissions'),
   id: 'js-job-token-permissions-settings',
   testid: 'job-token-permissions-settings',
   expanded: expanded_by_default?) do |c|
@@ -59,3 +62,12 @@
     = s_('CICD|Configure CI/CD job token settings for all projects.')
   - c.with_body do
     = render 'job_token_permissions_form'
+
+= render ::Layouts::SettingsBlockComponent.new(s_('CICD|Job logs'),
+  id: 'js-job-logs-settings',
+  testid: 'job-logs-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('CICD|Configure CI job log settings for all projects.')
+  - c.with_body do
+    = render 'job_logs_form'

@@ -9,10 +9,11 @@ Vue.use(VueApollo);
 export const initWorkItemsFeedback = ({
   feedbackIssue,
   feedbackIssueText,
-  title,
-  content,
-  expiry,
   featureName,
+  expiry,
+  badgeTitle,
+  badgePopoverTitle,
+  badgeContent,
 } = {}) => {
   if (expiry) {
     const expiryDate = new Date(expiry);
@@ -30,9 +31,10 @@ export const initWorkItemsFeedback = ({
     provide: {
       feedbackIssue,
       feedbackIssueText,
-      title,
-      content,
       featureName,
+      badgeTitle,
+      badgePopoverTitle,
+      badgeContent,
     },
     render(h) {
       return h(feedbackIssue ? WorkItemFeedback : WorkItemViewToggle);

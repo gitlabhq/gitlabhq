@@ -227,6 +227,7 @@ module API
       optional :concurrent_bitbucket_server_import_jobs_limit, type: Integer, desc: 'Bitbucket Server Importer maximum number of simultaneous import jobs'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
+      optional :ci_job_live_trace_enabled, type: Boolean, desc: 'Turn on incremental logging for job logs.'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
       optional :slack_app_enabled, type: Grape::API::Boolean, desc: 'Enable the GitLab for Slack app'
       given slack_app_enabled: ->(val) { val } do

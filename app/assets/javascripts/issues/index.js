@@ -18,21 +18,15 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
-import { __ } from '~/locale';
-import { NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY } from '~/work_items/constants';
+import { ISSUE_WIT_FEEDBACK_BADGE } from '~/work_items/constants';
 import { issuableInitialDataById, isLegacyIssueType } from './show/utils/issuable_data';
 
-const feedback = {};
+let feedback = {};
 
 if (gon.features?.workItemViewForIssues) {
-  feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/523713';
-  feedback.feedbackIssueText = __('Provide feedback on the experience');
-  feedback.content = __(
-    'We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?',
-  );
-  feedback.title = __('New issue look');
-  feedback.featureName = 'work_item_epic_feedback';
-  feedback.expiry = NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY;
+  feedback = {
+    ...ISSUE_WIT_FEEDBACK_BADGE,
+  };
 }
 
 export function initForm() {

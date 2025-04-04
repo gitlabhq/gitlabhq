@@ -2,8 +2,7 @@ import { initForm } from 'ee_else_ce/issues';
 import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/mount_markdown_editor';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
 import { initWorkItemsRoot } from '~/work_items';
-import { NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY } from '~/work_items/constants';
-import { __ } from '~/locale';
+import { ISSUE_WIT_FEEDBACK_BADGE } from '~/work_items/constants';
 
 initForm();
 initWorkItemsRoot();
@@ -11,17 +10,12 @@ initWorkItemsRoot();
 // eslint-disable-next-line no-new
 new IssuableTemplateSelectors({ warnTemplateOverride: true, editor: mountMarkdownEditor() });
 
-const feedback = {};
+let feedback = {};
 
 if (gon.features.workItemViewForIssues) {
-  feedback.feedbackIssue = 'https://gitlab.com/gitlab-org/gitlab/-/issues/523713';
-  feedback.feedbackIssueText = __('Provide feedback on the experience');
-  feedback.content = __(
-    'We’ve introduced some improvements to the issue page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?',
-  );
-  feedback.title = __('New issue look');
-  feedback.featureName = 'work_item_epic_feedback';
-  feedback.expiry = NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY;
+  feedback = {
+    ...ISSUE_WIT_FEEDBACK_BADGE,
+  };
 }
 
 if (gon.features.workItemsViewPreference || gon.features.workItemViewForIssues) {

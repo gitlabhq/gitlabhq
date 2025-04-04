@@ -674,7 +674,7 @@ persistence classes.
 | `queues`           | Store Sidekiq background jobs. |
 | `shared_state`     | Store session-related and other persistent data. |
 | `actioncable`      | Pub/Sub queue backend for ActionCable. |
-| `trace_chunks`     | Store [CI trace chunks](../cicd/job_logs.md#enable-or-disable-incremental-logging) data. |
+| `trace_chunks`     | Store [CI trace chunks](../cicd/job_logs.md#incremental-logging) data. |
 | `rate_limiting`    | Store [rate limiting](../settings/user_and_ip_rate_limits.md) state. |
 | `sessions`         | Store [sessions](../../development/session.md#gitlabsession). |
 | `repository_cache` | Store cache data specific to repositories. |

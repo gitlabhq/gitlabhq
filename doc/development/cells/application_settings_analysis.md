@@ -19,7 +19,7 @@ title: Application Settings analysis
 - Number of attributes documented: 298 (60.0%)
 - Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
 - Number of attributes with `clusterwide` set: 493 (100.0%)
-- Number of attributes with `clusterwide: true` set: 124 (25.0%)
+- Number of attributes with `clusterwide: true` set: 125 (25.0%)
 
 ## Individual columns
 
@@ -66,6 +66,7 @@ title: Application Settings analysis
 | `can_create_group` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `can_create_organization` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `check_namespace_plan` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
+| `ci_cd_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `ci_job_token_signing_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_jwt_signing_key` | `true` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_max_includes` | `false` | `integer` | `integer` | `true` | `150` | `false` | `false`| `true` |

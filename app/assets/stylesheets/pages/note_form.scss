@@ -435,21 +435,6 @@ table {
   }
 }
 
-.note-edit-warning.settings-message {
-  display: none;
-  padding: 5px 10px;
-  position: absolute;
-  left: 127px;
-  top: 2px;
-
-  @include media-breakpoint-down(xs) {
-    position: relative;
-    top: 0;
-    left: 0;
-    margin-bottom: 10px;
-  }
-}
-
 .comment-type-dropdown {
   @include media-breakpoint-down(xs) {
     display: flex;
