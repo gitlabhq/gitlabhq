@@ -15299,6 +15299,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance requirements controls data. Please refresh the page."
 msgstr ""
 
+msgid "ComplianceFrameworks|Error loading projects."
+msgstr ""
+
 msgid "ComplianceFrameworks|External"
 msgstr ""
 

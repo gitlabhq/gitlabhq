@@ -1,0 +1,11 @@
+---
+table_name: admin_roles
+classes:
+  - Authz::AdminRole
+feature_categories:
+  - permissions
+description: Stores custom admin roles with composable permissions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186331
+milestone: '17.11'
+gitlab_schema: gitlab_main_clusterwide
+table_size: small

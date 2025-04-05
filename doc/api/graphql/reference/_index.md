@@ -48116,6 +48116,16 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | New description for the compliance framework. |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | New name for the compliance framework. |
 | <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Use pipeline execution policies instead. Deprecated in GitLab 17.4. |
+| <a id="complianceframeworkinputprojects"></a>`projects` | [`ComplianceFrameworkProjectInput`](#complianceframeworkprojectinput) | Projects to add or remove from the compliance framework. |
+
+### `ComplianceFrameworkProjectInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworkprojectinputaddprojects"></a>`addProjects` | [`[Int!]!`](#int) | IDs of the projects to add to the compliance framework. |
+| <a id="complianceframeworkprojectinputremoveprojects"></a>`removeProjects` | [`[Int!]!`](#int) | IDs of the projects to remove from the compliance framework. |
 
 ### `ComplianceRequirementInput`
 
