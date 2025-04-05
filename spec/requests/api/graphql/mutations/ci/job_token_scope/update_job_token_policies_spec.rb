@@ -53,7 +53,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
     let_it_be(:target_project) { create(:project, :private) }
     let_it_be(:target_path) { target_project.full_path }
 
-    let(:policies) { %w[READ_CONTAINERS READ_PACKAGES] }
+    let(:policies) { %w[READ_DEPLOYMENTS READ_PACKAGES] }
 
     context 'when user does not have permissions to admin project' do
       let_it_be(:current_user) { create(:user, guest_of: target_project) }
@@ -83,7 +83,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             source_project: project,
             target_project: target_project,
             default_permissions: false,
-            job_token_policies: %w[read_containers],
+            job_token_policies: %w[read_deployments],
             direction: :inbound
           )
         end
@@ -135,7 +135,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
     let_it_be(:target_group) { create(:group, :private) }
     let_it_be(:target_path) { target_group.full_path }
 
-    let(:policies) { %w[READ_CONTAINERS READ_PACKAGES] }
+    let(:policies) { %w[READ_DEPLOYMENTS READ_PACKAGES] }
 
     context 'when user does not have permissions to admin project' do
       let_it_be(:current_user) { create(:user, guest_of: target_group) }
@@ -165,7 +165,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             source_project: project,
             target_group: target_group,
             default_permissions: false,
-            job_token_policies: %w[read_containers]
+            job_token_policies: %w[read_deployments]
           )
         end
 

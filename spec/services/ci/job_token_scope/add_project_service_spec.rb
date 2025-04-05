@@ -7,7 +7,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:policies) { %w[read_containers read_packages] }
+  let_it_be(:policies) { %w[read_deployments read_packages] }
 
   shared_examples 'adds project' do |context|
     before do

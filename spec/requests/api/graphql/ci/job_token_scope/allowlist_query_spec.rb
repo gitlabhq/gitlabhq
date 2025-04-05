@@ -73,7 +73,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           'addedBy' => { 'username' => current_user.username },
           'direction' => 'inbound',
           'defaultPermissions' => false,
-          'jobTokenPolicies' => ['READ_CONTAINERS'],
+          'jobTokenPolicies' => ['READ_DEPLOYMENTS'],
           'sourceProject' => { 'fullPath' => project.full_path },
           'target' => { 'fullPath' => target_group_1.full_path }
         }
@@ -89,7 +89,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           'addedBy' => { 'username' => current_user.username },
           'direction' => 'outbound',
           'defaultPermissions' => false,
-          'jobTokenPolicies' => ['READ_CONTAINERS'],
+          'jobTokenPolicies' => ['READ_DEPLOYMENTS'],
           'sourceProject' => { 'fullPath' => project.full_path },
           'target' => { 'fullPath' => target_project_2.full_path }
         },
@@ -97,7 +97,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           'addedBy' => { 'username' => current_user.username },
           'direction' => 'inbound',
           'defaultPermissions' => false,
-          'jobTokenPolicies' => ['READ_CONTAINERS'],
+          'jobTokenPolicies' => ['READ_DEPLOYMENTS'],
           'sourceProject' => { 'fullPath' => project.full_path },
           'target' => { 'fullPath' => target_project_1.full_path }
         }
@@ -144,7 +144,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           source_project: project,
           target_project: target_project_1,
           default_permissions: false,
-          job_token_policies: %w[read_containers],
+          job_token_policies: %w[read_deployments],
           added_by: current_user,
           direction: :inbound
         )
@@ -154,7 +154,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           source_project: project,
           target_project: target_project_2,
           default_permissions: false,
-          job_token_policies: %w[read_containers],
+          job_token_policies: %w[read_deployments],
           added_by: current_user,
           direction: :outbound
         )
@@ -165,7 +165,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
           target_group: target_group_1,
           added_by: current_user,
           default_permissions: false,
-          job_token_policies: %w[read_containers]
+          job_token_policies: %w[read_deployments]
         )
       end
 

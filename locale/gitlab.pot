@@ -33931,9 +33931,6 @@ msgstr ""
 msgid "JobToken|Apply permissions that grant access to individual resources."
 msgstr ""
 
-msgid "JobToken|Containers"
-msgstr ""
-
 msgid "JobToken|Default permissions"
 msgstr ""
 

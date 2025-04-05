@@ -63,9 +63,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     it_behaves_like 'capturing job token policies'
 
     context 'when the policies are not allowed' do
-      let(:allowed_policies) do
-        (::Ci::JobToken::Policies::POLICIES - Array(policies)).take(1)
-      end
+      let(:allowed_policies) { [] }
 
       it { is_expected.to have_gitlab_http_status(:forbidden) }
 

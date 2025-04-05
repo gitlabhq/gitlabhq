@@ -6,7 +6,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_group) { create(:group, :private) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:policies) { %w[read_containers read_packages] }
+  let_it_be(:policies) { %w[read_deployments read_packages] }
 
   let(:service) { described_class.new(project, current_user) }
 

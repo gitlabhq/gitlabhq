@@ -91,12 +91,12 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
       using RSpec::Parameterized::TableSyntax
 
       where(:value, :valid) do
-        nil                               | true
-        []                                | true
-        %w[read_containers]               | true
-        %w[read_containers read_packages] | true
-        %w[read_issue]                    | false
-        { project: %w[read_build] }       | false
+        nil                                | true
+        []                                 | true
+        %w[read_deployments]               | true
+        %w[read_deployments read_packages] | true
+        %w[read_issue]                     | false
+        { project: %w[read_build] }        | false
       end
 
       with_them do

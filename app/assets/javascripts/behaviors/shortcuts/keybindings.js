@@ -386,6 +386,8 @@ export const PROJECT_FILES_GO_BACK = {
   id: 'projectFiles.goBack',
   description: __('Go back (while searching for files)'),
   defaultKeys: ['esc'],
+  // ESC is OK to have multiple actions
+  overrideGlobalHotkey: true,
 };
 
 const { blobOverflowMenu } = gon.features ?? {};
@@ -463,6 +465,8 @@ export const MR_TOGGLE_FILE_BROWSER = {
   description: __('Toggle file browser'),
   defaultKeys: ['f'],
   customizable: false,
+  // TODO: remap https://gitlab.com/gitlab-org/gitlab/-/issues/533312#note_2433282146
+  overrideGlobalHotkey: true,
 };
 
 export const MR_ADD_TO_REVIEW = {
@@ -538,12 +542,16 @@ export const ISSUE_CLOSE_DESIGN = {
   id: 'issues.closeDesign',
   description: __('Close design'),
   defaultKeys: ['esc'],
+  // ESC is OK to have multiple actions
+  overrideGlobalHotkey: true,
 };
 
 export const SIDEBAR_CLOSE_WIDGET = {
   id: 'sidebar.closeWidget',
   description: __('Close sidebar widget'),
   defaultKeys: ['esc'],
+  // ESC is OK to have multiple actions
+  overrideGlobalHotkey: true,
 };
 
 export const WORK_ITEM_TOGGLE_SIDEBAR = {

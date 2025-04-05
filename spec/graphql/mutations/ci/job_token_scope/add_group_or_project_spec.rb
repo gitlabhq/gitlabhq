@@ -42,7 +42,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
       let_it_be(:target_project) { create(:project) }
       let_it_be(:target_project_path) { target_project.full_path }
 
-      let(:policies) { %w[read_containers read_packages] }
+      let(:policies) { %w[read_deployments read_packages] }
 
       let(:mutation_args) do
         {
@@ -108,7 +108,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
       let_it_be(:target_group) { create(:group, :private) }
       let_it_be(:target_group_path) { target_group.full_path }
 
-      let(:policies) { %w[read_containers read_packages] }
+      let(:policies) { %w[read_deployments read_packages] }
 
       let(:mutation_args) do
         {

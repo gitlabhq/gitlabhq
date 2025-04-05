@@ -80,7 +80,7 @@ module Types
         def job_token_policies
           return unless object.source_project.job_token_policies_enabled?
 
-          object.job_token_policies
+          object.job_token_policies - ::Ci::JobToken::Policies::DEPRECATED_POLICIES.map(&:to_s)
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

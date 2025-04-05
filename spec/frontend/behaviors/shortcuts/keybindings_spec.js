@@ -39,6 +39,23 @@ describe('~/behaviors/shortcuts/keybindings', () => {
       );
       expect(allCommandIds).toHaveLength(new Set(allCommandIds).size);
     });
+
+    it('has no local keys conflicting with global keys', () => {
+      const globalGroup = keybindingGroups.find((group) => group.id === 'globalShortcuts');
+      const globalKeys = flatten(globalGroup.keybindings.map((binding) => binding.defaultKeys));
+      const localGroups = keybindingGroups.filter((group) => group !== globalGroup);
+      const localBindings = flatten(localGroups.map((group) => group.keybindings));
+      const localKeys = localBindings.reduce((acc, binding) => {
+        // Do not set 'overrideGlobalHotkey: true' for bindings that perform an action different from a global one
+        // Instead, remap a local shortcut
+        if (binding.overrideGlobalHotkey) return acc;
+        acc.push(...binding.defaultKeys);
+        return acc;
+      }, []);
+      localKeys.forEach((key) => {
+        expect(globalKeys).not.toContain(key);
+      });
+    });
   });
 
   describe('when a command has not been customized', () => {

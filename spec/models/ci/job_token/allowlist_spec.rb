@@ -71,7 +71,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
   describe 'add!' do
     let_it_be(:added_project) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_containers read_packages] }
+    let_it_be(:policies) { %w[read_deployments read_packages] }
     let_it_be(:default_permissions) { false }
 
     subject(:add_project) do
@@ -127,7 +127,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
   describe 'add_group!' do
     let_it_be(:added_group) { create(:group) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_containers read_packages] }
+    let_it_be(:policies) { %w[read_deployments read_packages] }
     let_it_be(:default_permissions) { false }
 
     subject(:add_group) do
@@ -312,7 +312,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     let_it_be(:added_project1) { create(:project) }
     let_it_be(:added_project2) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_containers read_packages] }
+    let_it_be(:policies) { %w[read_deployments read_packages] }
 
     subject(:add_projects) do
       allowlist.bulk_add_projects!([added_project1, added_project2], policies: policies, user: user,
@@ -356,7 +356,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     let_it_be(:added_group1) { create(:group) }
     let_it_be(:added_group2) { create(:group) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_containers read_packages] }
+    let_it_be(:policies) { %w[read_deployments read_packages] }
 
     subject(:add_groups) do
       allowlist.bulk_add_groups!([added_group1, added_group2], policies: policies, user: user, autopopulated: true)

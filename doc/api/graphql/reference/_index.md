@@ -42064,7 +42064,6 @@ CI_JOB_TOKEN policy.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cijobtokenscopepoliciesadmin_containers"></a>`ADMIN_CONTAINERS` | Admin Containers. |
 | <a id="cijobtokenscopepoliciesadmin_deployments"></a>`ADMIN_DEPLOYMENTS` | Admin Deployments. |
 | <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin Environments. |
 | <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Admin Jobs. |
@@ -42072,7 +42071,6 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin Releases. |
 | <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin Secure Files. |
 | <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin Terraform State. |
-| <a id="cijobtokenscopepoliciesread_containers"></a>`READ_CONTAINERS` | Read Containers. |
 | <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read Deployments. |
 | <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read Environments. |
 | <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read Jobs. |

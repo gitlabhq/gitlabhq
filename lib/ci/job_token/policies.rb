@@ -4,8 +4,6 @@ module Ci
   module JobToken
     module Policies
       POLICIES = [
-        :read_containers,
-        :admin_containers,
         :read_deployments,
         :admin_deployments,
         :read_environments,
@@ -20,6 +18,11 @@ module Ci
         :admin_secure_files,
         :read_terraform_state,
         :admin_terraform_state
+      ].freeze
+
+      DEPRECATED_POLICIES = [
+        :read_containers,
+        :admin_containers
       ].freeze
 
       class << self
