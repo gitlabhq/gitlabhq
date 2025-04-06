@@ -16,9 +16,10 @@ When modifying the Markdown or API code, also update the corresponding
 To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:check_docs`.
 This is also checked by the `openapi-doc-check` CI/CD job that runs for commits that modify API code or documentation.
 
-In the Markdown doc for a resource (AKA endpoint):
+In the Markdown doc for a resource (the API endpoint):
 
-- Every method must have the REST API request. For example:
+- Every method must have the REST API request. The request should include the HTTP method
+(like GET, PUT, DELETE) followed by the request path. The path should always start with a `/`. For example:
 
   ```plaintext
   GET /api/v4/projects/:id/repository/branches
