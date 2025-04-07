@@ -54,7 +54,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_NAME_MAP,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_CUSTOM_FIELDS,
@@ -280,7 +280,7 @@ export default {
         }
 
         const selectedWorkItemType = this.workItemTypes?.find(
-          (workItemType) => WORK_ITEM_TYPE_VALUE_MAP[workItemType.name] === this.workItemTypeName,
+          (workItemType) => NAME_TO_ENUM_MAP[workItemType.name] === this.workItemTypeName,
         );
 
         if (selectedWorkItemType) {
@@ -380,7 +380,7 @@ export default {
       return this.selectedWorkItemType?.iconName;
     },
     selectedWorkItemTypeEnum() {
-      return WORK_ITEM_TYPE_VALUE_MAP[this.selectedWorkItemTypeName];
+      return NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName];
     },
     formOptions() {
       const options = [...this.workItemTypesForSelect];

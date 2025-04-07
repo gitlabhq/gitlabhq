@@ -16,30 +16,64 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
 
   describe 'POST upload' do
     context 'with a valid manifest' do
-      it 'saves the manifest and redirects to the status page', :aggregate_failures do
-        post :upload, params: {
-          group_id: group.id,
-          manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
-        }
+      context 'when format is HTML' do
+        it 'saves the manifest and redirects to the status page', :aggregate_failures do
+          post :upload, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+          }
 
-        metadata = Gitlab::ManifestImport::Metadata.new(user)
+          metadata = Gitlab::ManifestImport::Metadata.new(user)
 
-        expect(metadata.group_id).to eq(group.id)
-        expect(metadata.repositories.size).to eq(660)
-        expect(metadata.repositories.first).to include(name: 'platform/build', path: 'build/make')
+          expect(metadata.group_id).to eq(group.id)
+          expect(metadata.repositories.size).to eq(660)
+          expect(metadata.repositories.first).to include(name: 'platform/build', path: 'build/make')
 
-        expect(response).to redirect_to(status_import_manifest_path)
+          expect(response).to redirect_to(status_import_manifest_path)
+        end
+      end
+
+      context 'when format is JSON' do
+        it 'saves the manifest and responds with 200', :aggregate_failures do
+          post :upload, format: :json, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+          }
+
+          metadata = Gitlab::ManifestImport::Metadata.new(user)
+
+          expect(metadata.group_id).to eq(group.id)
+          expect(metadata.repositories.size).to eq(660)
+          expect(metadata.repositories.first).to include(name: 'platform/build', path: 'build/make')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({ 'success' => true })
+        end
       end
     end
 
     context 'with an invalid manifest' do
-      it 'displays an error' do
-        post :upload, params: {
-          group_id: group.id,
-          manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
-        }
+      context 'when format is HTML' do
+        it 'displays an error' do
+          post :upload, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
+          }
 
-        expect(assigns(:errors)).to be_present
+          expect(assigns(:errors)).to be_present
+        end
+      end
+
+      context 'when format is JSON' do
+        it 'displays an error' do
+          post :upload, format: :json, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
+          }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(Gitlab::Json.parse(response.body)['errors']).to be_present
+        end
       end
     end
 
@@ -48,31 +82,68 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
         stub_const("#{described_class}::MAX_MANIFEST_SIZE_IN_MB", 0)
       end
 
-      it 'displays an error' do
-        post :upload, params: {
-          group_id: group.id,
-          manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
-        }
+      context 'when format is HTML' do
+        it 'displays an error' do
+          post :upload, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+          }
 
-        expect(assigns(:errors)).to include(
-          format(
-            s_("ManifestImport|Import manifest files cannot exceed %{size} MB"),
-            size: described_class::MAX_MANIFEST_SIZE_IN_MB
+          expect(assigns(:errors)).to include(
+            format(
+              s_("ManifestImport|Import manifest files cannot exceed %{size} MB"),
+              size: described_class::MAX_MANIFEST_SIZE_IN_MB
+            )
           )
-        )
+        end
+      end
+
+      context 'when format is JSON' do
+        it 'displays an error' do
+          post :upload, format: :json, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+          }
+
+          expect(Gitlab::Json.parse(response.body)['errors']).to include(
+            format(
+              s_("ManifestImport|Import manifest files cannot exceed %{size} MB"),
+              size: described_class::MAX_MANIFEST_SIZE_IN_MB
+            )
+          )
+        end
       end
     end
 
     context 'when the user cannot import projects in the group' do
-      it 'displays an error' do
-        sign_in(create(:user))
+      context 'when format is HTML' do
+        it 'displays an error' do
+          sign_in(create(:user))
 
-        post :upload, params: {
-          group_id: group.id,
-          manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
-        }
+          post :upload, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+          }
 
-        expect(assigns(:errors)).to be_present
+          expect(assigns(:errors)).to include(
+            s_("ManifestImport|You don't have enough permissions to import projects in the selected group")
+          )
+        end
+      end
+
+      context 'when format is JSON' do
+        it 'displays an error' do
+          sign_in(create(:user))
+
+          post :upload, format: :json, params: {
+            group_id: group.id,
+            manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+          }
+
+          expect(Gitlab::Json.parse(response.body)['errors']).to include(
+            s_("ManifestImport|You don't have enough permissions to import projects in the selected group")
+          )
+        end
       end
     end
   end

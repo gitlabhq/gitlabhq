@@ -23,7 +23,7 @@ import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEMS_TYPE_MAP,
 } from '~/work_items/constants';
@@ -195,7 +195,7 @@ describe('Create work item component', () => {
           namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
             ({ name }) => name === typeName,
           );
-        createComponent({ workItemTypeName: WORK_ITEM_TYPE_VALUE_MAP[typeName] });
+        createComponent({ workItemTypeName: NAME_TO_ENUM_MAP[typeName] });
         await waitForPromises();
 
         findCancelButton().vm.$emit('click');

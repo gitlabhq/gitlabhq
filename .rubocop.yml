@@ -595,6 +595,9 @@ Gitlab/BoundedContexts:
     - '**/app/serializers/**/*'
     - '**/lib/tasks/**/*'
     - '**/app/views/**/*'
+    - 'app/experiments/*_experiment.rb' # Experiments are short-lived. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186484#note_2428354288
+    - 'ee/app/experiments/*_experiment.rb'
+    - 'ee/app/experiments/ee/application_experiment.rb'
   Include:
     - 'app/**/*'
     - 'ee/app/**/*'

@@ -8,7 +8,6 @@ import {
   GlFormTextarea,
 } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
 import TimelineEventsTagsPopover from './timeline_events_tags_popover.vue';
 import { MAX_TEXT_LENGTH, TIMELINE_EVENT_TAGS, timelineFormI18n } from './constants';
@@ -37,7 +36,6 @@ export default {
     GlCollapsibleListbox,
     GlFormTextarea,
   },
-  mixins: [glFeatureFlagsMixin()],
   i18n: timelineFormI18n,
   MAX_TEXT_LENGTH,
   props: {

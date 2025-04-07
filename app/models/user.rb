@@ -875,14 +875,11 @@ class User < ApplicationRecord
 
     def filter_items(filter_name)
       case filter_name
+      when 'blocked', 'blocked_pending_approval', 'banned',
+           'deactivated', 'active'
+        filter_by_state(filter_name)
       when 'admins'
         admins
-      when 'blocked'
-        blocked
-      when 'blocked_pending_approval'
-        blocked_pending_approval
-      when 'banned'
-        banned
       when 'two_factor_disabled'
         without_two_factor
       when 'two_factor_enabled'
@@ -891,14 +888,29 @@ class User < ApplicationRecord
         without_projects
       when 'external'
         external
-      when 'deactivated'
-        deactivated
       when "trusted"
         trusted
-      when "active"
-        active_without_ghosts
+      when "placeholder"
+        placeholder
+      when "without_placeholders"
+        without_placeholders
       else
         all_without_ghosts
+      end
+    end
+
+    def filter_by_state(filter_name)
+      case filter_name
+      when 'blocked'
+        blocked
+      when 'blocked_pending_approval'
+        blocked_pending_approval
+      when 'banned'
+        banned
+      when 'deactivated'
+        deactivated
+      when 'active'
+        active_without_ghosts
       end
     end
 

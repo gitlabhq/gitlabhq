@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFormGroup, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 import SingleChoiceSelectorItem from '~/vue_shared/components/single_choice_selector_item.vue';
@@ -73,10 +74,10 @@ export default {
       required: false,
       default: () => ({}),
     },
-    namespaceId: {
-      type: String,
+    namespace: {
+      type: Object,
       required: false,
-      default: null,
+      default: () => ({}),
     },
   },
   data() {
@@ -85,6 +86,15 @@ export default {
     };
   },
   computed: {
+    namespaceId() {
+      if (this.namespace?.id) {
+        return isGid(this.namespace.id) ? getIdFromGraphQLId(this.namespace.id) : this.namespace.id;
+      }
+      return null;
+    },
+    isPersonalNamespace() {
+      return this.namespace?.isPersonal ?? false;
+    },
     importOptions() {
       return [
         {
@@ -140,8 +150,10 @@ export default {
           stepsTotal: 4,
         },
         {
-          isAvailable: this.importManifestEnabled,
-          path: this.importManifestImportPath,
+          isAvailable: this.importManifestEnabled && !this.isPersonalNamespace,
+          path: this.namespaceId
+            ? `${this.importManifestImportPath}?namespace_id=${this.namespaceId}`
+            : this.importManifestImportPath,
           icon: 'doc-text',
           title: s__('ProjectImport|Manifest file'),
           name: 'manifest',

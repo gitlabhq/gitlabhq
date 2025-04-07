@@ -30,7 +30,7 @@ import {
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -379,7 +379,7 @@ export default {
       return BASE_ALLOWED_CREATE_TYPES;
     },
     workItemTypeNameEnum() {
-      return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
+      return NAME_TO_ENUM_MAP[this.workItemType];
     },
     showMoveButton() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;

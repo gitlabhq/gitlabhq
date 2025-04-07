@@ -1,7 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -42,7 +41,6 @@ export default {
     RunnerPlatformsRadioGroup,
     RunnerGoogleCloudOption,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     runnerId: {
       type: String,

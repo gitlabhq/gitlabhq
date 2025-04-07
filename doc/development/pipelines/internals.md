@@ -89,6 +89,16 @@ In addition to the [predefined CI/CD variables](../../ci/variables/predefined_va
 each pipeline includes default variables defined in
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
+### Variable naming
+
+Starting in March 2025, we have begun prefixing new environment variables
+that are exclusively used for the monolith CI pipelines with `GLCI_`.
+
+This allows us to track if an environment variable is intended for CI
+(`GLCI_`), the product (`GITLAB_`), or tools and systems not owned by us.
+That helps us better evaluate the impact of environment variable changes
+in our pipeline configuration.
+
 ## Stages
 
 The current stages are:

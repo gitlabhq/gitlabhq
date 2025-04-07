@@ -6,12 +6,15 @@
   needs:
     - "graphql-schema-dump"
 
+.with-ci-node-image:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
+
 .compile-assets-base:
   extends:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
+    - .with-ci-node-image
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -37,7 +40,7 @@ compile-production-assets:
     - .production
     - .frontend:rules:compile-production-assets
   tags:
-    - $GITLAB_LARGE_RUNNER_OPTIONAL
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   variables:
     GLCI_BUILD_ASSETS_IMAGE: "true"
     ARCH: linux/amd64,linux/arm64
@@ -250,6 +253,7 @@ upload-graphql-schema-dump:
   extends:
     - .default-retry
     - .yarn-cache
+    - .with-ci-node-image
   variables:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384

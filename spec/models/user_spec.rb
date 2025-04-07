@@ -3278,6 +3278,26 @@ RSpec.describe User, feature_category: :user_profile do
         expect(described_class.filter_items(filter_name)).to include user
       end
     end
+
+    context 'with placeholder filter' do
+      it 'returns only placeholder users' do
+        placeholder_user = create(:user, user_type: :placeholder)
+        regular_user = create(:user)
+
+        expect(described_class.filter_items('placeholder')).to include(placeholder_user)
+        expect(described_class.filter_items('placeholder')).not_to include(regular_user)
+      end
+    end
+
+    context 'with without_placeholders filter' do
+      it 'returns users that are not placeholders' do
+        placeholder_user = create(:user, user_type: :placeholder)
+        regular_user = create(:user)
+
+        expect(described_class.filter_items('without_placeholders')).to include(regular_user)
+        expect(described_class.filter_items('without_placeholders')).not_to include(placeholder_user)
+      end
+    end
   end
 
   describe '.without_projects' do

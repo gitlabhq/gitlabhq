@@ -59,6 +59,7 @@ module HasUserType
     scope :human_or_service_user, -> { where(user_type: %i[human service_user]) }
     scope :resource_access_token_bot, -> { where(user_type: 'project_bot') }
     scope :service_accounts, -> { where(user_type: 'service_account') }
+    scope :without_placeholders, -> { where.not(user_type: 'placeholder') }
 
     validates :user_type, presence: true
   end

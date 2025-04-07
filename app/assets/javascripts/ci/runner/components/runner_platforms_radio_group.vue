@@ -3,7 +3,6 @@ import DOCKER_LOGO_URL from '@gitlab/svgs/dist/illustrations/third-party-logos/c
 import LINUX_LOGO_URL from '@gitlab/svgs/dist/illustrations/third-party-logos/linux.svg?url';
 import KUBERNETES_LOGO_URL from '@gitlab/svgs/dist/illustrations/logos/kubernetes.svg?url';
 import { GlFormRadioGroup, GlIcon, GlLink } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import {
   LINUX_PLATFORM,
@@ -22,7 +21,6 @@ export default {
     GlIcon,
     RunnerPlatformsRadio,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     value: {
       type: String,

@@ -118,6 +118,7 @@ export function initMergeRequestDashboard(el) {
     apolloProvider,
     provide: {
       mergeRequestsSearchDashboardPath: el.dataset.mergeRequestsSearchDashboardPath,
+      listTypeToggleEnabled: parseBoolean(el.dataset.listTypeToggleEnabled),
     },
     render(createElement) {
       return createElement(App, {

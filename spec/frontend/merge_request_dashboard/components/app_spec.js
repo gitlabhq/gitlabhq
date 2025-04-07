@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import { createMockSubscription } from 'mock-apollo-client';
+import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -26,8 +27,9 @@ describe('Merge requests app component', () => {
   const findMergeRequests = () => wrapper.findAllComponents(MergeRequest);
   const findLoadMoreButton = () => wrapper.findByTestId('load-more');
   const findCountExplanation = () => wrapper.findByTestId('merge-request-count-explanation');
+  const findFeedbackLink = () => wrapper.findAllComponents(GlLink).at(0);
 
-  function createComponent(lists = null) {
+  function createComponent(lists = null, listTypeToggleEnabled = false) {
     subscriptionHandler = createMockSubscription();
     assigneeQueryMock = jest.fn().mockResolvedValue({
       data: {
@@ -97,10 +99,12 @@ describe('Merge requests app component', () => {
       },
       provide: {
         mergeRequestsSearchDashboardPath: '/search',
+        listTypeToggleEnabled,
       },
       stubs: {
         MergeRequestsQuery,
         CollapsibleSection,
+        GlLink,
       },
     });
   }
@@ -220,6 +224,24 @@ describe('Merge requests app component', () => {
       expect(eventHub.$emit).toHaveBeenCalledWith(
         'refetch.mergeRequests',
         'reviewRequestedMergeRequests',
+      );
+    });
+  });
+
+  describe('feedback link', () => {
+    it('shows the default feedback link when feature flag is off', async () => {
+      createComponent();
+      await waitForPromises();
+      expect(findFeedbackLink().attributes('href')).toBe(
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/515912',
+      );
+    });
+
+    it('shows the new feedback link when feature flag is on', async () => {
+      createComponent(null, { listTypeToggleEnabled: true });
+      await waitForPromises();
+      expect(findFeedbackLink().attributes('href')).toBe(
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/533850',
       );
     });
   });

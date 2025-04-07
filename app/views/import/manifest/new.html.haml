@@ -3,8 +3,16 @@
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
 
-%h1.page-title.gl-text-size-h-display
-  = _('Manifest file import')
+- if Feature.enabled?(:new_project_creation_form, current_user)
+  - namespace_id = namespace_id_from(params) || current_user.manageable_groups(include_groups_with_developer_access: true)&.first&.id
+  #js-vue-import-manifest-file-app{ data: {
+    back_button_path: new_project_path(anchor: 'import_project'),
+    form_path: upload_import_manifest_path,
+    status_import_manifest_path: status_import_manifest_path,
+    namespace_id: namespace_id } }
+- else
+  %h1.page-title.gl-text-size-h-display
+    = _('Manifest file import')
 
-= render 'import/shared/errors'
-= render 'form'
+  = render 'import/shared/errors'
+  = render 'form'

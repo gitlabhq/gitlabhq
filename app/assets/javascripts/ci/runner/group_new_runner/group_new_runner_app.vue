@@ -3,7 +3,6 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { GROUP_TYPE } from '../constants';
@@ -15,7 +14,7 @@ export default {
     RunnerCreateForm,
     PageHeading,
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin()],
   props: {
     groupId: {
       type: String,

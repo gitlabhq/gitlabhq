@@ -7,7 +7,7 @@ import {
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   BASE_ALLOWED_CREATE_TYPES,
   WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
 } from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
@@ -80,10 +80,7 @@ export default {
       this.workItemType = type;
     },
     workItemCreated({ workItem, numberOfDiscussionsResolved }) {
-      if (
-        this.$router &&
-        WORK_ITEM_TYPE_VALUE_MAP[this.workItemType] !== WORK_ITEM_TYPE_ENUM_INCIDENT
-      ) {
+      if (this.$router && NAME_TO_ENUM_MAP[this.workItemType] !== WORK_ITEM_TYPE_ENUM_INCIDENT) {
         const routerPushObject = {
           name: ROUTES.workItem,
           params: { iid: workItem.iid },

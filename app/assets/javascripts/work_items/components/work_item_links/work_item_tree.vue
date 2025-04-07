@@ -8,7 +8,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   FORM_TYPES,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
@@ -207,20 +207,20 @@ export default {
       let childTypes = this.allowedChildTypes;
       // To remove EPICS actions when subepics are not available
       if (
-        this.workItemType.toUpperCase() === WORK_ITEM_TYPE_ENUM_EPIC &&
+        NAME_TO_ENUM_MAP[this.workItemType] === WORK_ITEM_TYPE_ENUM_EPIC &&
         !this.hasSubepicsFeature
       ) {
         childTypes = childTypes.filter((type) => {
-          return type.name.toUpperCase() !== WORK_ITEM_TYPE_ENUM_EPIC;
+          return NAME_TO_ENUM_MAP[type.name] !== WORK_ITEM_TYPE_ENUM_EPIC;
         });
       }
 
       const reorderedChildTypes = childTypes.slice().sort((a, b) => a.id.localeCompare(b.id));
       return reorderedChildTypes.map((type) => {
-        const enumType = WORK_ITEM_TYPE_VALUE_MAP[type.name];
+        const enumType = NAME_TO_ENUM_MAP[type.name];
         const depthLimitByType =
           this.depthLimitReachedByType?.find(
-            (item) => item.workItemType?.name.toUpperCase() === enumType,
+            (item) => NAME_TO_ENUM_MAP[item.workItemType?.name] === enumType,
           ) || {};
 
         return {
@@ -323,7 +323,7 @@ export default {
   },
   methods: {
     genericActionItems(workItem) {
-      const enumType = WORK_ITEM_TYPE_VALUE_MAP[workItem];
+      const enumType = NAME_TO_ENUM_MAP[workItem];
       const workItemName = WORK_ITEMS_TYPE_MAP[enumType].name.toLowerCase();
       return [
         {

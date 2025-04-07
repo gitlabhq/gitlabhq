@@ -5607,7 +5607,13 @@ msgstr ""
 msgid "AiPowered|Always off"
 msgstr ""
 
+msgid "AiPowered|Amazon Q Setup"
+msgstr ""
+
 msgid "AiPowered|Assign seats"
+msgstr ""
+
+msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
@@ -5667,6 +5673,9 @@ msgstr ""
 msgid "AiPowered|GitLab Duo settings have moved"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo with Amazon Q"
+msgstr ""
+
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr ""
 
@@ -5719,6 +5728,9 @@ msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
+msgstr ""
+
+msgid "AiPowered|View configuration"
 msgstr ""
 
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
@@ -25905,6 +25917,9 @@ msgstr ""
 msgid "File upload error."
 msgstr ""
 
+msgid "FileUpload|Drop your file here or %{linkStart}click to upload%{linkEnd}."
+msgstr ""
+
 msgid "Filename"
 msgstr ""
 
@@ -35873,6 +35888,18 @@ msgid "Manifest import"
 msgstr ""
 
 msgid "ManifestImport|Import manifest files cannot exceed %{size} MB"
+msgstr ""
+
+msgid "ManifestImport|Manifest file import"
+msgstr ""
+
+msgid "ManifestImport|Please upload a manifest file."
+msgstr ""
+
+msgid "ManifestImport|Unable to upload the file. Please upload a valid XML file."
+msgstr ""
+
+msgid "ManifestImport|You don't have enough permissions to import projects in the selected group"
 msgstr ""
 
 msgid "Manual"

@@ -162,7 +162,7 @@ export default {
         @select="select"
       >
         <template #toggle>
-          <gl-button class="!gl-rounded-br-none !gl-rounded-tr-none">
+          <gl-button class="!gl-rounded-br-none !gl-rounded-tr-none !gl-border-r-0">
             <gl-sprintf v-if="multipleSelected" :message="$options.multipleSelectedPhrase">
               <template #length>{{ mergeRequestFilters.length - 1 }}</template>
               <template #strong>

@@ -83,7 +83,7 @@ class ProjectCiCdSetting < ApplicationRecord
   def pipeline_variables_minimum_override_role=(value)
     return if value.nil?
 
-    self.restrict_user_defined_variables = true
+    self[:restrict_user_defined_variables] = true # don't use the method because it's overridden
     self[:pipeline_variables_minimum_override_role] = value
   end
 
@@ -91,6 +91,24 @@ class ProjectCiCdSetting < ApplicationRecord
     return 'developer' unless restrict_user_defined_variables
 
     self[:pipeline_variables_minimum_override_role]
+  end
+
+  def restrict_user_defined_variables=(value)
+    return unless [true, false].include?(value)
+
+    self[:restrict_user_defined_variables] = true
+
+    if value == true && pipeline_variables_minimum_override_role == 'developer'
+      self[:pipeline_variables_minimum_override_role] = 'maintainer'
+    elsif value == true && pipeline_variables_minimum_override_role != 'developer'
+      # keep minimum role as is
+    elsif value == false
+      self[:pipeline_variables_minimum_override_role] = 'developer'
+    end
+  end
+
+  def restrict_user_defined_variables
+    self[:restrict_user_defined_variables] && self[:pipeline_variables_minimum_override_role] != 'developer'
   end
 
   private

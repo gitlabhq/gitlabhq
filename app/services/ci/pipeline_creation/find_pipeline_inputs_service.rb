@@ -24,7 +24,9 @@ module Ci
           return error_response('ref can only be an existing branch or tag')
         end
 
-        return error_response('config not found') unless project_config.exists?
+        # The project config may not exist if the project is using a policy.
+        # We currently don't support inputs for policies.
+        return success_response(Ci::PipelineCreation::Inputs::SpecInputs.new([])) unless project_config.exists?
 
         # Since CI Config path is configurable (local, other project, URL) we translate
         # all supported config types into an `include: {...}` statement.

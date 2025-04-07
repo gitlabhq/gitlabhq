@@ -21,7 +21,7 @@ import {
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
@@ -116,7 +116,7 @@ export default {
       update(data) {
         return (
           findHierarchyWidgetDefinition(data.workItem)?.allowedParentTypes?.nodes.map(
-            (el) => WORK_ITEM_TYPE_VALUE_MAP[el.name],
+            (el) => NAME_TO_ENUM_MAP[el.name],
           ) || []
         );
       },

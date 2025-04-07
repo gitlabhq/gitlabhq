@@ -110,11 +110,11 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
         end
 
-        it 'returns error response' do
+        it 'returns success response with empty inputs' do
           result = service.execute
 
-          expect(result).to be_error
-          expect(result.message).to eq('config not found')
+          expect(result).to be_success
+          expect(result.payload[:inputs].all_inputs).to be_empty
         end
       end
 

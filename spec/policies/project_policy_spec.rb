@@ -1003,10 +1003,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         :developer   | :developer      | true | true
         :maintainer  | :developer      | true | true
         :owner       | :developer      | true | true
-        :guest       | :developer      | true | false
-        :planner     | :developer      | true | false
-        :reporter    | :developer      | true | false
-        :anonymous   | :developer      | true | false
+        :guest       | :developer      | true | true
+        :planner     | :developer      | true | true
+        :reporter    | :developer      | true | true
+        :anonymous   | :developer      | true | true
         :developer   | :maintainer     | true | false
         :maintainer  | :maintainer     | true | true
         :owner       | :maintainer     | true | true
@@ -1055,8 +1055,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         before do
           ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
-          ci_cd_settings.restrict_user_defined_variables = restrict_variables
+          ci_cd_settings[:pipeline_variables_minimum_override_role] = minimum_role
+          ci_cd_settings[:restrict_user_defined_variables] = restrict_variables
           ci_cd_settings.save!
         end
 

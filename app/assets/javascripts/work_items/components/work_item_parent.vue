@@ -18,7 +18,7 @@ import {
   sprintfWorkItem,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
 } from '../constants';
 import { isReference, findHierarchyWidgetDefinition, newWorkItemId } from '../utils';
 
@@ -193,7 +193,7 @@ export default {
       update(data) {
         return (
           findHierarchyWidgetDefinition(data.workItem)?.allowedParentTypes?.nodes.map(
-            (el) => WORK_ITEM_TYPE_VALUE_MAP[el.name],
+            (el) => NAME_TO_ENUM_MAP[el.name],
           ) || []
         );
       },

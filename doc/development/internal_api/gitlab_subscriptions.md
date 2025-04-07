@@ -171,7 +171,7 @@ Example response:
 
 #### Provision a namespace
 
-Use to provision subscription related resources for a root namespace. This includes main plan, storage, compute minutes, and add-on purchases.
+Use to provision subscription related resources for a root namespace. This includes base product, storage, compute minutes, and add-on purchases.
 The endpoint processes resources independently - if one resource fails to provision, others continue to be provisioned.
 
 You can provision one or more resources in a single request based on the parameters provided.
@@ -190,12 +190,12 @@ The endpoint supports parameters for each resource nested under the `provision` 
 
 | Attribute          | Type      | Required   | Description                                           |
 | :------------      | :-------- | :--------- | :------------                                         |
-| `main_plan`        | hash      | no         | Hash object containing GitLab Subscription attributes |
+| `base_product`     | hash      | no         | Hash object containing GitLab Subscription attributes |
 | `storage`          | hash      | no         | Hash object containing Storage attributes             |
 | `compute_minutes`  | hash      | no         | Hash object containing Compute Minutes attributes     |
 | `add_on_purchases` | hash      | no         | Hash object containing Add-on Purchases attributes    |
 
-Main plan supported attributes:
+Base product supported attributes:
 
 | Attribute         | Type      | Required   | Description                                                       |
 | :------------     | :-------- | :--------- | :------------                                                     |
@@ -239,7 +239,7 @@ Example request:
 curl --request POST --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1/provision" \
 --data '{
   "provision": {
-    "main_plan": {
+    "base_product": {
       "plan_code": "ultimate",
       "seats": 30,
       "start_date": "2024-01-01",

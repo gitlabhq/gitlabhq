@@ -10,7 +10,6 @@ import { getDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
@@ -49,7 +48,7 @@ export default {
     TimelineEntryItem,
     AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin()],
   provide() {
     return {
       summarizeClientSubscriptionId: uuidv4(),

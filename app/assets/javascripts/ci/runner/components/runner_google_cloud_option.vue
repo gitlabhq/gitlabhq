@@ -1,5 +1,4 @@
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { GOOGLE_CLOUD_PLATFORM, GOOGLE_KUBERNETES_ENGINE } from '../constants';
 import RunnerPlatformsRadio from './runner_platforms_radio.vue';
 
@@ -10,7 +9,6 @@ export default {
   components: {
     RunnerPlatformsRadio,
   },
-  mixins: [glFeatureFlagsMixin()],
   model: {
     event: 'input',
     prop: 'checked',
