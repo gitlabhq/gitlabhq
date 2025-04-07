@@ -382,6 +382,7 @@ module API
 
         desc 'Download the artifacts file for job' do
           http_codes [[200, 'Download allowed'],
+                      [302, 'Found'],
                       [401, 'Unauthorized'],
                       [403, 'Forbidden'],
                       [404, 'Artifact not found']]

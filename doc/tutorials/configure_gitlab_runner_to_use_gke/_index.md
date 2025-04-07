@@ -21,7 +21,7 @@ To configure GitLab Runner to use the GKE:
 
 Before you can configure GitLab Runner to use the GKE you must:
 
-- Have a project where you have the Maintainer or Owner role. If you don't have a project, you can [create it](../../user/project/_index.md).
+- Have a project where you have at least the Maintainer role. If you don't have a project, you can [create it](../../user/project/_index.md).
 - [Obtain the project runner authentication token](../../ci/runners/runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 - Install GitLab Runner.
 

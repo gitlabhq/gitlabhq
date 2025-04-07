@@ -590,7 +590,11 @@ module MergeRequestsHelper
                 helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
-                  reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+                  reviewStates: %w[REVIEWED REQUESTED_CHANGES],
+                  not: {
+                    onlyReviewer: true,
+                    reviewerUsername: 'GitlabDuo'
+                  }
                 }
               },
               {
@@ -615,7 +619,10 @@ module MergeRequestsHelper
 
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
-                  reviewerWildcardId: 'NONE'
+                  or: {
+                    reviewerWildcard: 'NONE',
+                    onlyReviewerUsername: 'GitlabDuo'
+                  }
                 }
               }
             ],

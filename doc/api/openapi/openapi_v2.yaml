@@ -38175,6 +38175,8 @@ paths:
       responses:
         '200':
           description: Download allowed
+        '302':
+          description: Found
         '401':
           description: Unauthorized
         '403':

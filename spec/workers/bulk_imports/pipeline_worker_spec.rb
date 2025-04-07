@@ -230,6 +230,29 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
   end
 
+  context 'when pipeline is created' do
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        :created,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
+    end
+
+    it 'no-ops and returns' do
+      expect(described_class).not_to receive(:run)
+
+      expect(Gitlab::ErrorTracking).to receive(:log_exception)
+      .with(
+        instance_of(BulkImports::Pipeline::FailedError),
+        a_hash_including(tracker_state: 'created')
+      ).and_call_original
+
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+    end
+  end
+
   context 'when pipeline is finished' do
     let(:pipeline_tracker) do
       create(
@@ -242,6 +265,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     it 'no-ops and returns' do
       expect(described_class).not_to receive(:run)
+
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:warn).with(a_hash_including(
+          message: 'Pipeline in invalid status',
+          tracker_state: 'finished'
+        )).and_call_original
+      end
 
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
@@ -260,6 +290,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     it 'no-ops and returns' do
       expect(described_class).not_to receive(:run)
 
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:warn).with(a_hash_including(
+          message: 'Pipeline in invalid status',
+          tracker_state: 'skipped'
+        )).and_call_original
+      end
+
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
   end
@@ -276,6 +313,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     it 'no-ops and returns' do
       expect(described_class).not_to receive(:run)
+
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:warn).with(a_hash_including(
+          message: 'Pipeline in invalid status',
+          tracker_state: 'canceled'
+        )).and_call_original
+      end
 
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end

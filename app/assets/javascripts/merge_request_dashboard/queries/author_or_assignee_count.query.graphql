@@ -4,6 +4,8 @@ query requestingReviewAuthorOrAssigneeCount(
   $reviewStates: [MergeRequestReviewState!]
   $reviewerWildcardId: ReviewerWildcardId
   $mergedAfter: Time
+  $or: UnionedMergeRequestFilterInput
+  $not: MergeRequestsResolverNegatedParams
 ) {
   currentUser {
     id
@@ -14,6 +16,8 @@ query requestingReviewAuthorOrAssigneeCount(
       reviewStates: $reviewStates
       reviewerWildcardId: $reviewerWildcardId
       mergedAfter: $mergedAfter
+      or: $or
+      not: $not
     ) {
       count
     }

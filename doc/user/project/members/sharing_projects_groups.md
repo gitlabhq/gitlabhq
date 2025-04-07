@@ -122,7 +122,7 @@ For a project that was created by `Group 1`:
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role.
+- You must have at least the Maintainer role.
 - Sharing the project with other groups must not be prevented.
 - You must be a member of the invited group or subgroup.
 

@@ -305,6 +305,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.distinct_source_branches' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:mr1) { create(:merge_request, source_branch: 'feature-1', source_project: project) }
+      let_it_be(:mr2) { create(:merge_request, source_branch: 'feature-2', source_project: project) }
+      let_it_be(:mr3) { create(:merge_request, source_branch: 'feature-1', target_branch: 'another-branch', source_project: project) }
+      let_it_be(:mr4) { create(:merge_request, source_branch: 'feature-3', source_project: project) }
+
+      it 'returns an array of unique source branch names' do
+        expect(described_class.distinct_source_branches).to include('feature-1', 'feature-2', 'feature-3')
+      end
+
+      it 'returns only source branch names once even if used in multiple MRs' do
+        branches = described_class.distinct_source_branches
+        expect(branches.count('feature-1')).to eq(1)
+      end
+    end
+
     describe '.by_sorted_source_branches' do
       let(:fork_for_project) { fork_project(project) }
 

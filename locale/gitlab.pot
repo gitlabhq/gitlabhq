@@ -50939,9 +50939,6 @@ msgstr ""
 msgid "Runners|Capacity of 1 enables warm HA through Auto Scaling group re-spawn. Capacity of 2 enables hot HA because the service is available even when a node is lost. Capacity of 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
-msgid "Runners|Checkbox"
-msgstr ""
-
 msgid "Runners|Choose an executor when prompted by the command line. Executors run builds in different environments. %{linkStart}Not sure which one to select?%{linkEnd}"
 msgstr ""
 

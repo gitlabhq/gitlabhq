@@ -5,12 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Generate a software bill of materials with GitLab package registry'
 ---
 
-This tutorial shows you how to generate a software bill of materials (SBOM) in CycloneDX format with a CI/CD pipeline. The pipeline you'll build collects packages across multiple projects in a group, providing you with a comprehensive view of the dependencies in related projects. 
+This tutorial shows you how to generate a software bill of materials (SBOM) in CycloneDX format with a CI/CD pipeline. The pipeline you'll build collects packages across multiple projects in a group, providing you with a comprehensive view of the dependencies in related projects.
 
 You'll create a virtual Python environment to complete this tutorial, but you can apply the same approach to other supported package types, too.
 
 ## What is a software bill of materials?
- 
+
 An SBOM is a machine-readable inventory of all the software components that comprise a software product. The SBOM might include:
 
 - Direct and indirect dependencies
@@ -43,12 +43,12 @@ CycloneDX supports multiple output formats, including JSON, XML, and Protocol Bu
 
 To complete this tutorial, you need:
 
-- A group with the Maintainer or Owner role.
+- A group with at least the Maintainer role.
 - Access to GitLab CI/CD.
 - A configured [GitLab Runner](../../../ci/runners/_index.md#runner-categories) if you're using a GitLab Self-Managed instance. If you're using GitLab.com, you can skip this requirement.
-- Optional. A [group deploy token](../../project/deploy_tokens/_index.md) to authenticate requests to the package registry. 
+- Optional. A [group deploy token](../../project/deploy_tokens/_index.md) to authenticate requests to the package registry.
 
-## Steps 
+## Steps
 
 This tutorial involves two sets of steps to complete:
 
@@ -75,10 +75,10 @@ Before implementing this solution, be aware that:
 
 ### Add the base pipeline configuration
 
-First, set up the base image that defines 
-the variables and stages used throughout the pipeline. 
+First, set up the base image that defines
+the variables and stages used throughout the pipeline.
 
-In the following sections, you'll build out 
+In the following sections, you'll build out
 the pipeline by adding the configuration for each stage.
 
 In your project:
@@ -158,45 +158,45 @@ collect_group_packages:
   stage: collect
   script: |
     echo "[]" > "${SBOM_OUTPUT_DIR}/packages.json"
-    
+
     GROUP_PATH_ENCODED=$(echo "${GROUP_PATH}" | sed 's|/|%2F|g')
     PACKAGES_URL="${CI_API_V4_URL}/groups/${GROUP_PATH_ENCODED}/packages"
-    
+
     # Optional exclusion list - you can add package types you want to exclude
     # EXCLUDE_TYPES="terraform"
-    
+
     page=1
     while true; do
       # Fetch all packages without specifying type, with pagination
       response=$(curl --silent --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
                     "${PACKAGES_URL}?per_page=100&page=${page}")
-      
+
       if ! echo "$response" | jq 'type == "array"' > /dev/null 2>&1; then
         echo "Error in API response for page $page"
         break
       fi
-      
+
       count=$(echo "$response" | jq '. | length')
       if [ "$count" -eq 0 ]; then
         break
       fi
-      
+
       # Filter packages if EXCLUDE_TYPES is set
       if [ -n "${EXCLUDE_TYPES:-}" ]; then
         filtered_response=$(echo "$response" | jq --arg types "$EXCLUDE_TYPES" '[.[] | select(.package_type | inside($types | split(" ")) | not)]')
         response="$filtered_response"
         count=$(echo "$response" | jq '. | length')
       fi
-      
+
       # Merge this page of results with existing data
       jq -s '.[0] + .[1]' "${SBOM_OUTPUT_DIR}/packages.json" <(echo "$response") > "${SBOM_OUTPUT_DIR}/packages.tmp.json"
       mv "${SBOM_OUTPUT_DIR}/packages.tmp.json" "${SBOM_OUTPUT_DIR}/packages.json"
-      
+
       # Move to next page if we got a full page of results
       if [ "$count" -lt 100 ]; then
         break
       fi
-      
+
       page=$((page + 1))
     done
   artifacts:
@@ -240,30 +240,30 @@ aggregate_sboms:
         """Process version information by aggregating packages with same name and type"""
         version_history = {}
         package_versions = {}  # Dict to group packages by name and type
-        
+
         try:
             with open(packages_file, 'r') as f:
                 packages = json.load(f)
                 if not isinstance(packages, list):
                     return version_history
-                
+
                 # First, group packages by name and type
                 for package in packages:
                     key = f"{package.get('name')}:{package.get('package_type')}"
                     if key not in package_versions:
                         package_versions[key] = []
-                    
+
                     package_versions[key].append({
                         'id': package.get('id'),
                         'version': package.get('version', 'unknown'),
                         'created_at': package.get('created_at')
                     })
-                
+
                 # Then process each group to create version history
                 for package_key, versions in package_versions.items():
                     # Sort versions by creation date, newest first
                     versions.sort(key=lambda x: x.get('created_at', ''), reverse=True)
-                    
+
                     # Use the first package's ID as the key (newest version)
                     if versions:
                         package_id = str(versions[0]['id'])
@@ -285,18 +285,18 @@ aggregate_sboms:
             'total_packages': 0,
             'package_types': {}
         }
-        
+
         try:
             with open(package_file, 'r') as f:
                 packages = json.load(f)
                 if not isinstance(packages, list):
                     return [], package_stats
-                
+
                 for package in packages:
                     package_stats['total_packages'] += 1
                     pkg_type = package.get('package_type', 'unknown')
                     package_stats['package_types'][pkg_type] = package_stats['package_types'].get(pkg_type, 0) + 1
-                    
+
                     component = {
                         'type': 'library',
                         'name': package['name'],
@@ -308,14 +308,14 @@ aggregate_sboms:
                             'value': package.get('_links', {}).get('web_path', '')
                         }]
                     }
-                    
+
                     key = f"{component['name']}:{component['version']}"
                     if key not in merged_components:
                         merged_components[key] = component
         except Exception as e:
             print(f"Error merging package data: {e}")
             return [], package_stats
-        
+
         return list(merged_components.values()), package_stats
 
     # Main processing
@@ -385,16 +385,16 @@ publish_sbom:
   stage: publish
   script: |
     STATS=$(cat "${SBOM_OUTPUT_DIR}/package_stats.json")
-    
+
     # Upload generated files
     curl --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
          --upload-file "${SBOM_OUTPUT_DIR}/merged_sbom.${OUTPUT_TYPE}" \
          "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sbom/${CI_COMMIT_SHA}/merged_sbom.${OUTPUT_TYPE}"
-    
+
     curl --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
          --upload-file "${SBOM_OUTPUT_DIR}/package_stats.json" \
          "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sbom/${CI_COMMIT_SHA}/package_stats.json"
-    
+
     # Add package description
     curl --header "${AUTH_HEADER:-"JOB-TOKEN: $CI_JOB_TOKEN"}" \
          --header "Content-Type: application/json" \
@@ -429,7 +429,7 @@ To access the generated files:
 1. Find the package named `sbom`.
 1. Download the SBOM and statistics files.
 
-### Using the SBOM file 
+### Using the SBOM file
 
 The SBOM file follows the [CycloneDX 1.4 JSON specification](https://cyclonedx.org/docs/1.4/json/), and provides details about published packages, package versions, and artifacts in your group's package registry.
 
@@ -447,7 +447,7 @@ When working with CycloneDX files, consider using the following tools:
 
 ### Using the statistics file
 
-The statistics file provides package registry analytics and activity tracking. 
+The statistics file provides package registry analytics and activity tracking.
 
 For example, to analyze your package registry, you can:
 
@@ -463,7 +463,7 @@ To track package registry activity, you can:
 
 You can use a CLI tool like `jq` with the statistics file
 to generate analytics or activity information in a readable
-JSON format. 
+JSON format.
 
 The following code block lists several examples of `jq` commands you can run against the statistics file for general analysis or reporting purposes:
 
@@ -492,7 +492,7 @@ To schedule the pipeline:
 
 1. In your project, go to **Build > Pipeline schedules**.
 1. Select **Create a new pipeline schedule** and fill in the form:
-   - From the **Cron timezone** dropdown list, select a timezone. 
+   - From the **Cron timezone** dropdown list, select a timezone.
    - Select an **Interval Pattern**, or add a **Custom** pattern using [cron syntax](../../../ci/pipelines/schedules.md).
    - Select the branch or tag for the pipeline.
    - Under **Variables**, enter any number of CI/CD variables to the schedule.
@@ -514,7 +514,7 @@ If you encounter authentication errors:
 
 If you're missing package types:
 
-- Make sure your [deploy token has access](../../project/deploy_tokens/_index.md#pull-packages-from-a-package-registry) to all package types. 
+- Make sure your [deploy token has access](../../project/deploy_tokens/_index.md#pull-packages-from-a-package-registry) to all package types.
 - Check if the package type is enabled in your group settings.
 
 ### Memory issues in the `aggregate` stage

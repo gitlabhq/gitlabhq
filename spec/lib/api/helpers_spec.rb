@@ -1532,12 +1532,13 @@ RSpec.describe API::Helpers, feature_category: :shared do
       end
 
       it 'redirects to a CDN-fronted URL' do
-        expect(helper).to receive(:redirect)
         expect_next_instance_of(ObjectStorage::CDN::FileUrl) do |instance|
           expect(instance).to receive(:url).and_call_original
         end
+
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
+        expect(helper).to receive(:redirect)
 
         subject
       end
@@ -1546,9 +1547,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
         let(:is_head_request) { true }
 
         it 'redirects to a CDN-fronted URL' do
-          expect(helper).to receive(:redirect)
           expect(ObjectStorage::S3).to receive(:signed_head_url).and_call_original
           expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
+          expect(helper).to receive(:redirect)
 
           subject
         end

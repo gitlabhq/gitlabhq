@@ -62,6 +62,13 @@ module BulkImports
         if pipeline_tracker.enqueued? || pipeline_tracker.started?
           logger.info(log_attributes(message: 'Pipeline starting'))
           run
+        elsif pipeline_tracker.created?
+          Gitlab::ErrorTracking.log_exception(
+            Pipeline::FailedError.new('Pipeline in invalid status'),
+            log_attributes
+          )
+        else
+          logger.warn(log_attributes(message: 'Pipeline in invalid status'))
         end
       end
     end

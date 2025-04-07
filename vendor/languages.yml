@@ -2015,8 +2015,10 @@ HCL:
   - ".nomad"
   - ".tf"
   - ".tfvars"
+  - ".tofu"
   - ".workflow"
   aliases:
+  - opentofu
   - terraform
   ace_mode: ruby
   codemirror_mode: ruby

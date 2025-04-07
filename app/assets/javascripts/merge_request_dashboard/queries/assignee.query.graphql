@@ -11,6 +11,7 @@ query requestingReview(
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
+  $or: UnionedMergeRequestFilterInput
 ) {
   currentUser {
     id
@@ -21,6 +22,7 @@ query requestingReview(
       reviewerWildcardId: $reviewerWildcardId
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
       first: $perPage
       after: $afterCursor
       sort: $sort

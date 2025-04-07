@@ -175,7 +175,7 @@ Only direct members of a project are imported. Inherited or shared members of a 
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role.
+- You must have at least the Maintainer role.
 
 If the importing member's role for the target project is:
 

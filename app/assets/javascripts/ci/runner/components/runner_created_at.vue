@@ -51,7 +51,7 @@ export default {
 };
 </script>
 <template>
-  <span v-if="message">
+  <span v-if="message" class="gl-text-left">
     <gl-sprintf :message="message">
       <template #timeAgo>
         <time-ago v-if="createdAt" :time="createdAt" />

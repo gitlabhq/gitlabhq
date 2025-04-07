@@ -26,8 +26,7 @@ module Gitlab
 
           validate_archived_trace unless Gitlab::FIPS.enabled?
 
-          trace_metadata.destroy! if trace_metadata.successfully_archived? && \
-            Feature.enabled?(:ci_delete_archived_trace_metadata, job.project)
+          trace_metadata.destroy! if trace_metadata.successfully_archived?
         end
 
         private
@@ -62,10 +61,11 @@ module Gitlab
         def validate_archived_trace
           return unless remote_checksum
 
-          trace_metadata.update!(remote_checksum: remote_checksum)
+          trace_metadata.remote_checksum = remote_checksum
 
           unless trace_metadata.remote_checksum_valid?
             metrics.increment_error_counter(error_reason: :archive_invalid_checksum)
+            trace_metadata.save!
           end
         end
 

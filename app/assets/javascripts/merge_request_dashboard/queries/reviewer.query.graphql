@@ -10,6 +10,7 @@ query reviewRequests(
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
+  $or: UnionedMergeRequestFilterInput
 ) {
   currentUser {
     id
@@ -19,6 +20,7 @@ query reviewRequests(
       reviewStates: $reviewStates
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
       first: $perPage
       after: $afterCursor
       sort: $sort

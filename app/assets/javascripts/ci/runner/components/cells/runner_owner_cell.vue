@@ -49,10 +49,10 @@ export default {
 </script>
 
 <template>
-  <div>
+  <p class="gl-mb-0 gl-text-left">
     <gl-link v-if="cell.href" v-gl-tooltip="cell.tooltip" :href="cell.href" class="gl-text-default">
       {{ cell.text }}
     </gl-link>
     <span v-else>{{ cell.text }}</span>
-  </div>
+  </p>
 </template>

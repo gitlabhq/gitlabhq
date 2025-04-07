@@ -44,19 +44,6 @@ RSpec.describe Gitlab::Ci::Trace::Archive, feature_category: :scalability do
 
             expect(job.reload.trace_metadata).to be_nil
           end
-
-          context 'when FF `ci_delete_archived_trace_metadata` is disabled' do
-            before do
-              stub_feature_flags(ci_delete_archived_trace_metadata: false)
-            end
-
-            it 'does not delete trace metadata record' do
-              expect { subject.execute!(stream) }
-                .not_to change { Ci::BuildTraceMetadata.count }
-
-              expect(job.reload.trace_metadata).to eq(trace_metadata)
-            end
-          end
         end
 
         shared_examples 'local checksum only' do

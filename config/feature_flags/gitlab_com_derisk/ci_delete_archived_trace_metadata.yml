@@ -1,9 +1,0 @@
----
-name: ci_delete_archived_trace_metadata
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500654
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185876
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/526985
-milestone: '17.11'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false

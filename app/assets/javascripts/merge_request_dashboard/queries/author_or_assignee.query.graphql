@@ -11,6 +11,7 @@ query requestingReviewAuthorOrAssignee(
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
+  $or: UnionedMergeRequestFilterInput
 ) {
   currentUser {
     id
@@ -22,6 +23,7 @@ query requestingReviewAuthorOrAssignee(
       reviewerWildcardId: $reviewerWildcardId
       mergedAfter: $mergedAfter
       not: $not
+      or: $or
       first: $perPage
       after: $afterCursor
       sort: $sort

@@ -654,6 +654,10 @@ class MergeRequest < ApplicationRecord
       .pluck(:source_branch)
   end
 
+  def self.distinct_source_branches
+    distinct.pluck(:source_branch)
+  end
+
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'merged_at', 'merged_at_asc' then order_merged_at_asc

@@ -41,7 +41,7 @@ export function assignedToYouBadge({ mergeRequest }) {
     return { icon: 'merge-request', text: __('Draft') };
   }
 
-  if (mergeRequest.reviewers?.nodes.length === 0) {
+  if (mergeRequest.reviewers?.nodes.length <= 1) {
     return { icon: 'user', text: __('Reviewers needed') };
   }
 

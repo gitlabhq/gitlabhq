@@ -465,7 +465,7 @@ active at the same time.
 
 To enable Opsgenie integration:
 
-1. Sign in as a user with the Maintainer or Owner role.
+1. Sign in as a user with at least the Maintainer role.
 1. Go to **Monitor > Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.
