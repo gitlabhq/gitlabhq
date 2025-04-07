@@ -154,3 +154,131 @@ To import a compliance framework by using a JSON template:
 1. In the dialog that appears, select the JSON file from your local system.
 
 If the import is successful, the new compliance framework appears in the list. Any errors are displayed for correction.
+
+## Requirements
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186525) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `enable_standards_adherence_dashboard_v2`. Disabled by default.
+
+{{< /history >}}
+
+In GitLab Ultimate, you can define specific **requirements** for a compliance framework. Requirements are made up of one or more **controls**, which are checks against the configuration or behavior of projects that are assigned the framework. There is maximum of 5 controls per requirement.
+
+### Controls
+
+Each control includes logic that GitLab uses during scheduled or triggered scans to evaluate a project's adherence. For more details on how adherence is tracked, see [Compliance status report](compliance_center/compliance_status_report.md).
+
+#### GitLab controls
+
+The following controls are available to use in framework requirements:
+
+- **SAST running**
+- **At least two approvals**
+- **Author approved merge request**
+- **Committers approved merge request**
+- **Internal visibility is forbidden**
+- **Default branch protected**
+- **Auth SSO enabled**
+- **Secret detection running**
+- **Dependency scanning running**
+- **Container scanning running**
+- **License compliance running**
+- **DAST running**
+- **API security running**
+- **Fuzz testing running**
+- **Code quality running**
+- **IaC scanning running**
+- **Code changes requires code owners**
+- **Reset approvals on push**
+- **Status checks required**
+- **Require branch up to date**
+- **Resolve discussions required**
+- **Require linear history**
+- **Restrict push/merge access**
+- **Force push disabled**
+- **Terraform enabled**
+
+#### External controls
+
+External controls are API calls to external systems that request the status of an external control or requirement.
+
+You can create a external control that sends data to third-party tools.
+
+When the [compliance scans](compliance_center/compliance_status_report.md#scan-timing-and-triggers) are run, GitLab sends a notification. The users or automated workflows can then update the status of control from outside of GitLab.
+
+With this integration, you can integrate with third-party workflow tools, like ServiceNow, or the custom tool of your choice. The third-party tool
+responds with an associated status. This status is then displayed in the [Compliance status report](compliance_center/compliance_status_report.md).
+
+You can configure external controls for each individual project. External controls are not shared between projects.
+Status checks fail if an external control stays in the pending state for more than two minutes.
+
+##### Add external controls
+
+To add an external control when creating or editing a framework:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework** or edit an existing one.
+1. In the **Requirements** section, select **New requirement**.
+1. Select **Add an external control**.
+1. In the feilds edit **External URL** and **HMAC shared secret**.
+1. Select **Save changes to the framework** to save the requirment.
+
+##### External control lifecycle
+
+External controls have an **asynchronous** workflow. [Compliance scans](compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
+
+```mermaid
+sequenceDiagram
+    [GitLab->>+External service: Requirement payload
+    External service-->>-GitLab: Control response
+    Note over External service,GitLab: Response includes SHA at HEAD
+```
+
+When the payload is received, the external service can then run any required processes before posting its response back to the merge request using the REST API.
+
+External controls have the following states:
+
+- `pending` - The default state. No response has been received from the external service.
+- `passed` - A response from the external service has been received and approved by it.
+- `failed` - A response from the external service has been received and denied by it.
+
+If something changes outside of GitLab, you can set the status of an external control by using the API. You don't need to wait for a payload to be sent first.
+
+### Add requirements
+
+To add a requirement when creating or editing a framework:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework** or edit an existing one.
+1. In the **Requirements** section, select **New requirement**.
+1. In the popup add **Name** and **Description**.
+1. Select **Add a GitLab control** to add more controls.
+1. In the control dropdown search and select a control.
+1. Select **Save changes to the framework** to save the requirment.
+
+### Edit requirements
+
+To edit a requirement when creating or editing a framework:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select **New framework** or edit an existing one.
+1. In the **Requirements** section, select **Action** > **Edit**.
+1. In the popup edit **Name** and **Description**.
+1. Select **Add a GitLab control** to add more controls.
+1. In the control dropdown search and select a control.
+1. Select {{< icon name="remove" >}} to remove a control.
+1. Select **Save changes to the framework** to save the requirment.

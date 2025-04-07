@@ -54,10 +54,10 @@ module Members
     def enqueue_jobs_that_needs_to_be_run_only_once_per_hierarchy(member, unassign_issuables)
       return if recursive_call?
 
-      enqueue_cleanup_jobs_once_per_heirarchy(member, unassign_issuables)
+      enqueue_cleanup_jobs_once_per_hierarchy(member, unassign_issuables)
     end
 
-    def enqueue_cleanup_jobs_once_per_heirarchy(member, unassign_issuables)
+    def enqueue_cleanup_jobs_once_per_hierarchy(member, unassign_issuables)
       enqueue_delete_todos(member)
       enqueue_unassign_issuables(member) if unassign_issuables
     end
