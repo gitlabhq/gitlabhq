@@ -172,7 +172,7 @@ If the [Dependency Scanning](../dependency_scanning/_index.md) CI job is configu
 
 ## Download the dependency list
 
-You can download the full list of dependencies and their details in JSON or CSV format.
+You can download the full list of dependencies and their details in JSON, CSV, or CycloneDX format.
 The dependency list shows only the results of the last successful pipeline that ran on the default branch.
 
 To download the dependency list:

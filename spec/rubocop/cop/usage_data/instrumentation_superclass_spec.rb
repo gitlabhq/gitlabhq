@@ -10,8 +10,8 @@ RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass do
 
   let(:config) do
     RuboCop::Config.new('UsageData/InstrumentationSuperclass' => {
-                          'AllowedClasses' => allowed_classes
-                        })
+      'AllowedClasses' => allowed_classes
+    })
   end
 
   context 'when in an instrumentation file' do
@@ -28,10 +28,10 @@ RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass do
 
       context 'when inheriting from some other superclass' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             class NewMetric < BaseMetric; end
                               ^^^^^^^^^^ #{msg}
-          CODE
+          RUBY
         end
       end
 
@@ -51,10 +51,10 @@ RSpec.describe RuboCop::Cop::UsageData::InstrumentationSuperclass do
 
       context 'when inheriting from some other superclass' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             NewMetric = Class.new(BaseMetric)
                                   ^^^^^^^^^^ #{msg}
-          CODE
+          RUBY
         end
       end
 

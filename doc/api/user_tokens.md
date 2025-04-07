@@ -47,8 +47,11 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" \
-     --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "name=mytoken" --data "expires_at=2017-04-04" \
+  --data "scopes[]=api" \
+  --url "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
 ```
 
 Example response:
@@ -106,7 +109,10 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "scopes[]=k8s_proxy" "https://gitlab.example.com/api/v4/user/personal_access_tokens"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "name=mytoken" --data "scopes[]=k8s_proxy" \
+  --url "https://gitlab.example.com/api/v4/user/personal_access_tokens"
 ```
 
 Example response:
@@ -152,7 +158,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -214,7 +222,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2"
 ```
 
 Example response:
@@ -263,8 +273,11 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" \
-     --data "scopes[]=api" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "name=mytoken" --data "expires_at=2017-04-04" \
+  --data "scopes[]=api" \
+  --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens"
 ```
 
 Example response:
@@ -309,5 +322,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
 ```

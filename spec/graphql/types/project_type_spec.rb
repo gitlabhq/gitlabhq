@@ -15,6 +15,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
   specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
 
+  specify { expect(described_class.interfaces).to include(::Types::Projects::ProjectInterface) }
+
   it 'has the expected fields' do
     expected_fields = %w[
       user_permissions id full_path path name_with_namespace

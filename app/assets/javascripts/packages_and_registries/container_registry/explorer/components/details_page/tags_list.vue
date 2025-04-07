@@ -61,11 +61,6 @@ export default {
       default: true,
       required: false,
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
     isImageLoading: {
       type: Boolean,
       default: false,
@@ -265,7 +260,6 @@ export default {
               :first="first"
               :selected="isSelected(item)"
               :is-mobile="isMobile"
-              :disabled="disabled"
               @select="selectItem(item)"
               @delete="deleteTags([item])"
             />

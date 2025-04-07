@@ -33,9 +33,11 @@
   - 1
 - - analytics_code_review_metrics
   - 1
-- - analytics_code_suggestions_usage_backfill
+- - analytics_code_suggestions_events_backfill
   - 1
 - - analytics_devops_adoption_create_snapshot
+  - 1
+- - analytics_duo_chat_events_backfill
   - 1
 - - analytics_usage_trends_counter_job
   - 1

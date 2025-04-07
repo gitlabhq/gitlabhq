@@ -291,9 +291,6 @@ export default {
     <paginated-table-with-search-and-tabs
       :show-error-msg="showErrorMsg"
       :i18n="$options.i18n"
-      :items="
-        alerts.list || [] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */
-      "
       :page-info="alerts.pageInfo"
       :items-count="alertsCount"
       :status-tabs="$options.statusTabs"

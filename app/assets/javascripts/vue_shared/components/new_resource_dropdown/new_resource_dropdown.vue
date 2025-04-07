@@ -10,7 +10,6 @@ import { createAlert } from '~/alert';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import AccessorUtilities from '~/lib/utils/accessor';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import searchUserProjectsWithIssuesEnabled from './graphql/search_user_projects_with_issues_enabled.query.graphql';
 import { RESOURCE_TYPE_ISSUE, RESOURCE_TYPES, RESOURCE_OPTIONS } from './constants';
@@ -54,11 +53,6 @@ export default {
       type: Function,
       required: false,
       default: (data) => data?.projects?.nodes,
-    },
-    withLocalStorage: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -124,9 +118,6 @@ export default {
     },
     showNoSearchResultsText() {
       return !this.projects.length && this.search;
-    },
-    canUseLocalStorage() {
-      return this.withLocalStorage && AccessorUtilities.canUseLocalStorage();
     },
     selectedProjectForLocalStorage() {
       const { webUrl, name } = this.selectedProject;

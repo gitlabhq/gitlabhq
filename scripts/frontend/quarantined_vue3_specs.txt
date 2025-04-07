@@ -129,7 +129,6 @@ spec/frontend/issues/list/components/issues_list_app_spec.js
 spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js
 spec/frontend/issues/show/components/app_spec.js
 spec/frontend/issues/show/components/fields/description_spec.js
-spec/frontend/issues/show/components/header_actions_spec.js
 spec/frontend/jira_import/components/jira_import_form_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js

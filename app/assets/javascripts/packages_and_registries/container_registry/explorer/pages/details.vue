@@ -177,7 +177,6 @@ export default {
         :id="$route.params.id"
         :is-image-loading="isLoading"
         :is-mobile="isMobile"
-        :disabled="pageActionsAreDisabled"
         @delete="showAlert"
       />
 

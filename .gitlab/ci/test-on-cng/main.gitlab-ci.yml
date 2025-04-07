@@ -36,8 +36,10 @@ workflow:
     - .e2e-test-base
     - .cng-qa-cache # cng-cache includes additional cached helm chart
   needs:
-    - build-cng-env
-    - build-cng
+    - job: build-cng-env
+    - job: build-cng
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
   tags:
     - e2e
   variables:
@@ -51,6 +53,7 @@ workflow:
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    GIT_STRATEGY: "none"
   before_script:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]

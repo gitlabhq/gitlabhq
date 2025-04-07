@@ -117,6 +117,7 @@ where:
 - [YAML anchors](../yaml/yaml_optimization.md#anchors) are replaced with the linked configuration.
 - [YAML `!reference` tags](../yaml/yaml_optimization.md#reference-tags) are also replaced
   with the linked configuration.
+- Conditional rules are evaluated assuming a default branch push event.
 
 Using `!reference` tags can cause nested configuration that display with
 multiple hyphens (`-`) at the start of the line in the expanded view. This behavior is expected, and the extra

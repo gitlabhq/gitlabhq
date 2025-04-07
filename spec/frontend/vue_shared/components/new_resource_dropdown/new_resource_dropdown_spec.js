@@ -5,12 +5,12 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import searchUserProjectsWithIssuesEnabledQuery from '~/vue_shared/components/new_resource_dropdown/graphql/search_user_projects_with_issues_enabled.query.graphql';
 import { RESOURCE_TYPES } from '~/vue_shared/components/new_resource_dropdown/constants';
 import searchProjectsWithinGroupQuery from '~/issues/list/queries/search_projects.query.graphql';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { stubComponent } from 'helpers/stub_component';
 import {
   emptySearchProjectsQueryResponse,
@@ -25,8 +25,6 @@ import {
 jest.mock('~/alert');
 
 describe('NewResourceDropdown component', () => {
-  useLocalStorageSpy();
-
   let wrapper;
 
   Vue.use(VueApollo);
@@ -60,6 +58,7 @@ describe('NewResourceDropdown component', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const showDropdown = async () => {
     findDropdown().vm.$emit('shown');
     await waitForPromises();
@@ -183,31 +182,18 @@ describe('NewResourceDropdown component', () => {
     );
   });
 
-  describe('without localStorage', () => {
-    beforeEach(() => {
-      mountComponent({ mountFn: mount });
-    });
-
-    it('does not attempt to save the selected project to the localStorage', async () => {
-      await showDropdown();
-      findGlDropdownItem().vm.$emit('click', project1);
-
-      expect(localStorage.setItem).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('with localStorage', () => {
+  describe('local storage sync', () => {
     it('retrieves the selected project from the localStorage', async () => {
-      localStorage.setItem(
-        'group--new-issue-recent-project',
-        JSON.stringify({
-          webUrl: project1.webUrl,
-          name: project1.name,
-        }),
-      );
-      mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
-      await nextTick();
+      mountComponent();
       const dropdown = findDropdown();
+
+      expect(dropdown.props('splitHref')).toBe('');
+
+      findLocalStorageSync().vm.$emit('input', {
+        webUrl: project1.webUrl,
+        name: project1.name,
+      });
+      await nextTick();
 
       expect(dropdown.props('splitHref')).toBe(
         joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
@@ -216,16 +202,17 @@ describe('NewResourceDropdown component', () => {
     });
 
     it('retrieves legacy cache from the localStorage', async () => {
-      localStorage.setItem(
-        'group--new-issue-recent-project',
-        JSON.stringify({
-          url: `${project1.webUrl}/issues/new`,
-          name: project1.name,
-        }),
-      );
-      mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
-      await nextTick();
+      mountComponent();
       const dropdown = findDropdown();
+
+      expect(dropdown.props('splitHref')).toBe('');
+
+      findLocalStorageSync().vm.$emit('input', {
+        url: `${project1.webUrl}/issues/new`,
+        name: project1.name,
+      });
+
+      await nextTick();
 
       expect(dropdown.props('splitHref')).toBe(
         joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
@@ -234,34 +221,24 @@ describe('NewResourceDropdown component', () => {
     });
 
     describe.each(RESOURCE_TYPES)('with resource type %s', (resourceType) => {
-      it('computes the local storage key without a group', async () => {
+      it('computes the local storage key without a group', () => {
         mountComponent({
-          mountFn: mount,
-          propsData: { resourceType, withLocalStorage: true },
+          propsData: { resourceType },
         });
-        await showDropdown();
-        findGlDropdownItem().vm.$emit('click', project1);
-        await nextTick();
 
-        expect(localStorage.setItem).toHaveBeenLastCalledWith(
+        expect(findLocalStorageSync().props('storageKey')).toBe(
           `group--new-${resourceType}-recent-project`,
-          expect.any(String),
         );
       });
 
-      it('computes the local storage key with a group', async () => {
+      it('computes the local storage key with a group', () => {
         const groupId = '22';
         mountComponent({
-          mountFn: mount,
-          propsData: { groupId, resourceType, withLocalStorage: true },
+          propsData: { groupId, resourceType },
         });
-        await showDropdown();
-        findGlDropdownItem().vm.$emit('click', project1);
-        await nextTick();
 
-        expect(localStorage.setItem).toHaveBeenLastCalledWith(
+        expect(findLocalStorageSync().props('storageKey')).toBe(
           `group-${groupId}-new-${resourceType}-recent-project`,
-          expect.any(String),
         );
       });
     });

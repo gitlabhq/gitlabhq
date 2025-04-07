@@ -19,11 +19,8 @@ export default {
     SmartVirtualList,
     ReportItem,
   },
-  // Typical height of a report item in px
-  typicalReportItemHeight: 32,
   /*
-   The maximum amount of shown issues. This is calculated by
-   ( max-height of report-block-list / typicalReportItemHeight ) + some safety margin
+   The maximum amount of shown issues.
    We will use VirtualList if we have more items than this number.
    For entries lower than this number, the virtual scroll list calculates the total height of the element wrongly.
    */
@@ -101,7 +98,6 @@ export default {
   <smart-virtual-list
     :length="issuesWithState.length"
     :remain="$options.maxShownReportItems"
-    :size="$options.typicalReportItemHeight"
     class="report-block-container"
     :class="listClasses"
     wtag="ul"

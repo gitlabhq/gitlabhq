@@ -5,7 +5,7 @@ module Resolvers
     class RunnerOwnerProjectResolver < BaseResolver
       include LooksAhead
 
-      type Types::ProjectType, null: true
+      type ::Types::Projects::ProjectInterface, null: true
 
       alias_method :runner, :object
 

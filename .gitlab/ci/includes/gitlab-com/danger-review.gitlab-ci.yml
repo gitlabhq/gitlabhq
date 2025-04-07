@@ -1,5 +1,5 @@
 include:
-  - component: ${CI_SERVER_FQDN}/gitlab-org/components/danger-review/danger-review@2.0.0
+  - component: ${CI_SERVER_FQDN}/gitlab-org/components/danger-review/danger-review@2.1.0
     inputs:
       job_image: "${DEFAULT_CI_IMAGE}"
       job_stage: "preflight"

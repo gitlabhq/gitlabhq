@@ -103,9 +103,6 @@ export default {
         class: this.displayAsCard ? 'gl-mb-3' : 'gl-mr-3',
       };
     },
-    validMimeTypeString() {
-      return this.validFileMimetypes.join();
-    },
     showDropzoneOverlay() {
       if (this.validateDesignUploadOnDragover && this.acceptDesignFormats) {
         return this.dragging && this.isDragDataValid && !this.enableDragBehavior;

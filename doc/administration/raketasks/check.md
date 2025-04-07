@@ -540,7 +540,7 @@ W, [2022-11-28T13:14:09.296911 #10025]  WARN -- : Failed to transfer Ci::JobArti
 
 Attempting to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) after you have disabled object storage, results in the following error:
 
-```shell
+```plaintext
 RuntimeError (Object Storage is not enabled for JobArtifactUploader)
 ```
 

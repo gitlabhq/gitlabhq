@@ -44,10 +44,6 @@ export default {
     },
   },
   props: {
-    items: {
-      type: Array,
-      required: true,
-    },
     itemsCount: {
       type: Object,
       required: false,

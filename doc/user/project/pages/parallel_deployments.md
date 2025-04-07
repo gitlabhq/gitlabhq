@@ -230,3 +230,23 @@ The previous YAML example uses [user-defined job names](_index.md#user-defined-j
 
 Parallel Pages deployments, created by a merge request with a `path_prefix`, are automatically deleted when the
 merge request is closed or merged.
+
+### Usage with redirects
+
+Redirects use absolute paths.
+Because parallel deployments are available on a sub-path, redirects require
+additional modifications to the `_redirects` file to work in parallel deployments.
+
+Existing files always take priority over a redirect rule, so you can use a splat placeholder
+to catch requests to prefixed paths.
+
+If your `path_prefix` is `/mr-${$CI_MERGE_REQUEST_IID}`, adapt this `_redirect` file example
+to redirect requests for both primary and parallel deployments:
+
+```shell
+# Redirect the primary deployment
+/will-redirect.html /redirected.html 302
+
+# Redirect parallel deployments
+/*/will-redirect.html /:splat/redirected.html 302
+```

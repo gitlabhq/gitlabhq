@@ -194,7 +194,7 @@ To see what polyfills are being used:
 1. In the **Search modules** field, enter `gitlab/node_modules/core-js` to see
    which polyfills are being loaded and where:
 
-   ![Image of webpack report](img/webpack_report_v12_8.png)
+   ![A list of core-js polyfills being loaded, including their count and total size, filtered by the Search modules field](img/webpack_report_v12_8.png)
 
 ### 9. Why is my page broken in dark mode?
 

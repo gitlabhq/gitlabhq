@@ -180,7 +180,7 @@ export default {
 </script>
 
 <template>
-  <list-item v-bind="$attrs" :selected="selected" :disabled="disabled">
+  <list-item v-bind="$attrs" :selected="selected">
     <template #left-action>
       <gl-form-checkbox
         v-if="tag.userPermissions.destroyContainerRepositoryTag"

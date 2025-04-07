@@ -1059,6 +1059,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_project) }.policy do
     enable :read_incident_management_timeline_event_tag
+    enable :read_project_metadata
   end
 
   rule { can?(:download_code) }.policy do

@@ -72,7 +72,7 @@ module Types
         resolver: Resolvers::Ci::RunnerManagersResolver
       field :maximum_timeout, GraphQL::Types::Int, null: true,
         description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
-      field :owner_project, ::Types::ProjectType, null: true,
+      field :owner_project, ::Types::Projects::ProjectInterface, null: true,
         description: 'Project that owns the runner. For project runners only.',
         resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
       field :paused, GraphQL::Types::Boolean, null: false,

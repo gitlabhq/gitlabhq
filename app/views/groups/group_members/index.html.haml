@@ -1,6 +1,7 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _('Group members')
 - content_for :reload_on_member_invite_success, true
+- content_for :hide_invite_members_button, true
 
 - if can_admin_group_member?(@group)
   = render_if_exists 'shared/promotions/promote_planner_role'

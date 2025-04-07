@@ -150,9 +150,9 @@ module KubernetesHelpers
 
   def stub_server_min_version(min_version)
     response = kube_response({
-                               major: "1", # not used, just added here to be a bit more realistic purposes
-                               minor: min_version.to_s
-                             })
+      major: "1", # not used, just added here to be a bit more realistic purposes
+      minor: min_version.to_s
+    })
 
     WebMock.stub_request(:get, service.api_url + '/version')
       .with(
@@ -759,12 +759,12 @@ module KubernetesHelpers
           },
           "spec" => {
             "containers" => [{
-                               "env" =>
-                                 [{ "name" => "timestamp", "value" => "2019-10-22 21:19:12" }],
-                               "image" => "image_name",
-                               "name" => "user-container",
-                               "resources" => {}
-                             }],
+              "env" =>
+              [{ "name" => "timestamp", "value" => "2019-10-22 21:19:12" }],
+              "image" => "image_name",
+              "name" => "user-container",
+              "resources" => {}
+            }],
             "timeoutSeconds" => 300
           }
         },
@@ -810,12 +810,12 @@ module KubernetesHelpers
           },
           "spec" => {
             "containers" => [{
-                               "env" =>
-                                 [{ "name" => "timestamp", "value" => "2019-10-22 21:19:12" }],
-                               "image" => "image_name",
-                               "name" => "user-container",
-                               "resources" => {}
-                             }],
+              "env" =>
+              [{ "name" => "timestamp", "value" => "2019-10-22 21:19:12" }],
+              "image" => "image_name",
+              "name" => "user-container",
+              "resources" => {}
+            }],
             "timeoutSeconds" => 300
           }
         },

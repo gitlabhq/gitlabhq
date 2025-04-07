@@ -12,10 +12,10 @@ RSpec.describe RuboCop::Cop::UsageData::LargeTable do
 
   let(:config) do
     RuboCop::Config.new('UsageData/LargeTable' => {
-                          'NonRelatedClasses' => large_tables,
-                          'CountMethods' => count_methods,
-                          'AllowedMethods' => allowed_methods
-                        })
+      'NonRelatedClasses' => large_tables,
+      'CountMethods' => count_methods,
+      'AllowedMethods' => allowed_methods
+    })
   end
 
   context 'in an usage data file' do
@@ -26,19 +26,19 @@ RSpec.describe RuboCop::Cop::UsageData::LargeTable do
     context 'with large tables' do
       context 'when calling Issue.count' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             Issue.count
             ^^^^^^^^^^^ #{msg} Issue
-          CODE
+          RUBY
         end
       end
 
       context 'when calling Issue.active.count' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             Issue.active.count
             ^^^^^^^^^^^^ #{msg} Issue
-          CODE
+          RUBY
         end
       end
 
@@ -56,10 +56,10 @@ RSpec.describe RuboCop::Cop::UsageData::LargeTable do
 
       context 'when calling Ci::Build.active.count' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             Ci::Build.active.count
             ^^^^^^^^^^^^^^^^ #{msg} Ci::Build
-          CODE
+          RUBY
         end
       end
 

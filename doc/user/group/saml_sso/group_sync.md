@@ -431,30 +431,27 @@ To configure for GitLab Self-Managed:
 
 {{< /history >}}
 
-GitLab administrators can use the global SAML group memberships lock to prevent group members from inviting new members to subgroups that have their membership synchronized with SAML Group Links.
+You can enforce a global lock on SAML group memberships. This lock limits who can invite new members to subgroups where membership is synchronized with SAML Group Links.
 
-Global group memberships lock only applies to subgroups of a top-level group where SAML Group Links synchronization is configured. No user can modify the
-membership of a top-level group configured for SAML Group Links synchronization.
+When you lock group memberships:
 
-When global group memberships lock is enabled:
-
-- Only an administrator can manage memberships of any group including access levels.
-- Users cannot:
+- You cannot set a group or subgroup as a [Code Owner](../../project/codeowners/_index.md).
+  For more information, see [Incompatibility with Global SAML group memberships lock](../../project/codeowners/troubleshooting.md#incompatibility-with-global-saml-group-memberships-lock).
+- Only administrators can manage group members and change their access levels.
+- Group members cannot:
   - Share a project with other groups.
-
-    {{< alert type="note" >}}
-
-    You cannot set groups or subgroups as [Code Owners](../../project/codeowners/_index.md).
-    The Code Owners feature requires direct group memberships, which are not possible when this lock is enabled.
-
-    {{< /alert >}}
-
   - Invite members to a project created in a group.
+  - Modify the membership of a top-level group configured for SAML Group Links synchronization.
 
-To enable global group memberships lock:
+### Lock group memberships
 
-1. [Configure SAML](../../../integration/saml.md) for GitLab Self-Managed.
+Prerequisites:
+
+- [SAML SSO for GitLab Self-Managed](../../../integration/saml.md) must be configured.
+
+To lock memberships to SAML Group Links synchronization:
+
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. Ensure that **Lock memberships to SAML Group Links synchronization** is selected.
+1. Select the **Lock memberships to SAML Group Links synchronization** checkbox.

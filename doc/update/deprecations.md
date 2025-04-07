@@ -1014,37 +1014,6 @@ In most cases, the 45-second value was higher than the timeout value of many sca
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Default GitLab Runner's `FF_GIT_URLS_WITHOUT_TOKENS` feature flag to `true`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/518709).
-
-</div>
-
-In GitLab Runner 18.0, to limit the potential for token leakage, the
-default value for the `FF_GIT_URLS_WITHOUT_TOKENS` feature flag changes
-to `true`.
-
-This change affects users who:
-
-- Use executors that share Git credential state across jobs (for example, shell executor).
-- Have a caching Git credential helper installed (for example,
-  [gitforwindows](https://gitforwindows.org/) installs
-  [Git credential manager (GCM)](https://github.com/git-ecosystem/git-credential-manager)
-  system-wide by default).
-- Run builds in parallel.
-
-To prevent issues, ensure that you don't use any caching Git credential
-helper with GitLab Runner, use an executor which runs jobs in isolated
-environments, or run job serially only.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### Dependency Proxy token scope enforcement
 
 <div class="deprecation-notes">

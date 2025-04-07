@@ -46,6 +46,9 @@ workflow:
       command: [gdk, tail, rails-web]
   tags:
     - e2e
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
   variables:
     COVERBAND_ENABLED: "$COVERBAND_ENABLED"  # explicitly define variable so it is passed in to gdk service container
     GITLAB_CRON_JOBS_POLL_INTERVAL: "0"
@@ -57,6 +60,7 @@ workflow:
     QA_DOCKER_NETWORK: host
     QA_GITLAB_URL: http://gdk.test:3000
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
+    GIT_STRATEGY: "none"
   after_script:
     - !reference [.with-gdk-log, after_script]
     - !reference [.gitlab-qa-report, after_script]

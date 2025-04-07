@@ -146,7 +146,9 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
 
   describe '#run_eslint_for_changed_files' do
     let(:files) { ['file1.js', 'file2.vue'] }
-    let(:eslint_command) { ['yarn', 'run', 'lint:eslint', '--format', 'gitlab', 'file1.js', 'file2.vue'] }
+    let(:eslint_command) do
+      ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab', 'file1.js', 'file2.vue']
+    end
 
     before do
       allow(instance).to receive(:puts).with('Running ESLint...')

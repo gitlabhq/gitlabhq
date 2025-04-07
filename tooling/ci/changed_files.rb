@@ -51,7 +51,7 @@ module CI
 
       return 0 if files.empty?
 
-      command = ["yarn", "run", "lint:eslint", "--format", "gitlab", *files]
+      command = ["yarn", "run", "lint:eslint", "--no-warn-ignored", "--format", "gitlab", *files]
       system(*command)
 
       last_command_status.exitstatus

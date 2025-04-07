@@ -307,6 +307,13 @@ pages:
   pages: false
 ```
 
+{{< alert type="warning" >}}
+
+If you have multiple Pages jobs in your pipeline with the same value for
+`path_prefix`, the last one to be completed will be deployed with Pages.
+
+{{< /alert >}}
+
 ## Parallel deployments
 
 To create multiple deployments for your project at the same time, for example to

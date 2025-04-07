@@ -75,9 +75,9 @@ RSpec.shared_examples 'a harbor repositories controller' do |args|
     stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories?page=1&page_size=10")
       .with(
         headers: {
-      Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
-      'Content-Type': 'application/json'
-      }).to_return(status: 200, body: mock_repositories.to_json, headers: { "x-total-count": 2 })
+          Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+          'Content-Type': 'application/json'
+        }).to_return(status: 200, body: mock_repositories.to_json, headers: { "x-total-count": 2 })
     container.add_reporter(user)
     sign_in(user)
   end

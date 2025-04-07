@@ -402,11 +402,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
-                                  category: nil,
-                                  duration: 3600,
-                                  user_id: developer.id,
-                                  spent_at: DateTime.current
-                                })
+            category: nil,
+            duration: 3600,
+            user_id: developer.id,
+            spent_at: DateTime.current
+          })
         end
       end
     end
@@ -417,11 +417,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
-                                  category: nil,
-                                  duration: -7200,
-                                  user_id: developer.id,
-                                  spent_at: DateTime.current
-                                })
+            category: nil,
+            duration: -7200,
+            user_id: developer.id,
+            spent_at: DateTime.current
+          })
         end
       end
 
@@ -437,11 +437,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: {
-                                category: nil,
-                                duration: 1800,
-                                user_id: developer.id,
-                                spent_at: Date.parse(date)
-                              })
+          category: nil,
+          duration: 1800,
+          user_id: developer.id,
+          spent_at: Date.parse(date)
+        })
       end
     end
 

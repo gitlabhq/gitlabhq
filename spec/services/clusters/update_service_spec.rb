@@ -51,9 +51,9 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
       context 'when service token is empty' do
         let(:params) do
           {
-              platform_kubernetes_attributes: {
-                  token: ''
-              }
+            platform_kubernetes_attributes: {
+              token: ''
+            }
           }
         end
 
@@ -69,9 +69,9 @@ RSpec.describe Clusters::UpdateService, feature_category: :deployment_management
       context 'when service token is not empty' do
         let(:params) do
           {
-              platform_kubernetes_attributes: {
-                  token: 'new secret token'
-              }
+            platform_kubernetes_attributes: {
+              token: 'new secret token'
+            }
           }
         end
 

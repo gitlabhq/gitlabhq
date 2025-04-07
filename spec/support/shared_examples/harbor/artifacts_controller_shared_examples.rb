@@ -71,13 +71,13 @@ RSpec.shared_examples 'a harbor artifacts controller' do |args|
 
   before do
     stub_request(:get,
-      "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts"\
-      "?page=1&page_size=10&with_tag=true")
-    .with(
-      headers: {
-      Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
-      'Content-Type': 'application/json'
-    }).to_return(status: 200, body: mock_artifacts.to_json, headers: { "x-total-count": 2 })
+      "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts" \
+        "?page=1&page_size=10&with_tag=true")
+      .with(
+        headers: {
+          Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+          'Content-Type': 'application/json'
+        }).to_return(status: 200, body: mock_artifacts.to_json, headers: { "x-total-count": 2 })
     container.add_reporter(user)
     sign_in(user)
   end

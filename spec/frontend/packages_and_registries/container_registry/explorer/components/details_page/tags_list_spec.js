@@ -372,10 +372,7 @@ describe('Tags List', () => {
 
       const rows = findTagsListRow();
 
-      expect(rows.at(0).attributes()).toMatchObject({
-        first: 'true',
-        disabled: 'true',
-      });
+      expect(rows.at(0).attributes('first')).toBe('true');
     });
 
     describe('events', () => {

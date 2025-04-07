@@ -128,7 +128,6 @@ export default {
       fullPath: this.projectPath,
       isLoading: false,
       isLoadingDraft: false,
-      isLoadingClipboard: false,
       isReportAbuseDrawerOpen: false,
       isDropdownVisible: false,
     };

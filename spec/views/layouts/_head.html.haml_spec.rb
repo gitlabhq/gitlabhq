@@ -133,10 +133,10 @@ RSpec.describe 'layouts/_head' do
 
     before do
       stub_config(extra: {
-                    matomo_url: matomo_host,
-                    matomo_site_id: 12345,
-                    matomo_disable_cookies: false
-                  })
+        matomo_url: matomo_host,
+        matomo_site_id: 12345,
+        matomo_disable_cookies: false
+      })
     end
 
     it 'add a Matomo Javascript' do

@@ -186,7 +186,6 @@ export default {
       :show-items="true"
       :show-error-msg="error"
       :i18n="$options.i18n"
-      :items="contacts.list"
       :page-info="contacts.pageInfo"
       :items-count="contactsCount"
       :status-tabs="$options.statusTabs"

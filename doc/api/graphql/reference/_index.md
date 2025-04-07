@@ -22808,7 +22808,7 @@ CI/CD variables for a project.
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
-| <a id="cirunnerownerproject"></a>`ownerProject` | [`Project`](#project) | Project that owns the runner. For project runners only. |
+| <a id="cirunnerownerproject"></a>`ownerProject` | [`ProjectInterface`](#projectinterface) | Project that owns the runner. For project runners only. |
 | <a id="cirunnerpaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is paused and not available to run jobs. |
 | <a id="cirunnerprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerprojectcount"></a>`projectCount` | [`Int`](#int) | Number of projects that the runner is associated with. |
@@ -34399,7 +34399,7 @@ Project-level settings for product analytics provider.
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
 | <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
 | <a id="projectautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
-| <a id="projectavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the project. |
+| <a id="projectavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="projectciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
@@ -34462,8 +34462,8 @@ Project-level settings for product analytics provider.
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
 | <a id="projectmergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
-| <a id="projectname"></a>`name` | [`String!`](#string) | Name of the project (without namespace). |
-| <a id="projectnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Full name of the project with its namespace. |
+| <a id="projectname"></a>`name` | [`String!`](#string) | Name of the project without the namespace. |
+| <a id="projectnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Name of the project including the namespace. |
 | <a id="projectnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace of the project. |
 | <a id="projectonlyallowmergeifalldiscussionsareresolved"></a>`onlyAllowMergeIfAllDiscussionsAreResolved` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged when all the discussions are resolved. |
 | <a id="projectonlyallowmergeifallstatuscheckspassed"></a>`onlyAllowMergeIfAllStatusChecksPassed` | [`Boolean`](#boolean) | Indicates that merges of merge requests should be blocked unless all status checks have passed. |
@@ -36804,6 +36804,19 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
+### `ProjectMinimalAccess`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
+| <a id="projectminimalaccessdescription"></a>`description` | [`String`](#string) | Short description of the project. |
+| <a id="projectminimalaccessid"></a>`id` | [`ID`](#id) | ID of the project. |
+| <a id="projectminimalaccessname"></a>`name` | [`String!`](#string) | Name of the project without the namespace. |
+| <a id="projectminimalaccessnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Name of the project including the namespace. |
+| <a id="projectminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 
 ### `ProjectPermissions`
 
@@ -47251,6 +47264,24 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pendingmemberinterfacemergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
+#### `ProjectInterface`
+
+Implementations:
+
+- [`Project`](#project)
+- [`ProjectMinimalAccess`](#projectminimalaccess)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
+| <a id="projectinterfacedescription"></a>`description` | [`String`](#string) | Short description of the project. |
+| <a id="projectinterfaceid"></a>`id` | [`ID`](#id) | ID of the project. |
+| <a id="projectinterfacename"></a>`name` | [`String`](#string) | Name of the project without the namespace. |
+| <a id="projectinterfacenamewithnamespace"></a>`nameWithNamespace` | [`String`](#string) | Name of the project including the namespace. |
+| <a id="projectinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 
 #### `ResolvableInterface`
 

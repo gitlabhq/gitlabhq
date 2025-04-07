@@ -1814,6 +1814,9 @@ ee/app/workers/ai/repository_xray/
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/
 
+^[Foundations::Design System] @gitlab-org/foundations/design-system/engineering
+/app/components/pajamas/
+
 # Necessary for availability, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/elastic/migrate/

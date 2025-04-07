@@ -394,7 +394,6 @@ describe('Details Page', () => {
       await waitForApolloRequestRender();
 
       expect(findDetailsHeader().props('disabled')).toBe(true);
-      expect(findTagsList().props('disabled')).toBe(true);
     });
 
     it('shows a status alert', async () => {

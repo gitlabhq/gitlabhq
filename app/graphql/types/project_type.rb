@@ -11,6 +11,7 @@ module Types
     expose_permissions Types::PermissionTypes::Project
 
     implements Types::TodoableInterface
+    implements ::Types::Projects::ProjectInterface
 
     field :id, GraphQL::Types::ID,
       null: false,
@@ -75,11 +76,11 @@ module Types
 
     field :name, GraphQL::Types::String,
       null: false,
-      description: 'Name of the project (without namespace).'
+      description: 'Name of the project without the namespace.'
 
     field :name_with_namespace, GraphQL::Types::String,
       null: false,
-      description: 'Full name of the project with its namespace.'
+      description: 'Name of the project including the namespace.'
 
     field :description, GraphQL::Types::String,
       null: true,
@@ -165,7 +166,7 @@ module Types
     field :avatar_url, GraphQL::Types::String,
       null: true,
       calls_gitaly: true,
-      description: 'URL to avatar image file of the project.'
+      description: 'Avatar URL of the project.'
 
     field :jobs_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -879,10 +880,6 @@ module Types
     end
 
     markdown_field :description_html, null: true
-
-    def avatar_url
-      object.avatar_url(only_path: false)
-    end
 
     def jobs_enabled
       object.feature_available?(:builds, context[:current_user])

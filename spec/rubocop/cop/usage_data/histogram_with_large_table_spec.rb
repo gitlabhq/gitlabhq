@@ -10,8 +10,8 @@ RSpec.describe RuboCop::Cop::UsageData::HistogramWithLargeTable do
 
   let(:config) do
     RuboCop::Config.new('UsageData/HistogramWithLargeTable' => {
-                          'HighTrafficModels' => high_traffic_models
-                        })
+      'HighTrafficModels' => high_traffic_models
+    })
   end
 
   context 'in an usage data file' do

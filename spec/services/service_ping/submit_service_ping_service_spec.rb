@@ -318,11 +318,11 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
         uuid: 'uuid',
         metric_a: metric_double,
         metric_group: {
-            metric_b: metric_double_with_error
-          },
+          metric_b: metric_double_with_error
+        },
         metric_without_timing: "value",
         recorded_at: Time.current
-        }
+      }
     end
 
     let(:metadata_payload) do
@@ -333,8 +333,8 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
             { name: 'metric_a', time_elapsed: 123 },
             { name: 'metric_group.metric_b', time_elapsed: 123, error: 'Error' }
           ]
-          }
         }
+      }
     end
 
     it 'submits metadata' do

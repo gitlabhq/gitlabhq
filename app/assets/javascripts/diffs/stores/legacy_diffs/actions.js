@@ -994,13 +994,15 @@ export function rereadNoteHash() {
 export function setCurrentDiffFileIdFromNote(noteId) {
   const note = useNotes().notesById[noteId];
 
-  if (!note) return;
+  if (!note) return Promise.resolve();
 
   const fileHash = useNotes().getDiscussion(note.discussion_id).diff_file?.file_hash;
 
   if (fileHash && this.flatBlobsList.some((f) => f.fileHash === fileHash)) {
     this[types.SET_CURRENT_DIFF_FILE](fileHash);
   }
+
+  return Promise.resolve();
 }
 
 export function navigateToDiffFileIndex(index) {

@@ -84,13 +84,10 @@ export default {
     closeDrawer() {
       this.open = false;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- toggleDrawer() is part of the component's public API.
     toggleDrawer() {
       this.getDrawerTop();
       this.open = !this.open;
-    },
-    openDrawer() {
-      this.getDrawerTop();
-      this.open = true;
     },
   },
   safeHtmlConfig: {

@@ -14,11 +14,11 @@ RSpec.describe Notes::RenderService, feature_category: :team_planning do
         .with(
           user: user,
           redaction_context: {
-              requested_path: 'foo',
-              project_wiki: wiki,
-              ref: 'bar',
-              only_path: nil,
-              xhtml: false
+            requested_path: 'foo',
+            project_wiki: wiki,
+            ref: 'bar',
+            only_path: nil,
+            xhtml: false
           }
         )
         .and_call_original

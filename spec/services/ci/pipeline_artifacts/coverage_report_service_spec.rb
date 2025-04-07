@@ -39,11 +39,11 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportService, feature_category: :
         it 'logs relevant information' do
           allow(Gitlab::AppLogger).to receive(:info).and_call_original
           expect(Gitlab::AppLogger).to receive(:info).with({
-                                                             project_id: project.id,
-                                                             pipeline_id: pipeline.id,
-                                                             pipeline_artifact_id: kind_of(Numeric),
-                                                             message: kind_of(String)
-                                                           })
+            project_id: project.id,
+            pipeline_id: pipeline.id,
+            pipeline_artifact_id: kind_of(Numeric),
+            message: kind_of(String)
+          })
 
           subject
         end

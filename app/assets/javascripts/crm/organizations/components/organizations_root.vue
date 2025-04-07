@@ -177,7 +177,6 @@ export default {
       :show-items="true"
       :show-error-msg="error"
       :i18n="$options.i18n"
-      :items="organizations.list"
       :page-info="organizations.pageInfo"
       :items-count="organizationsCount"
       :status-tabs="$options.statusTabs"

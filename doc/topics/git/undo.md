@@ -297,7 +297,7 @@ Even with an updated history, old commits can still be
 accessed by commit SHA, at least until all the automated cleanup
 of detached commits is performed, or a cleanup is run manually. Even the cleanup might not remove old commits if there are still refs pointing to them.
 
-![Modifying history causes problems on remote branch](img/rebase_reset_v17_10.drawio.svg)
+![Discrepancy between local branch with altered history and unaltered remote branch](img/rebase_reset_v17_10.drawio.svg)
 
 You should not change the history when you're working in a public branch
 or a branch that might be used by others.
