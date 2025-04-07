@@ -1450,3 +1450,118 @@ ENV['DEBUG'] = "1"
 {{< /tab >}}
 
 {{< /tabs >}}
+
+### Inconsistencies after migrating to object storage
+
+Data inconsistencies can occur when migrating from local to object storage.
+Especially in combination with [Geo](geo/replication/object_storage.md),
+when files were manually deleted prior to the migration.
+
+For example, an instance administrator manually deletes several artifacts on
+the local file system. Such changes are not properly propagated to the database
+and result in inconsistencies. After the migration to object storage, these
+inconsistencies remain and can cause frictions. Geo secondaries might continue
+to try replicating those files as they are still referenced in the database but
+no longer exist.
+
+#### Identify inconsistencies when using Geo
+
+Assume the following Geo scenario:
+
+- An environment consists of a Geo primary and secondary node
+- Both systems have been migrated to object storage
+  - The secondary uses the same object storage as the primary
+  - The option `Allow this secondary site to replicate content on Object Storage` is deactivated
+- Multiple *uploads* were manually deleted before the object storage migration
+  - For this example, two images which were uploaded to an issue
+
+In such a scenario, the secondary does no longer need to replicate any data as
+it uses the same object storage as the primary. Because of inconsistencies,
+administrators can observe that the secondary still tries to replicate data:
+
+On the primary site:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Geo > Sites**.
+1. Look at the **primary site** and check the verification information. Take note that all *uploads* were verified:
+   ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)
+1. Look at the **secondary site** and check the verification information. Notice that two *uploads* are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
+   ![The Geo Sites dashboard displaying inconsistencies of the secondary.](img/geo_secondary_uploads_inconsistencies_v17_11.png)
+
+#### Clean up inconsistencies
+
+{{< alert type="warning" >}}
+
+Ensure you have a recent and working backup at hand before issuing any deletion commands.
+
+{{< /alert >}}
+
+Based on the previous scenario, multiple **uploads** are causing
+inconsistencies which are used as an example below.
+
+Proceed as follows to properly delete potential leftovers:
+
+1. Map the identified inconsistencies to their respective model names. The model name is needed in the following steps.
+
+   | Object storage type      | Model name                                              |
+   |--------------------------|---------------------------------------------------------|
+   | Backups                  | not applicable                                          |
+   | Container registry       | not applicable                                          |
+   | Mattermost               | not applicable                                          |
+   | Autoscale runner caching | not applicable                                          |
+   | Secure Files             | `Ci::SecureFile`                                        |
+   | Job artifacts            | `Ci::JobArtifact` and `Ci::PipelineArtifact`            |
+   | LFS objects              | `LfsObject`                                             |
+   | Uploads                  | `Upload`                                                |
+   | Merge request diffs      | `MergeRequestDiff`                                      |
+   | Packages                 | `Packages::PackageFile`                                 |
+   | Dependency Proxy         | `DependencyProxy::Blob` and `DependencyProxy::Manifest` |
+   | Terraform state files    | `Terraform::StateVersion`                               |
+   | Pages content            | `PagesDeployment`                                       |
+
+1. Start a [Rails console](operations/rails_console.md). When using Geo, run it on the primary site.
+1. Query for all "files" which are still stored locally (instead of in object storage) based on the *model name* of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
+
+   ```ruby
+   Upload.with_files_stored_locally
+   ```
+
+   ```ruby
+   #<Upload:0x00007d35b69def68
+     id: 108,
+     size: 13346,
+     path: "c95c1c9bf91a34f7d97346fd3fa6a7be/openbao.png",
+     checksum: "db29d233de49b25d2085dcd8610bac787070e721baa8dcedba528a292b6e816b",
+     model_id: 2,
+     model_type: "Project",
+     uploader: "FileUploader",
+     created_at: Wed, 02 Apr 2025 05:56:47.941319000 UTC +00:00,
+     store: 1,
+     mount_point: nil,
+     secret: "[FILTERED]",
+     version: 2,
+     uploaded_by_user_id: 1,
+     organization_id: nil,
+     namespace_id: nil,
+     project_id: 2,
+     verification_checksum: nil>]
+   ```
+
+1. Use the `id` of the identified resources to properly delete them. First, verify that it is the correct resource by using `find` and then run `destroy`:
+
+   ```ruby
+   Upload.find(108)
+   Upload.find(108).destroy
+   ```
+
+1. Optionally, verify that the resource was deleted correctly by running `find` again which should no longer find it:
+
+   ```ruby
+   Upload.find(108)
+   ```
+
+   ```ruby
+   ActiveRecord::RecordNotFound: Couldn't find Upload with 'id'=108
+   ```
+
+Repeat the steps for all affected object storage types.

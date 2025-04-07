@@ -47,6 +47,12 @@ See [Object storage replication tests](geo_validation_tests.md#object-storage-re
 
 {{< /history >}}
 
+{{< alert type="warning" >}}
+
+In case of issues, avoid manually deleting individual files as that can lead to [data inconsistencies](#inconsistencies-after-the-migration).
+
+{{< /alert >}}
+
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.
 
@@ -62,9 +68,9 @@ For LFS, follow the documentation to
 [set up LFS object storage](../../lfs/_index.md#storing-lfs-objects-in-remote-object-storage).
 
 For CI job artifacts, there is similar documentation to configure
-[jobs artifact object storage](../../cicd/job_artifacts.md#using-object-storage)
+[jobs artifact object storage](../../cicd/job_artifacts.md#using-object-storage).
 
-For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage)
+For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage).
 
 If you want to migrate the **primary** site's files to object storage, you can
 configure the **secondary** in a few ways:
@@ -79,6 +85,11 @@ GitLab does not support the case where both:
 
 - The **primary** site uses local storage.
 - A **secondary** site uses object storage.
+
+### Inconsistencies after the migration
+
+Data inconsistencies can occur when migrating from local to object storage,
+which is further described in the [object storage troubleshooting section](../../object_storage.md#inconsistencies-after-migrating-to-object-storage).
 
 ## Third-party replication services
 
