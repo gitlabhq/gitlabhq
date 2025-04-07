@@ -14,6 +14,24 @@ title: Profile preferences
 
 You can update your preferences to change the look and feel of GitLab.
 
+## Change the appearance
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/524846) from experiment to beta in GitLab 17.11.
+
+{{< /history >}}
+
+You can change the visual appearance of the interface to be light, dark, or automatically update based on device preferences.
+
+To change the appearance:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. In the **Appearance** section, select an option.
+1. Select **Save changes**.
+
 ## Change the color theme
 
 You can change the color theme of the GitLab UI. These colors are displayed on the left sidebar.
@@ -25,20 +43,6 @@ To change the color theme:
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. In the **Color theme** section, select a theme.
-
-### Dark mode
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
-
-{{< /history >}}
-
-Dark mode makes elements on the GitLab UI stand out on a dark background.
-
-- To turn on Dark mode, Select **Preferences > Color theme > Dark Mode**.
-
-You can use dark mode with any syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 
 ## Change the syntax highlighting theme
 

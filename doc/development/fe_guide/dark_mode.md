@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Dark mode
 ---
 
-This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [Profile preferences](../../user/profile/preferences.md#dark-mode).
+This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [how to change the UI appearance](../../user/profile/preferences.md#change-the-appearance).
 
 ## How dark mode works
 
@@ -14,7 +14,7 @@ This page is about developing dark mode for GitLab. For more information on how 
 1. GitLab UI includes light and dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) CSS custom properties for colors and components.
 1. [Semantic design tokens](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens) provide values for light and dark mode in general usage, for example: background, text, and border colors.
 
-### Legacy approach
+### Deprecated approach
 
 1. SCSS variables for the [color palette](https://design.gitlab.com/product-foundations/color) are reversed using [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) to provide darker colors for smaller scales.
 1. `app/assets/stylesheets/color_modes/_dark.scss` imports dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) SCSS variables for colors.

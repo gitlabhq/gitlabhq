@@ -15,8 +15,8 @@ module Gitlab
     def self.available_modes
       [
         Mode.new(APPLICATION_DEFAULT, s_('ColorMode|Light'), 'gl-light'),
-        Mode.new(APPLICATION_DARK, s_('ColorMode|Dark (Experiment)'), 'gl-dark'),
-        Mode.new(APPLICATION_SYSTEM, s_('ColorMode|Auto (Experiment)'), 'gl-system')
+        Mode.new(APPLICATION_DARK, s_('ColorMode|Dark (Beta)'), 'gl-dark'),
+        Mode.new(APPLICATION_SYSTEM, s_('ColorMode|Auto (Beta)'), 'gl-system')
       ]
     end
 

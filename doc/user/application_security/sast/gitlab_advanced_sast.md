@@ -33,7 +33,7 @@ The Semgrep analyzer will not scan these files.
 
 All vulnerabilities identified by the GitLab Advanced SAST analyzer will be reported,
 including vulnerabilities previously reported by the Semgrep-based analyzer.
-An automated transition automatically de-duplicates findings
+An automated [transition process](#transitioning-from-semgrep-to-gitlab-advanced-sast) de-duplicates findings
 when GitLab Advanced SAST locates the same type of vulnerability in the same location as the Semgrep-based analyzer.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -66,6 +66,43 @@ GitLab Advanced SAST is tuned to emphasize input that crosses trust boundaries, 
 The set of untrusted input sources does not include command-line arguments, environment variables, or other inputs that are typically provided by the user operating the program.
 
 For details of which types of vulnerabilities GitLab Advanced SAST detects, see [GitLab Advanced SAST CWE coverage](advanced_sast_coverage.md).
+
+## Transitioning from Semgrep to GitLab Advanced SAST
+
+When you migrate from Semgrep to GitLab Advanced SAST, an automated transition process deduplicates vulnerabilities. This process links previously detected Semgrep vulnerabilities with corresponding GitLab Advanced SAST findings, replacing them when a match is found.
+
+### How vulnerability transition works
+
+After enabling Advanced SAST scanning in the **default branch** (see [Enable GitLab Advanced SAST scanning](#enable-gitlab-advanced-sast-scanning)), when a scan runs and detects vulnerabilities, it checks whether any of them should replace existing Semgrep vulnerabilities based on the following conditions.
+
+#### Conditions for deduplication
+
+1. **Matching Identifier:**
+   - At least one of the GitLab Advanced SAST vulnerability's identifiers (excluding CWE and OWASP) must match the **primary identifier** of an existing Semgrep vulnerability.
+   - The primary identifier is the first identifier in the vulnerability's identifiers array in the [SAST report](_index.md#download-a-sast-report).
+   - For example, if a GitLab Advanced SAST vulnerability has identifiers including `bandit.B506` and a Semgrep vulnerability's primary identifier is also `bandit.B506`, this condition is met.
+
+1. **Matching Location:**
+   - The vulnerabilities must be associated with the **same location** in the code. This is determined using one of the following fields in a vulnerability in the [SAST report](_index.md#download-a-sast-report):
+     - Tracking field (if present)
+     - Location field (if the Tracking field is absent)
+
+### Changes to the vulnerability
+
+When the conditions are met, the existing Semgrep vulnerability is converted into a GitLab Advanced SAST vulnerability. This updated vulnerability appears in the [Vulnerability Report](../vulnerability_report/_index.md) with the following changes:
+
+- The scanner type updates from Semgrep to GitLab Advanced SAST.
+- Any additional identifiers present in the GitLab Advanced SAST vulnerability are added to the existing vulnerability.
+- All other details of the vulnerability remain unchanged.
+
+### Handling duplicated vulnerabilities
+
+In some cases, Semgrep vulnerabilities may still appear as duplicates if the [deduplication conditions](#conditions-for-deduplication) are not met. To resolve this in the [Vulnerability Report](../vulnerability_report/_index.md):
+
+1. [Filter vulnerabilities](../vulnerability_report/_index.md#filtering-vulnerabilities) by Advanced SAST scanner and [export the results in CSV format](../vulnerability_report/_index.md#export-details-in-csv-format).
+1. [Filter vulnerabilities](../vulnerability_report/_index.md#filtering-vulnerabilities) by Semgrep scanner. These are likely the vulnerabilities that were not deduplicated.
+1. For each Semgrep vulnerability, check if it has a corresponding match in the exported Advanced SAST results.
+1. If a duplicate exists, resolve the Semgrep vulnerability appropriately.
 
 ## Supported languages
 

@@ -14640,10 +14640,10 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-msgid "ColorMode|Auto (Experiment)"
+msgid "ColorMode|Auto (Beta)"
 msgstr ""
 
-msgid "ColorMode|Dark (Experiment)"
+msgid "ColorMode|Dark (Beta)"
 msgstr ""
 
 msgid "ColorMode|Light"
