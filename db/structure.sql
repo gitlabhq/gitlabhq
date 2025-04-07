@@ -9059,6 +9059,7 @@ CREATE TABLE application_settings (
     vscode_extension_marketplace jsonb DEFAULT '{}'::jsonb NOT NULL,
     token_prefixes jsonb DEFAULT '{}'::jsonb NOT NULL,
     ci_cd_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    duo_nano_features_enabled boolean,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -38218,6 +38219,8 @@ CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes US
 CREATE INDEX tmp_index_pats_on_notification_columns_and_expires_at ON personal_access_tokens USING btree (id) WHERE ((expire_notification_delivered IS TRUE) AND (seven_days_notification_sent_at IS NULL) AND (expires_at IS NOT NULL));
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
+
+CREATE INDEX tmp_index_users_on_external_where_external_is_null ON users USING btree (external) WHERE (external IS NULL);
 
 CREATE UNIQUE INDEX u_compliance_requirements_for_framework ON compliance_requirements USING btree (framework_id, name);
 

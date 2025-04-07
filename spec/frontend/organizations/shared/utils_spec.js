@@ -44,6 +44,9 @@ describe('formatGroups', () => {
         integerValue: 50,
       },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
+      children: [],
+      childrenLoading: false,
+      hasChildren: false,
     });
     expect(formattedGroups.length).toBe(organizationGroups.length);
   });

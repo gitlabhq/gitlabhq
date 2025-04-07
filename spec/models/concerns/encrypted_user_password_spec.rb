@@ -43,7 +43,7 @@ RSpec.describe User, feature_category: :system_access do
   describe '#valid_password?' do
     subject(:validate_password) { user.valid_password?(password) }
 
-    let(:user) { build(:user, encrypted_password: encrypted_password) }
+    let(:user) { create(:user, encrypted_password: encrypted_password) }
     let(:password) { described_class.random_password }
 
     shared_examples 'password validation fails when the password is encrypted using an unsupported method' do
@@ -143,7 +143,7 @@ RSpec.describe User, feature_category: :system_access do
   end
 
   describe '#password=' do
-    let(:user) { build(:user) }
+    let(:user) { create(:user) }
     let(:password) { described_class.random_password }
 
     def compare_bcrypt_password(user, password)

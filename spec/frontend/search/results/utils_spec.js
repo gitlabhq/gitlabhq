@@ -42,17 +42,19 @@ describe('Global Search Results Utils', () => {
   });
 
   describe('initLineHighlight', () => {
+    beforeEach(() => {});
     it('returns original line for unsupported language', async () => {
-      highlight.mockClear();
-
-      const result = await initLineHighlight({
+      const blobData = {
         line: { text: 'const test = true;', highlights: [[6, 9]] },
         language: 'txt',
         fileUrl: 'test.txt',
-      });
+      };
+
+      highlight.mockResolvedValue([{ highlightedContent: cleanLineAndMark(blobData.line) }]);
+      const result = await initLineHighlight(blobData);
 
       expect(result).toBe('const <b class="hll">test</b> = true;');
-      expect(highlight).not.toHaveBeenCalled();
+      expect(highlight).toHaveBeenCalled();
     });
 
     it('handles gleam files correctly', async () => {

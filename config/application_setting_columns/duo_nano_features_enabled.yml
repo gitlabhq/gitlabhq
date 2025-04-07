@@ -1,0 +1,14 @@
+---
+api_type: boolean
+attr: duo_nano_features_enabled
+clusterwide: true
+column: duo_nano_features_enabled
+db_type: boolean
+default: null
+description: Indicates whether Duo Nano features are enabled for this instance.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187113) in GitLab
+  17.11. GitLab Self-Managed, Premium and Ultimate only.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

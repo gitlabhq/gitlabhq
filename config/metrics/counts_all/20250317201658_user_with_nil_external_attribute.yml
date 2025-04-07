@@ -1,0 +1,17 @@
+---
+key_path: counts.user_with_nil_external_attribute
+description: "Count of users with an external attribute value of nil"
+product_group: authentication
+value_type: number
+status: active
+milestone: "17.11"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521244
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountNilExternalAttributesMetric
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

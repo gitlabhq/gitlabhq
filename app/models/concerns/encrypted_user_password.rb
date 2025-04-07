@@ -44,17 +44,24 @@ module EncryptedUserPassword
     @password = new_password # rubocop:disable Gitlab/ModuleWithInstanceVariables
     return unless new_password.present?
 
-    self.encrypted_password = if Gitlab::FIPS.enabled?
-                                Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
-                                  new_password,
-                                  Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512::STRETCHES,
-                                  Devise.friendly_token(PBKDF2_SALT_LENGTH))
-                              else
-                                Devise::Encryptor.digest(self.class, new_password)
-                              end
+    self.encrypted_password = hash_this_password(new_password)
   end
 
   private
+
+  # Generates a hashed password for the configured encryption method
+  # (BCrypt or PBKDF2+SHA512).
+  # DOES NOT SAVE IT IN ANY WAY.
+  def hash_this_password(password)
+    if Gitlab::FIPS.enabled?
+      Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
+        password,
+        Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512::STRETCHES,
+        Devise.friendly_token(PBKDF2_SALT_LENGTH))
+    else
+      Devise::Encryptor.digest(self.class, password)
+    end
+  end
 
   def password_strategy
     return BCRYPT_STRATEGY if encrypted_password.starts_with?(BCRYPT_PREFIX)
@@ -94,9 +101,11 @@ module EncryptedUserPassword
       end
     end
 
-    # We do not want to send a "your password changed" notification on stretch update
     skip_password_change_notification!
-    update_attribute(:password, password)
+    # We get some password_change emails even when
+    # skip_password_change_notification! is set and update_attribute is used.
+    # update_column skips callbacks: https://stackoverflow.com/a/14416455
+    update_column(:encrypted_password, hash_this_password(password))
   end
 
   def bcrypt_password_matches_current_stretches?

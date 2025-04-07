@@ -1,29 +1,26 @@
 - page_title _("Groups")
 
-- if Feature.enabled?(:your_work_groups_vue, current_user)
-  -# Do nothing for now. To get around an issue with ff-inverse job
-  -# we can't introduce a FF and change the UI in the same MR.
-  -# But if we don't use the feature flag in the code then the
-  -# rspec:feature-flags job fails. This will be updated in a
-  -# future commit.
-
 = render_dashboard_ultimate_trial(current_user)
-%div{ data: { testid: 'groups-page' } }
-  - if current_user.groups.exists?
-    = render 'dashboard/groups_head'
-    = render 'groups'
-  - else
-    - button_text = _("New group") if current_user.can_create_group?
-    - button_link = new_group_path if current_user.can_create_group?
-    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
-      title: s_('GroupsEmptyState|A group is a collection of several projects'),
-      primary_button_text: button_text,
-      primary_button_link: button_link,
-      primary_button_options: { data: { testid: "new-group-button" } },
-      secondary_button_text: _("Explore groups"),
-      secondary_button_link: explore_groups_path,
-      secondary_button_options: { data: { testid: "explore-groups-button" } },
-      empty_state_options: { data: { testid: 'groups-empty-state' } }) do |c|
+- if Feature.enabled?(:your_work_groups_vue, current_user)
+  = render 'dashboard/groups_head'
+  #js-your-work-groups-app{ data: { app_data: groups_list_with_filtered_search_app_data(dashboard_groups_path(format: :json)) } }
+- else
+  %div{ data: { testid: 'groups-page' } }
+    - if current_user.groups.exists?
+      = render 'dashboard/groups_head'
+      = render 'groups'
+    - else
+      - button_text = _("New group") if current_user.can_create_group?
+      - button_link = new_group_path if current_user.can_create_group?
+      = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
+        title: s_('GroupsEmptyState|A group is a collection of several projects'),
+        primary_button_text: button_text,
+        primary_button_link: button_link,
+        primary_button_options: { data: { testid: "new-group-button" } },
+        secondary_button_text: _("Explore groups"),
+        secondary_button_link: explore_groups_path,
+        secondary_button_options: { data: { testid: "explore-groups-button" } },
+        empty_state_options: { data: { testid: 'groups-empty-state' } }) do |c|
 
-      - c.with_description do
-        = s_("GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group.")
+        - c.with_description do
+          = s_("GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group.")

@@ -12,11 +12,15 @@ RSpec.describe 'User visits the notifications tab', :js, feature_category: :user
     visit(profile_notifications_path)
   end
 
+  def click_notification_item(value)
+    first("[data-testid='listbox-item-#{value}']").click
+  end
+
   it 'changes the project notifications setting' do
     expect(page).to have_content('Notifications')
 
     first('[data-testid="notification-dropdown"]').click
-    click_button('On mention')
+    click_notification_item(:mention)
 
     expect(page).to have_selector('[data-testid="notification-dropdown"]', text: 'On mention')
   end

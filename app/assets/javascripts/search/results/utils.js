@@ -24,6 +24,7 @@ export const isUnsupportedLanguage = (language) => {
   const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
   const supportedLanguages = Object.keys(languageLoader);
   const isUnsupported = !supportedLanguages.includes(mappedLanguage);
+
   return LEGACY_FALLBACKS.includes(language) || isUnsupported;
 };
 
@@ -379,17 +380,19 @@ export const initLineHighlight = async (linesData) => {
     language = 'gleam';
   }
 
+  // vue is not a supported language
+  // but it's esentially javascript
+  if (language === 'vue') {
+    language = 'javascript';
+  }
+
   const originalText = line.text;
   const highlights = line.highlights || [];
-
   const cleanedLine = cleanLineAndMark(line);
-
-  let highlightedHtml;
-  if (isUnsupportedLanguage(language)) {
-    highlightedHtml = highlightSearchTerm(cleanedLine);
-  } else {
-    const resultData = await highlight(null, cleanedLine, language);
-    highlightedHtml = highlightSearchTerm(resultData[0].highlightedContent);
-  }
-  return truncateHtml(highlightedHtml, originalText, highlights);
+  // in whole blob mode we have a fallback to backend highlighting
+  // we don't have that option here. So we fallback to plaintext if language is unsupported.
+  const normalizeLanguage = isUnsupportedLanguage(language) ? 'plaintext' : language;
+  const resultData = await highlight(null, cleanedLine, normalizeLanguage);
+  const withHighlightedSearchTerm = highlightSearchTerm(resultData[0].highlightedContent);
+  return truncateHtml(withHighlightedSearchTerm, originalText, highlights);
 };

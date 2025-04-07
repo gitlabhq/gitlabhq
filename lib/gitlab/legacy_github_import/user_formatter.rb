@@ -25,7 +25,11 @@ module Gitlab
       end
 
       def gitlab_id
-        user_mapping_enabled? ? gitlab_user&.id : find_by_email
+        return find_by_email unless user_mapping_enabled?
+
+        return GithubImport.ghost_user_id if ghost_user?
+
+        gitlab_user&.id
       end
       strong_memoize_attr :gitlab_id
 

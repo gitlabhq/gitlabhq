@@ -65,7 +65,11 @@ start-as-if-foss:
     - prepare-as-if-foss-branch
     - prepare-as-if-foss-env
   inherit:
-    variables: false  # Otherwise variables will be messed up
+    # runner variable defaults are defined under global `variables:` key
+    # make sure default values are inherited, otherwise these will be interpreted literally in the downstream pipeline
+    variables:
+      - GITLAB_LARGE_RUNNER_OPTIONAL
+      - GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   variables:
     START_AS_IF_FOSS: $START_AS_IF_FOSS
     RUBY_VERSION: $RUBY_VERSION

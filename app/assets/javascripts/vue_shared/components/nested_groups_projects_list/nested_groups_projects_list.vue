@@ -4,6 +4,17 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 
+/**
+ * This component uses circular references.
+ * https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
+ * To use this component you must globally register `NestedGroupsProjectsList` and `NestedGroupsProjectsListItem`.
+ *
+ * Example:
+ *
+ * Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
+ * Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
+ */
+
 export default {
   name: 'NestedGroupsProjectsList',
   props: {
@@ -19,12 +30,6 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
-  },
-  beforeCreate() {
-    // https://v2.vuejs.org/v2/guide/components-edge-cases.html?redirect=true#Circular-References-Between-Components
-    this.$options.components.NestedGroupsProjectsListItem =
-      // eslint-disable-next-line global-require
-      require('./nested_groups_projects_list_item.vue').default;
   },
 };
 </script>

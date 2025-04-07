@@ -26,10 +26,8 @@ title: GitLab Duo Self-Hosted configuration and authentication
 
 There are two configuration options for self-managed customers:
 
-- **GitLab.com AI gateway**: Use the GitLab-managed AI gateway with default external
-  large language model (LLM) providers (for example, Google Vertex or Anthropic).
-- **Self-hosted AI gateway**: Deploy and manage your own AI gateway and language models in your infrastructure,
-  without depending on GitLab-provided external language providers.
+- **GitLab.com AI gateway**: This is the default configuration for GitLab Self-Managed customers. Use the GitLab-managed AI gateway with external large language model (LLM) providers selected by GitLab (for example, Google Vertex or Anthropic).
+- **Self-hosted AI gateway**: Deploy and manage your own AI gateway and language models in your infrastructure, without depending on GitLab-provided external language providers.
 
 ## GitLab.com AI gateway
 
@@ -66,8 +64,8 @@ sequenceDiagram
 
     User ->> SelfHostedGitLab: Send request
     SelfHostedGitLab ->> SelfHostedGitLab: Check if self-hosted model is configured
-    SelfHostedAIGateway ->> SelfHostedModel: Create prompt and perform request to AI model server
     SelfHostedGitLab ->> SelfHostedAIGateway: Forward request for AI processing
+    SelfHostedAIGateway ->> SelfHostedModel: Create prompt and perform request to AI model server
     SelfHostedModel -->> SelfHostedAIGateway: Respond to the prompt
     SelfHostedAIGateway -->> SelfHostedGitLab: Forward AI response
     SelfHostedGitLab -->> User: Forward AI response

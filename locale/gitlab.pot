@@ -27834,6 +27834,9 @@ msgstr ""
 msgid "Given epic is already related to this epic."
 msgstr ""
 
+msgid "Given inputs must be a hash"
+msgstr ""
+
 msgid "Given inputs not defined in the `spec` section of the included configuration file"
 msgstr ""
 

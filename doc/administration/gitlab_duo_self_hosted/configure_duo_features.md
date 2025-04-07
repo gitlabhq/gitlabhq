@@ -40,7 +40,7 @@ To configure your GitLab instance to access the available self-hosted models in 
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
-1. In the **GitLab Duo** section, select **Change configuration**.
+1. Select **Change configuration**.
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
 
@@ -70,7 +70,7 @@ To configure a self-hosted model:
 1. Select **Add self-hosted model**.
 1. Complete the fields:
    - **Deployment name**: Enter a name to uniquely identify the model deployment, for example, `Mixtral-8x7B-it-v0.1 on GCP`.
-   - **Model family**: Select the model family the deployment belongs to. Only GitLab-approved models
+   - **Model family**: Select the model family the deployment belongs to. Only GitLab-supported models
      are in this list.
    - **Endpoint**: Enter the URL where the model is hosted.
      - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
@@ -99,7 +99,7 @@ To enable self-hosted [beta](../../policy/development_stages_support.md#beta) mo
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
-1. In the **GitLab Duo** section, select **Change configuration**.
+1. Select **Change configuration**.
 1. Under **Self-hosted beta models and features**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. Select **Save changes**.
 

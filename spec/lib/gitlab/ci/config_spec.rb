@@ -989,6 +989,14 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       end
     end
 
+    context 'when the given inputs are not a hash' do
+      let(:inputs) { 'invalid' }
+
+      it 'raises a Config::ConfigError' do
+        expect { config }.to raise_error(described_class::ConfigError, 'Given inputs must be a hash')
+      end
+    end
+
     context 'when passing required inputs' do
       let(:inputs) do
         {

@@ -16,7 +16,6 @@ module WebHooks
 
     INITIAL_BACKOFF = 1.minute.freeze
     MAX_BACKOFF = 1.day.freeze
-    MAX_BACKOFF_COUNT = 11
     BACKOFF_GROWTH_FACTOR = 2.0
 
     class_methods do
@@ -36,6 +35,8 @@ module WebHooks
 
     included do
       delegate :auto_disabling_enabled?, to: :class, private: true
+
+      ignore_column :backoff_count, remove_with: '18.1', remove_after: '2025-05-20'
 
       # A webhook is disabled if:
       #
@@ -100,9 +101,9 @@ module WebHooks
 
     def enable!
       return unless auto_disabling_enabled?
-      return if recent_failures == 0 && disabled_until.nil? && backoff_count == 0
+      return if recent_failures == 0 && disabled_until.nil?
 
-      attrs = { recent_failures: 0, disabled_until: nil, backoff_count: 0 }
+      attrs = { recent_failures: 0, disabled_until: nil }
 
       assign_attributes(attrs)
       logger.info(hook_id: id, action: 'enable', **attrs)
@@ -112,15 +113,12 @@ module WebHooks
     # Don't actually back-off until a grace level of TEMPORARILY_DISABLED_FAILURE_THRESHOLD failures have been seen
     # tracked in the recent_failures counter
     def backoff!
-      return unless auto_disabling_enabled?
-      return if permanently_disabled? || temporarily_disabled?
+      return unless executable?
 
-      attrs = { recent_failures: next_failure_count }
+      new_recent_failures = next_failure_count
 
-      if recent_failures >= TEMPORARILY_DISABLED_FAILURE_THRESHOLD
-        attrs[:backoff_count] = next_backoff_count
-        attrs[:disabled_until] = next_backoff.from_now
-      end
+      attrs = { recent_failures: new_recent_failures }
+      attrs[:disabled_until] = next_backoff.from_now if new_recent_failures > TEMPORARILY_DISABLED_FAILURE_THRESHOLD
 
       assign_attributes(attrs)
 
@@ -128,15 +126,6 @@ module WebHooks
 
       logger.info(hook_id: id, action: 'backoff', **attrs)
       save(validate: false)
-    end
-
-    def next_backoff
-      # Optimization to prevent expensive exponentiation and possible overflows
-      return MAX_BACKOFF if backoff_count >= MAX_BACKOFF_COUNT
-
-      (INITIAL_BACKOFF * (BACKOFF_GROWTH_FACTOR**backoff_count))
-        .clamp(INITIAL_BACKOFF, MAX_BACKOFF)
-        .seconds
     end
 
     def alert_status
@@ -161,8 +150,12 @@ module WebHooks
       recent_failures.succ.clamp(1, PERMANENTLY_DISABLED_FAILURE_THRESHOLD + 1)
     end
 
-    def next_backoff_count
-      backoff_count.succ.clamp(1, PERMANENTLY_DISABLED_FAILURE_THRESHOLD + 1)
+    def next_backoff
+      backoff_count = recent_failures - TEMPORARILY_DISABLED_FAILURE_THRESHOLD
+
+      (INITIAL_BACKOFF * (BACKOFF_GROWTH_FACTOR**backoff_count))
+        .clamp(INITIAL_BACKOFF, MAX_BACKOFF)
+        .seconds
     end
   end
 end

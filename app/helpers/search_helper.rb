@@ -398,15 +398,11 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    projects = if Feature.enabled?(:autocomplete_projects_use_search_service, current_user)
-                 search_using_search_service(current_user, 'projects', term, limit)
-               else
-                 current_user.authorized_projects.order_id_desc.search(
-                   term,
-                   include_namespace: true,
-                   use_minimum_char_limit: false
-                 ).sorted_by_stars_desc.non_archived.limit(limit)
-               end
+    projects = current_user.authorized_projects.order_id_desc.search(
+      term,
+      include_namespace: true,
+      use_minimum_char_limit: false
+    ).sorted_by_stars_desc.non_archived.limit(limit)
 
     projects.map do |p|
       {

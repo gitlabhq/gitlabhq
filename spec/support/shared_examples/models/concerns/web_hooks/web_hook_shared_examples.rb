@@ -421,48 +421,6 @@ RSpec.shared_examples 'a webhook' do |factory:|
     end
   end
 
-  describe '#next_backoff' do
-    before do
-      hook.backoff_count = backoff_count
-    end
-
-    context 'when there was no last backoff' do
-      let(:backoff_count) { 0 }
-
-      it 'is the initial value' do
-        expect(hook.next_backoff).to eq(WebHooks::AutoDisabling::INITIAL_BACKOFF)
-      end
-    end
-
-    context 'when we have backed off once' do
-      let(:backoff_count) { 1 }
-
-      it 'is twice the initial value' do
-        expect(hook.next_backoff).to eq(2 * WebHooks::AutoDisabling::INITIAL_BACKOFF)
-      end
-    end
-
-    context 'when the next backoff is just before the max backoff limit' do
-      let(:backoff_count) { WebHooks::AutoDisabling::MAX_BACKOFF_COUNT - 1 }
-
-      it 'is an exponential of the initial backoff' do
-        expect(hook.next_backoff).to eq((2**backoff_count) * WebHooks::AutoDisabling::INITIAL_BACKOFF)
-      end
-
-      it 'is not yet capped at the max limit' do
-        expect(hook.next_backoff).to be < WebHooks::AutoDisabling::MAX_BACKOFF
-      end
-    end
-
-    describe 'when next_backoff has reached the MAX_BACKOFF limit' do
-      let(:backoff_count) { WebHooks::AutoDisabling::MAX_BACKOFF_COUNT }
-
-      it 'does not exceed the max backoff value' do
-        expect(hook.next_backoff).to eq(WebHooks::AutoDisabling::MAX_BACKOFF)
-      end
-    end
-  end
-
   describe '#rate_limited?' do
     it 'is false when hook has not been rate limited' do
       expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|

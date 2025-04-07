@@ -27,6 +27,19 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
   end
 
+  describe Dashboard::GroupsController, '(JavaScript fixtures)', type: :controller do
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    it 'groups/dashboard/index.json' do
+      get :index, format: :json
+
+      expect(response).to be_successful
+    end
+  end
+
   describe API::Groups, '(JavaScript fixtures)', type: :request do
     before do
       group.add_owner(user)

@@ -21,4 +21,7 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_users_on_email_trigram
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152249
+- type: missing_indexes
+  object_name: tmp_index_users_on_external_where_external_is_null
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
 table_size: medium

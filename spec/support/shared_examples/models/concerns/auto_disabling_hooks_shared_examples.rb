@@ -101,8 +101,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
           hook_id: hook.id,
           action: 'enable',
           recent_failures: 0,
-          disabled_until: nil,
-          backoff_count: 0
+          disabled_until: nil
         ))
 
       hook.enable!
@@ -110,7 +109,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
     it 'does not update hooks unless necessary' do
       hook.recent_failures = 0
-      hook.backoff_count = 0
       hook.disabled_until = nil
 
       sql_count = ActiveRecord::QueryRecorder.new { hook.enable! }.count
@@ -145,10 +143,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         expect { hook.backoff! }.to change { hook.recent_failures }.from(0).to(1)
       end
 
-      it 'does not increment backoff_count' do
-        expect { hook.backoff! }.not_to change { hook.backoff_count }.from(0)
-      end
-
       it 'does not set disabled_until' do
         expect { hook.backoff! }.not_to change { hook.disabled_until }.from(nil)
       end
@@ -176,10 +170,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         expect(hook.class.executable).not_to include(hook)
       end
 
-      it 'increments backoff_count' do
-        expect { hook.backoff! }.to change { hook.backoff_count }.from(0).to(1)
-      end
-
       it 'increments recent_failures' do
         expect { hook.backoff! }.to change {
           hook.recent_failures
@@ -198,8 +188,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
             hook_id: hook.id,
             action: 'backoff',
             recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1,
-            disabled_until: 1.minute.from_now,
-            backoff_count: 1
+            disabled_until: 1.minute.from_now
           ))
 
         hook.backoff!
@@ -224,7 +213,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
         expect(hook).to have_attributes(
           recent_failures: (WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1),
-          backoff_count: 1,
           disabled_until: be_like_time(Time.zone.now + 1.minute)
         )
 
@@ -233,7 +221,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
           expect(hook).to have_attributes(
             recent_failures: (WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 2),
-            backoff_count: 2,
             disabled_until: be_like_time(Time.zone.now + 2.minutes)
           )
         end
@@ -243,7 +230,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
           expect(hook).to have_attributes(
             recent_failures: (WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 3),
-            backoff_count: 3,
             disabled_until: be_like_time(Time.zone.now + 4.minutes)
           )
         end
@@ -290,7 +276,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         hook.url = nil
 
         expect(hook).to be_invalid
-        expect { hook.backoff! }.to change { hook.backoff_count }.by(1)
+        expect { hook.backoff! }.to change { hook.recent_failures }.by(1)
       end
     end
   end

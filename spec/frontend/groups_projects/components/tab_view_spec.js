@@ -47,6 +47,7 @@ describe('TabView', () => {
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
     },
+    filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
     programmingLanguages,
   };
@@ -106,7 +107,7 @@ describe('TabView', () => {
             first: DEFAULT_PER_PAGE,
             before: null,
             after: null,
-            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
             ...expectedVariables,
@@ -234,7 +235,7 @@ describe('TabView', () => {
             membership: false,
             archived: 'EXCLUDE',
             sort: defaultPropsData.sort,
-            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
@@ -272,7 +273,7 @@ describe('TabView', () => {
             membership: false,
             archived: 'EXCLUDE',
             sort: defaultPropsData.sort,
-            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });

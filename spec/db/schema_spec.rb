@@ -287,7 +287,7 @@ RSpec.describe 'Database schema',
       project_type_ci_runners: 17,
       projects: 55,
       sbom_occurrences: 25,
-      users: 32,
+      users: 33, # To decrement back to 32 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
       vulnerability_reads: 23
     }.with_indifferent_access.freeze
   end

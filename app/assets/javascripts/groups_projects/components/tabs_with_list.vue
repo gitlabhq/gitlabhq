@@ -404,6 +404,7 @@ export default {
         :filters="filters"
         :timestamp-type="timestampType"
         :programming-languages="programmingLanguages"
+        :filtered-search-term-key="filteredSearchTermKey"
         @page-change="onPageChange"
       />
       <template v-else>{{ tab.text }}</template>

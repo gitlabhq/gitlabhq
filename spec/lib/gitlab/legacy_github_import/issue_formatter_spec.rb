@@ -140,8 +140,8 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       context 'and it is assigned to a deleted gitea user' do
         let(:raw_data) { base_data.merge(assignee: ghost_user) }
 
-        it 'returns nil for assignee_ids' do
-          expect(issue.attributes.fetch(:assignee_ids)).to be_empty
+        it 'returns gitlab ghost user id for assignee_ids' do
+          expect(issue.attributes.fetch(:assignee_ids)).to include(Users::Internal.ghost.id)
         end
       end
 
@@ -208,8 +208,8 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       context 'and the author is a deleted gitea user' do
         let(:raw_data) { base_data.merge(user: ghost_user) }
 
-        it 'returns the project creator id' do
-          expect(issue.attributes.fetch(:author_id)).to eq(project.creator_id)
+        it 'returns the project gitlab ghost user id' do
+          expect(issue.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
         end
       end
 

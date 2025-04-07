@@ -482,7 +482,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 | Action                                                                                                    | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | Use Duo features                                                                                          |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). |
-| Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-group)                      |            |       |         |          |           |     ✓      |   ✓   |       |
+| Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-group-or-subgroup)                      |            |       |         |          |           |     ✓      |   ✓   |       |
 | Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)            |            |       |         |          |           |            |   ✓   |       |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) |            |       |         |          |           |            |   ✓   |       |
 | Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats)       |            |       |         |          |           |            |   ✓   |       |

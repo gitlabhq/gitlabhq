@@ -1,10 +1,17 @@
+import Vue from 'vue';
 import {
   TIMESTAMP_TYPE_UPDATED_AT,
   TIMESTAMP_TYPES,
 } from '~/vue_shared/components/resource_lists/constants';
 import NestedGroupsProjectsList from './nested_groups_projects_list.vue';
+import NestedGroupsProjectsListItem from './nested_groups_projects_list_item.vue';
 import { items as mockItems } from './mock_data';
 import { LIST_ITEM_TYPE_GROUP } from './constants';
+
+// We need to globally render components to avoid circular references
+// https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
+Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
+Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
 
 export default {
   component: NestedGroupsProjectsList,

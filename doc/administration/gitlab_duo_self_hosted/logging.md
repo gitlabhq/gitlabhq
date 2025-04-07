@@ -21,6 +21,7 @@ title: Enable logging for self-hosted models
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8
 - Generally available in GitLab 17.9
+- Ability to turn logging on and off through the UI added in GitLab 17.9.
 
 {{< /history >}}
 
@@ -35,20 +36,22 @@ Prerequisites:
 - You must have an Ultimate subscription.
 - You must have a GitLab Duo Enterprise add-on.
 
-To enable logging and access the logs, enable the feature flag:
+To enable logging:
 
-```ruby
-Feature.enable(:expanded_ai_logging)
-```
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. In the GitLab Duo section, select **Change configuration**.
+1. Under **Enable AI logs**, select **Capture detailed information about AI-related activities and requests**.
+1. Select **Save changes**.
 
-Disabling the feature flag stops logs from being written.
+You can now access the logs in your GitLab installation.
 
 ## Logs in your GitLab installation
 
 The logging setup is designed to protect sensitive information while maintaining transparency about system operations, and is made up of the following components:
 
 - Logs that capture requests to the GitLab instance.
-- Feature flag and logging control.
+- Logging control.
 - The `llm.log` file.
 
 ### Logs that capture requests to the GitLab instance
@@ -98,13 +101,13 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
   As shown, while the general structure of the request is logged, the sensitive input parameters such as `content_above_cursor` and `content_below_cursor` are marked as `[FILTERED]`.
 
-### Feature Flag and Logging Control
+### Logging Control
 
-**Feature Flag Dependency**: You can control a subset of these logs by enabling or disabling the `expanded_ai_logging` feature flag. Disabling the feature flag disables logging for specific operations. For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/logging.md#privacy-considerations).
+You control a subset of these logs by turning AI Logs on and off through the Duo settings page. Turning AI logs off disables logging for specific operations.
 
 ### The `llm.log` file
 
-When the `:expanded_ai_logging` feature flag is enabled, the [`llm.log` file](../logs/_index.md#llmlog) in your GitLab instance captures code generation and Chat events that occur through your instance. The log file does not capture anything when the feature flag is not enabled. Code completion logs are captured directly in the AI gateway.
+When AI Logs are enabled, the [`llm.log` file](../logs/_index.md#llmlog) in your GitLab Self-Managed instance, code generation and Chat events that occur through your instance are captured. The log file does not capture anything when it is not enabled. Code completion logs are captured directly in the AI gateway. These logs are not transmitted to GitLab, and are only visible on your GitLab Self-Managed infrastructure.
 
 For more information on:
 
@@ -281,7 +284,7 @@ By default, the log does not contain LLM prompt input and response output to sup
 In this configuration, both GitLab and the AI gateway are hosted by the customer.
 
 - **Logging Behavior**: Full logging is enabled, and all prompts, inputs, and outputs are logged to `llm.log` on the instance.
-- **Expanded Logging**: When the `:expanded_ai_logging` feature flag is activated, extra debugging information is logged, including:
+- When AI logs are enabled, extra debugging information is logged, including:
   - Preprocessed prompts.
   - Final prompts.
   - Additional context.
@@ -298,9 +301,9 @@ In this scenario, the customer hosts GitLab but relies on the GitLab-managed AI 
   - Logging remains **minimal** in this setup, and the expanded logging features are disabled by default.
 - **Privacy**: This configuration is designed to ensure that sensitive data is not logged in a cloud environment.
 
-## Feature Flag: `:expanded_ai_logging`
+## AI logs
 
-The `:expanded_ai_logging` feature flag controls whether additional debugging information, including prompts and inputs, is logged. This flag is essential for monitoring and debugging AI-related activities.
+The AI logs control whether additional debugging information, including prompts and inputs, is logged. This configuration is essential for monitoring and debugging AI-related activities.
 
 ### Behavior by Deployment Setup
 

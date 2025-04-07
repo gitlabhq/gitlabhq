@@ -39826,9 +39826,9 @@ Represents a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilityabouttobearchived"></a>`aboutToBeArchived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Indicates whether the vulnerability is about to be archived in the next month. |
 | <a id="vulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether the type of vulnerability can be resolved with AI. |
 | <a id="vulnerabilityairesolutionenabled"></a>`aiResolutionEnabled` | [`Boolean`](#boolean) | Indicates whether the specific vulnerability can be resolved with AI. |
+| <a id="vulnerabilityarchivalinformation"></a>`archivalInformation` {{< icon name="warning-solid" >}} | [`VulnerabilityArchivalInformation!`](#vulnerabilityarchivalinformation) | **Introduced** in GitLab 17.11. **Status**: Experiment. Indicates whether the vulnerability is about to be archived in the next month. |
 | <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
@@ -39908,6 +39908,17 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilitynotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
+
+### `VulnerabilityArchivalInformation`
+
+Represents vulnerability archival information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityarchivalinformationabouttobearchived"></a>`aboutToBeArchived` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is about to be archived in the next month. |
+| <a id="vulnerabilityarchivalinformationexpectedtobearchivedon"></a>`expectedToBeArchivedOn` | [`Date`](#date) | Date when the vulnerability is expected to be archived. |
 
 ### `VulnerabilityArchive`
 

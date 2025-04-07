@@ -5,7 +5,6 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
-import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
@@ -45,6 +44,10 @@ export default {
     },
     filters: {
       type: Object,
+      required: true,
+    },
+    filteredSearchTermKey: {
+      type: String,
       required: true,
     },
     timestampType: {
@@ -128,7 +131,7 @@ export default {
       return this.$apollo.queries.items.loading;
     },
     search() {
-      return this.filters[FILTERED_SEARCH_TERM_KEY];
+      return this.filters[this.filteredSearchTermKey];
     },
     minAccessLevel() {
       const { [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: minAccessLevelInteger } = this.filters;
