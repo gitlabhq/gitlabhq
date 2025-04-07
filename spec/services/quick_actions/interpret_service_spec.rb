@@ -3367,7 +3367,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item_with_parent)
 
               expect(updates).to be_empty
-              expect(message).to eq("Work item #{task_work_item_with_parent.to_reference} has already been added to " \
+              expect(message).to eq("Task #{task_work_item_with_parent.to_reference} has already been added to " \
                 "parent #{parent.to_reference}.")
               expect(task_work_item_with_parent.reload.work_item_parent).to eq parent
             end
@@ -3381,8 +3381,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("Cannot assign a confidential parent to a non-confidential work item. Make the " \
-                "work item confidential and try again")
+              expect(message).to eq("Cannot assign a confidential parent to a non-confidential Task. Make the " \
+                "Task confidential and try again")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3395,7 +3395,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("Cannot assign this work item type to parent type")
+              expect(message).to eq("Cannot assign a child Task to a Task")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end

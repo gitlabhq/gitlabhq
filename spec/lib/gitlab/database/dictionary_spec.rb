@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     it 'returns a hash of name and schema mappings' do
       expect(dictionary.to_name_and_schema_mapping).to include(
         {
-          'application_settings' => :gitlab_main_clusterwide,
+          'application_settings' => :gitlab_main_clusterwide_setting,
           'members' => :gitlab_main_cell
         }
       )
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       entry = dictionary.find_by_table_name('application_settings')
       expect(entry).to be_instance_of(Gitlab::Database::Dictionary::Entry)
       expect(entry.key_name).to eq('application_settings')
-      expect(entry.gitlab_schema).to eq('gitlab_main_clusterwide')
+      expect(entry.gitlab_schema).to eq('gitlab_main_clusterwide_setting')
     end
 
     it 'returns nil if the entry is not found' do
@@ -106,7 +106,10 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
       describe '#name_and_schema' do
         it 'returns the name of the table and its gitlab schema' do
-          expect(database_dictionary.name_and_schema).to match_array(['application_settings', :gitlab_main_clusterwide])
+          expect(database_dictionary.name_and_schema).to match_array([
+            'application_settings',
+            :gitlab_main_clusterwide_setting
+          ])
         end
       end
 
@@ -168,7 +171,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       describe '#schema?' do
         it 'checks if the given schema matches the schema of the table' do
           expect(database_dictionary.schema?('gitlab_main')).to eq(false)
-          expect(database_dictionary.schema?('gitlab_main_clusterwide')).to eq(true)
+          expect(database_dictionary.schema?('gitlab_main_clusterwide_setting')).to eq(true)
         end
       end
 

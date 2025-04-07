@@ -2,18 +2,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ConanToken, :aggregate_failures, feature_category: :package_registry do
-  let(:base_secret) { SecureRandom.base64(64) }
-
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('SHA256'),
-      base_secret,
+      ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
       described_class::HMAC_KEY
     )
-  end
-
-  before do
-    allow(Settings).to receive(:attr_encrypted_db_key_base).and_return(base_secret)
   end
 
   def build_encoded_jwt(access_token_id:, user_id:, expire_time: nil)

@@ -32,7 +32,21 @@ RSpec.describe 'cross-database foreign keys' do
       'snippet_repositories.snippet_id',
       'snippet_repositories.snippet_organization_id',
       'snippet_repositories.snippet_project_id',
-      'upload_states.upload_id'
+      'upload_states.upload_id',
+      'application_settings.web_ide_oauth_application_id',          # https://gitlab.com/gitlab-org/gitlab/-/issues/531355
+      'ai_settings.amazon_q_oauth_application_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
+      'ai_settings.duo_workflow_oauth_application_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
+      'ai_settings.duo_workflow_service_account_user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
+      'ai_settings.amazon_q_service_account_user_id',               # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
+      'targeted_message_dismissals.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
+      'user_broadcast_message_dismissals.broadcast_message_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/531358
+      'targeted_message_namespaces.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
+      'plan_limits.plan_id',                                        # https://gitlab.com/gitlab-org/gitlab/-/issues/519892
+      'term_agreements.term_id',                                    # https://gitlab.com/gitlab-org/gitlab/-/issues/531367
+      'appearance_uploads.uploaded_by_user_id',                     # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
+      'appearance_uploads.project_id',                              # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
+      'appearance_uploads.namespace_id',                            # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
+      'appearance_uploads.organization_id'                          # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
     ]
 
     keys << if ::Gitlab.next_rails?

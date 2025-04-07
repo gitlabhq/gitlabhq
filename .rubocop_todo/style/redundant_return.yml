@@ -4,7 +4,6 @@ Style/RedundantReturn:
   Exclude:
     - 'ee/app/controllers/concerns/audit_events/enforces_valid_date_params.rb'
     - 'ee/app/controllers/concerns/description_diff_actions.rb'
-    - 'ee/app/controllers/ee/dashboard/projects_controller.rb'
     - 'ee/app/controllers/ee/projects/environments_controller.rb'
     - 'ee/app/controllers/ee/projects/merge_requests_controller.rb'
     - 'ee/app/controllers/groups/analytics/application_controller.rb'

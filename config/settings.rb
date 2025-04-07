@@ -5,6 +5,7 @@ require_relative '../lib/gitlab_settings'
 file = ENV.fetch('GITLAB_CONFIG') { Rails.root.join('config/gitlab.yml') }
 
 GITLAB_INSTANCE_UUID_NOT_SET = 'uuid-not-set'
+MultipleDbKeyBaseError = Class.new(StandardError)
 
 Settings = GitlabSettings.load(file, Rails.env) do
   def gitlab_on_standard_port?
@@ -131,9 +132,21 @@ Settings = GitlabSettings.load(file, Rails.env) do
     File.expand_path(path, Rails.root)
   end
 
-  # Don't use this in new code, use attr_encrypted_db_key_base_32 instead!
+  # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
   def attr_encrypted_db_key_base_truncated
-    Gitlab::Application.credentials.db_key_base[0..31]
+    db_key_base_keys_truncated.first
+  end
+
+  # Don't use this in new code, use db_key_base_keys_32_bytes instead!
+  def db_key_base_keys_truncated
+    db_key_base_keys.map do |key| # rubocop:disable Rails/Pluck -- No Rails context
+      key[0..31]
+    end
+  end
+
+  # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
+  def attr_encrypted_db_key_base_32
+    db_key_base_keys_32_bytes.first
   end
 
   # Ruby 2.4+ requires passing in the exact required length for OpenSSL keys
@@ -143,20 +156,25 @@ Settings = GitlabSettings.load(file, Rails.env) do
   # Makes sure the key is exactly 32 bytes long, either by
   # truncating or right-padding it with ASCII 0s. Use this when
   # using :per_attribute_iv mode for attr_encrypted.
-  def attr_encrypted_db_key_base_32
-    Gitlab::Utils.ensure_utf8_size(attr_encrypted_db_key_base, bytes: 32.bytes)
+  def db_key_base_keys_32_bytes
+    db_key_base_keys.map do |key|
+      Gitlab::Utils.ensure_utf8_size(key, bytes: 32.bytes)
+    end
   end
 
-  def attr_encrypted_db_key_base_12
-    Gitlab::Utils.ensure_utf8_size(attr_encrypted_db_key_base, bytes: 12.bytes)
+  # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
+  def attr_encrypted_db_key_base
+    db_key_base_keys.first
   end
 
-  # This should be used for :per_attribute_salt_and_iv mode. There is no
+  # This should be used for :per_attribute_iv_and_salt mode. There is no
   # need to truncate the key because the encryptor will use the salt to
   # generate a hash of the password:
   # https://github.com/attr-encrypted/encryptor/blob/c3a62c4a9e74686dd95e0548f9dc2a361fdc95d1/lib/encryptor.rb#L77
-  def attr_encrypted_db_key_base
-    Gitlab::Application.credentials.db_key_base
+  def db_key_base_keys
+    Array(Gitlab::Application.credentials.db_key_base).tap do |keys|
+      raise(MultipleDbKeyBaseError, "Defining multiple `db_key_base` keys isn't supported yet.") if keys.size > 1
+    end
   end
 
   def encrypted(path)

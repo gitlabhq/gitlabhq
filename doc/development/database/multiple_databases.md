@@ -29,6 +29,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | -------- | ----------- | ------- |
 | `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
 | `gitlab_main_cell` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
+| `gitlab_main_clusterwide_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_clusterwide` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |

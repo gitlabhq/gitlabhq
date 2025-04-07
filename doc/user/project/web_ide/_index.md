@@ -308,24 +308,6 @@ To uninstall an extension in the Web IDE:
 
 Web IDE extensions may require additional configuration to work with your projects.
 
-#### YAML language support extension
-
-To validate YAML files that match specified patterns, use
-the Red Hat [YAML](https://open-vsx.org/extension/redhat/vscode-yaml) extension.
-
-1. [Install the YAML extension](#install-an-extension).
-1. Configure your schema:
-
-   1. On the top menu bar, select **File > Preferences > Settings**, or press
-   <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> and enter `Preferences: Open Settings (JSON)`.
-   1. In the `settings.json` file, add your schema configuration. For local schema paths, add the following prefix: `gitlab-web-ide://~/`. For example:
-
-      ```json
-      "yaml.schemas": {
-         "gitlab-web-ide://~/<path-to-local-schema>.json": ["*.yaml", "*.yml"]
-      }
-      ```
-
 #### Use Vim keybindings
 
 Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.

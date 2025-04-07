@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CryptoHelper do
+RSpec.describe Gitlab::CryptoHelper, feature_category: :shared do
+  let(:encryption_key) { ::Gitlab::Encryption::KeyProvider[:db_key_base_32].encryption_key.secret }
+  let(:default_iv) { Gitlab::Utils.ensure_utf8_size(encryption_key, bytes: 12.bytes) }
+
   describe '.sha256' do
     it 'generates SHA256 digest Base46 encoded' do
       digest = described_class.sha256('some-value')
@@ -13,6 +16,8 @@ RSpec.describe Gitlab::CryptoHelper do
   end
 
   describe '.aes256_gcm_encrypt' do
+    let(:base_encrypt_options) { { algorithm: 'aes-256-gcm', key: encryption_key, value: 'some-value' } }
+
     it 'is Base64 encoded string without new line character' do
       encrypted = described_class.aes256_gcm_encrypt('some-value')
 
@@ -21,7 +26,7 @@ RSpec.describe Gitlab::CryptoHelper do
     end
 
     it 'encrypts using static iv' do
-      expect(Encryptor).to receive(:encrypt).with(described_class::AES256_GCM_OPTIONS.merge(value: 'some-value', iv: described_class::AES256_GCM_IV_STATIC)).and_return('hashed_value')
+      expect(Encryptor).to receive(:encrypt).with(base_encrypt_options.merge(iv: default_iv)).and_return('hashed_value')
 
       described_class.aes256_gcm_encrypt('some-value')
     end
@@ -30,7 +35,7 @@ RSpec.describe Gitlab::CryptoHelper do
       let(:iv) { create_nonce }
 
       it 'encrypts using provided iv' do
-        expect(Encryptor).to receive(:encrypt).with(described_class::AES256_GCM_OPTIONS.merge(value: 'some-value', iv: iv)).and_return('hashed_value')
+        expect(Encryptor).to receive(:encrypt).with(base_encrypt_options.merge(iv: iv)).and_return('hashed_value')
 
         described_class.aes256_gcm_encrypt('some-value', nonce: iv)
       end
@@ -39,7 +44,7 @@ RSpec.describe Gitlab::CryptoHelper do
 
   describe '.aes256_gcm_decrypt' do
     context 'when token was encrypted using static nonce' do
-      let(:encrypted) { described_class.aes256_gcm_encrypt('some-value', nonce: described_class::AES256_GCM_IV_STATIC) }
+      let(:encrypted) { described_class.aes256_gcm_encrypt('some-value', nonce: default_iv) }
 
       it 'correctly decrypts encrypted string' do
         decrypted = described_class.aes256_gcm_decrypt(encrypted)

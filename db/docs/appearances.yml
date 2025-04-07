@@ -7,5 +7,5 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/40104eead753e7e8ea77951a74a3941546c35aab
 milestone: '6.8'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_clusterwide_setting
 table_size: small

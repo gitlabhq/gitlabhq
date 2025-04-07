@@ -21,6 +21,7 @@ class User
   attr_encrypted :email, :without_encoding, :key => SECRET_KEY
   attr_encrypted :password, :prefix => 'crypted_', :suffix => '_test'
   attr_encrypted :ssn, :key => :secret_key, :attribute => 'ssn_encrypted'
+  attr_encrypted :ssn2, :key => :dynamic_secret_key, :attribute => 'ssn2_encrypted'
   attr_encrypted :credit_card, :encryptor => SillyEncryptor, :encrypt_method => :silly_encrypt, :decrypt_method => :silly_decrypt, :some_arg => 'test'
   attr_encrypted :with_encoding, :key => SECRET_KEY, :encode => true
   attr_encrypted :with_custom_encoding, :key => SECRET_KEY, :encode => 'm'
@@ -46,6 +47,16 @@ class User
   private
   def secret_key
     SECRET_KEY
+  end
+
+  def dynamic_secret_key(attribute)
+    operation = attr_encrypted_attributes[attribute][:operation]
+
+    if operation == :encrypting
+      SECRET_KEY
+    else
+      [OLD_SECRET_KEY, SECRET_KEY]
+    end
   end
 end
 
@@ -202,6 +213,17 @@ class AttrEncryptedTest < Minitest::Test
     refute_nil @user.ssn_encrypted
     encrypted =  Encryptor.encrypt(:value => 'testing', :key => SECRET_KEY, :iv => @user.ssn_encrypted_iv.unpack("m").first, :salt => @user.ssn_encrypted_salt.unpack("m").first )
     assert_equal encrypted, @user.ssn_encrypted
+  end
+
+  def test_should_evaluate_a_key_passed_as_a_symbol_with_argument
+    @user = User.new
+    assert_nil @user.ssn2_encrypted
+    @user.ssn2 = 'testing'
+    refute_nil @user.ssn2_encrypted
+    encrypted =  Encryptor.encrypt(:value => 'testing', :key => SECRET_KEY, :iv => @user.ssn2_encrypted_iv.unpack("m")
+      .first, :salt => @user.ssn2_encrypted_salt.unpack("m").first )
+    assert_equal encrypted, @user.ssn2_encrypted
+    assert_equal 'testing', @user.ssn2
   end
 
   def test_should_evaluate_a_key_passed_as_a_proc

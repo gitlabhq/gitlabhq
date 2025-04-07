@@ -7,5 +7,5 @@ feature_categories:
 description: In-app messages targeted at specific namespaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179303
 milestone: '17.10'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_clusterwide_setting
 table_size: small

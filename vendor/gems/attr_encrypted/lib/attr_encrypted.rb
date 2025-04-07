@@ -240,15 +240,22 @@ module AttrEncrypted
   def attr_decrypt(attribute, encrypted_value, options = {})
     options = attr_encrypted_attributes[attribute.to_sym].merge(options)
     if options[:if] && !options[:unless] && not_empty?(encrypted_value)
-      encrypted_value = encrypted_value.unpack(options[:encode]).first if options[:encode]
-      value = options[:encryptor].send(options[:decrypt_method], options.merge!(value: encrypted_value))
-      if options[:marshal]
-        value = options[:marshaler].send(options[:load_method], value)
-      elsif defined?(Encoding)
-        encoding = Encoding.default_internal || Encoding.default_external
-        value = value.force_encoding(encoding.name)
+      keys = Array(options[:key])
+
+      keys.each.with_index do |key, index|
+        encrypted_value = encrypted_value.unpack(options[:encode]).first if options[:encode]
+        value = options[:encryptor].send(options[:decrypt_method], options.merge!(value: encrypted_value, key: key))
+        if options[:marshal]
+          value = options[:marshaler].send(options[:load_method], value)
+        elsif defined?(Encoding)
+          encoding = Encoding.default_internal || Encoding.default_external
+          value = value.force_encoding(encoding.name)
+        end
+
+        return value
+      rescue OpenSSL::Cipher::CipherError
+        raise if index == keys.length - 1
       end
-      value
     else
       encrypted_value
     end
@@ -382,7 +389,7 @@ module AttrEncrypted
         evaluated_options.tap do |options|
           if options[:if] && !options[:unless] && options[:value_present] || options[:allow_empty_value]
             (attributes.keys - evaluated_options.keys).each do |option|
-              options[option] = evaluate_attr_encrypted_option(attributes[option])
+              options[option] = evaluate_attr_encrypted_option(attributes[option], attribute.to_sym)
             end
 
             unless options[:mode] == :single_iv_and_salt
@@ -399,9 +406,17 @@ module AttrEncrypted
       # Evaluates symbol (method reference) or proc (responds to call) options
       #
       # If the option is not a symbol or proc then the original option is returned
-      def evaluate_attr_encrypted_option(option)
+      def evaluate_attr_encrypted_option(option, attribute = nil)
         if option.is_a?(Symbol) && respond_to?(option, true)
-          send(option)
+          method = method(option)
+
+          # Allows a dynamic key method to receive the attribute name as argument
+          if method.arity == 1
+            send(option, attribute)
+          else
+            send(option)
+          end
+
         elsif option.respond_to?(:call)
           option.call(self)
         else

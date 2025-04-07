@@ -128,12 +128,4 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
       end
     end
   end
-
-  describe '#starred' do
-    it 'does not assign all_starred_projects' do
-      get :starred
-
-      expect(assigns(:all_starred_projects)).to be_nil
-    end
-  end
 end

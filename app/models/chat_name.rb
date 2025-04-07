@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ChatName < ApplicationRecord
+  include Gitlab::EncryptedAttribute
+
   LAST_USED_AT_INTERVAL = 1.hour
 
   belongs_to :user
@@ -14,7 +16,7 @@ class ChatName < ApplicationRecord
   attr_encrypted :token,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm',
-    key: Settings.attr_encrypted_db_key_base_32,
+    key: :db_key_base_32,
     encode: false,
     encode_iv: false
 

@@ -8,6 +8,7 @@ gitlab_schemas:
   - gitlab_main_cell_local
   - gitlab_pm
   - gitlab_main_clusterwide
+  - gitlab_main_clusterwide_setting
 lock_gitlab_schemas:
   - gitlab_ci
   - gitlab_ci_cell_local

@@ -114,11 +114,13 @@ module Gitlab
       def secret
         case actor
         when DeployKey, Key
-          # Since fingerprint is based on the public key, let's take more bytes from attr_encrypted_db_key_base
-          actor.fingerprint_sha256.first(16) + Settings.attr_encrypted_db_key_base_32
+          actor.fingerprint_sha256.first(16) +
+            # Since fingerprint is based on the public key, let's take more bytes from db_key_base
+            ::Gitlab::Encryption::KeyProvider[:db_key_base_32].encryption_key.secret
         when User
           # Take the last 16 characters as they're more unique than the first 16
-          actor.id.to_s + actor.encrypted_password.last(16) + Settings.attr_encrypted_db_key_base.first(16)
+          actor.id.to_s + actor.encrypted_password.last(16) +
+            ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret.first(16)
         end
       end
     end

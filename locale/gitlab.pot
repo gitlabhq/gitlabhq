@@ -687,6 +687,9 @@ msgstr[1] ""
 msgid "%{chartTitle} no data series"
 msgstr ""
 
+msgid "%{child_type} %{child_reference} has already been added to parent %{parent_reference}."
+msgstr ""
+
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
 msgstr ""
 
@@ -11894,13 +11897,13 @@ msgstr ""
 msgid "Cancelling Preview"
 msgstr ""
 
+msgid "Cannot assign a child %{child_type} to a %{parent_type}"
+msgstr ""
+
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
-msgid "Cannot assign a confidential parent to a non-confidential work item. Make the work item confidential and try again"
-msgstr ""
-
-msgid "Cannot assign this work item type to parent type"
+msgid "Cannot assign a confidential parent to a non-confidential %{child_type}. Make the %{child_type} confidential and try again"
 msgstr ""
 
 msgid "Cannot be merged automatically"
@@ -14419,10 +14422,10 @@ msgstr ""
 msgid "CodeSuggestions|Enterprise"
 msgstr ""
 
-msgid "CodeSuggestions|Get started with GitLab Duo Pro today to boost your efficiency and effectiveness by reducing the time required to write and understand code."
+msgid "CodeSuggestions|Get started with GitLab Duo Pro today by %{duo_ide_setup_page_link_start}setting up your IDE for success%{duo_ide_setup_page_link_end}."
 msgstr ""
 
-msgid "CodeSuggestions|Get started with these Duo Pro features:"
+msgid "CodeSuggestions|Get started with GitLab Duo Pro today."
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo Enterprise"
@@ -14467,6 +14470,9 @@ msgstr ""
 msgid "CodeSuggestions|Seats used"
 msgstr ""
 
+msgid "CodeSuggestions|See Duo Pro in action in a Code Suggestions %{code_suggestions_demo_link_start}click-through demo%{code_suggestions_demo_link_end}."
+msgstr ""
+
 msgid "CodeSuggestions|Subscription"
 msgstr ""
 
@@ -14500,13 +14506,16 @@ msgstr ""
 msgid "CodeSuggestions|Welcome to GitLab Duo Pro!"
 msgstr ""
 
+msgid "CodeSuggestions|You have been assigned a GitLab Duo Pro seat"
+msgstr ""
+
 msgid "CodeSuggestions|You have successfully added a license that activates on %{date}."
 msgstr ""
 
-msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features %{code_suggestions_link_start}Code Suggestions%{code_suggestions_link_end} and %{chat_link_start}Chat%{chat_link_end}."
+msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features %{code_suggestions_link_start}Code Suggestions%{code_suggestions_link_end} and %{chat_link_start}Chat%{chat_link_end}, which boost your efficiency and effectiveness by reducing the time required to write and understand code."
 msgstr ""
 
-msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features Code Suggestions and Chat."
+msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features Code Suggestions and Chat, which boost your efficiency and effectiveness by reducing the time required to write and understand code."
 msgstr ""
 
 msgid "CodeSuggestions|Your GitLab Duo Pro trial has expired"
@@ -15245,6 +15254,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Compliance frameworks that have a scoped policy can't be deleted"
 msgstr ""
 
+msgid "ComplianceFrameworks|Compliance pipeline configuration (deprecated)"
+msgstr ""
+
 msgid "ComplianceFrameworks|Compliance pipeline configuration (optional)"
 msgstr ""
 
@@ -15488,13 +15500,40 @@ msgstr ""
 msgid "ComplianceFramework|After a framework is added to %{linkStart}%{groupName}%{linkEnd}, it will appear here."
 msgstr ""
 
+msgid "ComplianceFramework|Create a new compliance framework from scratch to define your compliance requirements."
+msgstr ""
+
+msgid "ComplianceFramework|Create blank framework"
+msgstr ""
+
+msgid "ComplianceFramework|Create new framework"
+msgstr ""
+
 msgid "ComplianceFramework|Edit compliance framework"
+msgstr ""
+
+msgid "ComplianceFramework|Failed to import framework file."
+msgstr ""
+
+msgid "ComplianceFramework|Framework imported successfully."
+msgstr ""
+
+msgid "ComplianceFramework|Import an existing compliance framework from a JSON file."
+msgstr ""
+
+msgid "ComplianceFramework|Import framework"
+msgstr ""
+
+msgid "ComplianceFramework|Looking for a template? Need an example JSON schema? Look through our %{linkStart}examples here.%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceFramework|New compliance framework"
 msgstr ""
 
 msgid "ComplianceFramework|No compliance frameworks are set up yet"
+msgstr ""
+
+msgid "ComplianceFramework|Unable to determine the correct upload URL. Please try again."
 msgstr ""
 
 msgid "ComplianceManagement|Framework"
@@ -22595,28 +22634,25 @@ msgstr ""
 msgid "DuoEnterprise|AI-assisted root cause analysis"
 msgstr ""
 
-msgid "DuoEnterprise|AI-powered vulnerability remediation"
+msgid "DuoEnterprise|Automate your repetitive tasks and catch bugs early"
 msgstr ""
 
-msgid "DuoEnterprise|Collaboration and summarization tools"
+msgid "DuoEnterprise|Automatically generate new lines of code, including full functions, from single and multi-line comments as well as comment blocks"
 msgstr ""
 
-msgid "DuoEnterprise|Easily get up to speed on issue discussions with concise overviews of proposed code changes"
+msgid "DuoEnterprise|Code Suggestions"
 msgstr ""
 
-msgid "DuoEnterprise|Get started with these Duo Enterprise features:"
-msgstr ""
-
-msgid "DuoEnterprise|Need help enabling features? Check to make sure an administrator has %{link_start}configured GitLab Duo on your instance%{link_end}."
+msgid "DuoEnterprise|Explore all of the Duo Enterprise features in this %{demo_link_start}click-through demo%{demo_link_end}"
 msgstr ""
 
 msgid "DuoEnterprise|Quickly resolve CI/CD pipeline issues so developers can focus on critical tasks"
 msgstr ""
 
-msgid "DuoEnterprise|To get started using GitLab Duo Enterprise features, %{link_start}set up your IDE for success.%{link_end}."
+msgid "DuoEnterprise|Test Generation"
 msgstr ""
 
-msgid "DuoEnterprise|Understand and remediate vulnerabilities more efficiently to mitigate security risks"
+msgid "DuoEnterprise|To get started using GitLab Duo Enterprise features, %{link_start}set up your IDE for success%{link_end}."
 msgstr ""
 
 msgid "DuoEnterprise|Welcome to GitLab Duo Enterprise!"
@@ -22628,10 +22664,10 @@ msgstr ""
 msgid "DuoEnterprise|You have been assigned a GitLab Duo Enterprise seat!"
 msgstr ""
 
-msgid "DuoEnterprise|You now have access to %{link_start}GitLab Duo Enterprise%{link_end}, the only AI solution that supports developers at every stage of the software development lifecycle."
+msgid "DuoEnterprise|You now have access to %{link_start}GitLab Duo Enterprise%{link_end}, which boosts your efficiency and effectiveness by reducing the time required to write and understand code."
 msgstr ""
 
-msgid "DuoEnterprise|You now have access to GitLab Duo Enterprise, the only AI solution that supports developers at every stage of the software development lifecycle."
+msgid "DuoEnterprise|You now have access to GitLab Duo Enterprise, which boosts your efficiency and effectiveness by reducing the time required to write and understand code."
 msgstr ""
 
 msgid "DuoProDiscover|A single platform integrates the best AI model for each use case across the entire development workflow."
@@ -27310,6 +27346,9 @@ msgid "GitLab Support Bot"
 msgstr ""
 
 msgid "GitLab Team"
+msgstr ""
+
+msgid "GitLab University"
 msgstr ""
 
 msgid "GitLab User"
@@ -32697,9 +32736,6 @@ msgstr ""
 msgid "Issue"
 msgstr ""
 
-msgid "Issue %{issue_reference} has already been added to epic %{epic_reference}."
-msgstr ""
-
 msgid "Issue Analytics"
 msgstr ""
 
@@ -34315,6 +34351,9 @@ msgid "Key (PEM)"
 msgstr ""
 
 msgid "Key details"
+msgstr ""
+
+msgid "Key features"
 msgstr ""
 
 msgid "Key:"
@@ -46475,12 +46514,6 @@ msgstr ""
 msgid "ProjectImport|Project URL"
 msgstr ""
 
-msgid "ProjectList|Starred"
-msgstr ""
-
-msgid "ProjectList|Yours"
-msgstr ""
-
 msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the file from Git history."
 msgstr ""
 
@@ -48851,6 +48884,9 @@ msgstr ""
 msgid "Quick help"
 msgstr ""
 
+msgid "Quick start guide"
+msgstr ""
+
 msgid "README"
 msgstr ""
 
@@ -49603,12 +49639,6 @@ msgid "Removed time estimate."
 msgstr ""
 
 msgid "Removed upload with id %{id}"
-msgstr ""
-
-msgid "RemovedProjects|No projects pending deletion found"
-msgstr ""
-
-msgid "RemovedProjects|Projects that are pending deletion that you have access to are listed here."
 msgstr ""
 
 msgid "Removes %{assignee_text} %{assignee_references}."
@@ -50372,6 +50402,9 @@ msgid "Resolved by %{name}"
 msgstr ""
 
 msgid "Resource link added"
+msgstr ""
+
+msgid "Resources"
 msgstr ""
 
 msgid "Response"
@@ -57655,12 +57688,6 @@ msgstr ""
 msgid "Starred projects"
 msgstr ""
 
-msgid "StarredProjectsEmptyState|Visit a project page and press on a star icon. Then, you can find the project on this page."
-msgstr ""
-
-msgid "StarredProjectsEmptyState|You don't have starred projects yet."
-msgstr ""
-
 msgid "Starrers"
 msgstr ""
 
@@ -60802,9 +60829,6 @@ msgid "This epic cannot be added. It is already assigned to the parent epic."
 msgstr ""
 
 msgid "This epic cannot be added. One or more epics would exceed the maximum depth (%{max_depth}) from its most distant ancestor."
-msgstr ""
-
-msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"
@@ -67304,9 +67328,6 @@ msgid "Work in progress limit"
 msgstr ""
 
 msgid "Work in progress limit: %{wipLimit} items"
-msgstr ""
-
-msgid "Work item %{work_item_reference} has already been added to parent %{parent_reference}."
 msgstr ""
 
 msgid "Work item not supported"

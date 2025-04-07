@@ -15,6 +15,10 @@ RSpec.describe ChatName, feature_category: :integrations do
 
   it { is_expected.to validate_uniqueness_of(:chat_id).scoped_to(:team_id) }
 
+  it_behaves_like 'encrypted attribute', :token, :db_key_base_32 do
+    let(:record) { chat_name }
+  end
+
   describe '#update_last_used_at', :clean_gitlab_redis_shared_state do
     it 'updates the last_used_at timestamp' do
       expect(subject.last_used_at).to be_nil

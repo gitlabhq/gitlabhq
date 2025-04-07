@@ -209,31 +209,66 @@ module Gitlab
         parent = extract_work_items(parent_param).first
         child = quick_action_target
 
-        message =
-          if parent && current_user.can?(:read_work_item, parent)
-            if child&.work_item_parent == parent
-              format(_('Work item %{work_item_reference} has already been added to parent %{parent_reference}.'),
-                work_item_reference: child&.to_reference, parent_reference: parent.to_reference)
-            elsif parent.confidential? && !child&.confidential?
-              _("Cannot assign a confidential parent to a non-confidential work item. Make the work item " \
-                "confidential and try again")
-            elsif ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(parent.work_item_type_id,
-              child&.work_item_type_id).nil?
-              _("Cannot assign this work item type to parent type")
-            else
-              @updates[:set_parent] = parent
-              success_msg[:set_parent]
-            end
-          else
-            _("This parent does not exist or you don't have sufficient permission.")
-          end
+        error = set_parent_validation_message(parent, child)
 
-        @execution_message[:set_parent] = message
+        @execution_message[:set_parent] = if error.nil?
+                                            @updates[:set_parent] = parent
+                                            success_msg[:set_parent]
+                                          else
+                                            error
+                                          end
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       # overridden in EE
       def show_epic_alias?; end
+
+      def set_parent_validation_message(parent, child)
+        # child_work_item can be nil if this is a legacy issue and the quick action is used during creation,
+        # since the associated work_item (and child.id) won't exist for the issue until after save.
+        child_work_item = fetch_child_work_item(child)
+
+        # If the parent doesn't exist, or the current user can't access it
+        unless parent && current_user.can?(:read_work_item, parent)
+          return _("This parent does not exist or you don't have sufficient permission.")
+        end
+
+        # If the child has already been added to the parent
+        if child_work_item && child_work_item.work_item_parent == parent
+          return format(_('%{child_type} %{child_reference} has already been added to parent %{parent_reference}.'),
+            child_reference: child_work_item.to_reference,
+            parent_reference: parent.to_reference,
+            child_type: child_work_item.work_item_type.name)
+        end
+
+        # If the parent is confidential, but the child is not
+        if parent.confidential? && !child.confidential?
+          return format(_("Cannot assign a confidential parent to a non-confidential %{child_type}. Make the " \
+            "%{child_type} confidential and try again"), child_type: child.work_item_type&.name || 'Issue')
+        end
+
+        # Check hierarchy restriction
+        return unless child_work_item && !hierarchy_relationship_allowed?(parent, child_work_item)
+
+        format(_("Cannot assign a child %{child_type} to a %{parent_type}"),
+          child_type: child_work_item.work_item_type.name,
+          parent_type: parent.work_item_type.name)
+      end
+
+      def fetch_child_work_item(child)
+        if child.is_a?(::WorkItem)
+          child
+        elsif child.id
+          ::WorkItem.find_by_id(child.id)
+        end
+      end
+
+      def hierarchy_relationship_allowed?(parent, child_work_item)
+        ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
+          parent.work_item_type_id,
+          child_work_item.work_item_type_id
+        ).present?
+      end
     end
   end
 end
