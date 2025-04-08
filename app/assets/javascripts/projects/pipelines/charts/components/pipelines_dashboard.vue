@@ -21,6 +21,7 @@ import {
 import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
 import DashboardHeader from './dashboard_header.vue';
+import ClickhouseHelpPopover from './clickhouse_help_popover.vue';
 import StatisticsList from './statistics_list.vue';
 
 const defaultAnalyticsValues = {
@@ -54,6 +55,7 @@ export default {
     GlChartSeriesLabel,
     GlSkeletonLoader,
     DashboardHeader,
+    ClickhouseHelpPopover,
     StatisticsList,
     CiCdAnalyticsCharts,
   },
@@ -320,7 +322,7 @@ export default {
       failure.text
     }}</gl-alert>
     <dashboard-header>
-      {{ s__('PipelineCharts|Pipelines') }}
+      {{ s__('PipelineCharts|Pipelines') }} <clickhouse-help-popover />
     </dashboard-header>
     <gl-skeleton-loader v-if="loading" :lines="5" />
     <statistics-list v-else :counts="formattedCounts" />

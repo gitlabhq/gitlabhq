@@ -38,7 +38,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |  |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |  |
 | [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |  |
-| [Fix typo in user profile visibility updated audit event type](https://gitlab.com/gitlab-org/gitlab/-/issues/474386) | Low | Software supply chain security | Instance |  |
 | [DAST `dast_devtools_api_timeout` will have a lower default value](https://gitlab.com/gitlab-org/gitlab/-/issues/517254) | Low | Application security testing | Project |  |
 | [API Discovery will use branch pipelines by default](https://gitlab.com/gitlab-org/gitlab/-/issues/515487) | Low | Application_security_testing | Project |  |
 | [Container Scanning default severity threshold set to `medium`](https://gitlab.com/gitlab-org/gitlab/-/issues/515358) | Low | Application security testing | Project |  |

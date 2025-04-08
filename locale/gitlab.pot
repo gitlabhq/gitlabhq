@@ -43522,6 +43522,9 @@ msgstr ""
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
 msgstr ""
 
+msgid "PipelineCharts|ClickHouse can provide a more comprehensive pipelines analytics for your project. %{linkStart}See how to enable Clickhouse for analytics%{linkEnd}."
+msgstr ""
+
 msgid "PipelineCharts|Failure rate"
 msgstr ""
 
@@ -43553,6 +43556,9 @@ msgid "PipelineCharts|There was an error parsing the data for the charts."
 msgstr ""
 
 msgid "PipelineCharts|Total pipeline runs"
+msgstr ""
+
+msgid "PipelineCharts|Try ClickHouse for advanced analytics"
 msgstr ""
 
 msgid "PipelineEditorFileTree|Configuration files added with the include keyword"

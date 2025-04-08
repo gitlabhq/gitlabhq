@@ -6,6 +6,7 @@
   project_id: @project.id,
   should_render_dora_charts: should_render_dora_charts.to_s,
   should_render_quality_summary: should_render_quality_summary.to_s,
+  click_house_enabled_for_analytics: Gitlab::ClickHouse.enabled_for_analytics?(@project.group).to_s,
   failed_pipelines_link: project_pipelines_path(@project, page: '1', scope: 'all', status: 'failed'),
   coverage_chart_path: charts_project_graph_path(@project, @project.default_branch),
   test_runs_empty_state_image_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
