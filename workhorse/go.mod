@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.66.0
 	github.com/dlclark/regexp2 v1.11.4
 	github.com/getsentry/raven-go v0.2.0
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/gorilla/websocket v1.5.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0

@@ -1,4 +1,15 @@
-.gl-ml-auto.gl-mr-auto{ class: 'sm:gl-w-1/2' }
+= javascript_tag nonce: content_security_policy_nonce do
+  :plain
+    const enablePointerEvents = () =>{
+      setTimeout(()=>{
+        document.getElementById('container').classList.remove('gl-pointer-events-none');
+      },500)
+    }
+
+    window.addEventListener('focus', enablePointerEvents, {once: true});
+    window.addEventListener('mousemove', enablePointerEvents, {once: true});
+
+#container.gl-ml-auto.gl-mr-auto.gl-pointer-events-none{ class: 'sm:gl-w-1/2' }
   .gl-items-center
     .gl-text-size-h1
       = safe_format(_('%{strong_start}%{client_name}%{strong_end} is requesting access to your account on %{title}.'),
