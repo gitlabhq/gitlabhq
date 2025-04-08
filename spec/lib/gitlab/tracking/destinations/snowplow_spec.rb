@@ -14,8 +14,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   before do
     stub_application_setting(
       snowplow_collector_hostname: 'gitfoo.com',
-      snowplow_app_id: '_abc123_',
-      snowplow_enabled: true
+      snowplow_app_id: '_abc123_'
     )
 
     allow(Kernel).to receive(:at_exit)
@@ -128,18 +127,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       expect(Kernel).not_to receive(:at_exit)
 
       subject
-    end
-  end
-
-  context 'when snowplow is disabled' do
-    describe '#event' do
-      it 'does not send event to tracker' do
-        stub_application_setting(snowplow_enabled: false)
-
-        expect_any_instance_of(SnowplowTracker::Tracker).not_to receive(:track_struct_event)
-
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-      end
     end
   end
 

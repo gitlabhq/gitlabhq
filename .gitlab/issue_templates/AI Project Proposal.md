@@ -200,8 +200,8 @@ _What tasks or actions should the user be capable of performing with this featur
 ## Additional resources
 - If you'd like help with technical validation, or would like to discuss UX considerations for AI mention the AI Assisted group using `@gitlab-org/modelops/applied-ml`.
 - Read about our [AI Integration strategy](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/)
-- [AI-human interaction guidelines](https://design.gitlab.com/usability/ai-human-interaction)
-- [Highlighting feature versions guidelines](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions)
+- [AI-human interaction guidelines](https://design.gitlab.com/patterns/ai-human-interaction)
+- [Highlighting feature versions guidelines](https://design.gitlab.com/patterns/feature-management#highlighting-feature-versions)
 - [UX maturity requirements](https://about.gitlab.com/handbook/product/ai/ux-maturity/)
 - **Slack channels**
     - `#wg_ai_integration` - Slack channel for the working group and the high-level alignment on getting AI ready for Production (Development, Product, UX, Legal, etc.) But from the other channels feel free to reach out and post progress here

@@ -28,10 +28,23 @@ module Organizations
     end
 
     def destroy
-      Groups::DestroyService.new(group, current_user).async_execute
-      render json: { message: format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name) }
-    rescue Groups::DestroyService::DestroyError => error
-      render json: { message: error.message }, status: :unprocessable_entity
+      return destroy_immediately unless group.adjourned_deletion?
+
+      if group.marked_for_deletion? &&
+          ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
+        return destroy_immediately
+      end
+
+      result = ::Groups::MarkForDeletionService.new(group, current_user).execute
+
+      if result[:status] == :success
+        removal_time = helpers.permanent_deletion_date_formatted(Date.current)
+        message = _("'%{group_name}' has been scheduled for removal on %{removal_time}.")
+
+        render json: { message: format(message, group_name: group.name, removal_time: removal_time) }
+      else
+        render json: { message: result[:message] }, status: :unprocessable_entity
+      end
     end
 
     private
@@ -55,6 +68,13 @@ module Organizations
       return render_404 if group.nil?
 
       access_denied! unless can?(current_user, :remove_group, group)
+    end
+
+    def destroy_immediately
+      Groups::DestroyService.new(group, current_user).async_execute
+      render json: { message: format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name) }
+    rescue Groups::DestroyService::DestroyError => error
+      render json: { message: error.message }, status: :unprocessable_entity
     end
   end
 end

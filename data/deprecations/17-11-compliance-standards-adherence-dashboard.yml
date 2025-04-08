@@ -1,0 +1,20 @@
+- title: 'Remove compliance standards adherence dashboard'
+  removal_milestone: '18.6'
+  announcement_milestone: '17.11'
+  breaking_change: true
+  window: 1
+  reporter: nrosandich
+  stage: Software Supply Chain Security
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470834
+  impact: med
+  scope: group
+  body: |
+    In GitLab 17.11, we released:
+
+    - [Custom compliance frameworks](https://docs.gitlab.com/user/compliance/compliance_frameworks/).
+    - The [Compliance status report](https://docs.gitlab.com/user/compliance/compliance_center/compliance_status_report/).
+
+    These features give all of the same functionality as the compliance standards adherence dashboard, but you can
+    configure the adherence that you require.
+
+    In GitLab 18.6, we'll remove the compliance standards adherence dashboard.

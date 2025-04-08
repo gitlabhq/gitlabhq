@@ -114,8 +114,9 @@ describe('GlobalSearchResultsApp', () => {
       expect(findEmptyResult().exists()).toBe(true);
     });
 
-    it('Renders status bar', () => {
+    it('Renders status bar in correct order', () => {
       expect(findStatusBar().exists()).toBe(true);
+      expect(findStatusBar().element.nextElementSibling).toBe(findEmptyResult().element);
     });
   });
 

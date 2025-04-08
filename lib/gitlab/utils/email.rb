@@ -100,7 +100,7 @@ module Gitlab
         end
       end
 
-      # Implements https://design.gitlab.com/usability/obfuscation#email-addresses
+      # Implements https://design.gitlab.com/patterns/obfuscation#email-addresses
       class Deform < Masker
         def local_part
           mask(@local_part, visible_length: 2, star_length: 5)

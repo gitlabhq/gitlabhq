@@ -20,7 +20,6 @@ module Gitlab
 
         override :event
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
-          return unless enabled?
           return unless @event_eligibility_checker.eligible?(action)
 
           tracker.track_struct_event(

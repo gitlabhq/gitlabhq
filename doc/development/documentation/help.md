@@ -74,7 +74,7 @@ with the following conventions:
 - It's relative to the `doc/` directory in the GitLab repository.
 - For clarity, it should end with the `.md` file extension.
 
-The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/contextual-help#formatting-help-content).
+The help text follows the [Pajamas guidelines](https://design.gitlab.com/patterns/contextual-help#formatting-help-content).
 
 ### Linking to `/help` in HAML
 

@@ -58,6 +58,8 @@ import {
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  CUSTOM_FIELDS_TYPE_NUMBER,
+  CUSTOM_FIELDS_TYPE_TEXT,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -492,6 +494,11 @@ export default {
       const isTitleFilled = Boolean(this.workItemTitle.trim());
       const isDescriptionFilled = Boolean(this.workItemDescription.trim());
       const defaultColorValue = DEFAULT_EPIC_COLORS;
+      const isCustomFieldsFilled = Boolean(
+        this.workItemCustomFields?.find(
+          (field) => field.value != null || field.selectedOptions?.length > 0,
+        ),
+      );
 
       return (
         isTitleFilled ||
@@ -505,7 +512,8 @@ export default {
         Boolean(this.workItemStartDateFixed) ||
         Boolean(this.workItemDueDateIsFixed) ||
         Boolean(this.workItemStartDateIsFixed) ||
-        Boolean(this.workItemIterationId)
+        Boolean(this.workItemIterationId) ||
+        (this.glFeatures.customFieldsFeature && isCustomFieldsFilled)
       );
     },
     shouldDatesRollup() {
@@ -712,6 +720,32 @@ export default {
         workItemCreateInput.hierarchyWidget = {
           parentId: this.workItemParent?.id ?? this.parentId,
         };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_CUSTOM_FIELDS)) {
+        const customFieldsMutationInput = this.workItemCustomFields?.map((field) => {
+          if (field.customField.fieldType === CUSTOM_FIELDS_TYPE_NUMBER) {
+            return {
+              customFieldId: field.customField.id,
+              numberValue: field.value,
+            };
+          }
+
+          if (field.customField.fieldType === CUSTOM_FIELDS_TYPE_TEXT) {
+            return {
+              customFieldId: field.customField.id,
+              textValue: field.value,
+            };
+          }
+
+          const selectedOptionsIds = field.selectedOptions?.map(({ id }) => id);
+          return {
+            customFieldId: field.customField.id,
+            selectedOptionIds: selectedOptionsIds,
+          };
+        });
+
+        workItemCreateInput.customFieldsWidget = customFieldsMutationInput;
       }
 
       try {

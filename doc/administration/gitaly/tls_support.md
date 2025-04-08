@@ -34,6 +34,12 @@ If you use a load balancer, it must be able to negotiate HTTP/2 using the ALPN T
 
 ## Configure Gitaly with TLS
 
+{{< history >}}
+
+- Minimum TLS version configuration option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/7755) in GitLab 17.11.
+
+{{< /history >}}
+
 [Configure Gitaly](configure_gitaly.md) before configuring TLS support.
 
 The process for configuring TLS support depends on your installation type.
@@ -94,6 +100,12 @@ The process for configuring TLS support depends on your installation type.
       tls: {
         certificate_path: '/etc/gitlab/ssl/cert.pem',
         key_path: '/etc/gitlab/ssl/key.pem',
+        ## Optionally configure the minimum TLS version Gitaly offers to clients.
+        ##
+        ## Default: "TLS 1.2"
+        ## Options: ["TLS 1.2", "TLS 1.3"].
+        #
+        # min_version: "TLS 1.2"
       },
    }
    ```

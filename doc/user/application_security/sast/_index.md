@@ -820,9 +820,17 @@ flags are added to the scanner's CLI options.
   </thead>
   <tbody>
     <tr>
-      <td rowspan="1">
+      <td rowspan="2">
         GitLab Advanced SAST
       </td>
+      <td>
+        <code>--include-propagator-files</code>
+      </td>
+      <td>
+        WARNING: This flag may cause significant performance degradation. <br> This option enables the scanning of intermediary files that connect source and sink files without containing either sources or sinks themselves. While useful for comprehensive analysis in smaller repositories, enabling this feature for large repositories will substantially impact performance. 
+      </td>
+    </tr>
+    <tr>
       <td>
         <code>--multi-core</code>
       </td>

@@ -8,12 +8,20 @@ module Gitlab
       ].freeze
 
       def eligible?(event)
-        product_usage_data_enabled? || duo_event?(event)
+        if ::Feature.enabled?('collect_product_usage_events', :instance)
+          snowplow_enabled? || send_usage_data? || duo_event?(event)
+        else
+          snowplow_enabled?
+        end
       end
 
       private
 
-      def product_usage_data_enabled?
+      def snowplow_enabled?
+        Gitlab::CurrentSettings.snowplow_enabled?
+      end
+
+      def send_usage_data?
         Gitlab::CurrentSettings.product_usage_data_enabled?
       end
 

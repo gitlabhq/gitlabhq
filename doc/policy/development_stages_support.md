@@ -96,10 +96,10 @@ In addition to the [experiment details](#experiment) for users, experiments shou
   but a group or project setting in the UI is not.
 - Link out to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
 - Have documentation that reflects that the feature is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-- Have [UI that reflects the experiment status](https://design.gitlab.com/usability/feature-management/#highlighting-feature-versions).
+- Have [UI that reflects the experiment status](https://design.gitlab.com/patterns/feature-management/#highlighting-feature-versions).
 - Have a feedback issue to engage with internal and external users.
 - Not be announced in a release post.
-- Be promoted in the user interface through [discovery moments](https://design.gitlab.com/usability/feature-management/#discovery-moments),
+- Be promoted in the user interface through [discovery moments](https://design.gitlab.com/patterns/feature-management/#discovery-moments),
   if needed.
 
 All experimental features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
@@ -112,12 +112,12 @@ In addition to the [beta details](#beta) for users, beta features should:
 
 - Not be required or necessary for most features.
 - Have documentation that reflects the beta status.
-- Have [UI that reflects the beta status](https://design.gitlab.com/usability/feature-management/#highlighting-feature-versions).
+- Have [UI that reflects the beta status](https://design.gitlab.com/patterns/feature-management/#highlighting-feature-versions).
 - Have a feedback issue to engage with internal and external users.
 - Be behind a feature flag that is on by default.
 - Be behind a toggle that is off by default.
 - Be announced in a release post that reflects the beta status, if desired.
-- Be promoted in the user interface through [discovery moments](https://design.gitlab.com/usability/feature-management/#discovery-moments),
+- Be promoted in the user interface through [discovery moments](https://design.gitlab.com/patterns/feature-management/#discovery-moments),
   if needed.
 
 All beta features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)

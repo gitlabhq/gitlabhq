@@ -466,7 +466,7 @@ You can also refer to our general [documentation guidelines](../documentation/_i
 
 You can provide help text in the integration form, including links to off-site documentation,
 as described above in [Customize the frontend form](#customize-the-frontend-form). Refer to
-our [usability guidelines](https://design.gitlab.com/usability/contextual-help) for help text.
+our [usability guidelines](https://design.gitlab.com/patterns/contextual-help) for help text.
 
 ## Testing
 

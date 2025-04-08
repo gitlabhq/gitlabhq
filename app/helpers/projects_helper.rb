@@ -637,6 +637,15 @@ module ProjectsHelper
     localized_access_names[access] || Gitlab::Access.human_access(access)
   end
 
+  def project_delete_delayed_button_data(project, button_text = nil, is_security_policy_project: false)
+    project_delete_button_shared_data(project, button_text).merge({
+      is_security_policy_project: is_security_policy_project.to_s,
+      restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
+      delayed_deletion_date: permanent_deletion_date_formatted(Date.current),
+      form_path: project_path(project)
+    })
+  end
+
   def badge_count(number)
     format_cached_count(1000, number)
   end
@@ -733,7 +742,33 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
+  def delete_delayed_message(project)
+    date = permanent_deletion_date_formatted(Date.current)
+
+    if project.adjourned_deletion?
+      message = _("This action will place this project, including all its resources, in a pending deletion state " \
+        "for %{deletion_adjourned_period} days, and delete it permanently on %{strongOpen}%{date}%{strongClose}.")
+      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date,
+        deletion_adjourned_period: project.deletion_adjourned_period)
+    else
+      delete_permanently_message
+    end
+  end
+
   def delete_immediately_message(project)
+    return delete_permanently_message unless project.adjourned_deletion?
+    return delete_delayed_message(project) unless project.marked_for_deletion_on
+
+    date = permanent_deletion_date_formatted(project.marked_for_deletion_on)
+
+    message = _('This project is scheduled for deletion on %{strongOpen}%{date}%{strongClose}. ' \
+      'This action will permanently delete this project, ' \
+      'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.')
+
+    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date)
+  end
+
+  def delete_permanently_message
     _('This action will permanently delete this project, including all its resources.')
   end
 

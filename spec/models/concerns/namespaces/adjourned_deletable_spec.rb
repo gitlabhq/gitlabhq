@@ -13,6 +13,17 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
       expect(project).to receive(:adjourned_deletion_configured?).and_return(false)
       expect(project.adjourned_deletion?).to be false
     end
+
+    context 'when downtier_delayed_deletion feature flag is disabled' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+      end
+
+      it 'returns false', :aggregate_failures do
+        expect(project).not_to receive(:adjourned_deletion_configured?)
+        expect(project.adjourned_deletion?).to be false
+      end
+    end
   end
 
   describe '#adjourned_deletion_configured?' do

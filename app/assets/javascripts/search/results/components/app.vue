@@ -83,8 +83,8 @@ export default {
   <div>
     <error-result v-if="hasError" />
     <section v-else>
-      <empty-result v-if="!hasResults && !isLoading" />
       <status-bar v-if="!isLoading" :blob-search="blobSearch" />
+      <empty-result v-if="!hasResults && !isLoading" />
       <zoekt-blob-results
         v-if="hasResults"
         :blob-search="blobSearch"

@@ -5,6 +5,8 @@ module Namespaces
     extend ActiveSupport::Concern
 
     def adjourned_deletion?
+      return false unless Feature.enabled?(:downtier_delayed_deletion, :instance, type: :wip)
+
       adjourned_deletion_configured?
     end
 
@@ -12,7 +14,7 @@ module Namespaces
       return false unless Feature.enabled?(:downtier_delayed_deletion, :instance, type: :wip)
       return false if try(:personal?)
 
-      ::Gitlab::CurrentSettings.deletion_adjourned_period > 0
+      deletion_adjourned_period > 0
     end
 
     def marked_for_deletion?
@@ -29,7 +31,11 @@ module Namespaces
     end
 
     def permanent_deletion_date(date)
-      date + ::Gitlab::CurrentSettings.deletion_adjourned_period.days
+      date + deletion_adjourned_period.days
+    end
+
+    def deletion_adjourned_period
+      ::Gitlab::CurrentSettings.deletion_adjourned_period
     end
   end
 end

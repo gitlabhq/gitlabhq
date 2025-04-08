@@ -218,7 +218,7 @@ With this integration, you can integrate with third-party workflow tools, like S
 responds with an associated status. This status is then displayed in the [Compliance status report](compliance_center/compliance_status_report.md).
 
 You can configure external controls for each individual project. External controls are not shared between projects.
-Status checks fail if an external control stays in the pending state for more than two minutes.
+Status checks fail if an external control stays in the pending state for more than six hours.
 
 ##### Add external controls
 

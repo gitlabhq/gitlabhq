@@ -716,6 +716,35 @@ This is one small step towards moving away from CI/CD templates in preference of
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.6">
+
+## GitLab 18.6
+
+<div class="deprecation breaking-change" data-milestone="18.6">
+
+### Remove compliance standards adherence dashboard
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.11</span>
+- Removal in GitLab <span class="milestone">18.6</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470834).
+
+</div>
+
+In GitLab 17.11, we released:
+
+- [Custom compliance frameworks](https://docs.gitlab.com/user/compliance/compliance_frameworks/).
+- The [Compliance status report](https://docs.gitlab.com/user/compliance/compliance_center/compliance_status_report/).
+
+These features give all of the same functionality as the compliance standards adherence dashboard, but you can
+configure the adherence that you require.
+
+In GitLab 18.6, we'll remove the compliance standards adherence dashboard.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.3">
 
 ## GitLab 18.3
