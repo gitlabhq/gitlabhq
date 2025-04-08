@@ -32,7 +32,9 @@ module Ci
 
     def status
       return :stale if stale?
-      return :never_contacted unless finished_creation_state?
+
+      # NOTE: We can't use finished_creation_state? here as we need to check cached value
+      return :never_contacted unless creation_state == 'finished'
 
       online? ? :online : :offline
     end

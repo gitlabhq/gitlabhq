@@ -48566,7 +48566,7 @@ A year and month input for querying product analytics usage data.
 | <a id="negatedworkitemfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |
 | <a id="negatedworkitemfilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji not applied by the current user. |
-| <a id="negatedworkitemfilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filters out work items by the given types. |
+| <a id="negatedworkitemfilterinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter out work items by the given types. |
 
 ### `OncallRotationActivePeriodInputType`
 

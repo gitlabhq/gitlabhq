@@ -259,7 +259,7 @@ module Ci
       where(runner_type: runner_type)
     end
 
-    cached_attr_reader :contacted_at
+    cached_attr_reader :contacted_at, :creation_state
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
       error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -558,7 +558,7 @@ module Ci
     def registration_available?
       authenticated_user_registration_type? &&
         created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
-        started_creation_state?
+        creation_state == 'started' # NOTE: We can't use started_creation_state? here as we need to check cached value
     end
 
     # CI_JOB_JWT_V2 that uses this method is deprecated

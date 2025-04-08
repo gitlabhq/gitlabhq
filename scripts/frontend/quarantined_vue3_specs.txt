@@ -24,7 +24,7 @@ ee/spec/frontend/compliance_dashboard/components/frameworks_report/edit_framewor
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/report_spec.js
 ee/spec/frontend/dependencies/components/app_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js
-ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
+ee/spec/frontend/dependencies/components/direct_descendant_viewer_spec.js
 ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js

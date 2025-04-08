@@ -3915,7 +3915,7 @@ msgstr ""
 msgid "AdherenceReport|There was an error loading adherence report."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|We are replacing the standards adherence report with the compliance status report, which includes new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -15116,13 +15116,13 @@ msgstr ""
 msgid "Compliance Center Export|You will be emailed after the export is processed."
 msgstr ""
 
+msgid "Compliance Center|Compliance status"
+msgstr ""
+
 msgid "Compliance Center|Frameworks"
 msgstr ""
 
-msgid "Compliance Center|Report and manage standards adherence, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "Compliance Center|Standards Adherence"
+msgid "Compliance Center|Report and manage compliance status, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Compliance Center|Violations"
@@ -15438,6 +15438,9 @@ msgid "ComplianceFrameworks|Secret token is required"
 msgstr ""
 
 msgid "ComplianceFrameworks|Select policies to enforce on all projects scoped to this framework."
+msgstr ""
+
+msgid "ComplianceFrameworks|Selected projects"
 msgstr ""
 
 msgid "ComplianceFrameworks|Send via:"

@@ -3,8 +3,10 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
+import RunnerCreateWizard from '~/ci/runner/components/runner_create_wizard.vue';
 import { INSTANCE_TYPE } from '../constants';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
@@ -12,8 +14,10 @@ export default {
   name: 'AdminNewRunnerApp',
   components: {
     RunnerCreateForm,
+    RunnerCreateWizard,
     PageHeading,
   },
+  mixins: [glFeatureFlagsMixin()],
   methods: {
     onSaved(runner) {
       saveAlertToLocalStorage({
@@ -31,7 +35,8 @@ export default {
 </script>
 
 <template>
-  <div>
+  <runner-create-wizard v-if="glFeatures.runnerCreateWizardAdmin" />
+  <div v-else>
     <page-heading :heading="s__('Runners|New instance runner')">
       <template #description>
         {{

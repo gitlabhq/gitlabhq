@@ -993,10 +993,21 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       it { is_expected.to eq(:stale) }
 
-      context 'created recently, never contacted' do
+      context 'created recently, never contacted', :clean_gitlab_redis_cache do
         let(:traits) { %i[unregistered online] }
 
         it { is_expected.to eq(:never_contacted) }
+
+        context "when cache contains 'finished' creation_state" do
+          before do
+            Gitlab::Redis::Cache.with do |redis|
+              cache_key = runner.send(:cache_attribute_key)
+              redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+            end
+          end
+
+          it { is_expected.to eq(:online) }
+        end
       end
     end
 
@@ -2269,7 +2280,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#registration_available?', :freeze_time do
+  describe '#registration_available?', :freeze_time, :clean_gitlab_redis_cache do
     subject { runner.registration_available? }
 
     let(:runner) { build(:ci_runner, *runner_traits, registration_type: registration_type) }
@@ -2284,6 +2295,17 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           let(:extra_runner_traits) { [:unregistered] }
 
           it { is_expected.to be_truthy }
+
+          context "when runner has cached creation_state value" do
+            before do
+              Gitlab::Redis::Cache.with do |redis|
+                cache_key = runner.send(:cache_attribute_key)
+                redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+              end
+            end
+
+            it { is_expected.to be_falsy }
+          end
         end
 
         context 'with runner creation finished' do

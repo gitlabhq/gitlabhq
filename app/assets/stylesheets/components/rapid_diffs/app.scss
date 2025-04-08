@@ -22,7 +22,7 @@
 .rd-app-body {
   display: flex;
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
     flex-direction: column;
   }
 }
@@ -37,13 +37,13 @@
   flex: none;
   box-sizing: content-box;
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(constants.$app-vertical-breakpoint) {
     $drag-handle-width: 4px;
     padding-right: calc($gl-spacing-scale-4 + $drag-handle-width / 2);
     margin-right: calc($gl-spacing-scale-4 - $drag-handle-width / 2);
   }
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
     flex: 1;
     margin: 0;
     // override .diff-tree-list, remove when fully switched to Rapid Diffs

@@ -1,0 +1,9 @@
+---
+name: runner_create_wizard_admin
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/396544
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186711
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/533827
+milestone: '17.11'
+group: group::runner
+type: wip
+default_enabled: false

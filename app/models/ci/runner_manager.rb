@@ -66,7 +66,8 @@ module Ci
 
     validate :no_sharding_key_id, if: :instance_type?
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at,
+      :executor_type, :creation_state
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner manager
     # will be considered stale

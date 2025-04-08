@@ -129,7 +129,7 @@ export default class Shortcuts {
     }
 
     this.filterSelectors = [
-      'input[type=search]',
+      'input[type=search]:not(#diff-tree-search)',
       '.gl-filtered-search-term-input',
       '.filtered-search',
     ];

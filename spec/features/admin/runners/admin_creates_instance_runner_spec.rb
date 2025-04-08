@@ -6,6 +6,7 @@ RSpec.describe "Admin creates an instance runner", :js, feature_category: :fleet
   let_it_be(:admin) { create(:admin) }
 
   before do
+    stub_feature_flags(runner_create_wizard_admin: false)
     sign_in(admin)
     enable_admin_mode!(admin)
   end

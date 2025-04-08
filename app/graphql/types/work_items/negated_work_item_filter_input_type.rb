@@ -24,7 +24,7 @@ module Types
         required: false,
         description: 'Filter by reaction emoji not applied by the current user.'
       argument :types, [::Types::IssueTypeEnum], as: :issue_types,
-        description: 'Filters out work items by the given types.',
+        description: 'Filter out work items by the given types.',
         required: false
 
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]

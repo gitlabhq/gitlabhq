@@ -283,4 +283,76 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       it { expect(finished_bulk_import.namespaces_with_unassigned_placeholders).to include(group) }
     end
   end
+
+  describe '#schedule_configuration_purge' do
+    subject(:schedule_purge) { bulk_import.schedule_configuration_purge }
+
+    context 'when configuration exists' do
+      let_it_be(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:configuration_id) { bulk_import.configuration.id }
+      let(:delay) { 24.hours }
+
+      before do
+        allow(bulk_import).to receive(:run_after_commit).and_yield
+        stub_const('BulkImport::PURGE_CONFIGURATION_DELAY', delay)
+      end
+
+      it 'schedules purge worker with default delay' do
+        expect(Import::BulkImports::ConfigurationPurgeWorker).to receive(:perform_in).with(delay, configuration_id)
+
+        schedule_purge
+      end
+    end
+
+    context 'when configuration does not exist' do
+      let_it_be(:bulk_import) { create(:bulk_import) }
+
+      it 'does not schedule any job' do
+        expect(Import::BulkImports::ConfigurationPurgeWorker).not_to receive(:perform_in)
+
+        schedule_purge
+      end
+    end
+  end
+
+  describe 'state-machine transitions for configuration purging' do
+    RSpec::Matchers.define :schedule_configuration_purge do
+      def supports_block_expectations?
+        true
+      end
+
+      match(notify_expectation_failures: true) do |proc|
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).to receive(:schedule_configuration_purge).and_call_original
+        end
+
+        proc.call
+        true
+      end
+
+      match_when_negated(notify_expectation_failures: true) do |proc|
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).not_to receive(:schedule_configuration_purge)
+        end
+
+        proc.call
+        true
+      end
+    end
+
+    context "when bulk import transitions to a completed state" do
+      subject(:import) { create(:bulk_import, :started, :with_configuration) }
+
+      it { expect { import.finish! }.to schedule_configuration_purge }
+      it { expect { import.fail_op! }.to schedule_configuration_purge }
+      it { expect { import.cleanup_stale! }.to schedule_configuration_purge }
+      it { expect { import.cancel }.to schedule_configuration_purge }
+    end
+
+    context "when bulk import transitions to a non-completed state" do
+      subject(:import) { create(:bulk_import, :created, :with_configuration) }
+
+      it { expect { import.start }.not_to schedule_configuration_purge }
+    end
+  end
 end

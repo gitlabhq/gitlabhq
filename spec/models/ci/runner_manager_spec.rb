@@ -457,7 +457,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     end
   end
 
-  describe '#status', :freeze_time do
+  describe '#status', :freeze_time, :clean_gitlab_redis_cache do
     subject { runner_manager.status }
 
     context 'if never connected' do
@@ -469,6 +469,17 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         let(:runner_manager) { build(:ci_runner_machine, :unregistered, :created_within_stale_deadline) }
 
         it { is_expected.to eq(:never_contacted) }
+
+        context "when cache contains 'finished' creation_state" do
+          before do
+            Gitlab::Redis::Cache.with do |redis|
+              cache_key = runner_manager.send(:cache_attribute_key)
+              redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+            end
+          end
+
+          it { is_expected.to eq(:offline) }
+        end
       end
     end
 
@@ -515,7 +526,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       runner_manager.heartbeat(values)
     end
 
-    context 'when database was updated recently' do
+    context 'when database was updated recently', :clean_gitlab_redis_cache do
       before do
         runner_manager.contacted_at = Time.current
       end

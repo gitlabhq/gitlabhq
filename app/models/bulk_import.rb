@@ -8,6 +8,7 @@ class BulkImport < ApplicationRecord
 
   MIN_MAJOR_VERSION = 14
   MIN_MINOR_VERSION_FOR_PROJECT = 4
+  PURGE_CONFIGURATION_DELAY = 24.hours
 
   belongs_to :user, optional: false
   belongs_to :organization, class_name: 'Organizations::Organization'
@@ -56,10 +57,12 @@ class BulkImport < ApplicationRecord
     after_transition any => [:finished, :failed, :timeout] do |bulk_import|
       bulk_import.update_has_failures
       bulk_import.send_completion_notification
+      bulk_import.run_after_commit { bulk_import.schedule_configuration_purge }
     end
     after_transition any => [:canceled] do |bulk_import|
       bulk_import.run_after_commit do
         bulk_import.propagate_cancel
+        bulk_import.schedule_configuration_purge
       end
     end
   end
@@ -134,5 +137,11 @@ class BulkImport < ApplicationRecord
     source_uri = URI.parse(configuration.url.to_s)
 
     source_uri.host == Settings.gitlab.host
+  end
+
+  def schedule_configuration_purge
+    return unless configuration
+
+    Import::BulkImports::ConfigurationPurgeWorker.perform_in(PURGE_CONFIGURATION_DELAY, configuration.id)
   end
 end

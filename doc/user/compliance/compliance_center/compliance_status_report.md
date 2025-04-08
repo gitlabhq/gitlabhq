@@ -18,7 +18,7 @@ title: Compliance status report
 
 {{< /history >}}
 
-The compliance status report displays the most recent instances where projects do not adhere to compliance framework requirements. It is part of the
+The compliance status report displays the most recent instances where projects do not adhere to [compliance framework requirements](../compliance_frameworks.md#requirements). It is part of the
 Compliance Center, and helps you quickly identify and remediate gaps in control implementation across your projects.
 
 ## Scan timing and triggers
@@ -31,7 +31,7 @@ Compliance scans that update the status report are automatically triggered in th
 
 After a scan is triggered, results can take 5 to 10 minutes to appear in the compliance status report.
 
-To learn more about how requirements and controls are defined in a compliance framework, see [Create and manage compliance framework requirements](../compliance_frameworks.md).
+To learn more about how requirements and controls are defined in a compliance framework, see [Create and manage compliance framework requirements](../compliance_frameworks.md#add-requirements).
 
 ## View the compliance status report
 

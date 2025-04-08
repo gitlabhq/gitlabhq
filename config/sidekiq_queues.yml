@@ -477,6 +477,8 @@
   - 1
 - - groups_update_two_factor_requirement_for_members
   - 1
+- - import_bulk_imports_configuration_purge
+  - 1
 - - import_bulk_imports_source_users_attributes
   - 1
 - - import_delete_placeholder_user

@@ -236,6 +236,21 @@ describe('Incidents List', () => {
       );
     });
 
+    it('shows the button linking to new incidents page with work items view', () => {
+      mountComponent({
+        data: { incidents: { list: mockIncidents }, incidentsCount: {} },
+        provide: { glFeatures: { workItemViewForIssues: true } },
+        loading: false,
+      });
+
+      expect(findCreateIncidentBtn().exists()).toBe(true);
+      findCreateIncidentBtn().trigger('click');
+      expect(mergeUrlParams).toHaveBeenCalledWith(
+        { issuable_template: incidentTemplateName, type: incidentType.toUpperCase() },
+        newIssuePath,
+      );
+    });
+
     it('sets button loading on click', async () => {
       findCreateIncidentBtn().vm.$emit('click');
       await nextTick();
