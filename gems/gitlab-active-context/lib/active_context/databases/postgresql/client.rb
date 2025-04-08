@@ -21,14 +21,14 @@ module ActiveContext
           setup_connection_pool
         end
 
-        def search(collection:, query:)
-          raise ArgumentError, "Expected Query object, you used #{query.class}" unless query.is_a?(ActiveContext::Query)
+        def search(user:, collection:, query:)
+          sql = Processor.transform(collection.collection_name, query)
 
-          sql = Processor.transform(collection, query)
-          res = with_connection do |conn|
+          result = with_connection do |conn|
             conn.execute(sql)
           end
-          QueryResult.new(res)
+
+          QueryResult.new(result: result, collection: collection, user: user).authorized_results
         end
 
         def bulk_process(operations)

@@ -371,6 +371,7 @@ export default {
           :noteable-type="workItemTypeKey"
         >
           <markdown-editor
+            class="js-gfm-wrapper"
             :value="commentText"
             :render-markdown-path="markdownPreviewPath"
             :markdown-docs-path="$options.constantOptions.markdownDocsPath"
@@ -378,6 +379,9 @@ export default {
             :autocomplete-data-sources="autocompleteDataSources"
             :form-field-props="formFieldProps"
             :uploads-path="uploadsPath"
+            :data-work-item-full-path="fullPath"
+            :data-work-item-id="workItemId"
+            :data-work-item-iid="workItemIid"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"

@@ -24677,7 +24677,8 @@ CREATE TABLE vulnerability_external_issue_links (
     external_issue_key text NOT NULL,
     project_id bigint,
     CONSTRAINT check_3200604f5e CHECK ((char_length(external_issue_key) <= 255)),
-    CONSTRAINT check_68cffd19b0 CHECK ((char_length(external_project_key) <= 255))
+    CONSTRAINT check_68cffd19b0 CHECK ((char_length(external_project_key) <= 255)),
+    CONSTRAINT check_9bbcf5afdd CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_external_issue_links_id_seq
@@ -28870,6 +28871,9 @@ ALTER TABLE description_versions
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
+
+ALTER TABLE packages_npm_metadata
+    ADD CONSTRAINT check_8d2e047947 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

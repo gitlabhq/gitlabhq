@@ -1,0 +1,20 @@
+---
+description: Opened dropdown of recent MRs modifying this file and targeting the current branch
+internal_events: true
+action: click_dropdown_showing_recent_mrs_for_file_on_branch
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  value:
+    description: Number of matching MRs returned in the dropdown
+product_group: source_code
+product_categories:
+  - source_code_management
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187097
+tiers:
+  - free
+  - premium
+  - ultimate

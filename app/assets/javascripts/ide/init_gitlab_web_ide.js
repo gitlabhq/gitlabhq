@@ -66,7 +66,7 @@ export const initGitlabWebIDE = async (el) => {
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
     await start(rootEl, {
-      ...getBaseConfig(),
+      ...(await getBaseConfig()),
       nonce,
       httpHeaders,
       auth: oauthConfig,

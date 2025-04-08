@@ -127,9 +127,9 @@ To view the open merge requests for a file:
 
 {{< history >}}
 
-- Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
-- Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
-- Filtering by `merged-by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
+- Filtering by `source branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
+- Filtering by `merged by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
+- Filtering by `merged by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
 
 {{< /history >}}
 
@@ -142,10 +142,10 @@ To filter the list of merge requests:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
-     - **Approved-By**, for merge requests already approved by a user. Premium and Ultimate only.
+     - **Approved by**, for merge requests already approved by a user. Premium and Ultimate only.
      - **Approver**, for merge requests that this user is eligible to approve.
        (For more information, read about [Code owners](../codeowners/_index.md)). Premium and Ultimate only.
-     - **Merged-By**, for merge requests merged by this user.
+     - **Merged by**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -164,8 +164,8 @@ To filter merge requests by deployment data, such as the environment or a date,
 you can type (or select from the dropdown list) the following:
 
 - Environment
-- Deployed-before
-- Deployed-after
+- Deployed before
+- Deployed after
 
 {{< alert type="note" >}}
 
@@ -177,7 +177,7 @@ do not return results, as this method does not create a merge commit.
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from.
 
-When filtering by `Deployed-before` or `Deployed-after`:
+When filtering by `Deployed before` or `Deployed after`:
 
 - The date refers to when the deployment to an environment (triggered by the
   merge commit) completed successfully.

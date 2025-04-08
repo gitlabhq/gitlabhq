@@ -10,7 +10,7 @@ export const mountOAuthCallback = async () => {
 
   try {
     await oauthCallback({
-      ...getBaseConfig(),
+      ...(await getBaseConfig()),
       username: gon.current_username,
       auth: getOAuthConfig(el.dataset),
     });

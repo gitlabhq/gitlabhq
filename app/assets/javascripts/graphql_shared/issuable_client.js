@@ -13,6 +13,7 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_ASSIGNEES,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -22,6 +23,7 @@ import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/r
 import { preserveDetailsState } from '~/work_items/utils';
 
 export const linkedItems = makeVar({});
+export const currentAssignees = makeVar({});
 
 export const config = {
   typeDefs,
@@ -200,10 +202,10 @@ export const config = {
                     return existingWidget;
                   }
 
-                  const incomindNodes = incomingWidget.linkedItems?.nodes || [];
+                  const incomingNodes = incomingWidget.linkedItems?.nodes || [];
                   const existingNodes = existingWidget.linkedItems?.nodes || [];
 
-                  const resultNodes = incomindNodes.map((incomingNode) => {
+                  const resultNodes = incomingNodes.map((incomingNode) => {
                     const existingNode =
                       existingNodes.find((n) => n.linkId === incomingNode.linkId) ?? {};
                     return { ...existingNode, ...incomingNode };
@@ -232,6 +234,20 @@ export const config = {
                       nodes: resultNodes,
                     },
                   };
+                }
+
+                if (existingWidget?.type === WIDGET_TYPE_ASSIGNEES && context.variables.id) {
+                  const workItemAssignees = existingWidget.assignees?.nodes || [];
+                  const users = workItemAssignees.map(
+                    // eslint-disable-next-line no-underscore-dangle
+                    (user) => context.cache.extract()[user.__ref],
+                  );
+
+                  const existingAssignees = currentAssignees();
+                  currentAssignees({
+                    ...existingAssignees,
+                    [`${context.variables.id}`]: users,
+                  });
                 }
 
                 return { ...existingWidget, ...incomingWidget };

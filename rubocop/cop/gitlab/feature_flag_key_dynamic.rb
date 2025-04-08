@@ -24,33 +24,34 @@ module RuboCop
       class FeatureFlagKeyDynamic < RuboCop::Cop::Base
         extend AutoCorrector
 
-        MSG = 'First argument to `Feature.%<method>s` must be a literal symbol.'
+        MSG = 'First argument to `%<module>s.%<method>s` must be a literal symbol.'
 
-        FEATURE_METHODS = %i[enabled? disabled?].freeze
+        RESTRICT_ON_SEND = %i[enabled? disabled?].to_set.freeze
 
         # @!method feature_flag_method?(node)
         def_node_matcher :feature_flag_method?, <<~PATTERN
             (send
-              (const nil? :Feature)
-              ${:enabled? :disabled?}
+              ${(const {nil? cbase} :Feature)}
+              ${RESTRICT_ON_SEND}
+              $_
               ...
             )
         PATTERN
 
+        # rubocop:disable InternalAffairs/OnSendWithoutOnCSend -- `Feature&.enabled?` is not possible
         def on_send(node)
-          method_name = feature_flag_method?(node)
+          module_node, method_name, first_arg = feature_flag_method?(node)
           return unless method_name
 
-          first_arg = node.first_argument
-          return if first_arg&.sym_type?
+          return if first_arg.sym_type?
 
-          message = format(MSG, method: method_name)
+          message = format(MSG, module: module_node.source, method: method_name)
 
           add_offense(first_arg, message: message) do |corrector|
-            autocorrect(corrector, first_arg) if first_arg&.str_type?
+            autocorrect(corrector, first_arg)
           end
         end
-        alias_method :on_csend, :on_send
+        # rubocop:enable InternalAffairs/OnSendWithoutOnCSend
 
         private
 

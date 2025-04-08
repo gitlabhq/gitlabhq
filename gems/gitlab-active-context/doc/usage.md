@@ -217,6 +217,7 @@ To add a new collection:
 1. Implement the `self.queue` class method to return the associated queue
 1. Implement the `self.reference_klass` or `self.reference_klasses` class method to return the references for an object
 1. Implement the `self.routing(object)` class method to determine how an object should be routed
+1. Implement the `self.ids_to_objects(ids)` class method to convert ids into objects for redaction.
 
 Example:
 
@@ -243,6 +244,10 @@ module Ai
 
         def self.routing(object)
           object.project.root_ancestor.id
+        end
+
+        def self.ids_to_objects(ids)
+          ::MergeRequest.id_in(ids)
         end
       end
     end
@@ -362,7 +367,7 @@ end
 ```ruby
 query = ActiveContext::Query.filter(project_id: 1).limit(1)
 
-results = ActiveContext.adapter.search(collection: "gitlab_active_context_code_embeddings", query: query)
+results = Ai::Context::Collections::MergeRequest.search(user: current_user, query: query)
 
 results.to_a
 ```
@@ -374,7 +379,7 @@ target_embedding = ::ActiveContext::Embeddings.generate_embeddings("some text")
 
 query = ActiveContext::Query.filter(project_id: 1).knn(target: "embeddings", vector: target_embedding, limit: 1)
 
-result = ActiveContext.adapter.search(collection: "gitlab_active_context_code_embeddings", query: query)
+results = Ai::Context::Collections::MergeRequest.search(user: current_user, query: query)
 
-result.to_a
+results.to_a
 ```

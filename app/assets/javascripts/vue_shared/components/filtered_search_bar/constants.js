@@ -61,8 +61,8 @@ export const TOKEN_EMPTY_SEARCH_TERM = {
   },
 };
 
-export const TOKEN_TITLE_APPROVED_BY = __('Approved-By');
-export const TOKEN_TITLE_MERGE_USER = __('Merged-By');
+export const TOKEN_TITLE_APPROVED_BY = __('Approved by');
+export const TOKEN_TITLE_MERGE_USER = __('Merged by');
 export const TOKEN_TITLE_APPROVER = __('Approver');
 export const TOKEN_TITLE_ASSIGNEE = s__('SearchToken|Assignee');
 export const TOKEN_TITLE_AUTHOR = __('Author');
@@ -90,8 +90,8 @@ export const TOKEN_TITLE_VERSION = __('Version');
 export const TOKEN_TITLE_SEARCH_WITHIN = __('Search within');
 export const TOKEN_TITLE_CREATED = __('Created date');
 export const TOKEN_TITLE_CLOSED = __('Closed date');
-export const TOKEN_TITLE_DEPLOYED_BEFORE = __('Deployed-before');
-export const TOKEN_TITLE_DEPLOYED_AFTER = __('Deployed-after');
+export const TOKEN_TITLE_DEPLOYED_BEFORE = __('Deployed before');
+export const TOKEN_TITLE_DEPLOYED_AFTER = __('Deployed after');
 export const TOKEN_TITLE_ASSIGNED_SEAT = __('Assigned seat');
 export const TOKEN_TITLE_ENVIRONMENT = __('Environment');
 export const TOKEN_TITLE_STATE = __('State');

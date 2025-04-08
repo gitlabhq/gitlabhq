@@ -239,8 +239,8 @@ const bindEvents = () => {
 
   bindHowToImport();
 
-  $('.btn_import_gitlab_project').on('click contextmenu', () => {
-    const importGitlabProjectBtn = document.querySelector('.btn_import_gitlab_project');
+  $('.js-import-gitlab-project-btn').on('click contextmenu', () => {
+    const importGitlabProjectBtn = document.querySelector('.js-import-gitlab-project-btn');
     const projectNamespaceId = document.querySelector('#project_namespace_id');
 
     const { href: importHref } = importGitlabProjectBtn.dataset;

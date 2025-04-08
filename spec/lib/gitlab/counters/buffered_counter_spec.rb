@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
   describe '#get' do
     it 'returns the value when there is an existing value stored in the counter' do
-      Gitlab::Redis::BufferedCounter.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.set(counter.key, 456)
       end
 
@@ -393,7 +393,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
     it 'removes the key from Redis' do
       counter.initiate_refresh!
 
-      Gitlab::Redis::BufferedCounter.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         expect(redis.exists?(counter.key)).to eq(false)
       end
     end
@@ -488,7 +488,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
     end
 
     it 'removes all tracking keys' do
-      Gitlab::Redis::BufferedCounter.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         expect { counter.cleanup_refresh }
           .to change { redis.scan_each(match: "#{counter.refresh_key}*").to_a.count }.from(4).to(0)
       end
@@ -533,7 +533,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
         let(:flushed_amount) { 10 }
 
         before do
-          Gitlab::Redis::BufferedCounter.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.incrby(counter.flushed_key, flushed_amount)
           end
         end
@@ -546,7 +546,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
         it 'deletes the relative :flushed key' do
           counter.commit_increment!
 
-          Gitlab::Redis::BufferedCounter.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             key_exists = redis.exists?(counter.flushed_key)
             expect(key_exists).to be_falsey
           end
@@ -555,7 +555,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
       context 'when deleting :flushed key fails' do
         before do
-          Gitlab::Redis::BufferedCounter.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.incrby(counter.flushed_key, 10)
 
             allow(redis).to receive(:del).and_raise('could not delete key')
@@ -614,7 +614,7 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
 
     with_them do
       before do
-        Gitlab::Redis::BufferedCounter.with do |redis|
+        Gitlab::Redis::SharedState.with do |redis|
           redis.set(increment_key, increment) if increment
           redis.set(flushed_key, flushed) if flushed
         end
@@ -635,19 +635,19 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
   end
 
   def redis_get_key(key)
-    Gitlab::Redis::BufferedCounter.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.get(key)
     end
   end
 
   def redis_exists_key(key)
-    Gitlab::Redis::BufferedCounter.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.exists?(key)
     end
   end
 
   def redis_key_ttl(key)
-    Gitlab::Redis::BufferedCounter.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.ttl(key)
     end
   end

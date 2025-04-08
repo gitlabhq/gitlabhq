@@ -296,8 +296,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/services/ee/projects/create_from_template_service.rb'
     - 'ee/app/services/ee/projects/gitlab_projects_import_service.rb'
     - 'ee/app/services/ee/protected_branches/create_service.rb'
-    - 'ee/app/services/ee/search/global_service.rb'
-    - 'ee/app/services/ee/search/group_service.rb'
     - 'ee/app/services/ee/users/authorized_build_service.rb'
     - 'ee/app/services/ee/users/build_service.rb'
     - 'ee/app/services/ee/users/update_service.rb'

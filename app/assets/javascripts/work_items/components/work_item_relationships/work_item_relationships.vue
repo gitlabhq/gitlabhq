@@ -328,8 +328,6 @@ export default {
     :anchor-id="widgetName"
     :title="$options.i18n.title"
     :is-loading="isLoading"
-    :data-work-item-full-path="workItemFullPath"
-    :data-work-item-iid="workItemIid"
     is-collapsible
     persist-collapsed-state
     data-testid="work-item-relationships"

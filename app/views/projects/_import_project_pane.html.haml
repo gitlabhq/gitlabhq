@@ -17,7 +17,7 @@
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body', testid: 'gitlab-import-button' } }
-          = render Pajamas::ButtonComponent.new(href: '#', icon: 'tanuki', button_options: { class: 'btn_import_gitlab_project js-import-project-btn', data: { href: new_import_gitlab_project_path, platform: 'gitlab_export', **tracking_attrs_data('import_project', 'click_button', 'gitlab_export') } }) do
+          = render Pajamas::ButtonComponent.new(href: '#', icon: 'tanuki', button_options: { class: 'js-import-gitlab-project-btn js-import-project-btn', data: { href: new_import_gitlab_project_path, platform: 'gitlab_export', **tracking_attrs_data('import_project', 'click_button', 'gitlab_export') } }) do
             = _('GitLab export')
 
       - if github_import_enabled?

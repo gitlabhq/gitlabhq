@@ -127,7 +127,11 @@ export default {
     @hidden="isDropdownOpen = false"
   >
     <template #toggle>
-      <button class="gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0 gl-leading-0">
+      <button
+        class="gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0 gl-leading-0"
+        data-event-tracking="click_dropdown_showing_recent_mrs_for_file_on_branch"
+        :data-event-value="openMrsCount"
+      >
         <gl-badge
           v-gl-tooltip
           data-testid="open-mr-badge"

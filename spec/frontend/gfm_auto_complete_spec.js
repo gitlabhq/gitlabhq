@@ -18,16 +18,19 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { linkedItems } from '~/graphql_shared/issuable_client';
+import { linkedItems, currentAssignees } from '~/graphql_shared/issuable_client';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
+  mockIssues,
+  mockAssignees,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 
 const mockSpriteIcons = '/icons.svg';
 
 jest.mock('~/graphql_shared/issuable_client', () => ({
   linkedItems: jest.fn(),
+  currentAssignees: jest.fn(),
 }));
 
 describe('escape', () => {
@@ -1131,104 +1134,6 @@ describe('GfmAutoComplete', () => {
     });
   });
 
-  describe('unlink', () => {
-    let autocomplete;
-    let $textarea;
-    const mockWorkItemFullPath = 'gitlab-test';
-    const mockWorkItemIid = '1';
-    const originalGon = window.gon;
-    const dataSources = {
-      issues: `${TEST_HOST}/autocomplete_sources/issues`,
-    };
-    const mockIssues = [
-      {
-        title: 'Issue 1',
-        iid: 1,
-        reference: 'group/project#1',
-        workItemType: { iconName: 'issues' },
-      },
-      {
-        title: 'Issue 2',
-        iid: 2,
-        reference: 'group/project#2',
-        workItemType: { iconName: 'issues' },
-      },
-    ];
-
-    const getDropdownItems = () => getAutocompleteDropdownItems('at-view-issues');
-
-    beforeEach(() => {
-      window.gon = {
-        current_user_use_work_items_view: true,
-      };
-      setHTMLFixture(`
-        <section>
-          <div id="linkeditems"
-              data-work-item-full-path="${mockWorkItemFullPath}"
-              data-work-item-iid="${mockWorkItemIid}"></div>
-          <textarea></textarea>
-        </section>
-      `);
-      $textarea = $('textarea');
-      linkedItems.mockImplementation(() => ({
-        [`${mockWorkItemFullPath}:${mockWorkItemIid}`]: [],
-      }));
-
-      autocomplete = new GfmAutoComplete(dataSources);
-      autocomplete.setup($textarea, { issues: true });
-      autocomplete.cachedData['#'] = {
-        // This looks odd but that's how GFMAutoComplete
-        // caches issues data internally.
-        '': [...mockIssues],
-      };
-    });
-
-    afterEach(() => {
-      autocomplete.destroy();
-      resetHTMLFixture();
-      window.gon = originalGon;
-    });
-
-    describe('without any linked issues present', () => {
-      it('using "#" shows all the issues', () => {
-        triggerDropdown($textarea, '#');
-
-        expect(getDropdownItems()).toHaveLength(mockIssues.length);
-        expect(getDropdownItems()).toEqual(mockIssues.map((i) => `${i.reference} ${i.title}`));
-      });
-
-      it('using "/unlink #" shows no issues', () => {
-        triggerDropdown($textarea, '/unlink #');
-
-        expect(getDropdownItems()).toHaveLength(0);
-        expect(linkedItems).toHaveBeenCalled();
-      });
-    });
-
-    describe('with linked issue present', () => {
-      beforeEach(() => {
-        linkedItems.mockImplementation(() => ({
-          [`${mockWorkItemFullPath}:${mockWorkItemIid}`]: [mockIssues[1]],
-        }));
-      });
-
-      it('using "#" shows all the issues', () => {
-        triggerDropdown($textarea, '#');
-
-        expect(getDropdownItems()).toHaveLength(mockIssues.length);
-        expect(getDropdownItems()).toEqual(mockIssues.map((i) => `${i.reference} ${i.title}`));
-      });
-
-      it('using "/unlink #" shows only linked issues', () => {
-        triggerDropdown($textarea, '/unlink #');
-
-        expect(getDropdownItems()).toHaveLength(1);
-        expect(getDropdownItems()).toEqual([mockIssues[1]].map((i) => `${i.reference} ${i.title}`));
-        expect(linkedItems).toHaveBeenCalled();
-      });
-    });
-  });
-
   describe('autocomplete show eventlisteners', () => {
     let $textarea;
 
@@ -1314,6 +1219,159 @@ describe('GfmAutoComplete', () => {
       autocomplete.updateDataSources(newDataSources);
 
       expect(autocomplete.dataSources).toEqual(newDataSources);
+    });
+  });
+
+  describe('Work Items', () => {
+    let autocomplete;
+    let $textarea;
+    const mockWorkItemId = 'gid://gitlab/WorkItem/1';
+    const mockWorkItemFullPath = 'gitlab-test';
+    const mockWorkItemIid = '1';
+    const originalGon = window.gon;
+    const dataSources = {
+      issues: `${TEST_HOST}/autocomplete_sources/issues`,
+      members: `${TEST_HOST}/autocomplete_sources/members`,
+    };
+
+    beforeEach(() => {
+      window.gon = {
+        current_user_use_work_items_view: true,
+      };
+      document.body.dataset.page = 'projects:issues:show';
+      setHTMLFixture(`
+        <section>
+          <div class="js-gfm-wrapper"
+              data-work-item-full-path="${mockWorkItemFullPath}"
+              data-work-item-id="${mockWorkItemId}"
+              data-work-item-iid="${mockWorkItemIid}">
+              <textarea></textarea>
+          </div>
+        </section>
+      `);
+      $textarea = $('textarea');
+      autocomplete = new GfmAutoComplete(dataSources);
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+      window.gon = originalGon;
+    });
+
+    describe('unlink', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-issues');
+      const issueMatcher = (issue) => `${issue.reference} ${issue.title}`;
+
+      beforeEach(() => {
+        linkedItems.mockImplementation(() => ({
+          [`${mockWorkItemFullPath}:${mockWorkItemIid}`]: [],
+        }));
+
+        autocomplete.setup($textarea, { issues: true });
+        autocomplete.cachedData['#'] = {
+          // This looks odd but that's how GFMAutoComplete
+          // caches issues data internally.
+          '': [...mockIssues],
+        };
+      });
+
+      describe('without any linked issues present', () => {
+        it('using "#" shows all the issues', () => {
+          triggerDropdown($textarea, '#');
+
+          expect(getDropdownItems()).toHaveLength(mockIssues.length);
+          expect(getDropdownItems()).toEqual(mockIssues.map(issueMatcher));
+        });
+
+        it('using "/unlink #" shows no issues', () => {
+          triggerDropdown($textarea, '/unlink #');
+
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(linkedItems).toHaveBeenCalled();
+        });
+      });
+
+      describe('with linked issue present', () => {
+        beforeEach(() => {
+          linkedItems.mockImplementation(() => ({
+            [`${mockWorkItemFullPath}:${mockWorkItemIid}`]: [mockIssues[1]],
+          }));
+        });
+
+        it('using "#" shows all the issues', () => {
+          triggerDropdown($textarea, '#');
+
+          expect(getDropdownItems()).toHaveLength(mockIssues.length);
+          expect(getDropdownItems()).toEqual(mockIssues.map(issueMatcher));
+        });
+
+        it('using "/unlink #" shows only linked issues', () => {
+          triggerDropdown($textarea, '/unlink #');
+
+          expect(getDropdownItems()).toHaveLength(1);
+          expect(getDropdownItems()).toEqual([mockIssues[1]].map(issueMatcher));
+          expect(linkedItems).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('unassign', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-users');
+      const assigneeMatcher = (user) =>
+        `${user.username.charAt(0).toUpperCase()} ${user.username} ${user.name}`;
+
+      beforeEach(() => {
+        currentAssignees.mockImplementation(() => ({
+          [`${mockWorkItemId}`]: [],
+        }));
+
+        autocomplete.setup($textarea, { members: true });
+        autocomplete.cachedData['@'] = {
+          // This looks odd but that's how GFMAutoComplete
+          // caches issues data internally.
+          '': [...mockAssignees],
+        };
+      });
+
+      describe('without any assignees present', () => {
+        it('using "@" shows all the members', () => {
+          triggerDropdown($textarea, '@');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length);
+          expect(getDropdownItems()).toEqual(mockAssignees.map(assigneeMatcher));
+        });
+
+        it('using "/unassign @" shows no users', () => {
+          triggerDropdown($textarea, '/unassign @');
+
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(currentAssignees).toHaveBeenCalled();
+        });
+      });
+
+      describe('with assignees present', () => {
+        beforeEach(() => {
+          currentAssignees.mockImplementation(() => ({
+            [`${mockWorkItemId}`]: [mockAssignees[1]],
+          }));
+        });
+
+        it('using "@" shows all the members', () => {
+          triggerDropdown($textarea, '@');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length);
+          expect(getDropdownItems()).toEqual(mockAssignees.map(assigneeMatcher));
+        });
+
+        it('using "/unassign @" shows only current assignees', () => {
+          triggerDropdown($textarea, '/unassign @');
+
+          expect(getDropdownItems()).toHaveLength(1);
+          expect(getDropdownItems()).toEqual([mockAssignees[1]].map(assigneeMatcher));
+          expect(currentAssignees).toHaveBeenCalled();
+        });
+      });
     });
   });
 });

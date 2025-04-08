@@ -9,7 +9,7 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import { linkedItems } from '~/graphql_shared/issuable_client';
+import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import {
   ISSUABLE_EPIC,
@@ -182,6 +182,18 @@ export const defaultAutocompleteConfig = {
 
 class GfmAutoComplete {
   constructor(dataSources = {}) {
+    // Ensure that all possible work item paths are included
+    const { page } = document.body.dataset;
+    this.isWorkItemsView =
+      (gon.current_user_use_work_items_view || gon.features?.workItemViewForIssues) &&
+      (page.includes('groups:work_items') ||
+        page.includes('projects:work_items') ||
+        page.includes('groups:issues') ||
+        page.includes('projects:issues') ||
+        page.includes('groups:epics') ||
+        page.includes('issues:show') ||
+        page.includes('epics:show'));
+
     this.dataSources = dataSources;
     this.cachedData = {};
     this.isLoadingData = {};
@@ -454,8 +466,13 @@ class GfmAutoComplete {
           });
 
           // Cache assignees & reviewers list for easier filtering later
-          assignees =
-            SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
+          if (instance.isWorkItemsView) {
+            const { workItemId } = this.$inputor.get(0).closest('.js-gfm-wrapper').dataset;
+            assignees = (currentAssignees()[`${workItemId}`] || []).map(createMemberSearchString);
+          } else {
+            assignees =
+              SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
+          }
           reviewers = state.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
@@ -562,14 +579,10 @@ class GfmAutoComplete {
           return match && match.length ? match[1] : null;
         },
         filter(query, data) {
-          // Limit enhanced /unlink to only Work Items for now.
-          const hasWorkItemIssuesEnabled =
-            gon.current_user_use_work_items_view || gon.features.workItemViewForIssues;
-          if (hasWorkItemIssuesEnabled && command === MEMBER_COMMAND.UNLINK) {
+          if (instance.isWorkItemsView && command === MEMBER_COMMAND.UNLINK) {
             const { workItemFullPath, workItemIid } = this.$inputor
               .get(0)
-              .closest('section')
-              .querySelector('#linkeditems').dataset;
+              .closest('.js-gfm-wrapper').dataset;
 
             // Only include items which are linked to the Issuable currently
             // if `#` is followed by `/unlink` command.

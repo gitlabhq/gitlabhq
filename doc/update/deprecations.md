@@ -633,6 +633,23 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### ZenTao integration
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377825).
+
+</div>
+
+The [ZenTao product integration](https://docs.gitlab.com/user/project/integrations/zentao/) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `scanResultPolicies` GraphQL field is deprecated
 
 <div class="deprecation-notes">
@@ -2269,23 +2286,6 @@ To prepare for this change:
 - Review and update your GraphQL queries that interact with the `Workspace` type.
 - Remove any references to the `editor` field.
 - Adjust your application logic accordingly.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### ZenTao integration
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.7</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377825).
-
-</div>
-
-The [ZenTao product integration](https://docs.gitlab.com/user/project/integrations/zentao/) has been deprecated
-and will be moved to the JiHu GitLab codebase.
 
 </div>
 

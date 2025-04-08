@@ -1,5 +1,6 @@
 import * as packageJSON from '@gitlab/web-ide/package.json';
 import { cleanEndingSeparator, joinPaths } from '~/lib/utils/url_utility';
+import { sha256 } from '~/lib/utils/text_utility';
 import { isMultiDomainEnabled } from './is_multi_domain_enabled';
 
 const getGitLabUrl = (gitlabPath = '') => {
@@ -13,10 +14,13 @@ const getGitLabUrl = (gitlabPath = '') => {
  * Generates a base64 string based on the GitLab instance origin and the current username.
  * @returns {string}
  */
-export const generateWorkbenchSubdomain = () =>
-  btoa(`${window.location.origin}-${window.gon.current_username}`).replace(/\W+/g, '');
+export const generateWorkbenchSubdomain = async () => {
+  const digest = await sha256(`${window.location.origin}-${window.gon.current_username}`);
 
-const getWorkbenchUrlsMultiDomain = () => {
+  return digest.substring(0, 30);
+};
+
+const getWorkbenchUrlsMultiDomain = async () => {
   const workbenchVersion = packageJSON.version;
 
   return {
@@ -24,7 +28,7 @@ const getWorkbenchUrlsMultiDomain = () => {
      * URL pointing to the origin and base path where the
      * Web IDE's workbench assets are hosted.
      */
-    workbenchBaseUrl: `https://workbench-${generateWorkbenchSubdomain()}.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${workbenchVersion}`,
+    workbenchBaseUrl: `https://workbench-${await generateWorkbenchSubdomain()}.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${workbenchVersion}`,
 
     /**
      * URL pointing to the origin and the base path where
@@ -52,7 +56,7 @@ const getWorkbenchUrlsSingleDomain = () => ({
 const getWorkbenchUrls = () =>
   isMultiDomainEnabled() ? getWorkbenchUrlsMultiDomain() : getWorkbenchUrlsSingleDomain();
 
-export const getBaseConfig = () => ({
+export const getBaseConfig = async () => ({
   /**
    * URL pointing to the system embedding the Web IDE. Most of the
    * time, but not necessarily, is a GitLab instance.
@@ -65,5 +69,5 @@ export const getBaseConfig = () => ({
    */
   gitlabUrl: getGitLabUrl(''),
 
-  ...getWorkbenchUrls(),
+  ...(await getWorkbenchUrls()),
 });

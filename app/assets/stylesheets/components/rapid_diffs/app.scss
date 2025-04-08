@@ -31,6 +31,15 @@
   flex: 1 0;
 }
 
+.rd-app-diffs-list {
+  transition: opacity 0.2s;
+}
+
+.rd-app-diffs-list[data-loading] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .rd-app-sidebar {
   top: var(--rd-app-sticky-top-with-padding) !important;
   width: 320px;

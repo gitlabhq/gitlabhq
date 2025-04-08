@@ -215,6 +215,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
     let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
     let(:connection_model) { class_double(ActiveRecord::Base) }
+    let(:collection) { double }
+    let(:user) { double }
 
     before do
       allow_any_instance_of(described_class).to receive(:create_connection_model)
@@ -231,6 +233,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       allow(raw_connection).to receive(:server_version).and_return(120000)
       allow(ActiveContext::Databases::Postgresql::QueryResult).to receive(:new)
+      allow(collection).to receive_messages(collection_name: 'test', redact_unauthorized_results!: [[], []])
 
       allow(ActiveContext::Databases::Postgresql::Processor).to receive(:transform)
         .and_return('SELECT * FROM pg_stat_activity')
@@ -239,9 +242,9 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     it 'executes query and returns QueryResult' do
       expect(ar_connection).to receive(:execute).with('SELECT * FROM pg_stat_activity')
       expect(ActiveContext::Databases::Postgresql::QueryResult)
-        .to receive(:new).with(query_result)
+        .to receive(:new).with(result: query_result, collection: collection, user: user).and_call_original
 
-      client.search(collection: 'test', query: ActiveContext::Query.filter(project_id: 1))
+      client.search(collection: collection, query: ActiveContext::Query.filter(project_id: 1), user: user)
     end
   end
 

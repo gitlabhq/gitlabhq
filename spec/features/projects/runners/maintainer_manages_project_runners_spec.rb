@@ -21,7 +21,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       create(:ci_runner_machine, runner: project_runner, platform: 'darwin')
     end
 
-    it 'user sees the project runner' do
+    it 'user sees the project runner', :js do
       visit project_runners_path(project)
 
       within_testid 'assigned_project_runners' do
@@ -30,7 +30,9 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
 
       click_on project_runner.short_sha
 
-      expect(page).to have_content(project_runner_manager.platform)
+      wait_for_requests
+
+      expect(page).to have_content(project_runner.description)
     end
 
     it 'user can pause and resume the project runner' do
@@ -75,7 +77,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       check 'protected'
       click_button 'Save changes'
 
-      expect(page).to have_content 'Protected Yes'
+      expect(page).to have_content 'Protected'
     end
 
     context 'when a runner has a tag', :js do
@@ -95,7 +97,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
         uncheck 'run-untagged'
         click_button 'Save changes'
 
-        expect(page).to have_content 'Can run untagged jobs No'
+        expect(page).not_to have_content 'Runs untagged jobs'
       end
     end
 

@@ -28,7 +28,7 @@
         = render RapidDiffs::EmptyStateComponent.new
 
       .code{ class: helpers.user_color_scheme }
-        %div{ data: { diffs_list: true } }
+        .rd-app-diffs-list{ data: { diffs_list: true } }
           = javascript_tag nonce: content_security_policy_nonce do
             :plain
               requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })

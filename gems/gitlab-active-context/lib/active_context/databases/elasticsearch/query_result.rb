@@ -6,10 +6,6 @@ module ActiveContext
       class QueryResult
         include ActiveContext::Databases::Concerns::QueryResult
 
-        def initialize(result)
-          @result = result
-        end
-
         def count
           result['hits']['total']['value']
         end
@@ -21,10 +17,6 @@ module ActiveContext
             yield hit['_source']
           end
         end
-
-        private
-
-        attr_reader :result
       end
     end
   end

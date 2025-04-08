@@ -156,10 +156,16 @@ describe('Diffs list store', () => {
     itSetsStatuses(() => store.reloadDiffs('/stream'));
     itAddsLoadingFilesWhileStreaming(() => store.reloadDiffs('/stream'));
 
+    it('sets loading state', () => {
+      store.reloadDiffs('/stream');
+      expect(findDiffsList().dataset.loading).toBe('true');
+    });
+
     it('clears existing state', async () => {
       store.reloadDiffs('/stream');
       await waitForPromises();
       expect(findDiffsList().innerHTML).toBe('');
+      expect(findDiffsList().dataset.loading).toBe(undefined);
     });
   });
 

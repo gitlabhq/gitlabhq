@@ -1,6 +1,6 @@
 -# TODO: add fork suggestion (commits only)
 
-%diff-file.rd-diff-file-component{ id: id, data: server_data }
+%diff-file.rd-diff-file-component{ id: id, data: {  testid: 'rd-diff-file', **server_data } }
   .rd-diff-file
     = render RapidDiffs::DiffFileHeaderComponent.new(diff_file: @diff_file)
     -# extra wrapper needed so content-visibility: hidden doesn't require removing border or other styles

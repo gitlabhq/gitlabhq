@@ -18,7 +18,7 @@ end
 if Gitlab.config.cell.enabled
   print_error.call("Cell ID is not set to a valid positive integer.") if Gitlab.config.cell.id.to_i < 1
 
-  Settings.topology_service_settings.each do |setting|
+  Settings.required_topology_service_settings.each do |setting|
     setting_value = Gitlab.config.cell.topology_service_client.send(setting)
     print_error.call("Topology Service setting '#{setting}' is not set.") if setting_value.blank?
   end

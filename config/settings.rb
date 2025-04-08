@@ -197,8 +197,8 @@ Settings = GitlabSettings.load(file, Rails.env) do
     [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, 'default']]
   end
 
-  def topology_service_settings
-    %w[address ca_file certificate_file private_key_file]
+  def required_topology_service_settings
+    %w[address]
   end
 
   private

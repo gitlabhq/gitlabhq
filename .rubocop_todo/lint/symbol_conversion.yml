@@ -43,7 +43,6 @@ Lint/SymbolConversion:
     - 'ee/lib/ee/api/helpers.rb'
     - 'ee/lib/gitlab/geo/replicator.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
-    - 'ee/lib/search/zoekt/search_results.rb'
     - 'ee/spec/factories/ci/builds.rb'
     - 'ee/spec/factories/ci/pipelines.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/charts_spec.rb'

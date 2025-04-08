@@ -2,6 +2,8 @@
 
 RSpec.describe ActiveContext::Databases::Opensearch::Client do
   let(:options) { { url: 'http://localhost:9200' } }
+  let(:user) { double }
+  let(:collection) { double }
 
   subject(:client) { described_class.new(options) }
 
@@ -13,16 +15,12 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
     before do
       allow(client).to receive(:client).and_return(opensearch_client)
       allow(opensearch_client).to receive(:search).and_return(search_response)
+      allow(collection).to receive_messages(collection_name: 'test', redact_unauthorized_results!: [[], []])
     end
 
     it 'calls search on the Opensearch client' do
       expect(opensearch_client).to receive(:search)
-      client.search(collection: 'test', query: query)
-    end
-
-    it 'returns a QueryResult object' do
-      result = client.search(collection: 'test', query: query)
-      expect(result).to be_a(ActiveContext::Databases::Opensearch::QueryResult)
+      client.search(collection: collection, query: query, user: user)
     end
   end
 

@@ -115,18 +115,6 @@ Amazon Q can make code changes based on reviewer feedback.
 
 Amazon Q proposes changes to the merge request based on the reviewer's comments and feedback.
 
-### View suggested fixes
-
-After Amazon Q has reviewed your code and added comments that explain potential issues,
-Amazon Q can reply to these comments with suggested fixes.
-
-1. Open a merge request that has feedback from Amazon Q.
-1. On the **Overview** tab, go to the comment you want to address.
-1. Type `/q fix`.
-1. Select **Add comment now**.
-
-Amazon Q proposes fixes for the issue in the comment.
-
 ### Generate unit tests
 
 Generate new unit tests while you're having your merge request reviewed.

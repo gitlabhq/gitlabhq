@@ -10,6 +10,10 @@ module ActiveContext
           ActiveContext::Tracker.track!(objects, collection: self)
         end
 
+        def search(user:, query:)
+          ActiveContext.adapter.search(query: query, user: user, collection: self)
+        end
+
         def collection_name
           raise NotImplementedError
         end
@@ -19,6 +23,10 @@ module ActiveContext
         end
 
         def routing(_)
+          raise NotImplementedError
+        end
+
+        def ids_to_objects(_)
           raise NotImplementedError
         end
 
@@ -34,6 +42,25 @@ module ActiveContext
 
         def collection_record
           ActiveContext::CollectionCache.fetch(collection_name)
+        end
+
+        def redact_unauthorized_results!(result)
+          objects = ids_to_objects(result.ids)
+          id_to_object_map = objects.index_by { |object| object.id.to_s }
+
+          authorized_ids = Set.new(objects.select do |object|
+            authorized_to_see_object?(result.user, object)
+          end.map(&:id).map(&:to_s))
+
+          result.ids
+            .select { |id| authorized_ids.include?(id.to_s) }
+            .map { |id| id_to_object_map[id.to_s] }
+        end
+
+        def authorized_to_see_object?(user, object)
+          return true unless object.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(object)
+
+          Ability.allowed?(user, :"read_#{object.to_ability_name}", object)
         end
       end
 

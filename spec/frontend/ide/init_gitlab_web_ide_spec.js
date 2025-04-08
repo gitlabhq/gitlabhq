@@ -9,6 +9,7 @@ import {
 } from '~/ide/lib/gitlab_web_ide';
 import Tracking from '~/tracking';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { renderWebIdeError } from '~/ide/render_web_ide_error';
 import { getMockCallbackUrl } from './helpers';
 
@@ -87,9 +88,6 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.signInPath = TEST_SIGN_IN_PATH;
     el.dataset.signOutPath = TEST_SIGN_OUT_PATH;
 
-    getBaseConfig.mockReturnValue(TEST_BASE_CONFIG);
-    isMultiDomainEnabled.mockReturnValue(false);
-
     document.body.append(el);
   };
   const findRootElement = () => document.getElementById(ROOT_ELEMENT_ID);
@@ -99,6 +97,9 @@ describe('ide/init_gitlab_web_ide', () => {
     gon.current_username = TEST_USERNAME;
     gon.features = { webIdeLanguageServer: true };
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
+
+    getBaseConfig.mockResolvedValue(TEST_BASE_CONFIG);
+    isMultiDomainEnabled.mockReturnValue(false);
 
     createRootElement();
   });
@@ -256,7 +257,7 @@ describe('ide/init_gitlab_web_ide', () => {
   });
 
   describe('when extensionMarketplaceSettings is in dataset', () => {
-    function setMockExtensionMarketplaceSettingsDataset(
+    async function setMockExtensionMarketplaceSettingsDataset(
       mockSettings = TEST_EXTENSION_MARKETPLACE_SETTINGS,
     ) {
       findRootElement().dataset.extensionMarketplaceSettings = JSON.stringify(mockSettings);
@@ -266,10 +267,12 @@ describe('ide/init_gitlab_web_ide', () => {
       }
 
       createSubject();
+
+      await waitForPromises();
     }
 
-    it('calls start with element and extensionsGallerySettings', () => {
-      setMockExtensionMarketplaceSettingsDataset();
+    it('calls start with element and extensionsGallerySettings', async () => {
+      await setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
         findRootElement(),
@@ -285,8 +288,8 @@ describe('ide/init_gitlab_web_ide', () => {
       );
     });
 
-    it('calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings is enabled', () => {
-      setMockExtensionMarketplaceSettingsDataset();
+    it('calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings is enabled', async () => {
+      await setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
         findRootElement(),
@@ -300,8 +303,8 @@ describe('ide/init_gitlab_web_ide', () => {
       );
     });
 
-    it('calls start with settingsContextHash', () => {
-      setMockExtensionMarketplaceSettingsDataset();
+    it('calls start with settingsContextHash', async () => {
+      await setMockExtensionMarketplaceSettingsDataset();
 
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
@@ -314,13 +317,13 @@ describe('ide/init_gitlab_web_ide', () => {
 
     it.each(['opt_in_unset', 'opt_in_disabled'])(
       'calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings reason is $reason',
-      (reason) => {
+      async (reason) => {
         const mockExtensionMarketplaceDisabledSettings = {
           enabled: false,
           reason,
         };
 
-        setMockExtensionMarketplaceSettingsDataset(mockExtensionMarketplaceDisabledSettings);
+        await setMockExtensionMarketplaceSettingsDataset(mockExtensionMarketplaceDisabledSettings);
 
         expect(start).toHaveBeenCalledTimes(1);
         expect(start).toHaveBeenCalledWith(

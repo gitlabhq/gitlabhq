@@ -38,9 +38,9 @@ RSpec.describe 'Merge Requests > User filters', :js, feature_category: :code_rev
       end
     end
 
-    context 'filtering by approved-by:none' do
+    context 'filtering by approved by:none' do
       it 'applies the filter' do
-        select_tokens 'Approved-By', '=', 'None', submit: true
+        select_tokens 'Approved by', '=', 'None', submit: true
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
 
@@ -50,9 +50,9 @@ RSpec.describe 'Merge Requests > User filters', :js, feature_category: :code_rev
       end
     end
 
-    context 'filtering by approved-by:any' do
+    context 'filtering by approved by:any' do
       it 'applies the filter' do
-        select_tokens 'Approved-By', '=', 'Any', submit: true
+        select_tokens 'Approved by', '=', 'Any', submit: true
 
         expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
 
@@ -61,9 +61,9 @@ RSpec.describe 'Merge Requests > User filters', :js, feature_category: :code_rev
       end
     end
 
-    context 'filtering by approved-by:@username' do
+    context 'filtering by approved by:@username' do
       it 'applies the filter' do
-        select_tokens 'Approved-By', '=', first_user.username, submit: true
+        select_tokens 'Approved by', '=', first_user.username, submit: true
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
 
@@ -74,7 +74,7 @@ RSpec.describe 'Merge Requests > User filters', :js, feature_category: :code_rev
 
     context 'filtering by an approver from a group' do
       it 'applies the filter' do
-        select_tokens 'Approved-By', '=', group_user.username, submit: true
+        select_tokens 'Approved by', '=', group_user.username, submit: true
 
         expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
 
