@@ -327,10 +327,10 @@ export default {
 
           <nav
             v-if="displayStickyFooter"
-            class="rca-bar-component gl-fixed gl-left-0 gl-flex gl-w-full gl-items-center"
+            class="rca-bar-component gl-fixed gl-px-5 gl-py-2 xl:gl-px-6"
             data-testid="rca-bar-component"
           >
-            <div class="rca-bar-content gl-flex gl-w-full" data-testid="rca-bar-content">
+            <div class="gl-flex gl-w-full">
               <root-cause-analysis-button
                 :job-id="job.id"
                 :job-status-group="job.status.group"

@@ -246,9 +246,10 @@ Before GitLab 17.11, secret push protection scanned the contents of all modified
 This can cause a push to be unexpectedly blocked if a modified file contains a secret,
 even if the secret is not part of the diff.
 
-[Enable the `spp_scan_diffs` feature flag](#diff-scanning) to ensure that only newly committed
-changes are scanned. To push a Web IDE change to a file that contains a secret, you need to
-additionally enable the `secret_checks_for_web_requests` feature flag.
+On GitLab 17.11 and earlier, [enable the `spp_scan_diffs` feature flag](#diff-scanning)
+to ensure that only newly committed changes are scanned. To push a Web IDE change to a
+file that contains a secret, you need to additionally enable the
+`secret_checks_for_web_requests` feature flag.
 
 ### File was not scanned
 

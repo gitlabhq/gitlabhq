@@ -33,8 +33,8 @@ glab auth login --stdin < token.txt
 # View a list of issues
 glab issue list
 
-# Create merge request for issue 123
-glab mr for 123
+# Create merge request for issue 123 
+glab mr create 123
 
 # Check out the branch for merge request 243
 glab mr checkout 243

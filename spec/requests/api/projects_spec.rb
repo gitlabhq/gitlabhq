@@ -4035,6 +4035,46 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
   end
 
+  describe 'POST /projects/:id/restore' do
+    let_it_be(:group) { create(:group, owners: user) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
+
+    context 'when the feature is available' do
+      it 'restores project' do
+        project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+
+        post api("/projects/#{project.id}/restore", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['archived']).to be_falsey
+        expect(json_response['marked_for_deletion_at']).to be_falsey
+        expect(json_response['marked_for_deletion_on']).to be_falsey
+      end
+
+      it 'returns error if project is already being deleted' do
+        message = 'Error'
+        expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+
+        post api("/projects/#{project.id}/restore", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response["message"]).to eq(message)
+      end
+    end
+
+    context 'when the feature is not available' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+      end
+
+      it 'returns error' do
+        post api("/projects/#{project.id}/restore", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/import_project_members/:project_id' do
     let_it_be(:project2) { create(:project) }
     let_it_be(:project2_user) { create(:user) }

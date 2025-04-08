@@ -1192,6 +1192,25 @@ paths:
       tags:
       - groups
       operationId: deleteApiV4GroupsId
+  "/api/v4/groups/{id}/restore":
+    post:
+      description: Restore a group.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '201':
+          description: Restore a group.
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdRestore
   "/api/v4/groups/{id}/groups/shared":
     get:
       description: Get a list of shared groups this group was invited to
@@ -2180,25 +2199,6 @@ paths:
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEventsAuditEventId
-  "/api/v4/groups/{id}/restore":
-    post:
-      description: Restore a group.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Restore a group.
-      tags:
-      - groups
-      operationId: postApiV4GroupsIdRestore
   "/api/v4/groups/{id}/provisioned_users":
     get:
       description: Get a list of users provisioned by the group
@@ -31747,6 +31747,27 @@ paths:
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdCustomAttributesKey
+  "/api/v4/projects/{id}/restore":
+    post:
+      description: Restore a project
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '201':
+          description: Restore a project
+          schema:
+            "$ref": "#/definitions/API_Entities_Project"
+      tags:
+      - projects
+      operationId: postApiV4ProjectsIdRestore
   "/api/v4/projects":
     get:
       description: Get a list of visible projects for authenticated user
@@ -33137,27 +33158,6 @@ paths:
       tags:
       - projects
       operationId: getApiV4ProjectsIdStorage
-  "/api/v4/projects/{id}/restore":
-    post:
-      description: Restore a project
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Restore a project
-          schema:
-            "$ref": "#/definitions/API_Entities_Project"
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdRestore
   "/api/v4/projects/{id}/audit_events":
     get:
       description: Get a list of audit events in this project.

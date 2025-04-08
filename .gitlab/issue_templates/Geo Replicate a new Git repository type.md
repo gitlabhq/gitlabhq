@@ -240,8 +240,6 @@ That's all of the required database changes.
 
     has_one :cool_widget_state, autosave: false, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
 
-    after_save :save_verification_details
-
     # Override the `all` default if not all records can be replicated. For an
     # example of an existing Model that needs to do this, see
     # `EE::MergeRequestDiff`.

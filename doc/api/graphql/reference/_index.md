@@ -40928,8 +40928,26 @@ Represents a custom fields widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetcustomfieldscustomfieldvalues"></a>`customFieldValues` {{< icon name="warning-solid" >}} | [`[WorkItemCustomFieldValue!]`](#workitemcustomfieldvalue) | **Introduced** in GitLab 17.9. **Status**: Experiment. Custom field values associated to the work item. |
 | <a id="workitemwidgetcustomfieldstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+#### Fields with arguments
+
+##### `WorkItemWidgetCustomFields.customFieldValues`
+
+Custom field values associated to the work item.
+
+{{< details >}}
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`[WorkItemCustomFieldValue!]`](#workitemcustomfieldvalue).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomfieldscustomfieldvaluescustomfieldids"></a>`customFieldIds` | [`[IssuablesCustomFieldID!]`](#issuablescustomfieldid) | Only return values for the given custom field IDs. |
 
 ### `WorkItemWidgetDefinitionAssignees`
 

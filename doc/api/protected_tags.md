@@ -41,7 +41,7 @@ GET /projects/:id/protected_tags
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/5/protected_tags"
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags"
 ```
 
 Example response:
@@ -83,7 +83,7 @@ GET /projects/:id/protected_tags/:name
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/5/protected_tags/release-1-0"
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags/release-1-0"
 ```
 
 Example response:
@@ -117,8 +117,10 @@ POST /projects/:id/protected_tags
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-   "https://gitlab.example.com/api/v4/projects/5/protected_tags" -d '{
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags" \
+  --data '{
    "allowed_to_create" : [
       {
          "user_id" : 1
@@ -165,7 +167,9 @@ This example request demonstrates how to create a protected tag that allows crea
 to a specific user and group:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_tags?name=*-stable&allowed_to_create%5B%5D%5Buser_id%5D=10&allowed_to_create%5B%5D%5Bgroup_id%5D=20"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags?name=*-stable&allowed_to_create%5B%5D%5Buser_id%5D=10&allowed_to_create%5B%5D%5Bgroup_id%5D=20"
 ```
 
 The example response includes:
@@ -205,8 +209,9 @@ DELETE /projects/:id/protected_tags/:name
 ```
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable"
 ```
 
 | Attribute | Type | Required | Description |

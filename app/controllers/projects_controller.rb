@@ -62,7 +62,7 @@ class ProjectsController < Projects::ApplicationController
 
   feature_category :groups_and_projects, [
     :index, :show, :new, :create, :edit, :update, :transfer,
-    :destroy, :archive, :unarchive, :toggle_star, :activity
+    :destroy, :archive, :unarchive, :toggle_star, :activity, :restore
   ]
 
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
@@ -195,12 +195,47 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:toast] = safe_format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
+    return destroy_immediately unless @project.adjourned_deletion_configured?
+    return destroy_immediately if @project.marked_for_deletion_at? && params[:permanently_delete].present?
 
-    redirect_to dashboard_projects_path, status: :found
-  rescue Projects::DestroyService::DestroyError => e
-    redirect_to edit_project_path(@project), status: :found, alert: e.message
+    result = ::Projects::MarkForDeletionService.new(@project, current_user, {}).execute
+
+    if result[:status] == :success
+      if @project.adjourned_deletion?
+        redirect_to project_path(@project), status: :found
+      else
+        # This is a free project, it will use delayed deletion but can only be restored by an admin.
+        flash[:toast] = format(
+          _("Deleting project '%{project_name}'. All data will be removed on %{date}."),
+          project_name: @project.full_name,
+          # FIXME: Replace `project.marked_for_deletion_at` with `project` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+          date: helpers.permanent_deletion_date_formatted(@project.marked_for_deletion_at)
+        )
+        redirect_to dashboard_projects_path, status: :found
+      end
+    else
+      flash.now[:alert] = result[:message]
+
+      render_edit
+    end
+  end
+
+  def restore
+    return access_denied! unless can?(current_user, :remove_project, @project)
+
+    result = ::Projects::RestoreService.new(@project, current_user, {}).execute
+
+    if result[:status] == :success
+      flash[:notice] = format(
+        _("Project '%{project_name}' has been successfully restored."), project_name: @project.full_name
+      )
+
+      redirect_to(edit_project_path(@project))
+    else
+      flash.now[:alert] = result[:message]
+
+      render_edit
+    end
   end
 
   def new_issuable_address
@@ -373,6 +408,13 @@ class ProjectsController < Projects::ApplicationController
   end
 
   private
+
+  def destroy_immediately
+    ::Projects::DestroyService.new(@project, current_user, {}).async_execute
+    flash[:toast] = safe_format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
+
+    redirect_to dashboard_projects_path, status: :found
+  end
 
   def refs_params
     params.permit(:search, :sort, :ref, find: [])

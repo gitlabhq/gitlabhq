@@ -927,6 +927,8 @@
   - 2
 - - security_scans_purge_by_job_id
   - 1
+- - security_secret_detection_update_token_status
+  - 1
 - - security_sync_linked_pipeline_execution_policy_configs
   - 1
 - - security_sync_pipeline_execution_policy_metadata

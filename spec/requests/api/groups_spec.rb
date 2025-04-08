@@ -3165,6 +3165,64 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  describe "POST /groups/:id/restore" do
+    let_it_be(:user) { user1 }
+    let_it_be(:unauthorized_user) { user2 }
+    let_it_be(:group) do
+      create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago, deleting_user: user, owners: user)
+    end
+
+    subject { post api("/groups/#{group.id}/restore", user) }
+
+    context 'when the downtier_delayed_deletion feature flag is enabled' do
+      context 'when authenticated as owner' do
+        context 'restoring is successful' do
+          it 'restores the group to original state' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['marked_for_deletion_on']).to be_falsey
+          end
+        end
+
+        context 'when restoring fails' do
+          before do
+            allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+          end
+
+          it 'returns error' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('error')
+          end
+        end
+      end
+
+      context 'when authenticated as a user without access to the group' do
+        subject { post api("/groups/#{group.id}/restore", unauthorized_user) }
+
+        it 'returns 403' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'when the downtier_delayed_deletion feature flag is disabled' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+      end
+
+      it 'returns 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     let(:project_path) { CGI.escape(project.full_path) }

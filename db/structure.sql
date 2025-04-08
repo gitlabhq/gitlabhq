@@ -1694,6 +1694,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_292097dea85c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "terraform_state_versions"
+  WHERE "terraform_state_versions"."id" = NEW."terraform_state_version_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_2a994bb5629f() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18661,6 +18677,40 @@ CREATE TABLE organization_details (
     CONSTRAINT check_9fbd483b51 CHECK ((char_length(avatar) <= 255))
 );
 
+CREATE TABLE organization_push_rules (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    max_file_size integer DEFAULT 0 NOT NULL,
+    member_check boolean DEFAULT false NOT NULL,
+    prevent_secrets boolean DEFAULT false NOT NULL,
+    commit_committer_name_check boolean DEFAULT false NOT NULL,
+    deny_delete_tag boolean,
+    reject_unsigned_commits boolean,
+    commit_committer_check boolean,
+    reject_non_dco_commits boolean,
+    commit_message_regex text,
+    branch_name_regex text,
+    commit_message_negative_regex text,
+    author_email_regex text,
+    file_name_regex text,
+    CONSTRAINT author_email_regex_size_constraint CHECK ((char_length(author_email_regex) <= 511)),
+    CONSTRAINT branch_name_regex_size_constraint CHECK ((char_length(branch_name_regex) <= 511)),
+    CONSTRAINT commit_message_negative_regex_size_constraint CHECK ((char_length(commit_message_negative_regex) <= 2047)),
+    CONSTRAINT commit_message_regex_size_constraint CHECK ((char_length(commit_message_regex) <= 511)),
+    CONSTRAINT file_name_regex_size_constraint CHECK ((char_length(file_name_regex) <= 511))
+);
+
+CREATE SEQUENCE organization_push_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_push_rules_id_seq OWNED BY organization_push_rules.id;
+
 CREATE TABLE organization_settings (
     organization_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23604,6 +23654,29 @@ CREATE SEQUENCE term_agreements_id_seq
 
 ALTER SEQUENCE term_agreements_id_seq OWNED BY term_agreements.id;
 
+CREATE TABLE terraform_state_version_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    terraform_state_version_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_dc0c9c9162 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE terraform_state_version_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE terraform_state_version_states_id_seq OWNED BY terraform_state_version_states.id;
+
 CREATE TABLE terraform_state_versions (
     id bigint NOT NULL,
     terraform_state_id bigint NOT NULL,
@@ -27313,6 +27386,8 @@ ALTER TABLE ONLY operations_user_lists ALTER COLUMN id SET DEFAULT nextval('oper
 
 ALTER TABLE ONLY organization_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('organization_cluster_agent_mappings_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('organization_push_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organization_users_id_seq'::regclass);
 
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
@@ -27688,6 +27763,8 @@ ALTER TABLE ONLY targeted_message_namespaces ALTER COLUMN id SET DEFAULT nextval
 ALTER TABLE ONLY targeted_messages ALTER COLUMN id SET DEFAULT nextval('targeted_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY term_agreements ALTER COLUMN id SET DEFAULT nextval('term_agreements_id_seq'::regclass);
+
+ALTER TABLE ONLY terraform_state_version_states ALTER COLUMN id SET DEFAULT nextval('terraform_state_version_states_id_seq'::regclass);
 
 ALTER TABLE ONLY terraform_state_versions ALTER COLUMN id SET DEFAULT nextval('terraform_state_versions_id_seq'::regclass);
 
@@ -30024,6 +30101,9 @@ ALTER TABLE ONLY organization_detail_uploads
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT organization_details_pkey PRIMARY KEY (organization_id);
 
+ALTER TABLE ONLY organization_push_rules
+    ADD CONSTRAINT organization_push_rules_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT organization_settings_pkey PRIMARY KEY (organization_id);
 
@@ -30746,6 +30826,9 @@ ALTER TABLE ONLY targeted_messages
 
 ALTER TABLE ONLY term_agreements
     ADD CONSTRAINT term_agreements_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY terraform_state_version_states
+    ADD CONSTRAINT terraform_state_version_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY terraform_state_versions
     ADD CONSTRAINT terraform_state_versions_pkey PRIMARY KEY (id);
@@ -36056,6 +36139,8 @@ CREATE UNIQUE INDEX index_ops_feature_flags_issues_on_feature_flag_id_and_issue_
 
 CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
+CREATE UNIQUE INDEX index_organization_push_rules_on_organization_id ON organization_push_rules USING btree (organization_id);
+
 CREATE INDEX index_organization_users_on_org_id_access_level_user_id ON organization_users USING btree (organization_id, access_level, user_id);
 
 CREATE INDEX index_organization_users_on_organization_id_and_id ON organization_users USING btree (organization_id, id);
@@ -37207,6 +37292,20 @@ CREATE INDEX index_targeted_message_namespaces_on_namespace_id ON targeted_messa
 CREATE INDEX index_term_agreements_on_term_id ON term_agreements USING btree (term_id);
 
 CREATE INDEX index_term_agreements_on_user_id ON term_agreements USING btree (user_id);
+
+CREATE INDEX index_terraform_state_version_states_failed_verification ON terraform_state_version_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_terraform_state_version_states_needs_verification_tsv_id ON terraform_state_version_states USING btree (terraform_state_version_id) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_terraform_state_version_states_on_project_id ON terraform_state_version_states USING btree (project_id);
+
+CREATE INDEX index_terraform_state_version_states_on_verification_started ON terraform_state_version_states USING btree (terraform_state_version_id, verification_started_at) WHERE (verification_state = 1);
+
+CREATE INDEX index_terraform_state_version_states_on_verification_state ON terraform_state_version_states USING btree (verification_state);
+
+CREATE INDEX index_terraform_state_version_states_pending_verification ON terraform_state_version_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
+CREATE UNIQUE INDEX index_terraform_state_version_states_state_version_id ON terraform_state_version_states USING btree (terraform_state_version_id);
 
 CREATE INDEX index_terraform_state_versions_failed_verification ON terraform_state_versions USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
@@ -40966,6 +41065,8 @@ CREATE TRIGGER table_sync_trigger_bc3e7b56bd AFTER INSERT OR DELETE OR UPDATE ON
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER terraform_state_versions_loose_fk_trigger AFTER DELETE ON terraform_state_versions REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER trigger_01b3fc052119 BEFORE INSERT OR UPDATE ON approval_merge_request_rules FOR EACH ROW EXECUTE FUNCTION trigger_01b3fc052119();
 
 CREATE TRIGGER trigger_02450faab875 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_identifiers FOR EACH ROW EXECUTE FUNCTION trigger_02450faab875();
@@ -41043,6 +41144,8 @@ CREATE TRIGGER trigger_25d35f02ab55 BEFORE INSERT OR UPDATE ON ml_candidate_meta
 CREATE TRIGGER trigger_25fe4f7da510 BEFORE INSERT OR UPDATE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION trigger_25fe4f7da510();
 
 CREATE TRIGGER trigger_29128c51c7c6 BEFORE INSERT OR UPDATE ON dast_pre_scan_verification_steps FOR EACH ROW EXECUTE FUNCTION trigger_29128c51c7c6();
+
+CREATE TRIGGER trigger_292097dea85c BEFORE INSERT OR UPDATE ON terraform_state_version_states FOR EACH ROW EXECUTE FUNCTION trigger_292097dea85c();
 
 CREATE TRIGGER trigger_2a994bb5629f BEFORE INSERT OR UPDATE ON incident_management_pending_alert_escalations FOR EACH ROW EXECUTE FUNCTION trigger_2a994bb5629f();
 
@@ -43732,6 +43835,9 @@ ALTER TABLE ONLY diff_note_positions
 
 ALTER TABLE ONLY analytics_cycle_analytics_aggregations
     ADD CONSTRAINT fk_rails_13c8374c7a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_push_rules
+    ADD CONSTRAINT fk_rails_14972ce31e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY service_desk_custom_email_verifications
     ADD CONSTRAINT fk_rails_14dcaf4c92 FOREIGN KEY (triggerer_id) REFERENCES users(id) ON DELETE SET NULL;

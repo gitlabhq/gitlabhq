@@ -1,0 +1,11 @@
+---
+table_name: terraform_state_version_states
+classes:
+  - Geo::TerraformStateVersionState
+feature_categories:
+  - geo_replication
+description: Separate table for Terraform::StateVersion containing Geo verification metadata.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182457
+milestone: '17.11'
+gitlab_schema: gitlab_main_cell_local
+table_size: small

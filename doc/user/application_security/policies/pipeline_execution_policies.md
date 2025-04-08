@@ -576,6 +576,12 @@ include:
   - project: $CI_PROJECT_PATH
     ref: $CI_COMMIT_SHA
     file: $CI_CONFIG_PATH
+    rules:
+      - exists:
+          paths: 
+            - '$CI_CONFIG_PATH' 
+          project: '$CI_PROJECT_PATH'
+          ref: '$CI_COMMIT_SHA'
 
 compliance_job:
  ...

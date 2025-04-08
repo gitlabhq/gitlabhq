@@ -513,6 +513,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # All new routes should go under /-/ scope.
       # Look for scope '-' at the top of the file.
 
+      post '/restore' => '/projects#restore', as: :restore # rubocop:todo Cop/PutProjectRoutesUnderScope -- Moved from EE
+
       #
       # Service Desk
       #

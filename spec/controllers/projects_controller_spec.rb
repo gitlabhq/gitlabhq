@@ -1085,36 +1085,161 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   describe "#destroy", :enable_admin_mode do
     let_it_be(:admin) { create(:admin) }
 
-    it "redirects to the dashboard", :sidekiq_might_not_need_inline do
-      controller.instance_variable_set(:@project, project)
-      sign_in(admin)
-
-      orig_id = project.id
-      delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-      expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
-      expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:toast]).to eq(format(_("Project &#39;%{project_name}&#39; is being deleted."), project_name: project.full_name))
-      expect(response).to redirect_to(dashboard_projects_path)
-    end
-
-    context "when the project is forked" do
-      let(:project) { create(:project, :repository) }
-      let(:forked_project) { fork_project(project, nil, repository: true) }
-      let(:merge_request) do
-        create(:merge_request,
-          source_project: forked_project,
-          target_project: project)
+    context 'when the delayed deletion feature is not available' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
       end
 
-      it "closes all related merge requests", :sidekiq_might_not_need_inline do
-        project.merge_requests << merge_request
+      it "redirects to the dashboard", :sidekiq_might_not_need_inline do
+        controller.instance_variable_set(:@project, project)
         sign_in(admin)
 
-        delete :destroy, params: { namespace_id: forked_project.namespace, id: forked_project }
+        orig_id = project.id
+        delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-        expect(merge_request.reload.state).to eq('closed')
+        expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:toast]).to eq(format(_("Project &#39;%{project_name}&#39; is being deleted."), project_name: project.full_name))
+        expect(response).to redirect_to(dashboard_projects_path)
       end
+
+      context "when the project is forked" do
+        let(:project) { create(:project, :repository) }
+        let(:forked_project) { fork_project(project, nil, repository: true) }
+        let(:merge_request) do
+          create(:merge_request,
+            source_project: forked_project,
+            target_project: project)
+        end
+
+        it "closes all related merge requests", :sidekiq_might_not_need_inline do
+          project.merge_requests << merge_request
+          sign_in(admin)
+
+          delete :destroy, params: { namespace_id: forked_project.namespace, id: forked_project }
+
+          expect(merge_request.reload.state).to eq('closed')
+        end
+      end
+    end
+
+    context 'when the delayed deletion feature is available' do
+      let_it_be(:group) { create(:group, owners: user) }
+      let_it_be_with_reload(:project) { create(:project, group: group) }
+
+      before do
+        sign_in(user)
+      end
+
+      shared_examples 'deletes project right away' do
+        specify :aggregate_failures do
+          delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+          expect(project.marked_for_deletion?).to be_falsey
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(dashboard_projects_path)
+        end
+      end
+
+      shared_examples 'marks project for deletion' do
+        specify :aggregate_failures do
+          delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+          expect(project.reload.marked_for_deletion?).to be_truthy
+          expect(project.reload.hidden?).to be_falsey
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_path(project))
+          expect(flash[:toast]).to be_nil
+        end
+      end
+
+      it_behaves_like 'marks project for deletion'
+
+      it 'does not mark project for deletion because of error' do
+        message = 'Error'
+
+        expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+
+        delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:edit)
+        expect(flash[:alert]).to include(message)
+      end
+
+      context 'when instance setting is set to 0 days' do
+        it 'deletes project right away' do
+          stub_application_setting(deletion_adjourned_period: 0)
+
+          delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+          expect(project.marked_for_deletion?).to be_falsey
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(dashboard_projects_path)
+        end
+      end
+
+      context 'when project is already marked for deletion' do
+        let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
+
+        context 'when permanently_delete param is set' do
+          it 'deletes project right away' do
+            expect(ProjectDestroyWorker).to receive(:perform_async)
+
+            delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
+
+            expect(project.reload.pending_delete).to eq(true)
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(dashboard_projects_path)
+          end
+        end
+
+        context 'when permanently_delete param is not set' do
+          it 'does nothing' do
+            expect(ProjectDestroyWorker).not_to receive(:perform_async)
+
+            delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+            expect(project.reload.pending_delete).to eq(false)
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(project_path(project))
+          end
+        end
+      end
+
+      context 'for projects in user namespace' do
+        let(:project) { create(:project, namespace: user.namespace) }
+
+        it_behaves_like 'deletes project right away'
+      end
+    end
+  end
+
+  describe 'POST #restore', feature_category: :groups_and_projects do
+    let_it_be(:project) { create(:project, namespace: user.namespace) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'restores project deletion' do
+      post :restore, params: { namespace_id: project.namespace, project_id: project }
+
+      expect(project.reload.marked_for_deletion_at).to be_nil
+      expect(project.reload.archived).to be_falsey
+      expect(response).to have_gitlab_http_status(:found)
+      expect(response).to redirect_to(edit_project_path(project))
+    end
+
+    it 'does not restore project because of error' do
+      message = 'Error'
+      expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+
+      post :restore, params: { namespace_id: project.namespace, project_id: project }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:edit)
+      expect(flash[:alert]).to include(message)
     end
   end
 

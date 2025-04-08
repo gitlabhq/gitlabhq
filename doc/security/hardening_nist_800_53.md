@@ -12,7 +12,7 @@ title: NIST 800-53 compliance
 
 {{< /details >}}
 
-This page provides a reference for GitLab administrators
+This page is a reference for GitLab administrators
 who want to configure GitLab Self-Managed instances to meet applicable
 NIST 800-53 controls. GitLab does not provide specific configuration
 guidance because of the variety of requirements an administrator might have.
@@ -23,7 +23,7 @@ you should work with a customer solutions architect for technical details.
 
 This page follows the structure of the NIST 800-53 control families. Because
 the scope of the page is limited primarily to configurations made to GitLab itself, not
-all control families apply. Configuration details are intended to be infrastructure agnostic.
+all control families apply. Configuration details are intended to be platform-independent.
 
 GitLab guidance does not constitute a fully compliant system.
 Before you handle government data, you should:
@@ -43,7 +43,7 @@ GitLab offers several [compliance features](../administration/compliance/complia
 
 GitLab is a [DevSecOps platform](../devsecops.md) that
 integrates security throughout the development lifecycle.
-At its core, you can use GitLab to address a wide range of controls within the SA control family.
+At its core, you can use GitLab to address a wide range of controls in the SA control family.
 
 #### System development lifecycle
 
@@ -85,9 +85,9 @@ GitLab instance.
 
 #### Identity Providers
 
-Access within GitLab can be managed with the UI or by
+Access in GitLab can be managed with the UI or by
 integrating with an existing identity provider.
-In order to meet FedRAMP requirements, ensure that the
+To meet FedRAMP requirements, ensure that the
 existing identity provider is FedRAMP authorized on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products). To
 meet requirements such as PIV, you should leverage an
 identity provider rather than using native authentication in
@@ -100,7 +100,7 @@ identity providers and protocols, including
 
 - [SAML](../integration/saml.md)
 
-- More information on identity providers can be found in [GitLab Docs](../administration/auth/_index.md).
+- For more information about identity providers, see [GitLab authentication and authorization](../administration/auth/_index.md).
 
 #### Native GitLab User Authentication Configurations
 
@@ -183,7 +183,7 @@ requirements:
   length requirements. GitLab supports 8-128 character passwords, with
   8 characters set as the default. GitLab provides [instructions for updating the minimum password length](password_length_limits.md#modify-minimum-password-length)
   with the GitLab UI, which organizations interested
-  in enforcing longer passwords can use. Additionally, self-managed customers
+  in enforcing longer passwords can use. Additionally, GitLab Self-Managed customers
   may [configure complexity requirements](../administration/settings/sign_up_restrictions.md#password-complexity-requirements)
   through the **Admin** area UI.
 
@@ -261,7 +261,7 @@ boundary.
 **Personal Identity Verification (PIV)**
 
 Personal Identification Verification cards may be a requirement for
-organizations meeting federal requirements. In order to meet PIV
+organizations meeting federal requirements. To meet PIV
 requirements, GitLab requires customers to connect PIV-enabled identity
 solutions with SAML. A link to SAML documentation is provided earlier in
 this guide.
@@ -391,7 +391,7 @@ satisfy configuration management controls.
 Merge requests offer a method for standardizing changes from a source
 branch to a target branch. In the context of NIST 800-53, it is
 important to consider how approvals should be collected prior to merging
-code and who has the ability to merge code within the organization.
+code and who has the ability to merge code inside the organization.
 GitLab provides guidance on the [various settings available for approvals in merge requests](../user/project/merge_requests/approvals/_index.md).
 Consider assigning approval and merge privileges only to appropriate
 roles after the necessary reviews have been completed. Additional merge
@@ -418,7 +418,7 @@ settings to consider:
 are a critical component of testing and validating changes. It is the
 responsibility of the customer to implement sufficient testing and
 validation pipelines for specific use cases. When selecting services,
-consider where that pipeline will run. Connecting to external services
+consider where that pipeline runs. Connecting to external services
 may violate an established authorization boundary where federal data is
 permitted to be stored and processed. GitLab provides runner container
 images configured to run on FIPS-enabled systems. GitLab provides
@@ -432,7 +432,7 @@ updating the code.
 
 NIST 800-53 requires cloud services providers to maintain component
 inventories. GitLab cannot directly track underlying hardware, however,
-it can generate software inventories via container and dependency
+it can generate software inventories through container and dependency
 scanning. GitLab outlines the [dependencies that container scanning and dependency scanning can detect](../user/application_security/comparison_dependency_and_container_scanning.md).
 GitLab offers additional documentation around generating dependency
 lists, which can be used in [software component inventories](../user/application_security/dependency_list/_index.md).
@@ -485,7 +485,7 @@ appropriate.
 
 **Backups**
 
-GitLab Docs outlines backup strategies for critical components,
+The documentation outlines backup strategies for critical components,
 including:
 
 - [PostgreSQL databases](../administration/backup_restore/backup_gitlab.md#postgresql-databases)
@@ -713,7 +713,7 @@ customer's authorization boundary.
 ### Additional Resources
 
 GitLab provides a [hardening guide](hardening.md)
-for self-managed customers that covers topics such as:
+for GitLab Self-Managed customers that covers topics such as:
 
 - [Application hardening recommendations](hardening_application_recommendations.md)
 

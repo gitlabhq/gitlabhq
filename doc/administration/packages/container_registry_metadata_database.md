@@ -19,8 +19,8 @@ title: Container registry metadata database
 
 {{< /history >}}
 
-The metadata database enables many new registry features, including
-online garbage collection, and increases the efficiency of many registry operations.
+The metadata database provides several [enhancements](#enhancements) to the container registry
+that improve performance and add new features.
 The work on the GitLab Self-Managed release of the registry metadata database feature
 is tracked in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
@@ -36,6 +36,25 @@ You must continue to maintain an object storage solution even after performing a
 
 For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
 in the Helm Charts documentation.
+
+## Enhancements
+
+The metadata database architecture supports performance improvements, bug fixes, and new features 
+that are not available with the object storage metadata architecture. These enhancements include:
+
+- Automatic [online garbage collection](../../user/packages/container_registry/delete_container_registry_images.md#garbage-collection)
+- [Storage usage visibility](../../user/packages/container_registry/reduce_container_registry_storage.md#view-container-registry-usage) for repositories, projects, and groups
+- [Image signing](../../user/packages/container_registry/_index.md#container-image-signatures)
+- [Moving and renaming repositories](../../user/packages/container_registry/_index.md#move-or-rename-container-registry-repositories)
+- [Protected tags](../../user/packages/container_registry/protected_container_tags.md)
+- Performance improvements for [cleanup policies](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy), enabling successful cleanup of large repositories
+- Performance improvements for listing repository tags
+- Tracking and displaying tag publish timestamps (see [issue 290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949))
+- Sorting repository tags by additional attributes beyond name
+
+Due to technical constraints of the object storage metadata architecture, new features are only 
+implemented for the metadata database version. Non-security bug fixes might be limited to the 
+metadata database version.
 
 ## Known limitations
 

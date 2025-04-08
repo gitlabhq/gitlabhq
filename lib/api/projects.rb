@@ -332,6 +332,21 @@ module API
     resource :projects do
       include CustomAttributesEndpoints
 
+      desc 'Restore a project' do
+        success ::API::Entities::Project
+      end
+      post ':id/restore', feature_category: :system_access do
+        authorize!(:remove_project, user_project)
+        break not_found! unless user_project.adjourned_deletion?
+
+        result = ::Projects::RestoreService.new(user_project, current_user).execute
+        if result[:status] == :success
+          present user_project, with: ::API::Entities::Project, current_user: current_user
+        else
+          render_api_error!(result[:message], 400)
+        end
+      end
+
       desc 'Get a list of visible projects for authenticated user' do
         success code: 200, model: Entities::BasicProjectDetails
         failure [

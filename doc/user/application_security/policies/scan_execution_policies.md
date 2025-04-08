@@ -153,6 +153,12 @@ from bypassing the pipeline execution policies.
 | `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
 | `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
+{{< alert type="note" >}}
+
+Scan execution policies that have the rule type `schedule` always ignore the `skip_ci` option. Scheduled scans run at their configured times regardless of whether `[skip ci]` (or any of its variations) appear in the last commit message. This ensures that security scans occur on a predictable schedule even when CI/CD pipelines are otherwise skipped.
+
+{{< /alert >}}
+
 ## `pipeline` rule type
 
 {{< history >}}

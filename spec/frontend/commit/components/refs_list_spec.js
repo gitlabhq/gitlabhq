@@ -77,13 +77,22 @@ describe('Commit references component', () => {
     expect(findTippingRefs().exists()).toBe(false);
   });
 
-  it('renders an empty message when there is no tipping and containing refs', () => {
-    createComponent({ tippingRefs: [] });
-    expect(findEmptyMessage().exists()).toBe(true);
-  });
-
   it('renders skeleton loader when isLoading prop has true value', () => {
     createComponent({ isLoading: true, containingRefs: [] });
     expect(findSkeletonLoader().exists()).toBe(true);
   });
+
+  it.each`
+    tippingRefs               | hasContainingRefs | shouldShowEmptyMessage
+    ${[]}                     | ${false}          | ${true}
+    ${[]}                     | ${true}           | ${false}
+    ${containingBranchesMock} | ${false}          | ${false}
+    ${containingBranchesMock} | ${true}           | ${false}
+  `(
+    'renders empty message correctly when tippingRefs=$tippingRefs and hasContainingRefs=$hasContainingRefs',
+    ({ tippingRefs, hasContainingRefs, shouldShowEmptyMessage }) => {
+      createComponent({ tippingRefs, hasContainingRefs });
+      expect(findEmptyMessage().exists()).toBe(shouldShowEmptyMessage);
+    },
+  );
 });

@@ -589,6 +589,13 @@ snippets:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+terraform_state_version_states:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: terraform_state_versions
+    column: terraform_state_version_id
+    on_delete: async_delete
 terraform_state_versions:
   - table: p_ci_builds
     column: ci_build_id

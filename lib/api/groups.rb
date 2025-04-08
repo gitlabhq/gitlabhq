@@ -379,6 +379,21 @@ module API
         delete_group(group)
       end
 
+      desc 'Restore a group.'
+      post ':id/restore', feature_category: :groups_and_projects do
+        authorize! :remove_group, user_group
+        break not_found! unless user_group.adjourned_deletion?
+
+        result = ::Groups::RestoreService.new(user_group, current_user).execute
+        user_group.preload_shared_group_links
+
+        if result[:status] == :success
+          present user_group, with: ::API::Entities::GroupDetail, current_user: current_user
+        else
+          render_api_error!(result[:message], 400)
+        end
+      end
+
       desc 'Get a list of shared groups this group was invited to' do
         success Entities::Group
         is_array true
