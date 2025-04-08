@@ -21,14 +21,31 @@ module Resolvers
     def resolve_with_lookahead(**args)
       return WorkItem.none if resource_parent.nil?
 
-      Gitlab::Graphql::Loaders::IssuableLoader.new(
-        resource_parent,
-        finder(prepare_finder_params(args))
-      ).batching_find_all { |q| apply_lookahead(q) }
+      finder = choose_finder(args)
+
+      Gitlab::Graphql::Loaders::IssuableLoader
+        .new(resource_parent, finder)
+        .batching_find_all { |q| apply_lookahead(q) }
     end
 
     private
 
+    def choose_finder(args)
+      if ::Feature.enabled?(:glql_es_integration, current_user)
+        glql_finder = glql_finder(args)
+
+        return glql_finder if glql_finder.use_elasticsearch_finder?
+      end
+
+      finder(prepare_finder_params(args))
+    end
+
+    def glql_finder(args)
+      ::WorkItems::Glql::WorkItemsFinder.new(current_user, context, resource_parent, args)
+    end
+
+    # When we search on a group level, this finder is being overwritten in
+    # app/graphql/resolvers/namespaces/work_items_resolver.rb:32
     def finder(args)
       ::WorkItems::WorkItemsFinder.new(current_user, args)
     end

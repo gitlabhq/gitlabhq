@@ -12,6 +12,8 @@ title: Model registry API
 
 {{< /details >}}
 
+Use this API to interact with the machine learning model registry. For more information, see [model registry](../user/project/ml/model_registry/_index.md).
+
 ## Download a machine learning model package
 
 Returns the file.

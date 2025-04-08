@@ -117,6 +117,15 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(my_job_deploy.options[:script]).to eq(['echo "Deploying to staging using blue-green strategy"'])
         end
 
+        it 'tracks the usage of inputs' do
+          expect { execute }.to trigger_internal_events('create_pipeline_with_inputs').with(
+            category: 'Gitlab::Ci::Pipeline::Chain::Metrics',
+            additional_properties: { value: 5, label: 'push', property: config_source },
+            project: project,
+            user: user
+          )
+        end
+
         context 'when the FF ci_inputs_for_pipelines is disabled' do
           before do
             stub_feature_flags(ci_inputs_for_pipelines: false)
@@ -136,6 +145,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when the project CI config is in the current repository file' do
+      let(:config_source) { 'repository_source' }
+
       let(:project_files) do
         { '.gitlab-ci.yml' => complex_inputs_example_yaml }
       end
@@ -150,6 +161,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when the project CI config is in another project repository file' do
+      let(:config_source) { 'external_project_source' }
+
       let_it_be(:project_2) do
         create(:project, :custom_repo, files: { 'a_config_file.yml' => complex_inputs_example_yaml })
       end
@@ -164,6 +177,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when the project CI config is a remote file' do
+      let(:config_source) { 'remote_source' }
+
       let(:project_ci_config_path) { 'https://gitlab.example.com/something/.gitlab-ci.yml' }
 
       before do
@@ -175,6 +190,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
 
     context 'when the CI config is passed as content' do
+      let(:config_source) { 'parameter_source' }
+
       let(:content) { complex_inputs_example_yaml }
 
       it_behaves_like 'testing invalid and valid cases'

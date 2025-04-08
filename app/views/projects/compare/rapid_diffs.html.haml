@@ -5,6 +5,8 @@
 - has_diff = @commits.present? || @diffs.present? && @diffs.diff_files.present?
 -# Only show commit list in the first page
 - hide_commit_list = params[:page].present? && params[:page] != '1'
+- add_page_specific_style 'page_bundles/merge_requests'
+- add_page_specific_style 'page_bundles/compare_rapid_diffs'
 
 .container-fluid{ class: [container_class] }
   .gl-border-b-0.gl-mb-0.gl-pt-4
@@ -15,7 +17,8 @@
   .container-fluid{ class: [container_class] }
     = render "projects/commits/commit_list" unless hide_commit_list
   .container-fluid
-    = render RapidDiffs::DiffFileComponent.with_collection(@diffs.diff_files, parallel_view: diff_view == :parallel)
+    - args = { diffs_slice: nil, reload_stream_url: @reload_stream_url, stream_url: nil, show_whitespace: @show_whitespace_default, diff_view: diff_view, metadata_endpoint: nil, update_user_endpoint: @update_current_user_path, diff_files_endpoint: @diff_files_endpoint, lazy: true }
+    = render ::RapidDiffs::AppComponent.new(**args)
 - else
   .container-fluid
     = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-subtle" }) do |c|

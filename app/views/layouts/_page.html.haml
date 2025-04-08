@@ -14,7 +14,7 @@
     -# Broadcast messages
     .broadcast-wrapper
       = dispensable_render_if_exists "shared/token_expiration_banner"
-      = dispensable_render "layouts/broadcast"
+      = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
       = yield :group_invite_members_banner
 
     -# Alerts

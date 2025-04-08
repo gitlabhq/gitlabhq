@@ -22,6 +22,17 @@ RSpec.describe TodosFinder, feature_category: :notifications do
         expect(described_class.new(nil, {}).execute).to be_empty
       end
 
+      context 'when user is a bot' do
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'request_todos_by_bot_user' }
+          let(:category) { described_class.name }
+          let(:user) { create(:user, :bot) }
+          let(:additional_properties) { { label: 'user_type', property: user.user_type } }
+          let(:event_attribute_overrides) { { project: nil, namespace: nil } }
+          subject(:finder_service) { finder.new(user).execute }
+        end
+      end
+
       context 'filtering' do
         let!(:todo1) { create(:todo, user: user, project: project, target: issue) }
         let!(:todo2) { create(:todo, user: user, group: group, target: merge_request) }

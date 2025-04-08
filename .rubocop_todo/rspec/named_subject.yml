@@ -2304,7 +2304,6 @@ RSpec/NamedSubject:
     - 'spec/models/alert_management/alert_spec.rb'
     - 'spec/models/alerting/project_alerting_setting_spec.rb'
     - 'spec/models/analytics/usage_trends/measurement_spec.rb'
-    - 'spec/models/application_setting_spec.rb'
     - 'spec/models/audit_event_spec.rb'
     - 'spec/models/aws/role_spec.rb'
     - 'spec/models/blob_spec.rb'

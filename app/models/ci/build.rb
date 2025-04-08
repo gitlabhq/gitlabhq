@@ -179,7 +179,6 @@ module Ci
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
-    scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where_exists(Ci::BuildTraceChunk.scoped_build) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, ->(date) { finished.where('finished_at < ?', date) }

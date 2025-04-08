@@ -24,8 +24,8 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope | Check potential impact |
 |-------------|--------|-------|-------|------------------------|
-| [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |  |
-| [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project | Use the [Authentication Log](../ci/jobs/ci_job_token.md#job-token-authentication-log) to verify which projects are authenticating with your project. |
+| [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Software supply chain security | Project |  |
+| [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Software supply chain security | Project | Use the [Authentication Log](../ci/jobs/ci_job_token.md#job-token-authentication-log) to verify which projects are authenticating with your project. |
 | [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) | Low | Secure | Project |  |
 | [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Deploy | Project |  |
 | [CodeClimate-based Code Quality scanning will be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471677) | High | Secure |  |  |

@@ -182,7 +182,45 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
     end
   end
 
-  def resolve_items(args = {}, context = { current_user: current_user })
+  context 'when searching for work items in ES for GLQL request' do
+    let(:request_params) { { 'operationName' => 'GLQL' } }
+    let(:glql_ctx) do
+      { request: instance_double(ActionDispatch::Request, params: request_params, referer: 'http://localhost') }
+    end
+
+    before do
+      allow(Gitlab::CurrentSettings).to receive(:elasticsearch_search?).and_return(true)
+      allow(project).to receive(:use_elasticsearch?).and_return(true)
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(glql_es_integration: true)
+      end
+
+      it 'uses GLQL WorkItemsFinder' do
+        expect(::WorkItems::Glql::WorkItemsFinder).to receive(:new).and_call_original
+
+        batch_sync { resolve_items({ label_name: item1.labels }, glql_ctx).to_a }
+      end
+    end
+
+    context 'when feature flag is not enabled' do
+      before do
+        stub_feature_flags(glql_es_integration: false)
+      end
+
+      it 'falls back to old WorkItemsFinder' do
+        expect(::WorkItems::Glql::WorkItemsFinder).not_to receive(:new)
+
+        batch_sync { resolve_items({ label_name: item1.labels }, glql_ctx).to_a }
+      end
+    end
+  end
+
+  def resolve_items(args = {}, context = {})
+    context[:current_user] = current_user
+
     resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
   end
 end

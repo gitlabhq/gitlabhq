@@ -26,6 +26,6 @@
 = dispensable_render_if_exists "projects/importing_alert", project: @project
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
 = dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
-= dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project
+= dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project unless content_for(:hide_unlimited_members_during_trial_alert).present?
 
 = render template: "layouts/application"

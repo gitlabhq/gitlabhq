@@ -267,6 +267,7 @@ that explain what you want to build:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_include_context_imports`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.11.
 
 {{< /history >}}
 

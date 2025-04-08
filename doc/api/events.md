@@ -12,6 +12,8 @@ title: Events API
 
 {{< /details >}}
 
+Use this API to view user and project events.
+
 ## Filter parameters
 
 ### Actions
@@ -137,7 +139,7 @@ Example response:
 ]
 ```
 
-### Get user contribution events
+## Get user contribution events
 
 Get the contribution events for the specified user, sorted from newest to oldest. Scope `read_user` or `api` is required.
 Events associated with epics are not available using API.

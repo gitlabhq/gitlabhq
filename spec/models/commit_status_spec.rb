@@ -6,7 +6,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let_it_be_with_reload(:pipeline) do
-    create(:ci_pipeline, project: project, sha: project.commit.id)
+    create(:ci_pipeline, project: project, sha: project.commit.id, user: create(:user))
   end
 
   let(:commit_status) { create_status }
@@ -608,6 +608,44 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     it 'returns statuses that match type' do
       expect(described_class.with_type(::Ci::Build)).to contain_exactly(have_attributes(name: 'build job'))
+    end
+  end
+
+  describe '.ref_protected' do
+    subject { described_class.ref_protected }
+
+    context 'when protected is true' do
+      let!(:job) { create_status(protected: true) }
+
+      it { is_expected.to include(job) }
+    end
+
+    context 'when protected is false' do
+      let!(:job) { create_status(protected: false) }
+
+      it { is_expected.not_to include(job) }
+    end
+
+    context 'when protected is nil' do
+      let!(:job) { create_status }
+
+      before do
+        job.update_attribute(:protected, nil)
+      end
+
+      it { is_expected.not_to include(job) }
+    end
+  end
+
+  describe '.for_user' do
+    subject { described_class.for_user(pipeline.user).order(:id) }
+
+    let(:statuses) do
+      [create_status(user: create(:user)), create_status(user: pipeline.user)]
+    end
+
+    it 'returns statuses for the specified user' do
+      is_expected.to eq(statuses.values_at(1))
     end
   end
 

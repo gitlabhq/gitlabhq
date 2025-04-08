@@ -57,6 +57,10 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
       let(:service_response) { instance_double(ServiceResponse, payload: pipeline, error?: false) }
       let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
 
+      before_all do
+        project.add_maintainer(user)
+      end
+
       context 'when pipeline can be created' do
         before do
           expect(Ci::CreatePipelineService).to receive(:new)
@@ -134,6 +138,27 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
         end
 
         before_all do
+          project.repository.create_file(
+            user,
+            '.gitlab-ci.yml',
+            <<~YAML,
+              spec:
+                inputs:
+                  input1:
+                    default: v1
+                  input2:
+                    default: v2
+
+              ---
+
+              build:
+                stage: build
+                script: echo "build"
+            YAML
+            message: 'test',
+            branch_name: 'master'
+          )
+
           create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'input1', value: 'value1')
           create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, name: 'input2', value: 'value2')
         end
@@ -146,6 +171,17 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
             .and_return(service_response)
 
           expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
+        end
+
+        it 'tracks the usage of inputs' do
+          expect do
+            worker.perform(pipeline_schedule.id, user.id)
+          end.to trigger_internal_events('create_pipeline_with_inputs').with(
+            category: 'Gitlab::Ci::Pipeline::Chain::Metrics',
+            additional_properties: { value: 2, label: 'schedule', property: 'repository_source' },
+            project: project,
+            user: user
+          )
         end
       end
     end

@@ -18,9 +18,11 @@ title: Database migrations API
 
 {{< /history >}}
 
-This API is for managing database migrations used in the development of GitLab.
+Use this API to manage GitLab database migrations.
 
-All methods require administrator authorization.
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ## Mark a migration as successful
 

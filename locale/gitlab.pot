@@ -51899,6 +51899,9 @@ msgid_plural "Runner|%d days selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runner|Assigned Projects"
+msgstr ""
+
 msgid "Runner|Export runner usage"
 msgstr ""
 

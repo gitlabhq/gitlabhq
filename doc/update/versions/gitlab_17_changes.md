@@ -296,6 +296,19 @@ However, some proxy services, such as Cloudflare, [alter this header, causing a 
 If you see [SignatureDoesNotMatch errors](https://repost.aws/knowledge-center/s3-presigned-url-signature-mismatch)
 ensure that your proxy server does not alter or remove signed HTTP headers.
 
+### 17.5 to 17.8 upgrade
+
+- When upgrading from GitLab 17.5 to 17.8, background migration fails with insert or update on the `group_type_ci_runner_machines` table.
+
+  In the UI, the migration path `BackfillCiRunnerMachinesPartitionedTable: ci_runner_machines` shows progress `0.00%` and status `failed`.
+  The corresponding error in the logs include a foreign key constraint error. 
+
+  ```shell
+  ERROR:  insert or update on table "group_type_ci_runner_machines_" violates foreign key constraint "fk_rails_"
+  ```
+
+  To resolve this error, initialize the migration from the UI. 
+
 ## 17.7.0
 
 - Git 2.47.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).

@@ -12,6 +12,12 @@ title: Conan v2 API
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `conan_package_revisions_support`. Disabled by default.
+
+{{< /history >}}
+
 {{< alert type="note" >}}
 
 For Conan v1 operations, see [Conan v1 API](conan_v1.md).
@@ -19,6 +25,12 @@ For Conan v1 operations, see [Conan v1 API](conan_v1.md).
 {{< /alert >}}
 
 Use this API to interact with the Conan v2 package manager. For more information, see [Conan packages in the package registry](../../user/packages/conan_repository/_index.md).
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
 and are not meant for manual consumption.
@@ -52,18 +64,6 @@ The project-level prefix is used to make requests in a single project's scope. T
 | `id`      | string | yes | The project ID or full project path. |
 
 ## Get latest recipe revision
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `conan_package_revisions_support`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 Get the revision hash and creation date of the latest package recipe.
 
@@ -117,4 +117,41 @@ curl --request PUT \
      --user <username>:<personal_access_token> \
      --upload-file path/to/conaninfo.txt \
      "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
+```
+
+## List all recipe revisions
+
+List all revisions for a package recipe.
+
+```plaintext
+GET <route_prefix>/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `package_name`      | string | yes | Name of a package. |
+| `package_version`   | string | yes | Version of a package. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`   | string | yes | Channel of a package. |
+
+```shell
+curl --header "Authorization: Bearer <authenticate_token>" "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions"
+```
+
+Example response:
+
+```json
+{
+  "reference": "my-package/1.0@my-group+my-project/stable",
+  "revisions": [
+    {
+      "revision": "75151329520e7685dcf5da49ded2fec0",
+      "time": "2024-12-17T09:16:40.334+0000"
+    },
+    {
+      "revision": "df28fd816be3a119de5ce4d374436b25",
+      "time": "2024-12-17T09:15:30.123+0000"
+    }
+  ]
+}
 ```

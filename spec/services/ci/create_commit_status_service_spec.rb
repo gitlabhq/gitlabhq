@@ -12,6 +12,7 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
   let_it_be(:guest) { create_user(:guest) }
   let_it_be(:reporter) { create_user(:reporter) }
   let_it_be(:developer) { create_user(:developer) }
+  let_it_be_with_reload(:plan_limits) { create(:plan_limits, :default_plan) }
 
   let(:user) { developer }
   let(:sha) { commit.id }
@@ -68,6 +69,46 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
             expect(response.message).to eq('403 Forbidden')
           end
         end
+
+        context 'when the pipeline size is exceeded' do
+          before do
+            plan_limits.update!(ci_pipeline_size: 1)
+            create(:ci_build, pipeline: pipeline)
+          end
+
+          it 'creates commit status on a new pipeline' do
+            expect(response).to be_success
+            expect(job.sha).to eq(commit.id)
+            expect(job.status).to eq(status)
+            expect(job.name).to eq('default')
+            expect(job.ref).not_to be_empty
+            expect(job.pipeline_id).to be_present
+            expect(job.pipeline_id).not_to eq(pipeline.id)
+          end
+
+          context 'when the flag is disabled' do
+            before do
+              stub_feature_flags(ci_limit_commit_statuses: false)
+            end
+
+            it 'creates commit status on the pipeline and logs a message' do
+              expect(Gitlab::AppJsonLogger).to receive(:info).with(
+                a_hash_including(
+                  class: described_class.name,
+                  project_id: project.id,
+                  subscription_plan: project.actual_plan_name
+                )
+              )
+
+              expect(response).to be_success
+              expect(job.sha).to eq(commit.id)
+              expect(job.status).to eq(status)
+              expect(job.name).to eq('default')
+              expect(job.ref).not_to be_empty
+              expect(job.pipeline_id).to eq(pipeline.id)
+            end
+          end
+        end
       end
     end
   end
@@ -89,6 +130,23 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
 
           expect(response).to be_success
           expect(job.status).to eq(status)
+        end
+
+        context 'when the pipeline size is exceeded' do
+          before do
+            plan_limits.update!(ci_pipeline_size: 1)
+            create(:ci_build, pipeline: ::Ci::Pipeline.last)
+          end
+
+          it "changes existing job to #{status}" do
+            expect { response }
+              .to not_change { ::Ci::Pipeline.count }.from(1)
+              .and not_change { ::Ci::Stage.count }.from(2)
+              .and not_change { ::CommitStatus.count }.from(2)
+
+            expect(response).to be_success
+            expect(job.status).to eq(status)
+          end
         end
       end
     end
@@ -366,6 +424,24 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
           expect(response).to be_error
           expect(response.http_status).to eq(:not_found)
           expect(response.message).to eq("404 Pipeline for pipeline_id, sha and ref Not Found")
+        end
+      end
+
+      context 'when the specified pipeline has too many jobs' do
+        before do
+          plan_limits.update!(ci_pipeline_size: 1)
+          create(:ci_build, pipeline: other_pipeline)
+        end
+
+        it 'returns a service error' do
+          expect { response }
+            .to not_change { ::Ci::Pipeline.count }.from(2)
+            .and not_change { ::Ci::Stage.count }.from(1)
+            .and not_change { ::CommitStatus.count }.from(1)
+
+          expect(response).to be_error
+          expect(response.http_status).to eq(:unprocessable_entity)
+          expect(response.message).to eq("The number of jobs has exceeded the limit")
         end
       end
     end

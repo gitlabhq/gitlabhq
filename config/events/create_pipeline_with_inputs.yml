@@ -1,0 +1,24 @@
+---
+description: Using inputs when creating a pipeline
+internal_events: true
+action: create_pipeline_with_inputs
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: The source of the pipeline, e.g. push, merge_request, schedule, etc.
+  property:
+    description: The source of the config, e.g. repository_source, auto_devops_source, etc.
+  value:
+    description: Number of inputs passed from the user
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186735
+tiers:
+- free
+- premium
+- ultimate

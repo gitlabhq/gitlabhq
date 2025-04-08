@@ -196,13 +196,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         let(:trigger) do
           {
             trigger: {
-              include: {
-                project: downstream_project.full_path,
-                file: '.gitlab-ci.yml',
-                inputs: {
-                  stage: 'deploy',
-                  suffix: 'build'
-                }
+              project: downstream_project.full_path,
+              file: '.gitlab-ci.yml',
+              inputs: {
+                stage: 'deploy',
+                suffix: 'build'
               }
             }
           }
@@ -214,6 +212,15 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         end
 
         it_behaves_like 'creates a downstream pipeline with the inputs provided'
+
+        it 'tracks the usage of inputs' do
+          expect { subject }.to trigger_internal_events('create_pipeline_with_inputs').with(
+            category: 'Gitlab::Ci::Pipeline::Chain::Metrics',
+            additional_properties: { value: 2, label: 'pipeline', property: 'repository_source' },
+            project: downstream_project,
+            user: user
+          )
+        end
       end
 
       context 'when the downstream pipeline is for the same project' do
@@ -238,6 +245,12 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         end
 
         it_behaves_like 'creates a downstream pipeline with the inputs provided'
+
+        it 'does not track the usage of inputs because the inputs are in the internal include' do
+          expect { subject }.not_to trigger_internal_events('create_pipeline_with_inputs')
+
+          subject
+        end
       end
     end
 

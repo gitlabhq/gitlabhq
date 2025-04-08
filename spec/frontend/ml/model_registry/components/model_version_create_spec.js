@@ -65,6 +65,7 @@ describe('ModelVersionCreate', () => {
       stubs: {
         PageHeading,
         UploadDropzone,
+        ImportArtifactZone,
       },
     });
   };

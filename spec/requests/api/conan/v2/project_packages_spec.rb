@@ -247,4 +247,42 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'package not found'
     it_behaves_like 'project not found by project id'
   end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/revisions' do
+    include_context 'for conan recipe endpoints'
+
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:url_suffix) { "#{recipe_path}/revisions" }
+    let_it_be(:revision1) { package.conan_recipe_revisions.first }
+    let_it_be(:revision2) { create(:conan_recipe_revision, package: package) }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it 'returns the reference and a list of revisions in descending order' do
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      expect(json_response['reference']).to eq(package.conan_recipe)
+      expect(json_response['revisions']).to eq([
+        {
+          'revision' => revision2.revision,
+          'time' => revision2.created_at.iso8601(3)
+        },
+        {
+          'revision' => revision1.revision,
+          'time' => revision1.created_at.iso8601(3)
+        }
+      ])
+    end
+
+    it_behaves_like 'conan package revisions feature flag check'
+    it_behaves_like 'packages feature check'
+    it_behaves_like 'enforcing read_packages job token policy'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'conan FIPS mode'
+    it_behaves_like 'package not found'
+    it_behaves_like 'project not found by project id'
+  end
 end

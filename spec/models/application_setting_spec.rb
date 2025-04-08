@@ -178,7 +178,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(nil).for(:protected_paths_for_get_request) }
     it { is_expected.to allow_value([]).for(:protected_paths_for_get_request) }
 
-    it do
+    it 'validates wiki_page_max_content_bytes is an integer not less than 1KB' do
       is_expected.to validate_numericality_of(:wiki_page_max_content_bytes)
         .only_integer.is_greater_than_or_equal_to(1024)
     end
@@ -204,17 +204,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value('default' => '90').for(:repository_storages_weighted) }
     it { is_expected.to allow_value('default' => nil).for(:repository_storages_weighted) }
 
-    it do
+    it 'rejects negative repository storage weights' do
       is_expected.not_to allow_value('default' => -1).for(:repository_storages_weighted)
         .with_message("value for 'default' must be between 0 and 100")
     end
 
-    it do
+    it 'rejects repository storage weights over 100' do
       is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted)
         .with_message("value for 'default' must be between 0 and 100")
     end
 
-    it do
+    it 'rejects repository storage weights with invalid keys' do
       is_expected.not_to allow_value('default' => 100,
         shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist")
     end
@@ -263,7 +263,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
 
-    it do
+    it 'accepts valid prometheus alert db indicators settings' do
       is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings)
         .for(:prometheus_alert_db_indicators_settings)
     end
@@ -484,7 +484,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     context 'for grafana_url validations' do
       before do
-        subject.instance_variable_set(:@parsed_grafana_url, nil)
+        setting.instance_variable_set(:@parsed_grafana_url, nil)
       end
 
       it { is_expected.to allow_value(http).for(:grafana_url) }
@@ -506,10 +506,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
       context 'with invalid grafana URL' do
         it 'adds an error' do
-          subject.grafana_url = " #{http}"
-          expect(subject.save).to be false
+          setting.grafana_url = " #{http}"
+          expect(setting.save).to be false
 
-          expect(subject.errors[:grafana_url]).to eq(
+          expect(setting.errors[:grafana_url]).to eq(
             [
               'must be a valid relative or absolute URL. ' \
                 'Please check your Grafana URL setting in ' \
@@ -520,10 +520,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
       context 'with blocked grafana URL' do
         it 'adds an error' do
-          subject.grafana_url = javascript
-          expect(subject.save).to be false
+          setting.grafana_url = javascript
+          expect(setting.save).to be false
 
-          expect(subject.errors[:grafana_url]).to eq(
+          expect(setting.errors[:grafana_url]).to eq(
             [
               'is blocked: Only allowed schemes are http, https. Please check your ' \
                 'Grafana URL setting in ' \
@@ -581,7 +581,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
         it { is_expected.to allow_value("db-snowplow.gitlab.com").for(:snowplow_database_collector_hostname) }
 
-        it do
+        it 'rejects snowplow database collector hostnames that exceed maximum length' do
           is_expected.not_to allow_value("#{'a' * 256}db-snowplow.gitlab.com")
             .for(:snowplow_database_collector_hostname)
         end
@@ -734,14 +734,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    it do
+    it 'validates local_markdown_version is an integer between 0 and 65535' do
       is_expected.to validate_numericality_of(:local_markdown_version)
         .only_integer
         .is_greater_than_or_equal_to(0)
         .is_less_than(65536)
     end
 
-    it do
+    it 'validates archive_builds_in_seconds is at least 1 day' do
       is_expected.to validate_numericality_of(:archive_builds_in_seconds)
         .only_integer
         .is_greater_than_or_equal_to(1.day.seconds.to_i)
@@ -750,14 +750,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     describe 'usage_ping_enabled setting' do
       shared_examples 'usage ping enabled' do
-        it do
+        it 'properly reflects enabled status' do
           expect(setting.usage_ping_enabled).to be(true)
           expect(setting.usage_ping_enabled?).to be(true)
         end
       end
 
       shared_examples 'usage ping disabled' do
-        it do
+        it 'properly reflects disabled status' do
           expect(setting.usage_ping_enabled).to be(false)
           expect(setting.usage_ping_enabled?).to be(false)
         end
@@ -985,72 +985,72 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
       [:gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
         it "validates that #{timeout_name} is lower than timeout_default" do
-          subject[:gitaly_timeout_default] = 50
-          subject[timeout_name] = 100
+          setting[:gitaly_timeout_default] = 50
+          setting[timeout_name] = 100
 
-          expect(subject).to be_invalid
+          expect(setting).to be_invalid
         end
       end
 
       it 'accepts all timeouts equal' do
-        subject.gitaly_timeout_default = 0
-        subject.gitaly_timeout_medium = 0
-        subject.gitaly_timeout_fast = 0
+        setting.gitaly_timeout_default = 0
+        setting.gitaly_timeout_medium = 0
+        setting.gitaly_timeout_fast = 0
 
-        expect(subject).to be_valid
+        expect(setting).to be_valid
       end
 
       it 'accepts timeouts in descending order' do
-        subject.gitaly_timeout_default = 50
-        subject.gitaly_timeout_medium = 30
-        subject.gitaly_timeout_fast = 20
+        setting.gitaly_timeout_default = 50
+        setting.gitaly_timeout_medium = 30
+        setting.gitaly_timeout_fast = 20
 
-        expect(subject).to be_valid
+        expect(setting).to be_valid
       end
 
       it 'rejects timeouts in ascending order' do
-        subject.gitaly_timeout_default = 20
-        subject.gitaly_timeout_medium = 30
-        subject.gitaly_timeout_fast = 50
+        setting.gitaly_timeout_default = 20
+        setting.gitaly_timeout_medium = 30
+        setting.gitaly_timeout_fast = 50
 
-        expect(subject).to be_invalid
+        expect(setting).to be_invalid
       end
 
       it 'rejects medium timeout larger than default' do
-        subject.gitaly_timeout_default = 30
-        subject.gitaly_timeout_medium = 50
-        subject.gitaly_timeout_fast = 20
+        setting.gitaly_timeout_default = 30
+        setting.gitaly_timeout_medium = 50
+        setting.gitaly_timeout_fast = 20
 
-        expect(subject).to be_invalid
+        expect(setting).to be_invalid
       end
 
       it 'rejects medium timeout smaller than fast' do
-        subject.gitaly_timeout_default = 30
-        subject.gitaly_timeout_medium = 15
-        subject.gitaly_timeout_fast = 20
+        setting.gitaly_timeout_default = 30
+        setting.gitaly_timeout_medium = 15
+        setting.gitaly_timeout_fast = 20
 
-        expect(subject).to be_invalid
+        expect(setting).to be_invalid
       end
 
       it 'does not prevent from saving when gitaly timeouts were previously invalid' do
-        subject.update_column(:gitaly_timeout_default, Settings.gitlab.max_request_duration_seconds + 1)
+        setting.update_column(:gitaly_timeout_default, Settings.gitlab.max_request_duration_seconds + 1)
 
-        expect(subject.reload).to be_valid
+        expect(setting.reload).to be_valid
       end
     end
 
     describe 'enforcing terms' do
       it 'requires the terms to present when enforcing users to accept' do
-        subject.enforce_terms = true
+        setting.enforce_terms = true
 
-        expect(subject).to be_invalid
+        expect(setting).to be_invalid
       end
 
       it 'is valid when terms are created' do
         create(:term)
-        subject.enforce_terms = true
+        setting.enforce_terms = true
 
-        expect(subject).to be_valid
+        expect(setting).to be_valid
       end
     end
 
@@ -1102,7 +1102,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     context 'with asset proxy settings' do
       before do
-        subject.asset_proxy_enabled = true
+        setting.asset_proxy_enabled = true
       end
 
       describe '#asset_proxy_url' do
@@ -1112,10 +1112,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.not_to allow_value(ftp).for(:asset_proxy_url) }
 
         it 'is not required when asset proxy is disabled' do
-          subject.asset_proxy_enabled = false
-          subject.asset_proxy_url = ''
+          setting.asset_proxy_enabled = false
+          setting.asset_proxy_url = ''
 
-          expect(subject).to be_valid
+          expect(setting).to be_valid
         end
       end
 
@@ -1124,17 +1124,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value('anything').for(:asset_proxy_secret_key) }
 
         it 'is not required when asset proxy is disabled' do
-          subject.asset_proxy_enabled = false
-          subject.asset_proxy_secret_key = ''
+          setting.asset_proxy_enabled = false
+          setting.asset_proxy_secret_key = ''
 
-          expect(subject).to be_valid
+          expect(setting).to be_valid
         end
 
         it 'is encrypted' do
-          subject.asset_proxy_secret_key = 'shared secret'
+          setting.asset_proxy_secret_key = 'shared secret'
 
-          expect(subject.encrypted_asset_proxy_secret_key).to be_present
-          expect(subject.encrypted_asset_proxy_secret_key).not_to eq(subject.asset_proxy_secret_key)
+          expect(setting.encrypted_asset_proxy_secret_key).to be_present
+          expect(setting.encrypted_asset_proxy_secret_key).not_to eq(setting.asset_proxy_secret_key)
         end
       end
 
@@ -1197,12 +1197,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:ci_jwt_signing_key) }
 
         it 'is encrypted' do
-          subject.ci_jwt_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+          setting.ci_jwt_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
 
           aggregate_failures do
-            expect(subject.encrypted_ci_jwt_signing_key).to be_present
-            expect(subject.encrypted_ci_jwt_signing_key_iv).to be_present
-            expect(subject.encrypted_ci_jwt_signing_key).not_to eq(subject.ci_jwt_signing_key)
+            expect(setting.encrypted_ci_jwt_signing_key).to be_present
+            expect(setting.encrypted_ci_jwt_signing_key_iv).to be_present
+            expect(setting.encrypted_ci_jwt_signing_key).not_to eq(setting.ci_jwt_signing_key)
           end
         end
       end
@@ -1214,12 +1214,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:ci_job_token_signing_key) }
 
         it 'is encrypted' do
-          subject.ci_job_token_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+          setting.ci_job_token_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
 
           aggregate_failures do
-            expect(subject.encrypted_ci_job_token_signing_key).to be_present
-            expect(subject.encrypted_ci_job_token_signing_key_iv).to be_present
-            expect(subject.encrypted_ci_job_token_signing_key).not_to eq(subject.ci_job_token_signing_key)
+            expect(setting.encrypted_ci_job_token_signing_key).to be_present
+            expect(setting.encrypted_ci_job_token_signing_key_iv).to be_present
+            expect(setting.encrypted_ci_job_token_signing_key).not_to eq(setting.ci_job_token_signing_key)
           end
         end
       end
@@ -1231,12 +1231,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:customers_dot_jwt_signing_key) }
 
         it 'is encrypted' do
-          subject.customers_dot_jwt_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+          setting.customers_dot_jwt_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
 
           aggregate_failures do
-            expect(subject.encrypted_customers_dot_jwt_signing_key).to be_present
-            expect(subject.encrypted_customers_dot_jwt_signing_key_iv).to be_present
-            expect(subject.encrypted_customers_dot_jwt_signing_key).not_to eq(subject.customers_dot_jwt_signing_key)
+            expect(setting.encrypted_customers_dot_jwt_signing_key).to be_present
+            expect(setting.encrypted_customers_dot_jwt_signing_key_iv).to be_present
+            expect(setting.encrypted_customers_dot_jwt_signing_key).not_to eq(setting.customers_dot_jwt_signing_key)
           end
         end
       end
@@ -1245,12 +1245,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value(nil).for(:cloud_license_auth_token) }
 
         it 'is encrypted' do
-          subject.cloud_license_auth_token = 'token-from-customers-dot'
+          setting.cloud_license_auth_token = 'token-from-customers-dot'
 
           aggregate_failures do
-            expect(subject.encrypted_cloud_license_auth_token).to be_present
-            expect(subject.encrypted_cloud_license_auth_token_iv).to be_present
-            expect(subject.encrypted_cloud_license_auth_token).not_to eq(subject.cloud_license_auth_token)
+            expect(setting.encrypted_cloud_license_auth_token).to be_present
+            expect(setting.encrypted_cloud_license_auth_token_iv).to be_present
+            expect(setting.encrypted_cloud_license_auth_token).not_to eq(setting.cloud_license_auth_token)
           end
         end
       end
@@ -1259,7 +1259,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     context 'for static objects external storage' do
       context 'when URL is set' do
         before do
-          subject.static_objects_external_storage_url = http
+          setting.static_objects_external_storage_url = http
         end
 
         it { is_expected.not_to allow_value(nil).for(:static_objects_external_storage_auth_token) }
@@ -1268,28 +1268,28 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     context 'with sourcegraph settings' do
       it 'is invalid if sourcegraph is enabled and no url is provided' do
-        allow(subject).to receive(:sourcegraph_enabled).and_return(true)
+        allow(setting).to receive(:sourcegraph_enabled).and_return(true)
 
-        expect(subject.sourcegraph_url).to be_nil
+        expect(setting.sourcegraph_url).to be_nil
         is_expected.to be_invalid
       end
     end
 
     context 'with gitpod settings' do
       it 'is invalid if gitpod is enabled and no url is provided' do
-        allow(subject).to receive_messages(gitpod_enabled: true, gitpod_url: nil)
+        allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: nil)
 
         is_expected.to be_invalid
       end
 
       it 'is invalid if gitpod is enabled and an empty url is provided' do
-        allow(subject).to receive_messages(gitpod_enabled: true, gitpod_url: '')
+        allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: '')
 
         is_expected.to be_invalid
       end
 
       it 'is invalid if gitpod is enabled and an invalid url is provided' do
-        allow(subject).to receive_messages(gitpod_enabled: true, gitpod_url: 'javascript:alert("test")//')
+        allow(setting).to receive_messages(gitpod_enabled: true, gitpod_url: 'javascript:alert("test")//')
 
         is_expected.to be_invalid
       end
@@ -1329,7 +1329,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     context 'with prometheus settings' do
       it 'validates metrics_method_call_threshold' do
-        allow(subject).to receive(:prometheus_metrics_enabled).and_return(true)
+        allow(setting).to receive(:prometheus_metrics_enabled).and_return(true)
 
         is_expected.to validate_numericality_of(:metrics_method_call_threshold).is_greater_than_or_equal_to(0)
       end
@@ -1364,7 +1364,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     context 'for default_syntax_highlighting_theme' do
       it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_syntax_highlighting_theme) }
 
-      it do
+      it 'rejects invalid values for default syntax highlighting theme' do
         is_expected.not_to allow_value(nil, 0,
           Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme)
       end
@@ -1389,7 +1389,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     context 'for default_project_visibility, default_group_visibility and restricted_visibility_levels validations' do
       before do
-        subject.restricted_visibility_levels = [10]
+        setting.restricted_visibility_levels = [10]
       end
 
       it { is_expected.not_to allow_value(10).for(:default_group_visibility) }
@@ -1398,19 +1398,19 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it { is_expected.to allow_value(20).for(:default_project_visibility) }
 
       it 'sets error messages when default visibility settings are not valid' do
-        subject.default_group_visibility = 10
-        subject.default_project_visibility = 10
+        setting.default_group_visibility = 10
+        setting.default_project_visibility = 10
 
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:default_group_visibility].first)
+        expect(setting).not_to be_valid
+        expect(setting.errors.messages[:default_group_visibility].first)
           .to eq("cannot be set to a restricted visibility level")
-        expect(subject.errors.messages[:default_project_visibility].first)
+        expect(setting.errors.messages[:default_project_visibility].first)
           .to eq("cannot be set to a restricted visibility level")
       end
     end
 
     describe 'sentry_clientside_traces_sample_rate' do
-      it do
+      it 'validates sentry_clientside_traces_sample_rate is between 0 and 1' do
         is_expected.to validate_numericality_of(:sentry_clientside_traces_sample_rate)
           .is_greater_than_or_equal_to(0)
           .is_less_than_or_equal_to(1)
@@ -1575,24 +1575,24 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     it 'removes unknown sources (as strings) from the array' do
-      subject.disabled_oauth_sign_in_sources = %w[github test]
+      setting.disabled_oauth_sign_in_sources = %w[github test]
 
-      expect(subject).to be_valid
-      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+      expect(setting).to be_valid
+      expect(setting.disabled_oauth_sign_in_sources).to eq ['github']
     end
 
     it 'removes unknown sources (as symbols) from the array' do
-      subject.disabled_oauth_sign_in_sources = %i[github test]
+      setting.disabled_oauth_sign_in_sources = %i[github test]
 
-      expect(subject).to be_valid
-      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+      expect(setting).to be_valid
+      expect(setting.disabled_oauth_sign_in_sources).to eq ['github']
     end
 
     it 'ignores nil' do
-      subject.disabled_oauth_sign_in_sources = nil
+      setting.disabled_oauth_sign_in_sources = nil
 
-      expect(subject).to be_valid
-      expect(subject.disabled_oauth_sign_in_sources).to be_empty
+      expect(setting).to be_valid
+      expect(setting.disabled_oauth_sign_in_sources).to be_empty
     end
   end
 
@@ -1637,7 +1637,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       context 'for validations' do
         it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
 
-        it do
+        it 'validates diff_max_patch_bytes is an integer within defined bounds' do
           is_expected.to validate_numericality_of(:diff_max_patch_bytes)
           .only_integer
           .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
@@ -1650,7 +1650,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       context 'for validations' do
         it { is_expected.to validate_presence_of(:diff_max_files) }
 
-        it do
+        it 'validates diff_max_files is an integer within allowed bounds' do
           is_expected
             .to validate_numericality_of(:diff_max_files)
             .only_integer
@@ -1664,7 +1664,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       context 'for validations' do
         it { is_expected.to validate_presence_of(:diff_max_lines) }
 
-        it do
+        it 'validates diff_max_lines is an integer within allowed bounds' do
           is_expected
             .to validate_numericality_of(:diff_max_lines)
             .only_integer
@@ -1704,7 +1704,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     where(users_over_minimum: [-1, 0, 1])
 
     with_them do
-      it do
+      it 'permits instance review when user count meets minimum requirement' do
         expect(Rails.cache).to receive(:fetch).with('limited_users_count', anything)
           .and_return(::ApplicationSetting::INSTANCE_REVIEW_MIN_USERS + users_over_minimum)
         is_expected.to be(users_over_minimum >= 0)
@@ -1715,51 +1715,51 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   describe 'email_restrictions' do
     context 'when email restrictions are enabled' do
       before do
-        subject.email_restrictions_enabled = true
+        setting.email_restrictions_enabled = true
       end
 
       it 'allows empty email restrictions' do
-        subject.email_restrictions = ''
+        setting.email_restrictions = ''
 
-        expect(subject).to be_valid
+        expect(setting).to be_valid
       end
 
       it 'accepts valid email restrictions regex' do
-        subject.email_restrictions = '\+'
+        setting.email_restrictions = '\+'
 
-        expect(subject).to be_valid
+        expect(setting).to be_valid
       end
 
       it 'does not accept invalid email restrictions regex' do
-        subject.email_restrictions = '+'
+        setting.email_restrictions = '+'
 
-        expect(subject).not_to be_valid
+        expect(setting).not_to be_valid
       end
 
       it 'sets an error when regex is not valid' do
-        subject.email_restrictions = '+'
+        setting.email_restrictions = '+'
 
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:email_restrictions].first)
+        expect(setting).not_to be_valid
+        expect(setting.errors.messages[:email_restrictions].first)
           .to eq(_('not valid RE2 syntax: no argument for repetition operator: +'))
       end
     end
 
     context 'when email restrictions are disabled' do
       before do
-        subject.email_restrictions_enabled = false
+        setting.email_restrictions_enabled = false
       end
 
       it 'allows empty email restrictions' do
-        subject.email_restrictions = ''
+        setting.email_restrictions = ''
 
-        expect(subject).to be_valid
+        expect(setting).to be_valid
       end
 
       it 'invalid regex is not valid' do
-        subject.email_restrictions = '+'
+        setting.email_restrictions = '+'
 
-        expect(subject).not_to be_valid
+        expect(setting).not_to be_valid
       end
     end
   end
@@ -1768,45 +1768,45 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe 'kroki_format_supported?' do
     it 'returns true when Excalidraw is enabled' do
-      subject.kroki_formats_excalidraw = true
-      expect(subject.kroki_format_supported?('excalidraw')).to be(true)
+      setting.kroki_formats_excalidraw = true
+      expect(setting.kroki_format_supported?('excalidraw')).to be(true)
     end
 
     it 'returns true when BlockDiag is enabled' do
-      subject.kroki_formats_blockdiag = true
+      setting.kroki_formats_blockdiag = true
       # format "blockdiag" aggregates multiple diagram types: actdiag, blockdiag, nwdiag...
-      expect(subject.kroki_format_supported?('actdiag')).to be(true)
-      expect(subject.kroki_format_supported?('blockdiag')).to be(true)
+      expect(setting.kroki_format_supported?('actdiag')).to be(true)
+      expect(setting.kroki_format_supported?('blockdiag')).to be(true)
     end
 
     it 'returns false when BlockDiag is disabled' do
-      subject.kroki_formats_blockdiag = false
+      setting.kroki_formats_blockdiag = false
       # format "blockdiag" aggregates multiple diagram types: actdiag, blockdiag, nwdiag...
-      expect(subject.kroki_format_supported?('actdiag')).to be(false)
-      expect(subject.kroki_format_supported?('blockdiag')).to be(false)
+      expect(setting.kroki_format_supported?('actdiag')).to be(false)
+      expect(setting.kroki_format_supported?('blockdiag')).to be(false)
     end
 
     it 'returns false when the diagram type is optional and not enabled' do
-      expect(subject.kroki_format_supported?('bpmn')).to be(false)
+      expect(setting.kroki_format_supported?('bpmn')).to be(false)
     end
 
     it 'returns true when the diagram type is enabled by default' do
-      expect(subject.kroki_format_supported?('vegalite')).to be(true)
-      expect(subject.kroki_format_supported?('nomnoml')).to be(true)
-      expect(subject.kroki_format_supported?('unknown-diagram-type')).to be(false)
+      expect(setting.kroki_format_supported?('vegalite')).to be(true)
+      expect(setting.kroki_format_supported?('nomnoml')).to be(true)
+      expect(setting.kroki_format_supported?('unknown-diagram-type')).to be(false)
     end
 
     it 'returns false when the diagram type is unknown' do
-      expect(subject.kroki_format_supported?('unknown-diagram-type')).to be(false)
+      expect(setting.kroki_format_supported?('unknown-diagram-type')).to be(false)
     end
   end
 
   describe 'kroki_formats' do
     it 'returns the value for kroki_formats' do
-      subject.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true }
-      expect(subject.kroki_formats_blockdiag).to be(true)
-      expect(subject.kroki_formats_bpmn).to be(false)
-      expect(subject.kroki_formats_excalidraw).to be(true)
+      setting.kroki_formats = { blockdiag: true, bpmn: false, excalidraw: true }
+      expect(setting.kroki_formats_blockdiag).to be(true)
+      expect(setting.kroki_formats_bpmn).to be(false)
+      expect(setting.kroki_formats_excalidraw).to be(true)
     end
   end
 
@@ -1814,11 +1814,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
 
     it 'returns the value for default_branch_protection_defaults' do
-      subject.default_branch_protection_defaults = defaults
-      expect(subject.default_branch_protection_defaults['name']).to eq('main')
-      expect(subject.default_branch_protection_defaults['push_access_level']).to eq(30)
-      expect(subject.default_branch_protection_defaults['merge_access_level']).to eq(30)
-      expect(subject.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
+      setting.default_branch_protection_defaults = defaults
+      expect(setting.default_branch_protection_defaults['name']).to eq('main')
+      expect(setting.default_branch_protection_defaults['push_access_level']).to eq(30)
+      expect(setting.default_branch_protection_defaults['merge_access_level']).to eq(30)
+      expect(setting.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
     end
 
     context 'when provided with content that does not match the JSON schema' do
@@ -1891,12 +1891,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   end
 
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do
-    subject { setting.static_objects_external_storage_auth_token = token }
+    subject(:set_auth_token) { setting.static_objects_external_storage_auth_token = token }
 
     let(:token) { 'Test' }
 
     it 'stores an encrypted version of the token' do
-      subject
+      set_auth_token
 
       expect(setting[:static_objects_external_storage_auth_token]).to be_nil
       expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_present
@@ -1907,7 +1907,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       let(:token) { '' }
 
       it 'removes an encrypted version of the token' do
-        subject
+        set_auth_token
 
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil
         expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
@@ -1919,7 +1919,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       let(:plaintext_token) { Devise.friendly_token(20) }
 
       it 'encrypts the plaintext token' do
-        subject
+        set_auth_token
 
         described_class.update!(static_objects_external_storage_auth_token: plaintext_token)
 
@@ -1933,25 +1933,25 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe '#database_grafana_api_key' do
     it 'is encrypted' do
-      subject.database_grafana_api_key = 'somesecret'
+      setting.database_grafana_api_key = 'somesecret'
 
       aggregate_failures do
-        expect(subject.encrypted_database_grafana_api_key).to be_present
-        expect(subject.encrypted_database_grafana_api_key_iv).to be_present
-        expect(subject.encrypted_database_grafana_api_key).not_to eq(subject.database_grafana_api_key)
+        expect(setting.encrypted_database_grafana_api_key).to be_present
+        expect(setting.encrypted_database_grafana_api_key_iv).to be_present
+        expect(setting.encrypted_database_grafana_api_key).not_to eq(setting.database_grafana_api_key)
       end
     end
   end
 
   context "when inactive project deletion" do
     it "validates warning email after months is less than delete after months" do
-      subject[:inactive_projects_delete_after_months] = 3
-      subject[:inactive_projects_send_warning_email_after_months] = 6
+      setting[:inactive_projects_delete_after_months] = 3
+      setting[:inactive_projects_send_warning_email_after_months] = 6
 
-      expect(subject).to be_invalid
+      expect(setting).to be_invalid
     end
 
-    it do
+    it 'validates inactive project warning email period is greater than zero' do
       is_expected.to validate_numericality_of(:inactive_projects_send_warning_email_after_months).is_greater_than(0)
     end
 

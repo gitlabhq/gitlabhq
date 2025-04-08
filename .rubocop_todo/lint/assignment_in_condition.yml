@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Lint/AssignmentInCondition:
   Exclude:
-    - 'app/controllers/concerns/uploads_actions.rb'
     - 'app/controllers/concerns/verifies_with_email.rb'
     - 'app/controllers/omniauth_callbacks_controller.rb'
     - 'app/controllers/projects/commit_controller.rb'

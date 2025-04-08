@@ -381,7 +381,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/alert_management/alert_spec.rb'
     - 'spec/models/alert_management/alert_user_mention_spec.rb'
     - 'spec/models/alert_management/http_integration_spec.rb'
-    - 'spec/models/application_setting_spec.rb'
     - 'spec/models/board_spec.rb'
     - 'spec/models/bulk_imports/entity_spec.rb'
     - 'spec/models/bulk_imports/tracker_spec.rb'

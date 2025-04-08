@@ -190,6 +190,7 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest` | Get the latest revision |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | Download recipe files |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files` | List recipe files |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | Get the list of revisions |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | Download package file |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/go/*module_name/@v/:module_version.info` | Version metadata |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/go/*module_name/@v/:module_version.mod` | Download module file |

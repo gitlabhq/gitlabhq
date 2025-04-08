@@ -198,32 +198,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   it_behaves_like 'a triggerable processable', :ci_build
 
-  describe '.ref_protected' do
-    subject { described_class.ref_protected }
-
-    context 'when protected is true' do
-      let!(:job) { create(:ci_build, :protected, pipeline: pipeline) }
-
-      it { is_expected.to include(job) }
-    end
-
-    context 'when protected is false' do
-      let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      it { is_expected.not_to include(job) }
-    end
-
-    context 'when protected is nil' do
-      let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      before do
-        job.update_attribute(:protected, nil)
-      end
-
-      it { is_expected.not_to include(job) }
-    end
-  end
-
   describe '.with_downloadable_artifacts' do
     subject { described_class.with_downloadable_artifacts }
 

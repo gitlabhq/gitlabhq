@@ -12651,7 +12651,7 @@ CREATE TABLE compliance_requirements (
     description text NOT NULL,
     control_expression text,
     requirement_type smallint DEFAULT 0 NOT NULL,
-    CONSTRAINT check_71d7c59197 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_71d7c59197 CHECK ((char_length(description) <= 500)),
     CONSTRAINT check_be5c3cfc16 CHECK ((char_length(control_expression) <= 2048)),
     CONSTRAINT check_f1fb6fdd81 CHECK ((char_length(name) <= 255))
 );
@@ -23215,7 +23215,7 @@ CREATE TABLE subscription_seat_assignments (
     last_activity_on timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    organization_id bigint DEFAULT 1 NOT NULL,
+    organization_id bigint NOT NULL,
     seat_type smallint
 );
 

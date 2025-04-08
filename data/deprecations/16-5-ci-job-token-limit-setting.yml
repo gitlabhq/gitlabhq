@@ -7,7 +7,7 @@
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   window: 1
   reporter: jocelynjane  # (required) GitLab username of the person reporting the deprecation
-  stage: govern  # (required) String value of the stage that the feature was created in. e.g., Growth
+  stage: Software Supply Chain Security  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383084  # (required) Link to the deprecation issue in GitLab
   check_impact: Use the [Authentication Log](../ci/jobs/ci_job_token.md#job-token-authentication-log) to verify which projects are authenticating with your project.
   impact: high  # Can be one of: [critical, high, medium, low]

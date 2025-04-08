@@ -1,4 +1,4 @@
-import { GlAvatar, GlBadge, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerAssignedItem from '~/ci/runner/components/runner_assigned_item.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
@@ -37,11 +37,11 @@ describe('RunnerAssignedItem', () => {
       entityName: mockName,
       src: mockAvatarUrl,
       shape: AVATAR_SHAPE_OPTION_RECT,
-      size: 48,
+      size: 32,
     };
 
     it('Shows an avatar as a link', () => {
-      const avatarLink = wrapper.findAllComponents(GlLink).at(0);
+      const avatarLink = wrapper.findAllComponents(GlAvatarLink).at(0);
 
       expect(avatarLink.attributes('href')).toBe(mockHref);
       expect(avatarLink.findComponent(GlAvatar).props()).toMatchObject(avatarProps);
@@ -53,7 +53,7 @@ describe('RunnerAssignedItem', () => {
       });
 
       it('does not display avatar as a link', () => {
-        expect(wrapper.findComponent(GlLink).exists()).toBe(false);
+        expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(false);
         expect(wrapper.findComponent(GlAvatar).props()).toMatchObject(avatarProps);
       });
     });
@@ -72,7 +72,7 @@ describe('RunnerAssignedItem', () => {
       });
 
       it('does not display item as a link', () => {
-        expect(wrapper.findComponent(GlLink).exists()).toBe(false);
+        expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(false);
 
         expect(wrapper.findByText(mockFullName).exists()).toBe(true);
       });

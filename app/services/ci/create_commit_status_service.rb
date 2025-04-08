@@ -26,7 +26,7 @@ module Ci
       result = validate
       return result if result&.error?
 
-      @pipeline = first_matching_pipeline || create_pipeline
+      @pipeline = find_or_create_pipeline
       return forbidden unless ::Ability.allowed?(current_user, :update_pipeline, pipeline)
 
       @stage = find_or_create_external_stage
@@ -46,9 +46,13 @@ module Ci
       return bad_request('State is required') if params[:state].blank?
       return not_found('References for commit') if ref.blank?
 
-      return unless params[:pipeline_id] && !first_matching_pipeline
+      return unless params[:pipeline_id]
 
-      not_found("Pipeline for pipeline_id, sha and ref")
+      return not_found("Pipeline for pipeline_id, sha and ref") unless first_matching_pipeline
+
+      return if can_append_jobs_to_existing_pipeline?
+
+      error("The number of jobs has exceeded the limit", :unprocessable_entity)
     end
 
     def ref
@@ -62,6 +66,23 @@ module Ci
     end
     strong_memoize_attr :commit
 
+    def find_or_create_pipeline
+      return create_pipeline unless first_matching_pipeline
+      return first_matching_pipeline if can_append_jobs_to_existing_pipeline?
+
+      create_log_entry
+
+      enforce_jobs_limit? ? create_pipeline : first_matching_pipeline
+    end
+
+    def can_append_jobs_to_existing_pipeline?
+      return true unless first_matching_pipeline_size_exceeded?
+      return true if external_commit_status_exists?
+
+      false
+    end
+    strong_memoize_attr :can_append_jobs_to_existing_pipeline?
+
     def first_matching_pipeline
       limit = params[:pipeline_id] ? nil : DEFAULT_LIMIT_PIPELINES
       pipelines = project.ci_pipelines.newest_first(sha: sha, limit: limit)
@@ -70,6 +91,13 @@ module Ci
       pipelines.first
     end
     strong_memoize_attr :first_matching_pipeline
+
+    def first_matching_pipeline_size_exceeded?
+      project
+        .actual_limits
+        .exceeded?(:ci_pipeline_size, first_matching_pipeline.all_jobs)
+    end
+    strong_memoize_attr :first_matching_pipeline_size_exceeded?
 
     def name
       params[:name] || params[:context] || 'default'
@@ -99,20 +127,30 @@ module Ci
       end
     end
 
+    def external_commit_status_exists?
+      external_commit_status_scope(first_matching_pipeline).any?
+    end
+
     def find_or_build_external_commit_status
-      ::GenericCommitStatus.running_or_pending.find_or_initialize_by( # rubocop:disable CodeReuse/ActiveRecord
-        project: project,
-        pipeline: pipeline,
-        name: name,
-        ref: ref,
-        user: current_user,
-        protected: project.protected_for?(ref),
+      external_commit_status_scope(pipeline).find_or_initialize_by( # rubocop:disable CodeReuse/ActiveRecord
         ci_stage: stage,
-        stage_idx: stage.position,
-        partition_id: pipeline.partition_id
+        stage_idx: stage.position
       ).tap do |new_commit_status|
         new_commit_status.assign_attributes(optional_commit_status_params)
       end
+    end
+
+    def external_commit_status_scope(pipeline)
+      scope = ::GenericCommitStatus
+        .running_or_pending
+        .for_project(project.id)
+        .in_pipelines(pipeline)
+        .in_partition(pipeline.partition_id)
+        .for_ref(ref)
+        .by_name(name)
+        .for_user(current_user)
+      scope = scope.ref_protected if project.protected_for?(ref)
+      scope
     end
 
     def add_or_update_external_job
@@ -151,6 +189,22 @@ module Ci
         sleep_sec: 0.1.seconds,
         retries: 20
       }
+    end
+
+    def create_log_entry
+      Gitlab::AppJsonLogger.info(
+        class: self.class.name,
+        namespace_id: project.namespace_id,
+        project_id: project.id,
+        current_user_id: current_user.id,
+        subscription_plan: project.actual_plan_name,
+        message: 'Project tried to create more jobs than the quota allowed',
+        limit_enforced: enforce_jobs_limit?
+      )
+    end
+
+    def enforce_jobs_limit?
+      Feature.enabled?(:ci_limit_commit_statuses, project)
     end
 
     def not_found(message)
