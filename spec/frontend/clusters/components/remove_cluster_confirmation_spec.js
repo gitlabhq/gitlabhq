@@ -1,6 +1,6 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import RemoveClusterConfirmation from '~/clusters/components/remove_cluster_confirmation.vue';
 
@@ -9,7 +9,7 @@ describe('Remove cluster confirmation modal', () => {
   const showMock = jest.fn();
 
   const createComponent = ({ props = {}, stubs = {} } = {}) => {
-    wrapper = mount(RemoveClusterConfirmation, {
+    wrapper = mountExtended(RemoveClusterConfirmation, {
       propsData: {
         clusterPath: 'clusterPath',
         clusterName: 'clusterName',
@@ -26,10 +26,9 @@ describe('Remove cluster confirmation modal', () => {
 
   describe('two buttons', () => {
     const findModal = () => wrapper.findComponent(GlModal);
-    const findRemoveIntegrationButton = () =>
-      wrapper.find('[data-testid="remove-integration-button"]');
+    const findRemoveIntegrationButton = () => wrapper.findByTestId('remove-integration-button');
     const findRemoveIntegrationAndResourcesButton = () =>
-      wrapper.find('[data-testid="remove-integration-and-resources-button"]');
+      wrapper.findByTestId('remove-integration-and-resources-button');
 
     beforeEach(() => {
       createComponent({

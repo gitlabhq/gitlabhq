@@ -1,7 +1,6 @@
 import { GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
@@ -57,50 +56,48 @@ describe('Incidents List', () => {
   const findIncidentLink = () => wrapper.findByTestId('incident-link');
 
   function mountComponent({ data = {}, loading = false, provide = {} } = {}) {
-    wrapper = extendedWrapper(
-      mount(IncidentsList, {
-        data() {
-          return {
-            incidents: [],
-            incidentsCount: {},
-            ...data,
-          };
-        },
-        mocks: {
-          $apollo: {
-            queries: {
-              incidents: {
-                loading,
-              },
+    wrapper = mountExtended(IncidentsList, {
+      data() {
+        return {
+          incidents: [],
+          incidentsCount: {},
+          ...data,
+        };
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            incidents: {
+              loading,
             },
           },
         },
-        provide: {
-          projectPath: '/project/path',
-          newIssuePath,
-          incidentTemplateName,
-          incidentType,
-          issuePath: '/project/issues',
-          publishedAvailable: true,
-          emptyListSvgPath,
-          textQuery: '',
-          authorUsernameQuery: '',
-          assigneeUsernameQuery: '',
-          slaFeatureAvailable: true,
-          canCreateIncident: true,
-          ...provide,
-        },
-        stubs: {
-          GlButton: true,
-          GlAvatar: true,
-          GlEmptyState: true,
-          ServiceLevelAgreementCell: true,
-          PaginatedTableWithSearchAndTabs: stubComponent(PaginatedTableWithSearchAndTabs, {
-            template: RENDER_ALL_SLOTS_TEMPLATE,
-          }),
-        },
-      }),
-    );
+      },
+      provide: {
+        projectPath: '/project/path',
+        newIssuePath,
+        incidentTemplateName,
+        incidentType,
+        issuePath: '/project/issues',
+        publishedAvailable: true,
+        emptyListSvgPath,
+        textQuery: '',
+        authorUsernameQuery: '',
+        assigneeUsernameQuery: '',
+        slaFeatureAvailable: true,
+        canCreateIncident: true,
+        ...provide,
+      },
+      stubs: {
+        GlButton: true,
+        GlAvatar: true,
+        GlEmptyState: true,
+        ServiceLevelAgreementCell: true,
+        PaginatedTableWithSearchAndTabs: stubComponent(PaginatedTableWithSearchAndTabs, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
+      },
+    });
   }
 
   it('shows the loading state', () => {

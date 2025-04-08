@@ -12,7 +12,7 @@ title: LDAP group links
 
 {{< /details >}}
 
-List, add, and delete [LDAP group links](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
+Use this API to manage LDAP group links. For more information, see [manage group memberships with LDAP](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 ## List LDAP group links
 

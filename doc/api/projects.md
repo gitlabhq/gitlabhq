@@ -12,7 +12,9 @@ title: Projects API
 
 {{< /details >}}
 
-The Projects API provides programmatic access to manage GitLab projects and configure their key settings. A project is a central hub for collaboration where you store code, track issues, and organize team activities.
+Use this API to manage GitLab projects and their associated settings. A project is a central hub for
+collaboration where you store code, track issues, and organize team activities.
+For more information, see [create a project](../user/project/_index.md).
 
 The Projects API contains endpoints that:
 
@@ -23,8 +25,6 @@ The Projects API contains endpoints that:
 - Archive and unarchive projects
 - Transfer projects between namespaces
 - Manage deployment and container registry settings
-
-This page explains how to use the Projects REST API endpoints to interact with [GitLab projects](../user/project/_index.md).
 
 ## Permissions
 

@@ -230,29 +230,26 @@ module Gitlab
 
         # If the parent doesn't exist, or the current user can't access it
         unless parent && current_user.can?(:read_work_item, parent)
-          return _("This parent does not exist or you don't have sufficient permission.")
+          return _("This parent item does not exist or you don't have sufficient permission.")
         end
 
         # If the child has already been added to the parent
         if child_work_item && child_work_item.work_item_parent == parent
-          return format(_('%{child_type} %{child_reference} has already been added to parent %{parent_reference}.'),
+          return format(_('%{child_reference} has already been added to parent %{parent_reference}.'),
             child_reference: child_work_item.to_reference,
-            parent_reference: parent.to_reference,
-            child_type: child_work_item.work_item_type.name)
+            parent_reference: parent.to_reference)
         end
 
         # If the parent is confidential, but the child is not
         if parent.confidential? && !child.confidential?
-          return format(_("Cannot assign a confidential parent to a non-confidential %{child_type}. Make the " \
-            "%{child_type} confidential and try again"), child_type: child.work_item_type&.name || 'Issue')
+          return _("Cannot assign a confidential parent item to a non-confidential child item. Make the child item " \
+            "confidential and try again.")
         end
 
         # Check hierarchy restriction
         return unless child_work_item && !hierarchy_relationship_allowed?(parent, child_work_item)
 
-        format(_("Cannot assign a child %{child_type} to a %{parent_type}"),
-          child_type: child_work_item.work_item_type.name,
-          parent_type: parent.work_item_type.name)
+        _("Cannot assign this child type to parent type.")
       end
 
       def fetch_child_work_item(child)

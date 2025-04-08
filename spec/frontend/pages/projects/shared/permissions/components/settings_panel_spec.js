@@ -131,8 +131,7 @@ describe('Settings Panel', () => {
     findContainerRegistrySettings().findComponent(GlSprintf);
   const findContainerRegistryAccessLevelInput = () =>
     wrapper.find('[name="project[project_feature_attributes][container_registry_access_level]"]');
-  const findPackageAccessLevel = () =>
-    wrapper.find('[data-testid="package-registry-access-level"]');
+  const findPackageAccessLevel = () => wrapper.findByTestId('package-registry-access-level');
   const findPackageRegistryEnabledInput = () => wrapper.find('[name="package_registry_enabled"]');
   const findPackageRegistryAccessLevelHiddenInput = () =>
     wrapper.find(

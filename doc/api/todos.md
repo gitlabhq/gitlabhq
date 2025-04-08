@@ -12,7 +12,7 @@ title: GitLab To-Do List API
 
 {{< /details >}}
 
-Interact with [to-do items](../user/todos.md) using the REST API.
+Use this API to interact with [to-do items](../user/todos.md).
 
 ## Get a list of to-do items
 

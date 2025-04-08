@@ -342,7 +342,7 @@ describe('Pipeline graph wrapper', () => {
 
         await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
 
-        expect(findStageColumnTitle().text()).toBe('');
+        expect(findStageColumnTitle().exists()).toBe(false);
       });
 
       it('saves the view type to local storage', async () => {

@@ -15,6 +15,7 @@ import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
+import eventHub from '~/notes/event_hub';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import {
@@ -292,6 +293,7 @@ export default {
 
           await this.$nextTick();
           handleLocationHash(); // Ensures that we scroll to the hash when async content is loaded
+          eventHub.$emit('showBlobInteractionZones', this.blobInfo.path);
         })
         .catch(() => this.displayError());
     },

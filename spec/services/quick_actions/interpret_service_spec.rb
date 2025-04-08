@@ -3353,7 +3353,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+              expect(message).to eq("This parent item does not exist or you don't have sufficient permission.")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3367,7 +3367,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item_with_parent)
 
               expect(updates).to be_empty
-              expect(message).to eq("Task #{task_work_item_with_parent.to_reference} has already been added to " \
+              expect(message).to eq("#{task_work_item_with_parent.to_reference} has already been added to " \
                 "parent #{parent.to_reference}.")
               expect(task_work_item_with_parent.reload.work_item_parent).to eq parent
             end
@@ -3381,8 +3381,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("Cannot assign a confidential parent to a non-confidential Task. Make the " \
-                "Task confidential and try again")
+              expect(message).to eq("Cannot assign a confidential parent item to a non-confidential child item. Make " \
+                "the child item confidential and try again.")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3395,7 +3395,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("Cannot assign a child Task to a Task")
+              expect(message).to eq("Cannot assign this child type to parent type.")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3408,7 +3408,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             _, updates, message = service.execute(content, task_work_item)
 
             expect(updates).to be_empty
-            expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+            expect(message).to eq("This parent item does not exist or you don't have sufficient permission.")
           end
         end
 

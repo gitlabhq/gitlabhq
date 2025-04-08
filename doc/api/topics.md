@@ -12,7 +12,7 @@ title: Topics API
 
 {{< /details >}}
 
-Interact with project topics using the REST API.
+Use this API to interact with project topics. For more information, see [project topics](../user/project/project_topics.md).
 
 ## List topics
 

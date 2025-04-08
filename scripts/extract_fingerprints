@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Script to extract SQL query fingerprints from auto-explain logs
+require 'json'
+require 'zlib'
+
+if ARGV.size < 2
+  puts "Usage: #{$PROGRAM_NAME} <input_file> <output_file>"
+  exit 1
+end
+
+input_file = ARGV[0]
+output_file = ARGV[1]
+
+unless File.exist?(input_file)
+  puts "Error: Input file not found - #{input_file}"
+  exit 1
+end
+
+fingerprints = Set.new
+
+begin
+  # Handle both compressed and uncompressed files
+  if input_file.end_with?('.gz')
+    Zlib::GzipReader.open(input_file) do |gz|
+      gz.each_line do |line|
+        data = JSON.parse(line)
+        fingerprints.add(data['fingerprint']) if data['fingerprint']
+      rescue JSON::ParserError
+        # empty
+      end
+    end
+  else
+    File.foreach(input_file) do |line|
+      data = JSON.parse(line)
+      fingerprints.add(data['fingerprint']) if data['fingerprint']
+    rescue JSON::ParserError
+      # empty
+    end
+  end
+
+  File.open(output_file, 'w') { |f| fingerprints.each { |fp| f.puts(fp) } }
+rescue StandardError => e
+  puts "Error: #{e.message}"
+  exit 1
+end

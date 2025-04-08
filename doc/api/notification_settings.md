@@ -12,7 +12,7 @@ title: Notification settings API
 
 {{< /details >}}
 
-Change [notification settings](../user/profile/notifications.md) using the REST API.
+Use this API to manage settings for GitLab notifications. For more information, see [notification emails](../user/profile/notifications.md).
 
 ## Valid notification levels
 

@@ -132,7 +132,7 @@ export default {
       hide-button
       is-group
       data-testid="new-group-work-item-modal"
-      :work-item-type-name="$options.WORK_ITEM_TYPE_ENUM_EPIC"
+      :preselected-work-item-type="$options.WORK_ITEM_TYPE_ENUM_EPIC"
       @hideModal="showCreateGroupWorkItemModal = false"
     />
     <create-work-item-modal

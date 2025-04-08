@@ -73,7 +73,7 @@ export default {
       required: false,
       default: false,
     },
-    workItemTypeName: {
+    preselectedWorkItemType: {
       type: String,
       required: false,
       default: null,
@@ -94,7 +94,7 @@ export default {
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
-      selectedWorkItemTypeName: this.workItemTypeName,
+      selectedWorkItemTypeName: this.preselectedWorkItemType,
       shouldDiscardDraft: false,
     };
   },
@@ -126,7 +126,7 @@ export default {
       return newWorkItemPath({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
-        workItemTypeName: this.workItemTypeName,
+        workItemTypeName: this.selectedWorkItemTypeName,
         query: this.newWorkItemPathQuery,
       });
     },
@@ -136,7 +136,7 @@ export default {
       ];
     },
     newWorkItemButtonText() {
-      return this.alwaysShowWorkItemTypeSelect && this.workItemTypeName
+      return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName
         ? sprintfWorkItem(s__('WorkItem|New %{workItemType}'), '')
         : this.newWorkItemText;
     },
@@ -165,7 +165,7 @@ export default {
     hideCreateModal() {
       this.$emit('hideModal');
       this.isCreateModalVisible = false;
-      this.selectedWorkItemTypeName = this.workItemTypeName;
+      this.selectedWorkItemTypeName = this.preselectedWorkItemType;
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
@@ -198,7 +198,7 @@ export default {
       this.hideConfirmationModal();
     },
     handleDiscardDraft(modal) {
-      this.selectedWorkItemTypeName = this.workItemTypeName;
+      this.selectedWorkItemTypeName = this.preselectedWorkItemType;
 
       if (modal === 'createModal') {
         // This is triggered on the create modal when the user didn't update the form,
@@ -317,7 +317,7 @@ export default {
         :parent-id="parentId"
         :show-project-selector="showProjectSelector"
         :title="title"
-        :work-item-type-name="workItemTypeName"
+        :work-item-type-name="selectedWorkItemTypeName"
         :related-item="relatedItem"
         :should-discard-draft="shouldDiscardDraft"
         :is-modal="true"

@@ -713,6 +713,12 @@ module ApplicationSettingsHelper
     # NOTE: description is overridden in EE
     _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.')
   end
+
+  def deletion_protection_data
+    {
+      deletion_adjourned_period: @application_setting[:deletion_adjourned_period]
+    }
+  end
 end
 
 ApplicationSettingsHelper.prepend_mod_with('ApplicationSettingsHelper')

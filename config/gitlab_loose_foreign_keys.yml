@@ -555,6 +555,10 @@ sbom_components:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+sbom_graph_paths:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 sbom_occurrences:
   - table: p_ci_pipelines
     column: pipeline_id

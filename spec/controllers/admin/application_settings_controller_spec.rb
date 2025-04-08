@@ -461,6 +461,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         expect(application_settings.reload.ci_max_includes).to eq(200)
       end
     end
+
+    context 'deletion adjourned period' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates deletion_adjourned_period setting' do
+        put :update, params: { application_setting: { deletion_adjourned_period: 6 } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.deletion_adjourned_period).to eq(6)
+      end
+    end
   end
 
   describe 'PUT #reset_registration_token', feature_category: :user_management do

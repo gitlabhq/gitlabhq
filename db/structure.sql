@@ -15732,7 +15732,8 @@ CREATE TABLE incident_management_timeline_event_tag_links (
     timeline_event_id bigint NOT NULL,
     timeline_event_tag_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_e693cb4516 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE incident_management_timeline_event_tag_links_id_seq
@@ -18026,7 +18027,9 @@ CREATE TABLE namespace_settings (
     jwt_ci_cd_job_token_opted_out boolean DEFAULT false NOT NULL,
     require_dpop_for_manage_api_endpoints boolean DEFAULT true NOT NULL,
     job_token_policies_enabled boolean DEFAULT false NOT NULL,
+    security_policies jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
+    CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
 );
@@ -22313,6 +22316,25 @@ CREATE SEQUENCE sbom_components_id_seq
     CACHE 1;
 
 ALTER SEQUENCE sbom_components_id_seq OWNED BY sbom_components.id;
+
+CREATE TABLE sbom_graph_paths (
+    id bigint NOT NULL,
+    ancestor_id bigint NOT NULL,
+    descendant_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    path_length integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE sbom_graph_paths_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_graph_paths_id_seq OWNED BY sbom_graph_paths.id;
 
 CREATE TABLE sbom_occurrences (
     id bigint NOT NULL,
@@ -27642,6 +27664,8 @@ ALTER TABLE ONLY sbom_component_versions ALTER COLUMN id SET DEFAULT nextval('sb
 
 ALTER TABLE ONLY sbom_components ALTER COLUMN id SET DEFAULT nextval('sbom_components_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_graph_paths ALTER COLUMN id SET DEFAULT nextval('sbom_graph_paths_id_seq'::regclass);
+
 ALTER TABLE ONLY sbom_occurrences ALTER COLUMN id SET DEFAULT nextval('sbom_occurrences_id_seq'::regclass);
 
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities ALTER COLUMN id SET DEFAULT nextval('sbom_occurrences_vulnerabilities_id_seq'::regclass);
@@ -30616,6 +30640,9 @@ ALTER TABLE ONLY sbom_component_versions
 
 ALTER TABLE ONLY sbom_components
     ADD CONSTRAINT sbom_components_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sbom_graph_paths
+    ADD CONSTRAINT sbom_graph_paths_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT sbom_occurrences_pkey PRIMARY KEY (id);
@@ -36959,6 +36986,12 @@ CREATE INDEX index_sbom_component_versions_on_organization_id ON sbom_component_
 
 CREATE INDEX index_sbom_components_on_organization_id ON sbom_components USING btree (organization_id);
 
+CREATE INDEX index_sbom_graph_paths_on_ancestor_id ON sbom_graph_paths USING btree (ancestor_id);
+
+CREATE INDEX index_sbom_graph_paths_on_descendant_id ON sbom_graph_paths USING btree (descendant_id);
+
+CREATE INDEX index_sbom_graph_paths_on_project_id_and_descendant_id ON sbom_graph_paths USING btree (project_id, descendant_id);
+
 CREATE INDEX index_sbom_occurr_on_project_id_and_component_version_id_and_id ON sbom_occurrences USING btree (project_id, component_version_id, id);
 
 CREATE INDEX index_sbom_occurrences_on_component_id_and_id ON sbom_occurrences USING btree (component_id, id);
@@ -43170,6 +43203,9 @@ ALTER TABLE ONLY targeted_message_dismissals
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_c49c83dd77 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY sbom_graph_paths
+    ADD CONSTRAINT fk_c4c7d16f3e FOREIGN KEY (ancestor_id) REFERENCES sbom_occurrences(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY wiki_repository_states
     ADD CONSTRAINT fk_c558ca51b8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -43448,6 +43484,9 @@ ALTER TABLE ONLY fork_networks
 
 ALTER TABLE ONLY packages_conan_package_references
     ADD CONSTRAINT fk_e7b5f3afc7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY sbom_graph_paths
+    ADD CONSTRAINT fk_e83002e9da FOREIGN KEY (descendant_id) REFERENCES sbom_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY error_tracking_error_events
     ADD CONSTRAINT fk_e84882273e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

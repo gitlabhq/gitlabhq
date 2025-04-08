@@ -15,6 +15,7 @@ RSpec.describe API::Entities::SSHKey, feature_category: :system_access do
         title: key.title,
         created_at: key.created_at,
         expires_at: key.expires_at,
+        last_used_at: key.last_used_at,
         key: key.publishable_key,
         usage_type: 'auth_and_signing'
       )

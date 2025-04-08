@@ -53451,6 +53451,10 @@ definitions:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
       key:
         type: string
         example: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==
@@ -53515,6 +53519,10 @@ definitions:
         format: date-time
         example: '2015-09-03T07:24:44.627Z'
       expires_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'
@@ -65772,6 +65780,10 @@ definitions:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
       key:
         type: string
         example: |-
@@ -67326,6 +67338,10 @@ definitions:
         format: date-time
         example: '2015-09-03T07:24:44.627Z'
       expires_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'

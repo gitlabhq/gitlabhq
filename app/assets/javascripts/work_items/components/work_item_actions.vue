@@ -693,7 +693,7 @@ export default {
         @action="handleToggleReportAbuseModal"
       >
         <template #list-item>
-          <gl-icon name="review-warning" class="gl-mr-2" variant="subtle" />
+          <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
           {{ $options.i18n.reportAbuse }}
         </template>
       </gl-disclosure-dropdown-item>
@@ -791,7 +791,7 @@ export default {
       :always-show-work-item-type-select="!isGroup"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :work-item-type-name="workItemTypeNameEnum"
+      :preselected-work-item-type="workItemTypeNameEnum"
       :show-project-selector="!isEpic"
       :is-group="isGroup"
       hide-button

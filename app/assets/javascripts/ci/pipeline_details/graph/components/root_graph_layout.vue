@@ -23,10 +23,10 @@ export default {
   <div>
     <gl-card
       class="ci-card gl-rounded-lg gl-bg-section"
-      header-class="gl-rounded-lg gl-px-0 gl-py-0 gl-bg-section gl-border-b-0"
-      body-class="gl-pt-2 gl-pb-0 gl-px-2"
+      header-class="gl-rounded-t-lg gl-px-0 gl-pt-0 gl-pb-2 gl-bg-section gl-border-b-section"
+      body-class="gl-pt-2 gl-pb-0 gl-px-0"
     >
-      <template #header>
+      <template v-if="$scopedSlots.stages" #header>
         <slot name="stages"></slot>
       </template>
 

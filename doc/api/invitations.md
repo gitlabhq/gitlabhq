@@ -12,8 +12,7 @@ title: Invitations API
 
 {{< /details >}}
 
-Use the Invitations API to invite or add users to a group or project, and to list pending
-invitations.
+Use this API to manage invitations and add users to a [group](../user/group/_index.md#add-users-to-a-group) or [project](../user/project/members/_index.md).
 
 ## Valid access levels
 

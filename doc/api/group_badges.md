@@ -12,6 +12,8 @@ title: Group badges API
 
 {{< /details >}}
 
+Use this API to interact with group badges. For more information, see [group badges](../user/project/badges.md#group-badges).
+
 ## Placeholder tokens
 
 [Badges](../user/project/badges.md) support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:

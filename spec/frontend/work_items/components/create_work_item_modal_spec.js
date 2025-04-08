@@ -40,13 +40,13 @@ describe('CreateWorkItemModal', () => {
   const createComponent = ({
     asDropdownItem = false,
     hideButton = false,
-    workItemTypeName = 'EPIC',
+    preselectedWorkItemType = 'EPIC',
     relatedItem = null,
     alwaysShowWorkItemTypeSelect = false,
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
-        workItemTypeName,
+        preselectedWorkItemType,
         asDropdownItem,
         hideButton,
         relatedItem,
@@ -111,8 +111,8 @@ describe('CreateWorkItemModal', () => {
       expect(findTrigger().exists()).toBe(false);
     });
 
-    it('has text of "New item" when the `alwaysShowWorkItemTypeSelect` prop is `true` and we also have a `workItemTypeName`', () => {
-      createComponent({ alwaysShowWorkItemTypeSelect: true, workItemTypeName: 'ISSUE' });
+    it('has text of "New item" when the `alwaysShowWorkItemTypeSelect` prop is `true` and we also have a `preselectedWorkItemType`', () => {
+      createComponent({ alwaysShowWorkItemTypeSelect: true, preselectedWorkItemType: 'ISSUE' });
 
       expect(findTrigger().text()).toBe('New item');
     });
@@ -148,9 +148,9 @@ describe('CreateWorkItemModal', () => {
     expect(findCreateModal().props('visible')).toBe(false);
   });
 
-  for (const [workItemTypeName, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
-    it(`has link to new work item page in modal header for ${workItemTypeName}`, async () => {
-      createComponent({ workItemTypeName });
+  for (const [preselectedWorkItemType, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
+    it(`has link to new work item page in modal header for ${preselectedWorkItemType}`, async () => {
+      createComponent({ preselectedWorkItemType });
 
       const routeParamName = vals.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
 

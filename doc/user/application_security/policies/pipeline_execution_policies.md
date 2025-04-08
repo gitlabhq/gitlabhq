@@ -212,6 +212,55 @@ To customize policy enforcement, you can define a policy's scope to either inclu
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#scope).
 
+## Pipeline execution policy limits
+
+For performance reasons, GitLab limits the number of pipeline execution policies that can run as part of a security policy project or pipeline. By default, these are the maximum number of pipelines execution policies:
+
+- Five per security policy project
+- Five per pipeline
+
+### Adjust policy limits
+
+{{< history >}}
+
+- [Configurable limits introduced](https://gitlab.com/groups/gitlab-org/-/epics/16929) in GitLab 17.11.
+
+{{< /history >}}
+
+The *Maximum 5 pipeline execution policies per security policy project* limit can be adjusted at different levels:
+
+#### Adjust the limit for an instance
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+On GitLab Self-Managed instances, administrators can adjust the limits for the entire instance, up to a maximum of 20 pipeline execution policies:
+
+1. Go to **Admin Area** > **Settings** > **Security and compliance**.
+1. Expand the **Security policies** section.
+1. Set a new value for **Maximum number of pipeline execution policies allowed per security policy configuration**.
+1. Select **Save changes**.
+
+#### Adjust the limit for a top-level group
+
+GitLab instance administrators can modify the limits for top-level groups. These group limits can exceed the configured or default instance limits.
+
+{{< alert type="note" >}}
+Increasing these limits can affect system performance, especially for complex policies or when applying many policies simultaneously.
+{{< /alert >}}
+
+To adjust the limit for a top-level group:
+
+1. Go to **Admin Area** > **Overview** > **Groups**.
+1. In the row of the top-level group you want to modify, select **Edit**.
+1. Set a new value for **Maximum number of pipeline execution policies allowed per security policy configuration**.
+1. Select **Save changes**.
+
+When the limit for an individual group is set to zero, the system will fall back to using the instance-wide default value. This ensures that groups with a zero limit can still create pipeline execution policies according to the instance default configuration.
+
 ## Manage access to the CI/CD configuration
 
 When you enforce pipeline execution policies on a project, users that trigger pipelines must have at least read-only access to the project that contains the policy CI/CD configuration. You can grant access to the project manually or automatically.

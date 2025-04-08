@@ -12,7 +12,7 @@ title: Namespaces API
 
 {{< /details >}}
 
-Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [Namespaces](../user/namespace/_index.md).
+Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [namespaces](../user/namespace/_index.md).
 
 This API uses [Pagination](rest/_index.md#pagination) to filter results.
 

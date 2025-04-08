@@ -917,7 +917,7 @@ export default {
         <template #new-issue-button>
           <create-work-item-modal
             :is-group="isGroup"
-            :work-item-type-name="workItemTypeName"
+            :preselected-work-item-type="workItemTypeName"
             @workItemCreated="handleWorkItemCreated"
           />
         </template>

@@ -382,7 +382,7 @@ export default {
       :show-project-selector="isGroup"
       :title="childTitle"
       :visible="visible"
-      :work-item-type-name="childItemType"
+      :preselected-work-item-type="childItemType"
       @hideModal="visible = false"
       @workItemCreated="handleWorkItemCreated"
     />

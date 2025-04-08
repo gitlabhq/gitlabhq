@@ -28,6 +28,13 @@
       ],
       "format": "date-time"
     },
+    "last_used_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
     "key": {
       "type": "string"
     },

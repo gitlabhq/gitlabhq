@@ -6,7 +6,6 @@ import {
   GlFormRadio,
   GlSprintf,
 } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { kebabCase, merge } from 'lodash';
@@ -16,6 +15,7 @@ import { createAlert } from '~/alert';
 import * as urlUtility from '~/lib/utils/url_utility';
 import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import searchQuery from '~/pages/projects/forks/new/queries/search_forkable_namespaces.query.graphql';
 import ProjectNamespace from '~/pages/projects/forks/new/components/project_namespace.vue';
 import { START_RULE, CONTAINS_RULE } from '~/projects/project_name_rules';
@@ -119,8 +119,8 @@ describe('ForkForm component', () => {
       });
     };
 
-  const createComponent = createComponentFactory(shallowMount);
-  const createFullComponent = createComponentFactory(mount);
+  const createComponent = createComponentFactory(shallowMountExtended);
+  const createFullComponent = createComponentFactory(mountExtended);
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
@@ -133,23 +133,21 @@ describe('ForkForm component', () => {
     axiosMock.restore();
   });
 
-  const findPrivateRadio = () => wrapper.find('[data-testid="radio-private"]');
-  const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
-  const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
-  const findForkNameInput = () => wrapper.find('[data-testid="fork-name-input"]');
+  const findPrivateRadio = () => wrapper.findByTestId('radio-private');
+  const findInternalRadio = () => wrapper.findByTestId('radio-internal');
+  const findPublicRadio = () => wrapper.findByTestId('radio-public');
+  const findForkNameInput = () => wrapper.findByTestId('fork-name-input');
   const findForkUrlInput = () => wrapper.findComponent(ProjectNamespace);
-  const findForkSlugInput = () => wrapper.find('[data-testid="fork-slug-input"]');
-  const findForkDescriptionTextarea = () =>
-    wrapper.find('[data-testid="fork-description-textarea"]');
-  const findVisibilityRadioGroup = () =>
-    wrapper.find('[data-testid="fork-visibility-radio-group"]');
-  const findBranchesRadioGroup = () => wrapper.find('[data-testid="fork-branches-radio-group"]');
+  const findForkSlugInput = () => wrapper.findByTestId('fork-slug-input');
+  const findForkDescriptionTextarea = () => wrapper.findByTestId('fork-description-textarea');
+  const findVisibilityRadioGroup = () => wrapper.findByTestId('fork-visibility-radio-group');
+  const findBranchesRadioGroup = () => wrapper.findByTestId('fork-branches-radio-group');
 
   it('will go to cancelPath when click cancel button', () => {
     createComponent();
 
     const { cancelPath } = DEFAULT_PROVIDE;
-    const cancelButton = wrapper.find('[data-testid="cancel-button"]');
+    const cancelButton = wrapper.findByTestId('cancel-button');
 
     expect(cancelButton.attributes('href')).toBe(cancelPath);
   });
