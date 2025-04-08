@@ -48,7 +48,7 @@ build-gdk-image:
     - .base-image-build-buildx
     - .build-images:rules:build-gdk-image
   tags:
-    - docker
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
   stage: build-images
   needs:
     - job: gdk:compile-test-assets
