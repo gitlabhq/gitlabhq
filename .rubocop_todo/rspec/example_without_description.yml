@@ -3,7 +3,6 @@ RSpec/ExampleWithoutDescription:
   Exclude:
     - 'ee/spec/bin/custom_ability_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_pro_component_spec.rb'
-    - 'ee/spec/controllers/ee/dashboard/projects_controller_spec.rb'
     - 'ee/spec/controllers/ee/search_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/ci_cd_analytics_controller_spec.rb'
     - 'ee/spec/controllers/projects_controller_spec.rb'

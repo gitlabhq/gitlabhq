@@ -24,7 +24,7 @@
       = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold_block_seat_overages"
       -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
       = dispensable_render_if_exists "layouts/header/account_notification"
-      = dispensable_render_if_exists "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
+      = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
       = dispensable_render "shared/projects/inactive_project_deletion_alert"
       = dispensable_render "shared/projects/archived_alert"
       = dispensable_render "layouts/header/read_only_banner"

@@ -67,7 +67,6 @@ Gitlab/NoFindInWorkers:
     - 'ee/app/workers/admin_emails_worker.rb'
     - 'ee/app/workers/analytics/devops_adoption/create_snapshot_worker.rb'
     - 'ee/app/workers/approval_rules/external_approval_rule_payload_worker.rb'
-    - 'ee/app/workers/audit_events/audit_event_streaming_worker.rb'
     - 'ee/app/workers/ci/runners/export_usage_csv_worker.rb'
     - 'ee/app/workers/compliance_management/chain_of_custody_report_worker.rb'
     - 'ee/app/workers/compliance_management/framework_export_mailer_worker.rb'

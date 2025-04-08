@@ -59,6 +59,6 @@ export default {
     :selected="fileBrowserVisible"
     @click="toggleFileBrowserVisibility"
   >
-    <gl-animated-sidebar-icon :is-on="fileBrowserVisible" />
+    <gl-animated-sidebar-icon :is-on="fileBrowserVisible" class="gl-button-icon" />
   </gl-button>
 </template>

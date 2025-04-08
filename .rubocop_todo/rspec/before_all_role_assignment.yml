@@ -267,7 +267,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/lib/ee/gitlab/import_export/project/tree_saver_spec.rb'
     - 'ee/spec/lib/elastic/latest/user_instance_proxy_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/loader_spec.rb'
-    - 'ee/spec/lib/gitlab/code_owners/validator_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/gitlab_documentation/executor_spec.rb'

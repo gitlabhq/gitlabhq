@@ -152,6 +152,7 @@ export default {
     <gl-animated-todo-icon
       :is-on="pendingTodo"
       :class="{ '!gl-text-status-info': pendingTodo }"
+      class="gl-button-icon"
       :name="buttonIcon"
     />
   </gl-button>

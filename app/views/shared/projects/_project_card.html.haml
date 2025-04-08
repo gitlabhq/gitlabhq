@@ -83,7 +83,7 @@
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-          = render_if_exists 'shared/projects/badges', project: project
+          = render 'shared/projects/badges', project: project
       .updated-note.gl-text-sm.gl-whitespace-nowrap.gl-justify-start.gl-text-subtle
         %span
           = _('Updated')

@@ -2105,6 +2105,10 @@ class Project < ApplicationRecord
     forked_from_project || fork_network&.root_project
   end
 
+  def valid_lfs_oids(oids_to_check)
+    lfs_objects.where(oid: oids_to_check).pluck(:oid)
+  end
+
   def lfs_objects_for_repository_types(*types)
     LfsObject
       .joins(:lfs_objects_projects)

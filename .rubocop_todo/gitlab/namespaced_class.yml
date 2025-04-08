@@ -981,8 +981,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/services/timebox_report_service.rb'
     - 'ee/app/validators/ldap_filter_validator.rb'
     - 'ee/app/workers/active_user_count_threshold_worker.rb'
-    - 'ee/app/workers/adjourned_group_deletion_worker.rb'
-    - 'ee/app/workers/adjourned_projects_deletion_cron_worker.rb'
     - 'ee/app/workers/admin_emails_worker.rb'
     - 'ee/app/workers/create_github_webhook_worker.rb'
     - 'ee/app/workers/elastic_association_indexer_worker.rb'

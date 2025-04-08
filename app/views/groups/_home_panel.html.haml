@@ -11,7 +11,7 @@
         %span.visibility-icon.gl-text-subtle.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
           = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
         = render_if_exists 'shared/tier_badge', source: @group
-        = render_if_exists 'shared/groups/badges', group: @group
+        = render 'shared/groups/badges', group: @group
 
     - if current_user
       .home-panel-buttons.gl-flex.md:gl-justify-end.gl-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }

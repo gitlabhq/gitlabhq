@@ -205,6 +205,13 @@ go:build:
 
 #### Gradle
 
+For Gradle projects use either of the following methods to create a dependency graph.
+
+- Nebula Gradle Dependency Lock Plugin
+- Gradle's HtmlDependencyReportTask
+
+##### Dependency Lock Plugin
+
 To enable the CI/CD component on a Gradle project:
 
 1. Edit the `build.gradle` or `build.gradle.kts` to use the
@@ -245,6 +252,71 @@ build:
     paths:
       - "**/dependencies.lock"
 
+```
+
+##### HtmlDependencyReportTask
+
+The [HtmlDependencyReportTask](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)
+is an alternative way to get the list of dependencies for a Gradle project (tested with `gradle`
+versions 4 through 8). This method gives information about dependencies which are both transitive
+and direct. To enable use of this method with dependency scanning the artifact from running the
+`gradle htmlDependencyReport` task needs to be available.
+
+```yaml
+stages:
+  - build
+  - test
+
+# Define the image that contains Java and Gradle
+image: gradle:8.0-jdk11
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  stage: build
+  script:
+    - gradle --init-script report.gradle htmlDependencyReport
+  # The gradle task writes the dependency report as a javascript file under
+  # build/reports/project/dependencies. Because the file has an un-standardized
+  # name, the after_script finds and renames the file to
+  # `gradle-html-dependency-report.js` copying it to the  same directory as
+  # `build.gradle`
+  after_script:
+    - |
+      reports_dir=build/reports/project/dependencies
+      while IFS= read -r -d '' src; do
+        dest="${src%%/$reports_dir/*}/gradle-html-dependency-report.js"
+        cp $src $dest
+      done < <(find . -type f -path "*/${reports_dir}/*.js" -not -path "*/${reports_dir}/js/*" -print0)
+  # Pass html report artifact to subsequent dependency scanning stage.
+  artifacts:
+    paths:
+      - "**/gradle-html-dependency-report.js"
+
+```
+
+The command above uses the `report.gradle` file and can be supplied through `--init-script` or its contents can be added to `build.gradle` directly:
+
+```kotlin
+allprojects {
+    apply plugin: 'project-report'
+}
+```
+
+{{< alert type="note" >}}
+
+The dependency report may indicate that dependencies for some configurations `FAILED` to be
+resolved. In this case dependency scanning logs a warning but does not fail the job. If you prefer
+to have the pipeline fail if resolution failures are reported, add the following extra steps to the
+`build` example above.
+
+{{< /alert >}}
+
+```shell
+while IFS= read -r -d '' file; do
+  grep --quiet -E '"resolvable":\s*"FAILED' $file && echo "Dependency report has dependencies with FAILED resolution status" && exit 1
+done < <(find . -type f -path "*/gradle-html-dependency-report.js -print0)
 ```
 
 #### Maven

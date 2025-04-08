@@ -741,7 +741,7 @@ In GitLab 18.6, we'll remove the `user_profile_visiblity_updated` event type.
 
 <div class="deprecation breaking-change" data-milestone="18.6">
 
-### Remove compliance standards adherence dashboard
+### Replace compliance standards adherence dashboard with compliance status dashboard
 
 <div class="deprecation-notes">
 
@@ -759,7 +759,7 @@ In GitLab 17.11, we released:
 These features give all of the same functionality as the compliance standards adherence dashboard, but you can
 configure the adherence that you require.
 
-In GitLab 18.6, we'll remove the compliance standards adherence dashboard.
+In GitLab 18.6, we'll replace the compliance standards adherence dashboard with the compliance status dashboard for more accurate reporting on requirements and controls.
 
 </div>
 </div>

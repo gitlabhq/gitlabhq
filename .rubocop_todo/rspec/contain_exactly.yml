@@ -94,7 +94,6 @@ RSpec/ContainExactly:
     - 'spec/graphql/resolvers/namespace_projects_resolver_spec.rb'
     - 'spec/graphql/resolvers/repository_branch_names_resolver_spec.rb'
     - 'spec/graphql/types/ci/analytics_job_status_enum_spec.rb'
-    - 'spec/graphql/types/ci/catalog/resources/components/input_type_enum_spec.rb'
     - 'spec/graphql/types/ci/freeze_period_status_enum_spec.rb'
     - 'spec/graphql/types/ci/job_artifact_file_type_enum_spec.rb'
     - 'spec/graphql/types/ci/job_status_enum_spec.rb'

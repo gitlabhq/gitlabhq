@@ -9957,4 +9957,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:model) { create(:project, pool_repository: parent) }
     end
   end
+
+  describe '#valid_lfs_oids' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:lfs_object) { create(:lfs_object) }
+    let_it_be(:another_lfs_object) { create(:lfs_object) }
+
+    let(:oids) { [lfs_object.oid, another_lfs_object.oid] }
+
+    before do
+      create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+    end
+
+    it 'returns only the OIDs of LFS objects owned by the project' do
+      expect(project.valid_lfs_oids(oids)).to eq([lfs_object.oid])
+    end
+  end
 end

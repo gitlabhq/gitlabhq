@@ -61,6 +61,42 @@ RSpec.describe MergeRequests::LinkLfsObjectsService, :sidekiq_inline, feature_ca
 
             execute
           end
+
+          context 'when there are an LFS object that does not belong to the source project' do
+            before do
+              allow_next_instance_of(Gitlab::Git::LfsChanges) do |instance|
+                allow(instance).to receive(:new_pointers)
+                .and_return([
+                  instance_double(Gitlab::Git::Blob, lfs_oid: "8b12507783d5becacbf2ebe5b01a60024d8728a8f86dcc818bce699e8b3320bc"),
+                  instance_double(Gitlab::Git::Blob, lfs_oid: "94a72c074cfe574742c9e99e863322f73feff82981d065ff65a0308f44f19f62"),
+                  instance_double(Gitlab::Git::Blob, lfs_oid: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") # this LFS object doesn't belong to the source project
+                ])
+              end
+            end
+
+            it 'only links LFS objects that belong to the source project' do
+              expect_next_instance_of(Projects::LfsPointers::LfsLinkService) do |service|
+                expect(service).to receive(:execute).with(
+                  %w[
+                    8b12507783d5becacbf2ebe5b01a60024d8728a8f86dcc818bce699e8b3320bc
+                    94a72c074cfe574742c9e99e863322f73feff82981d065ff65a0308f44f19f62
+                  ])
+              end
+
+              execute
+            end
+
+            it 'calls valid_lfs_oids method two times when BATCH_SIZE is 2' do
+              stub_const("#{described_class}::BATCH_SIZE", 2)
+
+              expect(source_project)
+                .to receive(:valid_lfs_oids)
+                .twice
+                .and_call_original
+
+              execute
+            end
+          end
         end
 
         context 'but there are no LFS objects added' do

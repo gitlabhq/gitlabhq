@@ -10,7 +10,6 @@ Lint/SymbolConversion:
     - 'app/graphql/mutations/snippets/base.rb'
     - 'app/graphql/resolvers/award_emoji/base_votes_count_resolver.rb'
     - 'app/graphql/resolvers/environments/last_deployment_resolver.rb'
-    - 'app/graphql/resolvers/user_discussions_count_resolver.rb'
     - 'app/graphql/resolvers/user_notes_count_resolver.rb'
     - 'app/helpers/notifications_helper.rb'
     - 'app/helpers/projects_helper.rb'

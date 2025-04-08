@@ -105,7 +105,6 @@ Style/StringConcatenation:
     - 'qa/qa/tools/generate_perf_testdata.rb'
     - 'scripts/perf/gc/print_gc_stats.rb'
     - 'scripts/perf/query_limiting_report.rb'
-    - 'spec/config/settings_spec.rb'
     - 'spec/controllers/concerns/redirects_for_missing_path_on_tree_spec.rb'
     - 'spec/controllers/groups/uploads_controller_spec.rb'
     - 'spec/controllers/projects/labels_controller_spec.rb'

@@ -67,10 +67,12 @@ GitLab 16.8.
     have the `api` scope.
   - For GitLab 15.0 and earlier source instances, the personal access token must
     have both the `api` and `read_repository` scopes.
-- You must have the Owner role on the source group to migrate from.
-- You must have a role in the destination namespace that enables you to
-  [create a subgroup](../subgroups/_index.md#create-a-subgroup) in that
-  namespace.
+- You must have the required permissions on the source and destination instances. For:
+  - Most users, you need:
+    - The Owner role on the source group to migrate from.
+    - A role in the destination namespace that allows you to [create a subgroup](../subgroups/_index.md#create-a-subgroup) in that namespace.
+  - Administrators of both instances without the required roles, you can instead start the import by using
+    [the API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
 - To import project snippets, ensure snippets are
   [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
 - To import items stored in object storage, you must either:

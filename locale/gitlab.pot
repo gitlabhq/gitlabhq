@@ -67908,6 +67908,9 @@ msgstr ""
 msgid "WorkItem|No child items are currently open."
 msgstr ""
 
+msgid "WorkItem|No custom fields have been archived. Archive custom fields to remove them from active work items while preserving their data."
+msgstr ""
+
 msgid "WorkItem|No items"
 msgstr ""
 
@@ -68194,6 +68197,9 @@ msgid "WorkItem|This %{workItemType} will be closed when any of the following is
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} will be closed when the following is merged."
+msgstr ""
+
+msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."

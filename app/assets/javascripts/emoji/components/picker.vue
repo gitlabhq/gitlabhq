@@ -168,7 +168,7 @@ export default {
           @focusout="onButtonFocusLeave"
         >
           <slot name="button-content">
-            <gl-animated-smile-icon :is-on="smileIcon" />
+            <gl-animated-smile-icon :is-on="smileIcon" class="gl-button-icon" />
           </slot>
         </gl-button>
       </template>

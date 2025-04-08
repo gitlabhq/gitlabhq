@@ -27,7 +27,6 @@ Lint/UnusedMethodArgument:
     - 'app/graphql/resolvers/clusters/agent_activity_events_resolver.rb'
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
     - 'app/graphql/resolvers/error_tracking/sentry_error_collection_resolver.rb'
-    - 'app/graphql/resolvers/last_commit_resolver.rb'
     - 'app/graphql/resolvers/merge_request_resolver.rb'
     - 'app/graphql/resolvers/project_resolver.rb'
     - 'app/graphql/resolvers/projects/branch_rules_resolver.rb'

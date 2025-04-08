@@ -88,15 +88,13 @@ module GroupsHelper
 
   # Overridden in EE
   def remove_group_message(group, permanently_remove)
-    content_tag :div do
-      content = ''.html_safe
-      content << content_tag(:span, _("You are about to delete the group %{group_name}.") % { group_name: group.name })
+    content = ''.html_safe
+    content << content_tag(:span, format(_("You are about to delete the group %{group_name}."), group_name: group.name))
 
-      additional_content = additional_removed_items(group)
-      content << additional_content if additional_content.present?
+    additional_content = additional_removed_items(group)
+    content << additional_content if additional_content.present?
 
-      content << remove_group_warning
-    end
+    content << remove_group_warning
   end
 
   def additional_removed_items(group)

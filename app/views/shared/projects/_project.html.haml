@@ -81,7 +81,7 @@
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-          = render_if_exists 'shared/projects/badges', project: project
+          = render 'shared/projects/badges', project: project
           - if stars
             = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
@@ -99,7 +99,7 @@
         %span.icon-wrapper.pipeline-status
           = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-      = render_if_exists 'shared/projects/badges', project: project
+      = render 'shared/projects/badges', project: project
       - if stars
         = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} star', '%{project} has %{number} stars', project.star_count), number: project.star_count, project: project.name) } do
           = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')

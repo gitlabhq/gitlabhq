@@ -34,7 +34,7 @@
             %th.border-bottom{ role: 'cell' }= _('Migration')
             %th.border-bottom{ role: 'cell' }= _('Progress')
             %th.border-bottom{ role: 'cell' }= _('Status')
-            %th.border-bottom{ role: 'cell' }
+            %th.border-bottom{ role: 'cell' }= _('Actions')
         %tbody
           = render partial: 'migration', collection: @migrations
     = paginate_collection @migrations

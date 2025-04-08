@@ -212,7 +212,11 @@ export default {
       class="hide-collapsed"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-animated-todo-icon :is-on="hasTodo" :class="{ '!gl-text-status-info': hasTodo }" />
+      <gl-animated-todo-icon
+        :is-on="hasTodo"
+        :class="{ '!gl-text-status-info': hasTodo }"
+        class="gl-button-icon"
+      />
     </todo-button>
     <todo-button
       v-else
@@ -234,7 +238,11 @@ export default {
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-animated-todo-icon :is-on="hasTodo" :class="{ '!gl-text-status-info': hasTodo }" />
+      <gl-animated-todo-icon
+        :is-on="hasTodo"
+        :class="{ '!gl-text-status-info': hasTodo }"
+        class="gl-button-icon"
+      />
     </gl-button>
   </div>
 </template>

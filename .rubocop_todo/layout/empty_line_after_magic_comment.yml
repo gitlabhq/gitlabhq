@@ -450,7 +450,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/lib/gitlab/x509/tag_spec.rb'
     - 'spec/lib/security/report_schema_version_matcher_spec.rb'
     - 'spec/models/analytics/cycle_analytics/aggregation_spec.rb'
-    - 'spec/models/concerns/loose_index_scan_spec.rb'
     - 'spec/models/dependency_proxy/blob_spec.rb'
     - 'spec/models/dependency_proxy/manifest_spec.rb'
     - 'spec/models/dependency_proxy/registry_spec.rb'

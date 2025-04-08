@@ -35,7 +35,6 @@ Style/GuardClause:
     - 'app/finders/snippets_finder.rb'
     - 'app/graphql/mutations/design_management/delete.rb'
     - 'app/graphql/mutations/notes/create/note.rb'
-    - 'app/graphql/mutations/notes/reposition_image_diff_note.rb'
     - 'app/graphql/mutations/packages/destroy_files.rb'
     - 'app/graphql/resolvers/board_list_issues_resolver.rb'
     - 'app/graphql/resolvers/projects/jira_projects_resolver.rb'

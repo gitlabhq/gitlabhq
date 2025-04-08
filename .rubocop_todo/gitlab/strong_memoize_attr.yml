@@ -315,7 +315,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/services/incident_management/pending_escalations/process_service.rb'
     - 'ee/app/services/iterations/create_service.rb'
     - 'ee/app/services/merge_requests/update_blocks_service.rb'
-    - 'ee/app/services/projects/restore_service.rb'
     - 'ee/app/services/protected_environments/base_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerabilities/mark_resolved_as_detected.rb'
     - 'ee/app/services/security/report_summary_service.rb'

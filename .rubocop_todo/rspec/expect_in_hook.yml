@@ -24,7 +24,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/lib/gitlab/auth/smartcard/certificate_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'
-    - 'ee/spec/lib/gitlab/code_owners/validator_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'

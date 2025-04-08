@@ -16,7 +16,6 @@ RSpec/PendingWithoutReason:
     - 'spec/features/boards/multi_select_spec.rb'
     - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'
     - 'spec/features/merge_request/user_merges_merge_request_spec.rb'
-    - 'spec/features/merge_request/user_posts_notes_spec.rb'
     - 'spec/features/merge_request/user_resolves_conflicts_spec.rb'
     - 'spec/features/merge_request/user_sees_mini_pipeline_graph_spec.rb'
     - 'spec/features/users/terms_spec.rb'

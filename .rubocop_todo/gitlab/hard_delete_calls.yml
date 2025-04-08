@@ -7,8 +7,6 @@ Gitlab/HardDeleteCalls:
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/organizations/groups_controller.rb'
     - 'app/controllers/projects_controller.rb'
-    - 'app/services/groups/mark_for_deletion_service.rb'
-    - 'app/services/projects/mark_for_deletion_service.rb'
     - 'app/services/projects/overwrite_project_service.rb'
     - 'app/services/users/destroy_service.rb'
     - 'app/workers/projects/inactive_projects_deletion_cron_worker.rb'

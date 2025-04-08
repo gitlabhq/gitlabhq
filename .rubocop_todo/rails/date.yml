@@ -87,7 +87,6 @@ Rails/Date:
     - 'ee/spec/requests/custom_roles/manage_group_access_tokens/request_spec.rb'
     - 'ee/spec/requests/custom_roles/manage_project_access_tokens/request_spec.rb'
     - 'ee/spec/requests/git_http_spec.rb'
-    - 'ee/spec/requests/gitlab_subscriptions/api/internal/namespaces_spec.rb'
     - 'ee/spec/requests/gitlab_subscriptions/api/internal/upcoming_reconciliations_spec.rb'
     - 'ee/spec/requests/gitlab_subscriptions/api/internal/users_spec.rb'
     - 'ee/spec/requests/groups/settings/access_tokens_controller_spec.rb'
