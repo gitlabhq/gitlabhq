@@ -471,9 +471,9 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#redis_usage_data' do
     it 'records duration' do
-      expect(described_class).to receive(:with_metadata)
+      result = described_class.redis_usage_data
 
-      described_class.redis_usage_data
+      expect(result.duration).to be_present
     end
 
     context 'with block given' do

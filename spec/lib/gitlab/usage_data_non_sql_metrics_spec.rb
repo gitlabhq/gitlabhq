@@ -11,6 +11,10 @@ RSpec.describe Gitlab::UsageDataNonSqlMetrics do
     it 'computes the metric value for given metric' do
       expect(described_class.add_metric(metric)).to eq(Gitlab::CurrentSettings.uuid)
     end
+
+    it 'records metadata' do
+      expect(described_class.add_metric(metric).duration).to be_present
+    end
   end
 
   describe '.count' do

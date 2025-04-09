@@ -33,6 +33,8 @@ module Clusters
         )
 
         if migration.save
+          Clusters::Migration::InstallAgentWorker.perform_async(migration.id)
+
           ServiceResponse.success
         else
           error_response(message: migration.errors.full_messages)

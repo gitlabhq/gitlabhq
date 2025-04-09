@@ -484,7 +484,7 @@ RSpec.describe 'Database schema',
         "Sbom::Occurrence" => %w[ancestors],
         "Security::ApprovalPolicyRule" => %w[content],
         "Security::Policy" => %w[metadata],
-        "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "ServicePing::NonSqlServicePing" => %w[payload metadata], # Usage data payloads change often, we cannot use one schema
         "ServicePing::QueriesServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "Security::ScanExecutionPolicyRule" => %w[content],
         "Security::VulnerabilityManagementPolicyRule" => %w[content],

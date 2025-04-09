@@ -193,7 +193,6 @@ spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.j
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/pagination_bar/pagination_bar_spec.js
 spec/frontend/vue_shared/components/registry/code_instruction_spec.js
-spec/frontend/vue_shared/components/smart_virtual_list_spec.js
 spec/frontend/vue_shared/components/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/components/upload_dropzone/upload_dropzone_spec.js
 spec/frontend/vue_shared/directives/tooltip_on_truncate_spec.js

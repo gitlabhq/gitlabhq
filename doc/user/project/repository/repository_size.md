@@ -153,6 +153,9 @@ Prerequisites:
 
 - You must have the Owner role for the project
 - [A list of object IDs](#get-a-list-of-object-ids) to remove.
+- Your project must not be:
+  - A fork of a public upstream project.
+  - A public upstream project with downstream forks.
 
 To remove blobs from your repository:
 

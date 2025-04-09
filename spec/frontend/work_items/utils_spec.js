@@ -477,6 +477,15 @@ describe('preserveDetailsState', () => {
     `);
   });
 });
+
+describe('createBranch', () => {
+  it('returns a "create branch" path when given fullPath', () => {
+    expect(createBranchMRApiPathHelper.createBranch('myGroup/myProject')).toBe(
+      '/myGroup/myProject/-/branches',
+    );
+  });
+});
+
 describe('createMR', () => {
   const fullPath = 'gitlab-org/gitlab';
   const workItemIID = '12';
@@ -516,6 +525,19 @@ describe('createMR', () => {
     });
     expect(path).toBe(
       '/foobar/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix',
+    );
+  });
+
+  it('returns url with encoded branch names', () => {
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch: 'source-branch#1',
+      targetBranch: 'target-branch#1',
+    });
+
+    expect(path).toBe(
+      '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=source-branch%231&merge_request%5Btarget_branch%5D=target-branch%231',
     );
   });
 });

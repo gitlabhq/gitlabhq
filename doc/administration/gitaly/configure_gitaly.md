@@ -195,7 +195,7 @@ Gitaly and GitLab use two shared secrets for authentication:
      gitlab_shell['secret_token'] = 'shellsecret'
      ```
 
-    On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
+     On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
 
      ```ruby
      gitaly['gitlab_secret'] = 'shellsecret'

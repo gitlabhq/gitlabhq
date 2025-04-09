@@ -15,10 +15,11 @@ title: Protected packages
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-- The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1
+- The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
 - Maven protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323969) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages_maven`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/516215) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages_delete`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497082) in GitLab 17.11. Feature flag `packages_protected_packages_maven` removed.
 
 {{< /history >}}
@@ -27,15 +28,16 @@ By default, any user with at least the Developer role can create,
 edit, and delete packages. Add a package protection rule to restrict
 which users can make changes to your packages.
 
-GitLab supports only push protection for npm, pypi and maven packages, but [epic 5574](https://gitlab.com/groups/gitlab-org/-/epics/5574) proposes to add additional features and package formats.
+GitLab supports package protection for npm, PyPI, and maven packages, but [epic 5574](https://gitlab.com/groups/gitlab-org/-/epics/5574) proposes to add additional features and package formats.
 
 When a package is protected, the default behavior enforces these restrictions on the package:
 
-| Action                                   | Who can do it                                                                     |
-|:-----------------------------------------|:----------------------------------------------------------------------------------|
-| Protect a package                        | At least the Maintainer role.                                                     |
-| Push a new package                       | At least the role set in [**Minimum access level for push**](#protect-a-package). |
-| Push a new package with a deploy token   | Any valid deploy token, only if the pushed package is not matched by a protection rule. Protected packages cannot be pushed with a deploy token. |
+| Action                                 | Who can do it                                                                     |
+|:---------------------------------------|:----------------------------------------------------------------------------------|
+| Protect a package                      | At least the Maintainer role.                                                     |
+| Push a new package                     | At least the role set in [**Minimum access level for push**](#protect-a-package). |
+| Push a new package with a deploy token | Any valid deploy token, only if the pushed package is not matched by a protection rule. Protected packages cannot be pushed with a deploy token. |
+| Delete a package                       | At least the role set in [**Minimum access level for delete**](#protect-a-package). |
 
 ## Protect a package
 
@@ -59,6 +61,7 @@ To protect a package:
    - **Name pattern** is a package name pattern you want to protect. The pattern can include a wildcard (`*`).
    - **Package type** is the type of package to protect.
    - **Minimum access level for push** is the minimum role required to push a package matching the name pattern.
+   - **Minimum access level for delete** is the minimum role required to delete a package matching the name pattern.
 1. Select **Protect**.
 
 The package protection rule is created, and appears in the settings.

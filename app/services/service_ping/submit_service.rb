@@ -41,22 +41,9 @@ module ServicePing
       {
         metadata: {
           uuid: service_ping_payload[:uuid],
-          metrics: metrics_collection_metadata(service_ping_payload)
+          metrics: Gitlab::Utils::UsageData.metrics_collection_metadata(service_ping_payload)
         }
       }
-    end
-
-    def metrics_collection_metadata(payload, parents = [])
-      return [] unless payload.is_a?(Hash)
-
-      payload.flat_map do |key, metric_value|
-        key_path = parents.dup.append(key)
-        if metric_value.respond_to?(:duration)
-          { name: key_path.join('.'), time_elapsed: metric_value.duration, error: metric_value.error }.compact
-        else
-          metrics_collection_metadata(metric_value, key_path)
-        end
-      end
     end
 
     def submit_payload(payload, path: USAGE_DATA_PATH)

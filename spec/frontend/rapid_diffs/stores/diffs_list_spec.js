@@ -6,7 +6,6 @@ import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import waitForPromises from 'helpers/wait_for_promises';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/diff_file';
-import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 
 jest.mock('~/streaming/polyfills');
@@ -52,33 +51,6 @@ describe('Diffs list store', () => {
       resolveStreamRender();
       await waitForPromises();
       expect(store.status).toBe(statuses.idle);
-    });
-  };
-
-  const itAddsLoadingFilesWhileStreaming = (action) => {
-    it('adds loading files while streaming', async () => {
-      let resolveRequest;
-      let resolveStreamRender;
-      global.fetch.mockImplementation(() => {
-        return new Promise((resolve) => {
-          resolveRequest = resolve;
-        });
-      });
-      renderHtmlStreams.mockImplementation(() => {
-        return new Promise((resolve) => {
-          resolveStreamRender = resolve;
-        });
-      });
-      action();
-      resolveRequest({ body: {} });
-      await waitForPromises();
-      const element = document.createElement('div');
-      element.id = 'foo';
-      document.body.appendChild(element);
-      element.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED, { bubbles: true }));
-      resolveStreamRender();
-      await waitForPromises();
-      expect(store.loadedFiles).toStrictEqual({ foo: true });
     });
   };
 
@@ -137,7 +109,6 @@ describe('Diffs list store', () => {
 
     itCancelsRunningRequest(() => store.streamRemainingDiffs('/stream'));
     itSetsStatuses(() => store.streamRemainingDiffs('/stream'));
-    itAddsLoadingFilesWhileStreaming(() => store.streamRemainingDiffs('/stream'));
   });
 
   describe('#reloadDiffs', () => {
@@ -154,7 +125,6 @@ describe('Diffs list store', () => {
 
     itCancelsRunningRequest(() => store.reloadDiffs('/stream'));
     itSetsStatuses(() => store.reloadDiffs('/stream'));
-    itAddsLoadingFilesWhileStreaming(() => store.reloadDiffs('/stream'));
 
     it('sets loading state', () => {
       store.reloadDiffs('/stream');

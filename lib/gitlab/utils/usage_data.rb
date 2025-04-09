@@ -208,7 +208,7 @@ module Gitlab
       end
 
       def redis_usage_data(counter = nil, &block)
-        with_metadata do
+        Gitlab::UsageData.with_metadata do
           if block
             redis_usage_counter(&block)
           elsif counter.present?
@@ -261,6 +261,19 @@ module Gitlab
 
         strong_memoize(key) do
           model.minimum(column_to_read)
+        end
+      end
+
+      def metrics_collection_metadata(payload, parents = [])
+        return [] unless payload.is_a?(Hash)
+
+        payload.flat_map do |key, metric_value|
+          key_path = parents.dup.append(key)
+          if metric_value.respond_to?(:duration)
+            { name: key_path.join('.'), time_elapsed: metric_value.duration, error: metric_value.error }.compact
+          else
+            metrics_collection_metadata(metric_value, key_path)
+          end
         end
       end
 

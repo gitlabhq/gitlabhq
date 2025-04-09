@@ -1449,6 +1449,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :gcp_cluster
+- :name: gcp_cluster:clusters_migration_install_agent
+  :worker_name: Clusters::Migration::InstallAgentWorker
+  :feature_category: :deployment_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:wait_for_cluster_creation
   :worker_name: WaitForClusterCreationWorker
   :feature_category: :deployment_management

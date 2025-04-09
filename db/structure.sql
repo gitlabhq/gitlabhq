@@ -18121,7 +18121,8 @@ CREATE TABLE non_sql_service_pings (
     updated_at timestamp with time zone NOT NULL,
     recorded_at timestamp with time zone NOT NULL,
     payload jsonb NOT NULL,
-    organization_id bigint NOT NULL
+    organization_id bigint NOT NULL,
+    metadata jsonb
 );
 
 CREATE SEQUENCE non_sql_service_pings_id_seq

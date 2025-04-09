@@ -3,7 +3,6 @@ import { debounce } from 'lodash';
 import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/diff_file';
-import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 
 export const statuses = {
@@ -49,13 +48,7 @@ export const useDiffsList = defineStore('diffsList', {
     },
     async renderDiffsStream(stream, container, signal) {
       this.status = statuses.streaming;
-      const addLoadedFile = this.addLoadedFile.bind(this);
-      document.addEventListener(DIFF_FILE_MOUNTED, addLoadedFile);
-      try {
-        await renderHtmlStreams([stream], container, { signal });
-      } finally {
-        document.removeEventListener(DIFF_FILE_MOUNTED, addLoadedFile);
-      }
+      await renderHtmlStreams([stream], container, { signal });
       this.status = statuses.idle;
     },
     streamRemainingDiffs(url) {

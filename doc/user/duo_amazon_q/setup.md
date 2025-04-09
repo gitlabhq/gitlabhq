@@ -39,6 +39,8 @@ To set up GitLab Duo with Amazon Q, you must:
 - [Complete the prerequisites](#prerequisites)
 - [Create an identity provider](#create-an-iam-identity-provider)
 - [Create an IAM role](#create-an-iam-role)
+- [Add the policy](#add-the-policy)
+- [Allow administrators to use customer managed keys](#allow-administrators-to-use-customer-managed-keys)
 - [Enter the ARN in GitLab and enable Amazon Q](#enter-the-arn-in-gitlab-and-enable-amazon-q)
 - [Add the Amazon Q user to your project](#add-the-amazon-q-user-to-your-project)
 
@@ -94,7 +96,7 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 1. Skip **Permissions policies** by selecting **Next**. You will create an inline policy later.
 1. Ensure the trust policy is correct. It should look like this:
 
-   ```plaintext
+   ```json
    {
     "Version": "2012-10-17",
     "Statement": [
@@ -117,6 +119,8 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 
 1. Name the role, for example `QDeveloperAccess`, and select **Create role**.
 
+### Add the policy
+
 Now edit the role and add the policy:
 
 1. Find the role that you just created and select it.
@@ -133,21 +137,42 @@ Now edit the role and add the policy:
 
    ```json
    {
-      "Version": "2012-10-17",
-      "Statement": [
-         {
-            "Sid": "GitLabDuoPermissions",
-            "Effect": "Allow",
-            "Action": [
-               "q:SendEvent",
-               "q:CreateOAuthAppConnection",
-               "q:CreateAuthGrant",
-               "q:UpdateAuthGrant",
-               "q:UpdateOAuthAppConnection"
-            ],
-            "Resource": "*"
-         }
-      ]
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "GitLabDuoUsagePermissions",
+         "Effect": "Allow",
+         "Action": [
+           "q:SendEvent",
+           "q:CreateAuthGrant",
+           "q:UpdateAuthGrant",
+           "q:GenerateCodeRecommendations",
+           "q:SendMessage",
+           "q:ListPlugins",
+           "q:VerifyOAuthAppConnection"
+         ],
+         "Resource": "*"
+       },
+       {
+         "Sid": "GitLabDuoManagementPermissions",
+         "Effect": "Allow",
+         "Action": [
+           "q:CreateOAuthAppConnection",
+           "q:DeleteOAuthAppConnection",
+         ],
+         "Resource": "*"
+       },
+       {
+         "Sid": "GitLabDuoPluginPermissions",
+         "Effect": "Allow",
+         "Action": [
+           "q:CreatePlugin",
+           "q:DeletePlugin",
+           "q:GetPlugin"
+         ],
+         "Resource": "arn:aws:qdeveloper:*:*:plugin/GitLabDuoWithAmazonQ/*"
+       }
+     ]
    }
    ```
 
@@ -159,6 +184,49 @@ Now edit the role and add the policy:
    ```plaintext
    arn:aws:iam::123456789:role/QDeveloperAccess
    ```
+
+#### Allow administrators to use customer managed keys
+
+If you are an administrator, you can use AWS Key Management Service (AWS KMS)
+customer managed keys (CMKs) to encrypt customer data.
+
+Update the role policy to grant permission to use CMKs when you create your key policy on a configured role in the KMS console.
+
+The `kms:ViaService` condition key limits the use of a KMS key to requests from specified AWS services.
+Additionally, it's used to deny permission to use a KMS key when the request comes from particular services.
+With the condition key, you can limit who can use CMK for encrypting or decrypting content.
+
+```json
+{
+   "Version": "2012-10-17",
+   "Statement": [
+      {
+         "Sid": "Sid0",
+         "Effect": "Allow",
+         "Principal": {
+            "AWS": "arn:aws:iam::<awsAccountId>:role/<rolename>"
+         },
+         "Action": [
+            "kms:GenerateDataKeyWithoutPlaintext",
+            "kms:Decrypt",
+            "kms:ReEncryptFrom",
+            "kms:ReEncryptTo"
+         ],
+         "Resource": "*",
+         "Condition": {
+            "StringEquals": {
+                "kms:ViaService": [
+                    "q.<region>.amazonaws.com"
+                ]
+            }
+        }
+      }
+   ]
+}
+```
+
+For more information, see
+[`kms:ViaService` in the AWS KMS Developer Guide](https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-via-service).
 
 ### Enter the ARN in GitLab and enable Amazon Q
 

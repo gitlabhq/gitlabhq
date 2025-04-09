@@ -76,6 +76,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
         record = create(
           :non_sql_service_ping,
           payload: { some_metric: 123 },
+          metadata: { name: 'some_metric', time_elapsed: 10, error: 'some error' },
           recorded_at: non_sql_payload[:recorded_at]
         )
 

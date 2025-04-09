@@ -15161,6 +15161,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Compliance framework ID"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Control ID copied to clipboard."
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Controls"
 msgstr ""
 
@@ -15387,6 +15390,12 @@ msgid "ComplianceFrameworks|No frameworks found. Create a framework in top-level
 msgstr ""
 
 msgid "ComplianceFrameworks|No frameworks found. Create a framework in top-level group %{linkStart}namespace%{linkEnd} to assign it to a project."
+msgstr ""
+
+msgid "ComplianceFrameworks|No projects found"
+msgstr ""
+
+msgid "ComplianceFrameworks|No projects found that match filters"
 msgstr ""
 
 msgid "ComplianceFrameworks|Note: This report was truncated to adhere to filesize limits of %{size}."

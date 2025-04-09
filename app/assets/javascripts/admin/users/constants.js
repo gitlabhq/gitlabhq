@@ -65,6 +65,14 @@ export const TOKENS = [
       { value: 'two_factor_disabled', title: __('Off') },
     ],
   },
+  {
+    title: __('Type'),
+    type: 'type',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [{ value: 'placeholder', title: s__('UserMapping|Placeholder') }],
+  },
 ];
 
 export const SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT = 10;
