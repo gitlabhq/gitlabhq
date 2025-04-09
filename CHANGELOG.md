@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.4 (2025-04-09)
+
+### Fixed (2 changes)
+
+- [Fix invalid pipelines for scan execution policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b27b9794e62f4e8ba33e2f56c1c7c64872b4e771) **GitLab Enterprise Edition**
+- [Move group.cluster_agents field to CE](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d649d85eab978e106135cc03db4baf261d5d8cb3) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0ccf3be7475234aca2c54bd1b0283cd9efed6d87) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4912))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a6b55c797818a232b0b6ca271f42f594f5a2eae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4907))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eef77387081aaf590f13dcdbd7faa6cbadd26bb7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4904))
+- [Bump Golang Oauth2 >=0.27.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ee730000f88d319bbd70ce828a0b21118e30231b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4893))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5d8162f4dfd64d817adef4b2bfd6ce174b66fa44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4884))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d54f30acea881202ae0b225c20d306633d7708bf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4888))
+- [Do not enable pprof by default in Workhorse](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4e61600d751d0aba541d8019c9c6419762acc1b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4891))
+
 ## 17.10.3 (2025-04-02)
 
 No changes.
