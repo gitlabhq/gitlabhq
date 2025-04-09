@@ -5,8 +5,13 @@ class ApplicationSettingPolicy < BasePolicy # rubocop:disable Gitlab/NamespacedC
 
   rule { admin }.policy do
     enable :read_application_setting
+
+    enable :read_runners_registration_token
     enable :update_runners_registration_token
   end
 
-  rule { ~runner_registration_token_enabled }.prevent :update_runners_registration_token
+  rule { ~runner_registration_token_enabled }.policy do
+    prevent :read_runners_registration_token
+    prevent :update_runners_registration_token
+  end
 end

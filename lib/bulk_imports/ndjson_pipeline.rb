@@ -199,6 +199,10 @@ module BulkImports
           # as they lack a foreign key constraint.
           next if IGNORE_PLACEHOLDER_USER_CREATION[relation_key]&.include?(reference)
 
+          # Skip creating placeholder users for imported ghost users.
+          # Ghost user contributions are assigned directly to the destination ghost user
+          next if context.source_ghost_user_id.to_s == relation_hash[reference].to_s
+
           source_user_mapper.find_or_create_source_user(
             source_name: nil,
             source_username: nil,

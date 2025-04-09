@@ -22,7 +22,7 @@ module Gitlab
       end
 
       def send_usage_data?
-        Gitlab::CurrentSettings.product_usage_data_enabled?
+        Gitlab::CurrentSettings.gitlab_product_usage_data_enabled?
       end
 
       def duo_event?(event_name)

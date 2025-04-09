@@ -136,6 +136,17 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         expect(page).to have_text("No diff preview for this file type.")
       end
     end
+
+    context 'with a whitespace only diff' do
+      before do
+        allow(diff_file).to receive(:whitespace_only?).and_return(true)
+      end
+
+      it 'shows no preview message' do
+        render_component
+        expect(page).to have_text("Contains only whitespace changes.")
+      end
+    end
   end
 
   describe 'actions' do
@@ -151,7 +162,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         allow(diff_file).to receive(:diffable_text?).and_return(true)
       end
 
-      it 'shows no preview message' do
+      it 'shows preview button' do
         render_component
         expect(page).to have_button("Show file contents")
       end
@@ -161,7 +172,18 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
           allow(diff_file).to receive(:collapsed?).and_return(true)
         end
 
-        it 'shows no preview message' do
+        it 'shows preview button' do
+          render_component
+          expect(page).to have_button("Show changes")
+        end
+      end
+
+      context 'when diff is whitespace only' do
+        before do
+          allow(diff_file).to receive(:whitespace_only?).and_return(true)
+        end
+
+        it 'shows preview button' do
           render_component
           expect(page).to have_button("Show changes")
         end

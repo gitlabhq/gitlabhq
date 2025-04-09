@@ -303,6 +303,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
+    enable :read_runners_registration_token
     enable :update_runners_registration_token
     enable :owner_access
     enable :update_git_access_protocol
@@ -432,6 +433,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~runner_registration_token_enabled }.policy do
     prevent :register_group_runners
+    prevent :read_runners_registration_token
     prevent :update_runners_registration_token
   end
 

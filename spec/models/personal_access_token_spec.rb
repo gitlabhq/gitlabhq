@@ -399,6 +399,12 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
           expect(personal_access_token).to be_valid
         end
+
+        it 'is valid with expiration date set beyond 400 days' do
+          personal_access_token.expires_at = 2.years.from_now
+
+          expect(personal_access_token).to be_valid
+        end
       end
     end
 

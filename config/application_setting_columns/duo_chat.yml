@@ -1,0 +1,12 @@
+---
+api_type:
+attr: duo_chat
+clusterwide: true
+column: duo_chat
+db_type: jsonb
+default: "'{}'::jsonb"
+description: A hash containing Duo Chat related settings.
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

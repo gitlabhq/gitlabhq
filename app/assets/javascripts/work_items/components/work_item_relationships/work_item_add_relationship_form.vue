@@ -52,6 +52,11 @@ export default {
       required: false,
       default: () => [],
     },
+    hasBlockedWorkItemsFeature: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   data() {
     return {
@@ -182,22 +187,24 @@ export default {
     <gl-alert v-if="error" variant="danger" class="gl-mb-3" @dismiss="unsetError">
       {{ error }}
     </gl-alert>
-    <gl-form-group
-      :label="linkItemFormHeaderLabel"
-      label-for="linked-item-type-radio"
-      label-class="label-bold"
-      class="gl-mb-3"
-    >
-      <gl-form-radio-group
-        id="linked-item-type-radio"
-        v-model="linkedItemType"
-        :options="linkedItemTypes"
-        :checked="linkedItemType"
-      />
-    </gl-form-group>
-    <p class="gl-mb-2 gl-font-bold">
-      {{ $options.i18n.linkItemInputLabel }}
-    </p>
+    <template v-if="hasBlockedWorkItemsFeature">
+      <gl-form-group
+        :label="linkItemFormHeaderLabel"
+        label-for="linked-item-type-radio"
+        label-class="label-bold"
+        class="gl-mb-3"
+      >
+        <gl-form-radio-group
+          id="linked-item-type-radio"
+          v-model="linkedItemType"
+          :options="linkedItemTypes"
+          :checked="linkedItemType"
+        />
+      </gl-form-group>
+      <p class="gl-mb-2 gl-font-bold">
+        {{ $options.i18n.linkItemInputLabel }}
+      </p>
+    </template>
     <div class="gl-mb-5">
       <work-item-token-input
         v-model="workItemsToAdd"

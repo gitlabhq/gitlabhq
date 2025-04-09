@@ -1499,6 +1499,100 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
+  describe 'snowplow_and_product_usage_data_are_mutually_exclusive validation' do
+    context 'when both snowplow and product usage data tracking are enabled' do
+      before do
+        setting.snowplow_enabled = true
+        setting.gitlab_product_usage_data_enabled = true
+      end
+
+      it 'is invalid' do
+        expect(setting).to be_invalid
+        expect(setting.errors[:base]).to include(
+          /Snowplow tracking and Product event tracking cannot be enabled at the same time/
+        )
+      end
+    end
+
+    context 'when only snowplow tracking is enabled' do
+      before do
+        setting.snowplow_enabled = true
+        setting.gitlab_product_usage_data_enabled = false
+      end
+
+      it 'is valid' do
+        expect(setting).to be_valid
+      end
+    end
+
+    context 'when only product usage data tracking is enabled' do
+      before do
+        setting.snowplow_enabled = false
+        setting.gitlab_product_usage_data_enabled = true
+      end
+
+      it 'is valid' do
+        expect(setting).to be_valid
+      end
+    end
+
+    context 'when neither snowplow nor product usage data tracking is enabled' do
+      before do
+        setting.snowplow_enabled = false
+        setting.gitlab_product_usage_data_enabled = false
+      end
+
+      it 'is valid' do
+        expect(setting).to be_valid
+      end
+    end
+
+    context 'when changing snowplow_enabled' do
+      before do
+        setting.gitlab_product_usage_data_enabled = true
+      end
+
+      it 'is invalid when enabling snowplow while product usage data is enabled' do
+        setting.snowplow_enabled = true
+
+        expect(setting).to be_invalid
+        expect(setting.errors[:base]).to include(
+          /Snowplow tracking and Product event tracking cannot be enabled at the same time/
+        )
+      end
+    end
+
+    context 'when changing gitlab_product_usage_data_enabled' do
+      before do
+        setting.snowplow_enabled = true
+      end
+
+      it 'is invalid when enabling product usage data while snowplow is enabled' do
+        setting.gitlab_product_usage_data_enabled = true
+
+        expect(setting).to be_invalid
+        expect(setting.errors[:base]).to include(
+          /Snowplow tracking and Product event tracking cannot be enabled at the same time/
+        )
+      end
+    end
+
+    context 'when changing an unrelated attribute' do
+      before do
+        setting.snowplow_enabled = true
+        setting.gitlab_product_usage_data_enabled = true
+        setting.save!(validate: false)
+      end
+
+      it 'skips the validation and allows saving' do
+        setting.home_page_url = 'https://example.com'
+
+        expect(setting.save).to be true
+        expect(setting.reload.home_page_url).to eq('https://example.com')
+      end
+    end
+  end
+
   describe '#runners_registration_token' do
     context 'when allowed by application setting' do
       before do

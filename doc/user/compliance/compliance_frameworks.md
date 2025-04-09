@@ -180,31 +180,69 @@ Each control includes logic that GitLab uses during scheduled or triggered scans
 
 The following controls are available to use in framework requirements:
 
-- **SAST running**
-- **At least two approvals**
-- **Author approved merge request**
-- **Committers approved merge request**
-- **Internal visibility is forbidden**
-- **Default branch protected**
-- **Auth SSO enabled**
-- **Secret detection running**
-- **Dependency scanning running**
-- **Container scanning running**
-- **License compliance running**
-- **DAST running**
-- **API security running**
-- **Fuzz testing running**
-- **Code quality running**
-- **IaC scanning running**
-- **Code changes requires code owners**
-- **Reset approvals on push**
-- **Status checks required**
-- **Require branch up to date**
-- **Resolve discussions required**
-- **Require linear history**
-- **Restrict push/merge access**
-- **Force push disabled**
-- **Terraform enabled**
+### GitLab Compliance Controls
+
+This table documents all available controls that can be used in GitLab compliance frameworks. Controls are checks against the configuration or behavior of projects that are assigned to a compliance framework.
+
+| Name | ID | Description | Documentation Link |
+|------|----|-----------|--------------------|
+| SAST running | `scanner_sast_running` | Ensures Static Application Security Testing (SAST) is configured and running in the project pipelines. | [SAST Configuration](../../user/application_security/sast/_index.md) |
+| At least two approvals | `minimum_approvals_required_2` | Ensures that merge requests require at least two approvals before merging. | [Merge request approvals](../../user/project/merge_requests/approvals/_index.md) |
+| Author approved merge request | `merge_request_prevent_author_approval` | Ensures that the author of a merge request cannot approve their own changes. | [Merge request approvals](../../user/project/merge_requests/approvals/_index.md) |
+| Committers approved merge request | `merge_request_prevent_committers_approval` | Ensures that users who have committed to a merge request cannot approve it. | [Merge Request Approvals](../../user/project/merge_requests/approvals/_index.md) |
+| Internal visibility is forbidden | `project_visibility_not_internal` | Ensures projects are not set to internal visibility. | [Project Visibility](../../user/public_access.md) |
+| Default branch protected | `default_branch_protected` | Ensures the default branch has protection rules enabled. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Auth SSO enabled | `auth_sso_enabled` | Ensures Single Sign-On (SSO) authentication is enabled for the project. | [SSO for GitLab.com Groups](../../user/group/saml_sso/_index.md) |
+| Secret detection running | `scanner_secret_detection_running` | Ensures secret detection scanning is configured and running in the project pipelines. | [Secret Detection](../../user/application_security/secret_detection/_index.md) |
+| Dependency scanning running | `scanner_dep_scanning_running` | Ensures dependency scanning is configured and running in the project pipelines. | [Dependency Scanning](../../user/application_security/dependency_scanning/_index.md) |
+| Container scanning running | `scanner_container_scanning_running` | Ensures container scanning is configured and running in the project pipelines. | [Container Scanning](../../user/application_security/container_scanning/_index.md) |
+| License compliance running | `scanner_license_compliance_running` | Ensures license compliance scanning is configured and running in the project pipelines. | [License Compliance](../../user/compliance/license_approval_policies.md) |
+| DAST running | `scanner_dast_running` | Ensures Dynamic Application Security Testing (DAST) is configured and running in the project pipelines. | [DAST Configuration](../../user/application_security/dast/_index.md) |
+| API security running | `scanner_api_security_running` | Ensures API security scanning is configured and running in the project pipelines. | [API Security](../../user/application_security/api_security/_index.md) |
+| Fuzz testing running | `scanner_fuzz_testing_running` | Ensures fuzz testing is configured and running in the project pipelines. | [Fuzz Testing](../../user/application_security/coverage_fuzzing/_index.md) |
+| Code quality running | `scanner_code_quality_running` | Ensures code quality scanning is configured and running in the project pipelines. | [Code Quality](../../ci/testing/code_quality.md) |
+| IaC scanning running | `scanner_iac_running` | Ensures Infrastructure as Code (IaC) scanning is configured and running in the project pipelines. | [IaC Security](../../user/application_security/iac_scanning/_index.md) |
+| Code changes requires code owners | `code_changes_requires_code_owners` | Ensures code changes require approval from code owners. | [Code Owners](../../user/project/codeowners/_index.md) |
+| Reset approvals on push | `reset_approvals_on_push` | Ensures approvals are reset when new commits are pushed to the merge request. | [Reset Approvals on Push](../../user/project/merge_requests/approvals/settings.md) |
+| Status checks required | `status_checks_required` | Ensures status checks must pass before merging is allowed. | [Status Checks](../../user/project/merge_requests/status_checks.md) |
+| Require branch up to date | `require_branch_up_to_date` | Ensures the source branch is up to date with the target branch before merging. | [Merge Requests](../../user/project/merge_requests/methods/_index.md) |
+| Resolve discussions required | `resolve_discussions_required` | Ensures all discussions must be resolved before merging is allowed. | [Resolve Discussions](../../user/discussions/_index.md) |
+| Require linear history | `require_linear_history` | Ensures a linear commit history by forbidding merge commits. | [Merge Request Fast-forward Merges](../../user/project/merge_requests/methods/_index.md#fast-forward-merge) |
+| Restrict push/merge access | `restrict_push_merge_access` | Restricts who can push to or merge into protected branches. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Force push disabled | `force_push_disabled` | Prevents force pushing to repositories. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Terraform enabled | `terraform_enabled` | Ensures Terraform integration is enabled for the project. | [Terraform in GitLab](../../administration/terraform_state.md) |
+| Version control enabled | `version_control_enabled` | Ensures version control functionality is enabled for the project. | [Git in GitLab](../../topics/git/_index.md) |
+| Issue tracking enabled | `issue_tracking_enabled` | Ensures issue tracking functionality is enabled for the project. | [GitLab Issues](../../user/project/issues/_index.md) |
+| Stale branch cleanup enabled | `stale_branch_cleanup_enabled` | Ensures automatic cleanup of stale branches is enabled. | [Deleting Branches](../../user/project/repository/branches/_index.md) |
+| Branch deletion disabled | `branch_deletion_disabled` | Prevents deletion of branches. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Review and archive stale repositories | `review_and_archive_stale_repos` | Ensures stale repositories are reviewed and archived. | [Archiving Projects](../../user/project/settings/_index.md) |
+| Review and remove inactive users | `review_and_remove_inactive_users` | Ensures inactive users are reviewed and removed. | [Managing Users](../../administration/admin_area.md) |
+| Minimum number of admins | `minimum_number_of_admins` | Ensures a minimum number of administrators are assigned to the project. | [Project Members](../../user/project/members/_index.md) |
+| Require MFA for contributors | `require_mfa_for_contributors` | Ensures contributors have Multi-Factor Authentication enabled. | [MFA for Contributors](../../user/profile/account/two_factor_authentication.md) |
+| Require MFA at org level | `require_mfa_at_org_level` | Ensures Multi-Factor Authentication is required at the organization level. | [Group-level MFA Enforcement](../../user/profile/account/two_factor_authentication.md) |
+| Ensure 2 admins per repository | `ensure_2_admins_per_repo` | Ensures at least two administrators are assigned to each repository. | [Project Members](../../user/project/members/_index.md) |
+| Strict permission for repository | `strict_permissions_for_repo` | Ensures strict permissions are set for repository access. | [Project Members Permissions](../../user/permissions.md) |
+| Secure webhooks | `secure_webhooks` | Ensures webhooks are securely configured. | [Webhooks](../../user/project/integrations/webhooks.md) |
+| Restricted build access | `restricted_build_access` | Restricts access to build artifacts and pipeline outputs. | [Pipeline Security](../../ci/pipelines/settings.md) |
+| GitLab license level ultimate | `gitlab_license_level_ultimate` | Ensures the GitLab instance is using an Ultimate license level. | [GitLab Licensing](https://about.gitlab.com/pricing/feature-comparison/) |
+| Status page configured | `status_page_configured` | Ensures a status page is configured for the project. | [Status Page](../../operations/incident_management/status_page.md) |
+| Has valid CI config | `has_valid_ci_config` | Ensures the project has a valid CI/CD configuration. | [CI/CD Pipeline Configuration](../../ci/yaml/_index.md) |
+| Error tracking enabled | `error_tracking_enabled` | Ensures error tracking is enabled for the project. | [Error Tracking](../../operations/error_tracking.md) |
+| Default branch users can push | `default_branch_users_can_push` | Controls whether users can push directly to the default branch. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Default branch protected from direct push | `default_branch_protected_from_direct_push` | Prevents direct pushes to the default branch. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Push protection enabled | `push_protection_enabled` | Ensures push protection is enabled for sensitive files. | [Push Rules](../../user/project/repository/push_rules.md) |
+| Project marked for deletion | `project_marked_for_deletion` | Checks if project is marked for deletion (false is compliant). | [Project Settings](../../user/project/settings/_index.md) |
+| Project archived | `project_archived` | Checks if project is archived (typically false is compliant). | [Archiving Projects](../../user/project/settings/_index.md) |
+| Default branch users can merge | `default_branch_users_can_merge` | Controls whether users can merge changes to the default branch. | [Protected Branches](../../user/project/repository/branches/protected.md) |
+| Merge request commit reset approvals | `merge_request_commit_reset_approvals` | Ensures new commits to merge requests reset approvals. | [Reset Approvals on Push](../../user/project/merge_requests/approvals/settings.md) |
+| Project visibility not public | `project_visibility_not_public` | Ensures projects are not set to public visibility. | [Project Visibility](../../user/public_access.md) |
+| Package hunter no findings untriaged | `package_hunter_no_findings_untriaged` | Ensures all package hunter findings are triaged. | [Package Hunter](../../user/application_security/triage/_index.md) |
+| Project pipelines not public | `project_pipelines_not_public` | Ensures project pipelines are not publicly visible. | [Pipeline Settings](../../ci/pipelines/settings.md) |
+| Vulnerabilities SLO days over threshold | `vulnerabilities_slo_days_over_threshold` | Ensures vulnerabilities are addressed within SLO thresholds. | [Vulnerability Management](../../user/application_security/vulnerabilities/_index.md) |
+| Merge requests approval rules prevent editing | `merge_requests_approval_rules_prevent_editing` | Prevents editing of merge request approval rules. | [Merge Request Approvals Settings](../../user/project/merge_requests/approvals/settings.md) |
+| Project user defined variables restricted to maintainers | `project_user_defined_variables_restricted_to_maintainers` | Restricts creation of project variables to maintainers only. | [Project CI/CD Variables](../../ci/variables/_index.md) |
+| Merge requests require code owner approval | `merge_requests_require_code_owner_approval` | Ensures merge requests require approval from code owners. | [Code Owners](../../user/project/codeowners/_index.md) |
+| CI/CD job token scope enabled | `cicd_job_token_scope_enabled` | Ensures CI/CD job token scope restrictions are enabled. | [CI/CD Job Token](../../ci/jobs/ci_job_token.md) |
 
 #### External controls
 
@@ -230,8 +268,8 @@ To add an external control when creating or editing a framework:
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
 1. Select **Add an external control**.
-1. In the feilds edit **External URL** and **HMAC shared secret**.
-1. Select **Save changes to the framework** to save the requirment.
+1. In the fields edit **External URL** and **`HMAC` shared secret**.
+1. Select **Save changes to the framework** to save the requirement.
 
 #### External control lifecycle
 
@@ -265,10 +303,10 @@ To add a requirement when creating or editing a framework:
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
-1. In the popup add **Name** and **Description**.
+1. In the dialog add **Name** and **Description**.
 1. Select **Add a GitLab control** to add more controls.
-1. In the control dropdown search and select a control.
-1. Select **Save changes to the framework** to save the requirment.
+1. In the control dropdown list search and select a control.
+1. Select **Save changes to the framework** to save the requirement.
 
 ### Edit requirements
 
@@ -279,8 +317,8 @@ To edit a requirement when creating or editing a framework:
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **Action** > **Edit**.
-1. In the popup edit **Name** and **Description**.
+1. In the dialog edit **Name** and **Description**.
 1. Select **Add a GitLab control** to add more controls.
-1. In the control dropdown search and select a control.
+1. In the control dropdown list search and select a control.
 1. Select {{< icon name="remove" >}} to remove a control.
-1. Select **Save changes to the framework** to save the requirment.
+1. Select **Save changes to the framework** to save the requirement.

@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe ::API::Entities::Project do
-  let(:project) { create(:project, :public) }
-  let(:current_user) { create(:user) }
-  let(:options) { { current_user: current_user } }
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:parent_group) { create(:group, :allow_runner_registration_token) }
+  let_it_be(:project) { create(:project, :public, group: parent_group) }
 
+  let(:options) { { current_user: current_user } }
   let(:entity) do
     described_class.new(project, options)
   end
@@ -14,7 +15,7 @@ RSpec.describe ::API::Entities::Project do
   subject(:json) { entity.as_json }
 
   context 'without project feature' do
-    before do
+    before_all do
       project.project_feature.destroy!
       project.reload
     end
@@ -27,12 +28,14 @@ RSpec.describe ::API::Entities::Project do
   end
 
   describe '.service_desk_address', feature_category: :service_desk do
+    let_it_be(:project) { create(:project, :public) }
+
     before do
-      allow(::ServiceDesk).to receive(:enabled?).and_return(true)
+      allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
     end
 
     context 'when a user can admin issues' do
-      before do
+      before_all do
         project.add_reporter(current_user)
       end
 
@@ -49,9 +52,9 @@ RSpec.describe ::API::Entities::Project do
   end
 
   describe '.shared_with_groups' do
-    let(:group) { create(:group, :private) }
+    let_it_be(:group) { create(:group, :private) }
 
-    before do
+    before_all do
       project.project_group_links.create!(group: group)
     end
 
@@ -62,7 +65,7 @@ RSpec.describe ::API::Entities::Project do
     end
 
     context 'when the current user has access to the group' do
-      before do
+      before_all do
         group.add_guest(current_user)
       end
 
@@ -74,7 +77,7 @@ RSpec.describe ::API::Entities::Project do
 
   describe '.ci/cd settings' do
     context 'when the user is not an admin' do
-      before do
+      before_all do
         project.add_reporter(current_user)
       end
 
@@ -84,12 +87,34 @@ RSpec.describe ::API::Entities::Project do
     end
 
     context 'when the user has admin privileges' do
-      before do
+      before_all do
         project.add_maintainer(current_user)
       end
 
       it 'returns ci settings' do
         expect(json[:ci_default_git_depth]).to be_present
+      end
+    end
+  end
+
+  describe 'runner token settings', feature_category: :runner do
+    context 'when the user is not an admin' do
+      before_all do
+        project.add_reporter(current_user)
+      end
+
+      it 'does not return runner token settings' do
+        expect(json[:runners_token]).to be_nil
+      end
+    end
+
+    context 'when the user has admin privileges' do
+      before_all do
+        project.add_maintainer(current_user)
+      end
+
+      it 'returns runner token settings' do
+        expect(json[:runners_token]).to be_present
       end
     end
   end

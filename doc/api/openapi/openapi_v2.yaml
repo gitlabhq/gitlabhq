@@ -46745,9 +46745,6 @@ definitions:
         type: boolean
       ci_pipeline_variables_minimum_override_role:
         type: string
-      runners_token:
-        type: string
-        example: b8547b1dc37721d05889db52fa2f02
       runner_token_expiration_interval:
         type: integer
         format: int32
@@ -46768,6 +46765,9 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      runners_token:
+        type: string
+        example: b8547b1dc37721d05889db52fa2f02
       ci_config_path:
         type: string
         example: ''
@@ -62326,9 +62326,6 @@ definitions:
         type: boolean
       ci_pipeline_variables_minimum_override_role:
         type: string
-      runners_token:
-        type: string
-        example: b8547b1dc37721d05889db52fa2f02
       runner_token_expiration_interval:
         type: integer
         format: int32
@@ -62349,6 +62346,9 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      runners_token:
+        type: string
+        example: b8547b1dc37721d05889db52fa2f02
       ci_config_path:
         type: string
         example: ''

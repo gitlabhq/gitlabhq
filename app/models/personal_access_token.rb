@@ -186,6 +186,8 @@ class PersonalAccessToken < ApplicationRecord
   def expires_at_before_instance_max_expiry_date
     return unless expires_at
 
+    return unless Gitlab::CurrentSettings.require_personal_access_token_expiry?
+
     max_expiry_date = Date.current.advance(days: max_expiration_lifetime_in_days)
     return unless expires_at > max_expiry_date
 

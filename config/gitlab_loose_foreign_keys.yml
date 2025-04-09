@@ -328,6 +328,10 @@ geo_node_namespace_links:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+group_push_rules:
+  - table: namespaces
+    column: group_id
+    on_delete: async_delete
 group_security_exclusions:
   - table: namespaces
     column: group_id

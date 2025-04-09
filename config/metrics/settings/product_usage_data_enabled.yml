@@ -9,7 +9,7 @@ time_frame: none
 data_source: system
 instrumentation_class: GitlabSettingsMetric
 options:
-  setting_method: product_usage_data_enabled?
+  setting_method: gitlab_product_usage_data_enabled?
 tiers:
 - free
 - premium

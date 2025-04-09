@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 493
+- Number of attributes: 495
 - Number of encrypted attributes: 41 (8.0%)
 - Number of attributes documented: 298 (60.0%)
 - Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 493 (100.0%)
-- Number of attributes with `clusterwide: true` set: 125 (25.0%)
+- Number of attributes with `clusterwide` set: 495 (100.0%)
+- Number of attributes with `clusterwide: true` set: 126 (25.0%)
 
 ## Individual columns
 
@@ -147,6 +147,7 @@ title: Application Settings analysis
 | `domain_denylist` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `true`| `true` |
 | `domain_denylist_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
+| `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `duo_workflow` | `false` | `jsonb` | `` | `false` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `ecdsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |

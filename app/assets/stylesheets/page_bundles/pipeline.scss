@@ -223,7 +223,8 @@
   border-color: var(--gl-control-border-color-error);
 }
 
-.ci-job-item-failed {
+.ci-job-component > .ci-job-item-failed,
+.ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
   @apply gl-bg-feedback-danger;
 
   // stylelint-disable-next-line gitlab/no-gl-class

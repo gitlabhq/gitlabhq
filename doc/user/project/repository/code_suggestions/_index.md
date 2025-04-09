@@ -11,8 +11,7 @@ title: Code Suggestions
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: For code completion, Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) and Fireworks AI-hosted [`Qwen2.5 7B`](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
-- To opt out of Qwen2.5 7B for a group, the feature flag `code_completion_model_opt_out_from_fireworks_qwen` is available.
+- LLMs: For code completion, Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) and Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
 - LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
@@ -26,6 +25,7 @@ title: Code Suggestions
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
+- Removed support for Qwen2.5 code completion model
 
 {{< /history >}}
 

@@ -75,6 +75,13 @@ module ApplicationSettingsHelper
   def global_search_settings_checkboxes(form)
     [
       form.gitlab_ui_checkbox_component(
+        :global_search_block_anonymous_searches_enabled,
+        _("Enable blocking of anonymous global search requests"),
+        checkbox_options: {
+          checked: @application_setting.global_search_block_anonymous_searches_enabled, multiple: false
+        }
+      ),
+      form.gitlab_ui_checkbox_component(
         :global_search_issues_enabled,
         _("Enable issues tab in global search results"),
         checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
@@ -488,6 +495,7 @@ module ApplicationSettingsHelper
       :snowplow_database_collector_hostname,
       :snowplow_enabled,
       :snowplow_app_id,
+      :gitlab_product_usage_data_enabled,
       :push_event_hooks_limit,
       :push_event_activities_limit,
       :custom_http_clone_url_root,

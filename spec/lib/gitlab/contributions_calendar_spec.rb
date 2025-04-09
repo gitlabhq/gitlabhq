@@ -128,6 +128,14 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
       expect(calendar(contributor).activity_dates[today]).to eq(4)
     end
 
+    it "counts design events" do
+      create_event(public_project, today, 0, :created, :design)
+      create_event(public_project, today, 1, :updated, :design)
+      create_event(public_project, today, 2, :destroyed, :design)
+
+      expect(calendar(contributor).activity_dates[today]).to eq(3)
+    end
+
     context "when events fall under different dates depending on the system time zone" do
       before do
         create_event(public_project, today, 1)

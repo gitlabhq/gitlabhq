@@ -10,4 +10,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f31
 milestone: '8.0'
 gitlab_schema: gitlab_ci
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442395
-table_size: small
+table_size: medium

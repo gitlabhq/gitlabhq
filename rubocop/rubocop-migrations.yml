@@ -18,6 +18,7 @@ Migration/UpdateLargeTable:
   - :ci_job_artifacts
   - :ci_job_artifacts_102
   - :ci_job_variables
+  - :ci_pipeline_messages
   - :ci_pipeline_variables
   - :ci_pipeline_variables_102
   - :ci_pipelines
@@ -57,6 +58,10 @@ Migration/UpdateLargeTable:
   - :ci_job_artifact_states
   - :ci_pipeline_messages
   - :namespaces
+  - :approval_merge_request_rules_users
+  - :audit_events
+  - :ci_job_artifact_states
+  - :ci_pipeline_messages
   - :packages_package_files
   - :personal_access_tokens
   - :projects

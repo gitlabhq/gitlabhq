@@ -11,6 +11,10 @@ RSpec.describe Ci::HasVariable, feature_category: :continuous_integration do
   it { is_expected.not_to allow_value('foo bar').for(:key) }
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
+  it_behaves_like 'encrypted attribute', :value, :db_key_base do
+    let(:record) { subject }
+  end
+
   describe 'scopes' do
     describe '.by_key' do
       let!(:matching_variable) { create(:ci_variable, key: 'example') }

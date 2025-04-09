@@ -126,7 +126,6 @@ module API
         expose :keep_latest_artifacts_available?, as: :keep_latest_artifact, documentation: { type: 'boolean' }
         expose :restrict_user_defined_variables, documentation: { type: 'boolean' }
         expose :ci_pipeline_variables_minimum_override_role, documentation: { type: 'string' }
-        expose :runners_token, documentation: { type: 'string', example: 'b8547b1dc37721d05889db52fa2f02' }
         expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
         expose :group_runners_enabled, documentation: { type: 'boolean' }
         expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
@@ -136,6 +135,11 @@ module API
           project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
         end
         expose :ci_push_repository_for_job_token_allowed, documentation: { type: 'boolean' }
+      end
+
+      with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :read_runners_registration_token, project) } do
+        # Runner token settings
+        expose :runners_token, documentation: { type: 'string', example: 'b8547b1dc37721d05889db52fa2f02' }
       end
 
       expose :ci_config_path, documentation: { type: 'string', example: '' }, if: ->(project, options) { Ability.allowed?(options[:current_user], :read_code, project) }

@@ -78,6 +78,11 @@ export default {
       required: false,
       default: null,
     },
+    hasBlockedWorkItemsFeature: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     linkedWorkItems: {
@@ -145,6 +150,13 @@ export default {
     },
     isEmptyRelatedWorkItems() {
       return !this.error && this.linkedWorkItems.length === 0;
+    },
+    emptyStateMessage() {
+      return this.hasBlockedWorkItemsFeature
+        ? s__(
+            "WorkItem|Link items together to show that they're related or that one is blocking others.",
+          )
+        : s__("WorkItem|Link items together to show that they're related.");
     },
     displayableLinksCount() {
       return this.displayableLinks(this.linkedWorkItems)?.length;
@@ -307,9 +319,6 @@ export default {
   i18n: {
     title: s__('WorkItem|Linked items'),
     fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
-    emptyStateMessage: s__(
-      "WorkItem|Link items together to show that they're related or that one is blocking others.",
-    ),
     noLinkedItemsOpen: s__('WorkItem|No linked items are currently open.'),
     removeLinkedItemErrorMessage: s__(
       'WorkItem|Something went wrong when removing item. Please refresh this page.',
@@ -371,13 +380,14 @@ export default {
         :work-item-full-path="workItemFullPath"
         :children-ids="childrenIds"
         :work-item-type="workItemType"
+        :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
         @submitted="hideLinkItemForm"
         @cancel="hideLinkItemForm"
       />
     </template>
 
     <template v-if="isEmptyRelatedWorkItems" #empty>
-      {{ $options.i18n.emptyStateMessage }}
+      {{ emptyStateMessage }}
     </template>
 
     <template #default>

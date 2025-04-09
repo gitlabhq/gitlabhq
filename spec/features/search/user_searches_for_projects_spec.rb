@@ -6,9 +6,9 @@ RSpec.describe 'User searches for projects', :js, :disable_rate_limiter, feature
   let!(:project) { create(:project, :public, name: 'Shop') }
 
   context 'when signed out' do
-    context 'when block_anonymous_global_searches is disabled' do
+    context 'when global_search_block_anonymous_searches_enabled is disabled' do
       before do
-        stub_feature_flags(block_anonymous_global_searches: false)
+        stub_application_setting(global_search_block_anonymous_searches_enabled: false)
       end
 
       include_examples 'top right search form'
@@ -46,7 +46,11 @@ RSpec.describe 'User searches for projects', :js, :disable_rate_limiter, feature
       end
     end
 
-    context 'when block_anonymous_global_searches is enabled' do
+    context 'when global_search_block_anonymous_searches_enabled is enabled' do
+      before do
+        stub_application_setting(global_search_block_anonymous_searches_enabled: true)
+      end
+
       it 'is redirected to login page' do
         visit(search_path)
         expect(page).to have_content('You need to sign in or sign up before continuing.')

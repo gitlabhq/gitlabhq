@@ -191,14 +191,12 @@ RSpec.describe Event, feature_category: :user_profile do
       let!(:push_event) { create_push_event(project, project.owner) }
       let!(:comment_event) { create(:event, :commented, project: project) }
 
-      before do
-        create(:design_event, project: project) # should not be in scope
-      end
+      let!(:design_event) { create(:design_event, project: project) }
 
       it 'returns events for MergeRequest, Issue, WorkItem and push, comment events' do
         expect(described_class.contributions).to contain_exactly(
           *merge_request_events, *issue_events, work_item_event,
-          push_event, comment_event
+          push_event, comment_event, design_event
         )
       end
     end

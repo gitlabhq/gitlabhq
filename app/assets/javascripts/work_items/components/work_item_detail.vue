@@ -340,6 +340,9 @@ export default {
     canSummarizeComments() {
       return this.workItem.userPermissions?.summarizeComments;
     },
+    hasBlockedWorkItemsFeature() {
+      return this.workItem.userPermissions?.blockedWorkItems;
+    },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
@@ -1208,6 +1211,7 @@ export default {
               :work-item-type="workItem.workItemType.name"
               :can-admin-work-item-link="canAdminWorkItemLink"
               :active-child-item-id="activeChildItemId"
+              :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
               @showModal="openContextualView"
             />
 

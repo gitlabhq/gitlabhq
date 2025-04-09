@@ -643,6 +643,7 @@ class ProjectPolicy < BasePolicy
     enable :create_runner
     enable :admin_project_runners
     enable :read_project_runners
+    enable :read_runners_registration_token
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_project_aws
@@ -1041,6 +1042,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~runner_registration_token_enabled }.policy do
     prevent :register_project_runners
+    prevent :read_runners_registration_token
     prevent :update_runners_registration_token
   end
 

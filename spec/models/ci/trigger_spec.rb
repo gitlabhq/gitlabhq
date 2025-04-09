@@ -31,6 +31,10 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     end
   end
 
+  it_behaves_like 'encrypted attribute', :encrypted_token_tmp, :db_key_base_32 do
+    let(:record) { create(:ci_trigger_without_token) }
+  end
+
   describe '#last_used' do
     let_it_be(:project) { create :project }
     let_it_be_with_refind(:trigger) { create(:ci_trigger, project: project) }

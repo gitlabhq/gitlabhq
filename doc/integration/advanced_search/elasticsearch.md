@@ -596,6 +596,7 @@ only project records are indexed and no associated data can be searched.
 
 - Global search for limited indexing [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a flag](../../administration/feature_flags.md) named `advanced_global_search_for_limited_indexing`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/244276) in GitLab 14.2.
+- Global search for limited indexing [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186727) in GitLab 17.11 as a UI option, instead of the `advanced_global_search_for_limited_indexing` flag.
 
 {{< /history >}}
 
@@ -609,12 +610,15 @@ When you index only some namespaces:
 
 For example, if you index two separate groups, you must run separate code searches on each group individually.
 
-{{< alert type="warning" >}}
+To enable global search for limited indexing:
 
-If you've already indexed your instance, you must [reindex the instance](#index-the-instance)
-to delete all existing data for filtering to work correctly.
-
-{{< /alert >}}
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Advanced search**
+1. Select **Enable global search for limited indexing**.
+1. Select **Save changes**.
+1. If you've already indexed your instance, you must [reindex the instance](#index-the-instance).
+   This deletes existing search data, to enable filtering to work correctly.
 
 ## Enable custom language analyzers
 

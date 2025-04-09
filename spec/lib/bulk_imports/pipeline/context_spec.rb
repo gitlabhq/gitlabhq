@@ -110,4 +110,26 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
       it { is_expected.to eq(true) }
     end
   end
+
+  describe '#source_ghost_user_id' do
+    let(:source_internal_user_finder) { instance_double(BulkImports::SourceInternalUserFinder) }
+
+    before do
+      allow(BulkImports::SourceInternalUserFinder).to receive(:new)
+        .with(bulk_import.configuration)
+        .and_return(source_internal_user_finder)
+    end
+
+    it 'returns the ghost user ID' do
+      expect(source_internal_user_finder).to receive(:cached_ghost_user_id).and_return('10')
+
+      expect(subject.source_ghost_user_id).to eq('10')
+    end
+
+    it 'memoizes the result' do
+      expect(source_internal_user_finder).to receive(:cached_ghost_user_id).once.and_return('10')
+
+      2.times { subject.source_ghost_user_id }
+    end
+  end
 end

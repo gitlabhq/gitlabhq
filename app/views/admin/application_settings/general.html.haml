@@ -100,7 +100,7 @@
 -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/640
 = render_if_exists 'admin/application_settings/feishu_integration'
 = render 'admin/application_settings/third_party_offers'
-= render 'admin/application_settings/snowplow'
+= render 'admin/application_settings/snowplow' if Feature.disabled?(:product_usage_data, :instance)
 = render_if_exists 'admin/application_settings/product_analytics'
 = render 'admin/application_settings/error_tracking' if Feature.enabled?(:gitlab_error_tracking)
 = render 'admin/application_settings/eks'

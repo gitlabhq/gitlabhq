@@ -543,7 +543,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
 
       it "allows updating the settings" do
-        put api("/application/settings", admin), params: settings
+        put api("/application/settings", admin), params: settings.merge({
+          gitlab_product_usage_data_enabled: false
+        })
 
         expect(response).to have_gitlab_http_status(:ok)
         settings.each do |attribute, value|

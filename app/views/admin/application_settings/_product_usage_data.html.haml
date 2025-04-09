@@ -3,11 +3,29 @@
 
   %fieldset
     .form-group
-      - label = s_('AdminSettings|Enable product usage tracking')
-      = f.gitlab_ui_checkbox_component :product_usage_data_enabled?, '%{label}'.html_safe % { label: label },
-        checkbox_options: { id: 'application_setting_product_usage_data_enabled' },
-        label_options: { id: 'service_ping_features_label' }
+      - label = s_('AdminSettings|Enable event tracking')
+      = f.gitlab_ui_checkbox_component :gitlab_product_usage_data_enabled, '%{label}'.html_safe % { label: label },
+        help_text: s_('AdminSettings|Send event data to GitLab.')
+    .form-group
+      = f.gitlab_ui_checkbox_component :snowplow_enabled, _('Enable Snowplow tracking'),
+        help_text: s_('AdminSettings|Send event data to your own Snowplow collector.'),
+        checkbox_options: { data: { testid: 'snowplow-enabled-checkbox' } }
+    #js-snowplow-settings.gl-ml-6
+      .form-group
+        = f.label :snowplow_collector_hostname, _('Collector hostname')
+        = f.text_field :snowplow_collector_hostname, class: 'form-control gl-form-input', placeholder: 'snowplow.example.com'
+        .form-text.gl-text-subtle
+          = _('The hostname of your Snowplow collector.')
+      .form-group
+        = f.label :snowplow_app_id, _('App ID')
+        = f.text_field :snowplow_app_id, class: 'form-control gl-form-input', placeholder: 'gitlab'
+        .form-text.gl-text-subtle
+          = _('The ID of the application.')
+      .form-group
+        = f.label :snowplow_cookie_domain, _('Cookie domain')
+        = f.text_field :snowplow_cookie_domain, class: 'form-control gl-form-input', placeholder: '.your-gitlab-instance.com'
+        .form-text.gl-text-subtle
+          = _('The Snowplow cookie domain.')
 
   = f.submit _('Save changes'), pajamas_button: true
-
 

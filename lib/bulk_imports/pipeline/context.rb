@@ -46,6 +46,10 @@ module BulkImports
         @configuration ||= bulk_import.configuration
       end
 
+      def source_ghost_user_id
+        @source_ghost_user_id ||= BulkImports::SourceInternalUserFinder.new(configuration).cached_ghost_user_id
+      end
+
       def source_user_mapper
         @source_user_mapper ||= Gitlab::Import::SourceUserMapper.new(
           namespace: portable.root_ancestor,

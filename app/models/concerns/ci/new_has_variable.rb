@@ -6,10 +6,12 @@ module Ci
     include Ci::HasVariable
 
     included do
+      include Gitlab::EncryptedAttribute
+
       attr_encrypted :value,
         mode: :per_attribute_iv,
         algorithm: 'aes-256-gcm',
-        key: Settings.attr_encrypted_db_key_base_32,
+        key: :db_key_base_32,
         insecure_mode: false
     end
   end

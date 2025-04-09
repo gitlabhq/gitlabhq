@@ -11,6 +11,10 @@ RSpec.describe Ci::InstanceVariable do
   it { is_expected.to validate_uniqueness_of(:key).with_message(/\(\w+\) has already been taken/) }
   it { is_expected.to validate_length_of(:value).is_at_most(10_000).with_message(/The value of the provided variable exceeds the 10000 character limit/) }
 
+  it_behaves_like 'encrypted attribute', :value, :db_key_base_32 do
+    let(:record) { subject }
+  end
+
   it_behaves_like 'includes Limitable concern' do
     subject { build(:ci_instance_variable) }
   end

@@ -17,13 +17,23 @@ module Import
       # returned. In this case SourceUsersMapper#map returns a class that responds
       # to [].
       class MockedHash
-        def initialize(source_user_mapper)
+        include Gitlab::Utils::StrongMemoize
+
+        def initialize(source_user_mapper, source_ghost_user_id)
           @source_user_mapper = source_user_mapper
+          @source_ghost_user_id = source_ghost_user_id
         end
 
         def [](user_identifier)
+          return ghost_user_id if @source_ghost_user_id.to_s == user_identifier.to_s
+
           @source_user_mapper.find_source_user(user_identifier)&.mapped_user_id
         end
+
+        def ghost_user_id
+          Users::Internal.ghost.id
+        end
+        strong_memoize_attr :ghost_user_id
       end
 
       def initialize(context:)
@@ -31,7 +41,7 @@ module Import
       end
 
       def map
-        @map ||= MockedHash.new(source_user_mapper)
+        @map ||= MockedHash.new(source_user_mapper, source_ghost_user_id)
       end
 
       def include?(user_identifier)
@@ -42,7 +52,7 @@ module Import
 
       attr_reader :context
 
-      delegate :source_user_mapper, to: :context
+      delegate :source_user_mapper, :source_ghost_user_id, to: :context
     end
   end
 end

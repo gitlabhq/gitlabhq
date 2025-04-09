@@ -11,4 +11,4 @@ milestone: '17.6'
 gitlab_schema: gitlab_ci
 sharding_key:
   sharding_key_id: namespaces
-table_size: small
+table_size: medium

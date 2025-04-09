@@ -206,6 +206,12 @@ production: &base
     # plaintext. This can be a security risk.
     # display_initial_root_password: false
 
+    ## Product Usage Data
+    # This setting enables or disables product usage data in the GitLab instance.
+    # It will be read on initial installation only. Once GitLab is up and running,
+    # this setting should be toggled from the admin pages in the UI.
+    # initial_gitlab_product_usage_data: true
+
   # Allows delivery of emails using Microsoft Graph API with OAuth 2.0 client credentials flow.
   microsoft_graph_mailer:
     enabled: false

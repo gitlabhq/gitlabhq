@@ -1378,6 +1378,7 @@ class Project < ApplicationRecord
   def ancestors(hierarchy_order: nil)
     group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
   end
+  alias_method :group_and_ancestors, :ancestors
 
   def ancestors_upto_ids(...)
     ancestors_upto(...).pluck(:id)

@@ -30,6 +30,7 @@ describe('WorkItemAddRelationshipForm', () => {
     workItemType = 'Objective',
     childrenIds = [],
     linkedWorkItemsMutationHandler = linkedWorkItemsSuccessMutationHandler,
+    hasBlockedWorkItemsFeature = true,
   } = {}) => {
     const mockApolloProvider = createMockApollo([
       [addLinkedItemsMutation, linkedWorkItemsMutationHandler],
@@ -43,6 +44,7 @@ describe('WorkItemAddRelationshipForm', () => {
         workItemFullPath: 'test-project-path',
         workItemType,
         childrenIds,
+        hasBlockedWorkItemsFeature,
       },
     });
 
@@ -69,6 +71,13 @@ describe('WorkItemAddRelationshipForm', () => {
     ]);
     expect(findLinkWorkItemButton().attributes().disabled).toBe('true');
     expect(findMaxWorkItemNote().text()).toBe('Add up to 10 items at a time.');
+  });
+
+  it('does not render relationship type radio options when hasBlockedWorkItemsFeature is false', async () => {
+    await createComponent({ hasBlockedWorkItemsFeature: false });
+
+    expect(findLinkWorkItemForm().exists()).toBe(true);
+    expect(findRadioGroup().exists()).toBe(false);
   });
 
   it('renders work item token input with default props', () => {
