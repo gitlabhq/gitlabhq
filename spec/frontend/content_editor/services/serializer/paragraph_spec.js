@@ -78,28 +78,6 @@ describe('when a paragraph contains a link', () => {
       );
     });
   });
-
-  it('serializes a text-only paragraph with an HTML tag as inline', () => {
-    expect(
-      serialize(
-        paragraph(sourceTag('p'), 'hello world'),
-        paragraph(sourceTag('p'), 'A quick brown fox jumps over the lazy dog'),
-      ),
-    ).toBe(`<p>hello world</p>
-
-<p>A quick brown fox jumps over the lazy dog</p>
-
-`);
-  });
-});
-
-it('serializes a text-only paragraph without a <p> tag as markdown', () => {
-  expect(
-    serialize(
-      paragraph(sourceTag('h1'), 'hello world'),
-      paragraph(sourceTag('h2'), 'A quick brown fox jumps over the lazy dog'),
-    ),
-  ).toBe(`hello world\n\nA quick brown fox jumps over the lazy dog`);
 });
 
 it('serializes a paragraph with an HTML tag containing markdown as markdown', () => {

@@ -9,6 +9,10 @@ RSpec.describe GitlabSchema.types['ContainerProtectionTagRule'], feature_categor
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_container_image) }
 
+  specify do
+    expect(described_class).to expose_permissions_using(Types::PermissionTypes::ContainerRegistry::Protection::TagRule)
+  end
+
   describe 'id' do
     subject { described_class.fields['id'] }
 

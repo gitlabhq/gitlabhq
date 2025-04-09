@@ -471,35 +471,6 @@ To review and triage documentation feedback and improvement issues for your grou
 1. Aim to keep the list of open, untriaged issues at **<10**.
 1. Share the triaged list with the group and group PM.
 
-## Stage leads
-
-{{< alert type="note" >}}
-
-This section outlines a process that we experimented with in Q1 and Q2 of FY2025, and rolled out more widely in Q3 of 2025. This process is subject to change.
-
-{{< /alert >}}
-
-Some technical writers are assigned as **stage leads** for a given [DevOps stage](#stage-leads).
-
-Stage leads might work across an entire stage, or a subset of groups in the stage.
-They support other technical writers assigned to groups in the stage.
-
-Stage leads:
-
-- Assume the same [responsibilities](https://handbook.gitlab.com/job-families/product/technical-writer/#responsibilities) as technical writers, but with a more targeted focus on proactively creating and improving documentation for their assigned stage.
-- Spend approximately 30% of their time on issues and merge requests reviews authored by developers for [new features and enhancements](#documentation-for-a-product-change) for their assigned groups.
-- Spend the remainder of their time:
-  - Creating and refining content to address documentation needs and gaps for their assigned **stage**
-    (for example, writing tutorials and use case-based content, restructuring existing content, and working on the information architecture).
-  - Supporting other writers in the stage to contribute to documentation improvements.
-- Create a quarterly planning issue to outline the content gaps and improvements that they aim to address over three milestones
-  (for example, [FY25Q3 Stage lead planning issue: Secure](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/1067)).
-- Apply the relevant `tw-lead` [label](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=tw-lead) to documentation improvement MRs that they drive or provide input on. This label allows us to track the improvements that come out of the stage lead process as one of our performance indicators (PIs).
-- Collaborate with other stage leads on documentation improvements.
-
-For [documentation improvements](#documentation-feedback-and-improvements), stage leads are responsible for creating an
-issue board to track ongoing and planned documentation enhancements and additions.
-
 ## Hackathons
 
 The Technical Writing team takes part in the [GitLab Hackathon](https://about.gitlab.com/community/hackathon/)
@@ -574,7 +545,7 @@ To further classify the type of effort, include one or more of the following lab
 - [`L10N-docs`](https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&sort=relevance&search=l10n-docs): Localization issue, MR, or epic that impacts the workflows of the Technical Writing team or the `docs.gitlab.com` site and infrastructure.
 - [`release post item`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=release+post+item): Release post items.
 - [`Technical Writing Leadership`](https://gitlab.com/gitlab-org/gitlab/-/labels?subscribed=&search=tech+writing+leadership): Work driven or owned by the Technical Writing leadership team, such as OKRs.
-- [`tw-lead`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=tw-lead): MRs that are driven by or require input from one of the [stage leads](#stage-leads).
+- [`tw-lead`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=tw-lead): MRs that are driven by or require input from one of the [stage leads](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#stage-leads).
 - [`tw-style`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=tw-style): Style standards for documentation and UI text.
 - [`UI text`](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=ui+text): Any user-facing text, such as UI text and error messages.
 

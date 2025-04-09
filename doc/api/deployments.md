@@ -39,7 +39,9 @@ GET /projects/:id/deployments
 | `status`          | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"
+curl --request "GET" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments"
 ```
 
 {{< alert type="note" >}}
@@ -213,7 +215,9 @@ GET /projects/:id/deployments/:deployment_id
 | `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1"
+curl --request "GET" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments/1"
 ```
 
 Example response:
@@ -351,8 +355,10 @@ POST /projects/:id/deployments
 | `status`      | string         | yes      | The status of the deployment that is created. One of `running`, `success`, `failed`, or `canceled`        |
 
 ```shell
-curl --data "environment=production&sha=a91957a858320c0e17f3a0eca7cfacbff50ea29a&ref=main&tag=false&status=success" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"
+curl --request "POST" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "environment=production&sha=a91957a858320c0e17f3a0eca7cfacbff50ea29a&ref=main&tag=false&status=success" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments"
 ```
 
 Example response:
@@ -406,7 +412,10 @@ PUT /projects/:id/deployments/:deployment_id
 | `status`         | string         | yes      | The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`.                         |
 
 ```shell
-curl --request PUT --data "status=success" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42"
+curl --request "PUT" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "status=success" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments/42"
 ```
 
 Example response:
@@ -475,7 +484,9 @@ DELETE /projects/:id/deployments/:deployment_id
 | `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```shell
-curl --request "DELETE" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1"
+curl --request "DELETE" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments/1"
 ```
 
 Example responses:
@@ -515,7 +526,9 @@ GET /projects/:id/deployments/:deployment_id/merge_requests
 It supports the same parameters as the [Merge requests API](merge_requests.md#list-merge-requests) and returns a response using the same format:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42/merge_requests"
+curl --request "GET" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments/42/merge_requests"
 ```
 
 ## Approve or reject a blocked deployment
@@ -549,8 +562,10 @@ POST /projects/:id/deployments/:deployment_id/approval
 | `represented_as`| string         | no       | The name of the User/Group/Role to use for the approval, when the user belongs to [multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules). |
 
 ```shell
-curl --data "status=approved&comment=Looks good to me&represented_as=security" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
+curl --request "POST" \
+  --data "status=approved&comment=Looks good to me&represented_as=security" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
 ```
 
 Example response:

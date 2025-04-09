@@ -88,7 +88,7 @@ describe('WorkItemActions component', () => {
         text: x.text(),
       };
     });
-  const findNotificationsToggle = () => wrapper.findByTestId('notifications-toggle');
+  const findNotificationsToggle = () => wrapper.findByTestId('notifications-toggle-form');
   const findMoveButton = () => wrapper.findByTestId('move-action');
   const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
 
@@ -130,7 +130,7 @@ describe('WorkItemActions component', () => {
     isGroup = false,
     isParentConfidential = false,
     okrsMvc = false,
-    subscribed = false,
+    subscribedToNotifications = false,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
     lockDiscussionMutationHandler = lockDiscussionMutationResolver,
@@ -169,7 +169,7 @@ describe('WorkItemActions component', () => {
         canMove,
         isConfidential,
         isDiscussionLocked,
-        subscribed,
+        subscribedToNotifications,
         isParentConfidential,
         workItemType,
         workItemReference,
@@ -457,8 +457,8 @@ describe('WorkItemActions component', () => {
 
     it.each`
       scenario        | subscribedToNotifications | notificationsMutationHandler     | subscribed | toastMessage
-      ${'turned off'} | ${false}                  | ${toggleNotificationsOffHandler} | ${false}   | ${'Notifications turned off.'}
-      ${'turned on'}  | ${true}                   | ${toggleNotificationsOnHandler}  | ${true}    | ${'Notifications turned on.'}
+      ${'turned off'} | ${true}                   | ${toggleNotificationsOffHandler} | ${false}   | ${'Notifications turned off.'}
+      ${'turned on'}  | ${false}                  | ${toggleNotificationsOnHandler}  | ${true}    | ${'Notifications turned on.'}
     `(
       'calls mutation and displays toast when notification toggle is $scenario',
       async ({
@@ -467,9 +467,9 @@ describe('WorkItemActions component', () => {
         subscribed,
         toastMessage,
       }) => {
-        createComponent({ notificationsMutationHandler });
+        createComponent({ notificationsMutationHandler, subscribedToNotifications });
 
-        findNotificationsToggle().vm.$emit('change', subscribedToNotifications);
+        findNotificationsToggle().vm.$emit('action', !subscribedToNotifications);
         await waitForPromises();
 
         expect(notificationsMutationHandler).toHaveBeenCalledWith({
@@ -485,7 +485,7 @@ describe('WorkItemActions component', () => {
     it('emits error when the update notification mutation fails', async () => {
       createComponent({ notificationsMutationHandler: toggleNotificationsFailureHandler });
 
-      findNotificationsToggle().vm.$emit('change', false);
+      findNotificationsToggle().vm.$emit('action', false);
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([['Failed to subscribe']]);

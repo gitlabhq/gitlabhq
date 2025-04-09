@@ -37,3 +37,4 @@ end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install
 Gitlab::Database::LoadBalancing::ActionCableCallbacks.install
+Gitlab::ActionCable::IpAddressStateCallback.install

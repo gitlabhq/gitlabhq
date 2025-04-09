@@ -471,6 +471,12 @@ placeholders.
 
 You can keep contributions assigned to placeholder users either one at a time or in bulk.
 
+When applied in bulk, it affects the entire namespace and only users with the following
+**Reassignment status** values in the **Awaiting reassignment** tab:
+
+- `Not started`
+- `Rejected`
+
 To keep placeholder users one at a time:
 
 1. On the left sidebar, select **Search or go to** and find your group.

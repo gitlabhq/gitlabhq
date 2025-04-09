@@ -25,6 +25,9 @@ module Ci
     self.sequence_name = :ci_pipelines_id_seq
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
+    YAML_ERRORS_MAX_LENGTH = 100.kilobytes
+    MAX_SHA_LENGTH = 64
+    MAX_REF_LENGTH = 300
 
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
       project: [:project_feature, :route, { namespace: :route }]
@@ -176,6 +179,13 @@ module Ci
     validate :valid_commit_sha, unless: :importing?
     validates :source, exclusion: { in: %w[unknown], unless: :importing? }, on: :create
     validates :project, presence: true
+
+    validates :ref, length: { maximum: MAX_REF_LENGTH }, if: :ref_changed?
+    validates :sha, length: { maximum: MAX_SHA_LENGTH }, if: :sha_changed?
+    validates :before_sha, length: { maximum: MAX_SHA_LENGTH }, if: :before_sha_changed?
+    validates :source_sha, length: { maximum: MAX_SHA_LENGTH }, if: :source_sha_changed?
+    validates :target_sha, length: { maximum: MAX_SHA_LENGTH }, if: :target_sha_changed?
+    validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
     after_commit :trigger_pipeline_status_change_subscription, if: :saved_change_to_status?

@@ -30,7 +30,7 @@ function setupMrNotesState(notesDataset, diffsDataset = {}) {
   store.dispatch('setUserData', currentUserData);
   store.dispatch('setTargetNoteHash', getLocationHash());
   useMrNotes(pinia).setEndpoints(endpoints);
-  store.dispatch('diffs/setBaseConfig', {
+  useLegacyDiffs(pinia).setBaseConfig({
     endpoint: diffsDataset.endpoint,
     endpointMetadata: diffsDataset.endpointMetadata,
     endpointBatch: diffsDataset.endpointBatch,

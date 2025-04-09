@@ -90,7 +90,7 @@ export default class Presenter {
    * @param {{ data: any, config: any, ...props: any[] }} props
    * @returns {Presenter}
    */
-  init({ data, config, ...props }) {
+  init({ data, config, queryKey, ...props }) {
     const { display } = config;
     const component = presentersByDisplayType[display] || ListPresenter;
     const additionalProps = additionalPropsByDisplayType[display] || {};
@@ -99,6 +99,7 @@ export default class Presenter {
     this.#component = {
       provide: {
         presenter: this,
+        queryKey,
       },
       render: (h) => {
         return h(component, {

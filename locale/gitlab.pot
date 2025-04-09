@@ -4914,6 +4914,9 @@ msgstr ""
 msgid "AdminUsers|Access the API"
 msgstr ""
 
+msgid "AdminUsers|Access to their groups and projects."
+msgstr ""
+
 msgid "AdminUsers|Activate"
 msgstr ""
 
@@ -5031,6 +5034,9 @@ msgstr ""
 msgid "AdminUsers|Deactivating a user has the following effects:"
 msgstr ""
 
+msgid "AdminUsers|Define user access to groups, projects, resources, and the Admin area."
+msgstr ""
+
 msgid "AdminUsers|Delete User %{username} and contributions?"
 msgstr ""
 
@@ -5068,6 +5074,12 @@ msgid "AdminUsers|Filter list"
 msgstr ""
 
 msgid "AdminUsers|For more information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
+msgstr ""
+
+msgid "AdminUsers|Full access to all groups, projects, users, features, and the Admin area."
+msgstr ""
+
+msgid "AdminUsers|Full access to all groups, projects, users, features, and the Admin area. You cannot remove your own administrator access."
 msgstr ""
 
 msgid "AdminUsers|Group Managed Account"
@@ -5143,6 +5155,9 @@ msgid "AdminUsers|Re-enable spam monitoring for %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Reactivating a user will:"
+msgstr ""
+
+msgid "AdminUsers|Read-only access to all groups and projects. No access to the Admin area by default."
 msgstr ""
 
 msgid "AdminUsers|Regular"
@@ -5257,6 +5272,9 @@ msgid "AdminUsers|Untrust user"
 msgstr ""
 
 msgid "AdminUsers|User administration"
+msgstr ""
+
+msgid "AdminUsers|User type"
 msgstr ""
 
 msgid "AdminUsers|User will not be able to access git repositories"
@@ -17455,6 +17473,9 @@ msgstr ""
 msgid "Copy commit SHA"
 msgstr ""
 
+msgid "Copy contents"
+msgstr ""
+
 msgid "Copy customize name"
 msgstr ""
 
@@ -17513,6 +17534,9 @@ msgid "Copy reference"
 msgstr ""
 
 msgid "Copy secret"
+msgstr ""
+
+msgid "Copy source"
 msgstr ""
 
 msgid "Copy source branch name"
@@ -26528,6 +26552,9 @@ msgstr ""
 msgid "GLQL table"
 msgstr ""
 
+msgid "GLQL view options"
+msgstr ""
+
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
 msgstr ""
 
@@ -27942,9 +27969,6 @@ msgstr ""
 msgid "GlobalSearch|Command palette"
 msgstr ""
 
-msgid "GlobalSearch|Commands %{superKey} %{link2Start}k%{link2End}"
-msgstr ""
-
 msgid "GlobalSearch|Comments"
 msgstr ""
 
@@ -27972,6 +27996,9 @@ msgstr ""
 msgid "GlobalSearch|Filters"
 msgstr ""
 
+msgid "GlobalSearch|Filters %{superKey} + %{link2Start}k%{link2End}"
+msgstr ""
+
 msgid "GlobalSearch|Forks"
 msgstr ""
 
@@ -27994,9 +28021,6 @@ msgid "GlobalSearch|Groups"
 msgstr ""
 
 msgid "GlobalSearch|Help"
-msgstr ""
-
-msgid "GlobalSearch|I'm looking for"
 msgstr ""
 
 msgid "GlobalSearch|In this project"
@@ -28212,18 +28236,6 @@ msgid "GlobalSearch|Toggle if results have source branch included or excluded"
 msgstr ""
 
 msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
-msgstr ""
-
-msgid "GlobalSearch|Type %{linkStart}&gt;%{linkEnd} to search for pages or actions"
-msgstr ""
-
-msgid "GlobalSearch|Type %{linkStart}:%{linkEnd} to search for projects"
-msgstr ""
-
-msgid "GlobalSearch|Type %{linkStart}@%{linkEnd} to search for users"
-msgstr ""
-
-msgid "GlobalSearch|Type %{linkStart}t%{linkEnd} to search for files"
 msgstr ""
 
 msgid "GlobalSearch|Type for new suggestions to appear below."
@@ -55303,6 +55315,9 @@ msgstr ""
 msgid "SecurityReports|Vulnerability report"
 msgstr ""
 
+msgid "SecurityReports|Vulnerability will be archived on %{date}"
+msgstr ""
+
 msgid "SecurityReports|Warning parsing security reports"
 msgstr ""
 
@@ -65734,6 +65749,9 @@ msgid "View report"
 msgstr ""
 
 msgid "View seat usage"
+msgstr ""
+
+msgid "View source"
 msgstr ""
 
 msgid "View the %{code_open}last_activity_at%{code_close} attribute for %{project_link} using the %{projects_api_link}."

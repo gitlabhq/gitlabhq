@@ -186,7 +186,7 @@ In this case, the smaller value is used.
 
 {{< alert type="note" >}}
 
-This setting applies to individual artifacts in a job, not the final archive file.
+This setting applies to the size of the final archive file, not individual files in a job.
 
 {{< /alert >}}
 

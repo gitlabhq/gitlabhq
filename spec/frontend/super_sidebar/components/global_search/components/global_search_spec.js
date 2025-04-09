@@ -304,14 +304,14 @@ describe('GlobalSearchModal', () => {
           findGlobalSearchInput().vm.$emit('click');
         });
 
-        it('should handle command selection', async () => {
-          await findCommandPaletteDropdown().vm.$emit('selected', handle);
+        it('should handle command selection', () => {
+          wrapper.vm.handleCommandSelection(handle);
 
           expect(actionSpies.setCommand).toHaveBeenCalledWith(expect.any(Object), handle);
         });
 
         it('should focus search input', async () => {
-          await findCommandPaletteDropdown().vm.$emit('selected', handle);
+          wrapper.vm.handleCommandSelection(handle);
           await nextTick();
           expect(document.activeElement).toBe(findCommandPaletteInput().element);
         });

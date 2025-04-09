@@ -22,6 +22,7 @@ describe('GlqlFacade', () => {
       },
       provide: {
         glFeatures,
+        queryKey: 'glql_key',
       },
     });
     await nextTick();
@@ -74,14 +75,12 @@ describe('GlqlFacade', () => {
       expect(wrapper.findComponent(MockComponent).exists()).toBe(true);
     });
 
-    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/498359
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('tracks GLQL render event', () => {
+    it('tracks GLQL render event', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         'render_glql_block',
-        { label: '2962e3a32ad4bbe0d402e183b60ba858fe907e125df39f3221a01162959531b8' },
+        { label: 'glql_key' },
         undefined,
       );
     });
@@ -115,7 +114,7 @@ describe('GlqlFacade', () => {
       alert.vm.$emit('primaryAction');
       await nextTick();
 
-      expect(executeAndPresentQuery).toHaveBeenCalledWith('assignee = "foo"');
+      expect(executeAndPresentQuery).toHaveBeenCalledWith('assignee = "foo"', 'glql_key');
     });
   });
 
@@ -205,7 +204,7 @@ describe('GlqlFacade', () => {
       alert.vm.$emit('primaryAction');
       await nextTick();
 
-      expect(executeAndPresentQuery).toHaveBeenCalledWith('assignee = "foo"');
+      expect(executeAndPresentQuery).toHaveBeenCalledWith('assignee = "foo"', 'glql_key');
     });
   });
 });

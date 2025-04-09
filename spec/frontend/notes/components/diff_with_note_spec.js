@@ -1,13 +1,21 @@
+import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import discussionFixture from 'test_fixtures/merge_requests/diff_discussion.json';
 import imageDiscussionFixture from 'test_fixtures/merge_requests/image_diff_discussion.json';
 import { createStore } from '~/mr_notes/stores';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+
+Vue.use(PiniaVuePlugin);
 
 describe('diff_with_note', () => {
   let store;
+  let pinia;
   let wrapper;
 
   const selectors = {
@@ -25,7 +33,17 @@ describe('diff_with_note', () => {
   const findDiffViewer = () => wrapper.findComponent(DiffViewer);
   const findDiffFileHeader = () => wrapper.findComponent(DiffFileHeader);
 
+  const createComponent = (propsData) => {
+    wrapper = shallowMount(DiffWithNote, {
+      propsData,
+      store,
+      pinia,
+    });
+  };
+
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
     store = createStore();
     store.replaceState({
       ...store.state,
@@ -39,14 +57,7 @@ describe('diff_with_note', () => {
 
   describe('text diff', () => {
     beforeEach(() => {
-      const diffDiscussion = discussionFixture[0];
-
-      wrapper = shallowMount(DiffWithNote, {
-        propsData: {
-          discussion: diffDiscussion,
-        },
-        store,
-      });
+      createComponent({ discussion: discussionFixture[0] });
     });
 
     it('removes trailing "+" char', () => {
@@ -81,10 +92,7 @@ describe('diff_with_note', () => {
     describe('when discussion has a diff_file', () => {
       beforeEach(() => {
         const imageDiscussion = imageDiscussionFixture[0];
-        wrapper = shallowMount(DiffWithNote, {
-          propsData: { discussion: imageDiscussion, diffFile: {} },
-          store,
-        });
+        createComponent({ discussion: imageDiscussion, diffFile: {} });
       });
 
       it('shows image diff', () => {
@@ -99,10 +107,7 @@ describe('diff_with_note', () => {
         const imageDiscussion = JSON.parse(JSON.stringify(imageDiscussionFixture[0]));
         delete imageDiscussion.diff_file;
 
-        wrapper = shallowMount(DiffWithNote, {
-          propsData: { discussion: imageDiscussion, diffFile: {} },
-          store,
-        });
+        createComponent({ discussion: imageDiscussion, diffFile: {} });
       });
 
       it('does not show image diff', () => {
@@ -120,10 +125,7 @@ describe('diff_with_note', () => {
         fileDiscussion.position.position_type = 'file';
         fileDiscussion.original_position.position_type = 'file';
 
-        wrapper = shallowMount(DiffWithNote, {
-          propsData: { discussion: fileDiscussion, diffFile: {} },
-          store,
-        });
+        createComponent({ discussion: fileDiscussion, diffFile: {} });
       });
 
       it('shows file header', () => {
@@ -139,10 +141,7 @@ describe('diff_with_note', () => {
         fileDiscussion.position.position_type = 'file';
         fileDiscussion.original_position.position_type = 'file';
 
-        wrapper = shallowMount(DiffWithNote, {
-          propsData: { discussion: fileDiscussion, diffFile: {} },
-          store,
-        });
+        createComponent({ discussion: fileDiscussion, diffFile: {} });
       });
 
       it('shows file header', () => {
@@ -168,12 +167,7 @@ describe('diff_with_note', () => {
         },
       };
 
-      wrapper = shallowMount(DiffWithNote, {
-        propsData: {
-          discussion: diffDiscussion,
-        },
-        store,
-      });
+      createComponent({ discussion: diffDiscussion });
     });
 
     it('shows file diff', () => {

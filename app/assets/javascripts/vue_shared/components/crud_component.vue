@@ -137,6 +137,15 @@ export default {
       },
     },
   },
+  mounted() {
+    if (this.persistCollapsedState) {
+      if (localStorage.getItem(this.getLocalStorageKeyName()) === 'true') {
+        this.$emit('collapsed');
+      } else {
+        this.$emit('expanded');
+      }
+    }
+  },
   methods: {
     toggleCollapse() {
       this.isCollapsed = !this.isCollapsed;

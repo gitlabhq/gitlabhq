@@ -52,3 +52,16 @@ it('correctly preserves code with a html tag <code>', () => {
     ),
   ).toBe(`<code>new content</code>`);
 });
+
+it('correctly serializes code with sourcemap', () => {
+  const sourceMarkdown = source('`` some `code` ``');
+
+  expect(serialize(paragraph(code(sourceMarkdown, 'some code')))).toBe('`` some `code` ``');
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(code(sourceMarkdown, 'some code')) },
+      paragraph(code(sourceMarkdown, 'new content')),
+    ),
+  ).toBe('`new content`');
+});

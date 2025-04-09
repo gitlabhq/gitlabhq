@@ -49,9 +49,7 @@ describe('CommandsOverviewDropdown', () => {
 
   describe('template', () => {
     it('renders header', () => {
-      expect(findDropdown().find('[data-testid="listbox-header-text"]').text()).toBe(
-        "I'm looking for",
-      );
+      expect(findDropdown().find('[data-testid="listbox-header-text"]').text()).toBe('Filters');
     });
 
     it('renders all items', () => {

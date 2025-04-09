@@ -49,7 +49,7 @@ export default {
     ref="reference"
     class="gl-text-strong"
     :class="`gfm gfm-${type}`"
-    :data-original="`${data.reference}+`"
+    :data-original="`${project || group}${data.reference}+`"
     :data-reference-type="type"
     :title="data.title"
     :href="data.webUrl"

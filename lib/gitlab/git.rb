@@ -126,9 +126,9 @@ module Gitlab
 
         # Optimization: prevent unnecessary substring creation
         if sha1.length == sha2.length
-          sha1 == sha2
+          sha1.casecmp(sha2) == 0
         else
-          sha1[0, length] == sha2[0, length]
+          sha1[0, length].casecmp(sha2[0, length]) == 0
         end
       end
     end

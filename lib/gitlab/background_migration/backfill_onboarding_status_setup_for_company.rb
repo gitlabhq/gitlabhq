@@ -6,6 +6,12 @@ module Gitlab
       operation_name :backfill_onboarding_status_setup_for_company
       feature_category :onboarding
 
+      class UserDetail < ApplicationRecord
+        self.table_name = :user_details
+
+        belongs_to :user
+      end
+
       def perform
         each_sub_batch do |sub_batch|
           UserDetail

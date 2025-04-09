@@ -334,7 +334,7 @@ One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **e
 of job names only. Matching substrings found at the beginning or in the middle of
 job names are not removed.
 
-## Retry a job
+## Retry jobs
 
 You can retry a job after it completes, regardless of its final state (failed, success, or canceled).
 
@@ -343,6 +343,17 @@ When you retry a job:
 - A new job instance is created with a new job ID.
 - The job runs with the same parameters and variables as the original job.
 - If the job produces artifacts, new artifacts are created and stored.
+- The new job associates with the user who initiated the retry, not the user who created the original pipeline.
+- Any subsequent jobs that were previously skipped are reassigned to the user who initiated the retry.
+
+When you retry a [trigger job](../yaml/_index.md#trigger) that triggers a downstream pipeline:
+
+- The trigger job generates a new downstream pipeline.
+- The downstream pipeline also associates with the user who initiated the retry.
+- The downstream pipeline runs with the configuration that exists at the time of the retry,
+  which might be different from the original run.
+
+### Retry a job
 
 Prerequisites:
 

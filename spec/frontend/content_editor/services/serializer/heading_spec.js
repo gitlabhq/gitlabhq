@@ -6,7 +6,7 @@ import {
   source,
 } from '../../serialization_utils';
 
-const { heading, bold } = builders;
+const { heading, bold, paragraph } = builders;
 
 it('correctly serializes headings', () => {
   expect(
@@ -120,6 +120,25 @@ it('serializes a heading with an HTML tag containing markdown as markdown', () =
 ##### Some **bold** text
 
 ###### Some **bold** text`);
+});
+
+it('serializes regular headings with sourcemap correctly', () => {
+  const headingSourcemap = source('# heading', 'h1');
+  const paragraphSourcemap = source('**bold text** non bolded text', 'p');
+  const boldSourcemap = source('**bold text**', 'strong');
+
+  expect(
+    serializeWithOptions(
+      {
+        pristineDoc: [
+          heading({ level: 1, ...headingSourcemap }, 'heading'),
+          paragraph(paragraphSourcemap, bold(boldSourcemap, 'bold text'), ' non bolded text'),
+        ],
+      },
+      heading({ level: 1, ...headingSourcemap }, 'heading'),
+      paragraph(paragraphSourcemap, bold(boldSourcemap, 'bold text'), ' non bolded text changed'),
+    ),
+  ).toBe('# heading\n\n**bold text** non bolded text changed');
 });
 
 it('serializes setext headings with sourcemap correctly', () => {

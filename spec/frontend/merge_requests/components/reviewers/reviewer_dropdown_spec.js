@@ -275,6 +275,37 @@ describe('Reviewer dropdown component', () => {
           undefined,
         );
       });
+
+      it('does not send the "simple sidebar" tracking event when used "normally" (in complex mode)', () => {
+        findDropdown().vm.$emit('select', ['bob']);
+        findDropdown().vm.$emit('hidden');
+
+        expect(trackEventSpy).not.toHaveBeenCalledWith(
+          'user_requests_review_from_mr_simple_sidebar',
+          {},
+          undefined,
+        );
+      });
+
+      describe('simple sidebar usage (without using the reviewers panel)', () => {
+        it('sends the "simple sidebar" tracking event', async () => {
+          createComponent(true, {
+            users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+            usage: 'simple',
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', ['bob']);
+          findDropdown().vm.$emit('hidden');
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'user_requests_review_from_mr_simple_sidebar',
+            {},
+            undefined,
+          );
+        });
+      });
     });
   });
 

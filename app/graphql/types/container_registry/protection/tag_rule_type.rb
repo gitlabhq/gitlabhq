@@ -12,6 +12,8 @@ module Types
 
         authorize :admin_container_image
 
+        expose_permissions Types::PermissionTypes::ContainerRegistry::Protection::TagRule
+
         field :id,
           ::Types::GlobalIDType[::ContainerRegistry::Protection::TagRule],
           null: false,

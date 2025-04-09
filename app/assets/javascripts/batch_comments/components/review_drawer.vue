@@ -1,6 +1,4 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions as mapVuexActions } from 'vuex';
 import { mapActions, mapState } from 'pinia';
 import { GlDrawer } from '@gitlab/ui';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
@@ -8,11 +6,13 @@ import { useBatchComments } from '~/batch_comments/store';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 export default {
   name: 'ReviewDrawer',
   components: { GlDrawer, PreviewItem },
   computed: {
+    ...mapState(useLegacyDiffs, ['viewDiffsFileByFile']),
     ...mapState(useBatchComments, ['sortedDrafts', 'draftsCount', 'drawerOpened']),
     getDrawerHeaderHeight() {
       if (!this.drawerOpened) return '0';
@@ -21,7 +21,7 @@ export default {
     },
   },
   methods: {
-    ...mapVuexActions('diffs', ['goToFile']),
+    ...mapActions(useLegacyDiffs, ['goToFile']),
     ...mapActions(useBatchComments, ['scrollToDraft', 'setDrawerOpened']),
     async onClickDraft(draft) {
       if (this.viewDiffsFileByFile) {

@@ -8,7 +8,7 @@ title: Multiple Databases
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 The main databases are `main`, `ci`, and (optionally) `sec`. GitLab supports being run with one, two, or three databases.
-On GitLab.com we are using separate `main` and `ci` databases.
+On GitLab.com we are using separate `main` `ci`, and `sec` databases.
 
 For the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture, we are decomposing
 the databases further, to introduce another database `gitlab_main_clusterwide`.

@@ -1,13 +1,14 @@
 <script>
-import { GlAlert, GlButton, GlIntersectionObserver } from '@gitlab/ui';
+import { GlAlert, GlButton, GlModal, GlIntersectionObserver } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { sha256 } from '~/lib/utils/text_utility';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
 import { executeAndPresentQuery, presentPreview } from '../../core';
 import Counter from '../../utils/counter';
+import { eventHubByKey } from '../../utils/event_hub_factory';
 
 const MAX_GLQL_BLOCKS = 20;
 
@@ -16,12 +17,14 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlModal,
     GlIntersectionObserver,
   },
   directives: {
     SafeHtml,
   },
   mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
+  inject: ['queryKey'],
   props: {
     query: {
       required: true,
@@ -30,6 +33,16 @@ export default {
   },
   data() {
     return {
+      eventHub: eventHubByKey(this.queryKey),
+
+      queryModalSettings: {
+        id: `glql-${this.queryKey}`,
+        show: false,
+        title: '',
+        primaryAction: { text: __('Copy source') },
+        cancelAction: { text: __('Close') },
+      },
+
       loadOnClick: true,
       presenterPreview: null,
       presenterComponent: null,
@@ -48,11 +61,34 @@ export default {
     hasError() {
       return this.error.title || this.error.message;
     },
+    wrappedQuery() {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `\`\`\`glql\n${this.query}\n\`\`\``;
+    },
   },
   async mounted() {
     this.loadOnClick = this.glFeatures.glqlLoadOnClick;
+
+    this.eventHub.$on('dropdownAction', this.onDropdownAction.bind(this));
   },
+
   methods: {
+    onDropdownAction(action, ...data) {
+      if (typeof this[action] === 'function') this[action](...data);
+    },
+
+    viewSource({ title }) {
+      Object.assign(this.queryModalSettings, { title, show: true });
+    },
+
+    copySource() {
+      navigator.clipboard.writeText(this.wrappedQuery);
+    },
+
+    async copyAsGFM() {
+      await copyGLQLNodeAsGFM(this.$refs.presenter.$el);
+    },
+
     loadGlqlBlock() {
       if (this.presenterComponent || this.presenterPreview) return;
 
@@ -73,7 +109,7 @@ export default {
 
     async loadPresenterComponent() {
       try {
-        this.presenterComponent = await executeAndPresentQuery(this.query);
+        this.presenterComponent = await executeAndPresentQuery(this.query, this.queryKey);
         this.trackRender();
       } catch (error) {
         switch (error.networkError?.statusCode) {
@@ -93,7 +129,7 @@ export default {
       this.dismissAlert();
 
       try {
-        this.presenterPreview = await presentPreview(this.query);
+        this.presenterPreview = await presentPreview(this.query, this.queryKey);
       } catch (error) {
         this.handleQueryError(error.message);
       }
@@ -127,7 +163,7 @@ export default {
     renderMarkdown,
     async trackRender() {
       try {
-        this.trackEvent('render_glql_block', { label: await sha256(this.query) });
+        this.trackEvent('render_glql_block', { label: this.queryKey });
       } catch (e) {
         // ignore any tracking errors
       }
@@ -188,14 +224,28 @@ export default {
         style="transform: translate(-50%, -50%)"
         :aria-label="$options.i18n.loadGlqlView"
         @click="loadOnClick = false"
-      >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ query.trim() }}</code></pre>
+      >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ query }}</code></pre>
     </div>
     <gl-intersection-observer v-else @appear="loadGlqlBlock">
-      <component :is="presenterComponent" v-if="presenterComponent" />
+      <component :is="presenterComponent" v-if="presenterComponent" ref="presenter" />
       <component :is="presenterPreview" v-else-if="presenterPreview && !hasError" />
       <div v-else-if="hasError" class="markdown-code-block gl-relative">
-        <pre :class="preClasses"><code>{{ query.trim() }}</code></pre>
+        <pre :class="preClasses"><code>{{ query }}</code></pre>
       </div>
     </gl-intersection-observer>
+    <gl-modal
+      v-model="queryModalSettings.show"
+      :title="queryModalSettings.title"
+      :modal-id="queryModalSettings.id"
+      :action-primary="queryModalSettings.primaryAction"
+      :action-cancel="queryModalSettings.cancelAction"
+      @primary="copySource"
+    >
+      <div class="md">
+        <div class="markdown-code-block gl-relative">
+          <pre :class="preClasses"><code>{{ wrappedQuery }}</code></pre>
+        </div>
+      </div>
+    </gl-modal>
   </div>
 </template>

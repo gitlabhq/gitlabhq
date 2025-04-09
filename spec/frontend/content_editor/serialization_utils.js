@@ -44,7 +44,12 @@ export const serializeWithOptions = (
   new MarkdownSerializer().serialize(
     {
       doc: doc(...content),
-      pristineDoc: pristineDoc && docWithAttrs({ referenceDefinitions }, pristineDoc),
+      pristineDoc:
+        pristineDoc &&
+        docWithAttrs(
+          { referenceDefinitions },
+          ...(Array.isArray(pristineDoc) ? pristineDoc : [pristineDoc]),
+        ),
     },
     options,
   );

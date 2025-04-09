@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.4 (2025-04-09)
+
+### Fixed (2 changes)
+
+- [Fix invalid pipelines for scan execution policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b27b9794e62f4e8ba33e2f56c1c7c64872b4e771) **GitLab Enterprise Edition**
+- [Move group.cluster_agents field to CE](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d649d85eab978e106135cc03db4baf261d5d8cb3) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0ccf3be7475234aca2c54bd1b0283cd9efed6d87) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4912))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a6b55c797818a232b0b6ca271f42f594f5a2eae) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4907))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eef77387081aaf590f13dcdbd7faa6cbadd26bb7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4904))
+- [Bump Golang Oauth2 >=0.27.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ee730000f88d319bbd70ce828a0b21118e30231b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4893))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5d8162f4dfd64d817adef4b2bfd6ce174b66fa44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4884))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d54f30acea881202ae0b225c20d306633d7708bf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4888))
+- [Do not enable pprof by default in Workhorse](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4e61600d751d0aba541d8019c9c6419762acc1b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4891))
+
 ## 17.10.3 (2025-04-02)
 
 No changes.
@@ -825,6 +842,17 @@ No changes.
 - [Validate NOT NULL on issue_links sharding key](https://gitlab.com/gitlab-org/gitlab/-/commit/88d10656deca31b2af41b3fcb20f5c56aa88af7e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180911))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/998d8028213da6bf0c3c1c08301797c8b3395c28) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180234))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/8ae69a3765cfb7561db95e43faa30cc60fac6444) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177662))
+
+## 17.9.6 (2025-04-09)
+
+### Security (6 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac61772efb740af0684755d1db7d057f412b218e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4913))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46932e9f78e0b138b8fd7320b2e4e4c09f2fcfc0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4908))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7019ae8aa04f49f66d7db86ec4023f816f8e90f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4905))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/33961db6cab6ac4d3cc99d4ad521f160b43aafe2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4885))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b154f7884178a622da6d60fdcbd1097ce50cc6cb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4852))
+- [Do not enable pprof by default in Workhorse](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94aba826029e01791e394456aa9dd6a5db497415) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4890))
 
 ## 17.9.5 (2025-04-02)
 
@@ -1969,6 +1997,20 @@ No changes.
 - [Add NOT NULL constraint to ml_experiment_metadata.project_id column](https://gitlab.com/gitlab-org/gitlab/-/commit/d0200b5b317b842f7bc2308a20760f8682bff3ba) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177249))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c932e35efdc0e3c6f316a3c2d37045e115ce8cd5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176452))
 - [Finalize migration BackfillRemoteDevelopmentAgentConfigsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/da4c63d7aab3685c3fbe9d1e48f68ba2162a0b5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172769))
+
+## 17.8.7 (2025-04-09)
+
+### Security (5 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/00f779daaff694529b5ae4d15011c6ed66ce8130) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4914))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/84a94c7a024ff295241bbf659812cd4a71bd2639) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4909))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/41e74002f076ce8af8d6ed1b7452f5b03c94f291) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4906))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1b887d7c7a826a696a2d459cbd7263b4d78d25c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4886))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c0202d64a770617d01884b47cac582867769c84b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4853))
+
+### Other (1 change)
+
+- [No-op ci_runner_machines_687967fa8a table backfill migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/547295b6cfb9da651208fbe64da67d236ff813de)
 
 ## 17.8.6 (2025-03-26)
 

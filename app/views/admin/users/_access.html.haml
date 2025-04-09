@@ -13,24 +13,28 @@
       = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create top-level group')
     = f.gitlab_ui_checkbox_component :private_profile, s_('AdminUsers|Private profile')
 
-  %fieldset.form-group.gl-form-group
-    %legend.col-form-label.col-form-label
-      = s_('AdminUsers|Access level')
-    - editing_current_user = (current_user == @user)
+  - editing_current_user = (current_user == @user)
+  - user_type = render_if_exists 'admin/users/user_type', is_current_user: editing_current_user
+  - if user_type
+    = user_type
+  - else
+    %fieldset.form-group.gl-form-group#access_levels
+      %legend.col-form-label.col-form-label
+        = s_('AdminUsers|Access level')
 
-    = f.gitlab_ui_radio_component :access_level, :regular,
-        s_('AdminUsers|Regular'),
-        radio_options: { disabled: editing_current_user },
-        help_text: s_('AdminUsers|Regular users have access to their groups and projects.')
+      = f.gitlab_ui_radio_component :access_level, :regular,
+          s_('AdminUsers|Regular'),
+          radio_options: { disabled: editing_current_user },
+          help_text: s_('AdminUsers|Regular users have access to their groups and projects.')
 
-    = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
+      = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
 
-    - help_text = s_('AdminUsers|The user has unlimited access to all groups, projects, users, and features.')
-    - help_text += ' ' + s_('AdminUsers|You cannot remove your own administrator access.') if editing_current_user
-    = f.gitlab_ui_radio_component :access_level, :admin,
-        s_('AdminUsers|Administrator'),
-        radio_options: { disabled: editing_current_user },
-        help_text: help_text
+      - help_text = s_('AdminUsers|The user has unlimited access to all groups, projects, users, and features.')
+      - help_text += ' ' + s_('AdminUsers|You cannot remove your own administrator access.') if editing_current_user
+      = f.gitlab_ui_radio_component :access_level, :admin,
+          s_('AdminUsers|Administrator'),
+          radio_options: { disabled: editing_current_user },
+          help_text: help_text
 
   .form-group.gl-form-group{ role: 'group' }
     = f.gitlab_ui_checkbox_component :external,

@@ -2,8 +2,8 @@
 name: work_item_move_and_clone
 feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/15470
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179494
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525524
 milestone: '17.10'
 group: group::project management
-type: wip
-default_enabled: false
+type: beta
+default_enabled: true

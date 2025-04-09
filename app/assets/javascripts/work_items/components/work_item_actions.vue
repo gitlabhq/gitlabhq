@@ -551,6 +551,7 @@ export default {
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="notifications-toggle-form"
+          @action="toggleNotifications(!subscribedToNotifications)"
         >
           <template #list-item>
             <gl-toggle
@@ -558,7 +559,6 @@ export default {
               label-position="left"
               data-testid="notifications-toggle"
               class="work-item-dropdown-toggle gl-justify-between"
-              @change="toggleNotifications($event)"
             >
               <template #label>
                 <span :title="$options.i18n.notifications" class="gl-flex gl-gap-3 gl-pt-1">

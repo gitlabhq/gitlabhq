@@ -145,3 +145,4 @@ For more information about sorting logic, see
 - [Labels](../project/labels.md)
 - [Iterations](../group/iterations/_index.md)
 - [Milestones](../project/milestones/_index.md)
+- [Custom fields](custom_fields.md)

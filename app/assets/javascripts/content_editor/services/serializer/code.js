@@ -1,4 +1,4 @@
-import { openTag, closeTag, getMarkText } from '../serialization_helpers';
+import { openTag, closeTag, getMarkText, preserveUnchangedMark } from '../serialization_helpers';
 
 const generateCodeTag = (wrapTagName = openTag) => {
   const isOpen = wrapTagName === openTag;
@@ -8,6 +8,8 @@ const generateCodeTag = (wrapTagName = openTag) => {
     if (sourceTagName && !sourceMarkdown) return wrapTagName(mark.attrs.sourceTagName);
 
     const childText = getMarkText(mark, parent);
+    if (!childText) return '';
+
     if (childText.includes('`')) {
       let tag = '``';
       if (childText.startsWith('`') || childText.endsWith('`'))
@@ -19,11 +21,11 @@ const generateCodeTag = (wrapTagName = openTag) => {
   };
 };
 
-const code = {
+const code = preserveUnchangedMark({
   open: generateCodeTag(),
   close: generateCodeTag(closeTag),
   mixable: true,
   escape: false,
-};
+});
 
 export default code;

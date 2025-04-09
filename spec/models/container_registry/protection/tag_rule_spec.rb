@@ -353,4 +353,62 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#can_be_deleted?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:rule) { build(:container_registry_protection_tag_rule) }
+
+    subject { rule.can_be_deleted?(user) }
+
+    context 'when the user is nil' do
+      let_it_be(:user) { nil }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the user is an admin' do
+      before do
+        allow(user).to receive(:can_admin_all_resources?).and_return(true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the rule is immutable' do
+      let_it_be(:rule) { build(:container_registry_protection_tag_rule, :immutable, project:) }
+
+      where(:user_role, :expected_result) do
+        :developer   | false
+        :maintainer  | false
+        :owner       | true
+      end
+
+      with_them do
+        before do
+          project.send(:"add_#{user_role}", user)
+        end
+
+        it { is_expected.to be(expected_result) }
+      end
+    end
+
+    context 'when the rule is mutable' do
+      let_it_be(:rule) { build(:container_registry_protection_tag_rule, project:) }
+
+      where(:user_role, :expected_result) do
+        :developer   | false
+        :maintainer  | true
+        :owner       | true
+      end
+
+      with_them do
+        before do
+          project.send(:"add_#{user_role}", user)
+        end
+
+        it { is_expected.to be(expected_result) }
+      end
+    end
+  end
 end

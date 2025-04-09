@@ -65,6 +65,16 @@ module ContainerRegistry
         minimum_access_level_for_push.nil? && minimum_access_level_for_delete.nil?
       end
 
+      def can_be_deleted?(user)
+        return false if user.nil?
+        return true if user.can_admin_all_resources?
+
+        user_access_level = project.team.max_member_access(user.id)
+        minimum_level_to_delete_rule = immutable? ? Gitlab::Access::OWNER : Gitlab::Access::MAINTAINER
+
+        minimum_level_to_delete_rule <= user_access_level
+      end
+
       private
 
       def validate_access_levels

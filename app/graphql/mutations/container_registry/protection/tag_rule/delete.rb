@@ -9,7 +9,7 @@ module Mutations
           description 'Deletes a protection rule that controls which user ' \
             'roles can modify container image tags matching a specified pattern.'
 
-          authorize :admin_container_image
+          authorize :destroy_container_registry_protection_tag_rule
 
           argument :id,
             ::Types::GlobalIDType[::ContainerRegistry::Protection::TagRule],

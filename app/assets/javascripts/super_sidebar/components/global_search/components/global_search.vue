@@ -64,7 +64,6 @@ import {
   MODAL_CLOSE_HEADERCLOSE,
   COMMANDS_TOGGLE_KEYBINDING,
 } from '../command_palette/constants';
-import CommandPaletteLottery from '../command_palette/command_palette_lottery.vue';
 import CommandsOverviewDropdown from '../command_palette/command_overview_dropdown.vue';
 import { commandPaletteDropdownItems } from '../utils';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
@@ -95,7 +94,6 @@ export default {
     GlModal,
     CommandPaletteItems,
     FakeSearchInput,
-    CommandPaletteLottery,
     ScrollScrim,
     CommandsOverviewDropdown,
   },
@@ -438,10 +436,12 @@ export default {
     :modal-id="$options.SEARCH_MODAL_ID"
     hide-header
     hide-header-close
+    hide-footer
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
     body-class="!gl-p-0 !gl-min-h-26"
     modal-class="global-search-modal"
+    content-class="gl-mt-2"
     :centered="false"
     @shown="onSearchModalShown"
     @hide="onSearchModalHidden"
@@ -451,30 +451,43 @@ export default {
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-w-full gl-rounded-lg gl-pb-0"
     >
-      <div class="input-box-wrapper gl-border-b -gl-mb-1 gl-bg-default gl-p-2">
-        <gl-search-box-by-type
-          id="search"
-          ref="searchInput"
-          v-model="searchText"
-          role="searchbox"
-          data-testid="global-search-input"
-          autocomplete="off"
-          :placeholder="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
-          :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
-          borderless
-          @input="getAutocompleteOptions"
-          @keydown="onKeydown"
-        />
-        <span :id="$options.SEARCH_INPUT_DESCRIPTION" class="gl-sr-only">
-          {{ $options.i18n.SEARCH_DESCRIBED_BY_WITH_RESULTS }}
-        </span>
+      <div class="gl-relative">
+        <div
+          class="input-box-wrapper gl-border-b -gl-mb-1 gl-border-b-section gl-bg-section gl-p-2"
+        >
+          <gl-search-box-by-type
+            id="search"
+            ref="searchInput"
+            v-model="searchText"
+            role="searchbox"
+            data-testid="global-search-input"
+            autocomplete="off"
+            :placeholder="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
+            :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
+            borderless
+            @input="getAutocompleteOptions"
+            @keydown="onKeydown"
+          />
+          <span :id="$options.SEARCH_INPUT_DESCRIPTION" class="gl-sr-only">
+            {{ $options.i18n.SEARCH_DESCRIBED_BY_WITH_RESULTS }}
+          </span>
 
-        <fake-search-input
-          v-if="isCommandMode"
-          :user-input="commandPaletteQuery"
-          :scope="commandChar"
-          class="fake-input-wrapper"
-        />
+          <fake-search-input
+            v-if="isCommandMode"
+            :user-input="commandPaletteQuery"
+            :scope="commandChar"
+            class="fake-input-wrapper"
+          />
+
+          <commands-overview-dropdown
+            v-if="!isCommandMode && !searchText"
+            ref="commandDropdown"
+            :items="commandPaletteDropdownItems"
+            class="gl-absolute gl-right-0 gl-top-0 gl-mr-3 gl-mt-3"
+            @selected="handleCommandSelection"
+            @hidden="handleClosing"
+          />
+        </div>
       </div>
       <span
         :data-testid="$options.SEARCH_RESULTS_DESCRIPTION"
@@ -530,20 +543,6 @@ export default {
         <input type="hidden" name="repository_ref" :value="searchContext.ref" />
       </template>
     </form>
-    <template #modal-footer>
-      <div class="gl-m-0 gl-flex gl-grow gl-items-center gl-justify-between">
-        <span class="gl-text-subtle"
-          >{{ $options.i18n.COMMAND_PALETTE_TIP }} <command-palette-lottery
-        /></span>
-        <span
-          ><commands-overview-dropdown
-            ref="commandDropdown"
-            :items="commandPaletteDropdownItems"
-            @selected="handleCommandSelection"
-            @hidden="handleClosing"
-        /></span>
-      </div>
-    </template>
   </gl-modal>
 </template>
 

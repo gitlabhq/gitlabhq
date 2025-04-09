@@ -19,3 +19,4 @@ desired_sharding_key:
         sharding_key: organization_id
         belongs_to: bulk_import
 table_size: small
+desired_sharding_key_migration_job_name: BackfillBulkImportConfigurationsOrganizationId

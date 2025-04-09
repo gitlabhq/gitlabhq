@@ -2574,6 +2574,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_738125833856() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "bulk_imports"
+  WHERE "bulk_imports"."id" = NEW."bulk_import_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_740afa9807b8() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -10473,7 +10489,8 @@ CREATE TABLE bulk_import_configurations (
     encrypted_access_token text,
     encrypted_access_token_iv text,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE bulk_import_configurations_id_seq
@@ -33858,6 +33875,8 @@ CREATE INDEX index_bulk_import_batch_trackers_on_tracker_id_and_updated_at ON bu
 
 CREATE INDEX index_bulk_import_configurations_on_bulk_import_id ON bulk_import_configurations USING btree (bulk_import_id);
 
+CREATE INDEX index_bulk_import_configurations_on_organization_id ON bulk_import_configurations USING btree (organization_id);
+
 CREATE INDEX index_bulk_import_entities_for_stale_status ON bulk_import_entities USING btree (updated_at, id) WHERE (status = ANY (ARRAY[0, 1]));
 
 CREATE INDEX index_bulk_import_entities_on_bulk_import_id_and_status ON bulk_import_entities USING btree (bulk_import_id, status);
@@ -41300,6 +41319,8 @@ CREATE TRIGGER trigger_700f29b1312e BEFORE INSERT OR UPDATE ON packages_rubygems
 
 CREATE TRIGGER trigger_70d3f0bba1de BEFORE INSERT OR UPDATE ON compliance_framework_security_policies FOR EACH ROW EXECUTE FUNCTION trigger_70d3f0bba1de();
 
+CREATE TRIGGER trigger_738125833856 BEFORE INSERT OR UPDATE ON bulk_import_configurations FOR EACH ROW EXECUTE FUNCTION trigger_738125833856();
+
 CREATE TRIGGER trigger_740afa9807b8 BEFORE INSERT OR UPDATE ON subscription_user_add_on_assignments FOR EACH ROW EXECUTE FUNCTION trigger_740afa9807b8();
 
 CREATE TRIGGER trigger_7495f5e0efcb BEFORE INSERT OR UPDATE ON snippet_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_7495f5e0efcb();
@@ -41800,6 +41821,9 @@ ALTER TABLE ONLY internal_ids
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_17a5fafbd4 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_configurations
+    ADD CONSTRAINT fk_17ae5587d3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_17ce579abf FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
