@@ -122,6 +122,54 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
+  describe 'GET #diffs_stats' do
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: sha
+      }
+    end
+
+    let(:send_request) { get diffs_stats_namespace_project_commit_path(params) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'with valid params' do
+      let(:sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
+
+      include_examples 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 645,
+            removed_lines: 0,
+            diffs_count: 6
+          }
+        end
+      end
+
+      context 'when diffs overflow' do
+        include_examples 'overflow' do
+          let(:expected_stats) do
+            {
+              visible_count: 6,
+              email_path: "/#{project.full_path}/-/commit/#{sha}.diff",
+              diff_path: "/#{project.full_path}/-/commit/#{sha}.patch"
+            }
+          end
+        end
+      end
+    end
+
+    context 'with invalid params' do
+      let(:sha) { '0123456789' }
+
+      include_examples 'missing diffs stats'
+    end
+  end
+
   describe 'GET #diff_files' do
     let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
     let(:format) { :html }

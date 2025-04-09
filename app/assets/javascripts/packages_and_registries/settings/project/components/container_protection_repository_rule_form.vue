@@ -11,10 +11,11 @@ import {
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import createProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_repository_rule.mutation.graphql';
 import {
-  MinimumAccessLevelOptions,
+  ContainerRepositoryMinimumAccessLevelOptions,
   GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
 } from '~/packages_and_registries/settings/project/constants';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -27,6 +28,7 @@ export default {
     GlSprintf,
     HelpPageLink,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   i18n: {
     protectionRuleSavedErrorMessage: s__(
@@ -40,6 +42,7 @@ export default {
     return {
       protectionRuleFormData: {
         repositoryPathPattern: '',
+        minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
         minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
@@ -63,8 +66,17 @@ export default {
       return {
         projectPath: this.projectPath,
         repositoryPathPattern: this.protectionRuleFormData.repositoryPathPattern,
-        minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush,
+        minimumAccessLevelForDelete:
+          this.protectionRuleFormData.minimumAccessLevelForDelete || null,
+        minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush || null,
       };
+    },
+    containerRepositoryMinimumAccessLevelOptions() {
+      return this.glFeatures.containerRegistryProtectedContainersDelete
+        ? this.$options.containerRepositoryMinimumAccessLevelOptions
+        : this.$options.containerRepositoryMinimumAccessLevelOptions.filter((option) =>
+            Boolean(option.value),
+          );
     },
   },
   methods: {
@@ -72,6 +84,7 @@ export default {
       this.clearAlertErrorMessages();
 
       this.updateInProgress = true;
+
       return this.$apollo
         .mutate({
           mutation: createProtectionRepositoryRuleMutation,
@@ -108,7 +121,7 @@ export default {
       this.$emit('cancel');
     },
   },
-  minimumAccessLevelOptions: MinimumAccessLevelOptions,
+  containerRepositoryMinimumAccessLevelOptions: ContainerRepositoryMinimumAccessLevelOptions,
 };
 </script>
 
@@ -155,7 +168,21 @@ export default {
       <gl-form-select
         id="input-minimum-access-level-for-push"
         v-model="protectionRuleFormData.minimumAccessLevelForPush"
-        :options="$options.minimumAccessLevelOptions"
+        :options="containerRepositoryMinimumAccessLevelOptions"
+        :disabled="isFieldDisabled"
+      />
+    </gl-form-group>
+
+    <gl-form-group
+      v-if="glFeatures.containerRegistryProtectedContainersDelete"
+      :label="s__('ContainerRegistry|Minimum access level for delete')"
+      label-for="input-minimum-access-level-for-delete"
+      :disabled="isFieldDisabled"
+    >
+      <gl-form-select
+        id="input-minimum-access-level-for-delete"
+        v-model="protectionRuleFormData.minimumAccessLevelForDelete"
+        :options="containerRepositoryMinimumAccessLevelOptions"
         :disabled="isFieldDisabled"
       />
     </gl-form-group>

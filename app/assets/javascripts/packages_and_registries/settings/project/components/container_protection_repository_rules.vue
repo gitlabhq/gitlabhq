@@ -16,12 +16,16 @@ import getContainerPotectionRepositoryRulesQuery from '~/packages_and_registries
 import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
 import deleteContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_repository_rule.mutation.graphql';
 import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
-import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
+import { ContainerRepositoryMinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
 import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
 const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('ContainerRegistry|Minimum access level for push');
+const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__(
+  'ContainerRegistry|Minimum access level for delete',
+);
 
 export default {
   components: {
@@ -40,11 +44,12 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   i18n: {
     settingBlockTitle: s__('ContainerRegistry|Protected container repositories'),
     settingBlockDescription: s__(
-      'ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image.',
+      'ContainerRegistry|When a container repository is protected, only users with specific roles can push and delete container images. This helps prevent unauthorized modifications.',
     ),
     protectionRuleDeletionConfirmModal: {
       title: s__('ContainerRegistry|Delete container repository protection rule?'),
@@ -56,6 +61,7 @@ export default {
       ),
     },
     minimumAccessLevelForPush: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
+    minimumAccessLevelForDelete: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
   },
   apollo: {
     protectionRulesQueryPayload: {
@@ -88,6 +94,12 @@ export default {
     };
   },
   computed: {
+    fields() {
+      if (this.glFeatures.containerRegistryProtectedContainersDelete) {
+        return this.$options.fields;
+      }
+      return this.$options.fields.filter((field) => field.key !== 'minimumAccessLevelForDelete');
+    },
     containsTableItems() {
       return this.protectionRulesQueryResult.length > 0;
     },
@@ -95,7 +107,8 @@ export default {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
           id: protectionRule.id,
-          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
+          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete || '',
+          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush || '',
           repositoryPathPattern: protectionRule.repositoryPathPattern,
         };
       });
@@ -117,6 +130,13 @@ export default {
     },
     showTopLevelLoadingIcon() {
       return this.isLoadingprotectionRules && !this.containsTableItems;
+    },
+    containerRepositoryMinimumAccessLevelOptions() {
+      return this.glFeatures.containerRegistryProtectedContainersDelete
+        ? this.$options.containerRepositoryMinimumAccessLevelOptions
+        : this.$options.containerRepositoryMinimumAccessLevelOptions.filter((option) =>
+            Boolean(option.value),
+          );
     },
   },
   methods: {
@@ -189,7 +209,12 @@ export default {
     },
     updateProtectionRuleMinimumAccessLevelForPush(protectionRule) {
       this.updateProtectionRule(protectionRule, {
-        minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
+        minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush || null,
+      });
+    },
+    updateProtectionRuleMinimumAccessLevelForDelete(protectionRule) {
+      this.updateProtectionRule(protectionRule, {
+        minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete || null,
       });
     },
     updateProtectionRule(protectionRule, updateData) {
@@ -237,13 +262,18 @@ export default {
       tdClass: '!gl-align-middle',
     },
     {
+      key: 'minimumAccessLevelForDelete',
+      label: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
+      tdClass: '!gl-align-middle',
+    },
+    {
       key: 'rowActions',
       label: __('Actions'),
       thAlignRight: true,
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],
-  minimumAccessLevelOptions: MinimumAccessLevelOptions,
+  containerRepositoryMinimumAccessLevelOptions: ContainerRepositoryMinimumAccessLevelOptions,
   modal: { id: 'delete-protection-rule-confirmation-modal' },
   modalActionPrimary: {
     text: s__('ContainerRegistry|Delete container protection rule'),
@@ -294,7 +324,7 @@ export default {
           v-else-if="containsTableItems"
           class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
           :items="tableItems"
-          :fields="$options.fields"
+          :fields="fields"
           show-empty
           stacked="md"
           :aria-label="$options.i18n.settingBlockTitle"
@@ -310,10 +340,23 @@ export default {
               class="gl-max-w-34"
               required
               :aria-label="$options.i18n.minimumAccessLevelForPush"
-              :options="$options.minimumAccessLevelOptions"
+              :options="containerRepositoryMinimumAccessLevelOptions"
               :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
-              data-testid="push-access-select"
+              data-testid="minimum-access-level-for-push-select"
               @change="updateProtectionRuleMinimumAccessLevelForPush(item)"
+            />
+          </template>
+
+          <template #cell(minimumAccessLevelForDelete)="{ item }">
+            <gl-form-select
+              v-model="item.minimumAccessLevelForDelete"
+              class="gl-max-w-34"
+              required
+              :aria-label="$options.i18n.minimumAccessLevelForDelete"
+              :options="containerRepositoryMinimumAccessLevelOptions"
+              data-testid="minimum-access-level-for-delete-select"
+              :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
+              @change="updateProtectionRuleMinimumAccessLevelForDelete(item)"
             />
           </template>
 

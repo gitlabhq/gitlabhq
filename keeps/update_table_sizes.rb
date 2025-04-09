@@ -135,15 +135,29 @@ module Keeps
     end
 
     def update_tables_in_config(config, tables_by_classification)
+      large_tables = config['Migration/UpdateLargeTable'].slice('LargeTables', 'OverLimitTables').values.flatten.uniq
+
       tables_by_classification.each do |size, new_tables|
         rubocop_classification = rubocop_size_classification(size)
+        demoted_tables = large_tables & new_tables.map(&:to_sym)
+
+        # At this point, we know if the table was promoted to "large" or "over limit", but we don't know if the table
+        # was demoted to "small" or "medium". If that's the case, we must remove the table from rubocop-migrations.yml.
+        remove_tables(demoted_tables, config) if !rubocop_classification && demoted_tables.any?
+
         next unless rubocop_classification
 
         existing_tables = config.dig('Migration/UpdateLargeTable', rubocop_classification) || []
         updated_tables = merge_and_sort_tables(existing_tables, new_tables)
 
         config['Migration/UpdateLargeTable'][rubocop_classification] = updated_tables
-        @rubocop_migrations_config[rubocop_classification] = updated_tables
+      end
+    end
+
+    def remove_tables(tables, config)
+      tables.each do |table_to_remove|
+        config['Migration/UpdateLargeTable']['LargeTables'].delete(table_to_remove)
+        config['Migration/UpdateLargeTable']['OverLimitTables'].delete(table_to_remove)
       end
     end
 
@@ -164,7 +178,7 @@ module Keeps
       [
         'database',
         'backend',
-        'group::database',
+        'group::database frameworks',
         'devops::data stores',
         'section::core platform',
         'maintenance::workflow',

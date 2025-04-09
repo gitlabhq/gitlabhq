@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_permissions.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
 
 fragment WorkItemHierarchy on WorkItem {
@@ -11,16 +12,7 @@ fragment WorkItemHierarchy on WorkItem {
   title
   confidential
   userPermissions {
-    adminParentLink
-    adminWorkItemLink
-    createNote
-    deleteWorkItem
-    markNoteAsInternal
-    moveWorkItem
-    reportSpam
-    setWorkItemMetadata
-    summarizeComments
-    updateWorkItem
+    ...WorkItemPermissions
   }
   widgets {
     type

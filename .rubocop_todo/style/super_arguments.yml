@@ -112,7 +112,6 @@ Style/SuperArguments:
     - 'ee/lib/ee/api/internal/kubernetes.rb'
     - 'ee/lib/ee/api/snippets.rb'
     - 'ee/lib/ee/banzai/filter/sanitization_filter.rb'
-    - 'ee/lib/ee/gitlab/event_store.rb'
     - 'ee/lib/ee/gitlab/quick_actions/users_extractor.rb'
     - 'ee/lib/elastic/latest/git_class_proxy.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/license.rb'

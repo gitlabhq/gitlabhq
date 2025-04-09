@@ -8,7 +8,6 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import DockerHubRateLimitsAlert from '~/vue_shared/components/docker_hub_rate_limits_alert.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PackageRegistrySection from '~/packages_and_registries/settings/project/components/package_registry_section.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 
@@ -20,7 +19,6 @@ export default {
     MetadataDatabaseAlert,
     PackageRegistrySection,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'showContainerRegistrySettings',
     'showPackageRegistrySettings',

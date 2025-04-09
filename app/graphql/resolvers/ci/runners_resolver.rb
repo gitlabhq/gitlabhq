@@ -62,18 +62,6 @@ module Resolvers
         description: 'Filter runners by owning project or group.',
         experiment: { milestone: '17.8' }
 
-      argument :owner_wildcard, ::Types::Ci::RunnerOwnerWildcardEnum,
-        required: false,
-        description: 'Filter runners by owner wildcard.',
-        experiment: { milestone: '17.8' }
-
-      def ready?(**args)
-        return true unless args[:owner_full_path].present? && args[:owner_wildcard].present?
-
-        raise Gitlab::Graphql::Errors::ArgumentError,
-          'The ownerFullPath and ownerWildcardPath arguments are mutually exclusive.'
-      end
-
       def resolve_with_lookahead(**args)
         apply_lookahead(
           ::Ci::RunnersFinder
@@ -92,10 +80,6 @@ module Resolvers
       def runners_finder_params(params)
         # Give preference to paused argument over the deprecated 'active' argument
         paused = params.fetch(:paused, params[:active] ? !params[:active] : nil)
-        owner = {
-          full_path: params[:owner_full_path],
-          wildcard: params[:owner_wildcard]
-        }.compact
 
         {
           active: paused.nil? ? nil : !paused,
@@ -109,7 +93,7 @@ module Resolvers
             params[:creator_id] ? ::GitlabSchema.parse_gid(params[:creator_id], expected_type: ::User).model_id : nil,
           creator_username: params[:creator_username],
           version_prefix: params[:version_prefix],
-          owner: owner.presence,
+          owner_full_path: params[:owner_full_path],
           preload: {} # we'll handle preloading ourselves
         }.compact
          .merge(parent_param)

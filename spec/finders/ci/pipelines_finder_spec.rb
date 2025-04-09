@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelinesFinder do
+RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:empty_project) { create(:project, :public) }
   let(:current_user) { nil }
   let(:params) { {} }
 
-  subject { described_class.new(project, current_user, params).execute }
+  subject(:execute) { described_class.new(project, current_user, params).execute }
 
   describe "#execute" do
     context 'when params is empty' do
@@ -160,6 +160,51 @@ RSpec.describe Ci::PipelinesFinder do
 
         it 'returns empty' do
           is_expected.to be_empty
+        end
+      end
+
+      context 'when ref exists as a virtual ref' do
+        let_it_be(:merge_request) do
+          create(:merge_request, source_project: project, source_branch: 'my-mr-branch-ref', target_branch: 'master')
+        end
+
+        let(:params) { { ref: merge_request.source_branch } }
+
+        it 'returns empty' do
+          is_expected.to be_empty
+        end
+
+        context 'when pipeline on merge request with matching source branch exists' do
+          let_it_be(:pipeline) do
+            create(:ci_pipeline, project: project, ref: "refs/#{Repository::REF_MERGE_REQUEST}/#{merge_request.iid}/head")
+          end
+
+          it 'returns matched pipeline' do
+            is_expected.to contain_exactly(pipeline)
+          end
+
+          context 'when FF is disabled' do
+            before do
+              stub_feature_flags(include_reserved_refs_in_pipeline_refs_filter: false)
+            end
+
+            it 'returns empty' do
+              is_expected.to be_empty
+            end
+          end
+
+          context 'when source does not include merge_request_event' do
+            let(:params) do
+              {
+                ref: merge_request.source_branch,
+                source: Ci::Pipeline.sources.keys.excluding('merge_request_event')
+              }
+            end
+
+            it 'returns empty' do
+              is_expected.to be_empty
+            end
+          end
         end
       end
     end
@@ -398,7 +443,7 @@ RSpec.describe Ci::PipelinesFinder do
 
       with_them do
         it 'returns the pipelines ordered' do
-          expect(subject).to eq(ordered_pipelines.map { |name| public_send(name) })
+          expect(execute).to eq(ordered_pipelines.map { |name| public_send(name) })
         end
       end
     end

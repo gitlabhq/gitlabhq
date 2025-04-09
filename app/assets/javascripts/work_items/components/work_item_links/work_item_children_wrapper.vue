@@ -11,13 +11,13 @@ import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
-import { WORK_ITEM_TYPE_NAME_OBJECTIVE, WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
-import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
 import {
-  addHierarchyChild,
-  removeHierarchyChild,
   optimisticUserPermissions,
-} from '../../graphql/cache_utils';
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+} from 'ee_else_ce/work_items/constants';
+import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
+import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import moveWorkItem from '../../graphql/move_work_item.mutation.graphql';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';

@@ -23,15 +23,15 @@ import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constan
 import { ASC, DESC } from '~/notes/constants';
 import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
-  mockWorkItemNotesResponse,
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
+  mockWorkItemNotesResponse,
   mockMoreWorkItemNotesResponse,
   workItemNotesCreateSubscriptionResponse,
   workItemNotesUpdateSubscriptionResponse,
   workItemNotesDeleteSubscriptionResponse,
   mockWorkItemNotesResponseWithComments,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/resize_observer', () => ({
   scrollToTargetOnResize: jest.fn(),

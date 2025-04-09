@@ -38,9 +38,9 @@ import workspacePermissionsQuery from '~/work_items/graphql/workspace_permission
 import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
 
 import {
-  mockParent,
   workItemByIidResponseFactory,
   workItemQueryResponse,
+  mockParent,
   workItemLinkedItemsResponse,
   objectiveType,
   epicType,
@@ -50,7 +50,7 @@ import {
   mockUploadDesignMutationResponse,
   mockUploadSkippedDesignMutationResponse,
   mockUploadErrorDesignMutationResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/work_items/components/design_management/cache_updates');

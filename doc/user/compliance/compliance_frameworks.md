@@ -220,7 +220,7 @@ responds with an associated status. This status is then displayed in the [Compli
 You can configure external controls for each individual project. External controls are not shared between projects.
 Status checks fail if an external control stays in the pending state for more than six hours.
 
-##### Add external controls
+#### Add external controls
 
 To add an external control when creating or editing a framework:
 
@@ -233,7 +233,7 @@ To add an external control when creating or editing a framework:
 1. In the feilds edit **External URL** and **HMAC shared secret**.
 1. Select **Save changes to the framework** to save the requirment.
 
-##### External control lifecycle
+#### External control lifecycle
 
 External controls have an **asynchronous** workflow. [Compliance scans](compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
 
@@ -246,11 +246,13 @@ sequenceDiagram
 
 When the payload is received, the external service can then run any required processes before posting its response back to the merge request using the REST API.
 
-External controls have the following states:
+External controls can have one of three statuses.
 
-- `pending` - The default state. No response has been received from the external service.
-- `passed` - A response from the external service has been received and approved by it.
-- `failed` - A response from the external service has been received and denied by it.
+| Status    | Description |
+|:----------|:------------|
+| `pending` | Default status. No response received from the external service. |
+| `passed`  | Response received from the external service and the external control was approved by the external service. |
+| `failed`  | Response received from the external service and the external control was denied by the external service. |
 
 If something changes outside of GitLab, you can set the status of an external control by using the API. You don't need to wait for a payload to be sent first.
 

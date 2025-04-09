@@ -3,7 +3,7 @@
 RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
   describe 'clickhouse pipeline analytics' do
     let_it_be(:pipelines) do
-      pipelines_data.map { |data| create_pipeline(*data) }
+      pipelines_data.map { |data| create_pipeline(**data) }
     end
 
     before do
@@ -23,7 +23,7 @@ RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
       end
     end
 
-    def create_pipeline(status, started_at, duration, ref, source)
+    def create_pipeline(status:, started_at:, duration:, ref:, source:)
       build_stubbed(:ci_pipeline, status, project: project.reload, ref: ref, source: source,
         created_at: 1.second.before(started_at), started_at: started_at, duration: duration)
     end
@@ -117,6 +117,91 @@ RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
               'failed' => '0',
               'other' => '0'
             )
+          end
+
+          context 'when ref exists as a reserved ref' do
+            let_it_be(:merge_request) do
+              create(:merge_request, source_project: project, source_branch: 'my-mr-branch-ref',
+                target_branch: 'main')
+            end
+
+            let(:ref) { merge_request.source_branch }
+
+            it 'returns no pipelines' do
+              expect(aggregate).to eq(
+                'label' => nil,
+                'all' => '0',
+                'success' => '0',
+                'failed' => '0',
+                'other' => '0'
+              )
+            end
+
+            context 'when pipeline on merge request with matching source branch exists' do
+              let_it_be(:mr_pipelines) do
+                [
+                  create_pipeline(
+                    status: :failed, started_at: 5.minutes.before(Time.utc(2024, 5, 11)),
+                    duration: 2.minutes,
+                    ref: "refs/#{Repository::REF_MERGE_REQUEST}/#{merge_request.iid}/head",
+                    source: 'merge_request_event'),
+                  create_pipeline(
+                    status: :canceled, started_at: 5.minutes.before(Time.utc(2024, 5, 11)),
+                    duration: 2.minutes,
+                    ref: "refs/#{Repository::REF_MERGE_REQUEST}/#{merge_request.iid}/merge",
+                    source: 'merge_request_event'),
+                  create_pipeline(
+                    status: :success, started_at: 5.minutes.before(Time.utc(2024, 5, 11)),
+                    duration: 2.minutes,
+                    ref: "refs/#{Repository::REF_MERGE_REQUEST}/#{merge_request.iid}/train",
+                    source: 'merge_request_event')
+                ]
+              end
+
+              before do
+                insert_ci_pipelines_to_click_house(mr_pipelines)
+              end
+
+              it 'returns matched pipeline' do
+                expect(aggregate).to eq(
+                  'label' => nil,
+                  'all' => '3',
+                  'success' => '1',
+                  'failed' => '1',
+                  'other' => '1'
+                )
+              end
+
+              context 'when FF is disabled' do
+                before do
+                  stub_feature_flags(include_reserved_refs_in_pipeline_refs_filter: false)
+                end
+
+                it 'returns no pipelines' do
+                  expect(aggregate).to eq(
+                    'label' => nil,
+                    'all' => '0',
+                    'success' => '0',
+                    'failed' => '0',
+                    'other' => '0'
+                  )
+                end
+              end
+
+              context 'when source does not include MERGE_REQUEST_EVENT' do
+                let(:source) { :PUSH }
+
+                it 'returns no pipelines' do
+                  expect(aggregate).to eq(
+                    'label' => nil,
+                    'all' => '0',
+                    'success' => '0',
+                    'failed' => '0',
+                    'other' => '0'
+                  )
+                end
+              end
+            end
           end
         end
 

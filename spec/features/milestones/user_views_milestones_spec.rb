@@ -30,7 +30,7 @@ RSpec.describe "User views milestones", feature_category: :team_planning do
 
       expect(page).to have_current_path(project_milestone_path(project, milestone), ignore_query: true)
       expect(page).to have_content(milestone.title)
-        .and have_selector("#tab-issues li.issuable-row", count: 2)
+        .and have_selector("#tab-issues li", count: 2)
         .and have_content(issue.title)
         .and have_content(closed_issue.title)
     end

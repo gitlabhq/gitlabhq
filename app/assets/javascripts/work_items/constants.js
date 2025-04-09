@@ -379,3 +379,31 @@ export const CUSTOM_FIELDS_TYPE_NUMBER = 'NUMBER';
 export const CUSTOM_FIELDS_TYPE_TEXT = 'TEXT';
 export const CUSTOM_FIELDS_TYPE_SINGLE_SELECT = 'SINGLE_SELECT';
 export const CUSTOM_FIELDS_TYPE_MULTI_SELECT = 'MULTI_SELECT';
+
+export const optimisticUserPermissions = {
+  adminParentLink: false,
+  adminWorkItemLink: false,
+  createNote: false,
+  deleteWorkItem: false,
+  markNoteAsInternal: false,
+  moveWorkItem: false,
+  reportSpam: false,
+  setWorkItemMetadata: false,
+  summarizeComments: false,
+  updateWorkItem: false,
+  __typename: 'WorkItemPermissions',
+};
+
+export const newWorkItemOptimisticUserPermissions = {
+  adminParentLink: true,
+  adminWorkItemLink: true,
+  createNote: true,
+  deleteWorkItem: true,
+  markNoteAsInternal: true,
+  moveWorkItem: true,
+  reportSpam: true,
+  setWorkItemMetadata: true,
+  summarizeComments: true,
+  updateWorkItem: true,
+  __typename: 'WorkItemPermissions',
+};

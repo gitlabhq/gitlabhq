@@ -11,7 +11,10 @@ import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_i
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
 import { LINKED_ITEM_TYPE_VALUE, MAX_WORK_ITEMS } from '~/work_items/constants';
 
-import { linkedWorkItemResponse, generateWorkItemsListWithId } from '../../mock_data';
+import {
+  linkedWorkItemResponse,
+  generateWorkItemsListWithId,
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('WorkItemAddRelationshipForm', () => {
   Vue.use(VueApollo);

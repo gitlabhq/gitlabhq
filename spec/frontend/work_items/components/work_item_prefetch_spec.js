@@ -8,7 +8,7 @@ import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { workItemByIidResponseFactory } from '../mock_data';
+import { workItemByIidResponseFactory } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 

@@ -34,10 +34,10 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import { resolvers } from '~/graphql_shared/issuable_client';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import {
-  createWorkItemMutationErrorResponse,
   createWorkItemMutationResponse,
+  createWorkItemMutationErrorResponse,
   createWorkItemQueryResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({

@@ -26,7 +26,7 @@ import {
   workItemNoBlockedByLinkedItemsResponse,
   mockOpenChildrenCount,
   mockNoOpenChildrenCount,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   updateCountsForParent: jest.fn(),

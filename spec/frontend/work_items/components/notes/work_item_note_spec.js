@@ -19,12 +19,12 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import {
   mockAssignees,
   mockWorkItemCommentNote,
+  mockWorkItemCommentNoteByContributor,
+  mockWorkItemCommentByMaintainer,
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
-  mockWorkItemCommentNoteByContributor,
-  mockWorkItemCommentByMaintainer,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { mockTracking } from 'helpers/tracking_helper';
 

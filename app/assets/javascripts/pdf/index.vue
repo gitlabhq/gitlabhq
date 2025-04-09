@@ -1,6 +1,5 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Page from './page/index.vue';
 
 let pdfjs;
@@ -9,7 +8,6 @@ let GlobalWorkerOptions;
 
 export default {
   components: { Page },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     pdf: {
       type: [String, Uint8Array],

@@ -32,10 +32,10 @@ import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.muta
 
 import {
   convertWorkItemMutationResponse,
-  convertWorkItemMutationErrorResponse,
   updateWorkItemMutationResponse,
   updateWorkItemNotificationsMutationResponse,
-} from '../mock_data';
+  convertWorkItemMutationErrorResponse,
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/vue_shared/plugins/global_toast');

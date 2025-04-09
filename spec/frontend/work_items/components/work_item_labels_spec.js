@@ -15,14 +15,14 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import {
+  workItemByIidResponseFactory,
+  updateWorkItemMutationResponseFactory,
+  updateWorkItemMutationErrorResponse,
   projectLabelsResponse,
   groupLabelsResponse,
   getProjectLabelsResponse,
   mockLabels,
-  workItemByIidResponseFactory,
-  updateWorkItemMutationResponseFactory,
-  updateWorkItemMutationErrorResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
 

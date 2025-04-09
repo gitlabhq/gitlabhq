@@ -20,7 +20,7 @@
       = _('Labels')
       = gl_tab_counter_badge milestone.issue_labels_visible_by_user(current_user).count
 
-.tab-content.milestone-content
+.tab-content
   .tab-pane.active#tab-issues
     = render "shared/milestones/tab_loading"
   - if milestone.merge_requests_enabled?

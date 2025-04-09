@@ -4,7 +4,6 @@ import EMPTY_DISCUSSION_URL from '@gitlab/svgs/dist/illustrations/empty-state/em
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import { s__, n__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DesignDisclosure from '~/vue_shared/components/design_management/design_disclosure.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
@@ -24,7 +23,6 @@ export default {
     DescriptionForm,
     DesignDisclosure,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     projectPath: {
       default: '',

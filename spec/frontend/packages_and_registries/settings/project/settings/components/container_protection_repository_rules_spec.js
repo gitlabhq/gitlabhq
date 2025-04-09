@@ -26,6 +26,9 @@ describe('Container protection repository rules project settings', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
+    glFeatures: {
+      containerRegistryProtectedContainersDelete: true,
+    },
   };
 
   const $toast = { show: jest.fn() };
@@ -141,8 +144,28 @@ describe('Container protection repository rules project settings', () => {
         (protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
           expect(findTableRowCellComboboxSelectedOption(i, 1).text).toBe('Maintainer');
+          expect(findTableRowCellComboboxSelectedOption(i, 2).text).toBe('Maintainer');
         },
       );
+    });
+
+    it('renders table with container protection rule with blank minimumAccessLevelForDelete', async () => {
+      const containerProtectionRepositoryRuleQueryResolver = jest.fn().mockResolvedValue(
+        containerProtectionRepositoryRuleQueryPayload({
+          nodes: [
+            { ...containerProtectionRepositoryRulesData[0], minimumAccessLevelForDelete: null },
+          ],
+        }),
+      );
+      createComponent({ containerProtectionRepositoryRuleQueryResolver });
+
+      await waitForPromises();
+
+      expect(findTableRowCell(0, 0).text()).toBe(
+        containerProtectionRepositoryRulesData[0].repositoryPathPattern,
+      );
+      expect(findTableRowCellComboboxSelectedOption(0, 1).text).toBe('Maintainer');
+      expect(findTableRowCellComboboxSelectedOption(0, 2).text).toBe('Developer (default)');
     });
 
     it('shows loading icon', () => {
@@ -314,8 +337,9 @@ describe('Container protection repository rules project settings', () => {
     });
 
     describe.each`
-      comboboxName            | minimumAccessLevelAttribute
-      ${'push-access-select'} | ${'minimumAccessLevelForPush'}
+      comboboxName                                | minimumAccessLevelAttribute
+      ${'minimum-access-level-for-push-select'}   | ${'minimumAccessLevelForPush'}
+      ${'minimum-access-level-for-delete-select'} | ${'minimumAccessLevelForDelete'}
     `(
       'column "$comboboxName" with selectbox (combobox)',
       ({ comboboxName, minimumAccessLevelAttribute }) => {
@@ -337,7 +361,12 @@ describe('Container protection repository rules project settings', () => {
             .findAllComponents('option')
             .wrappers.map((w) => w.text());
 
-          expect(accessLevelOptions).toEqual(['Maintainer', 'Owner', 'Administrator']);
+          expect(accessLevelOptions).toEqual([
+            'Developer (default)',
+            'Maintainer',
+            'Owner',
+            'Administrator',
+          ]);
         });
 
         describe('when value changes', () => {
@@ -352,7 +381,7 @@ describe('Container protection repository rules project settings', () => {
             expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueMaintainer);
             expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
 
-            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
+            await findComboboxInTableRow(0).findAll('option').at(2).setSelected();
 
             expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
             expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
@@ -367,7 +396,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
+            await findComboboxInTableRow(0).findAll('option').at(2).setSelected();
 
             expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledTimes(
               1,
@@ -380,12 +409,34 @@ describe('Container protection repository rules project settings', () => {
             });
           });
 
+          it('sends graphql mutation with blank field valule for minimumAccessLevel', async () => {
+            const updateContainerProtectionRepositoryRuleMutationResolver = jest
+              .fn()
+              .mockResolvedValue(updateContainerProtectionRepositoryRuleMutationPayload());
+
+            createComponent({ updateContainerProtectionRepositoryRuleMutationResolver });
+
+            await waitForPromises();
+
+            await findComboboxInTableRow(0).findAll('option').at(0).setSelected();
+
+            expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledTimes(
+              1,
+            );
+            expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledWith({
+              input: {
+                id: containerProtectionRepositoryRulesData[0].id,
+                [minimumAccessLevelAttribute]: null,
+              },
+            });
+          });
+
           it('disables all fields in relevant row when graphql mutation is in progress', async () => {
             createComponent();
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
+            await findComboboxInTableRow(0).findAll('option').at(2).setSelected();
 
             expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
             expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
@@ -411,7 +462,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
+            await findComboboxInTableRow(0).findAll('option').at(2).setSelected();
 
             await waitForPromises();
 
@@ -434,7 +485,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
+            await findComboboxInTableRow(0).findAll('option').at(2).setSelected();
 
             await waitForPromises();
 
@@ -447,7 +498,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
+            await findComboboxInTableRow(0).findAll('option').at(2).setSelected();
 
             await waitForPromises();
 
@@ -456,6 +507,53 @@ describe('Container protection repository rules project settings', () => {
         });
       },
     );
+
+    describe('when feature flag "containerRegistryProtectedContainersDelete" is disabled', () => {
+      const provide = {
+        ...defaultProvidedValues,
+        glFeatures: {
+          ...defaultProvidedValues.glFeatures,
+          containerRegistryProtectedContainersDelete: false,
+        },
+      };
+
+      describe('column "Minimum access level for push"', () => {
+        const findComboboxInTableRow = (i) =>
+          extendedWrapper(wrapper.findAllByTestId('minimum-access-level-for-push-select').at(i));
+
+        it('contains correct access level as options without null', async () => {
+          createComponent({ provide });
+
+          await waitForPromises();
+
+          expect(findComboboxInTableRow(0).isVisible()).toBe(true);
+          expect(findComboboxInTableRow(0).attributes('disabled')).toBeUndefined();
+          expect(findComboboxInTableRow(0).element.value).toBe(
+            containerProtectionRepositoryRulesData[0].minimumAccessLevelForPush,
+          );
+
+          const accessLevelOptions = findComboboxInTableRow(0)
+            .findAllComponents('option')
+            .wrappers.map((w) => w.text());
+
+          expect(accessLevelOptions).toEqual(['Maintainer', 'Owner', 'Administrator']);
+        });
+      });
+
+      describe('column "Minimum access level for delete"', () => {
+        const findTableColumnHeader = () =>
+          wrapper.findByRole('columnheader', { name: /minimum access level for delete/i });
+
+        it('does not show column "Minimum access level for delete"', async () => {
+          createComponent({ provide });
+
+          await waitForPromises();
+
+          expect(findTableColumnHeader().exists()).toBe(false);
+          expect(wrapper.findAllByTestId('minimum-access-level-for-delete-select')).toHaveLength(0);
+        });
+      });
+    });
 
     describe('column "rowActions"', () => {
       describe('button "Delete"', () => {

@@ -699,6 +699,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def diffs_resource
     @merge_request.latest_diffs
   end
+
+  def complete_diff_path
+    merge_request_path(merge_request, format: :patch)
+  end
+
+  def email_format_path
+    merge_request_path(merge_request, format: :diff)
+  end
 end
 
 Projects::MergeRequestsController.prepend_mod_with('Projects::MergeRequestsController')

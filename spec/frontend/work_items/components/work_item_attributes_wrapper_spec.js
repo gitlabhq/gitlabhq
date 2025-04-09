@@ -19,7 +19,7 @@ import {
   mockParticipantWidget,
   allowedParentTypesResponse,
   allowedParentTypesEmptyResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
   let wrapper;

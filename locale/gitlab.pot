@@ -2237,6 +2237,9 @@ msgstr ""
 msgid "A rule must have at least a minimum access role for push or delete."
 msgstr ""
 
+msgid "A rule requires at least the Maintainer role for either push or delete."
+msgstr ""
+
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr ""
 
@@ -6530,6 +6533,9 @@ msgid "AmazonQ|Remove"
 msgstr ""
 
 msgid "AmazonQ|Remove IAM role's ARN"
+msgstr ""
+
+msgid "AmazonQ|Request ID: %{request_id}"
 msgstr ""
 
 msgid "AmazonQ|Review merge request for code quality and security issues"
@@ -16598,6 +16604,9 @@ msgstr ""
 msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone. Please type the following to confirm: %{code}"
 msgstr ""
 
+msgid "ContainerRegistry|Developer (default)"
+msgstr ""
+
 msgid "ContainerRegistry|Digest: %{imageId}"
 msgstr ""
 
@@ -16683,6 +16692,9 @@ msgid "ContainerRegistry|Manifest media type: %{mediaType}"
 msgstr ""
 
 msgid "ContainerRegistry|Maximum number of rules reached."
+msgstr ""
+
+msgid "ContainerRegistry|Minimum access level for delete"
 msgstr ""
 
 msgid "ContainerRegistry|Minimum access level for push"
@@ -16936,7 +16948,7 @@ msgstr ""
 msgid "ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project."
 msgstr ""
 
-msgid "ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."
+msgid "ContainerRegistry|When a container repository is protected, only users with specific roles can push and delete container images. This helps prevent unauthorized modifications."
 msgstr ""
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."

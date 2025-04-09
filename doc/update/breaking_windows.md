@@ -42,9 +42,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [API Discovery will use branch pipelines by default](https://gitlab.com/gitlab-org/gitlab/-/issues/515487) | Low | Application_security_testing | Project |  |
 | [Container Scanning default severity threshold set to `medium`](https://gitlab.com/gitlab-org/gitlab/-/issues/515358) | Low | Application security testing | Project |  |
 | [Subscription related API endpoints in the public API are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251) | Low | Fulfillment | Instance |  |
-| [`maxHoursBeforeTermination` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |  |
-| [`RemoteDevelopmentAgentConfig` GraphQL type is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |  |
-| [`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |  |
 | [GitLab Advanced SAST will be enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/513685) | Medium | Application security testing | Instance |  |
 | [The `agentk` container registry is moving to Cloud Native GitLab](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630) | Medium | Deploy | Instance |  |
 | [SAST jobs no longer use global cache settings](https://gitlab.com/gitlab-org/gitlab/-/issues/512564) | Medium | Application security testing | Instance |  |

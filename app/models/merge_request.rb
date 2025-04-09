@@ -330,7 +330,7 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  scope :from_project, ->(project) { where(source_project_id: project.id) }
+  scope :from_project, ->(project) { where(source_project_id: project) }
   scope :from_fork, -> { where('source_project_id <> target_project_id') }
   scope :from_and_to_forks, ->(project) do
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)

@@ -17,14 +17,14 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
+  updateWorkItemMutationResponse,
+  workItemResponseFactory,
   projectMembersAutocompleteResponseWithCurrentUser,
   mockAssignees,
   currentUserResponse,
   currentUserNullResponse,
-  updateWorkItemMutationResponse,
   projectMembersAutocompleteResponseWithNoMatchingUsers,
-  workItemResponseFactory,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 

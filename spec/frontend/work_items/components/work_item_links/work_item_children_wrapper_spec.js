@@ -25,7 +25,7 @@ import {
   workItemByIidResponseFactory,
   workItemHierarchyTreeResponse,
   mockMoveWorkItemMutationResponse,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -42,7 +42,7 @@ describe('WorkItemChildrenWrapper', () => {
   const getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
   const moveWorkItemMutationSuccessHandler = jest
     .fn()
-    .mockResolvedValue(mockMoveWorkItemMutationResponse);
+    .mockResolvedValue(mockMoveWorkItemMutationResponse());
   const moveWorkItemMutationFailureHandler = jest
     .fn()
     .mockResolvedValue(mockMoveWorkItemMutationResponse({ error: 'Error' }));

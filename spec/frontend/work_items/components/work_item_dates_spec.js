@@ -10,7 +10,10 @@ import WorkItemDates from '~/work_items/components/work_item_dates.vue';
 import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import { updateWorkItemMutationErrorResponse, updateWorkItemMutationResponse } from '../mock_data';
+import {
+  updateWorkItemMutationErrorResponse,
+  updateWorkItemMutationResponse,
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
 

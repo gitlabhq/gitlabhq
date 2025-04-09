@@ -2291,27 +2291,6 @@ To prepare for this change:
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### `RemoteDevelopmentAgentConfig` GraphQL type is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509787).
-
-</div>
-
-The `RemoteDevelopmentAgentConfig` type is no longer used internally. It is deprecated in the `ClusterAgent` type.
-
-To prepare for this change:
-
-- Review and update your GraphQL queries that interact with the `RemoteDevelopmentAgentConfig` type.
-- Switch over to the experimental type `workspacesAgentConfig`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 <div class="deprecation-notes">
@@ -2340,33 +2319,6 @@ With the [upcoming default behavior change to the CI/CD job token](https://docs.
 
 The `ciDuration` field of the `CiRunnerUsage` and `CiRunnerUsageByProject` types replaces the former `ciMinutesUsed` field.
 Update all references to `ciMinutesUsed` from these types to `ciDuration`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509787).
-
-</div>
-
-The `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are no longer used internally.
-They are deprecated in the `WorkspacesAgentConfig` type.
-
-This removal extends to the [agent configuration](https://docs.gitlab.com/user/workspace/gitlab_agent_configuration/#workspace-settings)
-file associated with your workspaces setup.
-
-To prepare for this change:
-
-- Review and update your GraphQL queries that interact with the `WorkspacesAgentConfig` type.
-- Remove any references to the `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields.
-- Remove the fields `default_max_hours_before_termination` and `max_hours_before_termination_limit` from your agent configuration file.
-- Adjust your application logic accordingly.
 
 </div>
 
@@ -2410,31 +2362,6 @@ Instead, you should install the agent with one of the supported installation met
 - Flux
 
 To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### `maxHoursBeforeTermination` GraphQL field is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509787).
-
-</div>
-
-The `maxHoursBeforeTermination` GraphQL field is no longer used internally. It is deprecated in the following GraphQL elements:
-
-- `Workspace` type.
-- Input to `workspaceCreate` mutation.
-
-To prepare for this change:
-
-- Review and update your GraphQL queries that interact with the `Workspace` type.
-- Remove any references to the `maxHoursBeforeTermination` field.
-- Adjust your application logic accordingly.
 
 </div>
 

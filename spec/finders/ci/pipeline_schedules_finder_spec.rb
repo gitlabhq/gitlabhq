@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineSchedulesFinder do
+RSpec.describe Ci::PipelineSchedulesFinder, feature_category: :continuous_integration do
   let(:project) { create(:project) }
 
   describe "#execute" do

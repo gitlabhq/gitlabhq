@@ -27,12 +27,12 @@ import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutati
 import updateWorkItemHierarchyMutation from '~/work_items/graphql/update_work_item_hierarchy.mutation.graphql';
 import namespaceProjectsForLinksWidgetQuery from '~/work_items/graphql/namespace_projects_for_links_widget.query.graphql';
 import {
-  availableWorkItemsResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
+  availableWorkItemsResponse,
   namespaceProjectsList,
   generateWorkItemsListWithId,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
 

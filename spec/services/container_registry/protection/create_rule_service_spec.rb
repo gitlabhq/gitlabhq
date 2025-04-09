@@ -100,7 +100,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       let(:params) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
 
       it_behaves_like 'an erroneous service response without side effects',
-        message: ['A rule must have at least a minimum access role for push or delete.']
+        message: ['A rule requires at least the Maintainer role for either push or delete.']
     end
   end
 

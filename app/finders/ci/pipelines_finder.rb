@@ -4,6 +4,7 @@ module Ci
   class PipelinesFinder
     include UpdatedAtFilter
     include CreatedAtFilter
+    include PipelineRefFilterIncludingReservedRefNames
 
     attr_reader :project, :pipelines, :params, :current_user
 
@@ -149,7 +150,8 @@ module Ci
     def by_ref(items)
       return items unless params[:ref].present?
 
-      items.for_ref(params[:ref])
+      refs = ref_and_associated_reserved_refs(project, params[:ref], params[:source])
+      items.for_ref(refs)
     end
 
     def by_sha(items)

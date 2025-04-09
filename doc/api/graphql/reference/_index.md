@@ -1327,7 +1327,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="queryrunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="queryrunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
-| <a id="queryrunnersownerwildcard"></a>`ownerWildcard` {{< icon name="warning-solid" >}} | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="queryrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -28357,7 +28356,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouprunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
-| <a id="grouprunnersownerwildcard"></a>`ownerWildcard` {{< icon name="warning-solid" >}} | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -36176,7 +36174,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="projectrunnerscreatorusername"></a>`creatorUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="projectrunnersownerfullpath"></a>`ownerFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
-| <a id="projectrunnersownerwildcard"></a>`ownerWildcard` {{< icon name="warning-solid" >}} | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="projectrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="projectrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="projectrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -42204,12 +42201,6 @@ Values for filtering runners in namespaces.
 | <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 15.5. **Status**: Experiment. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
 | <a id="cirunnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
 | <a id="cirunnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
-
-### `CiRunnerOwnerWildcard`
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cirunnerownerwildcardadministrators"></a>`ADMINISTRATORS` | Filter runners owned by an administrator. |
 
 ### `CiRunnerSort`
 

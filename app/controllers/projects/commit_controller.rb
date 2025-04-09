@@ -304,6 +304,14 @@ class Projects::CommitController < Projects::ApplicationController
   def diffs_resource
     commit&.diffs(commit_diff_options)
   end
+
+  def complete_diff_path
+    project_commit_path(project, commit, format: :patch)
+  end
+
+  def email_format_path
+    project_commit_path(project, commit, format: :diff)
+  end
 end
 
 Projects::CommitController.prepend_mod_with('Projects::CommitController')

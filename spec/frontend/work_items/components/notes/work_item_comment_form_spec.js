@@ -17,10 +17,10 @@ import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import {
+  workItemByIidResponseFactory,
   workItemEmailParticipantsResponse,
   workItemEmailParticipantsEmptyResponse,
-  workItemByIidResponseFactory,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
 

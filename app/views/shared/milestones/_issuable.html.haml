@@ -9,14 +9,13 @@
 - issuable_type = is_merge_request ? :merge_requests : (is_epic ? :epics : :issues)
 - issuable_type_args = base_url_args + [issuable_type]
 
-
-%li.issuable-row
+%li{ class: '!gl-border-b-section' }
   %span
     - if show_project_name && project
       %strong #{project.name} &middot;
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
-    = link_to issuable.title, ::Gitlab::UrlBuilder.build(issuable), title: issuable.title
+    = link_to issuable.title, ::Gitlab::UrlBuilder.build(issuable), title: issuable.title, class: "gl-text-default gl-break-words"
   .issuable-detail
     = link_to ::Gitlab::UrlBuilder.build(issuable), class: 'issue-link' do
       %span.issuable-number= issuable.to_reference
@@ -26,9 +25,7 @@
 
     %span.assignee-icon
       - assignees.each do |assignee|
-        = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, assignee_id: assignee.id, state: 'all' }),
-                  class: 'has-tooltip', title: _("Assigned to %{assignee_name}") % { assignee_name: assignee.name }, data: { container: 'body' } do
-          - image_tag(avatar_icon_for_user(assignee, 16), class: "avatar s16", alt: '')
+        = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, assignee_id: assignee.id, state: 'all' }) do
+          = image_tag(avatar_icon_for_user(assignee, 16), class: "avatar s16", title: _("Assigned to %{assignee_name}") % { assignee_name: assignee.name }, data: { container: 'body', toggle: 'tooltip', placement: 'top' })
 
     = render_if_exists "shared/milestones/issuable_weight", issuable: issuable
-

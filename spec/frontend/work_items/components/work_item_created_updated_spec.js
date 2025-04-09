@@ -10,7 +10,7 @@ import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { mockAssignees, workItemByIidResponseFactory } from '../mock_data';
+import { workItemByIidResponseFactory, mockAssignees } from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('WorkItemCreatedUpdated component', () => {
   let wrapper;

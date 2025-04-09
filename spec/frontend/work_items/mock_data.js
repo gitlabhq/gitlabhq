@@ -6408,3 +6408,5 @@ export const errorTrackingQueryResponseWithStackTrace = getErrorTrackingQueryRes
     },
   ],
 });
+
+export const mockRolledUpHealthStatus = [];

@@ -93,13 +93,13 @@ The cells related configuration in `config/gitlab.yml` is in this format:
        cell:
          enabled: true
          id: 1
-       database:
-         skipSequenceAlteration: false
-       topologyServiceClient:
-         address: "topology-service.gitlab.example.com:443"
-         caFile: "path/to/your/ca/.pem"
-         privateKeyFile: "path/to/your/key/.pem"
-         certificateFile: "path/to/your/certificate/.pem"
+         database:
+           skipSequenceAlteration: false
+         topologyServiceClient:
+           address: "topology-service.gitlab.example.com:443"
+           caFile: "path/to/your/ca/.pem"
+           privateKeyFile: "path/to/your/key/.pem"
+           certificateFile: "path/to/your/certificate/.pem"
    ```
 
 1. Save the file and apply the new values:

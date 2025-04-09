@@ -117,9 +117,9 @@ export const OLDER_THAN_OPTIONS = [
   { key: 'NINETY_DAYS', variable: 90, default: true },
 ];
 
-const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 export const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
+const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
 export const MinimumAccessLevelText = {
   [GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER]: __('Maintainer'),
@@ -155,6 +155,13 @@ export const PackagesMinimumAccessLevelOptions = [
 
 export const PackagesMinimumAccessLevelForDeleteOptions = [
   { value: null, text: __('Developer (default)') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
+];
+
+export const ContainerRepositoryMinimumAccessLevelOptions = [
+  { value: '', text: s__('ContainerRegistry|Developer (default)') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
 ];

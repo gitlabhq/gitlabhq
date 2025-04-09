@@ -1,4 +1,5 @@
 #import "ee_else_ce/work_items/graphql/work_item_widgets.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_permissions.fragment.graphql"
 #import "~/graphql_shared/fragments/author.fragment.graphql"
 
 fragment WorkItem on WorkItem {
@@ -34,16 +35,7 @@ fragment WorkItem on WorkItem {
     iconName
   }
   userPermissions {
-    adminParentLink
-    adminWorkItemLink
-    createNote
-    deleteWorkItem
-    markNoteAsInternal
-    moveWorkItem
-    reportSpam
-    setWorkItemMetadata
-    summarizeComments
-    updateWorkItem
+    ...WorkItemPermissions
   }
   widgets {
     ...WorkItemWidgets

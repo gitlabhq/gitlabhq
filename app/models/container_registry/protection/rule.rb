@@ -121,7 +121,7 @@ module ContainerRegistry
       def at_least_one_minimum_access_level_must_be_present
         return unless minimum_access_level_for_delete.blank? && minimum_access_level_for_push.blank?
 
-        errors.add(:base, _('A rule must have at least a minimum access role for push or delete.'))
+        errors.add(:base, _('A rule requires at least the Maintainer role for either push or delete.'))
       end
     end
   end

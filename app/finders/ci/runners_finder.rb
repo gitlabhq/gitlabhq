@@ -158,25 +158,17 @@ module Ci
     end
 
     def by_owner(items)
-      owner_full_path = @params.dig(:owner, :full_path).presence
-      owner_wildcard = @params.dig(:owner, :wildcard).presence
+      return items unless @params[:owner_full_path].present?
 
-      if owner_wildcard == :administrators
-        items.instance_type.created_by_admins
-      elsif owner_full_path.present?
-        routable = Routable.find_by_full_path(owner_full_path)
+      routable = Routable.find_by_full_path(@params[:owner_full_path])
 
-        case routable
-        when ::Project
-          items.belonging_to_project(routable)
-        when ::Group
-          items.belonging_to_group(routable)
-        else
-          Ci::Runner.none
-        end
-
+      case routable
+      when ::Project
+        items.belonging_to_project(routable)
+      when ::Group
+        items.belonging_to_group(routable)
       else
-        items
+        Ci::Runner.none
       end
     end
 

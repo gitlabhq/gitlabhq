@@ -19,7 +19,7 @@ import {
   createWorkItemMutationResponse,
   getIssueDetailsResponse,
   workItemByIidResponseFactory,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 import {
   descriptionProps as initialProps,
   descriptionHtmlWithList,

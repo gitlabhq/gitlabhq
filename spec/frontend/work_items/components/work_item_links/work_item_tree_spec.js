@@ -33,13 +33,13 @@ import {
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as utils from '~/work_items/utils';
 import {
+  mockRolledUpCountsByType,
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   workItemHierarchyTreeSingleClosedItemResponse,
-  mockRolledUpCountsByType,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
 

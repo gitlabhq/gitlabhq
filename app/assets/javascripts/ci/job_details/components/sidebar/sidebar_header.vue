@@ -2,7 +2,6 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import { TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -35,7 +34,6 @@ export default {
     GlButton,
     JobSidebarRetryButton,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   apollo: {
     job: {

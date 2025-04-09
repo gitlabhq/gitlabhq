@@ -123,11 +123,9 @@ Keep in mind that restricting group access by IP address has the following impli
 
 ### GitLab.com access restrictions
 
-On GitLab.com instance runners are added to the [global allowlist](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges), so that they are available regardless of IP restrictions.
-
-Artifact and Registry downloading from runners is sourced from any Google or, in the case of MacOS runners, Amazon IP address in that region.
-The download is therefore not added to the global allowlist.
-To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com/_index.md#ip-range) to your group allowlist.
+IP address-based group access restriction doesn't work with [hosted runners for GitLab.com](../../ci/runners/hosted_runners/_index.md).
+These runners operate as ephemeral virtual machines with [dynamic IP addresses](../../user/gitlab_com/_index.md#ip-range) from large
+cloud provider pools (AWS, Google Cloud). To allow these broad IP ranges defeat the purpose of IP address-based access restriction.
 
 ## Restrict group access by domain
 

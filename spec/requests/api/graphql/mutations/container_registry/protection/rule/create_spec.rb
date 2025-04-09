@@ -94,7 +94,8 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
     it 'returns error with correct error message' do
       subject
 
-      expect(mutation_response['errors']).to eq ['A rule must have at least a minimum access role for push or delete.']
+      expect(mutation_response['errors'])
+        .to eq ['A rule requires at least the Maintainer role for either push or delete.']
     end
   end
 

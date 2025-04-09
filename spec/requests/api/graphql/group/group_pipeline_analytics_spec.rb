@@ -8,27 +8,22 @@ RSpec.describe 'Query.group.pipelineAnalytics', :aggregate_failures, :click_hous
 
   let_it_be_with_reload(:group) { create(:group) } # NOTE: reload is necessary to compute traversal_ids
   # NOTE: reload is necessary to compute traversal_ids
-  let_it_be_with_reload(:sub_group) do
-    create(:group, parent: group)
-  end
-
-  # NOTE: reload is necessary to compute traversal_ids
-  let_it_be_with_refind(:project) do
-    create(:project, group: sub_group)
-  end
+  let_it_be_with_reload(:sub_group) { create(:group, parent: group) }
+  let_it_be_with_refind(:project) { create(:project, group: sub_group) }
 
   let_it_be(:reporter) { create(:user, reporter_of: group) }
   let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:pipelines_data) do
     current_time = Time.utc(2024, 5, 11)
+    common_data = { ref: 'main', source: :pipeline }
 
     [
-      [:running, 35.minutes.before(current_time), 30.minutes, 'main', :pipeline],
-      [:success, 1.day.before(current_time), 30.minutes, 'main2', :push],
-      [:failed, 5.days.before(current_time), 2.hours, 'main', :pipeline],
-      [:canceled, 4.5.days.before(current_time), 30.minutes, 'main', :pipeline],
-      [:failed, 1.week.before(current_time), 45.minutes, 'main', :pipeline],
-      [:skipped, 7.months.before(current_time), 45.minutes, 'main', :pipeline]
+      { status: :running, started_at: 35.minutes.before(current_time), duration: 30.minutes, **common_data },
+      { status: :success, started_at: 1.day.before(current_time), duration: 30.minutes, ref: 'main2', source: :push },
+      { status: :failed, started_at: 5.days.before(current_time), duration: 2.hours, **common_data },
+      { status: :canceled, started_at: 4.5.days.before(current_time), duration: 30.minutes, **common_data },
+      { status: :failed, started_at: 1.week.before(current_time), duration: 45.minutes, **common_data },
+      { status: :skipped, started_at: 7.months.before(current_time), duration: 45.minutes, **common_data }
     ]
   end
 

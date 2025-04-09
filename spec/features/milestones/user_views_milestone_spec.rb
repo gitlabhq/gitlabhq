@@ -70,7 +70,7 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
 
         visit(project_milestone_path(project, milestone))
 
-        expect(page).to have_selector('.issuable-row', count: 3)
+        expect(page).to have_selector('#tab-issues li', count: 3)
         expect(page).to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 issues. View all issues')
         expect(page).to have_link('View all issues', href: project_issues_path(project, { milestone_title: milestone.title }))
       end
@@ -81,7 +81,7 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
         visit(project_milestone_path(project, milestone))
 
         expect(page).not_to have_selector('#milestone-issue-count-warning', text: 'Showing 3 of 6 issues. View all issues')
-        expect(page).to have_selector('.issuable-row', count: 6)
+        expect(page).to have_selector('#tab-issues li', count: 6)
       end
     end
   end

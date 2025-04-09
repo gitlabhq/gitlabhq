@@ -231,22 +231,6 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
         let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project], creator: user) }
         let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], creator: admin) }
 
-        context 'when filtered by ownerWildcard' do
-          let(:query) do
-            %(
-              query {
-                runners(ownerWildcard: ADMINISTRATORS) {
-                  #{fields}
-                }
-              }
-            )
-          end
-
-          it_behaves_like 'a working graphql query returning expected runners' do
-            let(:expected_runners) { runner_created_by_admin }
-          end
-        end
-
         context 'when filtered by ownerFullPath' do
           let(:query) do
             %(
@@ -280,24 +264,6 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
             it_behaves_like 'a working graphql query returning expected runners' do
               let(:expected_runners) { [] }
             end
-          end
-        end
-
-        context 'when filtered by both ownerWildcard and ownerFullPath' do
-          let(:query) do
-            %(
-              query {
-                runners(ownerWildcard: ADMINISTRATORS, ownerFullPath: "some-path") {
-                  #{fields}
-                }
-              }
-            )
-          end
-
-          it 'returns error' do
-            post_graphql(query, current_user: current_user)
-
-            expect_graphql_errors_to_include('The ownerFullPath and ownerWildcardPath arguments are mutually exclusive.')
           end
         end
       end

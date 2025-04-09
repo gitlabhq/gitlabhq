@@ -833,7 +833,6 @@
 - './ee/spec/lib/ee/gitlab/database_spec.rb'
 - './ee/spec/lib/ee/gitlab/email/handler/service_desk_handler_spec.rb'
 - './ee/spec/lib/ee/gitlab/etag_caching/router/rails_spec.rb'
-- './ee/spec/lib/ee/gitlab/event_store_spec.rb'
 - './ee/spec/lib/ee/gitlab/git_access_design_spec.rb'
 - './ee/spec/lib/ee/gitlab/git_access_project_spec.rb'
 - './ee/spec/lib/ee/gitlab/git_access_snippet_spec.rb'

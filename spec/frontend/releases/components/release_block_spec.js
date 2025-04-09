@@ -20,7 +20,7 @@ describe('Release block', () => {
   let release;
   let deployments = [mockDeployment];
 
-  const factory = async (releaseProp, featureFlags = {}) => {
+  const factory = async (releaseProp) => {
     wrapper = mount(ReleaseBlock, {
       propsData: {
         release: releaseProp,
@@ -28,9 +28,6 @@ describe('Release block', () => {
       },
       provide: {
         projectPath: 'project/path',
-        glFeatures: {
-          ...featureFlags,
-        },
       },
     });
 

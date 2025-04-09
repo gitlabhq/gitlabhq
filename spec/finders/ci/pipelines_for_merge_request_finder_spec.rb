@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelinesForMergeRequestFinder do
+RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous_integration do
   describe '#execute' do
     include ProjectForksHelper
 

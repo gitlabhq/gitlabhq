@@ -54,7 +54,7 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 
 {{< /details >}}
 

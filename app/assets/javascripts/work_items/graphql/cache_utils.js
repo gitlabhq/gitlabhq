@@ -10,16 +10,7 @@ import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
 import {
-  findCurrentUserTodosWidget,
-  findHierarchyWidget,
-  findHierarchyWidgetChildren,
-  findNotesWidget,
-  getNewWorkItemAutoSaveKey,
-  isNotesWidget,
-  newWorkItemFullPath,
-  newWorkItemId,
-} from '../utils';
-import {
+  newWorkItemOptimisticUserPermissions,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_HIERARCHY,
@@ -38,7 +29,17 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
-} from '../constants';
+} from 'ee_else_ce/work_items/constants';
+import {
+  findCurrentUserTodosWidget,
+  findHierarchyWidget,
+  findHierarchyWidgetChildren,
+  findNotesWidget,
+  getNewWorkItemAutoSaveKey,
+  isNotesWidget,
+  newWorkItemFullPath,
+  newWorkItemId,
+} from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -614,19 +615,7 @@ export const setNewWorkItemCache = async (
             iconName: workItemTypeIconName,
             __typename: 'WorkItemType',
           },
-          userPermissions: {
-            adminParentLink: true,
-            adminWorkItemLink: true,
-            createNote: true,
-            deleteWorkItem: true,
-            markNoteAsInternal: true,
-            moveWorkItem: true,
-            reportSpam: true,
-            setWorkItemMetadata: true,
-            summarizeComments: true,
-            updateWorkItem: true,
-            __typename: 'WorkItemPermissions',
-          },
+          userPermissions: newWorkItemOptimisticUserPermissions,
           widgets,
           __typename: 'WorkItem',
         },

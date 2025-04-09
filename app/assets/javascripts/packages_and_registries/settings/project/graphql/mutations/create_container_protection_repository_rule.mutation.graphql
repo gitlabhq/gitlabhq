@@ -5,6 +5,7 @@ mutation createContainerProtectionRepositoryRule(
     containerProtectionRepositoryRule {
       id
       repositoryPathPattern
+      minimumAccessLevelForDelete
       minimumAccessLevelForPush
     }
     errors

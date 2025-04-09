@@ -259,21 +259,9 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
           let_it_be(:project_runner) { create(:ci_runner, :project, projects: [projects.first]) }
           let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [projects.second]) }
 
-          context 'when owner is set to administrators wildcard' do
-            let(:current_user) { admin2 }
+          context 'when owner_full_path is set to first group full_path' do
             let(:params) do
-              { owner: { wildcard: :administrators } }
-            end
-
-            it 'calls corresponding scope and finds admin runner' do
-              expect(Ci::Runner).to receive(:created_by_admins).and_call_original
-              is_expected.to contain_exactly(instance_admin_runner, instance_admin_runner2)
-            end
-          end
-
-          context 'when owner is set to first group full_path' do
-            let(:params) do
-              { owner: { full_path: groups.first.name } }
+              { owner_full_path: groups.first.full_path }
             end
 
             it 'calls corresponding scope and finds group' do
@@ -282,9 +270,9 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
             end
           end
 
-          context 'when owner is set to first project full_path' do
+          context 'when owner_full_path is set to first project full_path' do
             let(:params) do
-              { owner: { full_path: projects.first.full_path } }
+              { owner_full_path: projects.first.full_path }
             end
 
             it 'calls corresponding scope and finds project' do
@@ -293,9 +281,9 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
             end
           end
 
-          context 'when owner is set to empty path' do
+          context 'when owner_full_path is set to empty path' do
             let(:params) do
-              { owner: { full_path: '' } }
+              { owner_full_path: '' }
             end
 
             it 'does not filter' do
@@ -306,9 +294,9 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
             end
           end
 
-          context 'when owner is set to a non-existing path' do
+          context 'when owner_full_path is set to a non-existing path' do
             let(:params) do
-              { owner: { full_path: "not-a-group-or-project" } }
+              { owner_full_path: "not-a-group-or-project" }
             end
 
             it { is_expected.to be_empty }
