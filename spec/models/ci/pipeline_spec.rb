@@ -98,6 +98,59 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it { is_expected.to validate_presence_of(:sha) }
     it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_length_of(:sha).is_at_most(64) }
+    it { is_expected.to validate_length_of(:target_sha).is_at_most(64) }
+    it { is_expected.to validate_length_of(:source_sha).is_at_most(64) }
+    it { is_expected.to validate_length_of(:ref).is_at_most(300) }
+
+    context 'before_sha validation' do
+      subject(:pipeline) { build(:ci_pipeline, project: project) }
+
+      it { is_expected.to validate_length_of(:before_sha).is_at_most(64) }
+    end
+  end
+
+  context 'yaml_errors validations' do
+    let_it_be(:invalid_yaml_errors) { 'a' * (described_class::YAML_ERRORS_MAX_LENGTH + 1.kilobyte) }
+
+    context 'with existing yaml_errors' do
+      let(:pipeline) { build(:ci_pipeline, yaml_errors: invalid_yaml_errors) }
+
+      before do
+        pipeline.save!(validate: false)
+      end
+
+      it 'does not raise a validation error if the yaml_errors is not changed' do
+        pipeline.ref = 'new ref'
+
+        expect(pipeline).to be_valid
+      end
+
+      it 'raises and error if the yaml_errors is changed and the size is bigger than limit' do
+        expect(pipeline).to be_valid
+
+        pipeline.yaml_errors = "#{invalid_yaml_errors}+b"
+
+        expect(pipeline).not_to be_valid
+      end
+    end
+
+    context 'with new pipelines' do
+      it 'is valid when yaml_errors is smaller than the limit' do
+        pipeline = build(:ci_pipeline, yaml_errors: 'Valid Yaml')
+
+        expect(pipeline).to be_valid
+      end
+
+      it 'raises error when yaml_errors is bigger than setting limit' do
+        pipeline = build(:ci_pipeline, yaml_errors: invalid_yaml_errors)
+
+        aggregate_failures do
+          expect(pipeline).not_to be_valid
+          expect(pipeline.errors.messages_for(:yaml_errors)).to include("is too long (101 KiB). The maximum size is 100 KiB.")
+        end
+      end
+    end
   end
 
   describe 'associations' do

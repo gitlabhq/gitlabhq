@@ -165,7 +165,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 }
 
 func initializePprof(listenerAddress string, errors chan error) (*http.Server, error) {
-	if listenerAddress != "" {
+	if listenerAddress == "" {
 		return nil, nil
 	}
 
