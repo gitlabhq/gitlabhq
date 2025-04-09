@@ -251,12 +251,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when dependency proxy is enabled' do
+        let(:virtual_registry_scopes) { %i[read_virtual_registry write_virtual_registry] }
+
         before do
           stub_config(dependency_proxy: { enabled: true })
         end
 
         it 'contains all virtual registry related scopes' do
-          expect(subject.virtual_registry_scopes).to eq %i[read_virtual_registry write_virtual_registry]
+          expect(subject.virtual_registry_scopes).to eq virtual_registry_scopes
+        end
+
+        context 'for a Project' do
+          it 'does not include virtual registry scopes' do
+            expect(subject.available_scopes_for(build_stubbed(:project))).to not_include(*virtual_registry_scopes)
+          end
+        end
+
+        %i[user group].each do |resource_type|
+          context "for a #{resource_type}" do
+            it 'includes the virtual registry scopes' do
+              expect(subject.available_scopes_for(build_stubbed(resource_type))).to include(*virtual_registry_scopes)
+            end
+          end
         end
       end
     end

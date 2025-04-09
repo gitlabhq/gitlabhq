@@ -435,6 +435,14 @@ class NotifyPreview < ActionMailer::Preview
     Notify.repository_rewrite_history_failure_email(project, user, 'Error message')
   end
 
+  def project_scheduled_for_deletion
+    cleanup do
+      project.update!(marked_for_deletion_at: Time.current)
+
+      ::Notify.project_scheduled_for_deletion(user.id, project.id).message
+    end
+  end
+
   private
 
   def project

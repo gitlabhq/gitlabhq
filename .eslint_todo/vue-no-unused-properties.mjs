@@ -292,7 +292,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_detail_modal.vue',
     'app/assets/javascripts/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue',
     'app/assets/javascripts/work_items/components/work_item_development/work_item_development_mr_item.vue',
-    'app/assets/javascripts/work_items/components/work_item_labels.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_children_wrapper.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_groups_listbox.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_link_child.vue',

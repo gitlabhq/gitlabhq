@@ -1,4 +1,6 @@
-import createMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
+import createMarkdownDeserializer, {
+  transformQuickActions,
+} from '~/content_editor/services/gl_api_markdown_deserializer';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import { builders, tiptapEditor, doc, text } from '../serialization_utils';
 
@@ -20,6 +22,14 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
+  });
+
+  describe('transformQuickActions', () => {
+    it('ensures at least 3 newlines after quick actions so that reference style links after the quick action are correctly parsed', () => {
+      expect(
+        transformQuickActions('Link to [GitLab][link]\n/confidential\n[link]: https://gitlab.com'),
+      ).toBe('Link to [GitLab][link]\n/confidential\n\n\n[link]: https://gitlab.com');
+    });
   });
 
   describe('when deserializing', () => {

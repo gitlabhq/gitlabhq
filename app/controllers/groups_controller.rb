@@ -22,7 +22,7 @@ class GroupsController < Groups::ApplicationController
   # Authorize
   before_action :authorize_admin_group!, only: [:update, :projects, :transfer, :export, :download_export]
   before_action :authorize_view_edit_page!, only: :edit
-  before_action :authorize_remove_group!, only: :destroy
+  before_action :authorize_remove_group!, only: [:destroy, :restore]
   before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
@@ -55,7 +55,7 @@ class GroupsController < Groups::ApplicationController
 
   feature_category :groups_and_projects, [
     :index, :new, :create, :show, :edit, :update,
-    :destroy, :details, :transfer, :activity
+    :destroy, :details, :transfer, :activity, :restore
   ]
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review_workflow, [:merge_requests, :unfoldered_environment_names]
@@ -180,18 +180,51 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    Groups::DestroyService.new(@group, current_user).async_execute
-    message = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+    return destroy_immediately unless group.adjourned_deletion?
+    return destroy_immediately if group.marked_for_deletion? && ::Gitlab::Utils.to_boolean(params[:permanently_remove])
 
-    respond_to do |format|
-      format.html do
-        flash[:toast] = message
-        redirect_to root_path, status: :found
-      end
+    result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
-      format.json do
-        render json: { message: message }
+    if result[:status] == :success
+      respond_to do |format|
+        format.html do
+          redirect_to group_path(group), status: :found
+        end
+
+        format.json do
+          render json: {
+            message: format(
+              _("'%{group_name}' has been scheduled for deletion and will be deleted on %{date}."),
+              group_name: group.name,
+              # FIXME: Replace `group.marked_for_deletion_on` with `group` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+              date: helpers.permanent_deletion_date_formatted(group.marked_for_deletion_on)
+            )
+          }
+        end
       end
+    else
+      respond_to do |format|
+        format.html do
+          redirect_to edit_group_path(group), status: :found, alert: result[:message]
+        end
+
+        format.json do
+          render json: { message: result[:message] }, status: :unprocessable_entity
+        end
+      end
+    end
+  end
+
+  def restore
+    return render_404 unless group.marked_for_deletion?
+
+    result = ::Groups::RestoreService.new(group, current_user).execute
+
+    if result[:status] == :success
+      redirect_to edit_group_path(group),
+        notice: format(_("Group '%{group_name}' has been successfully restored."), group_name: group.full_name)
+    else
+      redirect_to edit_group_path(group), alert: result[:message]
     end
   end
 
@@ -367,6 +400,22 @@ class GroupsController < Groups::ApplicationController
   override :has_project_list?
   def has_project_list?
     %w[details show index].include?(action_name)
+  end
+
+  def destroy_immediately
+    Groups::DestroyService.new(@group, current_user).async_execute
+    message = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+
+    respond_to do |format|
+      format.html do
+        flash[:toast] = message
+        redirect_to root_path, status: :found
+      end
+
+      format.json do
+        render json: { message: message }
+      end
+    end
   end
 end
 

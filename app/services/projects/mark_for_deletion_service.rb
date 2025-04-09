@@ -16,6 +16,7 @@ module Projects
 
       if result[:status] == :success
         log_event
+        send_project_deletion_notification
 
         ## Trigger root statistics refresh, to skip project_statistics of
         ## projects marked for deletion
@@ -26,6 +27,14 @@ module Projects
     end
 
     private
+
+    def send_project_deletion_notification
+      return unless ::Feature.enabled?(:project_deletion_notification_email, project) &&
+        project.adjourned_deletion? &&
+        project.marked_for_deletion?
+
+      ::NotificationService.new.project_scheduled_for_deletion(project)
+    end
 
     def log_event
       log_info("User #{current_user.id} marked project #{project.full_path} for deletion")

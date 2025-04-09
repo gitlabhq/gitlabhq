@@ -1,0 +1,10 @@
+---
+name: project_deletion_notification_email
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/522883
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184026
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525979
+milestone: '17.11'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false
+

@@ -242,11 +242,10 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
       page.within(labels_widget) do
         click_button 'Edit'
 
-        wait_for_requests
-
-        expect(page).to have_selector('.gl-new-dropdown-item-check-icon', count: 2)
-        expect(page).to have_content(development.title)
-        expect(page).to have_content(stretch.title)
+        # Selected labels are shown twice - once in a "Selected" section and once in the "All" section below
+        expect(page).to have_selector('.gl-new-dropdown-item-check-icon', count: 4)
+        expect(page).to have_content(development.title, count: 2)
+        expect(page).to have_content(stretch.title, count: 2)
       end
     end
 

@@ -81,6 +81,7 @@ To create a custom field:
    - In **Use on**, select the work item types where you want this field to be available.
    - In **Options** (on single-select and multi-select fields), enter the possible select options.
      A single-select or multi-select field can have at most 50 select options.
+     - Reorder options by dragging the grip icon ({{< icon name="grip" >}}) to the left of each option.
 1. Select **Save**.
 
 ### Edit a custom field

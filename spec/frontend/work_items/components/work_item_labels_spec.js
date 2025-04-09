@@ -214,22 +214,6 @@ describe('WorkItemLabels component', () => {
     expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(false);
   });
 
-  it('filters search results by title in frontend', async () => {
-    createComponent({
-      searchQueryHandler: jest.fn().mockResolvedValue(getProjectLabelsResponse(mockLabels)),
-    });
-
-    showDropdown();
-    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', mockLabels[0].title);
-
-    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
-
-    await waitForPromises();
-
-    expect(findWorkItemSidebarDropdownWidget().props('listItems')).toHaveLength(1);
-    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(false);
-  });
-
   it('emits error event if search query fails', async () => {
     createComponent({ searchQueryHandler: errorHandler });
     showDropdown();
@@ -336,25 +320,17 @@ describe('WorkItemLabels component', () => {
 
   it('shows selected labels at top of list', async () => {
     const [label1, label2, label3] = mockLabels;
-    const label999 = {
-      __typename: 'Label',
-      id: 'gid://gitlab/Label/999',
-      title: 'Label 999',
-      description: 'Label not in the label query result',
-      color: '#fff',
-      textColor: '#000',
-    };
 
     createComponent({
       workItemQueryHandler: workItemQuerySuccess,
       updateWorkItemMutationHandler: jest.fn().mockResolvedValue(
         updateWorkItemMutationResponseFactory({
-          labels: [label1, label999],
+          labels: [label1, label3],
         }),
       ),
     });
 
-    updateLabels([label1Id, label999.id]);
+    updateLabels([label1Id, label3Id]);
 
     showDropdown();
 
@@ -362,10 +338,11 @@ describe('WorkItemLabels component', () => {
 
     const selected = [
       { color: label1.color, text: label1.title, value: label1.id },
-      { color: label999.color, text: label999.title, value: label999.id },
+      { color: label3.color, text: label3.title, value: label3.id },
     ];
 
     const unselected = [
+      { color: label1.color, text: label1.title, value: label1.id },
       { color: label2.color, text: label2.title, value: label2.id },
       { color: label3.color, text: label3.title, value: label3.id },
     ];
@@ -374,6 +351,21 @@ describe('WorkItemLabels component', () => {
       { options: selected, text: 'Selected' },
       { options: unselected, text: 'All', textSrOnly: true },
     ]);
+  });
+
+  it('does not update labels when no labels were added or removed', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQueryWithLabelsHandler,
+      updateWorkItemMutationHandler: successRemoveAllLabelWorkItemMutationHandler,
+    });
+    await waitForPromises();
+
+    showDropdown();
+    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label1Id, label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', [label1Id, label2Id, label3Id]);
+
+    expect(successRemoveAllLabelWorkItemMutationHandler).not.toHaveBeenCalled();
   });
 
   describe('tracking', () => {

@@ -181,7 +181,6 @@ InitializerConnections.raise_if_new_database_connection do
         draw :gitlab_subscriptions
         draw :phone_verification
         draw :arkose
-        draw :amazon_q
 
         scope '/from_secondary/:geo_node_id' do
           draw :git_http

@@ -283,4 +283,29 @@ RSpec.describe Emails::Projects do
       is_expected.to have_body_text("#{project.name} | Project export error")
     end
   end
+
+  describe '#project_scheduled_for_deletion' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:frozen_time) { Time.new(2023, 10, 15, 12, 0, 0) }
+    let_it_be(:project) { create(:project, marked_for_deletion_on: frozen_time) }
+
+    let(:deletion_adjourned_period) { 7 }
+    let(:deletion_date) { (frozen_time.to_date + deletion_adjourned_period.days).strftime('%B %-d, %Y') }
+
+    before do
+      stub_application_setting(deletion_adjourned_period: deletion_adjourned_period)
+      allow_next_instance_of(Project) do |instance|
+        allow(instance).to receive(:marked_for_deletion_on).and_return(frozen_time)
+      end
+    end
+
+    subject { Notify.project_scheduled_for_deletion(user.id, project.id) }
+
+    it 'has expected content', :aggregate_failures do
+      is_expected.to have_subject("#{project.name} | Project scheduled for deletion")
+      is_expected.to have_body_text(project.full_name)
+      is_expected.to have_body_text(deletion_adjourned_period.to_s)
+      is_expected.to have_body_text(deletion_date)
+    end
+  end
 end

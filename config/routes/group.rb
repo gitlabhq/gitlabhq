@@ -182,6 +182,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :work_items, only: [:index, :show], param: :iid
 
     post :preview_markdown
+
+    post '/restore' => '/groups#restore', as: :restore
   end
 
   scope(

@@ -788,6 +788,19 @@ class NotificationService
     mailer.new_achievement_email(user, achievement)
   end
 
+  def project_scheduled_for_deletion(project)
+    return if project.emails_disabled?
+
+    recipients = owners_without_invites(project)
+
+    recipients.each do |recipient|
+      mailer.project_scheduled_for_deletion(
+        recipient.id,
+        project.id
+      ).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, current_user, method)
@@ -868,6 +881,16 @@ class NotificationService
   end
 
   private
+
+  def owners_without_invites(project)
+    recipients = project.members.active_without_invites_and_requests.owners
+
+    if recipients.empty? && project.group
+      recipients = project.group.members.active_without_invites_and_requests.owners
+    end
+
+    recipients.map(&:user)
+  end
 
   def log_info(message_text, user)
     Gitlab::AppLogger.info(

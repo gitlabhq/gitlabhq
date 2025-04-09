@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupsController, :with_current_organization, factory_default: :keep, feature_category: :code_review_workflow do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
+  include NamespacesHelper
 
   let_it_be(:group_organization) { current_organization }
   let_it_be_with_refind(:group) { create_default(:group, :public, organization: group_organization) }
@@ -24,7 +25,6 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
   before do
     enable_admin_mode!(admin_with_admin_mode)
-    stub_feature_flags(downtier_delayed_deletion: false)
   end
 
   shared_examples 'member with ability to create subgroups' do
@@ -527,42 +527,249 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
   end
 
   describe 'DELETE #destroy' do
-    context 'as another user' do
-      it 'returns 404' do
-        sign_in(create(:user))
+    let(:format) { :html }
+    let(:params) { {} }
 
-        delete :destroy, params: { id: group.to_param }
+    subject { delete :destroy, format: format, params: { id: group.to_param, **params } }
+
+    context 'when authenticated user can admin the group' do
+      let_it_be(:user) { owner }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'delayed deletion feature is available' do
+        context 'success' do
+          it 'marks the group for delayed deletion' do
+            expect { subject }.to change { group.reload.marked_for_deletion? }.from(false).to(true)
+          end
+
+          it 'does not immediately delete the group' do
+            Sidekiq::Testing.fake! do
+              expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
+            end
+          end
+
+          context 'for a html request' do
+            it 'redirects to group path' do
+              subject
+
+              expect(response).to redirect_to(group_path(group))
+            end
+          end
+
+          context 'for a json request', :freeze_time do
+            let(:format) { :json }
+
+            it 'returns json with message' do
+              subject
+
+              # FIXME: Replace `group.marked_for_deletion_on` with `group` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+              expect(json_response['message'])
+              .to eq(
+                "'#{group.name}' has been scheduled for deletion and will be deleted on " \
+                  "#{permanent_deletion_date_formatted(group.marked_for_deletion_on)}.")
+            end
+          end
+        end
+
+        context 'failure' do
+          before do
+            allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+          end
+
+          it 'does not mark the group for deletion' do
+            expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(false)
+          end
+
+          context 'for a html request' do
+            it 'redirects to group edit page' do
+              subject
+
+              expect(response).to redirect_to(edit_group_path(group))
+              expect(flash[:alert]).to include 'error'
+            end
+          end
+
+          context 'for a json request' do
+            let(:format) { :json }
+
+            it 'returns json with message' do
+              subject
+
+              expect(json_response['message']).to eq("error")
+            end
+          end
+        end
+
+        context 'when group is already marked for deletion' do
+          before do
+            create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+          end
+
+          context 'when permanently_remove param is set' do
+            let(:params) { { permanently_remove: true } }
+
+            context 'for a html request' do
+              it 'deletes the group immediately and redirects to root path' do
+                expect(GroupDestroyWorker).to receive(:perform_async)
+
+                subject
+
+                expect(response).to redirect_to(root_path)
+                expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+              end
+            end
+
+            context 'for a json request' do
+              let(:format) { :json }
+
+              it 'deletes the group immediately and returns json with message' do
+                expect(GroupDestroyWorker).to receive(:perform_async)
+
+                subject
+
+                expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
+              end
+            end
+          end
+
+          context 'when permanently_remove param is not set' do
+            context 'for a html request' do
+              it 'redirects to edit path with error' do
+                subject
+
+                expect(response).to redirect_to(edit_group_path(group))
+                expect(flash[:alert]).to include "Group has been already marked for deletion"
+              end
+            end
+
+            context 'for a json request' do
+              let(:format) { :json }
+
+              it 'returns json with message' do
+                subject
+
+                expect(json_response['message']).to eq("Group has been already marked for deletion")
+              end
+            end
+          end
+        end
+      end
+
+      context 'delayed deletion feature is not available', :sidekiq_inline do
+        before do
+          stub_feature_flags(downtier_delayed_deletion: false)
+        end
+
+        context 'for a html request' do
+          it 'immediately schedules a group destroy and redirects to root page with alert about immediate deletion' do
+            Sidekiq::Testing.fake! do
+              expect { subject }.to change { GroupDestroyWorker.jobs.size }.by(1)
+            end
+
+            expect(response).to redirect_to(root_path)
+            expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+          end
+        end
+
+        context 'for a json request' do
+          let(:format) { :json }
+
+          it 'immediately schedules a group destroy and returns json with message' do
+            Sidekiq::Testing.fake! do
+              expect { subject }.to change { GroupDestroyWorker.jobs.size }.by(1)
+            end
+
+            expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
+          end
+        end
+      end
+    end
+
+    context 'when authenticated user cannot admin the group' do
+      before do
+        sign_in(create(:user))
+      end
+
+      it 'returns 404' do
+        subject
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
 
-    context 'as the group owner' do
-      let(:user) { create(:user) }
-      let(:group) { create(:group) }
+  describe 'POST #restore' do
+    let_it_be(:group) do
+      create(:group_with_deletion_schedule,
+        marked_for_deletion_on: 1.day.ago,
+        deleting_user: user)
+    end
 
+    subject { post :restore, params: { group_id: group.to_param } }
+
+    context 'when authenticated user can admin the group' do
       before do
         group.add_owner(user)
         sign_in(user)
       end
 
-      context 'for a html request' do
-        it 'schedules a group destroy and redirects to the root path' do
-          Sidekiq::Testing.fake! do
-            expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+      context 'when the delayed deletion feature is available' do
+        context 'when the restore succeeds' do
+          it 'restores the group' do
+            expect { subject }.to change { group.reload.marked_for_deletion? }.from(true).to(false)
           end
-          expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
-          expect(response).to redirect_to(root_path)
+
+          it 'renders success notice upon restoring' do
+            subject
+
+            expect(response).to redirect_to(edit_group_path(group))
+            expect(flash[:notice]).to include "Group '#{group.name}' has been successfully restored."
+          end
+        end
+
+        context 'when the restore fails' do
+          before do
+            allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+          end
+
+          it 'does not restore the group' do
+            expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(true)
+          end
+
+          it 'redirects to group edit page' do
+            subject
+
+            expect(response).to redirect_to(edit_group_path(group))
+            expect(flash[:alert]).to include 'error'
+          end
         end
       end
 
-      context 'for a json request' do
-        it 'schedules a group destroy and returns message' do
-          Sidekiq::Testing.fake! do
-            expect { delete :destroy, format: :json, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
-          end
-          expect(Gitlab::Json.parse(response.body)).to eq({ 'message' => "Group '#{group.full_name}' is being deleted." })
+      context 'when delayed deletion feature is not available' do
+        before do
+          stub_feature_flags(downtier_delayed_deletion: false)
         end
+
+        it 'returns 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when authenticated user cannot admin the group' do
+      before do
+        sign_in(create(:user))
+      end
+
+      it 'returns 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

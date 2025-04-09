@@ -269,6 +269,8 @@ Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 The following table presents the events that generate notifications for issues, merge requests, and
 epics:
 
+<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
+
 | Type | Event | Sent to |
 |------|-------|---------|
 | Epic | Closed | Subscribers and participants. |
@@ -276,7 +278,6 @@ epics:
 | Epic | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Epic | Reopened | Subscribers and participants. |
 | Issue | Closed | Subscribers and participants. |
-<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
 | Issue | Due tomorrow. The notification is sent at 00:50 in the server's time zone (for GitLab.com this is UTC) for open issues with a due date of the next calendar day. | Participants and Custom notification level with this event selected. |
 | Issue | Milestone changed | Subscribers and participants. |
 | Issue | Milestone removed | Subscribers and participants. |

@@ -1,0 +1,7 @@
+%p
+  = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+%p
+  = _('Your project %{project_name} has been marked for deletion and will be removed in %{days}.').html_safe % { project_name: link_to(@project.full_name, project_url(@project)), days: pluralize((@deletion_due_in_days / 1.day).to_i, _('day')) }
+%p
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: inactive_dashboard_projects_url }
+  = _('If this was a mistake, you can %{link_start}retain the project%{link_end} before %{deletion_date}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe, deletion_date: @deletion_date }

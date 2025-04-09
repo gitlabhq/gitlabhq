@@ -401,7 +401,7 @@ gem 'sentry-sidekiq', '~> 5.22.0', feature_category: :observability
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 6.0.0', feature_category: :database
+gem 'pg_query', '~> 6.1.0', feature_category: :database
 
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation', feature_category: :shared
 gem 'gitlab-http', path: 'gems/gitlab-http', feature_category: :shared
@@ -521,7 +521,7 @@ group :development, :test do
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0', feature_category: :shared
 
-  gem 'spring', '~> 4.1.0', feature_category: :shared
+  gem 'spring', '~> 4.3.0', feature_category: :shared
   gem 'spring-commands-rspec', '~> 1.0.4', feature_category: :shared
 
   gem 'gitlab-styles', '~> 13.1.0', feature_category: :tooling, require: false

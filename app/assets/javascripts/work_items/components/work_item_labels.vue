@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
-import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { difference, unionBy } from 'lodash';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __, n__, s__ } from '~/locale';
@@ -64,27 +63,30 @@ export default {
   },
   data() {
     return {
+      searchLabels: [],
       searchTerm: '',
       searchStarted: false,
       showLabelForm: false,
       updateInProgress: false,
+      workItem: {},
       createdLabelId: undefined,
       removeLabelIds: [],
       addLabelIds: [],
       labelsCache: [],
-      labelsToShowAtTopOfTheListbox: [],
+      labelsToShowAtTopOfListbox: [],
       shortcut: ISSUABLE_CHANGE_LABEL,
     };
   },
   computed: {
-    createFlow() {
+    isCreateFlow() {
       return this.workItemId === newWorkItemId(this.workItemType);
     },
     workItemFullPath() {
-      return this.createFlow
+      return this.isCreateFlow
         ? newWorkItemFullPath(this.fullPath, this.workItemType)
         : this.fullPath;
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -92,55 +94,38 @@ export default {
         property: `type_${this.workItemType}`,
       };
     },
-    areLabelsSelected() {
-      return this.addLabelIds.length > 0 || this.itemValues.length > 0;
-    },
-    selectedLabelCount() {
-      return this.addLabelIds.length + this.itemValues.length - this.removeLabelIds.length;
-    },
-    dropDownLabelText() {
-      return n__('%d label', '%d labels', this.selectedLabelCount);
-    },
     dropdownText() {
-      return this.areLabelsSelected ? `${this.dropDownLabelText}` : __('No labels');
+      const selectedLabelsCount =
+        this.addLabelIds.length + this.widgetLabelsIds.length - this.removeLabelIds.length;
+      return this.addLabelIds.length > 0 || this.widgetLabelsIds.length > 0
+        ? n__('%d label', '%d labels', selectedLabelsCount)
+        : __('No labels');
     },
     isLoadingLabels() {
       return this.$apollo.queries.searchLabels.loading;
     },
-    visibleLabels() {
-      if (this.searchTerm) {
-        return fuzzaldrinPlus.filter(this.searchLabels, this.searchTerm, {
-          key: ['title'],
-        });
+    listboxItems() {
+      const formattedSearchLabels = this.searchLabels.map(formatLabelForListbox);
+
+      if (this.searchTerm || this.widgetLabelsIds.length === 0) {
+        return formattedSearchLabels;
       }
 
-      return this.searchLabels;
-    },
-    labelsList() {
-      const visibleLabels = this.visibleLabels?.map(formatLabelForListbox) || [];
-
-      if (this.searchTerm || this.itemValues.length === 0) {
-        return visibleLabels;
-      }
-
-      const selectedLabels = this.labelsToShowAtTopOfTheListbox.map(formatLabelForListbox) || [];
-      const unselectedLabels = visibleLabels.filter(
-        ({ value }) => !this.labelsToShowAtTopOfTheListbox.find((l) => l.id === value),
-      );
+      const selectedLabels = this.labelsToShowAtTopOfListbox.map(formatLabelForListbox);
 
       return [
-        { options: selectedLabels, text: __('Selected') },
-        { options: unselectedLabels, text: __('All'), textSrOnly: true },
+        { text: __('Selected'), options: selectedLabels },
+        { text: __('All'), textSrOnly: true, options: formattedSearchLabels },
       ];
     },
     labelsWidget() {
       return findLabelsWidget(this.workItem);
     },
-    localLabels() {
+    widgetLabels() {
       return this.labelsWidget?.labels?.nodes || [];
     },
-    itemValues() {
-      return this.localLabels.map(({ id }) => id);
+    widgetLabelsIds() {
+      return this.widgetLabels.map(({ id }) => id);
     },
     allowsScopedLabels() {
       return this.labelsWidget?.allowsScopedLabels;
@@ -158,21 +143,20 @@ export default {
   watch: {
     searchTerm(newVal, oldVal) {
       if (newVal === '' && oldVal !== '') {
-        const selectedIds = [...this.itemValues, ...this.addLabelIds].filter(
+        const selectedIds = [...this.widgetLabelsIds, ...this.addLabelIds].filter(
           (x) => !this.removeLabelIds.includes(x),
         );
 
-        this.labelsToShowAtTopOfTheListbox = this.labelsCache.filter(({ id }) =>
+        this.labelsToShowAtTopOfListbox = this.labelsCache.filter(({ id }) =>
           selectedIds.includes(id),
         );
       }
     },
-    localLabels(newVal) {
-      this.labelsToShowAtTopOfTheListbox = newVal;
+    widgetLabels(newVal) {
+      this.labelsToShowAtTopOfListbox = newVal;
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemByIidQuery,
       variables() {
@@ -195,7 +179,6 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     searchLabels: {
       query() {
         return this.isGroup ? groupLabelsQuery : projectLabelsQuery;
@@ -210,7 +193,7 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.labels?.nodes;
+        return data.workspace?.labels?.nodes ?? [];
       },
       result({ data }) {
         const labels = data?.workspace?.labels?.nodes || [];
@@ -231,30 +214,33 @@ export default {
     },
     search(searchTerm) {
       this.searchTerm = searchTerm;
-      this.searchStarted = true;
     },
     removeLabel({ id }) {
       this.removeLabelIds.push(id);
       this.updateLabels();
     },
     updateLabel(labels) {
-      this.removeLabelIds = difference(this.itemValues, labels);
-      this.addLabelIds = difference(labels, this.itemValues);
+      this.removeLabelIds = difference(this.widgetLabelsIds, labels);
+      this.addLabelIds = difference(labels, this.widgetLabelsIds);
     },
     async updateLabels(labels) {
-      this.updateInProgress = true;
-
       if (labels?.length === 0) {
-        this.removeLabelIds = this.itemValues;
+        this.removeLabelIds = this.widgetLabelsIds;
         this.addLabelIds = [];
       }
 
-      if (this.createFlow) {
-        const selectedIds = [...this.itemValues, ...this.addLabelIds].filter(
+      if (!this.addLabelIds.length && !this.removeLabelIds.length) {
+        return;
+      }
+
+      this.updateInProgress = true;
+
+      if (this.isCreateFlow) {
+        const selectedIds = [...this.widgetLabelsIds, ...this.addLabelIds].filter(
           (x) => !this.removeLabelIds.includes(x),
         );
 
-        this.$apollo.mutate({
+        await this.$apollo.mutate({
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
@@ -307,9 +293,6 @@ export default {
     scopedLabel(label) {
       return this.allowsScopedLabels && isScopedLabel(label);
     },
-    isSelected(id) {
-      return this.itemValues.includes(id) || this.addLabelIds.includes(id);
-    },
     labelFilterUrl(label) {
       return `${this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
     },
@@ -329,8 +312,8 @@ export default {
     :created-label-id="createdLabelId"
     dropdown-name="label"
     :loading="isLoadingLabels"
-    :list-items="labelsList"
-    :item-value="itemValues"
+    :list-items="listboxItems"
+    :item-value="widgetLabelsIds"
     :update-in-progress="updateInProgress"
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select labels')"
@@ -357,7 +340,7 @@ export default {
     <template #readonly>
       <div class="gl-mt-1 gl-flex gl-flex-wrap gl-gap-2" data-testid="selected-label-content">
         <gl-label
-          v-for="label in localLabels"
+          v-for="label in widgetLabels"
           :key="label.id"
           :title="label.title"
           :description="label.description"
