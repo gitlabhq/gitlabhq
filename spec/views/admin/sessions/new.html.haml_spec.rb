@@ -2,8 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/sessions/new.html.haml' do
+RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access do
+  include RenderedHtml
+
   let(:user) { create(:admin) }
+
+  let(:page) { rendered_html }
 
   before do
     disable_all_signin_methods
@@ -39,6 +43,12 @@ RSpec.describe 'admin/sessions/new.html.haml' do
       allow(view).to receive(:password_authentication_enabled_for_web?).and_return(true)
     end
 
+    let(:openid_connect_button_action_url) do
+      URI(rendered_html.find_button('Openid Connect').ancestor('form')[:action])
+    end
+
+    let(:openid_connect_button_action_url_query) { Rack::Utils.parse_query(openid_connect_button_action_url.query) }
+
     it 'shows omniauth form' do
       render
 
@@ -47,6 +57,54 @@ RSpec.describe 'admin/sessions/new.html.haml' do
         expect(rendered).to have_content(_('or sign in with'))
       end
       expect(rendered).to have_css('.js-oauth-login')
+    end
+
+    context 'when step-up auth config is set' do
+      let(:oidc_step_up_auth_options) do
+        GitlabSettings::Options.new(
+          name: "openid_connect",
+          step_up_auth: {
+            admin_mode: {
+              params: {
+                claims: { acr_values: 'gold' }
+              }
+            }
+          }
+        )
+      end
+
+      let(:oidc_step_up_auth_options_without_params) do
+        GitlabSettings::Options.new(name: "openid_connect", step_up_auth: { admin_mode: {} })
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [oidc_step_up_auth_options])
+
+        allow(view).to receive(:omniauth_enabled?).and_return(true)
+        allow(view).to receive(:auth_providers).and_return(['openid_connect'])
+      end
+
+      it 'includes additional params related to step-up auth in form action url' do
+        render
+
+        expect(rendered).to have_button('Openid Connect')
+
+        expect(openid_connect_button_action_url).to have_attributes(path: '/users/auth/openid_connect')
+        expect(openid_connect_button_action_url_query).to include('claims' => '{"acr_values":"gold"}')
+      end
+
+      context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+        before do
+          stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+        end
+
+        it 'does not include additional params related to step-up auth in form action url' do
+          render
+
+          expect(rendered).to have_button('Openid Connect')
+          expect(openid_connect_button_action_url).to have_attributes(path: '/users/auth/openid_connect', query: nil)
+        end
+      end
     end
   end
 

@@ -1664,7 +1664,8 @@ test:
           app_id: 'YOUR_CLIENT_ID',
           app_secret: 'YOUR_CLIENT_SECRET',
           args: { scope: 'offline_access read:jira-user read:jira-work', prompt: 'consent' }
-      }
+        }
+      - { name: 'openid_connect' }
   ldap:
     enabled: false
     servers:

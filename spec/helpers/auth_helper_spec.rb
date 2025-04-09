@@ -708,4 +708,80 @@ RSpec.describe AuthHelper, feature_category: :system_access do
         .to eq('http://www.w3.org/2001/04/xmlenc#sha256')
     end
   end
+
+  describe '#step_up_auth_params' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:current_user) { instance_double('User', flipper_id: '1') }
+
+    let(:oidc_setting_with_step_up_auth) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          admin_mode: {
+            params: {
+              claims: { acr_values: 'gold' },
+              prompt: 'login'
+            }
+          }
+        }
+      )
+    end
+
+    let(:oidc_setting_without_step_up_auth_params) do
+      GitlabSettings::Options.new(name: "openid_connect",
+        step_up_auth: { admin_mode: { id_token: { required: { acr: 'gold' } } } })
+    end
+
+    let(:oidc_setting_without_step_up_auth) do
+      GitlabSettings::Options.new(name: "openid_connect")
+    end
+
+    subject { helper.step_up_auth_params(provider_name, scope) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      stub_omniauth_setting(enabled: true, providers: omniauth_setting_providers)
+    end
+
+    # rubocop:disable Layout/LineLength -- Ensure one-line table syntax for better readability
+    where(:omniauth_setting_providers, :provider_name, :scope, :expected_result) do
+      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode, 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | 'admin_mode' | { step_up_auth_scope: 'admin_mode', 'claims' => '{"acr_values":"gold"}', 'prompt' => 'login' }
+      [ref(:oidc_setting_with_step_up_auth)]           | 'openid_connect'        | nil          | {}
+      [ref(:oidc_setting_with_step_up_auth)]           | 'missing_provider_name' | :admin_mode  | {}
+      [ref(:oidc_setting_with_step_up_auth)]           | nil                     | nil          | {}
+
+      []                                               | 'openid_connect'        | :admin_mode  | {}
+      [ref(:oidc_setting_without_step_up_auth)]        | 'openid_connect'        | :admin_mode  | {}
+      [ref(:oidc_setting_without_step_up_auth_params)] | 'openid_connect'        | :admin_mode  | { step_up_auth_scope: :admin_mode }
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it { is_expected.to eq expected_result }
+
+      context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+        before do
+          stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+        end
+
+        it { is_expected.to eq({}) }
+      end
+    end
+  end
+
+  def omniauth_providers_with_step_up_auth_config(step_up_auth_scope)
+    auth_providers.map { |provider| Gitlab::Auth::OAuth::Provider.config_for(provider) }
+                  .select { |provider_config| provider_config.dig("step_up_auth", step_up_auth_scope.to_s).present? }
+  end
+
+  def step_up_auth_params(provider_name, scope)
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+
+    provider_config_for_scope = Gitlab::Auth::OAuth::Provider.config_for(provider_name)&.dig('step_up_auth', scope)
+    return {} if provider_config_for_scope&.dig('enabled').blank?
+
+    provider_config_for_scope&.dig('params')&.transform_values { |v| v.is_a?(Hash) ? v.to_json : v }
+  end
 end

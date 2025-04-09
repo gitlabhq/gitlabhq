@@ -135,7 +135,7 @@
     "commander": "^13.1.0",
     "compression-webpack-plugin": "^5.0.2",
     "copy-webpack-plugin": "^6.4.1",
-    "core-js": "^3.40.0",
+    "core-js": "^3.41.0",
     "cron-validator": "^1.1.1",
     "cronstrue": "^1.122.0",
     "cropperjs": "^1.6.1",

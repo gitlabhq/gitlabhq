@@ -181,7 +181,7 @@ describe('NotificationsDropdown', () => {
       it.each`
         dropdownIndex | level              | title            | description
         ${0}          | ${'global'}        | ${'Global'}      | ${'Use your global notification setting'}
-        ${1}          | ${'watch'}         | ${'Watch'}       | ${'You will receive notifications for any activity'}
+        ${1}          | ${'watch'}         | ${'Watch'}       | ${'You will receive notifications for most activity'}
         ${2}          | ${'participating'} | ${'Participate'} | ${'You will only receive notifications for items you have participated in'}
         ${3}          | ${'mention'}       | ${'On mention'}  | ${'You will receive notifications only for comments in which you were @mentioned'}
         ${4}          | ${'disabled'}      | ${'Disabled'}    | ${'You will not get any notifications via email'}

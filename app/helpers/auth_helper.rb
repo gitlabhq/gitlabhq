@@ -165,6 +165,27 @@ module AuthHelper
     enabled_button_based_providers.any?
   end
 
+  def step_up_auth_params(provider_name, step_up_auth_scope)
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+
+    # Get provider configuration for step up auth scope
+    provider_config = Gitlab::Auth::OAuth::Provider
+      .config_for(provider_name)
+      &.dig('step_up_auth', step_up_auth_scope.to_s)
+      &.to_h
+
+    return {} if provider_config.blank?
+
+    base_params = { step_up_auth_scope: step_up_auth_scope }
+    config_params = provider_config['params'].to_h
+
+    base_params
+      .merge!(config_params)
+      .transform_values do |v|
+        v.is_a?(Hash) ? v.to_json : v
+      end
+  end
+
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 

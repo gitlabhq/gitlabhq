@@ -44,6 +44,10 @@ export default {
       required: false,
       default: false,
     },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     assignees() {
@@ -75,8 +79,14 @@ export default {
       }
       return '';
     },
-    projectPath() {
-      return `${this.itemContent.project.namespace.path}/${this.itemContent.project.name}`;
+    mrFullPath() {
+      return `${this.itemContent.project.namespace.path}/${this.itemContent.project.path}`;
+    },
+    showPath() {
+      return this.mrFullPath !== this.workItemFullPath;
+    },
+    fullReferenceWithPath() {
+      return `${this.mrFullPath}${this.itemContent?.reference}`;
     },
     detailedStatus() {
       return this.itemContent?.headPipeline?.detailedStatus;
@@ -86,9 +96,6 @@ export default {
     },
     branchName() {
       return this.itemContent?.sourceBranch;
-    },
-    mrReference() {
-      return this.itemContent?.reference;
     },
     isMRClosed() {
       return this.itemContent.state === STATUS_CLOSED;
@@ -120,7 +127,7 @@ export default {
 <template>
   <div class="gl-flex gl-w-full gl-items-start gl-justify-between gl-gap-3">
     <div
-      class="gl-flex gl-min-w-0 gl-grow gl-flex-wrap gl-items-center gl-justify-between gl-gap-3 xl:gl-flex-nowrap"
+      class="gl-flex gl-min-w-0 gl-grow gl-flex-wrap gl-items-center gl-justify-between gl-gap-3 gl-gap-y-0 xl:gl-flex-nowrap"
     >
       <div class="item-title gl-flex gl-min-w-0 gl-items-center gl-gap-3">
         <gl-icon
@@ -144,7 +151,15 @@ export default {
       <div class="item-info-area gl-mt-1 gl-flex gl-shrink-0 gl-grow gl-gap-3">
         <div class="item-meta gl-flex gl-grow gl-flex-wrap-reverse gl-gap-3 sm:gl-justify-between">
           <div class="item-path-area item-path-id gl-flex gl-flex-wrap gl-items-center gl-gap-3">
-            <span class="gl-font-sm gl-text-subtle"> !{{ itemContent.iid }} </span>
+            <span
+              v-gl-tooltip
+              :title="fullReferenceWithPath"
+              class="gl-font-sm gl-inline-flex gl-max-w-20 gl-text-subtle"
+              data-testid="mr-reference"
+            >
+              <span v-if="showPath" class="gl-truncate">{{ itemContent.project.path }}</span
+              ><span>{{ itemContent.reference }}</span>
+            </span>
             <item-milestone
               v-if="milestone"
               :milestone="milestone"
@@ -203,8 +218,8 @@ export default {
 
       <gl-disclosure-dropdown-item
         data-testid="mr-copy-reference"
-        :data-clipboard-text="mrReference"
-        @action="copyToClipboard(mrReference, __('Copied reference.'))"
+        :data-clipboard-text="fullReferenceWithPath"
+        @action="copyToClipboard(fullReferenceWithPath, __('Copied reference.'))"
       >
         <template #list-item>{{ __('Copy reference') }}</template>
       </gl-disclosure-dropdown-item>

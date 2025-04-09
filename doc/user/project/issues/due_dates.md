@@ -30,8 +30,9 @@ Due dates are supported in:
 - [Incidents](../../../operations/incident_management/incidents.md)
 
 The day before an open item is due, an email is sent to all participants.
-Like the due date, the "day before the due date" is determined by the
-server's time zone.
+<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
+The notification is sent at 00:50 in the server's time zone (for GitLab.com this is UTC)
+for all open items with a due date of the next calendar day.
 
 Due dates also appear in your [to-do items](../../todos.md).
 

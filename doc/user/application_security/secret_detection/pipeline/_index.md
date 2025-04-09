@@ -61,10 +61,11 @@ and whether any additional configuration is set.
 
 By default, when you run a pipeline:
 
-- On the **default branch**, the Git working tree is scanned.
-  This means the entire repository is scanned as though it were a typical directory.
-- On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
-- On an **existing, non-default branch**, the content of all commits from the most recent branch commit to the latest commit is scanned.
+- On a branch:
+  - On the **default branch**, the Git working tree is scanned.
+    This means the entire repository is scanned as though it were a typical directory.
+  - On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
+  - On an **existing, non-default branch**, the content of all commits from the last pushed commit to the latest commit is scanned.
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
   the content of all commits from the parent to the latest commit is scanned. To use merge request pipelines, you must use the
   [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).

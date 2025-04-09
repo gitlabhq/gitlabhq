@@ -15,4 +15,4 @@
           = _('No authentication methods configured.')
 
       - if omniauth_enabled? && button_based_providers_enabled?
-        = render 'devise/shared/omniauth_box', render_remember_me: false
+        = render 'devise/shared/omniauth_box', render_remember_me: false, step_up_auth_scope: 'admin_mode'

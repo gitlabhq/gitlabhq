@@ -84,14 +84,14 @@ Notification scope is applied from the broadest to most specific levels:
 
 For each project and group you can select one of the following levels:
 
-| Level       | Description                                                 |
-| ----------- | ----------------------------------------------------------- |
-| Global      | Your global settings apply.                                 |
-| Watch       | Receive notifications for any activity.                     |
+| Level       | Description |
+| ----------- | ----------- |
+| Global      | Your global settings apply. |
+| Watch       | Receive notifications for [most activity](#events-not-included-in-the-watch-level). |
 | Participate | Receive notifications for threads you have participated in. |
 | On mention  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
-| Disabled    | Receive no notifications.                                   |
-| Custom      | Receive notifications for selected events and threads you have participated in.                  |
+| Disabled    | Receive no notifications. |
+| Custom      | Receive notifications for selected events and threads you have participated in. |
 
 ### Global notification settings
 
@@ -207,13 +207,28 @@ In issues, merge requests, and epics, for most events, the notification is sent 
   - Anyone [mentioned](../discussions/_index.md#mentions) by username in the title
     or description.
   - Anyone mentioned by username in a comment if their notification level is "Participating" or higher.
-- Watchers: users with notification level "Watch".
+- Watchers: users with notification level "Watch" ([with some exceptions](#events-not-included-in-the-watch-level)).
 - Subscribers: anyone who manually subscribed to notifications.
 - Custom: users with notification level "Custom" who turned on notifications for a fitting type of events.
 
 To minimize the number of notifications that do not require any action, eligible
-approvers are not notified for all the activities in their projects. To turn on such notifications, they have
-to change their user notification settings to **Watch** instead.
+approvers are not notified for all the activities in their projects.
+
+To get notified about all events, change your user notification settings to **Custom** and select
+all the options.
+
+#### Events not included in the Watch level
+
+If you set the notification level to **Watch**, you get notified about _almost all_ events, with
+these exceptions:
+
+- Somebody pushes to a merge request.
+- Issue is due the next day.
+- Pipeline succeeds.
+- Merge request that you're eligible to approve is created.
+
+Issue [501083](https://gitlab.com/gitlab-org/gitlab/-/issues/501083) tracks adding these events to
+the **Watch** level.
 
 ### Edit notification settings for issues, merge requests, and epics
 
@@ -261,7 +276,8 @@ epics:
 | Epic | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Epic | Reopened | Subscribers and participants. |
 | Issue | Closed | Subscribers and participants. |
-| Issue | Due | Participants and Custom notification level with this event selected. |
+<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
+| Issue | Due tomorrow. The notification is sent at 00:50 in the server's time zone (for GitLab.com this is UTC) for open issues with a due date of the next calendar day. | Participants and Custom notification level with this event selected. |
 | Issue | Milestone changed | Subscribers and participants. |
 | Issue | Milestone removed | Subscribers and participants. |
 | Issue | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |

@@ -809,6 +809,95 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
     end
 
     it_behaves_like "sets provider_2FA session variable according to bypass_two_factor return value"
+
+    context 'for step-up authentication' do
+      context 'with different step-up authentication configurations' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:ommiauth_provider_config_with_step_up_auth) do
+          GitlabSettings::Options.new(
+            name: "openid_connect",
+            step_up_auth: {
+              admin_mode: {
+                id_token: {
+                  required: required_id_token_claims
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          mock_auth_hash(provider, extern_uid, user.email, additional_info: { extra: { raw_info: mock_auth_hash_extra_raw_info } })
+
+          request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+          session['omniauth_step_up_auth'] = { 'openid_connect' => { 'admin_mode' => { 'state' => 'requested' } } }
+
+          stub_omniauth_setting(enabled: true, auto_link_user: true, block_auto_created_users: false, providers: [ommiauth_provider_config_with_step_up_auth])
+        end
+
+        where(:required_id_token_claims, :mock_auth_hash_extra_raw_info, :step_up_auth_authenticated) do
+          { claim_1: 'gold' } | { claim_1: 'gold' }                         | 'succeeded'
+          { claim_1: 'gold' } | { claim_1: 'gold', claim_2: 'mfa' }         | 'succeeded'
+          { claim_1: 'gold' } | { claim_1: 'gold', claim_2: 'other_amr' }   | 'succeeded'
+          { claim_1: 'gold' } | { claim_1: 'silver' }                       | 'failed'
+          { claim_1: 'gold' } | { claim_1: 'silver', claim_2: 'other_amr' } | 'failed'
+          { claim_1: 'gold' } | { claim_1: nil }                            | 'failed'
+          { claim_1: 'gold' } | { claim_3: 'other_value' }                  | 'failed'
+          { claim_1: 'gold' } | {}                                          | 'failed'
+        end
+
+        with_them do
+          context 'when user is signed in' do
+            before do
+              sign_in user
+            end
+
+            it 'evaluates step-up authentication conditions and stores result in session' do
+              get provider
+
+              expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'admin_mode', 'state'))
+                .to eq step_up_auth_authenticated
+            end
+
+            context 'when feature flag :omniauth_step_up_auth_for_admin_mode disabled' do
+              before do
+                stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+                session.delete 'omniauth_step_up_auth'
+              end
+
+              it 'does not store step-up authentication evaluation result in session' do
+                get provider
+
+                expect(session).not_to include 'omniauth_step_up_auth'
+              end
+            end
+          end
+
+          context 'when user is not signed in' do
+            before do
+              session.delete 'omniauth_step_up_auth'
+            end
+
+            it 'does not store step-up authentication evaluation result in session' do
+              get provider
+
+              expect(session).not_to include 'omniauth_step_up_auth'
+            end
+          end
+        end
+      end
+
+      context 'without step-up authentication configuration' do
+        let(:ommiauth_provider_config_with_step_up_auth) { GitlabSettings::Options.new(name: "openid_connect") }
+
+        it 'does not add session key "step_up_auth"' do
+          get provider
+
+          expect(session).not_to include 'step_up_auth'
+        end
+      end
+    end
   end
 
   describe '#saml' do

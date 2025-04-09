@@ -3,6 +3,7 @@
   removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   window: 1
+  check_impact: Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/471677#understanding-this-change) section for details.
   impact: high
   reporter: connorgilbert  # (required) GitLab username of the person reporting the change
   stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth

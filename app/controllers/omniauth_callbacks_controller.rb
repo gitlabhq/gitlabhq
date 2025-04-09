@@ -163,6 +163,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       set_session_active_since(oauth['provider']) if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
       track_event(current_user, oauth['provider'], 'succeeded')
 
+      handle_step_up_auth
+
       if Gitlab::CurrentSettings.admin_mode
         return admin_mode_flow(auth_module::User) if current_user_mode.admin_mode_requested?
       end
@@ -406,6 +408,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       uri.fragment = verify_redirect_fragment(redirect_fragment)
       store_location_for(:user, uri.to_s)
     end
+  end
+
+  def handle_step_up_auth
+    return if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+
+    step_up_auth_flow =
+      ::Gitlab::Auth::Oidc::StepUpAuthentication.build_flow(session: session, provider: oauth.provider)
+
+    return unless step_up_auth_flow.enabled_by_config?
+    return unless step_up_auth_flow.requested?
+
+    step_up_auth_flow.evaluate!(oauth.extra.raw_info)
   end
 
   def admin_mode_flow(auth_user_class)

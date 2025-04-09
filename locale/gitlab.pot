@@ -40180,7 +40180,7 @@ msgstr ""
 msgid "NotificationEvent|Issue is created"
 msgstr ""
 
-msgid "NotificationEvent|Issue is due soon"
+msgid "NotificationEvent|Issue is due tomorrow"
 msgstr ""
 
 msgid "NotificationEvent|Issue is reassigned"
@@ -58093,6 +58093,9 @@ msgstr ""
 msgid "Step 4."
 msgstr ""
 
+msgid "Step-up auth not successful"
+msgstr ""
+
 msgid "Still loading..."
 msgstr ""
 
@@ -69395,7 +69398,7 @@ msgstr ""
 msgid "You will only receive notifications for items you have participated in and the events you choose"
 msgstr ""
 
-msgid "You will receive notifications for any activity"
+msgid "You will receive notifications for most activity"
 msgstr ""
 
 msgid "You will receive notifications only for comments in which you were @mentioned"

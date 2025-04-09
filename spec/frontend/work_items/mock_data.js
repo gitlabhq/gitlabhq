@@ -998,6 +998,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         name: 'Flight',
         id: 'gid://gitlab/Project/1',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1038,6 +1039,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1068,6 +1070,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1098,6 +1101,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1138,6 +1142,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',

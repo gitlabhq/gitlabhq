@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EnforcesAdminAuthentication do
+RSpec.describe EnforcesAdminAuthentication, feature_category: :system_access do
   let(:user) { create(:user) }
 
   before do

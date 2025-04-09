@@ -476,7 +476,7 @@ GEM
       git
     css_parser (1.14.0)
       addressable
-    cssbundling-rails (1.4.2)
+    cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.0)
     cvss-suite (3.3.0)
@@ -2048,7 +2048,7 @@ DEPENDENCIES
   coverband (= 6.1.4)
   creole (~> 0.5.0)
   crystalball (~> 0.7.0)
-  cssbundling-rails (= 1.4.2)
+  cssbundling-rails (= 1.4.3)
   csv_builder!
   cvss-suite (~> 3.3.0)
   database_cleaner-active_record (~> 2.2.0)
