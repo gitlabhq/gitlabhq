@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.6 (2025-04-09)
+
+### Security (6 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac61772efb740af0684755d1db7d057f412b218e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4913))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46932e9f78e0b138b8fd7320b2e4e4c09f2fcfc0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4908))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7019ae8aa04f49f66d7db86ec4023f816f8e90f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4905))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/33961db6cab6ac4d3cc99d4ad521f160b43aafe2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4885))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b154f7884178a622da6d60fdcbd1097ce50cc6cb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4852))
+- [Do not enable pprof by default in Workhorse](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94aba826029e01791e394456aa9dd6a5db497415) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4890))
+
 ## 17.9.5 (2025-04-02)
 
 No changes.
