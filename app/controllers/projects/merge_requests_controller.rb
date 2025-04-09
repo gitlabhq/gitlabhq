@@ -411,7 +411,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       )
     end
 
-    display_max_limit_warning
+    display_limit_warnings
 
     respond_to do |format|
       format.html do
@@ -688,12 +688,19 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     )
   end
 
-  def display_max_limit_warning
-    return unless @merge_request.reached_versions_limit?
+  def display_limit_warnings
+    if @merge_request.reached_versions_limit?
+      flash[:alert] = format(
+        _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
+          "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+      return
+    end
 
-    flash[:alert] = format(
-      _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
-        "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+    return unless @merge_request.reached_diff_commits_limit?
+
+    flash[:alert] =
+      _("This merge request has too many diff commits, and can't be updated. " \
+        "Close this merge request and create a new one.")
   end
 
   def diffs_resource

@@ -5,6 +5,8 @@
   add_page_specific_style 'page_bundles/issuable_list'
 
 = render_dashboard_ultimate_trial(current_user)
+= render_product_usage_data_collection_changes(current_user)
+
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 

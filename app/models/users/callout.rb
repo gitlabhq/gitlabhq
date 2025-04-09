@@ -103,7 +103,8 @@ module Users
       new_merge_request_dashboard_welcome: 99,
       pipeline_inputs_announcement_banner: 100,
       pipeline_new_inputs_adoption_banner: 101,
-      pipeline_schedules_inputs_adoption_banner: 102
+      pipeline_schedules_inputs_adoption_banner: 102,
+      product_usage_data_collection_changes: 103
     }
 
     validates :feature_name,

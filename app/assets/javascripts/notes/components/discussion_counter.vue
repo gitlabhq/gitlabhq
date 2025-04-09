@@ -1,7 +1,8 @@
 <script>
 import { GlButton, GlButtonGroup, GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { throttle } from 'lodash';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -12,6 +13,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
@@ -37,13 +39,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapVuexGetters([
       'getNoteableData',
       'resolvableDiscussionsCount',
       'unresolvedDiscussionsCount',
       'allResolvableDiscussions',
-      'allVisibleDiscussionsExpanded',
     ]),
+    ...mapState(useMrNotes, ['allVisibleDiscussionsExpanded']),
     allResolved() {
       return this.unresolvedDiscussionsCount === 0;
     },
@@ -109,7 +111,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleAllVisibleDiscussions']),
+    ...mapActions(useMrNotes, ['toggleAllVisibleDiscussions']),
   },
 };
 </script>

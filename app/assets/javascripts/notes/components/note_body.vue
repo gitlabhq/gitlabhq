@@ -12,6 +12,7 @@ import { __, sprintf } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import NoteAttachment from './note_attachment.vue';
 import NoteAwardsList from './note_awards_list.vue';
 import NoteEditedText from './note_edited_text.vue';
@@ -75,9 +76,9 @@ export default {
   computed: {
     ...mapVuexGetters(['getDiscussion', 'suggestionsCount', 'getSuggestionsFilePaths']),
     ...mapState(useLegacyDiffs, ['suggestionCommitMessage']),
+    ...mapState(useMrNotes, ['failedToLoadMetadata']),
     ...mapVuexState({
       batchSuggestionsInfo: (state) => state.notes.batchSuggestionsInfo,
-      failedToLoadMetadata: (state) => state.page.failedToLoadMetadata,
     }),
     discussion() {
       if (!this.note.isDraft) return {};

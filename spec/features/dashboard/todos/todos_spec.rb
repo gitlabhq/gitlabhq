@@ -21,6 +21,10 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_todos_path, :todos
 
+  it_behaves_like 'page with product usage data collection banner' do
+    let(:page_path) { dashboard_todos_path }
+  end
+
   context 'when the todo references a merge request' do
     let(:referenced_mr) { create(:merge_request, source_project: project) }
     let(:note) { create(:note, project: project, note: "Check out #{referenced_mr.to_reference}", noteable: create(:issue, project: project)) }

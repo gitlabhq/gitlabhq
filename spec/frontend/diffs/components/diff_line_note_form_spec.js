@@ -17,6 +17,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useBatchComments } from '~/batch_comments/store';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 jest.mock('~/lib/utils/autosave');
@@ -31,23 +32,6 @@ describe('DiffLineNoteForm', () => {
   let pinia;
   let diffFile;
   let diffLines;
-
-  beforeEach(() => {
-    diffFile = getDiffFileMock();
-    diffLines = diffFile.highlighted_diff_lines;
-
-    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
-    useLegacyDiffs().diffFiles = [diffFile];
-    useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
-    useNotes();
-    useBatchComments().saveDraft.mockResolvedValue();
-
-    store.reset();
-
-    store.state.notes.noteableData = noteableDataMock;
-
-    store.getters.isLoggedIn = jest.fn().mockReturnValue(true);
-  });
 
   const createComponent = ({ props } = {}) => {
     wrapper?.destroy();
@@ -74,6 +58,20 @@ describe('DiffLineNoteForm', () => {
   const findCommentForm = () => wrapper.findComponent(MultilineCommentForm);
 
   beforeEach(() => {
+    diffFile = getDiffFileMock();
+    diffLines = diffFile.highlighted_diff_lines;
+
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs().diffFiles = [diffFile];
+    useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
+    useNotes().userData = { id: 1 };
+    useBatchComments().saveDraft.mockResolvedValue();
+    useMrNotes();
+
+    store.reset();
+
+    store.state.notes.noteableData = noteableDataMock;
+
     createComponent();
   });
 

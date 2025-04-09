@@ -3,18 +3,34 @@ import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import * as types from '~/notes/stores/mutation_types';
 import { createStore } from '~/mr_notes/stores';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { discussionMock, noteableDataMock, notesDataMock } from '../mock_data';
+
+Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('DiscussionCounter component', () => {
   let store;
+  let pinia;
   let wrapper;
 
-  Vue.use(Vuex);
+  const createComponent = (propsData) => {
+    wrapper = mount(DiscussionCounter, { store, pinia, propsData });
+  };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+    useMrNotes();
     window.mrTabs = {};
     store = createStore();
     store.dispatch('setNoteableData', {
@@ -26,7 +42,7 @@ describe('DiscussionCounter component', () => {
 
   describe('has no discussions', () => {
     it('does not render', () => {
-      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      createComponent({ blocksMerge: true });
 
       expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -36,7 +52,7 @@ describe('DiscussionCounter component', () => {
     it('does not render', () => {
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [{ ...discussionMock, resolvable: false }]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      createComponent({ blocksMerge: true });
 
       expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -56,7 +72,7 @@ describe('DiscussionCounter component', () => {
 
     it('renders', () => {
       updateStore();
-      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      createComponent({ blocksMerge: true });
 
       expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(true);
     });
@@ -70,7 +86,7 @@ describe('DiscussionCounter component', () => {
       ({ blocksMerge, color }) => {
         updateStore();
         store.state.notes.unresolvedDiscussionsCount = 1;
-        wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge } });
+        createComponent({ blocksMerge });
 
         expect(wrapper.find('[data-testid="discussions-counter-text"]').classes()).toContain(color);
       },
@@ -82,7 +98,7 @@ describe('DiscussionCounter component', () => {
       ${'allResolved'}     | ${true}  | ${1}
     `('renders correctly if $title', async ({ resolved, groupLength }) => {
       updateStore({ resolvable: true, resolved });
-      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      createComponent({ blocksMerge: true });
       await wrapper.findComponent(GlDisclosureDropdown).trigger('click');
 
       expect(wrapper.findAllComponents(GlDisclosureDropdownItem)).toHaveLength(groupLength);
@@ -91,7 +107,7 @@ describe('DiscussionCounter component', () => {
     describe('resolve all with new issue link', () => {
       it('has correct href prop', async () => {
         updateStore({ resolvable: true });
-        wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+        createComponent({ blocksMerge: true });
 
         const resolveDiscussionsPath =
           store.getters.getNoteableData.create_issue_to_resolve_discussions_path;
@@ -112,7 +128,7 @@ describe('DiscussionCounter component', () => {
       discussion = { ...discussionMock, expanded };
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+      createComponent({ blocksMerge: true });
       await wrapper.findComponent(GlDisclosureDropdown).trigger('click');
       toggleAllButton = wrapper.find('[data-testid="toggle-all-discussions-btn"]');
     };
@@ -127,7 +143,7 @@ describe('DiscussionCounter component', () => {
 
       toggleAllButton.trigger('click');
 
-      expect(store.state.notes.discussions[0].expanded).toBe(false);
+      expect(useMrNotes().toggleAllVisibleDiscussions).toHaveBeenCalled();
     });
 
     it('expands all discussions if collapsed', async () => {
@@ -135,7 +151,7 @@ describe('DiscussionCounter component', () => {
 
       toggleAllButton.trigger('click');
 
-      expect(store.state.notes.discussions[0].expanded).toBe(true);
+      expect(useMrNotes().toggleAllVisibleDiscussions).toHaveBeenCalled();
     });
   });
 });

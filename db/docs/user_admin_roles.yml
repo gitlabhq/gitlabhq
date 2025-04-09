@@ -1,0 +1,11 @@
+---
+table_name: user_admin_roles
+classes:
+- Authz::UserAdminRole
+feature_categories:
+- permissions
+description: Stores association between users and admin roles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186334
+milestone: '17.11'
+gitlab_schema: gitlab_main_clusterwide
+table_size: small

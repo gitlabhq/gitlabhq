@@ -88,6 +88,8 @@ module Gitlab
         # action per rake invocation and one action can take up to 24 hours.
         # This means that it can span for more than the weekend.
         def too_late_for_reindexing?
+          return false unless Gitlab.com_except_jh? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- Not related to SaaS offerings
+
           !Time.current.on_weekend?
         end
       end

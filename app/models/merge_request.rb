@@ -53,6 +53,7 @@ class MergeRequest < ApplicationRecord
   CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH = 2700
   MERGE_LEASE_TIMEOUT = 15.minutes.to_i
   DIFF_VERSION_LIMIT = 1_000
+  DIFF_COMMITS_LIMIT = 1_000_000
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -2530,6 +2531,17 @@ class MergeRequest < ApplicationRecord
     return false if Feature.disabled?(:merge_requests_diffs_limit, target_project)
 
     merge_request_diffs.count >= DIFF_VERSION_LIMIT
+  end
+
+  def reached_diff_commits_limit?
+    return false if Feature.disabled?(:merge_requests_diff_commits_limit, target_project)
+
+    total_commits_count = MergeRequestDiff
+      .from(merge_request_diffs.limit(1000), :limited_diffs)
+      .pick('SUM(commits_count)')
+      .to_i
+
+    total_commits_count >= DIFF_COMMITS_LIMIT
   end
 
   private

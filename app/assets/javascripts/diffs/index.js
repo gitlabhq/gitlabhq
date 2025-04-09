@@ -1,16 +1,20 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
+import {
+  mapActions as mapVuexActions,
+  mapState as mapVuexState,
+  mapGetters as mapVuexGetters,
+} from 'vuex';
+import { mapState } from 'pinia';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
 import { pinia } from '~/pinia/instance';
-
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import eventHub from '../notes/event_hub';
 import DiffsApp from './components/app.vue';
-
 import { TREE_LIST_STORAGE_KEY, DIFF_WHITESPACE_COOKIE_NAME } from './constants';
 
 export default function initDiffsApp() {
@@ -47,9 +51,7 @@ export default function initDiffsApp() {
       };
     },
     computed: {
-      ...mapState({
-        activeTab: (state) => state.page.activeTab,
-      }),
+      ...mapState(useMrNotes, ['activeTab']),
     },
     created() {
       const treeListStored = localStorage.getItem(TREE_LIST_STORAGE_KEY);
@@ -79,7 +81,7 @@ export default function initDiffsApp() {
       }
     },
     methods: {
-      ...mapActions('diffs', ['setRenderTreeList', 'setShowWhitespace']),
+      ...mapVuexActions('diffs', ['setRenderTreeList', 'setShowWhitespace']),
     },
     render(createElement) {
       return createElement('diffs-app', {
@@ -111,8 +113,8 @@ export default function initDiffsApp() {
         FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),
       },
       computed: {
-        ...mapState('diffs', ['fileFinderVisible', 'isLoading']),
-        ...mapGetters('diffs', ['flatBlobsList']),
+        ...mapVuexState('diffs', ['fileFinderVisible', 'isLoading']),
+        ...mapVuexGetters('diffs', ['flatBlobsList']),
       },
       watch: {
         fileFinderVisible(newVal, oldVal) {
@@ -122,7 +124,7 @@ export default function initDiffsApp() {
         },
       },
       methods: {
-        ...mapActions('diffs', ['toggleFileFinder', 'scrollToFile']),
+        ...mapVuexActions('diffs', ['toggleFileFinder', 'scrollToFile']),
         openFile(file) {
           window.mrTabs.tabShown('diffs');
           this.scrollToFile({ path: file.path });

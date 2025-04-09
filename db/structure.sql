@@ -9076,6 +9076,7 @@ CREATE TABLE application_settings (
     token_prefixes jsonb DEFAULT '{}'::jsonb NOT NULL,
     ci_cd_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     duo_nano_features_enabled boolean,
+    database_reindexing jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -9130,6 +9131,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_clickhouse_is_hash CHECK ((jsonb_typeof(clickhouse) = 'object'::text)),
     CONSTRAINT check_application_settings_cluster_agents_is_hash CHECK ((jsonb_typeof(cluster_agents) = 'object'::text)),
     CONSTRAINT check_application_settings_code_creation_is_hash CHECK ((jsonb_typeof(code_creation) = 'object'::text)),
+    CONSTRAINT check_application_settings_database_reindexing_is_hash CHECK ((jsonb_typeof(database_reindexing) = 'object'::text)),
     CONSTRAINT check_application_settings_duo_workflow_is_hash CHECK ((jsonb_typeof(duo_workflow) = 'object'::text)),
     CONSTRAINT check_application_settings_elasticsearch_is_hash CHECK ((jsonb_typeof(elasticsearch) = 'object'::text)),
     CONSTRAINT check_application_settings_importers_is_hash CHECK ((jsonb_typeof(importers) = 'object'::text)),
@@ -18025,6 +18027,7 @@ CREATE TABLE namespace_settings (
     require_dpop_for_manage_api_endpoints boolean DEFAULT true NOT NULL,
     job_token_policies_enabled boolean DEFAULT false NOT NULL,
     security_policies jsonb DEFAULT '{}'::jsonb NOT NULL,
+    duo_nano_features_enabled boolean,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
@@ -23968,6 +23971,14 @@ CREATE SEQUENCE user_achievements_id_seq
     CACHE 1;
 
 ALTER SEQUENCE user_achievements_id_seq OWNED BY user_achievements.id;
+
+CREATE TABLE user_admin_roles (
+    user_id bigint NOT NULL,
+    admin_role_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    ldap boolean DEFAULT false NOT NULL
+);
 
 CREATE TABLE user_agent_details (
     id bigint NOT NULL,
@@ -30888,6 +30899,9 @@ ALTER TABLE ONLY uploads
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT user_achievements_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY user_admin_roles
+    ADD CONSTRAINT user_admin_roles_pkey PRIMARY KEY (user_id);
+
 ALTER TABLE ONLY user_agent_details
     ADD CONSTRAINT user_agent_details_pkey PRIMARY KEY (id);
 
@@ -37494,6 +37508,8 @@ CREATE INDEX index_user_achievements_on_revoked_by_user_id ON user_achievements 
 
 CREATE INDEX index_user_achievements_on_user_id_revoked_by_is_null ON user_achievements USING btree (user_id, ((revoked_by_user_id IS NULL)));
 
+CREATE INDEX index_user_admin_roles_on_admin_role_id ON user_admin_roles USING btree (admin_role_id);
+
 CREATE INDEX index_user_agent_details_on_subject_id_and_subject_type ON user_agent_details USING btree (subject_id, subject_type);
 
 CREATE INDEX index_user_broadcast_message_dismissals_on_broadcast_message_id ON user_broadcast_message_dismissals USING btree (broadcast_message_id);
@@ -42391,6 +42407,9 @@ ALTER TABLE ONLY events
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_admin_roles
+    ADD CONSTRAINT fk_62ce6c86fd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT fk_63097c0adc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -43326,6 +43345,9 @@ ALTER TABLE ONLY user_group_member_roles
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_admin_roles
+    ADD CONSTRAINT fk_d3e201cb93 FOREIGN KEY (admin_role_id) REFERENCES admin_roles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7_p FOREIGN KEY (source_partition_id, source_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

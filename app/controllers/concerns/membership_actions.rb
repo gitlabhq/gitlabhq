@@ -72,11 +72,15 @@ module MembershipActions
 
   def approve_access_request
     access_requester = requesters.find(params[:id])
-    Members::ApproveAccessRequestService
+    result = Members::ApproveAccessRequestService
       .new(current_user, params)
       .execute(access_requester)
 
-    redirect_to members_page_url
+    if result[:status] == :success
+      redirect_to members_page_url
+    else
+      redirect_to members_page_url, alert: result[:message]
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

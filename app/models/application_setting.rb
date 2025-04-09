@@ -860,6 +860,12 @@ class ApplicationSetting < ApplicationRecord
 
   validates :cluster_agents, json_schema: { filename: 'application_setting_cluster_agents' }
 
+  jsonb_accessor :database_reindexing,
+    reindexing_minimum_index_size: [::Gitlab::Database::Type::JsonbInteger.new, { default: 1.gigabyte }],
+    reindexing_minimum_relative_bloat_size: [:float, { default: 0.2 }]
+
+  validates :database_reindexing, json_schema: { filename: "application_setting_database_reindexing" }
+
   attr_encrypted :external_auth_client_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_auth_client_key_pass, encryption_options_base_32_aes_256_gcm
   attr_encrypted :lets_encrypt_private_key, encryption_options_base_32_aes_256_gcm

@@ -32,6 +32,8 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import notesEventHub from '~/notes/event_hub';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
@@ -103,6 +105,10 @@ describe('DiffFile', () => {
   const changeViewerType = (newType, index = 0) =>
     changeViewer(index, { name: diffViewerModes[newType] });
 
+  const authenticate = () => {
+    useNotes().userData = { id: 1 };
+  };
+
   function forceHasDiff({ index = 0, inlineLines, parallelLines, expandable }) {
     useLegacyDiffs().diffFiles[index] = {
       ...useLegacyDiffs().diffFiles[index],
@@ -123,7 +129,6 @@ describe('DiffFile', () => {
   }
 
   function createComponent({
-    file = getReadableFile(),
     first = false,
     last = false,
     options = {},
@@ -134,7 +139,6 @@ describe('DiffFile', () => {
 
     notes.getters = {
       ...notes.getters,
-      isLoggedIn: () => false,
       ...getters.notes,
     };
 
@@ -142,15 +146,11 @@ describe('DiffFile', () => {
       ...notes,
     });
 
-    useLegacyDiffs().diffFiles = [file];
-    useLegacyDiffs().loadCollapsedDiff.mockResolvedValue();
-    useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
-
     wrapper = shallowMountExtended(DiffFileComponent, {
       store,
       pinia,
       propsData: {
-        file,
+        file: useLegacyDiffs().diffFiles[0],
         canCurrentUserFork: false,
         viewDiffsFileByFile: false,
         isFirstFile: first,
@@ -165,8 +165,12 @@ describe('DiffFile', () => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     // eslint-disable-next-line prefer-destructuring
     useLegacyDiffs().mergeRequestDiff = diffsMockData[0];
+    useLegacyDiffs().diffFiles = [getReadableFile()];
+    useLegacyDiffs().loadCollapsedDiff.mockResolvedValue();
+    useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
+    useNotes();
+    useMrNotes();
     axiosMock = new MockAdapter(axios);
-    createComponent();
   });
 
   afterEach(() => {
@@ -216,7 +220,6 @@ describe('DiffFile', () => {
           }
 
           createComponent({
-            file: useLegacyDiffs().diffFiles[0],
             first,
             last,
           });
@@ -252,7 +255,6 @@ describe('DiffFile', () => {
         jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
         forceHasDiff({ inlineLines: [], parallelLines: [], expandable: true });
         createComponent({
-          file: useLegacyDiffs().diffFiles[0],
           first: true,
           last: true,
         });
@@ -315,6 +317,7 @@ describe('DiffFile', () => {
 
   describe('template', () => {
     it('should render component with file header, file content components', async () => {
+      createComponent();
       const el = wrapper.vm.$el;
       const { file_hash } = wrapper.vm.file;
 
@@ -357,6 +360,7 @@ describe('DiffFile', () => {
   describe('collapsing', () => {
     describe('forced open', () => {
       it('should have content even when it is automatically collapsed', () => {
+        createComponent();
         makeFileAutomaticallyCollapsed();
 
         expect(findDiffContentArea(wrapper).element.children.length).toBe(1);
@@ -364,6 +368,7 @@ describe('DiffFile', () => {
       });
 
       it('should have content even when it is manually collapsed', () => {
+        createComponent();
         makeFileManuallyCollapsed();
 
         expect(findDiffContentArea(wrapper).element.children.length).toBe(1);
@@ -372,26 +377,24 @@ describe('DiffFile', () => {
     });
 
     describe(`\`${EVT_EXPAND_ALL_FILES}\` event`, () => {
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'handleToggle').mockImplementation(() => {});
-      });
-
       it('performs the normal file toggle when the file is collapsed', async () => {
+        createComponent();
         makeFileAutomaticallyCollapsed();
 
         await nextTick();
 
         eventHub.$emit(EVT_EXPAND_ALL_FILES);
 
-        expect(wrapper.vm.handleToggle).toHaveBeenCalledTimes(1);
+        expect(useLegacyDiffs().setFileCollapsedByUser).toHaveBeenCalledTimes(1);
       });
 
       it('does nothing when the file is not collapsed', async () => {
+        createComponent();
         eventHub.$emit(EVT_EXPAND_ALL_FILES);
 
         await nextTick();
 
-        expect(wrapper.vm.handleToggle).not.toHaveBeenCalled();
+        expect(useLegacyDiffs().setFileCollapsedByUser).not.toHaveBeenCalled();
       });
     });
 
@@ -401,12 +404,14 @@ describe('DiffFile', () => {
       });
 
       it('should not have any content at all', async () => {
+        createComponent();
         await nextTick();
 
         expect(findDiffContentArea(wrapper).element.children.length).toBe(0);
       });
 
       it('should not have the class `has-body` to present the header differently', () => {
+        createComponent();
         expect(wrapper.classes('has-body')).toBe(false);
       });
     });
@@ -417,6 +422,7 @@ describe('DiffFile', () => {
       });
 
       it('should show the collapsed file warning with expansion button', () => {
+        createComponent();
         expect(findDiffContentArea(wrapper).html()).toContain(
           'Files with large changes are collapsed by default.',
         );
@@ -424,6 +430,7 @@ describe('DiffFile', () => {
       });
 
       it('should style the component so that it `.has-body` for layout purposes', () => {
+        createComponent();
         expect(wrapper.classes('has-body')).toBe(true);
       });
     });
@@ -438,6 +445,7 @@ describe('DiffFile', () => {
       });
 
       it('should show the generated file warning with expansion button', () => {
+        createComponent();
         const messageComponent = findDiffContentArea(wrapper).findComponent(GlSprintf);
 
         expect(messageComponent.attributes('message')).toBe(
@@ -454,16 +462,19 @@ describe('DiffFile', () => {
       });
 
       it('should have the file content', () => {
+        createComponent();
         expect(wrapper.findComponent(DiffContentComponent).exists()).toBe(true);
       });
 
       it('should style the component so that it `.has-body` for layout purposes', () => {
+        createComponent();
         expect(wrapper.classes('has-body')).toBe(true);
       });
     });
 
     describe('toggle', () => {
       it('should update store state', () => {
+        createComponent();
         jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
 
         toggleFile(wrapper);
@@ -481,6 +492,7 @@ describe('DiffFile', () => {
         });
 
         it("scrolls to the top when the file is open, the users initiates the collapse, and there's a content block to scroll to", async () => {
+          createComponent();
           makeFileOpenByDefault();
           await nextTick();
 
@@ -490,6 +502,7 @@ describe('DiffFile', () => {
         });
 
         it('does not scroll when the content block is missing', async () => {
+          createComponent();
           makeFileOpenByDefault();
           await nextTick();
           findDiffContentArea(wrapper).element.remove();
@@ -500,6 +513,7 @@ describe('DiffFile', () => {
         });
 
         it("does not scroll if the user doesn't initiate the file collapse", async () => {
+          createComponent();
           makeFileOpenByDefault();
           await nextTick();
 
@@ -509,6 +523,7 @@ describe('DiffFile', () => {
         });
 
         it('does not scroll if the file is already collapsed', async () => {
+          createComponent();
           makeFileManuallyCollapsed();
           await nextTick();
 
@@ -547,6 +562,7 @@ describe('DiffFile', () => {
         `(
           'does not make a request to fetch the diff for a diff file like { inline: $inlineLines, parallel: $parallelLines, expandable: $expandable }',
           async ({ inlineLines, parallelLines, expandable }) => {
+            createComponent();
             await prepFile(inlineLines, parallelLines, expandable);
 
             expect(useLegacyDiffs().loadCollapsedDiff).not.toHaveBeenCalled();
@@ -559,6 +575,7 @@ describe('DiffFile', () => {
         `(
           'makes a request to fetch the diff for a diff file like { inline: $inlineLines, parallel: $parallelLines, expandable: $expandable }',
           async ({ inlineLines, parallelLines, expandable }) => {
+            createComponent();
             await prepFile(inlineLines, parallelLines, expandable);
 
             expect(useLegacyDiffs().loadCollapsedDiff).toHaveBeenCalled();
@@ -569,6 +586,7 @@ describe('DiffFile', () => {
 
     describe('loading', () => {
       it('should have loading icon while loading a collapsed diffs', async () => {
+        createComponent();
         const { load_collapsed_diff_url } = useLegacyDiffs().diffFiles[0];
         axiosMock.onGet(load_collapsed_diff_url).reply(HTTP_STATUS_OK, getReadableFile());
         makeFileAutomaticallyCollapsed();
@@ -582,7 +600,8 @@ describe('DiffFile', () => {
 
     describe('general (other) collapsed', () => {
       it('should be expandable for unreadable files', async () => {
-        createComponent({ file: getUnreadableFile() });
+        useLegacyDiffs().diffFiles = [getUnreadableFile()];
+        createComponent();
         makeFileAutomaticallyCollapsed();
 
         await nextTick();
@@ -600,6 +619,7 @@ describe('DiffFile', () => {
       `(
         'should render the DiffContent component for files whose mode is $mode',
         async ({ mode }) => {
+          createComponent();
           makeFileOpenByDefault();
           markFileToBeRendered();
           changeViewerType(mode);
@@ -616,6 +636,7 @@ describe('DiffFile', () => {
 
   describe('too large diff', () => {
     it('should have too large warning and blob link', async () => {
+      createComponent();
       const file = useLegacyDiffs().diffFiles[0];
       const BLOB_LINK = '/file/view/path';
 
@@ -648,7 +669,8 @@ describe('DiffFile', () => {
         renderIt: true,
       };
 
-      createComponent({ file });
+      useLegacyDiffs().diffFiles = [file];
+      createComponent();
 
       expect(wrapper.findByTestId('conflictsAlert').exists()).toBe(false);
     });
@@ -660,7 +682,8 @@ describe('DiffFile', () => {
         renderIt: true,
       };
 
-      createComponent({ file });
+      useLegacyDiffs().diffFiles = [file];
+      createComponent();
 
       expect(wrapper.findByTestId('conflictsAlert').exists()).toBe(true);
     });
@@ -682,9 +705,8 @@ describe('DiffFile', () => {
           ...extraProps,
         };
 
-        createComponent({
-          file,
-        });
+        useLegacyDiffs().diffFiles = [file];
+        createComponent();
 
         expect(wrapper.findByTestId('file-discussions').exists()).toEqual(exists);
       },
@@ -702,9 +724,8 @@ describe('DiffFile', () => {
           hasCommentForm,
         };
 
-        createComponent({
-          file,
-        });
+        useLegacyDiffs().diffFiles = [file];
+        createComponent();
 
         expect(findNoteForm(wrapper).exists()).toEqual(exists);
       },
@@ -720,9 +741,8 @@ describe('DiffFile', () => {
         discussions,
       };
 
-      createComponent({
-        file,
-      });
+      useLegacyDiffs().diffFiles = [file];
+      createComponent();
 
       expect(wrapper.findByTestId('diff-file-discussions').exists()).toEqual(exists);
     });
@@ -733,9 +753,8 @@ describe('DiffFile', () => {
         discussions: [{ id: 1, position: { position_type: 'file' }, expandedOnDiff: false }],
       };
 
-      createComponent({
-        file,
-      });
+      useLegacyDiffs().diffFiles = [file];
+      createComponent();
 
       expect(wrapper.findByTestId('diff-file-discussions').exists()).toEqual(false);
     });
@@ -746,8 +765,9 @@ describe('DiffFile', () => {
         discussions: [{ id: 1, position: { position_type: 'file' }, expandedOnDiff: true }],
       };
 
+      authenticate();
+      useLegacyDiffs().diffFiles = [file];
       createComponent({
-        file,
         options: {
           data: () => ({
             noteableData: {
@@ -757,11 +777,6 @@ describe('DiffFile', () => {
               diff_head_sha: '123abc',
             },
           }),
-        },
-        getters: {
-          notes: {
-            isLoggedIn: () => true,
-          },
         },
       });
 
@@ -780,9 +795,8 @@ describe('DiffFile', () => {
         ],
       };
 
-      createComponent({
-        file,
-      });
+      useLegacyDiffs().diffFiles = [file];
+      createComponent();
 
       wrapper.findComponent(DiffFileDiscussionExpansion).vm.$emit('toggle');
 
@@ -800,8 +814,8 @@ describe('DiffFile', () => {
       const errorCallback = jest.fn();
 
       beforeEach(() => {
+        useLegacyDiffs().diffFiles = [file];
         createComponent({
-          file,
           options: { provide: { glFeatures: { commentOnFiles: true } } },
         });
       });
@@ -859,8 +873,8 @@ describe('DiffFile', () => {
       const errorCallback = jest.fn();
 
       beforeEach(async () => {
+        useLegacyDiffs().diffFiles = [file];
         createComponent({
-          file,
           options: { provide: { glFeatures: { commentOnFiles: true } } },
         });
 
@@ -881,30 +895,28 @@ describe('DiffFile', () => {
   });
 
   describe('comments on file', () => {
-    let commentForm;
-    let file;
-
     beforeEach(() => {
-      file = {
-        ...getReadableFile(),
-        id: 'file_id',
-        hasCommentForm: true,
-      };
-
-      createComponent({
-        file,
-        options: { provide: { glFeatures: { commentOnFiles: true } } },
-      });
-
-      commentForm = findNoteForm(wrapper);
+      useLegacyDiffs().diffFiles = [
+        {
+          ...getReadableFile(),
+          id: 'file_id',
+          hasCommentForm: true,
+        },
+      ];
     });
 
     it('assigns an empty string as the autosave key to the note form', () => {
-      expect(commentForm.props('autosaveKey')).toBe('');
+      createComponent({
+        options: { provide: { glFeatures: { commentOnFiles: true } } },
+      });
+      expect(findNoteForm(wrapper).props('autosaveKey')).toBe('');
     });
 
     it('clears the autosave value when the note-form emits `cancelForm`', async () => {
-      commentForm.vm.$emit('cancelForm');
+      createComponent({
+        options: { provide: { glFeatures: { commentOnFiles: true } } },
+      });
+      findNoteForm(wrapper).vm.$emit('cancelForm');
 
       await nextTick();
 
@@ -913,8 +925,8 @@ describe('DiffFile', () => {
 
     describe('when the user is logged in', () => {
       beforeEach(() => {
+        authenticate();
         createComponent({
-          file,
           options: {
             provide: { glFeatures: { commentOnFiles: true } },
             data: () => ({
@@ -926,22 +938,17 @@ describe('DiffFile', () => {
               },
             }),
           },
-          getters: {
-            notes: {
-              isLoggedIn: () => true,
-            },
-          },
         });
-
-        commentForm = findNoteForm(wrapper);
       });
 
       it('assigns the correct value as the autosave key to the note form', () => {
-        expect(commentForm.props('autosaveKey')).toBe('Autosave|Note/File/1/123abc/file/file_id');
+        expect(findNoteForm(wrapper).props('autosaveKey')).toBe(
+          'Autosave|Note/File/1/123abc/file/file_id',
+        );
       });
 
       it('clears the autosaved value with the correct key', async () => {
-        commentForm.vm.$emit('cancelForm');
+        findNoteForm(wrapper).vm.$emit('cancelForm');
 
         await nextTick();
 

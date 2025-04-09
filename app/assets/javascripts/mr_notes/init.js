@@ -29,7 +29,7 @@ function setupMrNotesState(notesDataset, diffsDataset = {}) {
   store.dispatch('setNoteableData', noteableData);
   store.dispatch('setUserData', currentUserData);
   store.dispatch('setTargetNoteHash', getLocationHash());
-  store.dispatch('setEndpoints', endpoints);
+  useMrNotes(pinia).setEndpoints(endpoints);
   store.dispatch('diffs/setBaseConfig', {
     endpoint: diffsDataset.endpoint,
     endpointMetadata: diffsDataset.endpointMetadata,
@@ -54,35 +54,34 @@ export function initMrStateLazyLoad() {
   useNotes(pinia);
   useLegacyDiffs(pinia);
   useBatchComments(pinia).$patch({ isMergeRequest: true });
-  useMrNotes(pinia);
+  useMrNotes(pinia).setActiveTab(window.mrTabs.getCurrentAction());
 
-  store.dispatch('setActiveTab', window.mrTabs.getCurrentAction());
-  window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) =>
-    store.dispatch('setActiveTab', value),
-  );
+  let pageInitialized = false;
+  const initPage = () => {
+    if (pageInitialized) return;
+
+    // prevent loading MR state on commits and pipelines pages
+    // this is due to them having a shared controller with the Overview page
+    if (['diffs', 'show'].includes(useMrNotes(pinia).activeTab)) {
+      eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
+
+      requestIdleCallback(() => {
+        initReviewBar();
+        initOverviewTabCounter();
+        initDiscussionCounter();
+      });
+      pageInitialized = true;
+    }
+  };
+
+  window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) => {
+    useMrNotes(pinia).setActiveTab(value);
+    initPage();
+  });
 
   const discussionsEl = document.getElementById('js-vue-mr-discussions');
   const diffsEl = document.getElementById('js-diffs-app');
 
-  let stop = () => {};
-  stop = store.watch(
-    (state) => state.page.activeTab,
-    (activeTab) => {
-      setupMrNotesState(discussionsEl.dataset, diffsEl?.dataset);
-
-      // prevent loading MR state on commits and pipelines pages
-      // this is due to them having a shared controller with the Overview page
-      if (['diffs', 'show'].includes(activeTab)) {
-        eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
-
-        requestIdleCallback(() => {
-          initReviewBar();
-          initOverviewTabCounter();
-          initDiscussionCounter();
-        });
-        stop();
-      }
-    },
-    { immediate: true },
-  );
+  setupMrNotesState(discussionsEl.dataset, diffsEl?.dataset);
+  initPage();
 }

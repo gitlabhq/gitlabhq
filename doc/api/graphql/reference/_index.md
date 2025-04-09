@@ -169,6 +169,21 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="queryadminmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
+### `Query.aiChatContextPresets`
+
+Get available GitLab Duo Chat context presets for the current user for a specific URL.
+
+Returns [`ContextPreset`](#contextpreset).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaichatcontextpresetsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
+| <a id="queryaichatcontextpresetsquestioncount"></a>`questionCount` | [`Int`](#int) | Number of questions for the default screen. |
+| <a id="queryaichatcontextpresetsresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource from the current page. |
+| <a id="queryaichatcontextpresetsurl"></a>`url` | [`String`](#string) | URL of the page the user is currently on. |
+
 ### `Query.aiConversationThreads`
 
 List conversation threads of AI features.
@@ -260,7 +275,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiSlashCommands`
 
-Get available Duo Chat slash commands for the current user for a specific URL.
+Get available GitLab Duo Chat slash commands for the current user for a specific URL.
 
 Returns [`[SlashCommand!]`](#slashcommand).
 
@@ -23938,6 +23953,16 @@ A tag expiration policy using regex patterns to control which images to keep or 
 | <a id="containertagsexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older than the given age will expire. |
 | <a id="containertagsexpirationpolicyupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the container expiration policy was updated. |
 
+### `ContextPreset`
+
+Presets for GitLab Duo Chat window based on current context.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="contextpresetquestions"></a>`questions` | [`[String!]`](#string) | Array of questions that the user can ask GitLab Duo Chat from the current page. |
+
 ### `ContributionAnalyticsContribution`
 
 Represents the contributions of a user.
@@ -44945,6 +44970,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumplanner_role_callout"></a>`PLANNER_ROLE_CALLOUT` | Callout feature name for planner_role_callout. |
 | <a id="usercalloutfeaturenameenumpreview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
 | <a id="usercalloutfeaturenameenumproduct_analytics_dashboard_feedback"></a>`PRODUCT_ANALYTICS_DASHBOARD_FEEDBACK` | Callout feature name for product_analytics_dashboard_feedback. |
+| <a id="usercalloutfeaturenameenumproduct_usage_data_collection_changes"></a>`PRODUCT_USAGE_DATA_COLLECTION_CHANGES` | Callout feature name for product_usage_data_collection_changes. |
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumproject_quality_summary_feedback"></a>`PROJECT_QUALITY_SUMMARY_FEEDBACK` | Callout feature name for project_quality_summary_feedback. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |

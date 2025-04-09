@@ -104,6 +104,7 @@ title: Application Settings analysis
 | `database_grafana_api_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `database_grafana_tag` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `database_max_running_batched_background_migrations` | `false` | `integer` | `` | `true` | `2` | `true` | `true`| `false` |
+| `database_reindexing` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `deactivate_dormant_users` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `deactivate_dormant_users_period` | `false` | `integer` | `integer` | `true` | `90` | `false` | `false`| `true` |
 | `deactivation_email_additional_text` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |

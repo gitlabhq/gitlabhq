@@ -91,7 +91,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
           'session_expire_from_init' => false
-        }
+        },
+        reindexing_minimum_index_size: 1.gigabyte,
+        reindexing_minimum_relative_bloat_size: 0.2
       )
     end
   end
@@ -2028,5 +2030,22 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   it_behaves_like 'TokenAuthenticatable' do
     let(:token_field) { :runners_registration_token }
+  end
+
+  describe '#database_reindexing' do
+    let(:reindexing_settings) do
+      {
+        reindexing_minimum_index_size: 1.gigabyte,
+        reindexing_minimum_relative_bloat_size: 0.2
+      }
+    end
+
+    # valid json
+    it { is_expected.to allow_value({}).for(:database_reindexing) }
+    it { is_expected.to allow_value(reindexing_settings).for(:database_reindexing) }
+
+    # invalid json
+    it { is_expected.not_to allow_value({ reindexing_minimum_index_size: "3" }).for(:database_reindexing) }
+    it { is_expected.not_to allow_value({ reindexing_minimum_relative_bloat_size: true }).for(:database_reindexing) }
   end
 end

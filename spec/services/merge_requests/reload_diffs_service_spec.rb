@@ -52,6 +52,26 @@ RSpec.describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_
       end
     end
 
+    context 'when the number of diff commits reaches the limit' do
+      before do
+        stub_const('MergeRequest::DIFF_COMMITS_LIMIT', 1)
+      end
+
+      it 'does not create a new diff' do
+        expect { subject.execute }.not_to change { merge_request.merge_request_diffs.count }
+      end
+
+      context 'when "merge_requests_diff_commits_limit" feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_requests_diff_commits_limit: false)
+        end
+
+        it 'creates new merge request diff' do
+          expect { subject.execute }.to change { merge_request.merge_request_diffs.count }.by(1)
+        end
+      end
+    end
+
     context 'cache clearing' do
       it 'clears the cache for older diffs on the merge request' do
         expect_next_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff) do |instance|

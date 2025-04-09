@@ -524,7 +524,7 @@ In addition to the wildcard domains, you can also have the option to configure
 GitLab Pages to work with custom domains. Again, there are two options here:
 support custom domains with and without TLS certificates. The easiest setup is
 that without TLS certificates. In either case, you need a **secondary IP**. If
-you have IPv6 as well as IPv4 addresses, you can use them both.
+you have IPv6 and IPv4 addresses, you can use them both.
 
 ### Custom domains
 
@@ -534,7 +534,7 @@ Prerequisites:
 - Secondary IP
 
 In that case, the Pages daemon is running, NGINX still proxies requests to
-the daemon but the daemon is also able to receive requests from the outside
+the daemon but the daemon can receive requests from the outside
 world. Custom domains are supported, but no TLS.
 
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
@@ -693,6 +693,11 @@ this:
 
 #### Disable public access to all Pages sites
 
+Prerequisites:
+
+- You must have administrator access to the instance.
+- You must enable [Access Control](#access-control) first for the setting to show in the **Admin** area.
+
 You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
 on your GitLab instance. By doing so, only authenticated users have access to them.
 This setting overrides Access Control set by users in individual projects.
@@ -706,12 +711,6 @@ To do that:
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-You must enable [Access Control](#access-control) first for the setting to show in the **Admin** area.
-
-{{< /alert >}}
 
 ### Running behind a proxy
 
@@ -1341,7 +1340,7 @@ HTTP request-based rate limits are enforced using the following:
 
 - `rate_limit_source_ip`: Sets the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
 - `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
-  For example, when you load a web page that loads a number of resources at the same time.
+  For example, when you load a web page that loads multiple resources at the same time.
 - `rate_limit_domain`: Sets the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
 - `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 

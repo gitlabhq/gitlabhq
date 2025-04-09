@@ -3,6 +3,7 @@
 
 = render_two_factor_auth_recovery_settings_check
 = render_dashboard_ultimate_trial(current_user)
+= render_product_usage_data_collection_changes(current_user)
 
 - if current_user.todos.any?
   = render ::Layouts::PageHeadingComponent.new(_('To-Do List'))

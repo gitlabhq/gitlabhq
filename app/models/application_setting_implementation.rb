@@ -323,7 +323,9 @@ module ApplicationSettingImplementation
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
         ropc_without_client_credentials: true,
-        vscode_extension_marketplace_enabled: false
+        vscode_extension_marketplace_enabled: false,
+        reindexing_minimum_index_size: 1.gigabyte,
+        reindexing_minimum_relative_bloat_size: 0.2
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

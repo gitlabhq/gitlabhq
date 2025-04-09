@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Configure database reindexing settings.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "reindexing_minimum_index_size": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 1073741824,
+      "description": "Minimum size threshold in bytes for indexes to be considered for reindexing."
+    },
+    "reindexing_minimum_relative_bloat_size": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 0.2,
+      "description": "Minimum relative bloat ratio (bloat estimate / total size) required for an index to be reindexed."
+    }
+  }
+}

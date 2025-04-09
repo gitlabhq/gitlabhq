@@ -15,6 +15,7 @@ import { commentLineOptions, formatLineRange } from '~/notes/components/multilin
 import NoteForm from '~/notes/components/note_form.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import {
   DIFF_NOTE_TYPE,
   INLINE_DIFF_LINES_KEY,
@@ -76,17 +77,12 @@ export default {
       'getDiffFileByHash',
       'diffLines',
     ]),
+    ...mapState(useMrNotes, ['isLoggedIn']),
     ...mapVuexState({
       noteableData: ({ notes }) => notes.noteableData,
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
     }),
-    ...mapVuexGetters([
-      'isLoggedIn',
-      'noteableType',
-      'getNoteableData',
-      'getNotesDataByProp',
-      'getUserData',
-    ]),
+    ...mapVuexGetters(['noteableType', 'getNoteableData', 'getNotesDataByProp', 'getUserData']),
     author() {
       return this.getUserData;
     },

@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
 import { pinia } from '~/pinia/instance';
 import notesEventHub from '~/notes/event_hub';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import discussionNavigator from '../notes/components/discussion_navigator.vue';
 import NotesApp from '../notes/components/notes_app.vue';
 import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
@@ -64,10 +65,8 @@ export default () => {
       };
     },
     computed: {
-      ...mapGetters(['isNotesFetched']),
-      ...mapState({
-        activeTab: (state) => state.page.activeTab,
-      }),
+      ...mapVuexGetters(['isNotesFetched']),
+      ...mapState(useMrNotes, ['activeTab']),
       isShowTabActive() {
         return this.activeTab === 'show';
       },
@@ -92,7 +91,7 @@ export default () => {
       this.fetchMrMetadata();
     },
     methods: {
-      ...mapActions(['setEndpoints', 'fetchMrMetadata']),
+      ...mapActions(useMrNotes, ['setEndpoints', 'fetchMrMetadata']),
     },
     render(createElement) {
       // NOTE: Even though `discussionNavigator` is added to the `notes-app`,

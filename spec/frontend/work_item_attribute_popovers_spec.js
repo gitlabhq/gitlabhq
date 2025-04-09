@@ -1,10 +1,10 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { handleIssuablePopoverMount } from 'ee_else_ce/issuable/popover';
+import { handleIssuablePopoverMount } from '~/issuable/popover';
 
 import initWorkItemAttributePopovers from '~/work_item_attribute_popovers';
 
 jest.mock('~/lib/graphql');
-jest.mock('ee_else_ce/issuable/popover');
+jest.mock('~/issuable/popover');
 
 describe('Work Item Attribute Popovers', () => {
   const triggerEvent = (eventName, el, target) => {

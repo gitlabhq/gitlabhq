@@ -22,6 +22,7 @@ import NoteForm from '~/notes/components/note_form.vue';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -134,7 +135,8 @@ export default {
       'isVirtualScrollingEnabled',
       'linkedFile',
     ]),
-    ...mapVuexGetters(['isLoggedIn', 'isNotesFetched', 'getNoteableData', 'noteableType']),
+    ...mapState(useMrNotes, ['isLoggedIn']),
+    ...mapVuexGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
     autosaveKey() {
       if (!this.isLoggedIn) return '';
 

@@ -1,6 +1,8 @@
 - page_title _("Groups")
 
 = render_dashboard_ultimate_trial(current_user)
+= render_product_usage_data_collection_changes(current_user)
+
 - if Feature.enabled?(:your_work_groups_vue, current_user)
   = render 'dashboard/groups_head'
   #js-your-work-groups-app{ data: { app_data: groups_list_with_filtered_search_app_data(dashboard_groups_path(format: :json)) } }

@@ -6,62 +6,30 @@ import {
   STATUS_LOCKED,
   STATUS_MERGED,
   STATUS_OPEN,
-  TYPE_EPIC,
-  TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
 } from '~/issues/constants';
+import { STATE_CLOSED } from '~/work_items/constants';
 
-const badgePropertiesMap = {
-  [TYPE_EPIC]: {
-    [STATUS_OPEN]: {
-      icon: 'issue-open-m',
-      text: __('Open'),
-      variant: 'success',
-    },
-    [STATUS_CLOSED]: {
-      icon: 'issue-close',
-      text: __('Closed'),
-      variant: 'info',
-    },
+const mergeRequestPropertiesMap = {
+  [STATUS_OPEN]: {
+    icon: 'merge-request',
+    text: __('Open'),
+    variant: 'success',
   },
-  [TYPE_ISSUE]: {
-    [STATUS_OPEN]: {
-      icon: 'issue-open-m',
-      text: __('Open'),
-      variant: 'success',
-    },
-    [STATUS_CLOSED]: {
-      icon: 'issue-close',
-      text: __('Closed'),
-      variant: 'info',
-    },
-    [STATUS_LOCKED]: {
-      icon: 'issue-open-m',
-      text: __('Open'),
-      variant: 'success',
-    },
+  [STATUS_CLOSED]: {
+    icon: 'merge-request-close',
+    text: __('Closed'),
+    variant: 'danger',
   },
-  [TYPE_MERGE_REQUEST]: {
-    [STATUS_OPEN]: {
-      icon: 'merge-request',
-      text: __('Open'),
-      variant: 'success',
-    },
-    [STATUS_CLOSED]: {
-      icon: 'merge-request-close',
-      text: __('Closed'),
-      variant: 'danger',
-    },
-    [STATUS_MERGED]: {
-      icon: 'merge',
-      text: __('Merged'),
-      variant: 'info',
-    },
-    [STATUS_LOCKED]: {
-      icon: 'merge-request',
-      text: __('Open'),
-      variant: 'success',
-    },
+  [STATUS_MERGED]: {
+    icon: 'merge',
+    text: __('Merged'),
+    variant: 'info',
+  },
+  [STATUS_LOCKED]: {
+    icon: 'merge-request',
+    text: __('Open'),
+    variant: 'success',
   },
 };
 
@@ -83,7 +51,23 @@ export default {
   },
   computed: {
     badgeProperties() {
-      return badgePropertiesMap[this.issuableType][this.state];
+      if (this.issuableType === TYPE_MERGE_REQUEST) {
+        return mergeRequestPropertiesMap[this.state];
+      }
+
+      if (this.state === STATUS_CLOSED || this.state === STATE_CLOSED) {
+        return {
+          icon: 'issue-close',
+          text: __('Closed'),
+          variant: 'info',
+        };
+      }
+
+      return {
+        icon: 'issue-open-m',
+        text: __('Open'),
+        variant: 'success',
+      };
     },
   },
 };

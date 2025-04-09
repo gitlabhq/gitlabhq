@@ -4,6 +4,7 @@ import dateFormat from '~/lib/dateformat';
 import {
   getDayDifference,
   getTimeago,
+  humanTimeframe,
   localeDateFormat,
   newDate,
 } from '~/lib/utils/datetime_utility';
@@ -25,6 +26,11 @@ export default {
       type: String,
       required: true,
     },
+    startDate: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     cssClass: {
       type: String,
       required: false,
@@ -39,32 +45,28 @@ export default {
   computed: {
     title() {
       const timeago = getTimeago();
-      const { timeDifference, standardDateFormat } = this;
-      const formattedDate = standardDateFormat;
 
-      if (timeDifference >= -1 && timeDifference < 7) {
-        return `${timeago.format(this.issueDueDate)} (${formattedDate})`;
+      if (this.timeDifference >= -1 && this.timeDifference < 7) {
+        return `${timeago.format(this.issueDueDate)} (${this.standardDateFormat})`;
       }
 
       return timeago.format(this.issueDueDate);
     },
     body() {
-      const { timeDifference, issueDueDate, standardDateFormat } = this;
-
-      if (timeDifference === 0) {
+      if (this.timeDifference === 0) {
         return __('Today');
       }
-      if (timeDifference === 1) {
+      if (this.timeDifference === 1) {
         return __('Tomorrow');
       }
-      if (timeDifference === -1) {
+      if (this.timeDifference === -1) {
         return __('Yesterday');
       }
-      if (timeDifference > 0 && timeDifference < 7) {
-        return dateFormat(issueDueDate, 'dddd');
+      if (this.timeDifference > 0 && this.timeDifference < 7) {
+        return dateFormat(this.issueDueDate, 'dddd');
       }
 
-      return standardDateFormat;
+      return this.standardDateFormat;
     },
     iconName() {
       return this.isOverdue ? 'calendar-overdue' : 'calendar';
@@ -77,10 +79,13 @@ export default {
       return getDayDifference(today, this.issueDueDate);
     },
     isOverdue() {
-      if (this.timeDifference >= 0 || this.closed) return false;
-      return true;
+      return !this.closed && this.timeDifference < 0;
     },
     standardDateFormat() {
+      if (this.startDate) {
+        return humanTimeframe(newDate(this.startDate), this.issueDueDate);
+      }
+
       const today = new Date();
       return today.getFullYear() === this.issueDueDate.getFullYear()
         ? localeDateFormat.asDateWithoutYear.format(this.issueDueDate)

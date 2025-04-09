@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlIntersperse } from '@gitlab/ui';
-import initIssuablePopovers from 'ee_else_ce/issuable/popover';
+import initIssuablePopovers from '~/issuable/popover';
 import { extractGroupOrProject } from '../../utils/common';
 
 const types = {

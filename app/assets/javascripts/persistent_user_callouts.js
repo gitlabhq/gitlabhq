@@ -33,6 +33,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.gcp-signup-offer',
   '.js-gold-trial-callout',
   '.js-namespace-user-cap-reached-alert',
+  '.js-data-collection-callout',
 ];
 
 const initCallouts = () => {

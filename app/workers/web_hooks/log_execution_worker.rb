@@ -4,7 +4,7 @@ module WebHooks
   class LogExecutionWorker
     include ApplicationWorker
 
-    data_consistency :delayed, feature_flag: :load_balancing_for_web_hooks_log_execution_worker
+    data_consistency :delayed
     feature_category :webhooks
     urgency :low
     sidekiq_options retry: 3

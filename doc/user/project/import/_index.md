@@ -138,6 +138,12 @@ all contributions display as associated with placeholders.
 For the behavior associated with subsequent imports to the same top-level group,
 see [placeholder user limits](#placeholder-user-limits).
 
+{{< alert type="note" >}}
+
+Ghost user contributions are handled differently. Contributions previously made by the ghost user (deleted user) on the source instance will automatically be mapped to the ghost user on the destination instance without creating placeholder users.
+
+{{< /alert >}}
+
 After the import has completed, you can:
 
 - Reassign memberships and contributions to existing users on the destination instance

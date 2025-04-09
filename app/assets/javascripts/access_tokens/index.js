@@ -31,7 +31,11 @@ export const initAccessTokenTableApp = () => {
   // Default values
   const noActiveTokensMessage =
     noTokensMessage ||
-    sprintf(__('This user has no active %{accessTokenTypePlural}.'), { accessTokenTypePlural });
+    sprintf(
+      __('This user has no active %{accessTokenTypePlural}.'),
+      { accessTokenTypePlural },
+      false,
+    );
   const showRole = 'showRole' in el.dataset;
 
   const initialActiveAccessTokens = JSON.parse(initialActiveAccessTokensJson);

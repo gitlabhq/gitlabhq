@@ -1,0 +1,10 @@
+- callout = Users::CalloutsHelper::PRODUCT_USAGE_DATA_COLLECTION_CHANGES
+- documentation_link = link_to '', help_page_path('administration/settings/event_data.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'click_link', track_label: 'documentation', track_property: 'product_usage_data_collection_banner' }
+
+= render Pajamas::BannerComponent.new(svg_path: 'illustrations/gitlab_logo.svg', banner_options: { class: 'gl-mt-6 js-data-collection-callout', data: { track_action: 'render', track_label: 'product_usage_data_collection_banner', uid: 'product_usage_data_collection_dismissed', feature_id: callout, dismiss_endpoint: callouts_path, testid: 'product-usage-data-collection-banner' } }, close_options: { class: 'js-close', data: { track_action: 'dismiss_banner', track_label: 'product_usage_data_collection_banner' }, 'aria-label': s_('ProductUsageData|Dismiss product usage data collection notice') }) do |c|
+  - c.with_title do
+    = s_('ProductUsageData|Review data collection changes coming in GitLab 18.0')
+  - c.with_primary_action do
+    = nil
+  %p
+    = safe_format(s_('ProductUsageData|Starting with 18.0, GitLab will collect event-level product usage data from Self-Managed and Dedicated instances — while ensuring privacy, transparency, and customer control. GitLab administrators can turn off the data collection toggle before any data is collected in version 18.0. For more information about this change and how you can opt out, see the %{link_start}documentation%{link_end}'), tag_pair(documentation_link, :link_start, :link_end))

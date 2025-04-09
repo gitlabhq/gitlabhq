@@ -4,12 +4,17 @@ import query from 'ee_else_ce/issuable/popover/queries/issue.query.graphql';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
-import { STATUS_CLOSED, TYPE_ISSUE } from '~/issues/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import {
+  findMilestoneWidget,
+  findStartAndDueDateWidget,
+  findWeightWidget,
+} from '~/work_items/utils';
+import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 
 export default {
-  TYPE_ISSUE,
   components: {
     GlIcon,
     GlPopover,
@@ -44,35 +49,47 @@ export default {
   },
   data() {
     return {
-      issue: {},
+      workItem: {},
     };
+  },
+  apollo: {
+    workItem: {
+      query,
+      variables() {
+        return {
+          fullPath: this.namespacePath,
+          iid: this.iid,
+        };
+      },
+      update: (data) => data.namespace?.workItem || {},
+    },
   },
   computed: {
     formattedTime() {
-      return this.timeFormatted(this.issue.createdAt);
-    },
-    title() {
-      return this.issue?.title || this.cachedTitle;
-    },
-    showDetails() {
-      return Object.keys(this.issue).length > 0;
+      return this.timeFormatted(this.workItem.createdAt);
     },
     isIssueClosed() {
-      return this.issue?.state === STATUS_CLOSED;
+      return this.workItem.state === STATUS_CLOSED;
     },
-  },
-  apollo: {
-    issue: {
-      query,
-      update: (data) => data.project?.issue || {},
-      variables() {
-        const { namespacePath, iid } = this;
-
-        return {
-          projectPath: namespacePath,
-          iid,
-        };
-      },
+    reference() {
+      return this.type === WORK_ITEM_TYPE_NAME_EPIC
+        ? this.workItem.fullReference?.replaceAll('#', '&')
+        : this.workItem.fullReference;
+    },
+    title() {
+      return this.workItem.title || this.cachedTitle;
+    },
+    type() {
+      return this.workItem.workItemType?.name;
+    },
+    datesWidget() {
+      return findStartAndDueDateWidget(this.workItem) ?? {};
+    },
+    milestoneWidget() {
+      return findMilestoneWidget(this.workItem) ?? {};
+    },
+    weightWidget() {
+      return findWeightWidget(this.workItem) ?? {};
     },
   },
 };
@@ -80,46 +97,41 @@ export default {
 
 <template>
   <gl-popover :target="target" boundary="viewport" placement="top" show>
-    <gl-skeleton-loader v-if="$apollo.queries.issue.loading" :height="15">
+    <gl-skeleton-loader v-if="$apollo.queries.workItem.loading" :height="15">
       <rect width="250" height="15" rx="4" />
     </gl-skeleton-loader>
-    <div v-else-if="showDetails" class="gl-flex gl-items-center gl-gap-2">
-      <status-badge :issuable-type="$options.TYPE_ISSUE" :state="issue.state" />
-      <gl-icon
-        v-if="issue.confidential"
-        v-gl-tooltip
-        name="eye-slash"
-        :title="__('Confidential')"
-        :aria-label="__('Confidential')"
-        variant="warning"
-      />
-      <span class="gl-text-subtle">
-        {{ __('Opened') }} <time :datetime="issue.createdAt">{{ formattedTime }}</time>
-      </span>
-    </div>
-    <h5 v-if="!$apollo.queries.issue.loading" class="gl-my-3">{{ title }}</h5>
-    <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-    <div>
-      <work-item-type-icon v-if="!$apollo.queries.issue.loading" :work-item-type="issue.type" />
-      <span class="gl-text-subtle">{{ `${namespacePath}#${iid}` }}</span>
-    </div>
-    <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
-
-    <div v-if="!$apollo.queries.issue.loading" class="gl-mt-2 gl-flex gl-text-subtle">
-      <issue-due-date
-        v-if="issue.dueDate"
-        :date="issue.dueDate.toString()"
-        :closed="isIssueClosed"
-        tooltip-placement="top"
-        class="gl-mr-4"
-        css-class="gl-flex gl-whitespace-nowrap"
-      />
-      <issue-weight v-if="issue.weight" :weight="issue.weight" class="gl-mr-4 gl-flex" />
-      <issue-milestone
-        v-if="issue.milestone"
-        :milestone="issue.milestone"
-        class="gl-flex gl-overflow-hidden"
-      />
-    </div>
+    <template v-else>
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <status-badge :state="workItem.state" />
+        <gl-icon
+          v-if="workItem.confidential"
+          v-gl-tooltip
+          name="eye-slash"
+          :title="__('Confidential')"
+          variant="warning"
+          :aria-label="__('Confidential')"
+        />
+        <span class="gl-text-subtle">
+          {{ __('Opened') }} <time :datetime="workItem.createdAt">{{ formattedTime }}</time>
+        </span>
+      </div>
+      <div class="gl-heading-5 gl-my-3">{{ title }}</div>
+      <div>
+        <work-item-type-icon :work-item-type="type" />
+        <span class="gl-text-subtle">{{ reference }}</span>
+      </div>
+      <div class="gl-mt-2 gl-flex gl-text-subtle">
+        <issue-due-date
+          v-if="datesWidget.dueDate"
+          :closed="isIssueClosed"
+          css-class="gl-inline-flex"
+          :date="datesWidget.dueDate"
+          :start-date="datesWidget.startDate"
+          tooltip-placement="top"
+        />
+        <issue-weight v-if="weightWidget.weight" :weight="weightWidget.weight" />
+        <issue-milestone v-if="milestoneWidget.milestone" :milestone="milestoneWidget.milestone" />
+      </div>
+    </template>
   </gl-popover>
 </template>

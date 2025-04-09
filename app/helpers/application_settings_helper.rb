@@ -593,7 +593,9 @@ module ApplicationSettingsHelper
       :global_search_merge_requests_enabled,
       :global_search_block_anonymous_searches_enabled,
       :vscode_extension_marketplace,
-      :vscode_extension_marketplace_enabled
+      :vscode_extension_marketplace_enabled,
+      :reindexing_minimum_index_size,
+      :reindexing_minimum_relative_bloat_size
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

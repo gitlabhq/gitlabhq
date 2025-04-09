@@ -12,10 +12,12 @@ import StatusBadge from '~/issuable/components/status_badge.vue';
 import IssuePopover from '~/issuable/popover/components/issue_popover.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
-describe('Issue Popover', () => {
+describe('IssuePopover component', () => {
   let wrapper;
 
   Vue.use(VueApollo);
+
+  const { workItem } = issueQueryResponse.data.namespace;
 
   const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
@@ -52,10 +54,7 @@ describe('Issue Popover', () => {
     });
 
     it('shows status badge', () => {
-      expect(wrapper.findComponent(StatusBadge).props()).toEqual({
-        issuableType: 'issue',
-        state: issueQueryResponse.data.project.issue.state,
-      });
+      expect(wrapper.findComponent(StatusBadge).props('state')).toBe(workItem.state);
     });
 
     it('shows opened time', () => {
@@ -63,39 +62,31 @@ describe('Issue Popover', () => {
     });
 
     it('shows title', () => {
-      expect(wrapper.find('h5').text()).toBe(issueQueryResponse.data.project.issue.title);
+      expect(wrapper.find('.gl-heading-5').text()).toBe(workItem.title);
     });
 
     it('shows the work type icon', () => {
-      expect(findWorkItemIcon().props('workItemType')).toBe(
-        issueQueryResponse.data.project.issue.type,
-      );
+      expect(findWorkItemIcon().props('workItemType')).toBe(workItem.workItemType.name);
     });
 
     it('shows reference', () => {
-      expect(wrapper.text()).toContain('foo/bar#1');
+      expect(wrapper.text()).toContain(workItem.fullReference);
     });
 
     it('shows confidential icon', () => {
-      const icon = wrapper.findComponent(GlIcon);
-
-      expect(icon.exists()).toBe(true);
-      expect(icon.props('name')).toBe('eye-slash');
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe('eye-slash');
     });
 
     it('shows due date', () => {
-      const component = wrapper.findComponent(IssueDueDate);
-
-      expect(component.exists()).toBe(true);
-      expect(component.props('date')).toBe('2020-07-05');
-      expect(component.props('closed')).toBe(false);
+      expect(wrapper.findComponent(IssueDueDate).props()).toMatchObject({
+        startDate: '2020-07-03',
+        date: '2020-07-05',
+        closed: false,
+      });
     });
 
     it('shows milestone', () => {
-      const component = wrapper.findComponent(IssueMilestone);
-
-      expect(component.exists()).toBe(true);
-      expect(component.props('milestone')).toMatchObject({
+      expect(wrapper.findComponent(IssueMilestone).props('milestone')).toMatchObject({
         title: '15.2',
         startDate: '2020-07-01',
         dueDate: '2020-07-30',

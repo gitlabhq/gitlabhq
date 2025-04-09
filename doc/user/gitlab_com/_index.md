@@ -345,6 +345,25 @@ GitLab limits each merge request to 1000 [diff versions](../project/merge_reques
 Merge requests that reach this limit cannot be updated further. Instead,
 close the affected merge request and create a new merge request.
 
+### Diff commits limit
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527036) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `merge_requests_diff_commits_limit`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+GitLab limits each merge request to 1,000,000 (one million) [diff commits](../../development/merge_request_concepts/diffs/development.md#mergerequestdiffcommit).
+Merge requests that reach this limit cannot be updated further. Instead,
+close the affected merge request and create a new merge request.
+
 ## Password requirements
 
 GitLab.com sets these requirements for passwords on new accounts and password changes:
