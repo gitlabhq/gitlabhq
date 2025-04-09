@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.7 (2025-04-09)
+
+### Security (5 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/00f779daaff694529b5ae4d15011c6ed66ce8130) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4914))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/84a94c7a024ff295241bbf659812cd4a71bd2639) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4909))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/41e74002f076ce8af8d6ed1b7452f5b03c94f291) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4906))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1b887d7c7a826a696a2d459cbd7263b4d78d25c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4886))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c0202d64a770617d01884b47cac582867769c84b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4853))
+
+### Other (1 change)
+
+- [No-op ci_runner_machines_687967fa8a table backfill migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/547295b6cfb9da651208fbe64da67d236ff813de)
+
 ## 17.8.6 (2025-03-26)
 
 ### Fixed (1 change)
