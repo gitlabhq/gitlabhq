@@ -276,10 +276,11 @@ const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
     Object.values(filterObj).includes(urlParamKey),
   )[0];
 
-export const getFilterTokens = (locationSearch, includeStateToken = false) =>
+export const getFilterTokens = (locationSearch, options = {}) =>
   Array.from(new URLSearchParams(locationSearch).entries())
     .filter(
-      ([key]) => urlParamKeys.includes(key) && (includeStateToken || key !== TOKEN_TYPE_STATE),
+      ([key]) =>
+        urlParamKeys.includes(key) && (options.includeStateToken || key !== TOKEN_TYPE_STATE),
     )
     .map(([key, data]) => {
       const type = getTokenTypeFromUrlParamKey(key);

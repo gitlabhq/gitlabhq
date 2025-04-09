@@ -257,7 +257,7 @@ Example response:
 ]
 ```
 
-## List all visible events for a project
+## List a project's visible events
 
 Lists all visible events for a specified project.
 

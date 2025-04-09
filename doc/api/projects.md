@@ -1729,7 +1729,7 @@ Supported general project attributes:
 | `only_mirror_protected_branches`                   | boolean           | No       | Only mirror protected branches. Premium and Ultimate only. |
 | `packages_enabled`                                 | boolean           | No       | Enable or disable packages repository feature. |
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
-| `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Premium and Ultimate only. |
+| `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean           | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean           | No       | If `true`, jobs can be viewed by non-project members. |

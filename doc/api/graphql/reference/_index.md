@@ -22797,6 +22797,7 @@ CI/CD variables for a project.
 | <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of the runner. |
 | <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the runner. |
 | <a id="cirunnercreationmethod"></a>`creationMethod` {{< icon name="warning-solid" >}} | [`CiRunnerCreationMethod`](#cirunnercreationmethod) | **Introduced** in GitLab 17.0. **Status**: Experiment. Type of runner registration. |
+| <a id="cirunnercreationstate"></a>`creationState` {{< icon name="warning-solid" >}} | [`CiRunnerCreationState`](#cirunnercreationstate) | **Introduced** in GitLab 17.11. **Status**: Experiment. Runner creation state. Used to determine if a runner has been registered and has contacted the GitLab instance. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
 | <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
@@ -42179,6 +42180,13 @@ Runner cloud provider.
 | ----- | ----------- |
 | <a id="cirunnercreationmethodauthenticated_user"></a>`AUTHENTICATED_USER` | Applies to a runner that was created by an authenticated user. |
 | <a id="cirunnercreationmethodregistration_token"></a>`REGISTRATION_TOKEN` | Applies to a runner that was created by a runner registration token. |
+
+### `CiRunnerCreationState`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnercreationstatefinished"></a>`FINISHED` | Applies to a runner that has been registered and has polled for CI jobs at least once. |
+| <a id="cirunnercreationstatestarted"></a>`STARTED` | Applies to a runner that has been created, but not is not yet registered and running. |
 
 ### `CiRunnerJobExecutionStatus`
 

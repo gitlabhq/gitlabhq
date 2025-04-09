@@ -736,7 +736,9 @@ export default {
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      this.filterTokens = getFilterTokens(window.location.search, !this.withTabs);
+      this.filterTokens = getFilterTokens(window.location.search, {
+        includeStateToken: !this.withTabs,
+      });
       if (!this.hasStateToken && this.state === STATUS_ALL) {
         this.filterTokens = this.filterTokens.filter(
           (filterToken) => filterToken.type !== TOKEN_TYPE_STATE,

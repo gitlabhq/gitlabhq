@@ -249,6 +249,8 @@
   - 1
 - - compliance_management_chain_of_custody_report
   - 1
+- - compliance_management_compliance_framework_project_compliance_statuses_removal
+  - 1
 - - compliance_management_compliance_framework_project_requirement_statuses_export_mailer
   - 1
 - - compliance_management_framework_export_mailer

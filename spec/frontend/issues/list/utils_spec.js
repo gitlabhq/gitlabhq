@@ -24,7 +24,7 @@ import {
   getSortOptions,
   getTypeTokenOptions,
   groupMultiSelectFilterTokens,
-} from '~/issues/list/utils';
+} from 'ee_else_ce/issues/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -35,9 +35,9 @@ import {
 describe('getDefaultWorkItemTypes', () => {
   it('returns default work item types', () => {
     const types = getDefaultWorkItemTypes({
-      hasEpicsFeature: true,
-      hasOkrsFeature: true,
-      hasQualityManagementFeature: true,
+      hasEpicsFeature: false,
+      hasOkrsFeature: false,
+      hasQualityManagementFeature: false,
     });
 
     expect(types).toEqual([
@@ -51,9 +51,9 @@ describe('getDefaultWorkItemTypes', () => {
 describe('getTypeTokenOptions', () => {
   it('returns options for the Type token', () => {
     const options = getTypeTokenOptions({
-      hasEpicsFeature: true,
-      hasOkrsFeature: true,
-      hasQualityManagementFeature: true,
+      hasEpicsFeature: false,
+      hasOkrsFeature: false,
+      hasQualityManagementFeature: false,
     });
 
     expect(options).toEqual([

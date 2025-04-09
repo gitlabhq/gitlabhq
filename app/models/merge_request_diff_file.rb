@@ -8,7 +8,10 @@ class MergeRequestDiffFile < ApplicationRecord
   include DiffFile
 
   belongs_to :merge_request_diff, inverse_of: :merge_request_diff_files
+
   alias_attribute :index, :relative_order
+
+  before_validation :update_project_id
 
   scope :by_paths, ->(paths) do
     where("new_path in (?) OR old_path in (?)", paths, paths)
@@ -51,6 +54,12 @@ class MergeRequestDiffFile < ApplicationRecord
   end
 
   private
+
+  def update_project_id
+    return unless respond_to?(:project_id) && merge_request_diff
+
+    self.project_id = merge_request_diff&.project_id
+  end
 
   # This method is meant to be used during Project Export.
   # It is identical to the behavior in #diff with the only

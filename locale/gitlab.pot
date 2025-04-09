@@ -58480,6 +58480,9 @@ msgstr ""
 msgid "Successfully deleted WebAuthn device."
 msgstr ""
 
+msgid "Successfully deleted requirement statuses."
+msgstr ""
+
 msgid "Successfully linked ID(s): %{item_ids}."
 msgstr ""
 

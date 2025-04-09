@@ -183,6 +183,7 @@ export default {
     'hasAnyIssues',
     'hasAnyProjects',
     'hasBlockedIssuesFeature',
+    'hasCustomFieldsFeature',
     'hasIssuableHealthStatusFeature',
     'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
@@ -347,10 +348,14 @@ export default {
       return !this.isProject && this.hasAnyProjects;
     },
     apiFilterParams() {
-      return convertToApiParams(this.filterTokens);
+      return convertToApiParams(this.filterTokens, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
     },
     urlFilterParams() {
-      return convertToUrlParams(this.filterTokens);
+      return convertToUrlParams(this.filterTokens, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
@@ -859,7 +864,9 @@ export default {
         sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
-      const tokens = getFilterTokens(window.location.search);
+      const tokens = getFilterTokens(window.location.search, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
       this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
 
       if (this.apiFilterParams) {

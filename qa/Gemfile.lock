@@ -128,8 +128,8 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (2.8.0)
-      activesupport (>= 7.0, < 7.2)
+    gitlab_quality-test_tooling (2.9.0)
+      activesupport (>= 7.0, < 7.3)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
       gitlab (>= 4.19, < 6.0)
@@ -369,7 +369,7 @@ DEPENDENCIES
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.3.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 2.8.0)
+  gitlab_quality-test_tooling (~> 2.9.0)
   googleauth (~> 1.9.0)
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)
