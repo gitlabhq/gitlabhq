@@ -30,15 +30,16 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
               merge_request_diff: { source_project: nil },
               merge_request_test: nil
             }
-            } },
+          } },
           { commit_statuses: {
-              include: [{ commit: { include: [] } }],
-              preload: { commit: nil }
-            } },
+            include: [{ commit: { include: [] } }],
+            preload: { commit: nil }
+          } },
           { project_members: {
-              include: [{ user: { include: [],
-                                  only: [:email] } }],
-              preload: { user: nil }
+            include: [
+              { user: { include: [], only: [:email] } }
+            ],
+            preload: { user: nil }
           } }
         ],
         preload: {
@@ -122,10 +123,11 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
 
         is_expected.to match(
           include: [{ merge_requests: {
-                      include: [{ notes: { include: [{ author: { include: [] } }],
-                                           preload: { author: nil } } }],
-                      preload: { notes: { author: nil } }
-                    } }],
+            include: [
+              { notes: { include: [{ author: { include: [] } }], preload: { author: nil } } }
+            ],
+            preload: { notes: { author: nil } }
+          } }],
           preload: { merge_requests: { notes: { author: nil } } }
         )
       end

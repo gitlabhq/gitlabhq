@@ -12,7 +12,7 @@ module Ci
       def execute
         ##
         # Create a persistent ref for the pipeline.
-        # The pipeline ref is fetched in the jobs and deleted when the pipeline transitions to a finished state.
+        # The pipeline ref is created here and will be deleted when the pipeline transitions to a finished state.
         pipeline.ensure_persistent_ref
 
         Ci::UpdateBuildNamesWorker.perform_async(pipeline.id)

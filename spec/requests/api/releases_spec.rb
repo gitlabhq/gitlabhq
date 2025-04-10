@@ -875,9 +875,9 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     it 'creates a new release without description' do
       params = {
-          name: 'New release without description',
-          tag_name: 'v0.1',
-          released_at: '2019-03-25 10:00:00'
+        name: 'New release without description',
+        tag_name: 'v0.1',
+        released_at: '2019-03-25 10:00:00'
       }
 
       expect do

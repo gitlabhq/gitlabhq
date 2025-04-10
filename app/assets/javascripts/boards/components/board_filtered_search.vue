@@ -23,12 +23,14 @@ import {
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
 
+const customFieldRegex = /custom-field\[([0-9]+)\]/g;
+
 export default {
   i18n: {
     search: __('Search'),
   },
   components: { FilteredSearch },
-  inject: ['initialFilterParams'],
+  inject: ['initialFilterParams', 'hasCustomFieldsFeature'],
   props: {
     isSwimlanesOn: {
       type: Boolean,
@@ -73,8 +75,20 @@ export default {
         releaseTag,
         confidential,
         healthStatus,
+        ...otherValues
       } = this.filterParams;
       const filteredSearchValue = [];
+
+      if (this.hasCustomFieldsFeature) {
+        for (const [key, value] of Object.entries(otherValues)) {
+          if (key.match(customFieldRegex)) {
+            filteredSearchValue.push({
+              type: key,
+              value: { data: value, operator: '=' },
+            });
+          }
+        }
+      }
 
       if (authorUsername) {
         filteredSearchValue.push({
@@ -281,10 +295,20 @@ export default {
         releaseTag,
         confidential,
         healthStatus,
+        ...otherValues
       } = this.filterParams;
       let iteration = iterationId;
       let cadence = iterationCadenceId;
       let notParams = {};
+      const customFieldParams = {};
+
+      if (this.hasCustomFieldsFeature) {
+        Object.entries(otherValues).forEach(([key, value]) => {
+          if (key.match(customFieldRegex)) {
+            customFieldParams[key] = value;
+          }
+        });
+      }
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
         notParams = pickBy(
@@ -311,6 +335,7 @@ export default {
 
       return mapValues(
         {
+          ...customFieldParams,
           ...notParams,
           author_username: authorUsername,
           'label_name[]': labelName,
@@ -441,6 +466,9 @@ export default {
             filterParams.healthStatus = filter.value.data;
             break;
           default:
+            if (this.hasCustomFieldsFeature && filter.type.match(customFieldRegex)) {
+              filterParams[filter.type] = filter.value.data;
+            }
             break;
         }
       });

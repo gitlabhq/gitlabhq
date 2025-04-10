@@ -60,6 +60,7 @@ describe('BoardFilteredSearch', () => {
       provide: {
         initialFilterParams,
         fullPath: '',
+        hasCustomFieldsFeature: false,
         ...provide,
       },
       propsData: {
@@ -225,6 +226,70 @@ describe('BoardFilteredSearch', () => {
           },
         ],
       ]);
+    });
+  });
+
+  describe('custom fields enabled', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: {
+          'custom-field[1]': '2',
+        },
+        provide: {
+          hasCustomFieldsFeature: true,
+        },
+      });
+    });
+
+    it('passes the correct props to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: 'custom-field[1]', value: { data: '2', operator: '=' } },
+      ]);
+    });
+
+    it('updates url params after onFilter event', () => {
+      findFilteredSearch().vm.$emit('onFilter', [
+        { type: 'custom-field[1]', value: { data: '2', operator: '=' } },
+      ]);
+
+      expect(updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/?custom-field[1]=2',
+      });
+
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
+    });
+  });
+
+  describe('custom fields disabled', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: {
+          'custom-field[1]': '2',
+        },
+        provide: {
+          hasCustomFieldsFeature: false,
+        },
+      });
+    });
+
+    it('does not pass customfield params to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([]);
+    });
+
+    it('does not update url params after onFilter event', () => {
+      findFilteredSearch().vm.$emit('onFilter', [
+        { type: 'custom-field[1]', value: { data: '2', operator: '=' } },
+      ]);
+
+      expect(updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/',
+      });
+
+      expect(wrapper.emitted('setFilters')).toHaveLength(1);
     });
   });
 });

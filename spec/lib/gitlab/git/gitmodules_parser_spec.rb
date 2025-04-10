@@ -22,10 +22,14 @@ RSpec.describe Gitlab::Git::GitmodulesParser do
     modules = parser.parse
 
     expect(modules).to eq({
-                            'vendor/libgit2' => { 'name' => 'vendor/libgit2',
-                                                  'url' => 'https://github.com/nodegit/libgit2.git' },
-                            'new/path' => { 'name' => 'moved',
-                                            'url' => 'https://example.com/some/project' }
-                          })
+      'vendor/libgit2' => {
+        'name' => 'vendor/libgit2',
+        'url' => 'https://github.com/nodegit/libgit2.git'
+      },
+      'new/path' => {
+        'name' => 'moved',
+        'url' => 'https://example.com/some/project'
+      }
+    })
   end
 end

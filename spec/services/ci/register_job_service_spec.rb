@@ -5,7 +5,7 @@ require 'spec_helper'
 module Ci
   RSpec.describe RegisterJobService, feature_category: :continuous_integration do
     let_it_be(:group) { create(:group) }
-    let_it_be_with_reload(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
+    let_it_be_with_reload(:project) { create(:project, :repository, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     let_it_be(:shared_runner) { create(:ci_runner, :instance) }
@@ -229,10 +229,10 @@ module Ci
           end
 
           context 'for multiple builds' do
-            let!(:project2) { create :project, shared_runners_enabled: true }
-            let!(:pipeline2) { create :ci_pipeline, project: project2 }
-            let!(:project3) { create :project, shared_runners_enabled: true }
-            let!(:pipeline3) { create :ci_pipeline, project: project3 }
+            let_it_be(:project2) { create(:project, :repository, shared_runners_enabled: true) }
+            let!(:pipeline2) { create(:ci_pipeline, project: project2) }
+            let_it_be(:project3) { create(:project, :repository, shared_runners_enabled: true) }
+            let!(:pipeline3) { create(:ci_pipeline, project: project3) }
             let!(:build1_project1) { pending_job }
             let!(:build2_project1) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
             let!(:build3_project1) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
@@ -393,9 +393,9 @@ module Ci
           end
 
           context 'for multiple builds' do
-            let!(:project2) { create(:project, group_runners_enabled: true, group: group) }
+            let!(:project2) { create(:project, :repository, group_runners_enabled: true, group: group) }
             let!(:pipeline2) { create(:ci_pipeline, project: project2) }
-            let!(:project3) { create(:project, group_runners_enabled: true, group: group) }
+            let!(:project3) { create(:project, :repository, group_runners_enabled: true, group: group) }
             let!(:pipeline3) { create(:ci_pipeline, project: project3) }
 
             let!(:build1_project1) { pending_job }
@@ -407,7 +407,7 @@ module Ci
 
             # these shouldn't influence the scheduling
             let!(:unrelated_group) { create(:group) }
-            let!(:unrelated_project) { create(:project, group_runners_enabled: true, group: unrelated_group) }
+            let!(:unrelated_project) { create(:project, :repository, group_runners_enabled: true, group: unrelated_group) }
             let!(:unrelated_pipeline) { create(:ci_pipeline, project: unrelated_project) }
             let!(:build1_unrelated_project) { create(:ci_build, :pending, :queued, pipeline: unrelated_pipeline) }
             let!(:unrelated_group_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }

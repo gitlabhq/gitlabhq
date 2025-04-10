@@ -46,7 +46,7 @@ describe('WorkItemStickyHeader', () => {
         isGroup: false,
         parentId,
         showSidebar: true,
-        enableTruncation: true,
+        truncationEnabled: true,
       },
       provide: {
         glFeatures: {

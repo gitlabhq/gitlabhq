@@ -34,6 +34,7 @@ export default {
     'isGroupBoard',
     'issuableType',
     'boardType',
+    'hasCustomFieldsFeature',
   ],
   data() {
     return {
@@ -121,6 +122,7 @@ export default {
         issuableType: this.issuableType,
         filterInfo: FiltersInfo,
         filterFields: FilterFields,
+        options: { hasCustomFieldsFeature: this.hasCustomFieldsFeature },
       });
     },
     isShowingEpicSwimlanesLocalStorageKey() {

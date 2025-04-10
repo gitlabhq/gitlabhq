@@ -351,6 +351,10 @@ groups_visits:
   - table: users
     column: user_id
     on_delete: async_delete
+lfs_object_states:
+  - table: lfs_objects
+    column: lfs_object_id
+    on_delete: async_delete
 member_approvals:
   - table: users
     column: requested_by_id

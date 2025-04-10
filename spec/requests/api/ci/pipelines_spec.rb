@@ -1091,11 +1091,11 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to contain_exactly({
-                                                     "variable_type" => "env_var",
-                                                     "key" => "foo",
-                                                     "value" => "bar",
-                                                     "raw" => false
-                                                   })
+            "variable_type" => "env_var",
+            "key" => "foo",
+            "value" => "bar",
+            "raw" => false
+          })
         end
       end
     end
@@ -1117,11 +1117,11 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to contain_exactly({
-                                                     "variable_type" => "env_var",
-                                                     "key" => "foo",
-                                                     "value" => "bar",
-                                                     "raw" => false
-                                                   })
+            "variable_type" => "env_var",
+            "key" => "foo",
+            "value" => "bar",
+            "raw" => false
+          })
         end
       end
 

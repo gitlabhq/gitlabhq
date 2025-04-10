@@ -3091,7 +3091,6 @@ RSpec/FeatureCategory:
     - 'spec/models/ci/build_trace_chunks/redis_spec.rb'
     - 'spec/models/ci/group_spec.rb'
     - 'spec/models/ci/instance_variable_spec.rb'
-    - 'spec/models/ci/persistent_ref_spec.rb'
     - 'spec/models/ci/pipeline_schedule_variable_spec.rb'
     - 'spec/models/ci/resource_spec.rb'
     - 'spec/models/ci/unit_test_failure_spec.rb'

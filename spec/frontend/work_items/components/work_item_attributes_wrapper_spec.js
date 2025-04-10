@@ -91,6 +91,7 @@ describe('WorkItemAttributesWrapper component', () => {
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
         WorkItemParent: true,
+        WorkItemStatus: true,
       },
     });
   };

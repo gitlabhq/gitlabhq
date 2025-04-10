@@ -2329,28 +2329,33 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#ensure_persistent_ref' do
-    subject { pipeline.ensure_persistent_ref }
-
+  describe '#ensure_persistent_ref', :use_clean_rails_memory_store_caching do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    context 'when the persistent ref does not exist' do
-      it 'creates a ref' do
-        expect(pipeline.persistent_ref).to receive(:create).once
+    it 'creates persistent ref' do
+      expect { pipeline.ensure_persistent_ref }
+        .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
+        .and not_change { pipeline.status }
+    end
 
-        subject
+    context 'when persistent ref is already created' do
+      before do
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not ActiveRecord
+      end
+
+      it 'does not create persistent ref' do
+        expect { pipeline.ensure_persistent_ref }
+          .to not_change { pipeline.persistent_ref.exist? }.from(true)
+          .and not_change { pipeline.status }
       end
     end
 
-    context 'when the persistent ref exists' do
-      before do
-        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
-      end
-
-      it 'does not create a ref' do
-        expect(pipeline.persistent_ref).not_to receive(:create)
-
-        subject
+    context 'when persistent ref creation raises error' do
+      it 'drops the pipeline' do
+        expect(pipeline.persistent_ref).to receive(:create_ref).and_raise('Error')
+        expect { pipeline.ensure_persistent_ref }
+          .to not_change { pipeline.persistent_ref.exist? }.from(false)
+          .and change { pipeline.status }.to('failed')
       end
     end
   end

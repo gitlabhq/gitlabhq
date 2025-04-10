@@ -542,9 +542,9 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
       context 'when target URL is an invalid address' do
         before do
           post api(post_url, developer), params: {
-                                          state: 'pending',
-                                          target_url: 'invalid url'
-                                        }
+            state: 'pending',
+            target_url: 'invalid url'
+          }
         end
 
         it 'responds with bad request status and validation errors' do
@@ -557,9 +557,9 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
       context 'when target URL is an unsupported scheme' do
         before do
           post api(post_url, developer), params: {
-                                          state: 'pending',
-                                          target_url: 'git://example.com'
-                                        }
+            state: 'pending',
+            target_url: 'git://example.com'
+          }
         end
 
         it 'responds with bad request status and validation errors' do

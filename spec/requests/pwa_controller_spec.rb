@@ -17,13 +17,13 @@ RSpec.describe PwaController, feature_category: :navigation do
 
     context 'with default appearance' do
       it_behaves_like 'text values', {}, {
-                                           'name' => 'GitLab',
-                                           'short_name' => 'GitLab',
-                                           'description' => 'The complete DevOps platform. ' \
-                                                            'One application with endless possibilities. ' \
-                                                            'Organizations rely on GitLab’s source code management, ' \
-                                                            'CI/CD, security, and more to deliver software rapidly.'
-                                           }
+        'name' => 'GitLab',
+        'short_name' => 'GitLab',
+        'description' => 'The complete DevOps platform. ' \
+          'One application with endless possibilities. ' \
+          'Organizations rely on GitLab’s source code management, ' \
+          'CI/CD, security, and more to deliver software rapidly.'
+      }
     end
 
     context 'with customized appearance' do

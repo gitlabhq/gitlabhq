@@ -69,6 +69,7 @@ function mountBoardApp(el) {
     wiGroupPath,
     wiCanAdminLabel,
     wiNewCommentTemplatePaths,
+    hasCustomFieldsFeature,
   } = el.dataset;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
@@ -141,6 +142,7 @@ function mountBoardApp(el) {
       hasSubepicsFeature: parseBoolean(el.dataset.subEpicsFeatureAvailable),
       hasLinkedItemsEpicsFeature: parseBoolean(el.dataset.hasLinkedItemsEpicsFeature),
       hasOkrsFeature: parseBoolean(el.dataset.hasOkrsFeature),
+      hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
       commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
     },
     render: (createComponent) => createComponent(BoardApp),

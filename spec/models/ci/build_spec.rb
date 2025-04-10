@@ -3617,9 +3617,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { aud: 'developers' },
-                                 'ID_TOKEN_2' => { aud: 'maintainers' }
-                               })
+          'ID_TOKEN_1' => { aud: 'developers' },
+          'ID_TOKEN_2' => { aud: 'maintainers' }
+        })
         build.runner = build_stubbed(:ci_runner)
       end
 
@@ -3665,10 +3665,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { aud: '$CI_SERVER_URL' },
-                                 'ID_TOKEN_2' => { aud: 'https://$CI_SERVER_HOST' },
-                                 'ID_TOKEN_3' => { aud: ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
-                               })
+          'ID_TOKEN_1' => { aud: '$CI_SERVER_URL' },
+          'ID_TOKEN_2' => { aud: 'https://$CI_SERVER_HOST' },
+          'ID_TOKEN_3' => { aud: ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
+        })
         build.runner = build_stubbed(:ci_runner)
       end
 
@@ -3707,9 +3707,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { aud: '$ENVIRONMENT_SCOPED_VAR' },
-                                 'ID_TOKEN_2' => { aud: ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
-                               })
+          'ID_TOKEN_1' => { aud: '$ENVIRONMENT_SCOPED_VAR' },
+          'ID_TOKEN_2' => { aud: ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
+        })
         build.runner = build_stubbed(:ci_runner)
       end
 

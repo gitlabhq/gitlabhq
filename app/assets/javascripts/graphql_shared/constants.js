@@ -41,6 +41,8 @@ export const TYPE_ORGANIZATION = 'Organizations::Organization';
 export const TYPE_USERS_SAVED_REPLY = 'Users::SavedReply';
 export const TYPE_WORKSPACE = 'RemoteDevelopment::Workspace';
 export const TYPE_COMPLIANCE_FRAMEWORK = 'ComplianceManagement::Framework';
+export const TYPENAME_CUSTOM_FIELD = 'Issuables::CustomField';
+export const TYPENAME_CUSTOM_FIELD_SELECT_OPTION = 'Issuables::CustomFieldSelectOption';
 
 export const QUERY_PARAM_START_CURSOR = 'start_cursor';
 export const QUERY_PARAM_END_CURSOR = 'end_cursor';

@@ -1476,6 +1476,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     it 'renders json in a correct format' do
+      expect(Banzai::Renderer).to receive(:render).once.and_call_original
+
       post :preview_markdown, params: { namespace_id: public_project.namespace, project_id: public_project, text: '*Markdown* text' }
 
       expect(json_response.keys).to match_array(%w[body references])

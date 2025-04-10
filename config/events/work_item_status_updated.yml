@@ -1,0 +1,17 @@
+---
+description: Work item status updated
+internal_events: true
+action: work_item_status_updated
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Update work item status
+product_group: project_management
+product_categories:
+- team_planning
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185554
+tiers:
+- premium
+- ultimate

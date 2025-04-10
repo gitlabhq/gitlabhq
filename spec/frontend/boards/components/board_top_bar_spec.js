@@ -60,6 +60,7 @@ describe('BoardTopBar', () => {
         epicFeatureAvailable: false,
         iterationFeatureAvailable: false,
         healthStatusFeatureAvailable: false,
+        hasCustomFieldsFeature: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

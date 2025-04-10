@@ -113,11 +113,11 @@ RSpec.describe Mattermost::Team do
             status: 400,
             headers: { 'Content-Type' => 'application/json' },
             body: {
-                id: "store.sql_team.save.domain_exists.app_error",
-                message: "A team with that name already exists",
-                detailed_error: "",
-                request_id: "1hsb5bxs97r8bdggayy7n9gxaw",
-                status_code: 400
+              id: "store.sql_team.save.domain_exists.app_error",
+              message: "A team with that name already exists",
+              detailed_error: "",
+              request_id: "1hsb5bxs97r8bdggayy7n9gxaw",
+              status_code: 400
             }.to_json
           )
       end
@@ -134,7 +134,7 @@ RSpec.describe Mattermost::Team do
     context 'for an existing team' do
       let(:response) do
         {
-            "status" => "OK"
+          "status" => "OK"
         }
       end
 

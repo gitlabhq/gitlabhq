@@ -335,7 +335,6 @@ module API
         mount ::API::RemoteMirrors
         mount ::API::Repositories
         mount ::API::ResourceAccessTokens::SelfRotation
-        mount ::API::ResourceAccessTokens
         mount ::API::ResourceMilestoneEvents
         mount ::API::RpmProjectPackages
         mount ::API::RubygemPackages
@@ -356,7 +355,6 @@ module API
         mount ::API::UsageDataTrack
         mount ::API::UsageDataNonSqlMetrics
         mount ::API::UsageDataQueries
-        mount ::API::Users
         mount ::API::UserCounts
         mount ::API::UserRunners
         mount ::API::WebCommits
@@ -383,6 +381,7 @@ module API
       mount ::API::ProjectMilestones
       mount ::API::ProjectRepositoryStorageMoves
       mount ::API::ProtectedTags
+      mount ::API::ResourceAccessTokens
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
       mount ::API::Search
@@ -397,6 +396,7 @@ module API
       mount ::API::UsageDataServicePing
       mount ::API::UsageDataTrack
       mount ::API::UsageDataNonSqlMetrics
+      mount ::API::Users
       mount ::API::VsCode::Settings::VsCodeSettingsSync
       mount ::API::Ml::Mlflow::Entrypoint
       mount ::API::Ml::MlflowArtifacts::Entrypoint

@@ -6,8 +6,9 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, maintainers: user) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+  let_it_be(:project) { create(:project, :repository, maintainers: user) }
+  let_it_be(:sha) { project.repository.commit.sha }
+  let_it_be(:pipeline) { create(:ci_pipeline, sha: sha, project: project, user: user) }
 
   let(:job) { create(:ci_build, :success, pipeline: pipeline, name: 'build') }
 

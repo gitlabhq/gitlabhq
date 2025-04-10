@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PersistentRef do
+RSpec.describe Ci::PersistentRef, feature_category: :continuous_integration do
   it 'cleans up persistent refs async after pipeline finished' do
     pipeline = create(:ci_pipeline, :running)
 
@@ -68,7 +68,7 @@ RSpec.describe Ci::PersistentRef do
 
     context 'when a persistent ref does not exist' do
       it 'creates a persistent ref' do
-        subject
+        expect(subject).to be_truthy
 
         expect(pipeline.persistent_ref).to be_exist
       end
@@ -77,7 +77,7 @@ RSpec.describe Ci::PersistentRef do
         let(:sha) { 'not-exist' }
 
         it 'fails to create a persistent ref' do
-          subject
+          expect(subject).to be_falsy
 
           expect(pipeline.persistent_ref).not_to be_exist
         end
@@ -92,7 +92,7 @@ RSpec.describe Ci::PersistentRef do
       it 'overwrites a persistent ref' do
         expect(project.repository).to receive(:create_ref).and_call_original
 
-        subject
+        expect(subject).to be_truthy
       end
     end
   end

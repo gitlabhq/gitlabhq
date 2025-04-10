@@ -176,12 +176,30 @@ describe('filterVariables', () => {
         },
       },
     ],
+    [
+      'converts custom fields',
+      {
+        filters: {
+          'custom-field[1]': '2',
+        },
+        expected: {
+          customField: [
+            {
+              customFieldId: 'gid://gitlab/Issuables::CustomField/1',
+              selectedOptionIds: ['gid://gitlab/Issuables::CustomFieldSelectOption/2'],
+            },
+          ],
+          not: {},
+        },
+      },
+    ],
   ])('%s', (_, { filters, issuableType = 'issue', expected }) => {
     const result = filterVariables({
       filters,
       issuableType,
       filterInfo: FiltersInfo,
       filterFields: FilterFields,
+      options: { hasCustomFieldsFeature: true },
     });
 
     expect(result).toEqual(expected);

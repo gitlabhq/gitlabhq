@@ -245,10 +245,10 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
         subject
 
         expect(payload).to include({
-         'meta.search.type' => 'basic',
-         'meta.search.level' => 'global',
-         'meta.search.scope' => 'issues',
-         global_search_duration_s: 0.1
+          'meta.search.type' => 'basic',
+          'meta.search.level' => 'global',
+          'meta.search.scope' => 'issues',
+          global_search_duration_s: 0.1
         })
       end
     end

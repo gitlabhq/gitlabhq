@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
+# Extracts any quick actions from the text, find any users or suggestions.
+# If a block is provided, then it should return rendered HTML from the
+# Banzai pipeline. If there is no block, then the act of finding users
+# will cause the the pipeline to be invoked.
 class PreviewMarkdownService < BaseContainerService
-  def execute
+  def execute(&block)
     text, commands = explain_quick_actions(params[:text])
+    @rendered_html = yield(text) if block
     users = find_user_references(text)
     suggestions = find_suggestions(text)
 
     success(
       text: text,
+      rendered_html: @rendered_html,
       users: users,
       suggestions: suggestions,
       commands: commands.join('<br>')
@@ -29,7 +35,9 @@ class PreviewMarkdownService < BaseContainerService
 
   def find_user_references(text)
     extractor = Gitlab::ReferenceExtractor.new(project, current_user)
-    extractor.analyze(text, author: current_user)
+    context = { author: current_user }
+    context[:rendered] = @rendered_html if @rendered_html
+    extractor.analyze(text, context)
     extractor.users.map(&:username)
   end
 

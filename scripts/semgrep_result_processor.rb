@@ -165,8 +165,10 @@ class SemgrepResultProcessor
         http.request(request)
       end
 
-      # if response is not 201, exit with error
-      next if response.instance_of?(Net::HTTPCreated)
+      if response.instance_of?(Net::HTTPCreated)
+        apply_label
+        next
+      end
 
       puts "Failed to post inline comment with status code #{response.code}: #{response.body}. Posting normal comment instead."
       post_comment message_from_bot
@@ -188,6 +190,23 @@ class SemgrepResultProcessor
     labels.split(',').map(&:strip)
   end
   strong_memoize_attr :stripped_labels
+
+  def apply_label
+    uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}")
+    request = Net::HTTP::Put.new(uri)
+    request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
+    request.set_form_data(
+      "add_labels" => "appsec-sast-ping::unresolved"
+    )
+
+    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
+    end
+
+    return if response.instance_of?(Net::HTTPOK)
+
+    puts "Failed to apply labels with status code #{response.code}: #{response.body}"
+  end
 
   def get_existing_comments
     # Retrieve existing comments on the merge request

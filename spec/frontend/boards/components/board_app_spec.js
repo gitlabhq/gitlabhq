@@ -53,6 +53,7 @@ describe('BoardApp', () => {
           issuesListDrawer: workItemDrawerEnabled,
           epicsListDrawer: !workItemDrawerEnabled,
         },
+        hasCustomFieldsFeature: false,
       },
     });
   };

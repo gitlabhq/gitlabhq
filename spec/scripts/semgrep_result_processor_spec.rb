@@ -147,20 +147,98 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     end
   end
 
-  describe '#perform_allowlist_check' do
-    let(:original_env) { ENV.to_hash }
+  describe '#apply_label' do
+    it 'returns' do
+      successful_response = instance_double(Net::HTTPOK, code: '200', body: 'Successful response')
+      http = instance_double(Net::HTTP)
 
-    around do |example|
-      example.run
-    rescue SystemExit
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+      allow(http).to receive(:request).and_return(successful_response)
+
+      expect(processor.send(:apply_label)).to be_nil
     end
 
-    before do
-      stub_env('CI_PROJECT_DIR', '/tmp/not_allowlisted')
-    end
+    it 'handles error response' do
+      failed_response = instance_double(Net::HTTPBadRequest, code: '400', body: 'Bad Request')
+      http = instance_double(Net::HTTP)
 
-    it 'exits on non allowlisted project dir' do
-      expect(processor.perform_allowlist_check).to raise_error(SystemExit)
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+      allow(http).to receive(:request).and_return(failed_response)
+      allow(processor).to receive(:post_comment)
+
+      expect do
+        processor.send(:apply_label)
+      end.to output(%r{Failed to apply labels with status code 400: Bad Request})
+               .to_stdout
+    end
+  end
+
+  describe SemgrepResultProcessor do
+    describe '#perform_allowlist_check' do
+      let(:processor) { described_class.new }
+      let(:original_env) { ENV.to_hash }
+
+      after do
+        # Restore original environment after each test
+        ENV.clear
+        original_env.each { |k, v| stub_env(k, v) }
+      end
+
+      context 'when CI_PROJECT_DIR is not allowlisted' do
+        before do
+          stub_env('CI_PROJECT_DIR', '/tmp/not_allowlisted')
+          # Set a valid API URL to isolate the test to just the project dir check
+          stub_env('CI_API_V4_URL', 'https://gitlab.com/api/v4')
+        end
+
+        it 'exits with status code 1' do
+          expect { processor.perform_allowlist_check }.to raise_error(SystemExit) do |error|
+            expect(error.status).to eq(1)
+          end
+        end
+
+        it 'outputs an error message' do
+          expect do
+            processor.perform_allowlist_check
+          rescue SystemExit
+            # Catch the exit to continue the test
+          end.to output(%r{Error: CI_PROJECT_DIR '/tmp/not_allowlisted' is not allowed.}).to_stdout
+        end
+      end
+
+      context 'when CI_PROJECT_DIR is allowlisted but CI_API_V4_URL is not' do
+        before do
+          # Set an allowed project dir
+          stub_env('CI_PROJECT_DIR', '/builds/gitlab-org/gitlab')
+          # Set a non-allowed API URL
+          stub_env('CI_API_V4_URL', 'https://not-allowed-api.com')
+        end
+
+        it 'exits with status code 1' do
+          expect { processor.perform_allowlist_check }.to raise_error(SystemExit) do |error|
+            expect(error.status).to eq(1)
+          end
+        end
+
+        it 'outputs an error message about the API URL' do
+          expect do
+            processor.perform_allowlist_check
+          rescue SystemExit
+            # Catch the exit to continue the test
+          end.to output(%r{Error: CI_API_V4_URL 'https://not-allowed-api.com' is not allowed.}).to_stdout
+        end
+      end
+
+      context 'when both CI_PROJECT_DIR and CI_API_V4_URL are allowlisted' do
+        before do
+          stub_env('CI_PROJECT_DIR', '/builds/gitlab-org/gitlab')
+          stub_env('CI_API_V4_URL', 'https://gitlab.com/api/v4')
+        end
+
+        it 'completes successfully without exiting' do
+          expect { processor.perform_allowlist_check }.not_to raise_error
+        end
+      end
     end
   end
 
@@ -335,76 +413,380 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
   end
 
   describe '#create_inline_comments' do
-    around do |example|
-      example.run
-    rescue SystemExit
-    end
-
-    let(:path_line_message_dict) do
-      {
-        'fingerprint1' => { line: 10, message: 'Error message 1', path: 'file1.rb' },
-        'fingerprint2' => { line: 20, message: 'Error message 2', path: 'file2.rb' }
-      }
-    end
+    let(:processor) { described_class.new }
+    let(:base_sha) { 'base_sha' }
+    let(:head_sha) { 'head_sha' }
+    let(:start_sha) { 'start_sha' }
 
     before do
       stub_env('CI_API_V4_URL', 'https://gitlab.example.com/api/v4')
       stub_env('CI_MERGE_REQUEST_PROJECT_ID', '123')
       stub_env('CI_MERGE_REQUEST_IID', '1')
       stub_env('CUSTOM_SAST_RULES_BOT_PAT', 'fake-token')
-
-      allow(processor).to receive(:populate_commits_from_versions).and_return(%w[dummy_base_sha dummy_head_sha
-        dummy_start_sha])
-    end
-
-    it 'posts multiple inline comments successfully' do
-      successful_response = instance_double(Net::HTTPCreated, code: '201', body: '')
-      allow(Net::HTTP).to receive(:start).and_return(successful_response)
-
-      expect { processor.create_inline_comments(path_line_message_dict) }
-        .not_to output.to_stdout
-    end
-
-    it 'handles failed comment post and outputs an error' do
-      failed_response = instance_double(Net::HTTPBadRequest, code: '400', body: 'Bad Request')
-      http = instance_double(Net::HTTP)
-
-      allow(Net::HTTP).to receive(:start).and_yield(http)
-      allow(http).to receive(:request).and_return(failed_response)
+      allow(processor).to receive(:populate_commits_from_versions).and_return([base_sha, head_sha, start_sha])
+      # More robust mocking of HTTP operations
       allow(processor).to receive(:post_comment)
+    end
 
-      expect(http).to receive(:request).twice
-      expect { processor.create_inline_comments(path_line_message_dict) }
-        .to output(/Failed to post inline comment with status code 400: Bad Request\. Posting normal comment instead\./)
-              .to_stdout
+    context 'with secure coding guidelines finding' do
+      let(:scg_finding) do
+        {
+          'fingerprint1' => {
+            path: 'file1.rb',
+            line: 10,
+            message: 'Error message 1',
+            check_id: 'builds.sast-custom-rules.secure-coding-guidelines.ruby'
+          }
+        }
+      end
+
+      it 'posts comment with SCG suffix and applies label' do
+        # Create a successful HTTP response mock
+        successful_response = instance_double(Net::HTTPCreated)
+        allow(successful_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+        allow(successful_response).to receive_messages(code: '201', body: 'Success')
+
+        # Mock Net::HTTP to capture and validate what happens with our mocked services
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(successful_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Expect apply_label to be called
+        expect(processor).to receive(:apply_label).once
+
+        # Expect post_comment not to be called
+        expect(processor).not_to receive(:post_comment)
+
+        # Run the method
+        processor.create_inline_comments(scg_finding)
+      end
+    end
+
+    context 'with s1 finding' do
+      let(:s1_finding) do
+        {
+          'fingerprint2' => {
+            path: 'file2.rb',
+            line: 20,
+            message: 'Error message 2',
+            check_id: 'builds.sast-custom-rules.s1.rule'
+          }
+        }
+      end
+
+      it 'posts comment with S1 suffix and applies label' do
+        # Create a successful HTTP response mock
+        successful_response = instance_double(Net::HTTPCreated)
+        allow(successful_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+        allow(successful_response).to receive_messages(code: '201', body: 'Success')
+
+        # Track the form data being sent
+        form_data_captured = nil
+
+        # Create a request double that can capture form data
+        request_double = instance_double(Net::HTTP::Post)
+        allow(request_double).to receive(:[]=)
+        allow(request_double).to receive(:set_form_data) do |data|
+          form_data_captured = data
+        end
+
+        # Mock Net::HTTP::Post.new to return our request double
+        allow(Net::HTTP::Post).to receive(:new).and_return(request_double)
+
+        # Mock HTTP to return successful response
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(successful_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Expect apply_label to be called
+        expect(processor).to receive(:apply_label).once
+
+        # Run the method
+        processor.create_inline_comments(s1_finding)
+
+        # Verify the message includes the S1 ping
+        expect(form_data_captured["body"]).to include(described_class::MESSAGE_S1_PING_APPSEC)
+      end
+    end
+
+    context 'with other finding type' do
+      let(:other_finding) do
+        {
+          'fingerprint3' => {
+            path: 'file3.rb',
+            line: 30,
+            message: 'Error message 3',
+            check_id: 'builds.sast-custom-rules.other'
+          }
+        }
+      end
+
+      it 'posts comment with default suffix and applies label' do
+        # Create a successful HTTP response mock
+        successful_response = instance_double(Net::HTTPCreated)
+        allow(successful_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+        allow(successful_response).to receive_messages(code: '201', body: 'Success')
+
+        # Track the form data being sent
+        form_data_captured = nil
+
+        # Create a request double that can capture form data
+        request_double = instance_double(Net::HTTP::Post)
+        allow(request_double).to receive(:[]=)
+        allow(request_double).to receive(:set_form_data) do |data|
+          form_data_captured = data
+        end
+
+        # Mock Net::HTTP::Post.new to return our request double
+        allow(Net::HTTP::Post).to receive(:new).and_return(request_double)
+
+        # Mock HTTP to return successful response
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(successful_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Expect apply_label to be called
+        expect(processor).to receive(:apply_label).once
+
+        # Run the method
+        processor.create_inline_comments(other_finding)
+
+        # Manually verify the message - there's an issue with the code that needs fixing
+        # This test will fail until that's addressed - the "" in the else clause is causing issues
+        message_without_newlines = form_data_captured["body"].delete("\n")
+        expect(message_without_newlines).to include(described_class::MESSAGE_PING_APPSEC.delete("\n"))
+      end
+    end
+
+    context 'with failed HTTP response' do
+      let(:finding) do
+        {
+          'fingerprint4' => {
+            path: 'file4.rb',
+            line: 40,
+            message: 'Error message 4',
+            check_id: 'some.rule'
+          }
+        }
+      end
+
+      it 'falls back to post_comment when inline comment fails' do
+        # Create a failed HTTP response mock
+        failed_response = instance_double(Net::HTTPBadRequest)
+        allow(failed_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(false)
+        allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+
+        # Mock request
+        request_double = instance_double(Net::HTTP::Post)
+        allow(request_double).to receive(:[]=)
+        allow(request_double).to receive(:set_form_data)
+        allow(Net::HTTP::Post).to receive(:new).and_return(request_double)
+
+        # Mock HTTP to return failed response
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(failed_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Expect post_comment to be called
+        expect(processor).to receive(:post_comment).once
+
+        # Output should include error message
+        expect do
+          processor.create_inline_comments(finding)
+        end.to output(/Failed to post inline comment with status code 400/).to_stdout
+      end
+    end
+
+    context 'with multiple findings' do
+      let(:mixed_findings) do
+        {
+          'fingerprint1' => {
+            path: 'file1.rb',
+            line: 10,
+            message: 'Error message 1',
+            check_id: 'builds.sast-custom-rules.secure-coding-guidelines.ruby'
+          },
+          'fingerprint2' => {
+            path: 'file2.rb',
+            line: 20,
+            message: 'Error message 2',
+            check_id: 'builds.sast-custom-rules.s1.rule'
+          }
+        }
+      end
+
+      it 'processes all findings correctly' do
+        # Create response doubles
+        successful_response = instance_double(Net::HTTPCreated)
+        allow(successful_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(true)
+        allow(successful_response).to receive_messages(code: '201', body: 'Success')
+
+        failed_response = instance_double(Net::HTTPBadRequest)
+        allow(failed_response).to receive(:instance_of?).with(Net::HTTPCreated).and_return(false)
+        allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+
+        # Mock request
+        request_double = instance_double(Net::HTTP::Post)
+        allow(request_double).to receive(:[]=)
+        allow(request_double).to receive(:set_form_data)
+        allow(Net::HTTP::Post).to receive(:new).and_return(request_double)
+
+        # Track call count to return different responses
+        call_count = 0
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request) do
+          call_count += 1
+          call_count == 1 ? successful_response : failed_response
+        end
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Apply label should be called once
+        expect(processor).to receive(:apply_label).once
+
+        # Post_comment should be called once
+        expect(processor).to receive(:post_comment).once
+
+        # Run the method and check output
+        expect do
+          processor.create_inline_comments(mixed_findings)
+        end.to output(/Failed to post inline comment with status code 400/).to_stdout
+      end
     end
   end
 
   describe '#get_existing_comments' do
+    before do
+      stub_env('CI_API_V4_URL', 'https://gitlab.example.com/api/v4')
+      stub_env('CI_MERGE_REQUEST_PROJECT_ID', '123')
+      stub_env('CI_MERGE_REQUEST_IID', '1')
+      stub_env('CUSTOM_SAST_RULES_BOT_PAT', 'fake-token')
+    end
+
     around do |example|
       example.run
     rescue SystemExit
+      # Catch SystemExit
     end
 
-    it 'handles error response' do
-      http_double = instance_double(Net::HTTP)
-      allow(http_double).to receive(:start).and_return(Net::HTTPBadRequest.new(nil, 400, 'Bad Request'))
+    context 'when API request is successful' do
+      it 'returns parsed JSON response' do
+        http_response = instance_double(Net::HTTPOK)
+        allow(http_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(true)
+        allow(http_response).to receive(:body).and_return('[{"id": 1, "body": "Comment"}]')
 
-      expect { processor.send(:get_existing_comments) }.to raise_error(SystemExit)
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(http_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        result = processor.send(:get_existing_comments)
+        expect(result).to eq([{ "id" => 1, "body" => "Comment" }])
+      end
+    end
+
+    context 'when API request fails' do
+      it 'outputs error message, posts comment, and exits' do
+        failed_response = instance_double(Net::HTTPBadRequest)
+        allow(failed_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(false)
+        allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(failed_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Expect post_comment to be called with specific message
+        expect(processor).to receive(:post_comment).with(/Failed to fetch comments: Bad Request/)
+
+        # Check for console output
+        expect do
+          # This will raise SystemExit which is caught by the around block
+          processor.send(:get_existing_comments)
+        end.to output(/Failed to fetch comments with status code 400/).to_stdout
+
+        # Verify the exit code by capturing the raised exception
+        begin
+          processor.send(:get_existing_comments)
+        rescue SystemExit => e
+          expect(e.status).to eq(0)
+        end
+      end
     end
   end
 
   describe '#populate_commits_from_versions' do
+    before do
+      stub_env('CI_API_V4_URL', 'https://gitlab.example.com/api/v4')
+      stub_env('CI_MERGE_REQUEST_PROJECT_ID', '123')
+      stub_env('CI_MERGE_REQUEST_IID', '1')
+      stub_env('CUSTOM_SAST_RULES_BOT_PAT', 'fake-token')
+    end
+
     around do |example|
       example.run
     rescue SystemExit
+      # Catch SystemExit
     end
 
-    it 'handles error response' do
-      http_double = instance_double(Net::HTTP)
-      allow(http_double).to receive(:start).and_return(Net::HTTPBadRequest.new(nil, 400, 'Bad Request'))
+    context 'when API request is successful' do
+      it 'returns the three SHA values' do
+        # Create mock response with sample data
+        sample_response = [
+          {
+            'base_commit_sha' => 'abc123base',
+            'head_commit_sha' => 'def456head',
+            'start_commit_sha' => 'ghi789start'
+          }
+        ].to_json
 
-      expect { processor.send(:populate_commits_from_versions) }.to raise_error(SystemExit)
+        # Mock the HTTP response
+        http_response = instance_double(Net::HTTPOK)
+        allow(http_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(true)
+        allow(http_response).to receive(:body).and_return(sample_response)
+
+        # Mock the HTTP request cycle
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(http_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Call the method and verify the result
+        result = processor.send(:populate_commits_from_versions)
+
+        # Verify each SHA is correctly extracted and returned
+        expect(result).to be_an(Array)
+        expect(result.size).to eq(3)
+        expect(result[0]).to eq('abc123base')   # base_sha
+        expect(result[1]).to eq('def456head')   # head_sha
+        expect(result[2]).to eq('ghi789start')  # start_sha
+      end
+    end
+
+    context 'when API request fails' do
+      it 'outputs error message, posts comment, and exits' do
+        # Mock a failed HTTP response
+        failed_response = instance_double(Net::HTTPBadRequest)
+        allow(failed_response).to receive(:instance_of?).with(Net::HTTPOK).and_return(false)
+        allow(failed_response).to receive_messages(code: '400', body: 'Bad Request')
+
+        # Mock the HTTP request cycle
+        http_double = instance_double(Net::HTTP)
+        allow(http_double).to receive(:request).and_return(failed_response)
+        allow(Net::HTTP).to receive(:start).and_yield(http_double)
+
+        # Expect post_comment to be called with specific message
+        expect(processor).to receive(:post_comment).with(/Failed to fetch versions: Bad Request/)
+
+        # Check for console output
+        expect do
+          # This will raise SystemExit which is caught by the around block
+          processor.send(:populate_commits_from_versions)
+        end.to output(/Failed to fetch versions with status code 400/).to_stdout
+
+        # Verify the exit code by capturing the raised exception
+        begin
+          processor.send(:populate_commits_from_versions)
+        rescue SystemExit => e
+          expect(e.status).to eq(0)
+        end
+      end
     end
   end
 

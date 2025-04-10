@@ -21,7 +21,8 @@ module Ci
         filtered_by_rules: Ci::Pipeline.rules_failure_message,
         filtered_by_workflow_rules: Ci::Pipeline.workflow_rules_failure_message,
         composite_identity_forbidden: 'This pipeline did not run because the code should be reviewed by a non-AI ' \
-          'user first. Verify that all changes in this merge request are safe before running a new pipeline.' }
+          'user first. Verify that all changes in this merge request are safe before running a new pipeline.',
+        pipeline_ref_creation_failure: 'Failed to create pipeline ref.' }
     end
 
     presents ::Ci::Pipeline, as: :pipeline

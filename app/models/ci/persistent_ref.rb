@@ -29,6 +29,7 @@ module Ci
     rescue StandardError => e
       Gitlab::ErrorTracking
         .track_exception(e, pipeline_id: pipeline.id)
+      false
     end
 
     def delete

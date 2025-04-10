@@ -8,9 +8,9 @@ RSpec.describe Integrations::ChatMessage::MergeMessage do
   let(:args) do
     {
       user: {
-          name: 'Test User',
-          username: 'test.user',
-          avatar_url: 'http://someavatar.com'
+        name: 'Test User',
+        username: 'test.user',
+        avatar_url: 'http://someavatar.com'
       },
       project_name: 'project_name',
       project_url: 'http://somewhere.com',

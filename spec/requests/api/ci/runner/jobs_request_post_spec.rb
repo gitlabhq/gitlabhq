@@ -20,8 +20,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:user) { create(:user) }
 
     let(:project) do
-      create(:project, :empty_repo, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
+      create(:project, *project_traits, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
     end
+
+    let(:project_traits) { :empty_repo }
 
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
@@ -489,6 +491,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'when job is made for merge request' do
+            let(:project_traits) { :repository }
             let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
             let!(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
 
@@ -659,6 +662,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
 
             describe 'preloading job_artifacts_archive' do
+              let(:project_traits) { :repository }
+
               it 'queries the ci_job_artifacts table once only' do
                 expect { request_job }.not_to exceed_all_query_limit(1).for_model(::Ci::JobArtifact)
               end
