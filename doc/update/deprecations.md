@@ -2043,14 +2043,10 @@ The following endpoints in the public REST API will be removed:
 - `POST /api/v4/namespaces/:namespace_id/minutes`
 - `GET /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
 - `POST /api/v4/namespaces/:id/gitlab_subscription`
-- `PUT /api/v4/namespaces/:id/gitlab_subscription`
 - `PUT /api/v4/user/:id/credit_card_validation`
 - `PUT /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
 - `POST /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
 - `PATCH /api/v4/namespaces/:previous_namespace_id/minutes/move/:target_namespace_id`
-- `DELETE /api/v4/internal/upcoming_reconciliations`
-- `PUT /api/v4/internal/upcoming_reconciliations`
-- `PUT /api/v4/namespaces/:id`
 
 These endpoints were being used by the Subscription Portal to manage subscription information on GitLab.com. Their
 usage has been replaced by internal endpoints with JWT authentication to support the upcoming Cells architecture.

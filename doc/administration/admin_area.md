@@ -149,6 +149,12 @@ By default, impersonation is enabled. GitLab can be configured to
 
 ### User identities
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
 {{< history >}}
 
 - Viewing a user's SCIM identity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.

@@ -83,6 +83,10 @@ These push rules apply only to commits and not [tags](tags/_index.md).
 - **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
 
+When using [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects)
+or [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups),
+you must add the generated email suffix so that bot tokens can commit and push changes.
+
 ## Validate commit messages
 
 Use these rules for your commit messages.

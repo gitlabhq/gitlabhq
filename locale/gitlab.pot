@@ -15434,6 +15434,9 @@ msgstr ""
 msgid "ComplianceFrameworks|No projects found that match filters"
 msgstr ""
 
+msgid "ComplianceFrameworks|No projects selected"
+msgstr ""
+
 msgid "ComplianceFrameworks|Note: This report was truncated to adhere to filesize limits of %{size}."
 msgstr ""
 
@@ -15504,6 +15507,9 @@ msgid "ComplianceFrameworks|Set basic information for the compliance framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworks|Show only selected"
 msgstr ""
 
 msgid "ComplianceFrameworks|Subgroup"

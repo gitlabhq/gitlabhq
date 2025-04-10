@@ -23,7 +23,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
 
     submit_then_clear_search 'foo'
     submit_then_clear_search 'bar'
-    click_button 'Toggle history'
+    click_button 'Toggle search history'
 
     expect_recent_searches_history_item 'bar'
     expect_recent_searches_history_item 'foo'
@@ -33,7 +33,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
     visit project_issues_path(project_1, label_name: 'foo', search: 'bar')
     visit project_issues_path(project_1, label_name: 'qux', search: 'garply')
 
-    click_button 'Toggle history'
+    click_button 'Toggle search history'
 
     expect_recent_searches_history_item 'Label := qux garply'
     expect_recent_searches_history_item 'Label := foo bar'
@@ -43,7 +43,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
     set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"saved1"}}],[{"type":"filtered-search-term","value":{"data":"saved2"}}]]')
 
     visit project_issues_path(project_1, search: 'foo')
-    click_button 'Toggle history'
+    click_button 'Toggle search history'
 
     expect_recent_searches_history_item 'foo'
     expect_recent_searches_history_item 'saved1'
@@ -60,7 +60,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
 
     submit_then_clear_search 'more'
     submit_then_clear_search 'things'
-    click_button 'Toggle history'
+    click_button 'Toggle search history'
 
     expect_recent_searches_history_item 'things'
     expect_recent_searches_history_item 'more'
@@ -70,7 +70,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
     set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"foo"}}],[{"type":"filtered-search-term","value":{"data":"bar"}}]]')
     visit project_issues_path(project_1)
 
-    click_button 'Toggle history'
+    click_button 'Toggle search history'
     click_button 'foo'
 
     expect_search_term 'foo'
@@ -80,7 +80,7 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
     set_recent_searches(project_1_local_storage_key, '[[{"type":"filtered-search-term","value":{"data":"foo"}}]]')
     visit project_issues_path(project_1)
 
-    click_button 'Toggle history'
+    click_button 'Toggle search history'
 
     expect_recent_searches_history_item_count 1
 

@@ -79,9 +79,8 @@ To improve your workflow while authoring code, try these features:
 - [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide): Test your code by generating tests.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide): Improve or refactor the selected code.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
 - [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide): Fix quality problems, like bugs or typos, in the selected code.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli): Discover or recall `git` commands.
 
 ## Reviewing code
