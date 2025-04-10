@@ -195,6 +195,12 @@ The following is an example to configure an adaptive limit for RPC concurrency:
 # in /etc/gitlab/gitlab.rb
 gitaly['configuration'] = {
     # ...
+    cgroups: {
+        # Minimum required configuration to enable cgroups support.
+        repositories: {
+            count: 1
+        },
+    },
     concurrency: [
         {
             rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',

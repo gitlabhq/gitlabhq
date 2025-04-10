@@ -84,7 +84,7 @@ export const QUEUED_MESSAGE_SUCCESSFUL = s__(
 );
 export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Something went wrong');
 export const READ_MORE_TEXT = s__(
-  `InviteMembersModal|Invited members are limited to this role or their current group role, whichever is higher. Learn more about %{linkStart}roles%{linkEnd}.`,
+  `InviteMembersModal|Invited members are assigned the selected role or the role they have in the group, whichever is lower. Learn more about %{linkStart}roles%{linkEnd}.`,
 );
 export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
   `InviteMembersModal|From this date onward, the user can no longer access the group or project. Learn more about %{linkStart}access%{linkEnd}.`,

@@ -1,6 +1,7 @@
 <script>
 import { GlAvatar, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export default {
@@ -10,6 +11,7 @@ export default {
   components: {
     GlAvatar,
     GlLink,
+    LinkCell,
   },
   props: {
     job: {
@@ -41,9 +43,9 @@ export default {
 <template>
   <div>
     <div class="-gl-mx-3 -gl-mt-3 gl-p-3">
-      <gl-link class="gl-truncate" :href="pipelinePath" data-testid="pipeline-id">
+      <link-cell :href="pipelinePath" class="gl-truncate" data-testid="pipeline-id">
         {{ pipelineId }}
-      </gl-link>
+      </link-cell>
 
       <span class="gl-text-subtle">
         <span>{{ __('created by') }}</span>

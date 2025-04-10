@@ -2,7 +2,7 @@
 
 module Ci
   class PipelinePolicy < BasePolicy
-    delegate { @subject.project }
+    delegate(:project) { @subject.project }
 
     condition(:protected_ref) { ref_protected?(@user, @subject.project, @subject.tag?, @subject.ref) }
 
@@ -61,6 +61,10 @@ module Ci
 
     rule { can?(:update_pipeline) & triggerer_of_pipeline }.policy do
       enable :read_pipeline_variable
+    end
+
+    rule { can?(:read_pipeline) }.policy do
+      enable :read_pipeline_metadata
     end
 
     rule { project_allows_read_dependency }.policy do

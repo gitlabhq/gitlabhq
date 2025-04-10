@@ -26,7 +26,7 @@ module Types
         description: 'Name of the job.'
       field :needs, BuildNeedType.connection_type, null: true,
         description: 'References to builds that must complete before the jobs run.'
-      field :pipeline, Types::Ci::PipelineType, null: true,
+      field :pipeline, Types::Ci::PipelineInterface, null: true,
         description: 'Pipeline the job belongs to.'
 
       field :runner, Types::Ci::RunnerType, null: true, description: 'Runner assigned to execute the job.'

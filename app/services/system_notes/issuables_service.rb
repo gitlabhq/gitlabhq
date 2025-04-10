@@ -179,15 +179,16 @@ module SystemNotes
     #   "changed title from **Old** to **New**"
     #
     # Returns the created Note object
-    def change_title(old_title)
-      new_title = noteable.title.dup
+    def change_title(org_title)
+      new_title = ERB::Util.html_escape(noteable.title)
+      old_title = ERB::Util.html_escape(org_title)
 
       old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
 
-      marked_old_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(old_title).mark(old_diffs)
-      marked_new_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(new_title).mark(new_diffs)
+      marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs)
+      marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs)
 
-      body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
+      body = "<div>changed title from <code class=\"idiff\">#{marked_old_title}</code> to <code class=\"idiff\">#{marked_new_title}</code></div>"
 
       track_issue_event(:track_issue_title_changed_action)
       work_item_activity_counter.track_work_item_title_changed_action(author: author) if noteable.is_a?(WorkItem)

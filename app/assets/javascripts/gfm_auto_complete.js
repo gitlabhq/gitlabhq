@@ -467,8 +467,11 @@ class GfmAutoComplete {
 
           // Cache assignees & reviewers list for easier filtering later
           if (instance.isWorkItemsView) {
-            const { workItemId } = this.$inputor.get(0).closest('.js-gfm-wrapper').dataset;
-            assignees = (currentAssignees()[`${workItemId}`] || []).map(createMemberSearchString);
+            const element = this.$inputor.get(0).closest('.js-gfm-wrapper');
+            if (element) {
+              const { workItemId } = element.dataset;
+              assignees = (currentAssignees()[`${workItemId}`] || []).map(createMemberSearchString);
+            }
           } else {
             assignees =
               SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];

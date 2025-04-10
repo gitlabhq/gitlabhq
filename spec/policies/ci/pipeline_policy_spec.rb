@@ -202,4 +202,22 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
       end
     end
   end
+
+  describe 'read_pipeline_metadata' do
+    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+    context 'when user has read_pipeline ability' do
+      let_it_be(:project) { create(:project, :private, :repository, guests: user) }
+
+      it { is_expected.to be_allowed(:read_pipeline) }
+      it { is_expected.to be_allowed(:read_pipeline_metadata) }
+    end
+
+    context 'when user does not have read_pipeline ability' do
+      let_it_be(:project) { create(:project, :private, :repository) }
+
+      it { is_expected.to be_disallowed(:read_pipeline) }
+      it { is_expected.to be_disallowed(:read_pipeline_metadata) }
+    end
+  end
 end

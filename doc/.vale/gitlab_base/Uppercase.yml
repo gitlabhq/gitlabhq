@@ -175,6 +175,7 @@ exceptions:
   - PKCS
   - PMD
   - PNG
+  - POC
   - POSIX
   - POST
   - PROXY

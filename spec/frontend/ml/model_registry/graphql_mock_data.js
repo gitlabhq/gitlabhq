@@ -106,6 +106,7 @@ export const candidate = {
         username: 'user1',
         name: 'User 1',
       },
+      __typename: 'Pipeline',
     },
   },
   _links: {

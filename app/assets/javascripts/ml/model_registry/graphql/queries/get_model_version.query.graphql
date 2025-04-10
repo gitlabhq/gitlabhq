@@ -50,18 +50,20 @@ query getModelVersion($modelId: MlModelID!, $modelVersionId: MlModelVersionID!) 
           name
           pipeline {
             id
-            mergeRequest {
-              id
-              iid
-              title
-              webUrl
-            }
             user {
               id
               avatarUrl
               webUrl
               username
               name
+            }
+            ... on Pipeline {
+              mergeRequest {
+                id
+                iid
+                title
+                webUrl
+              }
             }
           }
         }

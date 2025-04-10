@@ -22565,7 +22565,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobmanualvariables"></a>`manualVariables` | [`CiManualVariableConnection`](#cimanualvariableconnection) | Variables added to a manual job when the job is triggered. (see [Connections](#connections)) |
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
-| <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
+| <a id="cijobpipeline"></a>`pipeline` | [`PipelineInterface`](#pipelineinterface) | Pipeline the job belongs to. |
 | <a id="cijobplaypath"></a>`playPath` | [`String`](#string) | Play path of the job. |
 | <a id="cijobplayable"></a>`playable` | [`Boolean!`](#boolean) | Indicates the job can be played. |
 | <a id="cijobpreviousstagejobs"></a>`previousStageJobs` | [`CiJobConnection`](#cijobconnection) | Jobs from the previous stage. (see [Connections](#connections)) |
@@ -34100,6 +34100,18 @@ CI/CD variables added to a manual pipeline.
 | <a id="pipelinemessagecontent"></a>`content` | [`String!`](#string) | Content of the pipeline message. |
 | <a id="pipelinemessageid"></a>`id` | [`ID!`](#id) | ID of the pipeline message. |
 
+### `PipelineMinimalAccess`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineminimalaccessid"></a>`id` | [`ID!`](#id) | ID of the pipeline. |
+| <a id="pipelineminimalaccessiid"></a>`iid` | [`String`](#string) | Internal ID of the pipeline. |
+| <a id="pipelineminimalaccesspath"></a>`path` | [`String`](#string) | Relative path to the pipeline's page. |
+| <a id="pipelineminimalaccessproject"></a>`project` | [`ProjectInterface`](#projectinterface) | Project the pipeline belongs to. |
+| <a id="pipelineminimalaccessuser"></a>`user` | [`UserCore`](#usercore) | Pipeline user. |
+
 ### `PipelinePermissions`
 
 #### Fields
@@ -36845,6 +36857,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | ---- | ---- | ----------- |
 | <a id="projectminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="projectminimalaccessdescription"></a>`description` | [`String`](#string) | Short description of the project. |
+| <a id="projectminimalaccessfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectminimalaccessid"></a>`id` | [`ID`](#id) | ID of the project. |
 | <a id="projectminimalaccessname"></a>`name` | [`String!`](#string) | Name of the project without the namespace. |
 | <a id="projectminimalaccessnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Name of the project including the namespace. |
@@ -47329,6 +47342,23 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | ---- | ---- | ----------- |
 | <a id="pendingmemberinterfacemergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
+#### `PipelineInterface`
+
+Implementations:
+
+- [`Pipeline`](#pipeline)
+- [`PipelineMinimalAccess`](#pipelineminimalaccess)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineinterfaceid"></a>`id` | [`ID`](#id) | ID of the pipeline. |
+| <a id="pipelineinterfaceiid"></a>`iid` | [`String`](#string) | Internal ID of the pipeline. |
+| <a id="pipelineinterfacepath"></a>`path` | [`String`](#string) | Relative path to the pipeline's page. |
+| <a id="pipelineinterfaceproject"></a>`project` | [`ProjectInterface`](#projectinterface) | Project the pipeline belongs to. |
+| <a id="pipelineinterfaceuser"></a>`user` | [`UserCore`](#usercore) | Pipeline user. |
+
 #### `ProjectInterface`
 
 Implementations:
@@ -47342,6 +47372,7 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="projectinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="projectinterfacedescription"></a>`description` | [`String`](#string) | Short description of the project. |
+| <a id="projectinterfacefullpath"></a>`fullPath` | [`ID`](#id) | Full path of the project. |
 | <a id="projectinterfaceid"></a>`id` | [`ID`](#id) | ID of the project. |
 | <a id="projectinterfacename"></a>`name` | [`String`](#string) | Name of the project without the namespace. |
 | <a id="projectinterfacenamewithnamespace"></a>`nameWithNamespace` | [`String`](#string) | Name of the project including the namespace. |

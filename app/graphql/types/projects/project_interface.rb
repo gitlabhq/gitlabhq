@@ -2,7 +2,7 @@
 
 module Types
   module Projects
-    # This inteface sets [authorize: :read_project] (field-level authorization via
+    # This interface sets [authorize: :read_project] (field-level authorization via
     # ProjectBaseField) for all defined fields to ensure implementing types don't
     # expose inherited fields without proper authorization.
     #
@@ -29,6 +29,9 @@ module Types
       field :description, GraphQL::Types::String,
         null: true,
         description: 'Short description of the project.'
+      field :full_path, GraphQL::Types::ID,
+        null: true,
+        description: 'Full path of the project.'
       field :id, GraphQL::Types::ID, null: true,
         description: 'ID of the project.'
       field :name, GraphQL::Types::String,

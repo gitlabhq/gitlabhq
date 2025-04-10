@@ -215,7 +215,7 @@ prudent to skip this step until you have verified that it runs smoothly in produ
 rollout. In this case, go to the next step first, and then, after the verification period has passed, promote
 the new Ruby to be the new default.
 
-### Update CNG, Omnibus, Self-compiled and merge the GitLab MR
+### Update CNG, Omnibus, and Self-compiled and merge the GitLab MR
 
 The last step is to use the new Ruby in production. This
 requires updating Omnibus and production Docker images to use the new version.

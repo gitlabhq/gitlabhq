@@ -94,7 +94,7 @@ sequentially going through each as per the [upgrade order](#upgrade-order) and l
 
 For the purposes of this guide we'll upgrade a [200 RPS or 10,000 Reference Architecture](../administration/reference_architectures/10k_users.md) built with the Linux package.
 
-### Consul, PostgreSQL, PgBouncer and Redis
+### Consul, PostgreSQL, PgBouncer, and Redis
 
 The [Consul](../administration/consul.md), [PostgreSQL](../administration/postgresql/replication_and_failover.md),
 [PgBouncer](../administration/postgresql/pgbouncer.md), and [Redis](../administration/redis/replication_and_failover.md) components all follow the same underlying process to upgrading without downtime.

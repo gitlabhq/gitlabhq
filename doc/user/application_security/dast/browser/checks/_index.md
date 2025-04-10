@@ -186,6 +186,7 @@ scan for vulnerabilities in the site under test.
 | [611.1](611.1.md) | External XML Entity Injection (XXE) | High | Active |
 | [74.1](74.1.md) | XSLT Injection | High | Active |
 | [78.1](78.1.md) | OS Command Injection | High | Active |
+| [79.1](79.1.md) | Cross-site Scripting | High | Active |
 | [89.1](89.1.md) | SQL Injection | High | Active |
 | [917.1](917.1.md) | Expression Language Injection | High | Active |
 | [918.1](918.1.md) | Server-Side Request Forgery | High | Active |

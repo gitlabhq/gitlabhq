@@ -227,7 +227,7 @@ describe('InviteModalBase', () => {
 
     describe('when users limit is not reached', () => {
       const textRegex =
-        /Select maximum role\s*Invited members are limited to this role or their current group role, whichever is higher. Learn more about roles.\s*Access expiration date \(optional\)/;
+        /Select maximum role\s*Invited members are assigned the selected role or the role they have in the group, whichever is lower. Learn more about roles.\s*Access expiration date \(optional\)/;
 
       beforeEach(() => {
         createComponent({ props: { reachedLimit: false }, stubs: { GlModal, GlFormGroup } });

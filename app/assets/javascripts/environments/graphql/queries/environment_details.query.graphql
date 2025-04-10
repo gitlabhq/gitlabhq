@@ -52,10 +52,12 @@ query getEnvironmentDetails(
             ...DeploymentJob
             deploymentPipeline: pipeline {
               id
-              jobs(whenExecuted: ["manual"], retried: false) {
-                nodes {
-                  ...DeploymentJob
-                  scheduledAt
+              ... on Pipeline {
+                jobs(whenExecuted: ["manual"], retried: false) {
+                  nodes {
+                    ...DeploymentJob
+                    scheduledAt
+                  }
                 }
               }
             }

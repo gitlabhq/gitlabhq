@@ -26,4 +26,4 @@ Use this to raise cases where the GLAS engine's behavior does not align with the
 
 See [SAST Reaction rotation GLAS limitations](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis/reaction_rotation/#glas-limitations-issues) to traige this issue.
 
-/label ~"section::sec" ~"devops::application security testing" ~"group::static analysis" ~"Category:SAST" ~"GLAS::VR-Reported" ~"GLAS::EngineLimitation"
+/label ~"section::sec" ~"devops::application security testing" ~"group::static analysis" ~"Category:SAST" ~"GLAS::VR-Reported" ~"GLAS:EngineLimitation"

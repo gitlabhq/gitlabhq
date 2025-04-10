@@ -303,6 +303,68 @@ file that would look something like [this example](https://gitlab.com/gitlab-org
 
 [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/bulk_imports/common/pipelines/milestones_pipeline_spec.rb)
 
+#### Importing a relation with a custom association name
+
+Associations exist that do not match their ActiveRecord class names. For example:
+
+```ruby
+class Release
+  has_many :links, class_name: 'Releases::Link'
+end
+```
+
+An association like this is exported under `links` in `releases.ndjson`. However, on import, whenever we constantize a relation class, we can't constantize
+`links` because the class does not exist. The class should be `Releases::Link`.
+
+In this case, we must add this association name to the
+[`OVERRIDES`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/project/relation_factory.rb#L7) hash, which represents a map of
+associations and their corresponding ActiveRecord classes so that the importer knows how to constantize them correctly.
+
+```ruby
+module Gitlab
+  module ImportExport
+    module Project
+      class RelationFactory < Base::RelationFactory
+        OVERRIDES = {
+          links: 'Releases::Link'
+        }
+      end
+    end
+  end
+end
+```
+
+This way, the importer maps each exported `link` to the corresponding `Releases::Link` class.
+
+#### Importing an existing object that is referenced by multiple other relations
+
+If relations are referenced across multiple associations (or within a single association across multiple records), we won't want to import duplicates.
+
+For example, consider a label that is applied on a number of different issues and merge requests. Whenever we export issues and merge requests, the exported
+label is contained within each of the records as its subrelation. When we import exported issues and merge requests, we want to import the label only once
+and reuse it across all of the records. Otherwise, we end up with duplicates (multiple labels with the same name).
+
+To import an object like this only once and reuse it in multiple places, we must define the object as an existing object relation.
+
+First, we must add the label association to
+[`EXISTING_OBJECT_RELATIONS`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/project/relation_factory.rb#L54-54). After the
+relation is added to the list of existing object relations, the importer knows that such a relation must be treated differently from the others and goes
+through a different import flow. Instead of importing such a relation by using the regular route, it uses an
+[`ObjectBuilder`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/base/relation_factory.rb#L280).
+
+`ObjectBuilder` attempts to either:
+
+- [Find an existing object](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/base/object_builder.rb#L32-36) in the database based on
+  the parameters you define and returns it.
+- Create a new one if it doesn't exist.
+
+To add a new relation to the ObjectBuilder, you must:
+
+1. Add your relation to `EXISTING_OBJECT_RELATIONS` as mentioned above.
+1. Update either Group or Project `ObjectBuilder`, depending whether it's a project or group association.
+1. Define which attributes should be used to perform an existing object lookup. For example, for labels, we want to search by `title`, `description`, and
+   `created_at`. If a label with defined parameters exists in the project, reuse it and do not create a new one.
+
 ### Importing a relation from GraphQL API
 
 If your relation is available through GraphQL API, you can use `GraphQlExtractor` and perform transformations and loading within the pipeline class.
@@ -403,6 +465,6 @@ index 439f453cd9d3..d6b4119a0af9 100644
    commit_notes: __('Commit notes'),
 +  documents: __('Documents')
  };
- 
+
  const STATISTIC_ITEMS = {
 ```

@@ -171,6 +171,10 @@
     "PendingGroupMember",
     "PendingProjectMember"
   ],
+  "PipelineInterface": [
+    "Pipeline",
+    "PipelineMinimalAccess"
+  ],
   "ProjectInterface": [
     "Project",
     "ProjectMinimalAccess"
