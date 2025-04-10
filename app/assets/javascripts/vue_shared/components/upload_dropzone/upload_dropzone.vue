@@ -208,7 +208,7 @@ export default {
   >
     <slot>
       <button
-        class="card upload-dropzone-card upload-dropzone-border gl-mb-0 gl-h-full gl-w-full gl-items-center gl-justify-center gl-px-5 gl-py-4"
+        class="upload-dropzone-card upload-dropzone-border gl-mb-0 gl-h-full gl-w-full gl-items-center gl-justify-center gl-bg-default gl-px-5 gl-py-4"
         type="button"
         @click="openFileUpload"
         @mouseenter="onMouseEnter"
@@ -257,10 +257,9 @@ export default {
     <transition name="upload-dropzone-fade">
       <div
         v-show="showDropzoneOverlay"
-        class="card gl-absolute gl-flex gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-4"
+        class="gl-absolute gl-flex gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-4"
         :class="{
-          'design-upload-dropzone-overlay gl-z-200 gl-border-1 gl-border-dashed gl-border-blue-500':
-            showUploadDesignOverlay && isDragDataValid,
+          'design-upload-dropzone-overlay gl-z-200': showUploadDesignOverlay && isDragDataValid,
           'upload-dropzone-overlay upload-dropzone-border': !showUploadDesignOverlay,
         }"
       >
@@ -268,7 +267,7 @@ export default {
         <template v-if="showUploadDesignOverlay">
           <div
             v-if="isDragDataValid && !hideUploadTextOnDragging"
-            class="gl-absolute gl-bottom-6 gl-flex gl-items-center gl-rounded-base gl-bg-blue-950 gl-px-3 gl-py-2 gl-text-white"
+            class="gl-absolute gl-bottom-6 gl-flex gl-items-center gl-rounded-base gl-bg-feedback-strong gl-px-3 gl-py-2 gl-text-feedback-strong gl-shadow-sm"
             data-testid="design-upload-overlay"
           >
             <gl-animated-upload-icon :is-on="true" name="upload" />

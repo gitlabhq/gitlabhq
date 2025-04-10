@@ -13,13 +13,13 @@
 
 .upload-dropzone-border {
   border: 0;
-  @include dropzone-background($gray-400, 2);
+  @include dropzone-background($gl-border-color-default, 2);
   border-radius: $gl-border-radius-base;
 }
 
 .upload-dropzone-card {
   @apply gl-transition-[background,border];
-
+  stroke: $gl-border-color-default;
   @apply gl-text-default;
 
   &:hover,
@@ -27,7 +27,7 @@
   &:focus-within,
   &:active {
     outline: none;
-    @include dropzone-background($blue-500);
+    @include dropzone-background($gl-color-blue-500);
     @apply gl-text-default;
   }
 
@@ -37,9 +37,6 @@
     @apply gl-focus;
   }
 
-  &:hover {
-    border-color: $gray-300;
-  }
 }
 
 .upload-dropzone-overlay,
@@ -48,15 +45,18 @@
   left: 0;
   pointer-events: none;
   opacity: 1;
+  border: 0;
 }
 
 .upload-dropzone-overlay {
-  background-color: $blue-50;
-  @include dropzone-background($blue-500);
+  @apply gl-bg-feedback-info;
+  @include dropzone-background($gl-color-blue-500);
 }
 
 .design-upload-dropzone-overlay {
-  background-color: rgba($blue-500, 0.24);
+  background-color: color-mix(in srgb, var(--gl-color-blue-500) 24%, transparent);
+  @include dropzone-background($gl-color-blue-500);
+  border-radius: $gl-border-radius-base;
 }
 
 // These are composite classes for use with Vue Transition

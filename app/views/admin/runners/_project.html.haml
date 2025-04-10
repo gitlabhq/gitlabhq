@@ -3,13 +3,18 @@
 
 %li
   .gl-flex.gl-gap-3
-    .gl-w-6
-      - if assigned
+    - if assigned
+      .gl-min-w-6.gl-w-6
         = sprite_icon('status-success', variant: 'success', css_class: 'gl-mt-3')
+    - else
+      .gl-hidden.md:gl-block.gl-w-6
+
     = render Pajamas::AvatarComponent.new(project, size: 32, avatar_options: { aria: { hidden: "true" } })
-    .gl-flex.gl-flex-col.gl-gap-1.gl-grow
-      %h3.gl-text-base.gl-mt-1.gl-mb-0
+    .gl-grow.gl-self-center
+      %h3.gl-m-0.gl-text-base
         = project.full_name
-      %p.gl-text-sm.gl-text-subtle.gl-mb-0
-        = project.description
-    = yield
+      - if project.description
+        %p.gl-mb-0.gl-text-sm.gl-text-subtle
+          = project.description
+    .gl-self-start
+      = yield

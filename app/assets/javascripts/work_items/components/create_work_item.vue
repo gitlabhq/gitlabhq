@@ -60,6 +60,7 @@ import {
   WIDGET_TYPE_CUSTOM_FIELDS,
   CUSTOM_FIELDS_TYPE_NUMBER,
   CUSTOM_FIELDS_TYPE_TEXT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -353,6 +354,14 @@ export default {
         return false;
       }
 
+      // Hide Parent widget on Epic or Issue creation according to license permissions
+      if (
+        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_ISSUE ||
+        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC
+      ) {
+        if (!this.validateAllowedParentTypes(this.selectedWorkItemTypeName).length) return false;
+      }
+
       return Boolean(this.workItemHierarchy);
     },
     workItemCrmContacts() {
@@ -577,6 +586,14 @@ export default {
     },
     updateTitle(newValue) {
       this.workItemTitle = newValue;
+    },
+    validateAllowedParentTypes(selectedWorkItemType) {
+      return (
+        this.workItemTypes
+          ?.find((type) => type.name === selectedWorkItemType)
+          ?.widgetDefinitions.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
+          .allowedParentTypes?.nodes || []
+      );
     },
     isWidgetSupported(widgetType) {
       const widgetDefinitions =

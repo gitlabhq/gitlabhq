@@ -91,6 +91,9 @@ describe('Create work item component', () => {
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
 
+  const namespaceWorkItemTypes =
+    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
+
   const createComponent = ({
     props = {},
     mutationHandler = createWorkItemSuccessHandler,
@@ -191,10 +194,9 @@ describe('Create work item component', () => {
       'Clears cache on cancel for workItemType: %s with the correct data',
       async (type) => {
         const typeName = WORK_ITEMS_TYPE_MAP[type].value;
-        const expectedWorkItemTypeData =
-          namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-            ({ name }) => name === typeName,
-          );
+        const expectedWorkItemTypeData = namespaceWorkItemTypes.find(
+          ({ name }) => name === typeName,
+        );
         createComponent({ workItemTypeName: NAME_TO_ENUM_MAP[typeName] });
         await waitForPromises();
 
@@ -251,8 +253,7 @@ describe('Create work item component', () => {
       createComponent({ props: { workItemTypeName: null } });
       await waitForPromises();
       // +1 for the "Select type" option
-      const expectedOptions =
-        namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
+      const expectedOptions = namespaceWorkItemTypes.length + 1;
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
@@ -280,7 +281,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(
-        namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length,
+        namespaceWorkItemTypes.length,
       );
     });
 
@@ -543,10 +544,6 @@ describe('Create work item component', () => {
 
       it('renders the work item milestone widget', () => {
         expect(findMilestoneWidget().exists()).toBe(true);
-      });
-
-      it('renders the work item parent widget', () => {
-        expect(findParentWidget().exists()).toBe(true);
       });
     });
   });

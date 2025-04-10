@@ -35754,6 +35754,8 @@ CREATE INDEX index_merge_request_diff_details_on_verification_state ON merge_req
 
 CREATE INDEX index_merge_request_diff_details_pending_verification ON merge_request_diff_details USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_merge_request_diff_files_on_project_id ON merge_request_diff_files USING btree (project_id);
+
 CREATE INDEX index_merge_request_diffs_by_id_partial ON merge_request_diffs USING btree (id) WHERE ((files_count > 0) AND ((NOT stored_externally) OR (stored_externally IS NULL)));
 
 CREATE INDEX index_merge_request_diffs_on_external_diff ON merge_request_diffs USING btree (external_diff);

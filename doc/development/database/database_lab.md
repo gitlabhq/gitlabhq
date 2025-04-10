@@ -142,7 +142,9 @@ You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to 
 
 To access the database lab instances, you must:
 
-- File an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+- File an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request), requesting the following:
+  - `AllFeaturesUser` role in Postgres.ai
+  - `db-lab` role in `chef-repo`
 - Have a user data bag entry in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo) with your SSH key and the `db-lab` role.
 - Configure `ssh` as follows:
 

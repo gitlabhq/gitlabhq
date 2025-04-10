@@ -24,7 +24,6 @@ RSpec.describe 'Create issue work item', :js, feature_category: :team_planning d
         expect(page).to have_selector('[data-testid="work-item-assignees"]')
         expect(page).to have_selector('[data-testid="work-item-labels"]')
         expect(page).to have_selector('[data-testid="work-item-milestone"]')
-        expect(page).to have_selector('[data-testid="work-item-parent"]')
 
         send_keys 'I am a new issue'
         click_button 'Create issue'

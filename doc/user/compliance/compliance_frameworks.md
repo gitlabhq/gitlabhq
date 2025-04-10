@@ -72,6 +72,16 @@ compliance frameworks to a project.
 If you create compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user
 has the correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
 
+To apply a compliance framework to a project through a compliance framework:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Projects** tab.
+1. Hover over a compliance framework, select the **Edit Framework** tab.
+1. Select **Projects** section.
+1. Select projects from the list.
+1. Select **Update Framework**.
+
 ## Default compliance frameworks
 
 {{< history >}}

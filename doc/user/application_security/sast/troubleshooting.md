@@ -134,7 +134,7 @@ The SpotBugs-based analyzer is only used for scanning Groovy code, but it may tr
 The solution depends on whether you need to scan Groovy code:
 
 - If you don't have any Groovy code, or don't need to scan it, you should [disable the SpotBugs analyzer](analyzers.md#disable-specific-default-analyzers).
-- If you do need to scan Groovy code, you should use [pre-compilation](_index.md#pre-compilation).
+- If you do need to scan Groovy code, you should use [pre-compilation](_index.md#using-pre-compilation-with-spotbugs-analyzer).
   Pre-compilation avoids these failures by scanning an artifact you've already built in your pipeline, rather than trying to compile it in the `spotbugs-sast` job.
 
 ### Java out of memory error
