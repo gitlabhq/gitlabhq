@@ -64,7 +64,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-mt-5 gl-flex gl-items-start gl-gap-3 lg:gl-mt-0">
+    <div class="gl-flex gl-items-start gl-gap-3">
       <gl-button
         v-if="canRetryPipeline"
         v-gl-tooltip

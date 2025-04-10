@@ -62,10 +62,15 @@ Start by creating an IAM identity provider.
 
 First, you need the some values from GitLab:
 
+Prerequisites:
+
+- You must be an administrator.
+
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Configure GitLab Duo with Amazon Q**.
+1. Expand **GitLab Duo with Amazon Q**.
+1. Select **View configuration setup**.
 1. Under step 1, copy the provider URL and audience. You will need them in the next step.
 
 Now, create an AWS identity provider:
@@ -239,7 +244,7 @@ Prerequisites:
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Configure GitLab Duo with Amazon Q**.
+1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Under **IAM role's ARN**, paste the ARN.
 1. To determine which groups and projects can use GitLab Duo with Amazon Q, choose an option:
@@ -282,9 +287,10 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for the instance:
 
+1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Amazon Q**.
+1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Select **Always off**.
 1. Select **Save changes**.

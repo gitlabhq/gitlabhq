@@ -8,9 +8,9 @@ title: Eclipse troubleshooting
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
