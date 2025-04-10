@@ -525,7 +525,7 @@ correct location:
 
 If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message.
 Ensure the Maven package is not protected when publishing.
-For more information about package protection rules, see [how to protect a package](../../../user/packages/package_registry/package_protection_rules.md#protect-a-package).
+For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
 {{< /alert >}}
 
@@ -1281,8 +1281,8 @@ For example, "1.0.0", "1.0-SNAPSHOT", and "1.0.0-alpha" are valid, but "1..0" or
 The `403 Forbidden` error with the message `Authorization failed` usually indicates either an authentication or permissions issue. Check that:
 
 - You're using the correct token type (personal access token, deploy token, or CI/CD job token). For more information, see [Authenticate to the package registry](#authenticate-to-the-package-registry).
-- The token has the necessary permissions. Only users with the Developer role or higher can publish packages. For more information, see [GitLab permissions](../../../user/permissions.md#packages-and-registry).
-- The package you're publishing is not protected by push protection rules. For more information about package protection rules, see [how to protect a package](../../../user/packages/package_registry/package_protection_rules.md#protect-a-package).
+- The token has the necessary permissions. Only users with the Developer role or higher can publish packages. For more information, see [GitLab permissions](../../permissions.md#packages-and-registry).
+- The package you're publishing is not protected by push protection rules. For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
 ### "Artifact already exists" errors when publishing
 

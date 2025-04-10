@@ -682,10 +682,9 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         { 'ci' => { 'skip' => true } }
       end
 
-      it 'creates a pipline in the skipped state' do
+      it 'creates a pipeline in the skipped state' do
         pipeline = execute_service(push_options: push_options).payload
 
-        # TODO: DRY these up with "skips builds creation if the commit message"
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")

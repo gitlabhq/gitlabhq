@@ -99,7 +99,7 @@ Interactions with GitLab Duo can help to improve the suggestions and feedback as
 ### Automatic reviews from GitLab Duo
 
 To enable `@GitLabDuo` to automatically review merge requests, edit your
-[merge request template](../../../user/project/description_templates.md#create-a-merge-request-template)
+[merge request template](../description_templates.md#create-a-merge-request-template)
 and add the line `/assign_reviewer @GitLabDuo`. Add this line to your default template,
 and any other templates in your project where you want `@GitLabDuo` to perform a review.
 

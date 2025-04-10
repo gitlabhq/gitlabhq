@@ -212,7 +212,7 @@ nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/
 Replace:
 
 - `<source_name>` with your source name
-- `<group_id>` with the group ID found on the [Group overview page](../../../user/group/_index.md#access-a-group-by-using-the-group-id)
+- `<group_id>` with the group ID found on the [Group overview page](../../group/_index.md#access-a-group-by-using-the-group-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 
@@ -235,7 +235,7 @@ dotnet nuget add source "https://gitlab.example.com/api/v4/groups/<group_id>/-/p
 Replace:
 
 - `<source_name>` with your source name
-- `<group_id>` with the group ID found on the [Group overview page](../../../user/group/_index.md#access-a-group-by-using-the-group-id)
+- `<group_id>` with the group ID found on the [Group overview page](../../group/_index.md#access-a-group-by-using-the-group-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 
@@ -327,7 +327,7 @@ Prerequisites:
 When publishing packages:
 
 - Review the maximum file size limits for your GitLab instance:
-  - The [package registry limits on GitLab.com instances](../../../user/gitlab_com/_index.md#package-registry-limits) vary by file format, and are not configurable.
+  - The [package registry limits on GitLab.com instances](../../gitlab_com/_index.md#package-registry-limits) vary by file format, and are not configurable.
   - The [package registry limits on GitLab Self-Managed instances](../../../administration/instance_limits.md#file-size-limits) vary by file format, and are configurable.
 - If duplicates are allowed, and you publish the same package with the same version multiple times, each
   consecutive upload is saved as a separate file. When installing a package,

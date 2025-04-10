@@ -151,7 +151,7 @@ export default {
     v-gl-tooltip-directive.hover="$options.i18n.dropdownTooltip"
     no-caret
     icon="ellipsis_v"
-    data-testid="default-actions-container"
+    data-testid="blob-overflow-menu"
     :toggle-text="$options.i18n.dropdownLabel"
     text-sr-only
     class="gl-mr-0"
@@ -166,7 +166,7 @@ export default {
       :user-permissions="userPermissions"
       :is-loading="isLoading"
       :can-lock="canLock"
-      :is-replace-disabled="!canModifyFile"
+      :is-replace-disabled="!canModifyFile && isLocked"
       :is-locked="isLocked"
       @showForkSuggestion="onShowForkSuggestion"
     />
@@ -184,7 +184,7 @@ export default {
       :is-empty-repository="isEmptyRepository"
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
-      :disabled="!canModifyFile"
+      :disabled="!canModifyFile && isLocked"
       @showForkSuggestion="onShowForkSuggestion"
     />
   </gl-disclosure-dropdown>

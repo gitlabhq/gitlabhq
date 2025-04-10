@@ -103,7 +103,12 @@ To enable or disable Git LFS for your project:
 
 You can add large files to Git LFS. This helps you manage files in Git repositories.
 When you track files with Git LFS, they are replaced with text pointers in Git,
-and stored on a remote server. For more information, see [Git LFS](../../git/file_management.md#git-lfs).
+and stored on a remote server. For more information, see [Git LFS](../file_management.md#git-lfs).
+
+When you [configure Git LFS for a project](#configure-git-lfs-for-a-project), ensure you have a
+`.gitattributes` file in the root directory of the project. Without a root-level `.gitattributes` file,
+the UI displays a warning even if you correctly configured LFS in your project subdirectories.
+For more information, see [LFS configuration warning message](troubleshooting.md#warning-possible-lfs-configuration-issue).
 
 ## Clone a repository that uses Git LFS
 
@@ -156,7 +161,7 @@ the total size of your repository, see
 
 - Use Git LFS to set up [exclusive file locks](../file_management.md#configure-file-locks).
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Git LFS with Git](../../git/file_management.md#git-lfs)
+- [Git LFS with Git](../file_management.md#git-lfs)
 - [Git LFS developer information](../../../development/lfs.md)
 - [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md) for GitLab Self-Managed
 - [Troubleshooting Git LFS](troubleshooting.md)

@@ -120,7 +120,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
 
           within_testid 'available-shared-runners' do
             within_testid 'crud-title' do
-              expect(page).to have_content _('Available instance runners')
+              expect(page).to have_content _('Instance runners')
             end
             within_testid 'crud-count' do
               expect(page).to have_content 2

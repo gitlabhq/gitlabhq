@@ -52,7 +52,7 @@ tags on this page. You can share a filtered view by copying the URL from your br
 
 View container registry storage usage to track and manage the size of your container repositories across projects and groups.
 
-For more information, see [View container registry usage](../../../user/packages/container_registry/reduce_container_registry_storage.md#view-container-registry-usage).
+For more information, see [View container registry usage](reduce_container_registry_storage.md#view-container-registry-usage).
 
 ## Use container images from the container registry
 

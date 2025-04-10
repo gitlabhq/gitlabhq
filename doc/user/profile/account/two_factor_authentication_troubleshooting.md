@@ -37,7 +37,7 @@ To resolve this error:
   - For [dependency proxy](../../packages/dependency_proxy/_index.md#authenticate-with-the-dependency-proxy-for-container-images)
   requests: `read_registry` and `write_registry`
 - If you configured LDAP, use an [LDAP password](../../../administration/auth/ldap/_index.md).
-- Use an [OAuth credential helper](../../profile/account/two_factor_authentication.md#oauth-credential-helpers).
+- Use an [OAuth credential helper](two_factor_authentication.md#oauth-credential-helpers).
 
 ## Error: `invalid pin code`
 

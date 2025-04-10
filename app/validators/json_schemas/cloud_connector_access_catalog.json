@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Cloud Connector Access Catalog",
+  "type": "object",
+  "additionalProperties": true
+}

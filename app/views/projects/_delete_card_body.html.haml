@@ -1,1 +1,11 @@
-= render 'delete_immediately'
+- if @project.adjourned_deletion?
+  -# Adjourned deletion feature is configured and available globally or at the namespace level
+  - if scheduled_for_deletion?(@project)
+    -# Project has already been marked for delayed deletion, permanently delete this project
+    = render 'delete_immediately', button_text: _('Delete project immediately')
+  - else
+    -# Mark for delayed deletion
+    = render 'delete_delayed'
+- else
+  -# Adjourned deletion feature is not available, permanently delete the project
+  = render 'delete_immediately'

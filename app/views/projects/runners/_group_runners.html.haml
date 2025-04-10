@@ -31,8 +31,6 @@
           = _('Ask your group owner to set up a group runner.')
 
     - else
-      %h3.gl-heading-5.gl-mt-5.gl-mb-0.gl-px-5
-        = _('Available group runners: %{runners}') % { runners: @group_runners_count }
       %ul.content-list
         = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
       = paginate @group_runners, theme: "gitlab", param_name: "group_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }

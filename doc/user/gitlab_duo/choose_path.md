@@ -36,7 +36,7 @@ Follow this path to learn how to:
 - Generate, understand, and refactor code
 - Create tests automatically
 
-[Start here: Code Suggestions →](../../user/project/repository/code_suggestions/_index.md)
+[Start here: Code Suggestions →](../project/repository/code_suggestions/_index.md)
 
 {{< /tab >}}
 
@@ -50,7 +50,7 @@ Follow this path to learn how to:
 - Get AI-powered code reviews
 - Summarize review comments and generate commit messages
 
-[Start here: GitLab Duo in merge requests →](../../user/project/merge_requests/duo_in_merge_requests.md)
+[Start here: GitLab Duo in merge requests →](../project/merge_requests/duo_in_merge_requests.md)
 
 {{< /tab >}}
 
@@ -87,10 +87,10 @@ Need to do something specific? Here are some common tasks:
 | Task | Description | Quick Guide |
 |------|-------------|-------------|
 | Get AI assistance | Ask GitLab Duo questions about code, projects, or GitLab | [GitLab Duo Chat →](../gitlab_duo_chat/_index.md) |
-| Generate code | Get code suggestions as you type in your IDE | [Code Suggestions →](../../user/project/repository/code_suggestions/_index.md) |
-| Understand code | Have code explained in plain language | [Code Explanation →](../../user/project/repository/code_explain.md) |
+| Generate code | Get code suggestions as you type in your IDE | [Code Suggestions →](../project/repository/code_suggestions/_index.md) |
+| Understand code | Have code explained in plain language | [Code Explanation →](../project/repository/code_explain.md) |
 | Fix CI/CD issues | Analyze and fix failed jobs | [Root Cause Analysis →](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
-| Summarize changes | Generate descriptions for merge requests | [Merge Request Summary →](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) |
+| Summarize changes | Generate descriptions for merge requests | [Merge Request Summary →](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) |
 
 ## How GitLab Duo integrates with your workflow
 
@@ -108,14 +108,14 @@ GitLab Duo is integrated with your development processes and is available:
 If you're new to GitLab Duo, start with these features:
 
 - **[GitLab Duo Chat](../gitlab_duo_chat/_index.md)** - Ask questions about GitLab and get help with basic tasks
-- **[Code Explanation](../../user/project/repository/code_explain.md)** - Understand code in files or merge requests
-- **[Merge Request Summary](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes)** - Generate descriptions for your changes automatically
+- **[Code Explanation](../project/repository/code_explain.md)** - Understand code in files or merge requests
+- **[Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes)** - Generate descriptions for your changes automatically
 
 ### For intermediate users
 
 After you're comfortable with the basics, try these more advanced features:
 
-- **[Code Suggestions](../../user/project/repository/code_suggestions/_index.md)** - Get AI-powered code completion in your IDE
+- **[Code Suggestions](../project/repository/code_suggestions/_index.md)** - Get AI-powered code completion in your IDE
 - **[Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)** - Create tests for your code automatically
 - **[Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)** - Troubleshoot failed CI/CD jobs
 
@@ -125,7 +125,7 @@ When you're ready to maximize your productivity with GitLab Duo:
 
 - **[GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)** - Host LLMs on your own infrastructure
 - **[GitLab Duo Workflow](../duo_workflow/_index.md)** - Automate tasks in your development workflow
-- **[Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)** - Automatically generate merge requests to fix security issues
+- **[Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution)** - Automatically generate merge requests to fix security issues
 
 ## Best practices
 

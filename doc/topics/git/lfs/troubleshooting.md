@@ -190,3 +190,53 @@ Linux distributions, you can use simpler patterns. For example:
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
 ```
+
+## Warning: Possible LFS configuration issue
+
+You might see a warning in the GitLab UI that states:
+
+```plaintext
+Possible LFS configuration issue. This project contains LFS objects but there is no .gitattributes file.
+You can ignore this message if you recently added a .gitattributes file.
+```
+
+This warning occurs when Git LFS is enabled and contains LFS objects, but no `.gitattributes` file
+is detected in the root directory of your project. Git supports placing `.gitattributes` files in
+subdirectories, but GitLab only checks for this file in the root directory.
+
+The workaround is to create an empty `.gitattributes` file in the root directory:
+
+{{< tabs >}}
+
+{{< tab title="With Git" >}}
+
+1. Clone your repository::
+
+   ```shell
+   git clone <repository>
+   cd repository
+   ```
+
+1. Create an empty `.gitattributes` file:
+
+   ```shell
+   touch .gitattributes
+   git add .gitattributes
+   git commit -m "Add empty .gitattributes file to root directory"
+   git push
+   ```
+
+{{< /tab >}}
+
+{{< tab title="In the UI" >}}
+
+1. Select **Search or go to** and find your project.
+1. Select the plus icon (**+**) and **New file**.
+1. In the **Filename** field, enter `.gitattributes`.
+1. Select **Commit changes**.
+1. In the **Commit message** field, enter a commit message.
+1. Select **Commit changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}

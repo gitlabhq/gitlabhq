@@ -17,8 +17,6 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
 
   before do
     sign_in(user)
-
-    stub_feature_flags(blob_overflow_menu: false)
   end
 
   it "shows last commit for current directory", :js do
@@ -80,13 +78,12 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
       expect(page).to have_link("Browse Files").and have_no_link("Browse Directory")
     end
 
-    it "redirects to the permalink URL" do
+    it "copies permalink URL" do
       click_link(".gitignore")
-      click_link("Permalink")
+      click_button("File actions")
+      click_button("Copy permalink")
 
-      permalink_path = project_blob_path(project, "#{project.repository.commit.sha}/.gitignore")
-
-      expect(page).to have_current_path(permalink_path, ignore_query: true)
+      expect(page).to have_text("Permalink copied to clipboard.")
     end
   end
 
@@ -144,13 +141,12 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
         visit(project_tree_path(project, "markdown"))
       end
 
-      it "redirects to the permalink URL" do
+      it "copies permalink URL" do
         click_link(".gitignore")
-        click_link("Permalink")
+        click_button("File actions")
+        click_button("Copy permalink")
 
-        permalink_path = project_blob_path(project, "#{project.repository.commit('markdown').sha}/.gitignore")
-
-        expect(page).to have_current_path(permalink_path, ignore_query: true)
+        expect(page).to have_text("Permalink copied to clipboard.")
       end
 
       it "shows correct files and links" do

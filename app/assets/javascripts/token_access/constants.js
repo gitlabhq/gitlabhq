@@ -5,6 +5,7 @@ export const RESOURCE_DEPLOYMENTS = { value: 'DEPLOYMENTS', text: s__('JobToken|
 export const RESOURCE_ENVIRONMENTS = { value: 'ENVIRONMENTS', text: s__('JobToken|Environments') };
 export const RESOURCE_JOBS = { value: 'JOBS', text: s__('JobToken|Jobs') };
 export const RESOURCE_PACKAGES = { value: 'PACKAGES', text: s__('JobToken|Packages') };
+export const RESOURCE_PIPELINES = { value: 'PIPELINES', text: s__('JobToken|Pipelines') };
 export const RESOURCE_RELEASES = { value: 'RELEASES', text: s__('JobToken|Releases') };
 export const RESOURCE_SECURE_FILES = { value: 'SECURE_FILES', text: s__('JobToken|Secure files') };
 export const RESOURCE_TERRAFORM_STATE = {
@@ -55,6 +56,16 @@ export const POLICY_ADMIN_PACKAGES = {
   text: READ_AND_WRITE,
   resource: RESOURCE_PACKAGES,
 };
+export const POLICY_READ_PIPELINES = {
+  value: 'READ_PIPELINES',
+  text: READ,
+  resource: RESOURCE_PIPELINES,
+};
+export const POLICY_ADMIN_PIPELINES = {
+  value: 'ADMIN_PIPELINES',
+  text: READ_AND_WRITE,
+  resource: RESOURCE_PIPELINES,
+};
 export const POLICY_READ_RELEASES = {
   value: 'READ_RELEASES',
   text: READ,
@@ -103,6 +114,10 @@ export const POLICIES_BY_RESOURCE = [
   {
     resource: RESOURCE_PACKAGES,
     policies: [POLICY_NONE, POLICY_READ_PACKAGES, POLICY_ADMIN_PACKAGES],
+  },
+  {
+    resource: RESOURCE_PIPELINES,
+    policies: [POLICY_NONE, POLICY_READ_PIPELINES, POLICY_ADMIN_PIPELINES],
   },
   {
     resource: RESOURCE_RELEASES,

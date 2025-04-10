@@ -42184,6 +42184,7 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin Environments. |
 | <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Admin Jobs. |
 | <a id="cijobtokenscopepoliciesadmin_packages"></a>`ADMIN_PACKAGES` | Admin Packages. |
+| <a id="cijobtokenscopepoliciesadmin_pipelines"></a>`ADMIN_PIPELINES` | Admin Pipelines. |
 | <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin Releases. |
 | <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin Secure Files. |
 | <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin Terraform State. |
@@ -42191,6 +42192,7 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read Environments. |
 | <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read Jobs. |
 | <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read Packages. |
+| <a id="cijobtokenscopepoliciesread_pipelines"></a>`READ_PIPELINES` | Read Pipelines. |
 | <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read Releases. |
 | <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
 | <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |

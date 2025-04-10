@@ -24,7 +24,6 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
       end
 
       before do
-        stub_feature_flags(blob_overflow_menu: false)
         stub_feature_flags(directory_code_dropdown_updates: true)
       end
 
@@ -97,7 +96,6 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
       end
 
       before do
-        stub_feature_flags(blob_overflow_menu: false)
         stub_feature_flags(directory_code_dropdown_updates: false)
       end
 

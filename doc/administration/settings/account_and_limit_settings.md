@@ -115,7 +115,7 @@ You can also configure the prefix by using the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
 
 {{< /history >}}
 

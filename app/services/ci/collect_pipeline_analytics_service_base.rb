@@ -9,7 +9,6 @@ module Ci
     STATUS_TO_STATUS_GROUP = STATUS_GROUP_TO_STATUSES.flat_map { |k, v| v.product([k]) }.to_h
 
     ALLOWED_PERCENTILES = [50, 75, 90, 95, 99].freeze
-    MERGE_REQUEST_LIMIT = 100
 
     attr_reader :current_user, :container, :from_time, :to_time, :source, :ref, :status_groups, :duration_percentiles
 

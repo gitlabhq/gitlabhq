@@ -19,7 +19,7 @@ An SBOM is a machine-readable inventory of all the software components that comp
 
 An organization that's interested in using a software product may require an SBOM to determine how secure the product is before adopting it.
 
-If you're familiar with the GitLab package registry, you might wonder what the difference is between an SBOM and a [dependency list](../../../user/application_security/dependency_list/_index.md). The following table highlights the key differences:
+If you're familiar with the GitLab package registry, you might wonder what the difference is between an SBOM and a [dependency list](../../application_security/dependency_list/_index.md). The following table highlights the key differences:
 
 | Differences | Dependency list | SBOM |
 |---|---|---|

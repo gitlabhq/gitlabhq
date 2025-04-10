@@ -388,17 +388,17 @@ If a pipeline has multiple failed or canceled jobs, you can retry all of them at
    - Go to a merge request and select the **Pipelines** tab.
 1. For the pipeline with failed or canceled jobs, select **Retry all failed or canceled jobs** ({{< icon name="retry" >}}).
 
-## Cancel a job
+## Cancel jobs
 
-You can cancel a CI/CD job depending on its current state and the runner's capabilities.
+You can cancel a CI/CD job that hasn't completed yet.
 
-When you cancel a job, what happens next depends on the job state and runner capabilities:
+When you cancel a job, what happens next depends on its state and the GitLab Runner version:
 
-- For a `pending` job (not yet executing), the job is canceled immediately.
-- For a `running` job:
-  - If the runner supports graceful cancellation, the job enters the `canceling` state.
-    The runner can complete its [`after_script`](../yaml/_index.md#after_script) before the job is marked as `canceled`.
-  - If the runner doesn't support graceful cancellation, the job moves to the `canceled` state immediately.
+- For jobs that haven't started executing yet, the job is canceled immediately.
+- For running jobs:
+  - For GitLab Runner 16.10 and later with GitLab 17.0 and later, the job is marked as `canceling` while the runner runs the job's [`after_script`](../yaml/_index.md#after_script).
+    When `after_script` completes, the job is marked as `canceled`.
+  - For GitLab Runner 16.9 and earlier with GitLab 16.11 and earlier, the job is `canceled` immediately without running `after_script`.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -407,7 +407,7 @@ stateDiagram-v2
     accDescr: Shows possible state transitions for CI/CD jobs, including cancellation paths.
 
     direction TB
-    state if_graceful <>
+    state if_versions <>
     [*] --> pending: Job created
     pending --> canceled: Cancel requested
     canceled --> [*]
@@ -416,12 +416,15 @@ stateDiagram-v2
     success --> [*]
     running --> failed: Job fails
     failed --> [*]
-    running --> if_graceful: Cancel requested
-    if_graceful --> canceling: Runner supports graceful cancellation
-    if_graceful --> canceled: Runner doesn't support graceful cancellation
-    canceling --> canceled: Graceful cancellation complete
-    note right of if_graceful: Does the runner support graceful cancellation?
+    running --> if_versions: Cancel requested
+    if_versions --> canceling: GitLab 17.0 and later with GitLab Runner 16.10 and later
+    if_versions --> canceled: GitLab 16.11 and earlier with GitLab Runner 16.9 and earlier
+    canceling --> canceled: after_script complete
 ```
+
+If you need to cancel a job immediately without waiting for the `after_script`, use [force cancel](#force-cancel-a-job).
+
+### Cancel a job
 
 Prerequisites:
 
@@ -466,23 +469,24 @@ You can cancel all jobs in a running pipeline at once.
 
 {{< /history >}}
 
-If a job is stuck in the `canceling` state, you can force it to the `canceled` state.
+If you don't want to wait for `after_script` to finish or a job is unresponsive, you can force cancel it.
+Force cancel immediately moves a job from the `canceling` state to `canceled`.
+
+When you force cancel a job, the [job token](ci_job_token.md) is immediately revoked.
+If the runner is still executing the job, it loses access to GitLab.
+The runner aborts the job without waiting for `after_script` to complete.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
+- The job must be in the `canceling` state, which requires:
+  - GitLab 17.0 and later.
+  - GitLab Runner 16.10 and later.
 
 To force cancel a job:
 
-- From the job log, select **Force cancel**.
-
-{{< alert type="warning" >}}
-
-When you force cancel a job, the [job token](ci_job_token.md) is revoked.
-If the runner is still trying to execute the job, it loses access to GitLab.
-The runner aborts the job without waiting for `after_script` to complete.
-
-{{< /alert >}}
+1. Go to the job's log page.
+1. In the upper-right corner, select **Force cancel**.
 
 ## Troubleshoot a failed job
 

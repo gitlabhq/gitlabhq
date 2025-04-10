@@ -157,7 +157,7 @@ When you reassign a contribution to a user on the destination instance, the user
 
 {{< alert type="note" >}}
 
-User contribution mapping is not supported when you import projects to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
+User contribution mapping is not supported when you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
 When you import to a personal namespace, all contributions are assigned to
 a single non-functional user called `Import User` and they cannot be reassigned.
 [Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
@@ -196,7 +196,7 @@ A placeholder user is created for each user on the source instance, except in th
   Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
-- You are importing to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
+- You are importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
   Contributions are assigned to a single non-functional user called `Import User`.
   [Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
 

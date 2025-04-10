@@ -99,7 +99,6 @@ The following endpoints are available for CI/CD job tokens.
 | Environments: Read and write | `ADMIN_ENVIRONMENTS` | `PUT /projects/:id/environments/:environment_id` | Update an existing environment |
 | Environments: Read | `READ_ENVIRONMENTS` | `GET /projects/:id/environments/:environment_id` | Get a specific environment |
 | Environments: Read | `READ_ENVIRONMENTS` | `GET /projects/:id/environments` | List environments |
-| Jobs: Read and write | `ADMIN_JOBS` | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | Updates pipeline metadata |
 | Jobs: Read | `READ_JOBS` | `GET /jobs/:id/artifacts` | Download the artifacts file for job |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | Download a specific file from artifacts archive |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/:job_id/artifacts` | Download the artifacts archive from a job |
@@ -176,7 +175,6 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `GET /packages/maven/*path/:file_name` | Download the maven package file at instance level |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/npm/-/package/*package_name/dist-tags` | Get all tags for a given an NPM package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id/package_files` | List package files |
-| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id/pipelines` | Get the pipelines for a single project package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id` | Get a single project package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/composer/archives/*package_name` | Composer package endpoint to download a package archive |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | Recipe Digest |
@@ -214,6 +212,8 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | Recipe Upload Urls |
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` | NPM registry bulk advisory endpoint |
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/npm/-/npm/v1/security/audits/quick` | NPM registry quick audit endpoint |
+| Pipelines: Read and write | `ADMIN_PIPELINES` | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | Updates pipeline metadata |
+| Pipelines: Read | `READ_PIPELINES` | `GET /projects/:id/packages/:package_id/pipelines` | Get the pipelines for a single project package |
 | Releases: Read and write | `ADMIN_RELEASES` | `DELETE /projects/:id/releases/:tag_name/assets/links/:link_id` | Delete a release link |
 | Releases: Read and write | `ADMIN_RELEASES` | `DELETE /projects/:id/releases/:tag_name` | Delete a release |
 | Releases: Read and write | `ADMIN_RELEASES` | `POST /projects/:id/catalog/publish` | Publish a new component project release as version to the CI/CD catalog |

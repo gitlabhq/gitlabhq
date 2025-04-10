@@ -152,16 +152,16 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
     end
   end
 
-  describe 'Pipeline options' do
-    context 'when pipeline options contain inputs' do
+  describe 'Pipeline push options' do
+    context 'when push options contain inputs' do
       let(:pipeline_params) do
         {
           after: newrev,
           before: oldrev,
           checkout_sha: checkout_sha,
-          push_options: push_options,
+          push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
           ref: ref,
-          variables_attributes: variables_attributes
+          variables_attributes: []
         }
       end
 
@@ -182,7 +182,6 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
       let(:pipeline_service) { double(execute: service_response) }
       let(:service_response) { double(error?: false, payload: pipeline, message: 'message') }
       let(:pipeline) { double(persisted?: true) }
-      let(:variables_attributes) { [] }
 
       let(:inputs) do
         {
@@ -204,6 +203,8 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
       end
 
       it 'calls the create pipeline service' do
+        expect(Ci::PipelineCreation::PushOptions).to receive(:new).with(push_options).and_call_original
+
         expect(Ci::CreatePipelineService)
           .to receive(:new)
           .with(project, user, pipeline_params)
@@ -223,7 +224,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         after: newrev,
         before: oldrev,
         checkout_sha: checkout_sha,
-        push_options: push_options, # defined in each context
+        push_options: an_instance_of(Ci::PipelineCreation::PushOptions), # defined in each context
         ref: ref,
         variables_attributes: variables_attributes # defined in each context
       }
@@ -331,7 +332,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         after: newrev,
         before: oldrev,
         checkout_sha: checkout_sha,
-        push_options: push_options,
+        push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
         ref: ref,
         variables_attributes: variables_attributes
       }

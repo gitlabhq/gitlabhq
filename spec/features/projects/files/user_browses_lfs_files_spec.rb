@@ -7,7 +7,6 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :s
   let(:user) { project.first_owner }
 
   before do
-    stub_feature_flags(blob_overflow_menu: false)
     sign_in(user)
   end
 
@@ -63,14 +62,18 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :s
       expect(page).not_to have_content('size 1575078')
 
       page.within('.content') do
-        expect(page).to have_content('Delete')
         expect(page).to have_content('History')
-        expect(page).to have_content('Permalink')
-        expect(page).to have_content('Replace')
-        expect(page).to have_link('Download')
 
         expect(page).not_to have_content('Annotate')
         expect(page).not_to have_content('Blame')
+
+        click_button 'File actions'
+        expect(page).to have_button('Copy permalink')
+        expect(page).to have_button('Replace')
+        expect(page).to have_button('Delete')
+
+        click_button 'File actions' # close dropdown to make Download visible
+        expect(page).to have_link('Download')
 
         click_button 'Edit'
 

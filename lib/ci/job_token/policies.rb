@@ -12,6 +12,8 @@ module Ci
         :admin_jobs,
         :read_packages,
         :admin_packages,
+        :read_pipelines,
+        :admin_pipelines,
         :read_releases,
         :admin_releases,
         :read_secure_files,

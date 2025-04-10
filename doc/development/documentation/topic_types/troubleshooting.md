@@ -60,7 +60,7 @@ The workaround is...
 If multiple causes or solutions exist, consider putting them into a table format.
 If you use the exact error message, surround it in backticks so it's styled as code.
 
-For more guidance on solution types, see [workaround](../../documentation/styleguide/word_list.md#workaround) and [resolution, resolve](../../documentation/styleguide/word_list.md#resolution-resolve).
+For more guidance on solution types, see [workaround](../styleguide/word_list.md#workaround) and [resolution, resolve](../styleguide/word_list.md#resolution-resolve).
 
 ## Troubleshooting topic titles
 

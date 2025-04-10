@@ -181,7 +181,7 @@ You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.m
 The default maximum size for each artifact file in a job is 100 MB.
 For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
 
-Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
+Job artifacts defined with `artifacts:reports` can have [different limits](../instance_limits.md#maximum-file-size-per-type-of-artifact).
 In this case, the smaller value is used.
 
 {{< alert type="note" >}}
@@ -414,7 +414,7 @@ for all projects from the **Admin** area.
 
 Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 When turned on, archived job logs are incrementally uploaded to object storage.
-For more information, see [incremental logging](../../administration/cicd/job_logs.md#incremental-logging).
+For more information, see [incremental logging](../cicd/job_logs.md#incremental-logging).
 
 Prerequisites:
 

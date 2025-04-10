@@ -423,7 +423,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages,
+    it_behaves_like 'enforcing job token policies', :read_pipelines,
       allow_public_access_for_enabled_project_features: :package_registry do
       let(:request) { get api(package_pipelines_url), params: { job_token: target_job.token } }
     end

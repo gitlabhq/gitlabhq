@@ -36,7 +36,7 @@ export default {
     v-gl-tooltip-directive="$options.i18n.dropdownLabel"
     no-caret
     icon="ellipsis_v"
-    data-testid="default-actions-container"
+    data-testid="repository-overflow-menu"
     placement="bottom-end"
     category="tertiary"
     :toggle-text="$options.i18n.dropdownLabel"

@@ -149,7 +149,7 @@ When configuring GitLab Duo Chat sub-features, if you do not select a specific s
 
 ### Self-host the GitLab documentation
 
-If your setup of GitLab Duo Self-Hosted stops you from accessing the GitLab documentation at `docs.gitlab.com`, you can self-host the documentation instead. For more information, see how to [host the GitLab product documentation](../../administration/docs_self_host.md).
+If your setup of GitLab Duo Self-Hosted stops you from accessing the GitLab documentation at `docs.gitlab.com`, you can self-host the documentation instead. For more information, see how to [host the GitLab product documentation](../docs_self_host.md).
 
 ### Disable GitLab Duo features
 

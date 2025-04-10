@@ -138,7 +138,7 @@ To close projects:
 
 GitLab Duo Workflow requires that projects belong to a group namespace.
 
-To determine the namespace your project is in, [look at the URL](../../user/namespace/_index.md#determine-which-type-of-namespace-youre-in).
+To determine the namespace your project is in, [look at the URL](../namespace/_index.md#determine-which-type-of-namespace-youre-in).
 
 If necessary, you can
 [transfer your project to a group namespace](../../tutorials/move_personal_project_to_group/_index.md#move-your-project-to-a-group).

@@ -277,7 +277,11 @@ export default {
 };
 </script>
 <template>
-  <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+  <div
+    v-if="showBlobControls"
+    class="gl-flex gl-flex-wrap gl-items-center gl-gap-3"
+    data-testid="blob-controls"
+  >
     <open-mr-badge
       v-if="glFeatures.filterBlobPath"
       :project-path="projectPath"

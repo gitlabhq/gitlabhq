@@ -120,7 +120,7 @@ To ensure tag protection, direct manifest deletion requests are only allowed whe
 
 ## Deleting container images
 
-You cannot [delete container images](../../packages/container_registry/delete_container_registry_images.md) if all the following conditions are true:
+You cannot [delete container images](delete_container_registry_images.md) if all the following conditions are true:
 
 - The container image has tags.
 - The project has container registry tag protection rules.

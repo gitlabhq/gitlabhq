@@ -1,5 +1,6 @@
 <script>
 import {
+  GlIcon,
   GlLoadingIcon,
   GlDisclosureDropdownItem,
   GlTooltipDirective,
@@ -25,6 +26,7 @@ export default {
     displayText: __('Unlocked'),
   },
   components: {
+    GlIcon,
     GlLoadingIcon,
     GlDisclosureDropdownItem,
   },
@@ -81,6 +83,9 @@ export default {
     },
     lockToggleText() {
       return this.isLocked ? this.unlockMergeRequestText : this.lockMergeRequestText;
+    },
+    lockToggleIcon() {
+      return this.isLocked ? 'lock-open' : 'lock';
     },
     lockingMergeRequestText() {
       return sprintf(this.$options.i18n.lockingMergeRequest, {
@@ -188,6 +193,7 @@ export default {
           <gl-loading-icon inline size="sm" /> {{ lockToggleInProgressText }}
         </template>
         <template v-else>
+          <gl-icon :name="lockToggleIcon" class="gl-mr-2" variant="subtle" />
           {{ lockToggleText }}
         </template>
       </span>

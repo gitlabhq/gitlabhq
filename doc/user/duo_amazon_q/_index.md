@@ -148,16 +148,16 @@ In addition, these features are available on GitLab Duo with Amazon Q.
 
 | Feature                                                                                                                                | GitLab version |
 |----------------------------------------------------------------------------------------------------------------------------------------|----------------|
-| [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md)                                                                                | GitLab 17.11 and later |
-| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)                                                           | GitLab 17.11 and later |
-| [Code Explanation](../../user/project/repository/code_explain.md)                                                                      | GitLab 17.11 and later |
-| [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.11 and later |
-| [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.11 and later |
-| [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.11 and later |
-| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.11 and later |
-| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | GitLab 17.11 and later |
-| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | GitLab 17.11 and later |
-| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | GitLab 17.11 and later |
+| [GitLab Duo Chat](../gitlab_duo_chat/_index.md)                                                                                | GitLab 17.11 and later |
+| [Code Suggestions](../project/repository/code_suggestions/_index.md)                                                           | GitLab 17.11 and later |
+| [Code Explanation](../project/repository/code_explain.md)                                                                      | GitLab 17.11 and later |
+| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.11 and later |
+| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.11 and later |
+| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.11 and later |
+| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.11 and later |
+| [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | GitLab 17.11 and later |
+| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | GitLab 17.11 and later |
+| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | GitLab 17.11 and later |
 
 ## Related topics
 

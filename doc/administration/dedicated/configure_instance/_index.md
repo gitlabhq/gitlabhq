@@ -54,13 +54,15 @@ For all other instance configurations, submit a support ticket according to the
 
 ### Apply configuration changes in Switchboard
 
-You can apply configuration changes made in Switchboard immediately or defer them until your next scheduled weekly [maintenance window](../../dedicated/maintenance.md#maintenance-windows).
+You can apply configuration changes made in Switchboard immediately or defer them until your next scheduled weekly [maintenance window](../maintenance.md#maintenance-windows).
 
 When you apply changes immediately:
 
 - Deployment can take up to 90 minutes.
 - Changes are applied in the order they're saved.
 - You can save multiple changes and apply them in one batch.
+- Your GitLab Dedicated instance remains available during the deployment.
+- Changes to private hosted zones can disrupt services that use these records for up to 5 minutes.
 
 After the deployment job is complete, you receive an email notification. Check your spam folder if you do not see a notification in your main inbox.
 All users with access to view or edit your tenant in Switchboard receive a notification for each change. For more information, see [Manage Switchboard notification preferences](users_notifications.md#manage-notification-preferences).

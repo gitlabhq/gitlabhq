@@ -56,7 +56,7 @@ To view contribution analytics:
 
    - On the **Contribution analytics** bar charts, hover over the bar with the member's name.
    - In the **Contributions per group member** table, select the member's name.
-   The member's GitLab profile is displayed, and you can explore their [contributions calendar](../../../user/profile/contributions_calendar.md).
+   The member's GitLab profile is displayed, and you can explore their [contributions calendar](../../profile/contributions_calendar.md).
 
 To retrieve metrics for user contributions, you can also use the [GraphQL API](../../../api/graphql/reference/_index.md#groupcontributions).
 

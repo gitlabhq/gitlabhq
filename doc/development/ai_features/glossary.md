@@ -133,7 +133,7 @@ A mechanism used to take an input (such as a user question) into a system, retri
 
 ### Self-hosted model
 
-A LLM hosted externally to GitLab by an organisation and interacting with GitLab AI features. See also the [style guide reference](../../development/documentation/styleguide/word_list.md#self-hosted-model).
+A LLM hosted externally to GitLab by an organisation and interacting with GitLab AI features. See also the [style guide reference](../documentation/styleguide/word_list.md#self-hosted-model).
 
 ### Similarity Score
 

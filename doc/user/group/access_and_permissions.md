@@ -124,7 +124,7 @@ Keep in mind that restricting group access by IP address has the following impli
 ### GitLab.com access restrictions
 
 IP address-based group access restriction doesn't work with [hosted runners for GitLab.com](../../ci/runners/hosted_runners/_index.md).
-These runners operate as ephemeral virtual machines with [dynamic IP addresses](../../user/gitlab_com/_index.md#ip-range) from large
+These runners operate as ephemeral virtual machines with [dynamic IP addresses](../gitlab_com/_index.md#ip-range) from large
 cloud provider pools (AWS, Google Cloud). To allow these broad IP ranges defeat the purpose of IP address-based access restriction.
 
 ## Restrict group access by domain

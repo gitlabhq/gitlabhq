@@ -9150,9 +9150,6 @@ msgstr ""
 msgid "Available ID"
 msgstr ""
 
-msgid "Available group runners: %{runners}"
-msgstr ""
-
 msgid "Available on demand"
 msgstr ""
 
@@ -23003,7 +23000,10 @@ msgstr ""
 msgid "DuoCodeReview|:wave: There's nothing for me to review."
 msgstr ""
 
-msgid "DuoCodeReview|Hey :wave: I'm starting to review your merge request and I will let you know when I'm finished."
+msgid "DuoCodeReview|Can't access the merge request. When SAML single sign-on is enabled on a group or its parent, Duo Code Reviews can't be requested from the API. Request a review from the GitLab UI instead."
+msgstr ""
+
+msgid "DuoCodeReview|Hey :wave: I'm reviewing your merge request now. I will let you know when I'm finished."
 msgstr ""
 
 msgid "DuoCodeReview|I encountered some problems while responding to your query. Please try again later."
@@ -23013,6 +23013,9 @@ msgid "DuoCodeReview|I finished my review and found nothing to comment on. Nice 
 msgstr ""
 
 msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Please try again later."
+msgstr ""
+
+msgid "DuoCodeReview|I've received your Duo Code Review request, and will review your code shortly."
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|AI Impact Dashboard measures the ROI of AI"
@@ -34499,6 +34502,9 @@ msgid "JobToken|Jobs"
 msgstr ""
 
 msgid "JobToken|Packages"
+msgstr ""
+
+msgid "JobToken|Pipelines"
 msgstr ""
 
 msgid "JobToken|Read"
@@ -51494,9 +51500,6 @@ msgstr ""
 msgid "Runners|Available"
 msgstr ""
 
-msgid "Runners|Available instance runners"
-msgstr ""
-
 msgid "Runners|Available to all projects"
 msgstr ""
 
@@ -51737,6 +51740,9 @@ msgid "Runners|Install the %{gcloudLinkStart}Google Cloud CLI%{gcloudLinkEnd} an
 msgstr ""
 
 msgid "Runners|Instance"
+msgstr ""
+
+msgid "Runners|Instance runners"
 msgstr ""
 
 msgid "Runners|Instance runners are disabled in the group settings."
@@ -59021,6 +59027,9 @@ msgid "Successfully deactivated"
 msgstr ""
 
 msgid "Successfully deleted WebAuthn device."
+msgstr ""
+
+msgid "Successfully deleted requirement statuses"
 msgstr ""
 
 msgid "Successfully deleted requirement statuses."

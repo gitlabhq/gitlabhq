@@ -26,7 +26,7 @@ You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your
 
 For more information on troubleshooting GitLab Duo, see:
 
-- [Troubleshooting GitLab Duo](../../../../user/gitlab_duo/troubleshooting.md).
+- [Troubleshooting GitLab Duo](../../../gitlab_duo/troubleshooting.md).
 - [GitLab Duo Chat troubleshooting](../../../gitlab_duo_chat/troubleshooting.md).
 - [Troubleshooting GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/troubleshooting.md).
 

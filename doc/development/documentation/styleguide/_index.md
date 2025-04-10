@@ -1042,6 +1042,8 @@ Examples:
 
 ### Link to specific lines of code
 
+<!-- when blob_overflow_menu is removed, change 'button' to 'dropdown item' -->
+
 When linking to specific lines in a file, link to a commit instead of to the
 branch. Lines of code change over time. Linking to a line by using
 the commit link ensures the user lands on the line you're referring to. The

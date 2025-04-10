@@ -286,6 +286,14 @@ To link the project:
 
 The project becomes a security policy project, and the setting becomes available.
 
+{{< alert type="note" >}}
+
+To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
+In the security policy project, go to **Settings > CI/CD > Job token permissions** and add the authorized groups and projects to the allowlist. Alternatively, you can authorize all groups and projects.
+If you don't see the **CI/CD** settings, go to **Settings > General > Visibility, project features, permissions** and enable **CI/CD**.
+
+{{< /alert >}}
+
 #### Configuration
 
 1. In the policy project, select **Settings** > **General** > **Visibility, project features, permissions**.
@@ -627,8 +635,8 @@ include:
     file: $CI_CONFIG_PATH
     rules:
       - exists:
-          paths: 
-            - '$CI_CONFIG_PATH' 
+          paths:
+            - '$CI_CONFIG_PATH'
           project: '$CI_PROJECT_PATH'
           ref: '$CI_COMMIT_SHA'
 

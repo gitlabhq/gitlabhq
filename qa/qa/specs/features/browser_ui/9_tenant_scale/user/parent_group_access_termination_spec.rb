@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Tenant Scale' do
-    describe 'User', :requires_admin, product_group: :organizations do
+    describe(
+      'User', :requires_admin,
+      product_group: :organizations,
+      feature_flag: { name: :blob_overflow_menu }
+    ) do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) { create(:user, api_client: admin_api_client) }
@@ -14,7 +18,7 @@ module QA
       context 'with terminated parent group membership' do
         before do
           group.add_member(user)
-
+          Runtime::Feature.enable(:blob_overflow_menu)
           Flow::Login.while_signed_in_as_admin do
             group.visit!
 
@@ -37,7 +41,7 @@ module QA
 
           Page::File::Show.perform(&:click_edit)
 
-          expect(page).to have_text("You can’t edit files directly in this project.")
+          expect(page).to have_text("You're not allowed to make changes to this project directly.")
         end
       end
     end

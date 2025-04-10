@@ -67,18 +67,18 @@ Our APIs have special rules regarding deprecations and breaking changes.
 
 ### REST API v4
 
-REST API v4 [cannot have breaking changes made to it](../../development/api_styleguide.md#breaking-changes)
+REST API v4 [cannot have breaking changes made to it](../api_styleguide.md#breaking-changes)
 unless the API feature was previously
-[marked as experimental or beta](../../development/api_styleguide.md#experimental-beta-and-generally-available-features).
+[marked as experimental or beta](../api_styleguide.md#experimental-beta-and-generally-available-features).
 
-See [What to do instead of a breaking change?](../../development/api_styleguide.md#what-to-do-instead-of-a-breaking-change)
+See [What to do instead of a breaking change?](../api_styleguide.md#what-to-do-instead-of-a-breaking-change)
 
 ### GraphQL API
 
 The GraphQL API has a requirement for a [longer deprecation cycle](../../api/graphql/_index.md#deprecation-and-removal-process)
 than the [standard cycle](#when-can-a-feature-be-removedchanged) before a breaking change can be made.
 
-See the [GraphQL deprecation process](../../development/api_graphql_styleguide.md#deprecating-schema-items).
+See the [GraphQL deprecation process](../api_graphql_styleguide.md#deprecating-schema-items).
 
 ## How are Community Contributions to a deprecated feature handled?
 

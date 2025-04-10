@@ -225,7 +225,7 @@ Example:
 ```
 
 All objects are replicated and verified, which are defined in the [Geo glossary](../../glossary.md). Read more about the
-methods we use for replicating and verifying each data type in [supported Geo data types](../../replication/datatypes.md#data-types).
+methods we use for replicating and verifying each data type in [supported Geo data types](../datatypes.md#data-types).
 
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../../logs/log_parsing.md#find-most-common-geo-sync-errors)

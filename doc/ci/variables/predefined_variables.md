@@ -169,7 +169,7 @@ Predefined variables become available at three different phases of pipeline exec
 
 These variables are available before GitLab creates the pipeline
 (Pre-pipeline). These variables can be used with
-[`include:rules`](../../ci/yaml/includes.md#use-rules-with-include)
+[`include:rules`](../yaml/includes.md#use-rules-with-include)
 and as environment variables in jobs.
 
 The pipeline must be a [merge request pipeline](../pipelines/merge_request_pipelines.md),

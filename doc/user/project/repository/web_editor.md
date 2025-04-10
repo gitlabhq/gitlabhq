@@ -264,6 +264,34 @@ To cancel changes, edit, upload, or delete a file, from the Web Editor:
    - Confirm you want to cancel changes: Select **OK**.
    - Don't cancel changes: Select **Cancel**.
 
+### File operations from the Actions menu
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519325) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `blob_overflow_menu`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+The **Actions** ({{< icon name="ellipsis_v" >}}) menu consolidates file operations into the
+dropdown list. From this menu, you can:
+
+- Edit a file.
+- Upload a file.
+- Delete a file.
+- Replace a file.
+
+To complete these actions:
+
+1. Open the file in GitLab.
+1. In the upper-right corner, next to a file name, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select your desired action.
+
 ## Create a directory
 
 To create a directory in the Web Editor:

@@ -14,7 +14,7 @@ history. By creating a keep-around ref, we ensure these commits remain in the re
 they're no longer part of the active branch history.
 
 For more information about developing with Git references on Gitaly, see
-[Git references used by Gitaly](../../development/gitaly.md#git-references-used-by-gitaly).
+[Git references used by Gitaly](../gitaly.md#git-references-used-by-gitaly).
 
 ## Downsides of keep-around refs
 

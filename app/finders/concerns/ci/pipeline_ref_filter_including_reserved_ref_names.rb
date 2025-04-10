@@ -16,7 +16,7 @@ module Ci
     # @param pipeline_sources [Array<String>, String, nil] The pipeline sources to consider
     # @return [Array<String>] Array of refs including the original and any reserved refs
     def ref_and_associated_reserved_refs(container, ref, pipeline_sources = nil)
-      return [ref] unless ref && Feature.enabled?(:include_reserved_refs_in_pipeline_refs_filter, actor(container))
+      return [] unless ref
 
       normalized_sources = Array.wrap(pipeline_sources || Pipeline.sources.keys).map(&:to_s)
 

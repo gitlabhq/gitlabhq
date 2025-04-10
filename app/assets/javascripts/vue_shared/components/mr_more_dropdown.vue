@@ -139,6 +139,9 @@ export default {
     draftLabel() {
       return this.draft ? this.$options.i18n.markAsReady : this.$options.i18n.markAsDraft;
     },
+    draftIcon() {
+      return this.draft ? 'check-circle' : 'review-list';
+    },
     draftState() {
       return this.draft ? 'ready' : 'draft';
     },
@@ -277,7 +280,12 @@ export default {
           class="sm:!gl-hidden"
           data-testid="edit-merge-request"
           :item="editItem"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="pencil" class="gl-mr-2" variant="subtle" />
+            {{ $options.i18n.edit }}
+          </template>
+        </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="isOpen && canUpdateMergeRequest"
@@ -286,6 +294,7 @@ export default {
         >
           <template #list-item>
             <gl-loading-icon v-if="isLoadingDraft" inline size="sm" />
+            <gl-icon v-else :name="draftIcon" class="gl-mr-2" variant="subtle" />
             {{ draftLabel }}
           </template>
         </gl-disclosure-dropdown-item>
@@ -304,6 +313,7 @@ export default {
               }}
             </template>
             <template v-else>
+              <gl-icon name="merge-request-close" class="gl-mr-2" variant="subtle" />
               {{ sprintf($options.i18n.close, { issuableType: $options.i18n.issuableName }) }}
             </template>
           </template>
@@ -324,6 +334,7 @@ export default {
               }}
             </template>
             <template v-else>
+              <gl-icon name="merge-request-open" class="gl-mr-2" variant="subtle" />
               {{ sprintf($options.i18n.reopen, { issuableType: $options.i18n.issuableName }) }}
             </template>
           </template>
@@ -335,6 +346,7 @@ export default {
           class="js-sidebar-lock-root"
         >
           <template #list-item>
+            <gl-icon name="lock" class="gl-mr-2" variant="subtle" />
             {{ sprintf($options.i18n.lock, { issuableType: $options.i18n.issuableName }) }}
           </template>
         </gl-disclosure-dropdown-item>
@@ -346,6 +358,7 @@ export default {
           @action="copyClipboardAction"
         >
           <template #list-item>
+            <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
             {{ $options.i18n.copyReferenceText }}
           </template>
         </gl-disclosure-dropdown-item>
@@ -362,6 +375,7 @@ export default {
           @action="reportAbuseAction(true)"
         >
           <template #list-item>
+            <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
             {{ $options.i18n.reportAbuse }}
           </template>
         </gl-disclosure-dropdown-item>

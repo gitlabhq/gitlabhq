@@ -20,6 +20,10 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
 
   let_it_be(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let_it_be(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
+  let_it_be(:project2_non_default_branch_tree_path) do
+    project_tree_path(project2, 'non-default-branch', project2.repository.root_ref)
+  end
+
   let_it_be(:project3_protected_branch_tree_path_root_ref) do
     project_tree_path(project3, 'protected-branch', project3.repository.root_ref)
   end
@@ -27,7 +31,6 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
   let_it_be(:user) { create(:user) }
 
   before do
-    stub_feature_flags(blob_overflow_menu: false)
     sign_in(user)
   end
 
@@ -46,6 +49,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
 
       expect(page).to have_content('.gitignore')
 
+      click_button 'File actions'
       click_on('Replace')
       find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
@@ -60,21 +64,20 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
     end
   end
 
-  context 'when an user does not have write access' do
+  context 'when a user does not have write access' do
     before_all do
       project2.add_reporter(user)
     end
 
-    before do
+    it 'replaces an existed file with a new one in a forked project',
+      :sidekiq_might_not_need_inline do
       visit(project2_tree_path_root_ref)
       wait_for_requests
-    end
-
-    it 'replaces an existed file with a new one in a forked project', :sidekiq_might_not_need_inline do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
 
+      click_button 'File actions'
       click_on('Replace')
 
       expect(page).to have_link('Fork')
@@ -84,6 +87,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
 
       expect(page).to have_content(fork_message)
 
+      click_button 'File actions'
       click_on('Replace')
       find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
@@ -120,6 +124,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
 
       expect(page).to have_content('.gitignore')
 
+      click_button 'File actions'
       click_on('Replace')
 
       epoch = Time.zone.now.strftime('%s%L').last(5)

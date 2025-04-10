@@ -3939,7 +3939,7 @@ deploystacks: [vultr, processing]
           PROVIDER: [aws, gcp]
   ```
 
-  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) with `parallel:matrix`.
+  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](yaml_optimization.md#reference-tags) with `parallel:matrix`.
 
 **Related topics**:
 

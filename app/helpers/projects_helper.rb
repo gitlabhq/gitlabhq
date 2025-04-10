@@ -742,6 +742,10 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
+  def scheduled_for_deletion?(project)
+    project.marked_for_deletion_at.present?
+  end
+
   def delete_delayed_message(project)
     date = permanent_deletion_date_formatted(Date.current)
 

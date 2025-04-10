@@ -29,10 +29,6 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
     ).execute
   end
 
-  before do
-    stub_feature_flags(blob_overflow_menu: false)
-  end
-
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
@@ -471,6 +467,7 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
       expect(page).to have_link('Download (23.81 KiB)')
       # does not show a viewer switcher
       expect(page).not_to have_selector('.js-blob-viewer-switcher')
+
       expect(page).not_to have_selector('.js-copy-blob-source-btn:not(.disabled)')
       expect(page).not_to have_link('Open raw')
     end

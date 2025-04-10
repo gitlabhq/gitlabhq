@@ -27,7 +27,7 @@ The following Rake tasks are available for use with GitLab:
 | Tasks                                                                                                      | Description |
 |:-----------------------------------------------------------------------------------------------------------|:------------|
 | [Access token expiration tasks](tokens/_index.md)                                                          | Bulk extend or remove expiration dates for access tokens. |
-| [Back up and restore](../../administration/backup_restore/_index.md)                                          | Back up, restore, and migrate GitLab instances between servers. |
+| [Back up and restore](../backup_restore/_index.md)                                          | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                                                                     | Clean up unneeded items from GitLab instances. |
 | [Development](../../development/rake_tasks.md)                                                                | Tasks for GitLab contributors. |
 | [Elasticsearch](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks)         | Maintain Elasticsearch in a GitLab instance. |
@@ -36,9 +36,9 @@ The following Rake tasks are available for use with GitLab:
 | [Import large project exports](project_import_export.md#import-large-projects)                             | Import large GitLab [project exports](../../user/project/settings/import_export.md). |
 | [Incoming email](incoming_email.md)                                                                        | Incoming email-related tasks. |
 | [Integrity checks](check.md)                                                                               | Check the integrity of repositories, files, LDAP, and more. |
-| [LDAP maintenance](ldap.md)                                                                                | [LDAP](../../administration/auth/ldap/_index.md)-related tasks. |
+| [LDAP maintenance](ldap.md)                                                                                | [LDAP](../auth/ldap/_index.md)-related tasks. |
 | [Password](password.md)                                                                                    | Password management tasks. |
-| [Praefect Rake tasks](praefect.md)                                                                         | [Praefect](../../administration/gitaly/praefect.md)-related tasks. |
+| [Praefect Rake tasks](praefect.md)                                                                         | [Praefect](../gitaly/praefect.md)-related tasks. |
 | [Project import/export](project_import_export.md)                                                          | Prepare for [project exports and imports](../../user/project/settings/import_export.md). |
 | [Sidekiq job migration](../sidekiq/sidekiq_job_migration.md)                                                          | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
 | [Service Desk email](service_desk_email.md)                                                                | Service Desk email-related tasks. |

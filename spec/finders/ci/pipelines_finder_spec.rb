@@ -183,16 +183,6 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
             is_expected.to contain_exactly(pipeline)
           end
 
-          context 'when FF is disabled' do
-            before do
-              stub_feature_flags(include_reserved_refs_in_pipeline_refs_filter: false)
-            end
-
-            it 'returns empty' do
-              is_expected.to be_empty
-            end
-          end
-
           context 'when source does not include merge_request_event' do
             let(:params) do
               {

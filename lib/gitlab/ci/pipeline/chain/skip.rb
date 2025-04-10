@@ -29,7 +29,7 @@ module Gitlab
           private
 
           def skipped?
-            !@command.ignore_skip_ci && (commit_message_skips_ci? || push_option_skips_ci?)
+            !@command.ignore_skip_ci && (commit_message_skips_ci? || !!@command.push_options&.skips_ci?)
           end
 
           def commit_message_skips_ci?
@@ -38,11 +38,6 @@ module Gitlab
             strong_memoize(:commit_message_skips_ci) do
               !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
             end
-          end
-
-          def push_option_skips_ci?
-            @command.push_options.present? &&
-              @command.push_options.deep_symbolize_keys.dig(:ci, :skip).present?
           end
         end
       end

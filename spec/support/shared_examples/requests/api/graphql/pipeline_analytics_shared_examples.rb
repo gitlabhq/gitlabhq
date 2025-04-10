@@ -172,22 +172,6 @@ RSpec.shared_examples 'pipeline analytics graphql query' do |resource|
                 )
               end
 
-              context 'when FF is disabled' do
-                before do
-                  stub_feature_flags(include_reserved_refs_in_pipeline_refs_filter: false)
-                end
-
-                it 'returns no pipelines' do
-                  expect(aggregate).to eq(
-                    'label' => nil,
-                    'all' => '0',
-                    'success' => '0',
-                    'failed' => '0',
-                    'other' => '0'
-                  )
-                end
-              end
-
               context 'when source does not include MERGE_REQUEST_EVENT' do
                 let(:source) { :PUSH }
 

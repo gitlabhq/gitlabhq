@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Tenant Scale' do
-    describe 'User', :requires_admin, product_group: :organizations do
+    describe(
+      'User', :requires_admin,
+      product_group: :organizations,
+      feature_flag: { name: :blob_overflow_menu }
+    ) do
       let!(:parent_group) do
         create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}")
       end
@@ -21,6 +25,7 @@ module QA
 
         before do
           parent_group.add_member(parent_group_user)
+          Runtime::Feature.enable(:blob_overflow_menu)
         end
 
         it(
@@ -68,7 +73,7 @@ module QA
 
           Page::File::Show.perform(&:click_edit)
 
-          expect(page).to have_text("You can’t edit files directly in this project.")
+          expect(page).to have_text("You're not allowed to make changes to this project directly.")
         end
       end
     end

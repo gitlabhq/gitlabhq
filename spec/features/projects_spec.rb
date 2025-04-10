@@ -272,27 +272,64 @@ RSpec.describe 'Project', feature_category: :source_code_management do
   end
 
   describe 'removal', :js do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :public, owners: user) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
 
     before do
-      sign_in(user)
-      project.add_maintainer(user)
-      visit edit_project_path(project)
+      stub_application_setting(deletion_adjourned_period: 7)
     end
 
-    it 'focuses on the confirmation field' do
-      click_button 'Delete project'
+    context 'when the downtier_delayed_deletion feature flag is enabled' do
+      let(:project_to_delete) { project }
 
-      expect(page).to have_selector '#confirm_name_input:focus'
+      before do
+        sign_in user
+        visit edit_project_path(project)
+      end
+
+      it 'deletes project delayed and is restorable', :freeze_time do
+        deletion_adjourned_period = ::Gitlab::CurrentSettings.deletion_adjourned_period
+        deletion_date = (Time.now.utc + deletion_adjourned_period.days).strftime('%F')
+
+        expect(page).to have_content("This action will place this project, including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, and delete it permanently on #{deletion_date}.")
+
+        click_button "Delete project"
+
+        expect(page).to have_content("This project can be restored until #{deletion_date}.")
+
+        fill_in 'confirm_name_input', with: project_to_delete.path_with_namespace
+        click_button 'Yes, delete project'
+        wait_for_requests
+
+        expect(page).to have_content("This project is pending deletion, and will be deleted on #{deletion_date}. Repository and other project resources are read-only.")
+
+        visit inactive_dashboard_projects_path
+
+        expect(page).to have_content(project_to_delete.name_with_namespace)
+      end
     end
 
-    it 'deletes a project', :sidekiq_inline do
-      expect { remove_with_confirm('Delete project', project.path_with_namespace, 'Yes, delete project') }.to change { Project.count }.by(-1)
-      expect(page).to have_content "Project '#{project.full_name}' is being deleted."
-      expect(Project.all.count).to be_zero
-      expect(project.issues).to be_empty
-      expect(project.merge_requests).to be_empty
+    context 'when the downtier_delayed_deletion feature flag is disabled' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+        sign_in(user)
+        visit edit_project_path(project)
+      end
+
+      it 'focuses on the confirmation field' do
+        click_button 'Delete project'
+
+        expect(page).to have_selector '#confirm_name_input:focus'
+      end
+
+      it 'deletes a project', :sidekiq_inline do
+        expect { remove_with_confirm('Delete project', project.path_with_namespace, 'Yes, delete project') }.to change { Project.count }.by(-1)
+        expect(page).to have_content "Project '#{project.full_name}' is being deleted."
+        expect(Project.all.count).to be_zero
+        expect(project.issues).to be_empty
+        expect(project.merge_requests).to be_empty
+      end
     end
   end
 
