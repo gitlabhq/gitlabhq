@@ -331,6 +331,18 @@ module ApplicationHelper
     class_names
   end
 
+  def disable_fixed_body_scroll
+    content_for :disable_fixed_body_scroll, true
+  end
+
+  def body_scroll_classes
+    return '' unless Feature.enabled?(:force_scrollbar, current_user, type: :beta)
+    return '' if content_for(:disable_fixed_body_scroll).present?
+
+    # Custom class is used instead of Tailwind so people can discover this, do not replace this with Tailwind analog
+    'body-fixed-scrollbar'
+  end
+
   def system_message_class
     class_names = []
 

@@ -1,34 +1,44 @@
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import FileBrowser from '~/rapid_diffs/app/file_browser.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import store from '~/mr_notes/stores';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
 Vue.use(PiniaVuePlugin);
 
 describe('FileBrowser', () => {
   let wrapper;
+  let pinia;
 
   const createComponent = () => {
-    const pinia = createTestingPinia();
-    useDiffsList();
-    useFileBrowser();
     wrapper = shallowMount(FileBrowser, {
       store,
       pinia,
     });
   };
 
-  it('passes down loaded files', async () => {
+  beforeEach(() => {
+    pinia = createTestingPinia();
+    useDiffsList();
+    useDiffsView();
+    useFileBrowser();
+  });
+
+  it('passes down props', () => {
     const loadedFiles = { foo: 1 };
-    createComponent();
+    const totalFilesCount = 20;
     useDiffsList().loadedFiles = loadedFiles;
-    await nextTick();
-    expect(wrapper.findComponent(DiffsFileTree).props('loadedFiles')).toStrictEqual(loadedFiles);
+    useDiffsView().diffsStats = { diffsCount: totalFilesCount };
+    createComponent();
+    const tree = wrapper.findComponent(DiffsFileTree);
+    expect(tree.props('loadedFiles')).toStrictEqual(loadedFiles);
+    expect(tree.props('totalFilesCount')).toStrictEqual(totalFilesCount);
+    expect(tree.props('floatingResize')).toBe(true);
   });
 
   it('uses floating resize', () => {
@@ -41,10 +51,9 @@ describe('FileBrowser', () => {
     expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
   });
 
-  it('hides file browser', async () => {
-    createComponent();
+  it('hides file browser', () => {
     useFileBrowser().fileBrowserVisible = false;
-    await nextTick();
+    createComponent();
     expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(false);
   });
 

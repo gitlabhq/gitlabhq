@@ -158,7 +158,7 @@ Now edit the role and add the policy:
          "Effect": "Allow",
          "Action": [
            "q:CreateOAuthAppConnection",
-           "q:DeleteOAuthAppConnection",
+           "q:DeleteOAuthAppConnection"
          ],
          "Resource": "*"
        },

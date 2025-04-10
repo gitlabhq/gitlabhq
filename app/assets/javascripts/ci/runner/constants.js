@@ -150,6 +150,11 @@ export const GROUP_TYPE = 'GROUP_TYPE';
 export const PROJECT_TYPE = 'PROJECT_TYPE';
 export const RUNNER_TYPES = [INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE];
 
+// CiRunnerCreationState
+
+export const CREATION_STATE_STARTED = 'STARTED';
+export const CREATION_STATE_FINISHED = 'FINISHED';
+
 // CiRunnerStatus
 
 export const STATUS_ONLINE = 'ONLINE';

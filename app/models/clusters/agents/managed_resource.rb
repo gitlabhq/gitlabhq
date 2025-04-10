@@ -18,6 +18,12 @@ module Clusters
         completed: 1,
         failed: 2
       }
+
+      enum :deletion_strategy, {
+        never: 0,
+        on_stop: 1,
+        on_delete: 2
+      }
     end
   end
 end

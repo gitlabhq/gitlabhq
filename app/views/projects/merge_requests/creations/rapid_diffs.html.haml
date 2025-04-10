@@ -3,5 +3,5 @@
 - add_page_specific_style 'page_bundles/merge_request_creation_rapid_diffs'
 
 = render "page" do
-  - args = { diffs_slice: nil, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: diff_view, update_user_endpoint: expose_path(api_v4_user_preferences_path), metadata_endpoint: nil, diff_files_endpoint: @diff_files_endpoint, lazy: true }
+  - args = { diffs_slice: nil, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: diff_view, update_user_endpoint: expose_path(api_v4_user_preferences_path), diffs_stats_endpoint: @diffs_stats_endpoint, diff_files_endpoint: @diff_files_endpoint, lazy: true }
   = render ::RapidDiffs::AppComponent.new(**args)

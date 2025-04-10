@@ -3,6 +3,7 @@ import { mapState } from 'pinia';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
 export default {
   name: 'FileBrowser',
@@ -10,6 +11,7 @@ export default {
     DiffsFileTree,
   },
   computed: {
+    ...mapState(useDiffsView, ['totalFilesCount']),
     ...mapState(useDiffsList, ['loadedFiles']),
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
   },
@@ -26,6 +28,7 @@ export default {
     v-if="fileBrowserVisible"
     floating-resize
     :loaded-files="loadedFiles"
+    :total-files-count="totalFilesCount"
     @clickFile="clickFile"
   />
 </template>

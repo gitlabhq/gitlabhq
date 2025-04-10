@@ -10026,6 +10026,32 @@ Input type: `RestorePagesDeploymentInput`
 | <a id="mutationrestorepagesdeploymenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrestorepagesdeploymentpagesdeployment"></a>`pagesDeployment` | [`PagesDeployment!`](#pagesdeployment) | Restored Pages Deployment. |
 
+### `Mutation.runnerBulkPause`
+
+{{< details >}}
+**Introduced** in GitLab 17.11.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `RunnerBulkPauseInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnerbulkpauseclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnerbulkpauseids"></a>`ids` | [`[CiRunnerID!]!`](#cirunnerid) | IDs of the runners to pause or unpause. |
+| <a id="mutationrunnerbulkpausepaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is not allowed to receive jobs. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnerbulkpauseclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnerbulkpauseerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationrunnerbulkpauseupdatedcount"></a>`updatedCount` | [`Int`](#int) | Number of records effectively updated. Only present if operation was performed synchronously. |
+| <a id="mutationrunnerbulkpauseupdatedrunners"></a>`updatedRunners` | [`[CiRunner!]`](#cirunner) | Runners after mutation. |
+
 ### `Mutation.runnerCacheClear`
 
 Input type: `RunnerCacheClearInput`
@@ -40910,6 +40936,7 @@ Represents the emoji reactions widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetawardemojiawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | Emoji reactions on the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetawardemojidownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the work item has received. |
+| <a id="workitemwidgetawardemojinewcustomemojipath"></a>`newCustomEmojiPath` | [`String`](#string) | Path to create a new custom emoji. |
 | <a id="workitemwidgetawardemojitype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetawardemojiupvotes"></a>`upvotes` | [`Int!`](#int) | Number of upvotes the work item has received. |
 
@@ -42230,8 +42257,8 @@ Runner cloud provider.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnercreationstatefinished"></a>`FINISHED` | Applies to a runner that has been registered and has polled for CI jobs at least once. |
-| <a id="cirunnercreationstatestarted"></a>`STARTED` | Applies to a runner that has been created, but not is not yet registered and running. |
+| <a id="cirunnercreationstatefinished"></a>`FINISHED` | Applies to a runner that has been registered and has polled for CI/CD jobs at least once. |
+| <a id="cirunnercreationstatestarted"></a>`STARTED` | Applies to a runner that has been created, but is not yet registered and running. |
 
 ### `CiRunnerJobExecutionStatus`
 

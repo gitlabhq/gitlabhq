@@ -1698,7 +1698,7 @@ GEM
     ruby-fogbugz (0.3.0)
       crack (~> 0.4)
       multipart-post (~> 2.0)
-    ruby-lsp (0.23.10)
+    ruby-lsp (0.23.13)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 4)
@@ -1910,11 +1910,12 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    undercover (0.6.3)
+    undercover (0.6.4)
+      base64
       bigdecimal
       imagen (>= 0.2.0)
       rainbow (>= 2.1, < 4.0)
-      rugged (>= 0.27, < 1.8)
+      rugged (>= 0.27, < 1.10)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)

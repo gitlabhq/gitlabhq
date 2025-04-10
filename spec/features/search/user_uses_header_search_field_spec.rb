@@ -45,7 +45,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
 
     context 'when clicking the search button' do
       before do
-        click_button "Search or go to…"
+        find_by_testid('super-sidebar-search-button').click
         wait_for_all_requests
       end
 

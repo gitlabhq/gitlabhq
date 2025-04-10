@@ -17,7 +17,7 @@
   .container-fluid{ class: [container_class] }
     = render "projects/commits/commit_list" unless hide_commit_list
   .container-fluid
-    - args = { diffs_slice: nil, reload_stream_url: @reload_stream_url, stream_url: nil, show_whitespace: @show_whitespace_default, diff_view: diff_view, metadata_endpoint: nil, update_user_endpoint: @update_current_user_path, diff_files_endpoint: @diff_files_endpoint, lazy: true }
+    - args = { diffs_slice: nil, reload_stream_url: @reload_stream_url, stream_url: nil, show_whitespace: @show_whitespace_default, diff_view: diff_view, diffs_stats_endpoint: @diffs_stats_endpoint, update_user_endpoint: @update_current_user_path, diff_files_endpoint: @diff_files_endpoint, lazy: true }
     = render ::RapidDiffs::AppComponent.new(**args)
 - else
   .container-fluid

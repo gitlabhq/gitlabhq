@@ -35,23 +35,13 @@ RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', :freez
         expect(runner.runner_managers).to contain_exactly(runner_manager2)
       end
 
-      it 'does not clear runner heartbeat' do
-        expect(runner).not_to receive(:clear_heartbeat)
-
-        expect(execute).to be_success
-      end
-
       context "when there are no runner managers left after deletion" do
         let!(:runner_manager2) { nil }
 
-        it 'clears the heartbeat attributes' do
-          expect(runner).to receive(:clear_heartbeat).and_call_original
-
+        it 'does not clear the contacted_at value' do
           expect do
             expect(execute).to be_success
-          end.to change { runner.reload.read_attribute(:contacted_at) }
-            .from(a_kind_of(ActiveSupport::TimeWithZone))
-            .to(nil)
+          end.not_to change { runner.reload.read_attribute(:contacted_at) }
         end
       end
     end

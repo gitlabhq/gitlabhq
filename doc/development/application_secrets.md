@@ -90,9 +90,9 @@ the database may be ready.
 
 #### Add support to Omnibus GitLab and the Cloud Native GitLab charts
 
-Before you add a new secret to
+Before adding a new secret to
 [`config/initializers/01_secret_token.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/01_secret_token.rb),
-make sure you also update Omnibus GitLab and the Cloud Native GitLab charts, or the update will fail.
+ensure you also update the GitLab Linux package and the Cloud Native GitLab charts, or the update will fail.
 Both installation methods are responsible for writing the `config/secrets.yml` file.
 If if they don't know about a secret, Rails attempts to write to the file, and fails because it doesn't
 have write access.
@@ -100,7 +100,7 @@ have write access.
 **Examples**
 
 - [Change for self-compiled installation](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175154)
-- [Change for Omnibus GitLab installation](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8026)
+- [Change for Linux package installation](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8026)
 - [Change for Cloud Native installation](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3988)
 
 #### Populate the secrets in live environments

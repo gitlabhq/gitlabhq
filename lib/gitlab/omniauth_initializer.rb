@@ -30,7 +30,10 @@ module Gitlab
             authorize_params: { gl_auth_type: 'login' }
           }
         when ->(provider_name) { AuthHelper.saml_providers.include?(provider_name.to_sym) }
-          { attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements }
+          {
+            assertion_consumer_service_url: saml_acs_url(provider_name),
+            attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+          }
         else
           {}
         end
@@ -38,6 +41,10 @@ module Gitlab
 
       def full_host
         proc { |_env| Settings.gitlab['base_url'] }
+      end
+
+      def saml_acs_url(provider_name)
+        "#{full_host}/users/auth/#{provider_name}/callback"
       end
     end
 

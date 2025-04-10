@@ -135,6 +135,13 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
       create(:ci_build, environment: environment, user: user, deployment: deployment, project: deployment_project)
     end
 
+    let(:default_template) do
+      Gitlab::Agent::ManagedResources::EnvironmentTemplate.new(
+        name: 'default',
+        data: { objects: [], delete_resources: 'on_stop' }.stringify_keys.to_yaml
+      )
+    end
+
     let(:instance) { described_class.new(build) }
 
     subject(:execute_complete) { instance.complete! }
@@ -210,14 +217,13 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
                 allow(kas_client).to receive_messages(get_environment_template: double,
                   render_environment_template: double)
 
-                template = double
                 allow(kas_client).to receive(:get_environment_template)
                   .with(agent: cluster_agent, template_name: 'default')
-                  .and_return(template)
+                  .and_return(default_template)
 
                 rendered_template = double
                 allow(kas_client).to receive(:render_environment_template)
-                  .with(template: template, environment: environment, build: build)
+                  .with(template: default_template, environment: environment, build: build)
                   .and_return(rendered_template)
 
                 allow(kas_client).to receive(:ensure_environment)
@@ -230,6 +236,8 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
               expect { execute_complete }.to change { Clusters::Agents::ManagedResource.count }.by(1)
               managed_resource = Clusters::Agents::ManagedResource.find_by_build_id(build.id)
               expect(managed_resource.status).to eq("completed")
+              expect(managed_resource.template_name).to eq('default')
+              expect(managed_resource.deletion_strategy).to eq('on_stop')
               expect(managed_resource.tracked_objects).to contain_exactly(namespace_attributes, role_binding_attributes)
             end
 
@@ -247,7 +255,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
             before do
               allow_next_instance_of(Gitlab::Kas::Client) do |kas_client|
                 allow(kas_client).to receive(:get_environment_template).and_raise(GRPC::NotFound)
-                allow(kas_client).to receive_messages(get_default_environment_template: double,
+                allow(kas_client).to receive_messages(get_default_environment_template: default_template,
                   render_environment_template: double)
                 success_response = Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentResponse.new(errors: [])
                 allow(kas_client).to receive(:ensure_environment).and_return(success_response)

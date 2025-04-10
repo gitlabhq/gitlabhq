@@ -80,7 +80,7 @@ module API
           requires :token, type: String, desc: "The runner's authentication token"
         end
         delete '/', urgency: :low, feature_category: :runner do
-          authenticate_runner!(ensure_runner_manager: false, update_contacted_at: false)
+          authenticate_runner!(ensure_runner_manager: false)
 
           destroy_conditionally!(current_runner) do
             ::Ci::Runners::UnregisterRunnerService.new(current_runner, params[:token]).execute
@@ -120,11 +120,7 @@ module API
           optional :system_id, type: String, desc: "The runner's system identifier"
         end
         post '/verify', urgency: :low, feature_category: :runner do
-          # For runners that were created in the UI, we want to update the contacted_at value
-          # only when it starts polling for jobs
-          registering_created_runner = params[:token].start_with?(::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX)
-
-          authenticate_runner!(update_contacted_at: !registering_created_runner)
+          authenticate_runner!
           status 200
 
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails
@@ -194,7 +190,7 @@ module API
         parser :build_json, ::Grape::Parser::Json
 
         post '/request', urgency: :low, feature_category: :continuous_integration do
-          authenticate_runner!
+          authenticate_runner!(creation_state: :finished)
 
           unless current_runner.active?
             header 'X-GitLab-Last-Update', current_runner.ensure_runner_queue_value

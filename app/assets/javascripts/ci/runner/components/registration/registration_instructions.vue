@@ -10,7 +10,7 @@ import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_
 
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import {
-  STATUS_ONLINE,
+  CREATION_STATE_FINISHED,
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
@@ -92,7 +92,7 @@ export default {
         captureException({ error, component: this.$options.name });
       },
       pollInterval() {
-        if (this.isRunnerOnline) {
+        if (this.isRunnerRegistered) {
           // stop polling
           return 0;
         }
@@ -141,8 +141,8 @@ export default {
     runCommand() {
       return runCommand({ platform: this.platform });
     },
-    isRunnerOnline() {
-      return this.runner?.status === STATUS_ONLINE;
+    isRunnerRegistered() {
+      return this.runner?.creationState === CREATION_STATE_FINISHED;
     },
     showGoogleCloudRegistration() {
       return this.platform === GOOGLE_CLOUD_PLATFORM;
@@ -152,7 +152,7 @@ export default {
     },
   },
   watch: {
-    isRunnerOnline(newVal, oldVal) {
+    isRunnerRegistered(newVal, oldVal) {
       if (!oldVal && newVal) {
         this.$emit('runnerRegistered');
       }
@@ -172,7 +172,7 @@ export default {
       this.isDrawerOpen = val;
     },
     onBeforeunload(event) {
-      if (this.isRunnerOnline) {
+      if (this.isRunnerRegistered) {
         return undefined;
       }
 
@@ -310,7 +310,7 @@ export default {
       <platforms-drawer :platform="platform" :open="isDrawerOpen" @close="onToggleDrawer(false)" />
     </template>
 
-    <section v-if="isRunnerOnline" class="gl-mt-6">
+    <section v-if="isRunnerRegistered" class="gl-mt-6">
       <h2 class="gl-heading-2">🎉 {{ s__("Runners|You've registered a new runner!") }}</h2>
 
       <p>

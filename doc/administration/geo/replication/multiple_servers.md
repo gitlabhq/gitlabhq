@@ -206,7 +206,7 @@ Follow the [Geo database replication instructions](../setup/database.md).
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](../setup/external_database.md).
 
-After streaming replication is enabled in the secondary Geo site's read-replica database, then commands such as `gitlab-rake db:migrate:status:geo` will fail, until [configuration of the secondary site is complete](#step-7-copy-secrets-and-add-the-secondary-site-in-the-application), specifically [Geo configuration - Step 3. Add the secondary site](configuration.md#step-3-add-the-secondary-site).
+After enabling streaming replication, `gitlab-rake db:migrate:status:geo` fails until [configuration of the secondary site is complete](#step-7-copy-secrets-and-add-the-secondary-site-in-the-application), specifically [Geo configuration - Step 3. Add the secondary site](configuration.md#step-3-add-the-secondary-site).
 
 ### Step 4: Configure the frontend application nodes on the Geo **secondary** site
 
@@ -290,18 +290,18 @@ then make the following modifications:
    ```
 
 {{< alert type="note" >}}
-
+`postgresql['sql_user_password'] = 'md5 digest of secret'`
 If you had set up PostgreSQL cluster using the Linux package and had set
 `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
 mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
-contains the plaintext passwords. This is used to let the Rails
+contains the plaintext passwords. These configurations are used to let the Rails
 nodes connect to the databases.
 
 {{< /alert >}}
 
 {{< alert type="note" >}}
 
-Make sure that current node's IP is listed in
+ Ensure that the current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
 allow Rails on this node to connect to PostgreSQL.
 {{< /alert >}}

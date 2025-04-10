@@ -1,6 +1,6 @@
 - page_classes = page_class << @html_class
 - page_classes = [user_application_color_mode, user_application_theme, page_classes.flatten.compact]
-- body_classes = [user_tab_width, @body_class, client_class_list, *custom_diff_color_classes]
+- body_classes = [user_tab_width, @body_class, client_class_list, body_scroll_classes, *custom_diff_color_classes]
 
 !!! 5
 %html{ lang: I18n.locale, class: page_classes }

@@ -3,6 +3,6 @@ query getRunnerForRegistration($id: CiRunnerID!) {
     id
     description
     ephemeralAuthenticationToken
-    status
+    creationState
   }
 }

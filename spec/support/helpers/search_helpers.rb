@@ -2,7 +2,7 @@
 
 module SearchHelpers
   def fill_in_search(text)
-    click_button "Search or go to…"
+    find_by_testid('super-sidebar-search-button').click
     fill_in 'search', with: text
 
     wait_for_all_requests

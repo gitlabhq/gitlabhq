@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-title: Documenting the `.gitlab-ci.yml` keywords
+title: Documenting pipeline configuration keywords
 ---
 
 The [CI/CD YAML syntax reference](../../ci/yaml/_index.md) uses a standard style to make it easier to use and update.

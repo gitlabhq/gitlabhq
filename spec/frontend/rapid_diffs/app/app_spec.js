@@ -28,19 +28,6 @@ describe('Rapid Diffs App', () => {
     app = createRapidDiffsApp(options);
   };
 
-  beforeEach(() => {
-    createTestingPinia();
-    useDiffsView(pinia).loadMetadata.mockResolvedValue();
-    initFileBrowser.mockResolvedValue();
-    setHTMLFixture(
-      `
-        <div data-rapid-diffs data-reload-stream-url="/reload" data-metadata-endpoint="/metadata" data-diff-files-endpoint="/diff-files-metadata">
-          <div id="js-stream-container" data-diffs-stream-url="/stream"></div>
-        </div>
-      `,
-    );
-  });
-
   beforeAll(() => {
     Object.defineProperty(window, 'customElements', {
       value: { define: jest.fn() },
@@ -48,23 +35,28 @@ describe('Rapid Diffs App', () => {
     });
   });
 
-  it('initializes the app', async () => {
-    let res;
-    const mock = useDiffsView().loadMetadata.mockImplementationOnce(
-      () =>
-        new Promise((resolve) => {
-          res = resolve;
-        }),
+  beforeEach(() => {
+    createTestingPinia();
+    useDiffsView().loadDiffsStats.mockResolvedValue();
+    initFileBrowser.mockResolvedValue();
+    setHTMLFixture(
+      `
+        <div data-rapid-diffs data-reload-stream-url="/reload" data-diffs-stats-endpoint="/stats" data-diff-files-endpoint="/diff-files-metadata">
+          <div id="js-stream-container" data-diffs-stream-url="/stream"></div>
+        </div>
+      `,
     );
+  });
+
+  it('initializes the app', () => {
     createApp();
     app.init();
-    expect(useDiffsView().metadataEndpoint).toBe('/metadata');
-    expect(mock).toHaveBeenCalled();
+    expect(useDiffsView().diffsStatsEndpoint).toBe('/stats');
+    expect(useDiffsView().loadDiffsStats).toHaveBeenCalled();
     expect(initViewSettings).toHaveBeenCalledWith({ pinia, streamUrl: '/reload' });
     expect(window.customElements.define).toHaveBeenCalledWith('diff-file', DiffFile);
     expect(window.customElements.define).toHaveBeenCalledWith('diff-file-mounted', DiffFileMounted);
     expect(window.customElements.define).toHaveBeenCalledWith('streaming-error', StreamingError);
-    await res();
     expect(initHiddenFilesWarning).toHaveBeenCalled();
     expect(fixWebComponentsStreamingOnSafari).toHaveBeenCalled();
     expect(initFileBrowser).toHaveBeenCalledWith('/diff-files-metadata');

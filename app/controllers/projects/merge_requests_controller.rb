@@ -113,6 +113,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
     @diffs_slice = @merge_request.first_diffs_slice(streaming_offset)
     @diff_files_endpoint = diff_files_metadata_namespace_project_merge_request_path
+    @diffs_stats_endpoint = diffs_stats_namespace_project_merge_request_path
 
     show_merge_request
   end

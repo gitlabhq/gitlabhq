@@ -16,4 +16,4 @@ ignorecase: true
 link: https://docs.gitlab.com/development/documentation/styleguide/#punctuation
 scope: raw
 raw:
-  - '[  ​]'
+  - '[\u202F\u00A0\u200B]'

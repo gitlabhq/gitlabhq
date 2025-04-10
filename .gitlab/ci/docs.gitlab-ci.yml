@@ -35,7 +35,7 @@ review-docs-cleanup:
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.9.3-markdownlint2-0.17.1-lychee-0.18.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.11.2-markdownlint2-0.17.2-lychee-0.18.1
 
 docs-lint markdown:
   extends:

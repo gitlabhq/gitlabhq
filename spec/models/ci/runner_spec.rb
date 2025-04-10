@@ -986,50 +986,62 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   describe '#status', :freeze_time do
     let(:runner) { build(:ci_runner, *Array.wrap(traits)) }
 
-    subject { runner.status }
+    subject(:status) { runner.status }
 
-    context 'stale, never contacted' do
-      let(:traits) { %i[unregistered stale] }
+    context 'if unregistered' do
+      let(:traits) { :unregistered }
 
-      it { is_expected.to eq(:stale) }
+      it { is_expected.to eq(:never_contacted) }
 
-      context 'created recently, never contacted', :clean_gitlab_redis_cache do
+      context 'if created recently' do
         let(:traits) { %i[unregistered online] }
 
-        it { is_expected.to eq(:never_contacted) }
+        it { is_expected.to eq(:offline) }
+      end
 
-        context "when cache contains 'finished' creation_state" do
-          before do
-            Gitlab::Redis::Cache.with do |redis|
-              cache_key = runner.send(:cache_attribute_key)
-              redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+      context 'if stale' do
+        let(:traits) { %i[unregistered stale] }
+
+        it { is_expected.to eq(:stale) }
+
+        context 'created recently, never contacted', :clean_gitlab_redis_cache do
+          let(:traits) { %i[unregistered online] }
+
+          it { is_expected.to eq(:offline) }
+
+          context "when cache contains 'finished' creation_state" do
+            before do
+              Gitlab::Redis::Cache.with do |redis|
+                cache_key = runner.send(:cache_attribute_key)
+                redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+              end
             end
-          end
 
-          it { is_expected.to eq(:online) }
+            it { is_expected.to eq(:online) }
+          end
         end
       end
     end
 
-    context 'online, paused' do
+    context 'if online, paused' do
       let(:traits) { %i[paused online] }
 
       it { is_expected.to eq(:online) }
     end
 
-    context 'online' do
+    context 'if online' do
       let(:traits) { :almost_offline }
 
       it { is_expected.to eq(:online) }
     end
 
-    context 'offline' do
+    context 'if offline' do
       let(:traits) { :offline }
 
       it { is_expected.to eq(:offline) }
     end
 
-    context 'stale' do
+    context 'if stale' do
       let(:traits) { :stale }
 
       it { is_expected.to eq(:stale) }
@@ -1154,12 +1166,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         it 'still updates contacted at in redis cache and database' do
           expect(runner).to be_invalid
 
-          expect_redis_update(contacted_at: Time.current, creation_state: :finished)
+          expect_redis_update(contacted_at: Time.current)
           expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
         end
 
         it 'only updates contacted at in redis cache and database' do
-          expect_redis_update(contacted_at: Time.current, creation_state: :finished)
+          expect_redis_update(contacted_at: Time.current)
           expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
         end
       end
@@ -1176,22 +1188,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     def does_db_update
       expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
-    end
-  end
-
-  describe '#clear_heartbeat', :freeze_time do
-    let!(:runner) { create(:ci_runner) }
-
-    it 'clears contacted at' do
-      expect do
-        runner.heartbeat
-      end.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
-        .and change { runner.reload.uncached_contacted_at }.from(nil).to(Time.current)
-
-      expect do
-        runner.clear_heartbeat
-      end.to change { runner.reload.contacted_at }.from(Time.current).to(nil)
-        .and change { runner.reload.uncached_contacted_at }.from(Time.current).to(nil)
     end
   end
 

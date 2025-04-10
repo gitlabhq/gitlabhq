@@ -272,12 +272,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         cancel!: 'canceled'
       }.each do |pipeline_event, status|
         context "when transitioning to #{status}" do
-          it_behaves_like 'internal event tracking' do
-            let(:event) { 'completed_pipeline_execution' }
-            let(:additional_properties) { { label: status } }
-            let(:category) { described_class.name }
-
-            subject(:completed_pipeline) { pipeline.public_send(pipeline_event) }
+          it "triggers an internal event" do
+            expect { pipeline.public_send(pipeline_event) }.to trigger_internal_events('completed_pipeline_execution')
+              .with(
+                project: project,
+                user: user,
+                additional_properties: { label: status }
+              )
           end
         end
       end
@@ -288,23 +289,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     describe '.track_ci_pipeline_created_event' do
       let(:pipeline) { build(:ci_pipeline, user: user) }
 
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'create_ci_internal_pipeline' }
-        let(:additional_properties) do
-          {
-            label: 'push',
-            property: 'unknown_source'
-          }
-        end
-
-        subject { pipeline.save! }
+      it "triggers an internal event" do
+        expect { pipeline.save! }.to trigger_internal_events('create_ci_internal_pipeline').with(
+          category: 'InternalEventTracking',
+          project: project,
+          user: user,
+          additional_properties: { label: 'push', property: 'unknown_source' }
+        )
       end
 
       context 'when pipeline is external' do
         let(:pipeline) { build(:ci_pipeline, source: :external) }
 
-        it_behaves_like 'internal event not tracked' do
-          subject { pipeline.save! }
+        it "doesn't trigger an internal event" do
+          expect { pipeline.save! }.to not_trigger_internal_events('create_ci_internal_pipeline')
         end
       end
     end

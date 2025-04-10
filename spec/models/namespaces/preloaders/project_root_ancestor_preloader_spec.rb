@@ -18,13 +18,7 @@ RSpec.describe Namespaces::Preloaders::ProjectRootAncestorPreloader, feature_cat
     create(:project, name: 'a public maintainer', path: 'a-public-maintainer', namespace: root_parent2)
   end
 
-  let(:root_query_regex) do
-    if Feature.enabled?(:use_sql_functions_for_primary_key_lookups, Feature.current_request)
-      /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/
-    else
-      /\ASELECT.+FROM "namespaces" WHERE "namespaces"."id" = \d+/
-    end
-  end
+  let(:root_query_regex) { /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/ }
 
   let(:additional_preloads) { [] }
   let(:projects) { [guest_project, private_maintainer_project, private_developer_project, public_maintainer_project] }

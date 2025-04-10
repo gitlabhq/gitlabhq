@@ -11,10 +11,10 @@ level: warning
 link: https://docs.gitlab.com/development/documentation/topic_types/concept/#concept-topic-titles
 ignorecase: true
 nonword: true
-scope: raw
+scope: heading
 tokens:
-  - '\#+ How it works'
-  - '\#+ Limitations'
-  - '\#+ Overview'
-  - '\#+ Use cases?'
-  - '\#+ Important notes?'
+  - 'How it works'
+  - 'Limitations'
+  - 'Overview'
+  - 'Use cases?'
+  - 'Important notes?'

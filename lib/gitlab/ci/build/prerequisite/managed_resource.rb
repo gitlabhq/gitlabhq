@@ -26,7 +26,17 @@ module Gitlab
               managed_resource.update!(status: :failed)
               raise ManagedResourceError, format_error_message(response.errors)
             else
-              managed_resource.update!(status: :completed, tracked_objects: response.objects.map(&:to_h))
+              managed_resource.assign_attributes(
+                status: :completed,
+                template_name: get_template.name,
+                tracked_objects: response.objects.map(&:to_h)
+              )
+
+              deletion_strategy = template_yaml['delete_resources']
+              managed_resource.deletion_strategy = deletion_strategy if deletion_strategy.present?
+
+              managed_resource.save!
+
               Gitlab::InternalEvents.track_event(
                 'ensure_environment_for_managed_resource',
                 user: build.user,
@@ -52,14 +62,8 @@ module Gitlab
           end
 
           def ensure_environment
-            template = begin
-              get_custom_environment_template
-            rescue GRPC::NotFound
-              kas_client.get_default_environment_template
-            end
-
             rendered_template = kas_client.render_environment_template(
-              template: template,
+              template: get_template,
               environment: environment,
               build: build)
 
@@ -68,6 +72,18 @@ module Gitlab
               environment: environment,
               build: build)
           end
+
+          def get_template
+            get_custom_environment_template
+          rescue GRPC::NotFound
+            kas_client.get_default_environment_template
+          end
+          strong_memoize_attr :get_template
+
+          def template_yaml
+            YAML.safe_load(get_template.data)
+          end
+          strong_memoize_attr :template_yaml
 
           def get_custom_environment_template
             kas_client.get_environment_template(agent: environment.cluster_agent, template_name: DEFAULT_TEMPLATE_NAME)

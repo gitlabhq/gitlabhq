@@ -194,9 +194,11 @@ describe('DiffsFileTree', () => {
     });
   });
 
-  it('passes down loadedFiles table to tree list', () => {
+  it('passes down props to tree list', () => {
     const loadedFiles = { foo: true };
-    createComponent({ loadedFiles });
+    const totalFilesCount = '20';
+    createComponent({ loadedFiles, totalFilesCount });
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
+    expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
   });
 });

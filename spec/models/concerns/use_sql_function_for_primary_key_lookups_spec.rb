@@ -14,63 +14,57 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
     end
   end
 
-  context 'when the use_sql_functions_for_primary_key_lookups FF is on' do
-    before do
-      stub_feature_flags(use_sql_functions_for_primary_key_lookups: true)
-    end
+  it 'loads the correct record' do
+    expect(model.find(user.id).id).to eq(user.id)
+  end
 
-    it 'loads the correct record' do
-      expect(model.find(user.id).id).to eq(user.id)
-    end
-
-    it 'uses the function-based finder query' do
-      query = <<~SQL
+  it 'uses the function-based finder query' do
+    query = <<~SQL
         SELECT "users".* FROM find_users_by_id(#{user.id})#{' '}
         AS users WHERE ("users"."id" IS NOT NULL) LIMIT 1
+    SQL
+    query_log = ActiveRecord::QueryRecorder.new { model.find(user.id) }.log
+
+    expect(query_log).to match_array(include(query.tr("\n", '')))
+  end
+
+  it 'uses query cache', :use_sql_query_cache do
+    query = <<~SQL
+        SELECT "users".* FROM find_users_by_id(#{user.id})#{' '}
+        AS users WHERE ("users"."id" IS NOT NULL) LIMIT 1
+    SQL
+
+    recorder = ActiveRecord::QueryRecorder.new do
+      model.find(user.id)
+      model.find(user.id)
+      model.find(user.id)
+    end
+
+    expect(recorder.data.each_value.first[:count]).to eq(1)
+    expect(recorder.cached).to include(query.tr("\n", ''))
+  end
+
+  context 'when the model has ignored columns' do
+    around do |example|
+      model.ignored_columns = %i[encrypted_password]
+      example.run
+      model.ignored_columns = []
+    end
+
+    it 'enumerates the column names' do
+      column_list = model.columns.map do |column|
+        %("users"."#{column.name}")
+      end.join(', ')
+
+      expect(column_list).not_to include(%("users"."encrypted_password"))
+
+      query = <<~SQL
+          SELECT #{column_list} FROM find_users_by_id(#{user.id})#{' '}
+          AS users WHERE ("users"."id" IS NOT NULL) LIMIT 1
       SQL
       query_log = ActiveRecord::QueryRecorder.new { model.find(user.id) }.log
 
       expect(query_log).to match_array(include(query.tr("\n", '')))
-    end
-
-    it 'uses query cache', :use_sql_query_cache do
-      query = <<~SQL
-        SELECT "users".* FROM find_users_by_id(#{user.id})#{' '}
-        AS users WHERE ("users"."id" IS NOT NULL) LIMIT 1
-      SQL
-
-      recorder = ActiveRecord::QueryRecorder.new do
-        model.find(user.id)
-        model.find(user.id)
-        model.find(user.id)
-      end
-
-      expect(recorder.data.each_value.first[:count]).to eq(1)
-      expect(recorder.cached).to include(query.tr("\n", ''))
-    end
-
-    context 'when the model has ignored columns' do
-      around do |example|
-        model.ignored_columns = %i[encrypted_password]
-        example.run
-        model.ignored_columns = []
-      end
-
-      it 'enumerates the column names' do
-        column_list = model.columns.map do |column|
-          %("users"."#{column.name}")
-        end.join(', ')
-
-        expect(column_list).not_to include(%("users"."encrypted_password"))
-
-        query = <<~SQL
-          SELECT #{column_list} FROM find_users_by_id(#{user.id})#{' '}
-          AS users WHERE ("users"."id" IS NOT NULL) LIMIT 1
-        SQL
-        query_log = ActiveRecord::QueryRecorder.new { model.find(user.id) }.log
-
-        expect(query_log).to match_array(include(query.tr("\n", '')))
-      end
     end
 
     context 'when there are scope attributes' do
@@ -220,23 +214,6 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
           expect(model.find(user.id).id).to eq(user.id)
         end
       end
-    end
-  end
-
-  context 'when the use_sql_functions_for_primary_key_lookups FF is off' do
-    before do
-      stub_feature_flags(use_sql_functions_for_primary_key_lookups: false)
-    end
-
-    it 'loads the correct record' do
-      expect(model.find(user.id).id).to eq(user.id)
-    end
-
-    it 'uses the SQL-based finder query' do
-      expected_query = %(SELECT "users".* FROM \"users\" WHERE "users"."id" = #{user.id} LIMIT 1)
-      query_log = ActiveRecord::QueryRecorder.new { model.find(user.id) }.log
-
-      expect(query_log).to match_array(include(expected_query))
     end
   end
 end

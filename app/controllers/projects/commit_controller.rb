@@ -166,6 +166,7 @@ class Projects::CommitController < Projects::ApplicationController
     @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
     @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
     @diff_files_endpoint = diff_files_metadata_namespace_project_commit_path
+    @diffs_stats_endpoint = diffs_stats_namespace_project_commit_path
 
     show
   end

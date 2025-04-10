@@ -506,7 +506,7 @@ When a server-side backup is collected, the restore process defaults to use the 
 node that hosts each repository is responsible for pulling the necessary backup data directly from object storage.
 
 1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
-1. Start a server-side backup restore process and specifying the ID of the backup you wish to restore:
+1. Start a server-side backup restore process and specifying the [ID of the backup](backup_archive_process.md#backup-id) you wish to restore:
 
 {{< tabs >}}
 
@@ -529,7 +529,7 @@ sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=11493107454_2018_04
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 ```shell
-kubectl exec <Toolbox pod name> -it -- backup-utility --restore BACKUP=11493107454_2018_04_25_10.6.4-ce --repositories-server-side
+kubectl exec <Toolbox pod name> -it -- backup-utility --restore -t <backup_ID> --repositories-server-side
 ```
 
 When using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),

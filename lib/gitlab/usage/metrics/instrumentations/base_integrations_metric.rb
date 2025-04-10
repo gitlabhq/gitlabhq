@@ -22,12 +22,13 @@ module Gitlab
           def initialize(metric_definition)
             super
 
-            type = options[:type]
+            return if options[:type]
 
-            return if type.in?(allowed_types)
+            raise ArgumentError, "'type' option is required"
+          end
 
-            prefix = "Invalid type #{type}. " if type
-            raise ArgumentError, "#{prefix}Type must be one of: #{allowed_types.join(', ')}"
+          def available?
+            options[:type].in?(allowed_types)
           end
 
           private

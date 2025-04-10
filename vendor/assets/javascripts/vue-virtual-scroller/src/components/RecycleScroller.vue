@@ -619,7 +619,11 @@ export default {
         : { scroll: 'scrollLeft', start: 'left' }
 
       if (this.pageMode) {
-        const viewportEl = ScrollParent(this.$el)
+        let viewportEl = ScrollParent(this.$el)
+        if (viewportEl.tagName === 'BODY') {
+          // <html> is always a scroll container even when <body> has overflow: scroll
+          viewportEl = document.documentElement
+        }
         // HTML doesn't overflow like other elements
         const scrollTop = viewportEl.tagName === 'HTML' ? 0 : viewportEl[direction.scroll]
         const viewport = viewportEl.getBoundingClientRect()

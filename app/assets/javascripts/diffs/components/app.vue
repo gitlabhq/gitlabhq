@@ -787,6 +787,7 @@ export default {
         <diffs-file-tree
           v-if="renderFileTree"
           class="gl-px-5"
+          :total-files-count="numTotalFiles"
           @clickFile="goToFile({ path: $event.path })"
         />
         <div class="col-12 col-md-auto diff-files-holder">

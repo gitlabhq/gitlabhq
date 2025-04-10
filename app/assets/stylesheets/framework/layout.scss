@@ -4,6 +4,13 @@ html {
   }
 }
 
+// Do not change or manually disable this
+// Instead, call `- disable_fixed_body_scroll` inside your page's HAML template if you need to hide the scroll
+// Custom class is used instead of Tailwind so people can discover this, do not replace this with Tailwind analog
+.body-fixed-scrollbar {
+  overflow-y: scroll;
+}
+
 .container-fluid {
   &.limit-container-width {
     .flash-container.sticky {

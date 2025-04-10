@@ -33,59 +33,6 @@ module Gitlab
       recorded_at
     ].freeze
 
-    MIGRATED_INTEGRATIONS = %w[
-      amazon_q
-      apple_app_store
-      asana
-      assembla
-      bamboo
-      beyond_identity
-      bugzilla
-      buildkite
-      campfire
-      clickup
-      confluence
-      custom_issue_tracker
-      datadog
-      diffblue_cover
-      discord
-      drone_ci
-      emails_on_push
-      ewm
-      external_wiki
-      git_guardian
-      github
-      gitlab_slack_application
-      google_play
-      hangouts_chat
-      harbor
-      irker
-      jenkins
-      jira
-      jira_cloud_app
-      matrix
-      mattermost
-      mattermost_slash_commands
-      microsoft_teams
-      packagist
-      phorge
-      pipelines_email
-      pivotaltracker
-      prometheus
-      pumble
-      pushover
-      redmine
-      slack
-      slack_slash_commands
-      squash_tm
-      teamcity
-      telegram
-      unify_circuit
-      webex_teams
-      youtrack
-      zentao
-    ].freeze
-
     class << self
       include Gitlab::Utils::UsageData
       include Gitlab::Utils::StrongMemoize
@@ -175,7 +122,6 @@ module Gitlab
             merge_requests: count(MergeRequest),
             notes: count(Note)
           }.merge(
-            integrations_usage,
             user_preferences_usage,
             service_desk_counts
           )
@@ -266,31 +212,6 @@ module Gitlab
       def topology_usage_data
         Gitlab::UsageData::Topology.new.topology_usage_data
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def integrations_usage
-        # rubocop: disable UsageData/LargeTable:
-        available_integrations.each_with_object({}) do |name, response|
-          next if MIGRATED_INTEGRATIONS.include?(name)
-
-          type = Integration.integration_name_to_type(name)
-
-          response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
-          response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
-          response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
-          response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
-          response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))
-        end
-      end
-
-      def successful_deployments_with_cluster(scope)
-        scope
-          .joins(cluster: :deployments)
-          .merge(::Clusters::Cluster.enabled)
-          .merge(Deployment.success)
-      end
-      # rubocop: enable UsageData/LargeTable
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # augmented in EE
       def user_preferences_usage

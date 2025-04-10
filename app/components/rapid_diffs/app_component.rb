@@ -11,7 +11,7 @@ module RapidDiffs
       show_whitespace:,
       diff_view:,
       update_user_endpoint:,
-      metadata_endpoint:,
+      diffs_stats_endpoint:,
       diff_files_endpoint:,
       lazy: false
     )
@@ -21,7 +21,7 @@ module RapidDiffs
       @show_whitespace = show_whitespace
       @diff_view = diff_view
       @update_user_endpoint = update_user_endpoint
-      @metadata_endpoint = metadata_endpoint
+      @diffs_stats_endpoint = diffs_stats_endpoint
       @diff_files_endpoint = diff_files_endpoint
       @lazy = lazy
     end

@@ -83,6 +83,7 @@ class Projects::CompareController < Projects::ApplicationController
     @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
     @reload_stream_url = diffs_stream_namespace_project_compare_index_path(**compare_params)
     @diff_files_endpoint = diff_files_metadata_namespace_project_compare_index_path(**compare_params)
+    @diffs_stats_endpoint = diffs_stats_namespace_project_compare_index_path(**compare_params)
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
 
     show

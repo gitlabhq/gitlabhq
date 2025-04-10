@@ -71,7 +71,7 @@ describe('View settings', () => {
 
   it('sets diff app controls props', () => {
     useDiffsList().loadedFiles = { foo: true };
-    useDiffsView().diffStats = {
+    useDiffsView().diffsStats = {
       addedLines: 1,
       removedLines: 2,
       diffsCount: 3,

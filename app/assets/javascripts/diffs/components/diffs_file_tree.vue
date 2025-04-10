@@ -29,6 +29,11 @@ export default {
       required: false,
       default: false,
     },
+    totalFilesCount: {
+      type: [Number, String],
+      default: undefined,
+      required: false,
+    },
   },
   data() {
     const treeWidth =
@@ -133,6 +138,7 @@ export default {
       <tree-list
         :hide-file-stats="hideFileStats"
         :loaded-files="loadedFiles"
+        :total-files-count="totalFilesCount"
         @clickFile="onFileClick"
       />
     </div>

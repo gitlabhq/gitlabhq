@@ -21,12 +21,11 @@ module QA
       end
 
       let(:runner) do
-        Resource::Ci::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{SecureRandom.hex(6)}"
-          runner.tags = ["runner-for-#{imported_project.name}"]
-          runner.executor = :docker
-          runner.project = imported_project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{SecureRandom.hex(6)}",
+          tags: ["runner-for-#{imported_project.name}"],
+          executor: :docker,
+          project: imported_project)
       end
 
       before do

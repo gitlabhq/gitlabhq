@@ -42,7 +42,7 @@ See also the issue for [support running Jest tests in browsers](https://gitlab.c
 
 ### Debugging Jest tests
 
-Running `yarn jest-debug` runs Jest in debug mode, allowing you to debug/inspect as described in the [Jest docs](https://jestjs.io/docs/troubleshooting#tests-are-failing-and-you-don-t-know-why).
+Running `yarn jest-debug` runs Jest in debug mode, allowing you to debug/inspect as described in the [Jest documentation](https://jestjs.io/docs/troubleshooting#tests-are-failing-and-you-don-t-know-why).
 
 ### Timeout error
 

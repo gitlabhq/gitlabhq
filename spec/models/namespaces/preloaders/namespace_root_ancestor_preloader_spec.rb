@@ -9,14 +9,7 @@ RSpec.describe Namespaces::Preloaders::NamespaceRootAncestorPreloader, feature_c
   let_it_be(:public_group) { create(:group, :private, parent: parent_public_group) }
   let_it_be(:private_group) { create(:group, :private, project_creation_level: nil) }
 
-  let(:root_query_regex) do
-    if Feature.enabled?(:use_sql_functions_for_primary_key_lookups, Feature.current_request)
-      /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/
-    else
-      /\ASELECT.+FROM "namespaces" WHERE "namespaces"."id" = \d+/
-    end
-  end
-
+  let(:root_query_regex) { /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/ }
   let(:additional_preloads) { [] }
   let(:namespaces) { [project_namespace, public_group, private_group] }
   let(:pristine_namespaces) { Namespace.where(id: namespaces) }

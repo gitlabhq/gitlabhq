@@ -1,0 +1,9 @@
+---
+name: importer_user_mapping_allow_bypass_of_confirmation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/534328
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187616
+rollout_issue_url:
+milestone: '17.11'
+group: group::import and integrate
+type: wip
+default_enabled: false

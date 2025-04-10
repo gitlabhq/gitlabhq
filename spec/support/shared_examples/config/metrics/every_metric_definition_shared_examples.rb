@@ -8,13 +8,6 @@ RSpec.shared_examples 'every metric definition' do
     %w[
       testing_total_unique_counts
       user_auth_by_provider
-      counts.groups_google_cloud_platform_artifact_registry_active
-      counts.groups_inheriting_google_cloud_platform_artifact_registry_active
-      counts.groups_inheriting_google_cloud_platform_workload_identity_federation_active
-      counts.instances_google_cloud_platform_artifact_registry_active
-      counts.instances_google_cloud_platform_workload_identity_federation_active
-      counts.projects_inheriting_google_cloud_platform_artifact_registry_active
-      counts.projects_inheriting_google_cloud_platform_workload_identity_federation_active
     ].freeze
   end
 

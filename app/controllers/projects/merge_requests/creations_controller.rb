@@ -70,6 +70,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
     @reload_stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
     @diff_files_endpoint = project_new_merge_request_diff_files_metadata_path(@project, merge_request: merge_request)
+    @diffs_stats_endpoint = project_new_merge_request_diffs_stats_path(@project, merge_request: merge_request)
 
     define_new_vars
   end

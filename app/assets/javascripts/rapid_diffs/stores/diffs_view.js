@@ -11,7 +11,6 @@ import { queueRedisHllEvents } from '~/diffs/utils/queue_events';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
-import store from '~/mr_notes/stores';
 
 export const useDiffsView = defineStore('diffsView', {
   state() {
@@ -21,28 +20,38 @@ export const useDiffsView = defineStore('diffsView', {
       singleFileMode: false,
       updateUserEndpoint: undefined,
       streamUrl: undefined,
-      metadataEndpoint: undefined,
-      diffStats: null,
+      diffsStatsEndpoint: undefined,
+      diffsStats: null,
+      overflow: null,
     };
   },
   actions: {
-    async loadMetadata() {
-      // TODO: refactor this to our own Pinia stores
-      store.state.diffs.endpointMetadata = this.metadataEndpoint;
-      store.state.diffs.diffViewType = this.viewType;
-      store.state.diffs.showWhitespace = this.showWhitespace;
-      await store.dispatch('diffs/fetchDiffFilesMeta');
-      this.diffStats = {
-        addedLines: store.state.diffs.addedLines,
-        removedLines: store.state.diffs.removedLines,
-        size: store.state.diffs.size,
-        realSize: store.state.diffs.realSize,
-        plainDiffPath: store.state.diffs.plainDiffPath,
-        emailPatchPath: store.state.diffs.emailPatchPath,
-        renderOverflowWarning: store.state.diffs.renderOverflowWarning,
-        // we will be using a number for that after refactoring
-        diffsCount: parseInt(store.state.diffs.realSize, 10),
+    async loadDiffsStats() {
+      const { data } = await axios.get(this.diffsStatsEndpoint);
+      const {
+        added_lines: addedLines,
+        removed_lines: removedLines,
+        diffs_count: diffsCount,
+      } = data.diffs_stats;
+      this.diffsStats = {
+        addedLines,
+        removedLines,
+        diffsCount,
       };
+      if (data.overflow) {
+        const {
+          visible_count: visibleCount,
+          email_path: emailPath,
+          diff_path: diffPath,
+        } = data.overflow || {};
+        this.overflow = {
+          visibleCount,
+          emailPath,
+          diffPath,
+        };
+      } else {
+        this.overflow = null;
+      }
     },
     updateDiffView() {
       if (this.singleFileMode) {
@@ -68,7 +77,6 @@ export const useDiffsView = defineStore('diffsView', {
         // we don't have to wait for the setting to be saved since whitespace param is passed explicitly
         axios.put(this.updateUserEndpoint, { show_whitespace_in_diffs: value });
       }
-      this.loadMetadata();
       this.updateDiffView();
     },
   },
@@ -76,6 +84,9 @@ export const useDiffsView = defineStore('diffsView', {
     requestParams() {
       // w: '1' means ignore whitespace, app/helpers/diff_helper.rb#hide_whitespace?
       return { view: this.viewType, w: this.showWhitespace ? '0' : '1' };
+    },
+    totalFilesCount() {
+      return this.diffsStats?.diffsCount;
     },
   },
 });

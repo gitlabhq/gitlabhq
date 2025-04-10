@@ -25,14 +25,11 @@ class RapidDiffsFacade {
       document.querySelector('[data-diffs-list]'),
       this.DiffFileImplementation,
     );
-    const { reloadStreamUrl, metadataEndpoint, diffFilesEndpoint } =
+    const { reloadStreamUrl, diffsStatsEndpoint, diffFilesEndpoint } =
       document.querySelector('[data-rapid-diffs]').dataset;
-    useDiffsView(pinia).metadataEndpoint = metadataEndpoint;
+    useDiffsView(pinia).diffsStatsEndpoint = diffsStatsEndpoint;
     useDiffsView(pinia)
-      .loadMetadata()
-      .then(() => {
-        initHiddenFilesWarning();
-      })
+      .loadDiffsStats()
       .catch((error) => {
         createAlert({
           message: __('Failed to load additional diffs information. Try reloading the page.'),
@@ -46,6 +43,7 @@ class RapidDiffsFacade {
       });
     });
     initViewSettings({ pinia, streamUrl: reloadStreamUrl });
+    initHiddenFilesWarning();
     document.addEventListener(DIFF_FILE_MOUNTED, useDiffsList(pinia).addLoadedFile);
   }
 

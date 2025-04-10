@@ -12,15 +12,15 @@ module API
         JOB_TOKEN_PARAM = :token
         LEGACY_SYSTEM_XID = '<legacy>'
 
-        def authenticate_runner!(ensure_runner_manager: true, update_contacted_at: true)
+        def authenticate_runner!(ensure_runner_manager: true, creation_state: nil)
           track_runner_authentication
           forbidden! unless current_runner
 
-          current_runner.heartbeat if update_contacted_at
+          current_runner.heartbeat(creation_state: creation_state) if ensure_runner_manager
           return unless ensure_runner_manager
 
           runner_details = get_runner_details_from_request
-          current_runner_manager&.heartbeat(runner_details, update_contacted_at: update_contacted_at)
+          current_runner_manager&.heartbeat(runner_details)
         end
 
         def get_runner_details_from_request

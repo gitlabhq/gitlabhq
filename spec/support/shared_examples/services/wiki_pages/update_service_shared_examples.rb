@@ -64,8 +64,13 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
 
     subject(:track_event) { service.execute(page) }
 
-    it_behaves_like 'internal event tracking' do
-      let(:event) { 'update_wiki_page' }
+    it "triggers an internal event" do
+      expect { track_event }.to trigger_internal_events('update_wiki_page').with(
+        category: 'InternalEventTracking',
+        user: user,
+        project: project,
+        namespace: namespace
+      )
     end
 
     context 'with group container', if: container_type == :group do
@@ -79,19 +84,19 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
         let(:event) { 'update_group_wiki_page' }
       end
     end
-  end
 
-  context 'when the updated page is a template' do
-    let(:page) { create(:wiki_page, title: "#{Wiki::TEMPLATES_DIR}/foobar") }
+    context 'when the updated page is a template' do
+      let(:page) { create(:wiki_page, title: "#{Wiki::TEMPLATES_DIR}/foobar") }
 
-    it_behaves_like 'internal event tracking' do
-      let(:event) { 'update_wiki_page' }
-      let(:project) { container if container.is_a?(Project) }
-      let(:namespace) { container.is_a?(Group) ? container : container.namespace }
-      let(:label) { 'template' }
-      let(:property) { 'markdown' }
-
-      subject(:track_event) { service.execute(page) }
+      it "triggers an internal event" do
+        expect { track_event }.to trigger_internal_events('update_wiki_page').with(
+          category: 'InternalEventTracking',
+          user: user,
+          project: project,
+          namespace: namespace,
+          additional_properties: { label: 'template', property: 'markdown' }
+        )
+      end
     end
   end
 

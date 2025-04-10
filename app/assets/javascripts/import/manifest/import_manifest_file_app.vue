@@ -115,13 +115,13 @@ export default {
   >
     <template #form>
       <group-select
-        class="gl-w-full"
         :label="__('Group')"
         :initial-selection="namespaceId"
         :description="__('Choose the top-level group for your repository imports.')"
         input-name="group"
         input-id="group"
         block
+        fluid-width
         @input="handleGroupSelected"
         @clear="handleGroupSelected"
       />

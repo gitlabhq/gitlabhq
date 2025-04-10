@@ -9,7 +9,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:show_whitespace) { true }
   let(:diff_view) { 'inline' }
   let(:update_user_endpoint) { '/update_user' }
-  let(:metadata_endpoint) { '/metadata' }
+  let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
 
   it "renders diffs slice" do
@@ -22,7 +22,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     app = page.find('[data-rapid-diffs]')
     expect(app).not_to be_nil
     expect(app['data-reload-stream-url']).to eq(reload_stream_url)
-    expect(app['data-metadata-endpoint']).to eq(metadata_endpoint)
+    expect(app['data-diffs-stats-endpoint']).to eq(diffs_stats_endpoint)
     expect(app['data-diff-files-endpoint']).to eq(diff_files_endpoint)
   end
 
@@ -86,7 +86,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   it 'preloads' do
     instance = create_instance
     render_inline(instance)
-    expect(instance.helpers.page_startup_api_calls).to include(metadata_endpoint)
+    expect(instance.helpers.page_startup_api_calls).to include(diffs_stats_endpoint)
+    expect(instance.helpers.page_startup_api_calls).to include(diff_files_endpoint)
     expect(vc_test_controller.view_context.content_for?(:startup_js)).not_to be_nil
   end
 
@@ -113,7 +114,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       show_whitespace:,
       diff_view:,
       update_user_endpoint:,
-      metadata_endpoint:,
+      diffs_stats_endpoint:,
       diff_files_endpoint:,
       lazy:
     )

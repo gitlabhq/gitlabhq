@@ -41,6 +41,11 @@ export default {
       required: false,
       default: null,
     },
+    totalFilesCount: {
+      type: [Number, String],
+      default: undefined,
+      required: false,
+    },
   },
   data() {
     return {
@@ -52,7 +57,6 @@ export default {
       'renderTreeList',
       'currentDiffFileId',
       'viewedDiffFileIds',
-      'realSize',
       'fileTree',
       'allBlobs',
       'linkedFile',
@@ -191,7 +195,9 @@ export default {
   <div class="tree-list-holder flex-column gl-flex" data-testid="file-tree-container">
     <div class="gl-mb-3 gl-flex gl-items-center">
       <h5 class="gl-my-0 gl-inline-block">{{ __('Files') }}</h5>
-      <gl-badge class="gl-ml-2" data-testid="file-count">{{ realSize }}</gl-badge>
+      <gl-badge v-if="totalFilesCount != null" class="gl-ml-2" data-testid="file-count">{{
+        totalFilesCount
+      }}</gl-badge>
       <gl-button-group class="gl-ml-auto">
         <gl-button
           v-gl-tooltip.hover

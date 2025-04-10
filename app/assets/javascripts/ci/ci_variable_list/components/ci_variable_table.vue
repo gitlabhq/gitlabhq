@@ -14,6 +14,7 @@ import {
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { convertEnvironmentScope } from '~/ci/common/private/ci_environments_dropdown';
 import {
   DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
@@ -69,6 +70,7 @@ export default {
     GlTable,
     GlModal,
     CrudComponent,
+    ClipboardButton,
   },
   directives: {
     GlModalDirective,
@@ -273,15 +275,12 @@ export default {
                 class="gl-inline-block gl-max-w-full gl-break-anywhere"
                 >{{ item.key }}</span
               >
-              <gl-button
-                v-gl-tooltip
-                category="tertiary"
-                icon="copy-to-clipboard"
-                class="-gl-my-2 gl-ml-2"
-                size="small"
+              <clipboard-button
+                :text="item.key"
                 :title="__('Copy key')"
-                :data-clipboard-text="item.key"
-                :aria-label="__('Copy to clipboard')"
+                category="tertiary"
+                size="small"
+                class="-gl-my-2 gl-ml-2"
               />
             </div>
             <div v-if="item.description" class="gl-mt-2 gl-text-sm gl-text-subtle">
@@ -304,7 +303,7 @@ export default {
             v-if="!item.hidden"
             class="-gl-mr-3 gl-flex gl-items-start gl-justify-end md:gl-justify-start"
           >
-            <span v-if="areValuesHidden" data-testid="hiddenValue">*****</span>
+            <span v-if="areValuesHidden" data-testid="hiddenValue">•••••</span>
             <span
               v-else
               :id="`ci-variable-value-${item.id}`"
@@ -312,15 +311,12 @@ export default {
               data-testid="revealedValue"
               >{{ item.value }}</span
             >
-            <gl-button
-              v-gl-tooltip
-              category="tertiary"
-              icon="copy-to-clipboard"
-              class="-gl-my-2 gl-ml-2"
-              size="small"
+            <clipboard-button
+              :text="item.value"
               :title="__('Copy value')"
-              :data-clipboard-text="item.value"
-              :aria-label="__('Copy to clipboard')"
+              category="tertiary"
+              size="small"
+              class="-gl-my-2 gl-ml-2"
             />
           </div>
         </template>
@@ -331,15 +327,12 @@ export default {
               class="gl-inline-block gl-max-w-full gl-break-anywhere"
               >{{ convertEnvironmentScopeValue(item.environmentScope) }}</span
             >
-            <gl-button
-              v-gl-tooltip
-              category="tertiary"
-              icon="copy-to-clipboard"
-              class="-gl-my-2 gl-ml-2"
-              size="small"
+            <clipboard-button
+              :text="convertEnvironmentScopeValue(item.environmentScope)"
               :title="__('Copy environment')"
-              :data-clipboard-text="convertEnvironmentScopeValue(item.environmentScope)"
-              :aria-label="__('Copy to clipboard')"
+              category="tertiary"
+              size="small"
+              class="-gl-my-2 gl-ml-2"
             />
           </div>
         </template>

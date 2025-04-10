@@ -945,7 +945,7 @@ On each node perform the following:
 
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
-certificates aren't present, NGINX will fail to start. For more information, see
+certificates aren't present, NGINX won't start. For more information, see
 the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/).
 
 ### GitLab Rails post-configuration

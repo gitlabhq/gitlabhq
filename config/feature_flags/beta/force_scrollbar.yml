@@ -1,0 +1,9 @@
+---
+name: force_scrollbar
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186498
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/534572
+milestone: '17.11'
+group: group::personal productivity
+type: beta
+default_enabled: false

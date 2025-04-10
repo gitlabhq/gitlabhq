@@ -495,27 +495,21 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def heartbeat
+    def heartbeat(creation_state: nil)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
-        values = { contacted_at: Time.current, creation_state: :finished }
+        values = { contacted_at: Time.current }
+        values[:creation_state] = creation_state if creation_state.present?
 
         merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
       end
-    end
-
-    def clear_heartbeat
-      cleared_attributes = { contacted_at: nil }
-
-      merge_cache_attributes(cleared_attributes)
-      update_columns(cleared_attributes)
     end
 
     def pick_build!(build)

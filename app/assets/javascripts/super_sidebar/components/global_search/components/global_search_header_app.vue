@@ -1,6 +1,6 @@
 <script>
-import { GlModalDirective, GlTooltipDirective, GlIcon, GlButton } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
+import { GlModalDirective, GlIcon, GlButton, GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import {
@@ -19,23 +19,18 @@ export default {
     GlIcon,
     SearchModal,
     GlButton,
+    GlSprintf,
   },
   i18n: {
-    searchBtnText: __('Search or go to…'),
-    searchKbdHelp: sprintf(
-      s__('GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search'),
-      { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
-      false,
-    ),
+    searchKbdHelp: s__('GlobalSearch|Search or go to… (or use the / keyboard shortcut)'),
+    searchBtnText: s__('GlobalSearch|Search or go to… %{kbdStart}/%{kbdEnd}'),
   },
   directives: {
-    GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagsMixin(), trackingMixin],
   data() {
     return {
-      searchTooltip: this.$options.i18n.searchKbdHelp,
       isNarrowScreen: false,
     };
   },
@@ -50,12 +45,6 @@ export default {
     handleNarrowScreenChange({ matches }) {
       this.isNarrowScreen = matches;
     },
-    hideSearchTooltip() {
-      this.searchTooltip = '';
-    },
-    showSearchTooltip() {
-      this.searchTooltip = this.$options.i18n.searchKbdHelp;
-    },
   },
 };
 </script>
@@ -63,26 +52,33 @@ export default {
 <template>
   <div
     v-if="glFeatures.searchButtonTopRight"
-    :class="{ 'border-0 gl-max-w-26 gl-rounded-base': !isNarrowScreen }"
+    :class="{ 'border-0 gl-rounded-base': !isNarrowScreen }"
   >
     <gl-button
       id="super-sidebar-search"
-      v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      class="focus:!gl-focus"
-      :title="$options.i18n.searchBtnText"
-      :aria-label="$options.i18n.searchBtnText"
+      class="gl-relative focus:!gl-focus"
+      :title="$options.i18n.searchKbdHelp"
+      :aria-label="$options.i18n.searchKbdHelp"
       :class="
         isNarrowScreen
           ? 'shadow-none bg-transparent gl-border gl-w-6 !gl-p-0'
-          : 'user-bar-button gl-w-full !gl-justify-start !gl-pr-7'
+          : 'user-bar-button gl-w-full !gl-justify-start !gl-pr-15'
       "
       data-testid="super-sidebar-search-button"
       @click="trackEvent('click_search_button_to_activate_command_palette', { label: 'top_right' })"
     >
       <gl-icon name="search" />
-      <span v-if="!isNarrowScreen">{{ $options.i18n.searchBtnText }}</span>
+      <span v-if="!isNarrowScreen">
+        <gl-sprintf :message="$options.i18n.searchBtnText">
+          <template #kbd="{ content }">
+            <span class="gl-absolute gl-right-4"
+              ><kbd>{{ content }}</kbd></span
+            >
+          </template>
+        </gl-sprintf>
+      </span>
     </gl-button>
-    <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
+    <search-modal />
   </div>
 </template>

@@ -16,24 +16,26 @@
 # - property
 # - value
 # [Recommended] Prefer including these attributes via additional_properties instead.
-#   ex) let(:additional_properties) { { label: "value" } }
+#   ex) let(:additional_properties) { { label: "label_name" } }
 
 RSpec.shared_examples 'internal event tracking' do
   let(:all_metrics) do
-    additional_properties = try(:additional_properties) || {}
-    base_additional_properties = Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES.to_h do |key, _val|
-      [key, try(key)]
-    end
-
     Gitlab::Usage::MetricDefinition.all.filter_map do |definition|
-      matching_rules = definition.event_selection_rules.map do |event_selection_rule|
+      matching_rules = definition.event_selection_rules.select do |event_selection_rule|
         next unless event_selection_rule.name == event
 
         # Only include unique metrics if the unique_identifier_name is present in the spec
         next if event_selection_rule.unique_identifier_name && !try(event_selection_rule.unique_identifier_name)
 
-        properties = additional_properties.merge(base_additional_properties)
-        event_selection_rule.matches?(properties)
+        next true if event_selection_rule.filter.blank?
+
+        raise <<~MESSAGE
+          Event '#{event}' has metrics that use filters.
+          Testing such events with the 'internal event tracking' examples group is not supported.
+
+          To test it, use composable matchers:
+          https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/#composable-matchers
+        MESSAGE
       end
 
       definition.key if matching_rules.flatten.any?

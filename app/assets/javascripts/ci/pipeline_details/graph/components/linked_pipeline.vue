@@ -309,18 +309,22 @@ export default {
             >
           </div>
         </div>
-        <gl-button
-          v-if="showAction"
-          v-gl-tooltip
-          :title="action.ariaLabel"
-          :loading="isActionLoading"
-          :icon="action.icon"
-          class="gl-h-7 gl-w-7 !gl-rounded-full"
-          :aria-label="action.ariaLabel"
-          @click="action.method"
-          @mouseover="setActionTooltip(true)"
-          @mouseout="setActionTooltip(false)"
-        />
+        <div>
+          <gl-button
+            v-if="showAction"
+            v-gl-tooltip
+            :title="action.ariaLabel"
+            :loading="isActionLoading"
+            size="small"
+            class="!gl-rounded-full !gl-p-0"
+            :aria-label="action.ariaLabel"
+            @click="action.method"
+            @mouseover="setActionTooltip(true)"
+            @mouseout="setActionTooltip(false)"
+          >
+            <gl-icon :name="action.icon" size="12" />
+          </gl-button>
+        </div>
       </div>
       <span
         v-if="hasSourceJob"

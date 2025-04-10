@@ -542,9 +542,11 @@ describe('diffs/components/app', () => {
 
     describe('File browser', () => {
       it('should render file browser when files are present', () => {
+        store.realSize = '20';
         store.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
         createComponent();
         expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
+        expect(wrapper.findComponent(DiffsFileTree).props('totalFilesCount')).toBe('20');
       });
 
       it('should not render file browser without files', async () => {

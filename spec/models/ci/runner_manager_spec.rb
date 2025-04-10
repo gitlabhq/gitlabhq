@@ -458,17 +458,25 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
   end
 
   describe '#status', :freeze_time, :clean_gitlab_redis_cache do
-    subject { runner_manager.status }
+    let(:runner_manager) { build(:ci_runner_machine, *Array.wrap(traits)) }
 
-    context 'if never connected' do
-      let(:runner_manager) { build(:ci_runner_machine, :unregistered, :stale) }
+    subject(:status) { runner_manager.status }
 
-      it { is_expected.to eq(:stale) }
+    context 'if unregistered' do
+      let(:traits) { :unregistered }
+
+      it { is_expected.to eq(:never_contacted) }
+
+      context 'if stale' do
+        let(:traits) { %i[unregistered stale] }
+
+        it { is_expected.to eq(:stale) }
+      end
 
       context 'if created recently' do
-        let(:runner_manager) { build(:ci_runner_machine, :unregistered, :created_within_stale_deadline) }
+        let(:traits) { %i[unregistered online] }
 
-        it { is_expected.to eq(:never_contacted) }
+        it { is_expected.to eq(:offline) }
 
         context "when cache contains 'finished' creation_state" do
           before do
@@ -478,31 +486,31 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
             end
           end
 
-          it { is_expected.to eq(:offline) }
+          it { is_expected.to eq(:online) }
         end
       end
     end
 
     context 'if contacted just now' do
-      let(:runner_manager) { build(:ci_runner_machine, :online) }
+      let(:traits) { :online }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'if almost offline' do
-      let(:runner_manager) { build(:ci_runner_machine, :almost_offline) }
+      let(:traits) { :almost_offline }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'if contacted recently' do
-      let(:runner_manager) { build(:ci_runner_machine, :offline) }
+      let(:traits) { :offline }
 
       it { is_expected.to eq(:offline) }
     end
 
-    context 'if contacted long time ago' do
-      let(:runner_manager) { build(:ci_runner_machine, :stale) }
+    context 'if stale' do
+      let(:traits) { :stale }
 
       it { is_expected.to eq(:stale) }
     end

@@ -53,7 +53,6 @@ describe('Diffs tree list component', () => {
     useLegacyDiffs().addedLines = 10;
     useLegacyDiffs().addedLines = 20;
     useLegacyDiffs().mergeRequestDiff = {};
-    useLegacyDiffs().realSize = '20';
     useLegacyDiffs().setTreeOpen.mockReturnValue();
   });
 
@@ -165,7 +164,7 @@ describe('Diffs tree list component', () => {
   });
 
   it('renders file count', () => {
-    createComponent();
+    createComponent({ totalFilesCount: '20' });
 
     expect(wrapper.findByTestId('file-count').text()).toBe('20');
   });

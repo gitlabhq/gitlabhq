@@ -14586,6 +14586,9 @@ msgstr ""
 msgid "CodeownersValidation|Entries with spaces"
 msgstr ""
 
+msgid "CodeownersValidation|Group has no members with permission to approve merge requests"
+msgstr ""
+
 msgid "CodeownersValidation|Group needs at least Developer access to the project for its members to approve merge requests"
 msgstr ""
 
@@ -28591,6 +28594,12 @@ msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr ""
 
 msgid "GlobalSearch|Search labels"
+msgstr ""
+
+msgid "GlobalSearch|Search or go to… %{kbdStart}/%{kbdEnd}"
+msgstr ""
+
+msgid "GlobalSearch|Search or go to… (or use the / keyboard shortcut)"
 msgstr ""
 
 msgid "GlobalSearch|Search results are loading"
@@ -56242,6 +56251,9 @@ msgstr ""
 msgid "ServiceAccounts|Name"
 msgstr ""
 
+msgid "ServiceAccounts|No service accounts"
+msgstr ""
+
 msgid "ServiceAccounts|Service Accounts"
 msgstr ""
 
@@ -66699,6 +66711,9 @@ msgstr ""
 msgid "Vulnerability|Additional Info"
 msgstr ""
 
+msgid "Vulnerability|Archive pending"
+msgstr ""
+
 msgid "Vulnerability|Assert:"
 msgstr ""
 
@@ -66910,6 +66925,9 @@ msgid "Vulnerability|View training"
 msgstr ""
 
 msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
+
+msgid "Vulnerability|Vulnerability will be archived on %{date}. %{linkStart}Why will this vulnerability be archived?%{linkEnd}"
 msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"

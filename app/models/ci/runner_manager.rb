@@ -140,7 +140,7 @@ module Ci
       read_attribute(:contacted_at)
     end
 
-    def heartbeat(values, update_contacted_at: true)
+    def heartbeat(values)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
@@ -150,7 +150,7 @@ module Ci
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config,
           :executor, :runtime_features) || {}
 
-        values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at
+        values.merge!(contacted_at: Time.current, creation_state: :finished)
 
         if values.include?(:executor)
           values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)

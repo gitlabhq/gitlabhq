@@ -613,6 +613,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               ... on WorkItemWidgetAwardEmoji {
                 upvotes
                 downvotes
+                newCustomEmojiPath
                 awardEmoji {
                   nodes {
                     name
@@ -631,6 +632,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'type' => 'AWARD_EMOJI',
                 'upvotes' => work_item.upvotes,
                 'downvotes' => work_item.downvotes,
+                'newCustomEmojiPath' => Gitlab::Routing.url_helpers.new_group_custom_emoji_path(group),
                 'awardEmoji' => {
                   'nodes' => match_array(
                     [emoji, upvote, downvote].map { |e| { 'name' => e.name } }

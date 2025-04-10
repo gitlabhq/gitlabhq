@@ -20,8 +20,8 @@ import {
   DEFAULT_PLATFORM,
   EXECUTORS_HELP_URL,
   SERVICE_COMMANDS_HELP_URL,
-  STATUS_NEVER_CONTACTED,
-  STATUS_ONLINE,
+  CREATION_STATE_STARTED,
+  CREATION_STATE_FINISHED,
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   WINDOWS_PLATFORM,
   GOOGLE_CLOUD_PLATFORM,
@@ -216,7 +216,7 @@ describe('RegistrationInstructions', () => {
       it('when runner is online, stops polling and announces runner is registered', async () => {
         expect(wrapper.emitted('runnerRegistered')).toBeUndefined();
 
-        mockResolvedRunner({ ...mockRunner, status: STATUS_ONLINE });
+        mockResolvedRunner({ ...mockRunner, creationState: CREATION_STATE_FINISHED });
         await waitForPolling();
 
         expect(wrapper.emitted('runnerRegistered')).toHaveLength(1);
@@ -288,7 +288,7 @@ describe('RegistrationInstructions', () => {
 
         await waitForPolling();
 
-        mockResolvedRunner({ ...mockRunner, status: STATUS_NEVER_CONTACTED });
+        mockResolvedRunner({ ...mockRunner, creationState: CREATION_STATE_STARTED });
 
         await waitForPolling();
       });
@@ -317,7 +317,7 @@ describe('RegistrationInstructions', () => {
         createComponent();
         await waitForPolling();
 
-        mockResolvedRunner({ ...mockRunner, status: STATUS_ONLINE });
+        mockResolvedRunner({ ...mockRunner, creationState: CREATION_STATE_FINISHED });
         await waitForPolling();
       });
 

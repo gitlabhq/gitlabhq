@@ -20,6 +20,10 @@ module Types
           GraphQL::Types::Int,
           null: false,
           description: 'Number of downvotes the work item has received.'
+        field :new_custom_emoji_path,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Path to create a new custom emoji.'
         field :upvotes,
           GraphQL::Types::Int,
           null: false,
@@ -33,6 +37,12 @@ module Types
         def upvotes
           BatchLoaders::AwardEmojiVotesBatchLoader
             .load_upvotes(object.work_item, awardable_class: 'Issue')
+        end
+
+        def new_custom_emoji_path
+          return unless context[:current_user]&.can?(:create_custom_emoji, object.work_item.project.namespace)
+
+          ::Gitlab::Routing.url_helpers.new_group_custom_emoji_path(object.work_item.project.namespace)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

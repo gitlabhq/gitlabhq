@@ -20,6 +20,11 @@ export default {
       required: false,
       default: false,
     },
+    fluidWidth: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     label: {
       type: String,
       required: true,
@@ -207,6 +212,7 @@ export default {
       ref="listbox"
       v-model="selected"
       :block="block"
+      :fluid-width="fluidWidth"
       :header-text="headerText"
       :reset-button-label="resetButtonLabel"
       :toggle-text="toggleText"
