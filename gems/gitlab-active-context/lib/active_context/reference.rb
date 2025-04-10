@@ -78,8 +78,9 @@ module ActiveContext
         docs = docs.map { |doc| base.merge(doc) }
       end
 
-      docs.map do |json|
+      docs.map.with_index do |json, index|
         json.merge(
+          unique_identifier: unique_identifier(index),
           ref_id: identifier,
           ref_version: ref_version
         )
@@ -98,6 +99,14 @@ module ActiveContext
 
     def identifier
       raise NotImplementedError
+    end
+
+    def unique_identifier(index)
+      [unique_identifiers, index].flatten.join(':')
+    end
+
+    def unique_identifiers
+      [identifier]
     end
 
     def partition_name

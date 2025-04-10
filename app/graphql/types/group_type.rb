@@ -4,6 +4,8 @@ module Types
   class GroupType < NamespaceType
     graphql_name 'Group'
 
+    include ::NamespacesHelper
+
     implements ::Types::Namespaces::GroupInterface
 
     authorize :read_group
@@ -356,6 +358,22 @@ module Types
       description: 'Cluster agents associated with projects in the group and its subgroups.',
       resolver: ::Resolvers::Clusters::AgentsResolver
 
+    field :marked_for_deletion_on, ::Types::TimeType,
+      null: true,
+      description: 'Date when group was scheduled to be deleted.',
+      experiment: { milestone: '16.11' }
+
+    field :is_adjourned_deletion_enabled, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if delayed group deletion is enabled.',
+      method: :adjourned_deletion?,
+      experiment: { milestone: '16.11' }
+
+    field :permanent_deletion_date, GraphQL::Types::String,
+      null: true,
+      description: 'Date when group will be deleted if delayed group deletion is enabled.',
+      experiment: { milestone: '16.11' }
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder
@@ -449,6 +467,18 @@ module Types
         group.organization,
         id: group.to_param
       )
+    end
+
+    def marked_for_deletion_on
+      return unless group.adjourned_deletion?
+
+      group.marked_for_deletion_on
+    end
+
+    def permanent_deletion_date
+      return unless group.adjourned_deletion_configured?
+
+      permanent_deletion_date_formatted(Date.current)
     end
 
     private

@@ -29,8 +29,7 @@ module ActiveContext
         end
 
         def process_bulk_errors(result)
-          # we already return only failed references so nothing to do here
-          result
+          result.uniq { |ref| ref.unique_identifier(nil) }
         end
 
         def reset
@@ -43,8 +42,8 @@ module ActiveContext
         def build_operation(ref)
           case ref.operation.to_sym
           when :upsert
-            ref.jsons.each.with_index do |hash, index|
-              @operations << { "#{ref.partition_name}": { upsert: build_indexed_json(hash, ref, index) }, ref: ref }
+            ref.jsons.each do |hash|
+              @operations << { "#{ref.partition_name}": { upsert: build_indexed_json(hash, ref) }, ref: ref }
             end
             @operations << build_delete_operation(ref: ref, include_ref_version: true)
           when :delete
@@ -54,12 +53,13 @@ module ActiveContext
           end
         end
 
-        def build_indexed_json(hash, ref, index)
+        def build_indexed_json(hash, ref)
           hash
             .merge(
               partition_id: ref.partition_number,
-              id: unique_identifier(ref, index)
+              id: hash[:unique_identifier]
             )
+            .except(:unique_identifier)
             .transform_values { |value| convert_pg_array(value) }
         end
 

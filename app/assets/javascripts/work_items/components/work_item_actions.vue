@@ -793,6 +793,7 @@ export default {
       :related-item="relatedItemData"
       :preselected-work-item-type="workItemTypeNameEnum"
       :show-project-selector="!isEpic"
+      :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button
       @workItemCreated="$emit('workItemCreated')"

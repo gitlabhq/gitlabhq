@@ -3975,6 +3975,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|An error occurred while loading the AI feature settings. Please try again."
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|Apply to all sub-features"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Assists developers by providing real-time code completions and recommendations. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -4269,7 +4272,16 @@ msgstr ""
 msgid "AdminSelfHostedModels|An error occurred while loading the self-hosted model. Please try again."
 msgstr ""
 
+msgid "AdminSelfHostedModels|An error occurred while updating the %{mainFeature} sub-feature settings. Please try again."
+msgstr ""
+
 msgid "AdminSelfHostedModels|An error occurred while updating the self-hosted model, please try again."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Apply to all %{mainFeature} sub-features"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Assign a setting to the %{subFeatureTitle} sub-feature before applying to all"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Create self-hosted model"
@@ -48244,6 +48256,9 @@ msgstr ""
 msgid "ProjectsNew|Choose a group"
 msgstr ""
 
+msgid "ProjectsNew|Choose a group or namespace"
+msgstr ""
+
 msgid "ProjectsNew|Connect your external repository to GitLab CI/CD."
 msgstr ""
 
@@ -48380,6 +48395,12 @@ msgid "ProjectsNew|Please enter a valid token."
 msgstr ""
 
 msgid "ProjectsNew|Please enter a valid username."
+msgstr ""
+
+msgid "ProjectsNew|Please enter project name."
+msgstr ""
+
+msgid "ProjectsNew|Please enter project slug."
 msgstr ""
 
 msgid "ProjectsNew|Please upload a valid GitLab project export file."
@@ -55506,9 +55527,6 @@ msgid "SecurityReports|Error parsing security reports"
 msgstr ""
 
 msgid "SecurityReports|Export"
-msgstr ""
-
-msgid "SecurityReports|Export as CSV"
 msgstr ""
 
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
@@ -69133,9 +69151,6 @@ msgid "Workspaces|What's the %{linkStart}Gitlab default devfile%{linkEnd}?"
 msgstr ""
 
 msgid "Workspaces|When no devfile is provided, the GitLab default devfile will be used."
-msgstr ""
-
-msgid "Workspaces|Workspace automatically terminates after"
 msgstr ""
 
 msgid "Workspaces|Workspaces"

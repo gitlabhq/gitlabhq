@@ -270,7 +270,7 @@ gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdow
 gem 'rouge', '~> 4.5.0', feature_category: :shared
 gem 'truncato', '~> 0.7.13', feature_category: :team_planning
 gem 'nokogiri', '~> 1.18', feature_category: :shared
-gem 'gitlab-glfm-markdown', '~> 0.0.27', feature_category: :markdown
+gem 'gitlab-glfm-markdown', '~> 0.0.29', feature_category: :markdown
 gem 'tanuki_emoji', '~> 0.13', feature_category: :markdown
 gem 'unicode-emoji', '~> 4.0', feature_category: :markdown
 
@@ -729,7 +729,7 @@ gem 'cvss-suite', '~> 3.3.0', require: 'cvss_suite', feature_category: :software
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.3.0', feature_category: :workspaces
+gem 'devfile', '~> 0.4.0', feature_category: :workspaces
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0', feature_category: :mobile_devops

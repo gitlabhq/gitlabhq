@@ -4,4 +4,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515960
 milestone: '17.10'
 type: development
 group: group::analytics instrumentation
-default_enabled: false
+default_enabled: true

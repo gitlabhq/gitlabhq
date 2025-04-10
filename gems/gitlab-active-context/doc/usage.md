@@ -89,6 +89,9 @@ Instance methods required:
 - `operation`: determines the operation which can be one of `upsert` or `delete`
 - `identifier`: unique identifier
 
+Optional methods:
+- `unique_identifiers`: array of identifiers to build a unique identifier for every document. For example, `[identifier, branch_name]`. Defaults to `[identifier]`
+
 Example for a reference reading from a database relation, with preloading and bulk embedding generation:
 
 ```ruby

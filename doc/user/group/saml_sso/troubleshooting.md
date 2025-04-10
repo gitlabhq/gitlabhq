@@ -219,13 +219,13 @@ For convenience, we've included some [example resources](example_saml_config.md)
 
 ### Calculate the fingerprint
 
-If you use a `idp_cert_fingerprint`, it must be a SHA1 fingerprint. To calculate a SHA1 fingerprint, download the certificate file and run:
+When configuring the `idp_cert_fingerprint` you should use a SHA256 fingerprint whenever possible. SHA1 is also supported, but is not recommended. You can calculate the fingerprint by running the following command on the certificate file:
 
 ```shell
-openssl x509 -in <filename.crt> -noout -fingerprint -sha1
+openssl x509 -in <certificate.crt> -noout -fingerprint -sha256
 ```
 
-Replace `filename.crt` with the name of the certificate file.
+Replace `<certificate.crt>` with the name of the certificate file.
 
 ## SSO Certificate updates
 
@@ -248,8 +248,7 @@ must be validated using either a fingerprint, a certificate, or a validator.
 
 For this requirement, be sure to take the following into account:
 
-- If you use a fingerprint, it must be the correct SHA1 fingerprint. To confirm that you are using
-  the correct SHA1 fingerprint:
+- If you use a fingerprint, confirm your SHA256 fingerprint:
   1. Re-download the certificate file.
   1. [Calculate the fingerprint](#calculate-the-fingerprint).
   1. Compare the fingerprint to the value provided in `idp_cert_fingerprint`. The values should be the same.

@@ -62,17 +62,59 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
   include_context 'for loose foreign keys'
 
   it 'cleans up (delete or nullify) the model' do
+    puts("##+ Additional Debug Logs for LFK flakiness +##")
+    puts("## Parent: #{parent.inspect} ##")
     parent.delete
+    puts("## Parent deleted ##")
 
     expect(find_model).to be_present
 
+    begin
+      if find_model
+        puts("## Find Model: #{find_model.inspect} ##")
+      else
+        puts("## Find Model not present ##")
+      end
+    rescue NoMethodError
+      puts("## Inspect causes an NoMethodError for this class. Find Model: #{find_model.class} #{find_model.id} ##")
+    end
+
+    # + Debug code to be removed.
+    Gitlab::Database::SharedModel.using_connection(parent.connection) do
+      lfk_deleted_records = []
+      Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
+        fully_qualified_table_name = "#{parent.connection.current_schema}.#{table}"
+        lfk_deleted_records << LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000)
+      end
+      lfk_deleted_records.flatten!
+      puts("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
+      puts("## #{lfk_deleted_records.inspect} ##")
+    end
+    # - Debug code to be removed.
+
     process_loose_foreign_key_deletions(record: parent)
+    puts("## LFK's processed for parent ##")
+
+    # + Debug code to be removed.
+    Gitlab::Database::SharedModel.using_connection(parent.connection) do
+      lfk_deleted_records = []
+      Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
+        fully_qualified_table_name = "#{parent.connection.current_schema}.#{table}"
+        lfk_deleted_records << LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000)
+      end
+      lfk_deleted_records.flatten!
+      puts("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
+      puts("## #{lfk_deleted_records.inspect} ##")
+    end
+    # - Debug code to be removed.
 
     if foreign_key_definition.on_delete.eql?(:async_delete)
       expect(find_model).not_to be_present
     else
       expect(find_model[foreign_key_definition.column]).to eq(nil)
     end
+
+    puts("##- Additional Debug Logs for LFK flakiness end -##")
   end
 end
 

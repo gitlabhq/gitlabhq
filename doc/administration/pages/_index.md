@@ -152,7 +152,7 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 To configure GitLab Pages DNS for single-domain sites without wildcard DNS:
 
 1. Enable the GitLab Pages flag for this feature by adding
-   `gitlab_pages["namespace_in_path"] = true` to `/etc/gitlab/gitlab.rb`.
+   `gitlab_pages['namespace_in_path'] = true` to `/etc/gitlab/gitlab.rb`.
 1. In your DNS provider, add entries for `example.io`.
    Replace `example.io` with your domain name, and `192.0.0.0` with
    the IPv4 version of your IP address. The entries look like this:
@@ -268,7 +268,7 @@ To configure GitLab Pages to use single-domain sites:
    pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
 
    # Set this flag to enable this feature
-   gitlab_pages["namespace_in_path"] = true
+   gitlab_pages['namespace_in_path'] = true
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -363,7 +363,7 @@ daemon doesn't listen to the public internet:
    pages_nginx['redirect_http_to_https'] = true
 
    # Set this flag to enable this feature
-   gitlab_pages["namespace_in_path"] = true
+   gitlab_pages['namespace_in_path'] = true
    ```
 
 1. If your TLS certificate and key don't match the name of your domain, like

@@ -267,7 +267,7 @@ export default {
         this.$emit('replied');
         clearDraft(this.autosaveKey);
         this.cancelEditing();
-        this.doFullPageReloadIfIncident(commentText);
+        this.doFullPageReloadIfUnsupportedTypeChange(commentText);
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
@@ -275,16 +275,16 @@ export default {
         this.isSubmitting = false;
       }
     },
-    // Until incidents are fully migrated to work items
+    // Until incidents and Service Desk issues are fully migrated to work items
     // we need to browse to the detail page again
     // so the legacy detail view is rendered.
     // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-    doFullPageReloadIfIncident(commentText) {
-      // Matches quick actions /promote_to incident /promote_to_incident and /type incident case insensitive
-      const incidentTypeChangeRegex =
-        /\/(promote_to(?:_incident|\s{1,3}incident)|type\s{1,3}incident)(?!\S)/im;
+    doFullPageReloadIfUnsupportedTypeChange(commentText) {
+      // Matches quick actions /promote_to incident /promote_to_incident /type incident and /convert_to_ticket case insensitive
+      const unsupportedTypeChangeRegex =
+        /\/(promote_to(?:_incident|\s{1,3}incident)|type\s{1,3}incident|convert_to_ticket)(?!\S)/im;
 
-      if (incidentTypeChangeRegex.test(commentText)) {
+      if (unsupportedTypeChangeRegex.test(commentText)) {
         visitUrl(this.workItem.webUrl);
       }
     },

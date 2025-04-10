@@ -1,6 +1,7 @@
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlankProjectForm from '~/projects/new_v2/components/blank_project_form.vue';
+import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 
 describe('Blank Project Form', () => {
   let wrapper;
@@ -25,6 +26,7 @@ describe('Blank Project Form', () => {
   });
 
   const findMultiStepFormTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findSharedProjectCreationFields = () => wrapper.findComponent(SharedProjectCreationFields);
   const findCreateButton = () => wrapper.findByTestId('create-project-button');
   const findBackButton = () => wrapper.findByTestId('create-project-back-button');
 
@@ -33,6 +35,12 @@ describe('Blank Project Form', () => {
       title: defaultProps.option.title,
       currentStep: 2,
       stepsTotal: 2,
+    });
+  });
+
+  describe('form', () => {
+    it('renders the SharedProjectCreationFields component', () => {
+      expect(findSharedProjectCreationFields().exists()).toBe(true);
     });
   });
 

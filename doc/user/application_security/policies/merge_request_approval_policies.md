@@ -96,7 +96,7 @@ There are multiple ways to configure security scans in new projects:
 - In a scan execution policy to enforce that pipelines run specific security scanners.
 - In a pipeline execution policy to control which jobs must run in pipelines.
 
-For simple use cases, you can use the project's CI/CD configuration. For a comprehensive security strategy, consider combining merge request approval policies with the other policy types. 
+For simple use cases, you can use the project's CI/CD configuration. For a comprehensive security strategy, consider combining merge request approval policies with the other policy types.
 
 To minimize unnecessary approval requirements and ensure accurate security evaluations:
 
@@ -248,20 +248,42 @@ This rule enforces the defined actions based on security scan findings.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
 - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
+- The `licenses` field was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10203) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `exclude_license_packages`. Disabled by default.
 
 {{< /history >}}
 
 This rule enforces the defined actions based on license findings.
 
-| Field                | Type                | Required                                   | Possible values              | Description |
-|----------------------|---------------------|--------------------------------------------|------------------------------|-------------|
-| `type`               | `string`            | true                                       | `license_finding`            | The rule's type. |
-| `branches`           | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type`        | `string`            | true if `branches` field does not exist    | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions`  | `array` of `string` | false                                      | Names of branches            | Branches to exclude from this rule. |
-| `match_on_inclusion_license` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
-| `license_types`      | `array` of `string` | true                                       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
-| `license_states`     | `array` of `string` | true                                       | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+| Field          | Type     | Required                                      | Possible values              | Description                                                                                                                                                                                                         |
+|----------------|----------|-----------------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`         | `string` | true                                          | `license_finding`            | The rule's type.                                                                                                                                                                                                    |
+| `branches`     | `array` of `string` | true if `branch_type` field does not exist    | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                 |
+| `branch_type`  | `string` | true if `branches` field does not exist       | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                   |
+| `branch_exceptions` | `array` of `string` | false                                         | Names of branches            | Branches to exclude from this rule.                                                                                                                                                                                 |
+| `match_on_inclusion_license` | `boolean` | true if `licenses` field does not exists      | `true`, `false`              | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`.                                                                                                                              |
+| `license_types` | `array` of `string` | true if `licenses` field does not exists      | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
+| `license_states` | `array` of `string` | true                                          | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+| `licenses`     | `object` | true if `license_types` field does not exists | `licenses` object            | [SPDX license names](https://spdx.org/licenses) to match on including package exceptions.                                                                                                                        |
+
+### `licenses` object
+
+| Field     | Type     | Required                                | Possible values                                      | Description                                                |
+|-----------|----------|-----------------------------------------|------------------------------------------------------|------------------------------------------------------------|
+| `denied`  | `object` | true if `allowed` field does not exist | `array` of `licenses_with_package_exclusion` objects  | The list of denied licenses including package exceptions.  |
+| `allowed` | `object` | true if `denied` field does not exist  | `array` of `licenses_with_package_exclusion` objects  | The list of allowed licenses including package exceptions. |
+
+### `licenses_with_package_exclusion` object
+
+| Field  | Type     | Required | Possible values   | Description                                        |
+|--------|----------|----------|-------------------|----------------------------------------------------|
+| `name` | `string` | true     | SPDX license name | [SPDX license name](https://spdx.org/licenses).    |
+| `packages` | `object` | false    | `packages` object | List of packages exceptions for the given license. |
+
+### `packages` object
+
+| Field  | Type     | Required | Possible values                                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|--------|----------|----------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `excluding` | `object` | true     | {purls: `array` of `strings` using the `uri` format} | List of package exceptions for the given license. Define the list of packages exceptions using the [`purl`](https://github.com/package-url/purl-spec?tab=readme-ov-file#purl) components `scheme:type/name@version`. The `scheme:type/name` components are required. The `@` and `version` are optional. If a version is specified, only that version is considered an exception. If no version is specified and the `@` character is added at the end of the `purl`, only packages with the exact name is considered a match. If the `@` character is not added to the package name, all packages with the same prefix for the given license are matches. For example, a purl `pkg:gem/bundler` matches the `bundler` and `bundler-stats` packages because both packages use the same license. Defining a `purl` `pkg:gem/bundler@` matches only the `bundler` package. |
 
 ## `any_merge_request` rule type
 

@@ -241,9 +241,13 @@ describe('Create work item component', () => {
     );
 
     it('defaults the selected project to the injected `fullPath` value', async () => {
-      createComponent({ props: { showProjectSelector: true } });
+      const namespaceFullName = 'GitLab.org / GitLab';
+      createComponent({
+        props: { showProjectSelector: true, namespaceFullName },
+      });
       await waitForPromises();
 
+      expect(findProjectsSelector().props('currentProjectName')).toBe(namespaceFullName);
       expect(findProjectsSelector().props('selectedProjectFullPath')).toBe('full-path');
     });
   });

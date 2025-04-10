@@ -8,7 +8,7 @@ title: Auditor users
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

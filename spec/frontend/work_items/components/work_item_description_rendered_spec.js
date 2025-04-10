@@ -251,6 +251,7 @@ and more text
 and even more`,
           hideButton: true,
           isGroup: false,
+          namespaceFullName: '',
           parentId: 'gid://gitlab/WorkItem/818',
           relatedItem: null,
           showProjectSelector: false,

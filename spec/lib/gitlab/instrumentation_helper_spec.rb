@@ -312,48 +312,79 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
   end
 
   describe '.queue_duration_for_job' do
-    where(:enqueued_at, :created_at, :time_now, :expected_duration) do
-      "2019-06-01T00:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.000+0000" | 2.hours.to_f
-      "2019-06-01T02:00:00.000+0000" | "2019-05-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
-      nil                            | nil                            | "2019-06-01T02:00:00.001+0000" | nil
-      "2019-06-01T02:00:00.000+0200" | nil                            | "2019-06-01T02:00:00.000-0200" | 4.hours.to_f
-      1571825569                     | nil                            | "2019-10-23T12:13:16.000+0200" | 27
-      "invalid_date"                 | nil                            | "2019-10-23T12:13:16.000+0200" | nil
-      ""                             | nil                            | "2019-10-23T12:13:16.000+0200" | nil
-      0                              | nil                            | "2019-10-23T12:13:16.000+0200" | nil
-      -1                             | nil                            | "2019-10-23T12:13:16.000+0200" | nil
-      "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T00:00:00.000+0000" | 0
-      Time.at(1571999233).utc        | nil                            | "2019-10-25T12:29:16.000+0200" | 123
+    context 'without buffering' do
+      where(:enqueued_at, :created_at, :time_now, :expected_duration) do
+        "2019-06-01T00:00:00.000+0000" | nil                            |  "2019-06-01T02:00:00.000+0000" | 2.hours.to_f
+        "2019-06-01T02:00:00.000+0000" | "2019-05-01T02:00:00.000+0000" |  "2019-06-01T02:00:01.000+0000" | 1
+        nil                            | nil                            |  "2019-06-01T02:00:00.001+0000" | nil
+        "2019-06-01T02:00:00.000+0200" | nil                            |  "2019-06-01T02:00:00.000-0200" | 4.hours.to_f
+        1571825569                     | nil                            |  "2019-10-23T12:13:16.000+0200" | 27
+        "invalid_date"                 | nil                            |  "2019-10-23T12:13:16.000+0200" | nil
+        ""                             | nil                            |  "2019-10-23T12:13:16.000+0200" | nil
+        0                              | nil                            |  "2019-10-23T12:13:16.000+0200" | nil
+        -1                             | nil                            |  "2019-10-23T12:13:16.000+0200" | nil
+        "2019-06-01T02:00:00.000+0000" | nil                            |  "2019-06-01T00:00:00.000+0000" | 0
+        Time.at(1571999233).utc        | nil                            |  "2019-10-25T12:29:16.000+0200" | 123
+      end
+
+      with_them do
+        let(:job) { { 'enqueued_at' => enqueued_at, 'created_at' => created_at } }
+
+        it "returns the correct duration" do
+          travel_to(Time.iso8601(time_now)) do
+            expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
+          end
+        end
+      end
     end
 
-    with_them do
-      let(:job) { { 'enqueued_at' => enqueued_at, 'created_at' => created_at } }
+    context 'with buffering' do
+      where(:enqueued_at, :concurrency_limit_buffered_at, :with_buffering_duration?, :time_now,
+        :expected_duration) do
+        "2019-06-01T01:00:00.000+0000" | "2019-06-01T00:00:00.000+0000" | true | "2019-06-01T02:00:00.000+0000" |
+          2.hours.to_f
 
-      it "returns the correct duration" do
-        travel_to(Time.iso8601(time_now)) do
-          expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
+        "2019-06-01T02:00:00.000+0000" | "2019-06-01T00:00:00.000+0000" | false | "2019-06-01T03:00:00.000+0000" |
+          1.hour.to_f
+
+        nil                            | "2019-06-01T00:00:00.000+0000" | false | "2019-06-01T02:00:00.000+0000" |
+          nil
+      end
+
+      with_them do
+        let(:job) { { 'enqueued_at' => enqueued_at, 'concurrency_limit_buffered_at' => concurrency_limit_buffered_at } }
+
+        it "returns the correct duration" do
+          travel_to(Time.iso8601(time_now)) do
+            expect(described_class.queue_duration_for_job(job,
+              with_buffering_duration: with_buffering_duration?)).to eq(expected_duration)
+          end
         end
       end
     end
   end
 
   describe '.buffering_duration_for_job' do
-    where(:concurrency_limit_buffered_at, :time_now, :expected_duration) do
-      "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
-      1571825569                     | "2019-10-23T12:13:16.000+0200" | 27
-      -1                             | "2019-06-01T02:00:00.000+0200" | nil
-      0                              | "2019-06-01T02:00:00.000+0200" | nil
-      ""                             | "2019-06-01T02:00:00.000+0200" | nil
-      nil                            | "2019-06-01T02:00:00.000+0000" | nil
+    where(:concurrency_limit_buffered_at, :enqueued_at, :created_at, :expected_duration) do
+      "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | nil | 1
+      1571825569                     | "2019-10-23T12:13:16.000+0200" | nil | 27
+      -1                             | "2019-06-01T02:00:00.000+0200" | nil | nil
+      0                              | "2019-06-01T02:00:00.000+0200" | nil | nil
+      ""                             | "2019-06-01T02:00:00.000+0200" | nil | nil
+      nil                            | "2019-06-01T02:00:00.000+0000" | nil | nil
+      "2019-06-01T02:00:00.000+0000" | nil                            | nil | nil
+      "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T02:00:01.000+0000" | 1
+      "2019-06-01T02:00:00.000+0000" | "2019-06-01T02:00:30.000+0000" | "2019-06-01T02:00:01.000+0000" | 30
     end
 
     with_them do
-      let(:job) { { 'concurrency_limit_buffered_at' => concurrency_limit_buffered_at } }
+      let(:job) do
+        { 'concurrency_limit_buffered_at' => concurrency_limit_buffered_at, 'enqueued_at' => enqueued_at,
+          'created_at' => created_at }
+      end
 
       it "returns the correct duration" do
-        travel_to(Time.iso8601(time_now)) do
-          expect(described_class.buffering_duration_for_job(job)).to eq(expected_duration)
-        end
+        expect(described_class.buffering_duration_for_job(job)).to eq(expected_duration)
       end
     end
   end

@@ -25,20 +25,13 @@ see [Conan packages in the package registry](../../user/packages/conan_repositor
 Generally, these endpoints are used by the [Conan 1 package manager client](https://docs.conan.io/en/latest/)
 and are not meant for manual consumption.
 
-For instructions on how to upload and install Conan packages from the GitLab
-package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/_index.md).
-
 {{< alert type="note" >}}
 
-These endpoints do not adhere to the standard API authentication methods.
+- These endpoints do not adhere to the standard API authentication methods.
 See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
-These endpoints will all return 404 Not Found.
+- The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
+These endpoints all return `404 Not Found`.
 
 {{< /alert >}}
 

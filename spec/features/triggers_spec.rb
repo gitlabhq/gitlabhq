@@ -11,6 +11,10 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
   let_it_be(:guest_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
+  before do
+    stub_feature_flags(vue_project_runners_settings: false)
+  end
+
   before_all do
     project.add_maintainer(user)
     project.add_maintainer(user2)

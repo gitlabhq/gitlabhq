@@ -89,6 +89,11 @@ export default {
       validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
+    namespaceFullName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -320,6 +325,7 @@ export default {
         :work-item-type-name="selectedWorkItemTypeName"
         :related-item="relatedItem"
         :should-discard-draft="shouldDiscardDraft"
+        :namespace-full-name="namespaceFullName"
         :is-modal="true"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"

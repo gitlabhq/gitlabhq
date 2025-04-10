@@ -88,10 +88,10 @@ module ActiveContext
         def build_index_operations(ref)
           return unless ref.operation.to_sym == :upsert
 
-          ref.jsons.map.with_index do |hash, index|
+          ref.jsons.map do |hash|
             add_index_operation([
-              { update: { _index: ref.partition, _id: unique_identifier(ref, index), routing: ref.routing }.compact },
-              { doc: hash, doc_as_upsert: true }
+              { update: { _index: ref.partition, _id: hash[:unique_identifier], routing: ref.routing }.compact },
+              { doc: hash.except(:unique_identifier), doc_as_upsert: true }
             ])
           end
         end

@@ -126,6 +126,16 @@ module Ci
       }
     end
 
+    def project_runners_settings_data(project)
+      {
+        can_create_runner: can?(current_user, :create_runner, project).to_s,
+        allow_registration_token: project.namespace.allow_runner_registration_token?.to_s,
+        registration_token: can?(current_user, :read_runners_registration_token, project) ? project.runners_token : nil,
+        group_full_path: project.group&.full_path,
+        new_project_runner_path: new_project_runner_path(project)
+      }
+    end
+
     def toggle_shared_runners_settings_data(project)
       data = {
         is_enabled: project.shared_runners_enabled?.to_s,

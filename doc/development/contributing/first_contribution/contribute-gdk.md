@@ -9,11 +9,7 @@ Now for the fun part. Let's edit some code.
 
 In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
-I want to change `Customize the color of GitLab` to `Customize the color theme of the GitLab UI`:
-
-![The UI text in GitLab before making the change.](../img/ui_color_theme_before_v16_9.png)
-
-[View an interactive demo of this section](https://gitlab.navattic.com/uu5a0dc5).
+I want to change `Syntax highlighting theme` to `Code syntax highlighting theme`:
 
 Use your local IDE to make changes to the code in the GDK directory.
 
@@ -23,13 +19,12 @@ Use your local IDE to make changes to the code in the GDK directory.
    git checkout -b ui-updates
    ```
 
-1. Search the `gitlab-development-kit/gitlab` directory for the string `Customize the color of GitLab`.
-
+1. Search the `gitlab-development-kit/gitlab` directory for the string `Syntax highlighting theme`.
    The results show one `.haml` file and several `.po` files.
 
 1. Open the `app/views/profiles/preferences/show.html.haml` file.
-1. Update the string from `Customize the color of GitLab` to
-   `Customize the color theme of the GitLab UI`.
+1. Update the string from `Syntax highlighting theme` to
+   `Code syntax highlighting theme`.
 1. Save the file.
 1. You can check that you were successful:
 
@@ -42,8 +37,6 @@ Use your local IDE to make changes to the code in the GDK directory.
 
 1. Refresh the web browser where you're viewing the GDK.
    The changes should be displayed. Take a screenshot.
-
-   ![The UI text in GitLab after making the change.](../img/ui_color_theme_after_v16_9.png)
 
 1. Commit the changes:
 

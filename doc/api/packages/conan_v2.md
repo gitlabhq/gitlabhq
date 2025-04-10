@@ -18,37 +18,30 @@ title: Conan v2 API
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-For Conan v1 operations, see [Conan v1 API](conan_v1.md).
-
-{{< /alert >}}
-
-Use this API to interact with the Conan v2 package manager. For more information, see [Conan packages in the package registry](../../user/packages/conan_repository/_index.md).
-
 {{< alert type="flag" >}}
 
 The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 {{< /alert >}}
 
-Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
-and are not meant for manual consumption.
-
-For instructions on how to upload and install Conan packages from the GitLab
-package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/_index.md) and [Conan 2 package manager client](https://docs.conan.io/2/index.html).
-
 {{< alert type="note" >}}
 
-These endpoints do not adhere to the standard API authentication methods.
-See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
+For Conan v1 operations, see [Conan v1 API](conan_v1.md).
 
 {{< /alert >}}
 
+Use this API to interact with the Conan v2 package manager. For more information, see [Conan packages in the package registry](../../user/packages/conan_repository/_index.md) or [Conan 2 package manager client](https://docs.conan.io/2/index.html).
+
+Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
+and are not meant for manual consumption.
+
 {{< alert type="note" >}}
 
-The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
-These endpoints will all return 404 Not Found.
+- These endpoints do not adhere to the standard API authentication methods.
+See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
+
+- The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
+These endpoints all return `404 Not Found`.
 {{< /alert >}}
 
 ## Route prefix

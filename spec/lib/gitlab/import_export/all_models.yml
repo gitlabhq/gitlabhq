@@ -1029,6 +1029,8 @@ lists:
 - board
 - label
 - list_user_preferences
+- group
+- project
 milestone_releases:
 - milestone
 - release

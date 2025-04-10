@@ -291,6 +291,7 @@ export default {
       :option="selectedProjectOption"
       :namespace="namespace"
       data-testid="new-project-step2"
+      @onSelectNamespace="onSelectNamespace"
       @back="onBack"
       @next="onNext"
     />

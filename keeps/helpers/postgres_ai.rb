@@ -59,6 +59,8 @@ module Keeps
         query = "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)"
 
         pg_client.exec_params(query)
+      rescue PG::UndefinedTable
+        false
       end
 
       private

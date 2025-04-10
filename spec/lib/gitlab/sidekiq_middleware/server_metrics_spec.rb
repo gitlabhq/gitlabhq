@@ -187,7 +187,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                                         :urgency,
                                                         :external_dependencies,
                                                         :queue,
-                                                        :destination_shard_redis), queue_duration_for_job)
+                                                        :destination_shard_redis),
+                                                        queue_duration_for_job)
           end
 
           subject.call(worker, job, :test) { nil }

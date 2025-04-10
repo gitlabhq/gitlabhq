@@ -1,5 +1,5 @@
 - if Feature.enabled?(:vue_project_runners_settings, @project)
-  #js-project-runners-settings
+  #js-project-runners-settings{ data: project_runners_settings_data(@project) }
 - else
   .gl-flex.gl-flex-col.gl-gap-5.gl-mt-5
     = render 'projects/runners/project_runners'

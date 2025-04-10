@@ -54,7 +54,7 @@ If you're interested in a region not listed here, contact your account represent
 When setting up GitLab Dedicated, you select a secondary region to host a failover instance for
 disaster recovery. Some AWS regions are available only as secondary regions because they do not fully support certain AWS
 features that GitLab Dedicated relies on. If GitLab initiates a failover to your secondary region during
-a disaster recovery event or test, these limitations may impact available features.
+a disaster recovery event or test, these limitations impact available features.
 
 The following regions are verified for use as a secondary region but with known limitations:
 
@@ -80,13 +80,15 @@ The following regions are verified for use as a secondary region but with known 
 
 These limitations may affect your service in the following ways:
 
-- **No io2 volume support**: Regions without io2 volume support use gp3 volumes instead, which offer lower
-  data durability (99.8-99.9% compared to 99.999% for io2), potentially longer [RTO and RPO](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) recovery times, and
-  may affect failover capabilities if rebuilding is necessary.
+- **No io2 volume support**: In regions where AWS does not support io2 volumes, GitLab Dedicated uses GP3
+  volumes instead. GP3 volumes have lower durability (99.8-99.9% compared to 99.999% for io2), which
+  increases the risk of disk failures in your replica region. This can affect availability during failover
+  or while operating in the failed-over state. As a result, these regions are not covered by our standard
+  [RTO and RPO](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) time objectives.
 
-- **No SES support**: Regions without AWS Simple Email Service (SES) support cannot send email
-  notifications using the default configuration. To maintain email functionality in these regions,
-  you must set up your own [external SMTP mail service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service).
+- **No SES support**: In regions where AWS does not support Simple Email Service (SES), GitLab
+  cannot send email notifications using the default configuration. To maintain email functionality
+  in these regions, set up your own [external SMTP mail service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service).
 
 During onboarding, regions with these limitations are clearly marked. You must acknowledge the
 associated risks before selecting one as your secondary region.

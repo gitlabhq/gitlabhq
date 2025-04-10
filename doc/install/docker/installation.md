@@ -148,7 +148,6 @@ install, and upgrade your Docker-based GitLab installation:
 1. Create a `docker-compose.yml` file. For example:
 
    ```yaml
-   version: '3.6'
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0
@@ -182,7 +181,6 @@ install, and upgrade your Docker-based GitLab installation:
    `ports` section:
 
    ```yaml
-   version: '3.6'
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0
@@ -302,7 +300,6 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
 1. Create a `docker-compose.yml` file:
 
    ```yaml
-   version: "3.6"
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0

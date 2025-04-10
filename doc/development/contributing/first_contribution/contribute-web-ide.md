@@ -12,21 +12,21 @@ to GitLab code using the Web IDE.
 
 1. Go to the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab).
 
-1. Search the GitLab code for the string `Customize the color of GitLab`.
+1. Search the GitLab code for the string `Syntax highlighting theme`.
    From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab):
 
    1. On the left sidebar, select **Search or go to**.
-   1. Enter the search string `"Customize the color of GitLab"`.
+   1. Enter the search string `"Syntax highlighting theme"`.
 
 1. Select the filename
-   [from the results](https://gitlab.com/search?search=%22Customize+the+color+of+GitLab%22&nav_source=navbar&project_id=41372369&group_id=60717473&search_code=true).
+   [from the results](https://gitlab.com/search?search=%22Syntax+highlighting+theme%22&nav_source=navbar&project_id=41372369&group_id=60717473&search_code=true).
    In this case, `app/views/profiles/preferences/show.html.haml`.
 
 1. Open the file in Web IDE. Select **Edit > Open in Web IDE**.
 
    - Keyboard shortcut: <kbd>.</kbd>
 
-1. Update the string from `Customize the color of GitLab` to `Customize the color theme of the GitLab UI`.
+1. Update the string from `Syntax highlighting theme` to `Code syntax highlighting theme`.
 
 1. Save your changes.
 

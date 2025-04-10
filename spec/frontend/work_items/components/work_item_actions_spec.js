@@ -143,6 +143,7 @@ describe('WorkItemActions component', () => {
     workItemsBeta = true,
     parentId = null,
     projectId = 'gid://gitlab/Project/1',
+    namespaceFullName = 'GitLab.org / GitLab Test',
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -179,6 +180,7 @@ describe('WorkItemActions component', () => {
         canCreateRelatedItem,
         parentId,
         projectId,
+        namespaceFullName,
         showSidebar: true,
         truncationEnabled: true,
       },
@@ -666,6 +668,7 @@ describe('WorkItemActions component', () => {
     it('passes related item data to create work item modal', () => {
       createComponent();
 
+      expect(findCreateWorkItemModal().props('namespaceFullName')).toBe('GitLab.org / GitLab Test');
       expect(findCreateWorkItemModal().props('relatedItem')).toEqual({
         id: 'gid://gitlab/WorkItem/1',
         reference: 'gitlab-org/gitlab-test#1',

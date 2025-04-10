@@ -43,6 +43,7 @@ describe('CreateWorkItemModal', () => {
     preselectedWorkItemType = 'EPIC',
     relatedItem = null,
     alwaysShowWorkItemTypeSelect = false,
+    namespaceFullName = 'GitLab.org / GitLab',
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
@@ -51,6 +52,7 @@ describe('CreateWorkItemModal', () => {
         hideButton,
         relatedItem,
         alwaysShowWorkItemTypeSelect,
+        namespaceFullName,
       },
       provide: {
         fullPath: 'full-path',
@@ -88,6 +90,7 @@ describe('CreateWorkItemModal', () => {
       await nextTick();
 
       expect(findCreateModal().props('visible')).toBe(true);
+      expect(findForm().props('namespaceFullName')).toBe('GitLab.org / GitLab');
       expect(mockEvent.preventDefault).toHaveBeenCalled();
     });
 

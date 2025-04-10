@@ -462,17 +462,19 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger, feature_category: :shar
 
     context 'when the job is buffered' do
       let(:buffered_at) { timestamp - 5.seconds }
-      let(:scheduling_latency_s) { 6.0 }
+      let(:buffering_duration) { created_at - buffered_at }
+      let(:scheduling_latency_s) { timestamp - created_at }
+      let(:queue_duration_s) { buffering_duration + scheduling_latency_s }
 
       let(:extra_fields) do
         {
-          'concurrency_limit_buffering_duration_s' => 5.0,
+          'concurrency_limit_buffering_duration_s' => buffering_duration,
           'scheduling_latency_s' => scheduling_latency_s,
-          'concurrency_limit_buffered_at' => buffered_at.to_f
+          'concurrency_limit_buffered_at' => buffered_at
         }
       end
 
-      let(:buffered_job) { job.merge('concurrency_limit_buffered_at' => buffered_at.to_f) }
+      let(:buffered_job) { job.merge('concurrency_limit_buffered_at' => buffered_at) }
       let(:expected_start_payload) { start_payload.merge(extra_fields) }
       let(:expected_end_payload) { end_payload.merge(extra_fields) }
 

@@ -124,5 +124,14 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
       expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
       expect(result).to eq(query_response)
     end
+
+    context 'when the table does not exist' do
+      it 'returns false', :aggregate_failures do
+        expect(pg_client).to receive(:exec_params).with(query).and_raise(PG::UndefinedTable)
+        expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
+
+        expect(result).to be(false)
+      end
+    end
   end
 end

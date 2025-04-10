@@ -87,14 +87,7 @@ To set up Google Workspace as your identity provider:
    | **GitLab single sign-on URL**            | **Start URL**          |
    | **Identity provider single sign-on URL** | **SSO URL**            |
 
-1. Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint
-   required by GitLab to [configure SAML](#configure-gitlab):
-   1. Download the certificate.
-   1. Run this command:
-
-      ```shell
-      openssl x509 -noout -fingerprint -sha1 -inform pem -in "GoogleIDPCertificate-domain.com.pem"
-      ```
+1. Google Workspace displays a SHA256 fingerprint when you retrieve the certificate. If you need to generate the SHA256 fingerprint later, see [calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
 
 1. Set these values:
    - For **Primary email**: `email`.
@@ -225,7 +218,7 @@ The following GitLab settings correspond to the Keycloak fields.
    1. Retrieve the certificate fingerprint.
       1. Note the value of the `<ds:X509Certificate>` tag.
       1. Convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3).
-      1. [Calculate the fingerprint](../../group/saml_sso/troubleshooting.md#calculate-the-fingerprint).
+      1. [Calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
 
 ### Configure assertions
 
@@ -322,12 +315,6 @@ After you set up your identity provider to work with GitLab, you must configure 
    - **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**.
      For more information, see the [SSO enforcement documentation](#sso-enforcement).
 1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace)), use a secure signature algorithm.
-
-{{< /alert >}}
 
 If you are having issues configuring GitLab, see the [troubleshooting documentation](#troubleshooting).
 

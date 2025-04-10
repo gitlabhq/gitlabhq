@@ -38,4 +38,13 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
     expect(engine.render('http://example.com')).to eq expected
   end
+
+  it 'returns proper inline sourcepos' do
+    engine = described_class.new({})
+    expected = <<~TEXT
+      <p data-sourcepos="1:1-1:6"><code data-sourcepos="1:1-1:6">code</code></p>
+    TEXT
+
+    expect(engine.render('`code`')).to eq expected
+  end
 end
