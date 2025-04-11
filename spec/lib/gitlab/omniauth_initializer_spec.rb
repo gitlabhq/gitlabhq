@@ -227,23 +227,15 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
     end
 
     context 'when SAML providers are configured' do
-      let(:base_url) { 'https://example.com' }
-
-      before do
-        allow(described_class).to receive(:full_host).and_return(base_url.to_s)
-      end
-
       it 'configures default args for a single SAML provider' do
         stub_omniauth_config(providers: [{ name: 'saml', args: {
-          idp_sso_service_url: 'https://saml.example.com',
-          assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback"
+          idp_sso_service_url: 'https://saml.example.com'
         } }])
 
         expect(devise_config).to receive(:omniauth).with(
           :saml,
           {
             idp_sso_service_url: 'https://saml.example.com',
-            assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback",
             attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
           }
         )
@@ -258,7 +250,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
               {
                 name: 'saml',
                 args: {
-                  assertion_consumer_service_url: "https://saml.example.com/users/auth/saml/callback",
                   idp_sso_service_url: 'https://saml.example.com',
                   attribute_statements: { email: ['custom_attr'] }
                 }
@@ -272,7 +263,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
             :saml,
             {
               idp_sso_service_url: 'https://saml.example.com',
-              assertion_consumer_service_url: "https://saml.example.com/users/auth/saml/callback",
               attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
                                                                 .merge({ email: ['custom_attr'] })
             }
@@ -288,7 +278,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
             :saml,
             {
               idp_sso_service_url: 'https://saml.example.com',
-              assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback",
               attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
             }
           )
@@ -319,7 +308,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
           expect(devise_config).to receive(:omniauth).with(
             :saml,
             {
-              assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback",
               attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements,
               idp_cert_fingerprint: "DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4",
               idp_cert_fingerprint_algorithm: "http://www.w3.org/2000/09/xmldsig#sha1"
@@ -337,7 +325,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
           expect(devise_config).to receive(:omniauth).with(
             :saml,
             {
-              assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback",
               attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements,
               idp_cert_fingerprint:
                 "73:2D:28:C2:D2:D0:34:9F:F8:9A:9C:74:23:BF:0A:CB:66:75:78:9B:01:4D:1F:7D:60:8F:AD:47:A2:30:D7:4A",
@@ -365,7 +352,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
           expect(devise_config).to receive(:omniauth).with(
             :saml,
             {
-              assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback",
               attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements,
               idp_cert_fingerprint: "DD:80:B1:FA:A9:A7:8D:9D:41:7E:09:10:D8:6F:7D:0A:7E:58:4C:C4",
               idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
@@ -391,7 +377,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
           :saml,
           {
             idp_sso_service_url: 'https://saml.example.com',
-            assertion_consumer_service_url: "#{base_url}/users/auth/saml/callback",
             attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
           }
         )
@@ -400,7 +385,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
           {
             idp_sso_service_url: 'https://saml2.example.com',
             strategy_class: OmniAuth::Strategies::SAML,
-            assertion_consumer_service_url: "#{base_url}/users/auth/saml2/callback",
             attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
           }
         )
@@ -415,7 +399,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
               name: 'custom_saml',
               args: {
                 strategy_class: 'OmniAuth::Strategies::SAML',
-                assertion_consumer_service_url: "https://saml2.example.com/users/auth/custom_saml/callback",
                 idp_sso_service_url: 'https://saml2.example.com',
                 attribute_statements: { email: ['custom_attr'] }
               }
@@ -428,7 +411,6 @@ RSpec.describe Gitlab::OmniauthInitializer, feature_category: :system_access do
           {
             idp_sso_service_url: 'https://saml2.example.com',
             strategy_class: OmniAuth::Strategies::SAML,
-            assertion_consumer_service_url: "https://saml2.example.com/users/auth/custom_saml/callback",
             attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
                                                               .merge({ email: ['custom_attr'] })
           }

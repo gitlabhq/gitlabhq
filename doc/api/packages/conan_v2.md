@@ -44,35 +44,89 @@ See each route for details on how credentials are expected to be passed. Undocum
 These endpoints all return `404 Not Found`.
 {{< /alert >}}
 
-## Route prefix
+## Create an authentication token
 
-The project-level prefix is used to make requests in a single project's scope. The examples in this document all use the project-level prefix.
+Creates a JSON Web Token (JWT) for use as a Bearer header in other requests using the Conan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token) endpoint.
+
+## Verify authentication credentials
+
+Verifies the validity of Basic Auth credentials or a Conan JWT generated from the Conan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token) endpoint.
 
 ```plaintext
-/projects/:id/packages/conan
+GET /projects/:id/packages/conan/v2/users/check_credentials
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | string | yes | The project ID or full project path. |
+| Attribute | Type   | Required | Description                          |
+| --------- | ------ | -------- | ------------------------------------ |
+| `id`      | string | yes      | The project ID or full project path. |
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan/v2/users/check_credentials"
+```
+
+Example response:
+
+```plaintext
+ok
+```
+
+## Search for a Conan package
+
+Searches the project for a Conan package with a specified name.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/search?q=:query
+```
+
+| Attribute | Type   | Required | Description                                  |
+| --------- | ------ | -------- | -------------------------------------------- |
+| `id`      | string | yes      | The project ID or full project path.         |
+| `query`   | string | yes      | Search query. You can use `*` as a wildcard. |
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/search?q=Hello*"
+```
+
+Example response:
+
+```json
+{
+  "results": [
+    "Hello/0.1@foo+conan_test_prod/beta",
+    "Hello/0.1@foo+conan_test_prod/stable",
+    "Hello/0.2@foo+conan_test_prod/beta",
+    "Hello/0.3@foo+conan_test_prod/beta",
+    "Hello/0.1@foo+conan-reference-test/stable",
+    "HelloWorld/0.1@baz+conan-reference-test/beta"
+    "hello-world/0.4@buz+conan-test/alpha"
+  ]
+}
+```
 
 ## Get latest recipe revision
 
-Get the revision hash and creation date of the latest package recipe.
+Gets the revision hash and creation date of the latest package recipe.
 
 ```plaintext
-GET <route_prefix>/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `package_name`      | string | yes | Name of a package. |
-| `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
-| `package_channel`   | string | yes | Channel of a package. |
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
 
 ```shell
-curl --header "Authorization: Bearer <authenticate_token>" "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/latest"
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/latest"
 ```
 
 Example response:
@@ -84,51 +138,26 @@ Example response:
 }
 ```
 
-## Upload a package file
-
-Upload a package file to the package registry.
-
-```plaintext
-PUT <route_prefix>/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:package_reference/revisions/:package_revision/files/:file_name
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `package_name`      | string | yes | Name of a package. |
-| `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
-| `package_channel`   | string | yes | Channel of a package. |
-| `recipe_revision`   | string | yes | Revision of the recipe. Does not accept a value of `0`. |
-| `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
-| `package_revision`  | string | yes | Revision of the package. Does not accept a value of `0`. |
-| `file_name`         | string | yes | The name and file extension of the requested file. |
-
-Provide the file context in the request body:
-
-```shell
-curl --request PUT \
-     --user <username>:<personal_access_token> \
-     --upload-file path/to/conaninfo.txt \
-     "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
-```
-
 ## List all recipe revisions
 
-List all revisions for a package recipe.
+Lists all revisions for a package recipe.
 
 ```plaintext
-GET <route_prefix>/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `package_name`      | string | yes | Name of a package. |
-| `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
-| `package_channel`   | string | yes | Channel of a package. |
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
 
 ```shell
-curl --header "Authorization: Bearer <authenticate_token>" "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions"
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions"
 ```
 
 Example response:
@@ -147,4 +176,190 @@ Example response:
     }
   ]
 }
+```
+
+## List all recipe files
+
+Lists all recipe files from the package registry.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files
+```
+
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`  | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files"
+```
+
+Example response:
+
+```json
+{
+  "files": {
+    "conan_sources.tgz": {},
+    "conanfile.py": {},
+    "conanmanifest.txt": {}
+  }
+}
+```
+
+## Get a recipe file
+
+Gets a recipe file from the package regitry.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name
+```
+
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`  | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+| `file_name`        | string | yes      | The name and file extension of the requested file.                                          |
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py"
+```
+
+You can also write the output to a file by using:
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py" \
+     >> conanfile.py
+```
+
+This example writes to `conanfile.py` in the current directory.
+
+## Upload a recipe file
+
+Uploads a recipe file to the package registry.
+
+```plaintext
+PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name
+```
+
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`  | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+| `file_name`        | string | yes      | The name and file extension of the requested file.                                          |
+
+```shell
+curl --request PUT \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --upload-file path/to/conanfile.py \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/upload-v2-package/1.0.0/user/stable/revisions/123456789012345678901234567890ab/files/conanfile.py"
+```
+
+Example response:
+
+```json
+{
+  "id": 38,
+  "package_id": 28,
+  "created_at": "2025-04-07T12:35:40.841Z",
+  "updated_at": "2025-04-07T12:35:40.841Z",
+  "size": 24,
+  "file_store": 1,
+  "file_md5": "131f806af123b497209a516f46d12ffd",
+  "file_sha1": "01b992b2b1976a3f4c1e5294d0cab549cd438502",
+  "file_name": "conanfile.py",
+  "file": {
+    "url": "/94/00/9400f1b21cb527d7fa3d3eabba93557a18ebe7a2ca4e471cfe5e4c5b4ca7f767/packages/28/files/38/conanfile.py"
+  },
+  "file_sha256": null,
+  "verification_retry_at": null,
+  "verified_at": null,
+  "verification_failure": null,
+  "verification_retry_count": null,
+  "verification_checksum": null,
+  "verification_state": 0,
+  "verification_started_at": null,
+  "status": "default",
+  "file_final_path": null,
+  "project_id": 9,
+  "new_file_path": null
+}
+```
+
+## Upload a package file
+
+Uploads a package file to the package registry.
+
+```plaintext
+PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
+```
+
+| Attribute                 | Type   | Required | Description                                                                                 |
+| ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`                      | string | yes      | The project ID or full project path.                                                        |
+| `package_name`            | string | yes      | Name of a package.                                                                          |
+| `package_version`         | string | yes      | Version of a package.                                                                       |
+| `package_username`        | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`         | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`         | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+| `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value.                              |
+| `package_revision`        | string | yes      | Revision of the package. Does not accept a value of `0`.                                    |
+| `file_name`               | string | yes      | The name and file extension of the requested file.                                          |
+
+Provide the file context in the request body:
+
+```shell
+curl --request PUT \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --upload-file path/to/conaninfo.txt \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
+```
+
+Example response:
+
+```json
+  {
+    "id": 202,
+    "package_id": 48,
+    "created_at": "2025-03-19T10:06:53.626Z",
+    "updated_at": "2025-03-19T10:06:53.626Z",
+    "size": 208,
+    "file_store": 1,
+    "file_md5": "bf996313bbdd75944b58f8c673661d99",
+    "file_sha1": "02c8adf14c94135fb95d472f96525063efe09ee8",
+    "file_name": "conaninfo.txt",
+    "file": {
+        "url": "/94/00/9400f1b21cb527d7fa3d3eabba93557a18ebe7a2ca4e471cfe5e4c5b4ca7f767/packages/48/files/202/conaninfo.txt"
+    },
+    "file_sha256": null,
+    "verification_retry_at": null,
+    "verified_at": null,
+    "verification_failure": null,
+    "verification_retry_count": null,
+    "verification_checksum": null,
+    "verification_state": 0,
+    "verification_started_at": null,
+    "status": "default",
+    "file_final_path": null,
+    "project_id": 9,
+    "new_file_path": null
+  }
 ```

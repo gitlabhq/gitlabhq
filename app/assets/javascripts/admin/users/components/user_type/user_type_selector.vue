@@ -1,5 +1,6 @@
 <script>
-import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { GlFormRadioGroup, GlFormRadio, GlCard } from '@gitlab/ui';
+import AdminRoleDropdown from 'ee_component/admin/users/components/user_type/admin_role_dropdown.vue';
 import { s__ } from '~/locale';
 
 export const USER_TYPE_REGULAR = {
@@ -17,10 +18,10 @@ export const USER_TYPE_AUDITOR = {
 // description is set dynamically based on isCurrentUser prop.
 export const USER_TYPE_ADMIN = { value: 'admin', text: s__('AdminUsers|Administrator') };
 
-// This component is rendered inside a HTML form, so it doesn't submit any data directly. It only sets up the input
+// This component is rendered inside an HTML form, so it doesn't submit any data directly. It only sets up the input
 // values so that when the form is submitted, the values selected in this component are submitted as well.
 export default {
-  components: { GlFormRadioGroup, GlFormRadio },
+  components: { GlFormRadioGroup, GlFormRadio, GlCard, AdminRoleDropdown },
   props: {
     userType: {
       type: String,
@@ -33,6 +34,11 @@ export default {
     licenseAllowsAuditorUser: {
       type: Boolean,
       required: true,
+    },
+    adminRoleId: {
+      type: Number,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -81,5 +87,9 @@ export default {
         <template #help>{{ item.description }}</template>
       </gl-form-radio>
     </gl-form-radio-group>
+
+    <gl-card class="gl-mb-7 gl-bg-transparent">
+      <admin-role-dropdown :role-id="adminRoleId" />
+    </gl-card>
   </div>
 </template>

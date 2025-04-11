@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlModal } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import { WORK_ITEM_TYPE_NAME_LOWERCASE_MAP } from '../constants';
 
 export default {
   components: {
@@ -11,21 +12,17 @@ export default {
     isVisible: {
       type: Boolean,
       required: true,
-      default: false,
     },
-    workItemTypeName: {
+    workItemType: {
       type: String,
       required: true,
-      default: s__('Work Item|Epic'),
     },
   },
   computed: {
     cancelConfirmationText() {
       return sprintf(
         s__('WorkItem|Are you sure you want to cancel creating this %{workItemType}?'),
-        {
-          workItemType: this.workItemTypeName?.toLocaleLowerCase(),
-        },
+        { workItemType: WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.workItemType] },
       );
     },
   },

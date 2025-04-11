@@ -2117,9 +2117,6 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
-msgid "A basic folder structure of Astro Starter Kit, to help you get started."
-msgstr ""
-
 msgid "A basic folder structure of a Laravel application, to help you get started."
 msgstr ""
 
@@ -5025,6 +5022,9 @@ msgstr ""
 msgid "AdminUsers|Cannot unblock LDAP blocked users"
 msgstr ""
 
+msgid "AdminUsers|Change access"
+msgstr ""
+
 msgid "AdminUsers|Cohorts"
 msgstr ""
 
@@ -5037,13 +5037,22 @@ msgstr ""
 msgid "AdminUsers|Confirm user %{username}?"
 msgstr ""
 
+msgid "AdminUsers|Could not load custom admin roles."
+msgstr ""
+
 msgid "AdminUsers|Could not load user group counts. Please refresh the page to try again."
 msgstr ""
 
 msgid "AdminUsers|Create"
 msgstr ""
 
+msgid "AdminUsers|Create admin role to populate this list."
+msgstr ""
+
 msgid "AdminUsers|Create service account"
+msgstr ""
+
+msgid "AdminUsers|Custom admin roles"
 msgstr ""
 
 msgid "AdminUsers|Deactivate"
@@ -25248,6 +25257,9 @@ msgstr ""
 msgid "Everyone can contribute"
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using Astro"
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using Bridgetown"
 msgstr ""
 
@@ -39763,6 +39775,9 @@ msgstr ""
 msgid "New branch unavailable"
 msgstr ""
 
+msgid "New chat conversation."
+msgstr ""
+
 msgid "New code quality findings"
 msgstr ""
 
@@ -48059,9 +48074,6 @@ msgstr ""
 msgid "ProjectTemplates|Android"
 msgstr ""
 
-msgid "ProjectTemplates|Astro Tailwind"
-msgstr ""
-
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
@@ -48102,6 +48114,9 @@ msgid "ProjectTemplates|Netlify/Plain HTML"
 msgstr ""
 
 msgid "ProjectTemplates|NodeJS Express"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Astro"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Bridgetown"
@@ -53620,7 +53635,7 @@ msgstr[1] ""
 msgid "Secrets"
 msgstr ""
 
-msgid "Secrets represent sensitive information your CI job needs to complete work."
+msgid "Secrets manager"
 msgstr ""
 
 msgid "Secrets|Actions"
@@ -54126,6 +54141,9 @@ msgid "SecurityInventory|DAST"
 msgstr ""
 
 msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|Group vulnerabilities"
 msgstr ""
 
 msgid "SecurityInventory|IaC"
@@ -68017,9 +68035,6 @@ msgstr ""
 msgid "Work Item type with id %{id} was not found"
 msgstr ""
 
-msgid "Work Item|Epic"
-msgstr ""
-
 msgid "Work in progress (open and unassigned)"
 msgstr ""
 
@@ -69975,6 +69990,9 @@ msgid "You need git-lfs version %{min_git_lfs_version} (or greater) to continue.
 msgstr ""
 
 msgid "You need permission."
+msgstr ""
+
+msgid "You need the Developer, Maintainer or Owner role in the project or group and in the security policy project."
 msgstr ""
 
 msgid "You need to do this before %{grace_period_deadline}."

@@ -68,8 +68,10 @@ def write_windows_content(file)
     WINDOW
 
     data[:changes].each do |deprecation|
-      file.puts "| [#{deprecation[:title]}](#{deprecation[:issue_url]}) | #{deprecation[:impact]&.capitalize} | " \
-        "#{deprecation[:stage]&.capitalize} | #{deprecation[:scope]&.capitalize} | #{deprecation[:check_impact]} |"
+      deprecation_anchor = Gitlab::Help::HugoTransformer.new.hugo_anchor(deprecation[:title])
+      file.puts "| [#{deprecation[:title]}](deprecations.md##{deprecation_anchor}) | " \
+        "#{deprecation[:impact]&.capitalize} | #{deprecation[:stage]&.capitalize} | " \
+        "#{deprecation[:scope]&.capitalize} | #{deprecation[:check_impact]} |"
     end
 
     file.puts unless index == WINDOWS.size - 1
@@ -83,6 +85,7 @@ namespace :gitlab do
       require 'yaml'
       require 'date'
       require 'stringio'
+      require_relative '../../../../lib/gitlab/help/hugo_transformer'
 
       process_deprecations
       generate_markdown_file
@@ -92,6 +95,8 @@ namespace :gitlab do
 
     desc "Check that the breaking windows documentation is up to date"
     task :check_windows do
+      require_relative '../../../../lib/gitlab/help/hugo_transformer'
+
       old_content = File.read(OUTPUT_FILE)
       process_deprecations
       new_content = StringIO.new

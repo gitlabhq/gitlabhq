@@ -169,36 +169,26 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         {
           ci: {
             input: {
-              'security_scan=false': 1,
-              'stage=test': 1,
-              'level=20': 1,
-              'enviornments=["staging", "production"]': 1,
-              'rules=[{"if": "$CI_MERGE_REQUEST_ID"}, {"if": "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"}]': 1
+              'deploy_strategy=blue-green': 1,
+              'job_stage=test': 1,
+              'allow_failure=true': 1,
+              'parallel_jobs=3': 1,
+              'test_script=["echo 1", "echo 2"]': 1,
+              'test_rules=[{"if": "$CI_MERGE_REQUEST_ID"}, {"if": "$CI_COMMIT_BRANCH == $CI_COMMIT_BRANCH"}]': 1
             }
           }
         }
       end
 
-      let(:pipeline_service) { double(execute: service_response) }
-      let(:service_response) { double(error?: false, payload: pipeline, message: 'message') }
-      let(:pipeline) { double(persisted?: true) }
-
-      let(:inputs) do
-        {
-          security_scan: false,
-          stage: 'test',
-          level: 20,
-          enviornments: %w[
-            staging production
-          ],
-          rules: [
-            { if: "$CI_MERGE_REQUEST_ID" },
-            { if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH" }
-          ]
-        }
+      before_all do
+        project.add_maintainer(user)
       end
 
       before do
+        stub_ci_pipeline_yaml_file(
+          File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+        )
+
         params[:push_options] = push_options
       end
 
@@ -208,12 +198,22 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         expect(Ci::CreatePipelineService)
           .to receive(:new)
           .with(project, user, pipeline_params)
-          .and_return(pipeline_service)
+          .and_call_original
 
-        expect(pipeline_service).to receive(:execute).with(:push, { inputs: inputs })
-        expect(subject).not_to receive(:log_pipeline_errors)
+        expect { subject.execute }.to change { Ci::Pipeline.count }.by(1)
 
-        subject.execute
+        pipeline = Ci::Pipeline.last
+
+        my_job_test = pipeline.builds.find { |build| build.name == 'my-job-test' }
+        expect(my_job_test.allow_failure).to be(true)
+
+        expect(pipeline.builds.count { |build| build.name.starts_with?('my-job-build') }).to eq(3)
+
+        my_job_test2 = pipeline.builds.find { |build| build.name == 'my-job-test-2' }
+        expect(my_job_test2.options[:script]).to eq(["echo 1", "echo 2"])
+
+        my_job_deploy = pipeline.builds.find { |build| build.name == 'my-job-deploy' }
+        expect(my_job_deploy.options[:script]).to eq(['echo "Deploying to staging using blue-green strategy"'])
       end
     end
   end

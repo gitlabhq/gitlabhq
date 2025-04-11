@@ -97,8 +97,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
         it 'raises error' do
           expect { config }.to raise_error(
             ::Gitlab::Ci::Config::Yaml::LoadError,
-            '`compiler` input: provided value is not a string, ' \
-              '`optimization_level` input: provided value is not a number'
+            '`optimization_level` input: provided value is not a number'
           )
         end
       end

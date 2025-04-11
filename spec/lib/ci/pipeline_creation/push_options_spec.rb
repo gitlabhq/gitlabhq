@@ -94,16 +94,11 @@ RSpec.describe Ci::PipelineCreation::PushOptions, feature_category: :pipeline_co
       it 'returns the extracted key value input pairs from the push options' do
         extracted_inputs =
           {
-            security_scan: false,
-            stage: 'test',
-            level: 20,
-            environments: %w[
-              staging production
-            ],
-            rules: [
-              { if: "$CI_MERGE_REQUEST_ID" },
-              { if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH" }
-            ]
+            'security_scan' => 'false',
+            'stage' => 'test',
+            'level' => '20',
+            'environments' => '["staging", "production"]',
+            'rules' => '[{"if": "$CI_MERGE_REQUEST_ID"}, {"if": "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"}]'
           }
         expect(push_options.inputs).to eq(extracted_inputs)
       end

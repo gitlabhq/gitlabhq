@@ -379,4 +379,49 @@ RSpec.describe Gitlab::Help::HugoTransformer do
       end
     end
   end
+
+  describe '#hugo_anchor' do
+    let(:transformer) { described_class.new }
+
+    context 'with non-string input' do
+      it 'returns without error' do
+        expect(transformer.hugo_anchor(nil)).to eq('')
+        expect(transformer.hugo_anchor(123)).to eq('123')
+        expect(transformer.hugo_anchor(false)).to eq('false')
+      end
+    end
+
+    context 'with string input not containing code blocks' do
+      it 'handles title with spaces' do
+        expect(transformer.hugo_anchor('Toggle notes confidentiality on APIs')).to \
+          eq('toggle-notes-confidentiality-on-apis')
+      end
+
+      it 'handles title with special characters' do
+        expect(transformer.hugo_anchor('Updating CI/CD job tokens to JWT standard')).to \
+          eq('updating-cicd-job-tokens-to-jwt-standard')
+      end
+    end
+
+    context 'with string input containing code blocks' do
+      it 'handles single code block' do
+        expect(transformer.hugo_anchor('The `ci_job_token_scope_enabled` projects API attribute is deprecated')).to \
+          eq('the-ci_job_token_scope_enabled-projects-api-attribute-is-deprecated')
+      end
+
+      it 'handles multiple code blocks' do
+        expect(transformer.hugo_anchor('Replace `add_on_purchase` GraphQL field with `add_on_purchases`')).to \
+          eq('replace-add_on_purchase-graphql-field-with-add_on_purchases')
+      end
+
+      it 'handles code block with special characters' do
+        expect(transformer.hugo_anchor('The `heroku/builder:22` image is deprecated')).to \
+          eq('the-herokubuilder22-image-is-deprecated')
+      end
+
+      it 'handles empty code block' do
+        expect(transformer.hugo_anchor('``')).to eq('')
+      end
+    end
+  end
 end

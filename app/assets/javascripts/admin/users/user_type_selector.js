@@ -14,18 +14,21 @@ export const initUserTypeSelector = () => {
   const el = document.getElementById('js-user-type');
   if (!el) return null;
 
-  const { userType, isCurrentUser, licenseAllowsAuditorUser } = el.dataset;
+  const { userType, isCurrentUser, licenseAllowsAuditorUser, adminRoleId, manageRolesPath } =
+    el.dataset;
 
   return new Vue({
     el,
     name: 'UserTypeSelectorRoot',
     apolloProvider,
+    provide: { manageRolesPath },
     render(createElement) {
       return createElement(UserTypeSelector, {
         props: {
           userType,
           isCurrentUser: parseBoolean(isCurrentUser),
           licenseAllowsAuditorUser: parseBoolean(licenseAllowsAuditorUser),
+          adminRoleId: Number(adminRoleId) || undefined,
         },
       });
     },

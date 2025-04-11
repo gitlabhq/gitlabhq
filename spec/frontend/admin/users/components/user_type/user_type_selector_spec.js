@@ -1,7 +1,8 @@
-import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { GlFormRadioGroup, GlFormRadio, GlCard } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import UserTypeSelector from '~/admin/users/components/user_type/user_type_selector.vue';
 import { stubComponent } from 'helpers/stub_component';
+import AdminRoleDropdown from 'ee_component/admin/users/components/user_type/admin_role_dropdown.vue';
 
 describe('UserTypeSelector component', () => {
   let wrapper;
@@ -10,10 +11,12 @@ describe('UserTypeSelector component', () => {
     userType = 'regular',
     isCurrentUser = false,
     licenseAllowsAuditorUser = true,
+    adminRoleId = 1,
   } = {}) => {
     wrapper = shallowMountExtended(UserTypeSelector, {
-      propsData: { userType, isCurrentUser, licenseAllowsAuditorUser },
+      propsData: { userType, isCurrentUser, licenseAllowsAuditorUser, adminRoleId },
       stubs: {
+        AdminRoleDropdown: stubComponent(AdminRoleDropdown, { props: ['roleId'] }),
         GlFormRadio: stubComponent(GlFormRadio, {
           template: `<div>
                        <label><slot></slot></label>
@@ -27,6 +30,8 @@ describe('UserTypeSelector component', () => {
 
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findRadioFor = (value) => wrapper.findByTestId(`user-type-${value}`);
+  const findSummaryCard = () => wrapper.findComponent(GlCard);
+  const findAdminRoleDropdown = () => wrapper.findComponent(AdminRoleDropdown);
 
   describe('user type radio group', () => {
     beforeEach(() => createWrapper());
@@ -65,6 +70,18 @@ describe('UserTypeSelector component', () => {
       it('shows the help text', () => {
         expect(findRadioFor(userType).find('.help').text()).toBe(helpText);
       });
+    });
+  });
+
+  describe('access summary card', () => {
+    beforeEach(() => createWrapper());
+
+    it('shows the card', () => {
+      expect(findSummaryCard().exists()).toBe(true);
+    });
+
+    it('shows admin role dropdown', () => {
+      expect(findAdminRoleDropdown().props('roleId')).toBe(1);
     });
   });
 

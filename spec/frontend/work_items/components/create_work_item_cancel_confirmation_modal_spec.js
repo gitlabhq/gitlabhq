@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
+import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 
 describe('CreateWorkItemCancelConfirmationModal', () => {
   let wrapper;
@@ -45,7 +46,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
 
   describe('modal content', () => {
     it('displays the correct content in the modal body', () => {
-      createComponent({ workItemTypeName: 'Epic' });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
       expect(wrapper.text()).toContain('Are you sure you want to cancel creating this epic?');
     });

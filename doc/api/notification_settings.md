@@ -12,41 +12,50 @@ title: Notification settings API
 
 {{< /details >}}
 
-Use this API to manage settings for GitLab notifications. For more information, see [notification emails](../user/profile/notifications.md).
+Use this API to manage notification settings in GitLab.
+For more information, see [notification emails](../user/profile/notifications.md).
 
-## Valid notification levels
+## Notification levels
 
-The notification levels are defined in the `NotificationSetting.level` model enumeration. Currently, these levels are recognized:
+The notification levels are defined in the `NotificationSetting.level` model enumeration.
+These levels are recognized:
 
-- `disabled`
-- `participating`
-- `watch`
-- `global`
-- `mention`
-- `custom`
+- `disabled`: Turn off all notifications
+- `participating`: Receive notifications for threads you have participated in
+- `watch`: Receive notifications for most activity
+- `global`: Use your global notification settings
+- `mention`: Receive notifications when you are mentioned in a comment
+- `custom`: Receive notifications for selected events
 
-If the `custom` level is used, specific email events can be controlled. Available events are returned by `NotificationSetting.email_events`. Currently, these events are recognized:
+If you use the `custom` level, you can control specific email events. Available events are returned
+by `NotificationSetting.email_events`.
+These events are recognized:
 
-- `new_note`
-- `new_issue`
-- `reopen_issue`
-- `close_issue`
-- `reassign_issue`
-- `issue_due`
-- `new_merge_request`
-- `push_to_merge_request`
-- `reopen_merge_request`
-- `close_merge_request`
-- `reassign_merge_request`
-- `merge_merge_request`
-- `failed_pipeline`
-- `fixed_pipeline`
-- `success_pipeline`
-- `moved_project`
-- `merge_when_pipeline_succeeds`
-- `new_epic` Ultimate only.
+| Event                          | Description |
+| ------------------------------ | ----------- |
+| `approver`                     | A merge request you're eligible to approve is created |
+| `change_reviewer_merge_request`| When a merge request's reviewer is changed |
+| `close_issue`                  | When an issue is closed |
+| `close_merge_request`          | When a merge request is closed |
+| `failed_pipeline`              | When a pipeline fails |
+| `fixed_pipeline`               | When a previously failed pipeline is fixed |
+| `issue_due`                    | When an issue is due tomorrow |
+| `merge_merge_request`          | When a merge request is merged |
+| `merge_when_pipeline_succeeds` | When a merge request is set to auto-merge |
+| `moved_project`                | When a project is moved |
+| `new_epic`                     | When a new epic is created (in the Premium and Ultimate tier) |
+| `new_issue`                    | When a new issue is created |
+| `new_merge_request`            | When a new merge request is created |
+| `new_note`                     | When someone adds a comment |
+| `new_release`                  | When a new release is published |
+| `push_to_merge_request`        | When someone pushes to a merge request |
+| `reassign_issue`               | When an issue is reassigned |
+| `reassign_merge_request`       | When a merge request is reassigned |
+| `reopen_issue`                 | When an issue is reopened |
+| `reopen_merge_request`         | When a merge request is reopened |
+| `success_pipeline`             | When a pipeline completes successfully |
 
-## Global notification settings
+## Get global notification settings
 
 Get current notification settings and email address.
 
@@ -54,9 +63,19 @@ Get current notification settings and email address.
 GET /notification_settings
 ```
 
+Example request:
+
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/notification_settings"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/notification_settings"
 ```
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute            | Type   | Description |
+| -------------------- | ------ | ----------- |
+| `level`              | string | Global notification level |
+| `notification_email` | string | Email address where notifications are sent |
 
 Example response:
 
@@ -69,38 +88,53 @@ Example response:
 
 ## Update global notification settings
 
-Update current notification settings and email address.
+Update notification settings and email address.
 
 ```plaintext
 PUT /notification_settings
 ```
 
+Example request:
+
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/notification_settings?level=watch"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/notification_settings?level=watch"
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `level` | string | no | The global notification level |
-| `notification_email` | string | no | The email address to send notifications |
-| `new_note` | boolean | no | Enable/disable this notification |
-| `new_issue` | boolean | no | Enable/disable this notification |
-| `reopen_issue` | boolean | no | Enable/disable this notification |
-| `close_issue` | boolean | no | Enable/disable this notification |
-| `reassign_issue` | boolean | no | Enable/disable this notification |
-| `issue_due` | boolean | no | Enable/disable this notification |
-| `new_merge_request` | boolean | no | Enable/disable this notification |
-| `push_to_merge_request` | boolean | no | Enable/disable this notification |
-| `reopen_merge_request` | boolean | no | Enable/disable this notification |
-| `close_merge_request` | boolean | no | Enable/disable this notification |
-| `reassign_merge_request` | boolean | no | Enable/disable this notification |
-| `merge_merge_request` | boolean | no | Enable/disable this notification |
-| `failed_pipeline` | boolean | no | Enable/disable this notification |
-| `fixed_pipeline` | boolean | no | Enable/disable this notification |
-| `success_pipeline` | boolean | no | Enable/disable this notification |
-| `moved_project` | boolean | no | Enable/disable this notification |
-| `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification |
-| `new_epic` | boolean | no | Enable/disable this notification Ultimate only. |
+Supported attributes:
+
+| Attribute                      | Type    | Required | Description |
+| ------------------------------ | ------- | -------- | ----------- |
+| `approver`                     | boolean | No       | Turn on notifications when a merge request you're eligible to approve is created |
+| `change_reviewer_merge_request`| boolean | No       | Turn on notifications when a merge request's reviewer is changed |
+| `close_issue`                  | boolean | No       | Turn on notifications when an issue is closed |
+| `close_merge_request`          | boolean | No       | Turn on notifications when a merge request is closed |
+| `failed_pipeline`              | boolean | No       | Turn on notifications when a pipeline fails |
+| `fixed_pipeline`               | boolean | No       | Turn on notifications when a previously failed pipeline is fixed |
+| `issue_due`                    | boolean | No       | Turn on notifications when an issue is due tomorrow |
+| `level`                        | string  | No       | Global notification level |
+| `merge_merge_request`          | boolean | No       | Turn on notifications when a merge request is merged |
+| `merge_when_pipeline_succeeds` | boolean | No       | Turn on notifications when a merge request is set to auto-merge |
+| `moved_project`                | boolean | No       | Turn on notifications when a project is moved |
+| `new_epic`                     | boolean | No       | Turn on notifications when a new epic is created (in the Premium and Ultimate tier) |
+| `new_issue`                    | boolean | No       | Turn on notifications when a new issue is created |
+| `new_merge_request`            | boolean | No       | Turn on notifications when a new merge request is created |
+| `new_note`                     | boolean | No       | Turn on notifications when a new comment is added |
+| `new_release`                  | boolean | No       | Turn on notifications when a new release is published |
+| `notification_email`           | string  | No       | Email address where notifications are sent |
+| `push_to_merge_request`        | boolean | No       | Turn on notifications when someone pushes to a merge request |
+| `reassign_issue`               | boolean | No       | Turn on notifications when an issue is reassigned |
+| `reassign_merge_request`       | boolean | No       | Turn on notifications when a merge request is reassigned |
+| `reopen_issue`                 | boolean | No       | Turn on notifications when an issue is reopened |
+| `reopen_merge_request`         | boolean | No       | Turn on notifications when a merge request is reopened |
+| `success_pipeline`             | boolean | No       | Turn on notifications when a pipeline completes successfully |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute            | Type   | Description |
+| -------------------- | ------ | ----------- |
+| `level`              | string | Global notification level |
+| `notification_email` | string | Email address where notifications are sent |
 
 Example response:
 
@@ -111,25 +145,40 @@ Example response:
 }
 ```
 
-## Group / project level notification settings
+## Get group or project notification settings
 
-Get current group or project notification settings.
+Get notification settings for a group or project.
 
 ```plaintext
 GET /groups/:id/notification_settings
 GET /projects/:id/notification_settings
 ```
 
+Example request:
+
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/notification_settings"
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/8/notification_settings"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/notification_settings"
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID, or [URL-encoded path, of the group or project](rest/_index.md#namespaced-paths). |
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/8/notification_settings"
+```
 
-Example response:
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group or project |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type   | Description |
+| --------- | ------ | ----------- |
+| `level`   | string | Notification level |
+
+Example response for standard notification level:
 
 ```json
 {
@@ -137,44 +186,100 @@ Example response:
 }
 ```
 
-## Update group/project level notification settings
+Example response for a group with custom notification level:
 
-Update current group/project notification settings.
+```json
+{
+  "level": "custom",
+  "events": {
+    "new_release": null,
+    "new_note": null,
+    "new_issue": null,
+    "reopen_issue": null,
+    "close_issue": null,
+    "reassign_issue": null,
+    "issue_due": null,
+    "new_merge_request": null,
+    "push_to_merge_request": null,
+    "reopen_merge_request": null,
+    "close_merge_request": null,
+    "reassign_merge_request": null,
+    "change_reviewer_merge_request": null,
+    "merge_merge_request": null,
+    "failed_pipeline": null,
+    "fixed_pipeline": null,
+    "success_pipeline": null,
+    "moved_project": true,
+    "merge_when_pipeline_succeeds": false,
+    "new_epic": null
+  }
+}
+```
+
+In this response:
+
+- `true` indicates the notification is turned on.
+- `false` indicates the notification is turned off.
+- `null` indicates the notification uses the default setting.
+
+{{< alert type="note" >}}
+
+The `new_epic` attribute is available only in the Premium and Ultimate tiers.
+
+{{< /alert >}}
+
+## Update group or project notification settings
+
+Update notification settings for a group or project.
 
 ```plaintext
 PUT /groups/:id/notification_settings
 PUT /projects/:id/notification_settings
 ```
 
+Example requests:
+
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/notification_settings?level=watch"
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/8/notification_settings?level=custom&new_note=true"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/notification_settings?level=watch"
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID, or [URL-encoded path, of the group or project](rest/_index.md#namespaced-paths) |
-| `level` | string | no | The global notification level |
-| `new_note` | boolean | no | Enable/disable this notification |
-| `new_issue` | boolean | no | Enable/disable this notification |
-| `reopen_issue` | boolean | no | Enable/disable this notification |
-| `close_issue` | boolean | no | Enable/disable this notification |
-| `reassign_issue` | boolean | no | Enable/disable this notification |
-| `issue_due` | boolean | no | Enable/disable this notification |
-| `new_merge_request` | boolean | no | Enable/disable this notification |
-| `push_to_merge_request` | boolean | no | Enable/disable this notification |
-| `reopen_merge_request` | boolean | no | Enable/disable this notification |
-| `close_merge_request` | boolean | no | Enable/disable this notification |
-| `reassign_merge_request` | boolean | no | Enable/disable this notification |
-| `merge_merge_request` | boolean | no | Enable/disable this notification |
-| `failed_pipeline` | boolean | no | Enable/disable this notification |
-| `fixed_pipeline` | boolean | no | Enable/disable this notification |
-| `success_pipeline` | boolean | no | Enable/disable this notification |
-| `moved_project` | boolean | no | Enable/disable this notification |
-| `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification |
-| `new_epic` | boolean | no | Enable/disable this notification Ultimate only. |
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/8/notification_settings?level=custom&new_note=true"
+```
 
-Example responses:
+Supported attributes:
+
+| Attribute                      | Type              | Required | Description |
+| ------------------------------ | ----------------- | -------- | ----------- |
+| `approver`                     | boolean           | No       | Turn on notifications when a merge request you're eligible to approve is created |
+| `change_reviewer_merge_request`| boolean           | No       | Turn on notifications when a merge request's reviewer changes |
+| `close_issue`                  | boolean           | No       | Turn on notifications when an issue is closed |
+| `close_merge_request`          | boolean           | No       | Turn on notifications when a merge request is closed |
+| `failed_pipeline`              | boolean           | No       | Turn on notifications when a pipeline fails |
+| `fixed_pipeline`               | boolean           | No       | Turn on notifications when a previously failed pipeline is fixed |
+| `id`                           | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group or project |
+| `issue_due`                    | boolean           | No       | Turn on notifications when an issue is due tomorrow |
+| `level`                        | string            | No       | Notification level for this group or project |
+| `merge_merge_request`          | boolean           | No       | Turn on notifications when a merge request is merged |
+| `merge_when_pipeline_succeeds` | boolean           | No       | Turn on notifications when a merge request is set to merge when its pipeline succeeds |
+| `moved_project`                | boolean           | No       | Turn on notifications when a project is moved |
+| `new_epic`                     | boolean           | No       | Turn on notifications when a new epic is created (in the Premium and Ultimate tier) |
+| `new_issue`                    | boolean           | No       | Turn on notifications when a new issue is created |
+| `new_merge_request`            | boolean           | No       | Turn on notifications when a new merge request is created |
+| `new_note`                     | boolean           | No       | Turn on notifications when a new comment is added |
+| `new_release`                  | boolean           | No       | Turn on notifications when a new release is published |
+| `push_to_merge_request`        | boolean           | No       | Turn on notifications when someone pushes to a merge request |
+| `reassign_issue`               | boolean           | No       | Turn on notifications when an issue is reassigned |
+| `reassign_merge_request`       | boolean           | No       | Turn on notifications when a merge request is reassigned |
+| `reopen_issue`                 | boolean           | No       | Turn on notifications when an issue is reopened |
+| `reopen_merge_request`         | boolean           | No       | Turn on notifications when a merge request is reopened |
+| `success_pipeline`             | boolean           | No       | Turn on notifications when a pipeline completes successfully |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and one of the following response formats.
+
+For a non-custom notification level:
 
 ```json
 {
@@ -182,40 +287,44 @@ Example responses:
 }
 ```
 
+For a custom notification level, the response includes an `events` object showing the status of each notification:
+
 ```json
 {
   "level": "custom",
   "events": {
+    "new_release": null,
     "new_note": true,
     "new_issue": false,
-    "reopen_issue": false,
-    "close_issue": false,
-    "reassign_issue": false,
-    "issue_due": false,
-    "new_merge_request": false,
-    "push_to_merge_request": false,
-    "reopen_merge_request": false,
-    "close_merge_request": false,
-    "reassign_merge_request": false,
-    "merge_merge_request": false,
+    "reopen_issue": null,
+    "close_issue": null,
+    "reassign_issue": null,
+    "issue_due": null,
+    "new_merge_request": null,
+    "push_to_merge_request": null,
+    "reopen_merge_request": null,
+    "close_merge_request": null,
+    "reassign_merge_request": null,
+    "change_reviewer_merge_request": null,
+    "merge_merge_request": null,
     "failed_pipeline": false,
-    "fixed_pipeline": false,
-    "success_pipeline": false
+    "fixed_pipeline": null,
+    "success_pipeline": null,
+    "moved_project": false,
+    "merge_when_pipeline_succeeds": false,
+    "new_epic": null
   }
 }
 ```
 
-Users on [GitLab Ultimate](https://about.gitlab.com/pricing/) also see the `new_epic`
-parameter for global and group-level notification settings:
+In this response:
 
-```json
-{
-  "level": "custom",
-  "events": {
-    "new_note": true,
-    "new_issue": false,
-    "new_epic": false,
-    ...
-  }
-}
-```
+- `true` indicates the notification is turned on.
+- `false` indicates the notification is turned off.
+- `null` indicates the notification uses the default setting.
+
+{{< alert type="note" >}}
+
+The `new_epic` attribute is available only in the Premium and Ultimate tiers.
+
+{{< /alert >}}

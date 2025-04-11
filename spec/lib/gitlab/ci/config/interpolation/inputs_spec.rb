@@ -176,15 +176,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
       let(:specs) { { a_input: nil, b_input: { default: 'test' }, c_input: { default: 123 } } }
       let(:args) { { a_input: 123, b_input: 123, c_input: 'test' } }
 
-      it 'is the default type' do
-        expect(inputs).not_to be_valid
-        expect(inputs.errors).to contain_exactly(
-          '`a_input` input: provided value is not a string',
-          '`b_input` input: provided value is not a string',
-          '`c_input` input: default value is not a string'
-        )
-      end
-
       context 'when the value is a string' do
         let(:specs) { { foo: { type: 'string' } } }
         let(:args) { { foo: 'bar' } }
@@ -202,26 +193,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
         it 'is valid' do
           expect(inputs).to be_valid
           expect(inputs.to_hash).to eq(foo: 'bar')
-        end
-      end
-
-      context 'when the value is not a string' do
-        let(:specs) { { foo: { type: 'string' } } }
-        let(:args) { { foo: 123 } }
-
-        it 'is invalid' do
-          expect(inputs).not_to be_valid
-          expect(inputs.errors).to contain_exactly('`foo` input: provided value is not a string')
-        end
-      end
-
-      context 'when the default is not a string' do
-        let(:specs) { { foo: { default: 123, type: 'string' } } }
-        let(:args) { {} }
-
-        it 'is invalid' do
-          expect(inputs).not_to be_valid
-          expect(inputs.errors).to contain_exactly('`foo` input: default value is not a string')
         end
       end
     end
@@ -258,7 +229,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
       end
 
       context 'when the default is not a number' do
-        let(:specs) { { number_input: { default: 'NaN', type: 'number' } } }
+        let(:specs) { { number_input: { default: 'abc', type: 'number' } } }
         let(:args) { {} }
 
         it 'is invalid' do
@@ -419,18 +390,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
         expect(inputs).not_to be_valid
         expect(inputs.errors).to contain_exactly(
           '`test_input` input: RegEx validation can only be used with string inputs'
-        )
-      end
-    end
-
-    context 'when given a value that is not a string' do
-      let(:specs) { { test_input: { regex: '^input_value$' } } }
-      let(:args) { { test_input: 999 } }
-
-      it 'is invalid' do
-        expect(inputs).not_to be_valid
-        expect(inputs.errors).to contain_exactly(
-          '`test_input` input: provided value is not a string'
         )
       end
     end

@@ -130,14 +130,10 @@ This feature is available for testing, but not ready for production use.
 You can set a custom prefix for all tokens generated on your instance.
 By default, GitLab uses `gl` as the instance prefix.
 
-{{< alert type="note" >}}
-
 Custom token prefixes apply only to the following tokens:
 
 - [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [Deploy tokens](../../user/project/deploy_tokens/_index.md)
-
-{{< /alert >}}
 
 Prerequisites:
 
@@ -151,9 +147,20 @@ To set a custom token prefix:
 1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
 
+{{< alert type="note" >}}
+
 By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md), [client-side secret detection](../../user/application_security/secret_detection/client/_index.md) and
-[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes.
-Custom instance token prefixes might cause an increase in false negatives.
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes. This may result in an increase in false negatives.
+
+{{< /alert >}}
+
+### Token prefix benefits
+
+Using custom token prefixes provides the following benefits:
+
+- Makes your tokens distinct and identifiable.
+- Helps identify leaked tokens during security scans.
+- Reduces the risk of token confusion between different instances.
 
 ## Repository size limit
 

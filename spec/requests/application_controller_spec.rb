@@ -23,22 +23,22 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
 
   describe 'session expiration' do
     context 'when user is authenticated' do
-      it 'sets the expire_after option from session_expire_delay setting' do
+      it 'sets the redis_expiry option from session_expire_delay setting' do
         sign_in(user)
 
         get root_path
 
-        expect(request.env['rack.session.options'][:expire_after]).to eq(
+        expect(request.env['rack.session.options'][:redis_expiry]).to eq(
           Settings.gitlab['session_expire_delay'] * 60
         )
       end
     end
 
     context 'when user is unauthenticated' do
-      it 'sets the expire_after option from unauthenticated_session_expire_delay' do
+      it 'sets the redis_expiry option from unauthenticated_session_expire_delay' do
         get root_path
 
-        expect(request.env['rack.session.options'][:expire_after]).to eq(
+        expect(request.env['rack.session.options'][:redis_expiry]).to eq(
           Settings.gitlab['unauthenticated_session_expire_delay']
         )
       end

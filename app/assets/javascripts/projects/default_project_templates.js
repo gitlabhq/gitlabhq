@@ -33,6 +33,10 @@ export default {
     text: s__('ProjectTemplates|Go Micro'),
     icon: '.template-option .icon-gomicro',
   },
+  astro: {
+    text: s__('ProjectTemplates|Pages/Astro'),
+    icon: '.template-option .icon-astro',
+  },
   gatsby: {
     text: s__('ProjectTemplates|Pages/Gatsby'),
     icon: '.template-option .icon-gatsby',
@@ -124,10 +128,6 @@ export default {
   laravel: {
     text: s__('ProjectTemplates|Laravel Framework'),
     icon: '.template-option .icon-laravel',
-  },
-  astro_tailwind: {
-    text: s__('ProjectTemplates|Astro Tailwind'),
-    icon: '.template-option .icon-gitlab_logo',
   },
   nist_80053r5: {
     text: s__('ProjectTemplates|NIST 800-53r5'),

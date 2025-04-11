@@ -107,15 +107,15 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
   context 'when provided interpolation argument is invalid' do
     let(:header) do
-      { spec: { inputs: { website: nil } } }
+      { spec: { inputs: { number_of_deploy: { type: 'number' } } } }
     end
 
     let(:content) do
-      { test: 'deploy $[[ inputs.website ]]' }
+      { test: 'deploy $[[ inputs.number_of_deploy ]]' }
     end
 
     let(:arguments) do
-      { website: ['gitlab.com'] }
+      { number_of_deploy: 'hello' }
     end
 
     it 'returns an error' do
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.error_message).to eq subject.errors.first
-      expect(subject.errors).to include '`website` input: provided value is not a string'
+      expect(subject.errors).to include '`number_of_deploy` input: provided value is not a number'
     end
   end
 

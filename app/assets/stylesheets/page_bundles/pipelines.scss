@@ -46,3 +46,8 @@
     }
   }
 }
+
+// Pipeline failed status
+.ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
+  @include ci-job-item-failed-status-bg;
+}

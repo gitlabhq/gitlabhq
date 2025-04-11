@@ -6,6 +6,8 @@ module Ci
       ##
       # This is a common abstraction for all input types
       class BaseInput
+        include Gitlab::Utils::StrongMemoize
+
         def self.matches?(spec)
           spec.is_a?(Hash) && spec[:type] == type_name
         end
@@ -38,7 +40,7 @@ module Ci
 
         def actual_value(param)
           # nil check is to support boolean values.
-          param.nil? ? default : param
+          param.nil? ? default : coerced_value(param)
         end
 
         def type
@@ -77,6 +79,8 @@ module Ci
         private
 
         def run_validations(value, default: false)
+          value = coerced_value(value)
+
           validate_type(value, default)
           validate_options(value)
           validate_regex(value, default)
@@ -107,6 +111,16 @@ module Ci
 
         def error(message)
           @errors.push("`#{name}` input: #{message}")
+        end
+
+        def coerced_value(value)
+          strong_memoize_with(:coerced_value, value) do
+            next if value.nil?
+
+            Gitlab::Json.parse(value)
+          rescue JSON::ParserError
+            value
+          end
         end
       end
     end

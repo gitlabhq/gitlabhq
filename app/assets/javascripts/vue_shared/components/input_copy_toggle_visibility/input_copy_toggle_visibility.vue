@@ -3,6 +3,7 @@ import {
   GlFormInputGroup,
   GlFormInput,
   GlFormGroup,
+  GlButtonGroup,
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -21,6 +22,7 @@ export default {
     GlFormInputGroup,
     GlFormInput,
     GlFormGroup,
+    GlButtonGroup,
     GlButton,
     ClipboardButton,
   },
@@ -171,6 +173,7 @@ export default {
         :class="formInputClass"
         v-bind="formInputGroupProps"
         :value="value"
+        class="!gl-border !gl-border-r-section"
         @input="handleInput"
         @click="handleClick"
       />
@@ -180,21 +183,23 @@ export default {
         See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88059#note_969812649
        -->
       <template v-if="showToggleVisibilityButton || showCopyButton" #append>
-        <gl-button
-          v-if="showToggleVisibilityButton"
-          v-gl-tooltip.hover="toggleVisibilityLabel"
-          :aria-label="toggleVisibilityLabel"
-          :icon="toggleVisibilityIcon"
-          data-testid="toggle-visibility-button"
-          @click.stop="handleToggleVisibilityButtonClick"
-        />
-        <clipboard-button
-          v-if="showCopyButton"
-          :text="value"
-          :title="copyButtonTitle"
-          data-testid="clipboard-button"
-          @click="handleCopyButtonClick"
-        />
+        <gl-button-group>
+          <gl-button
+            v-if="showToggleVisibilityButton"
+            v-gl-tooltip.hover="toggleVisibilityLabel"
+            :aria-label="toggleVisibilityLabel"
+            :icon="toggleVisibilityIcon"
+            data-testid="toggle-visibility-button"
+            @click.stop="handleToggleVisibilityButtonClick"
+          />
+          <clipboard-button
+            v-if="showCopyButton"
+            :text="value"
+            :title="copyButtonTitle"
+            data-testid="clipboard-button"
+            @click="handleCopyButtonClick"
+          />
+        </gl-button-group>
       </template>
     </gl-form-input-group>
     <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->

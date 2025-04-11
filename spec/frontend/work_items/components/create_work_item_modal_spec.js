@@ -6,9 +6,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
-  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEMS_TYPE_MAP,
 } from '~/work_items/constants';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
@@ -187,7 +187,7 @@ describe('CreateWorkItemModal', () => {
 
       expect(wrapper.find('h2').text()).toBe('New epic');
 
-      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_NAME_KEY_RESULT);
       await nextTick();
       findForm().vm.$emit('workItemCreated', { webUrl: '/' });
 

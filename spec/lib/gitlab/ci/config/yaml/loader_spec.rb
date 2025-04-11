@@ -106,7 +106,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
     context 'when there are errors with the inputs' do
       let(:inputs) do
         {
-          coverage_enabled: 'true',
+          coverage_enabled: 'abc',
           deploy_strategy: 'not-an-option',
           version: 'test-version'
         }

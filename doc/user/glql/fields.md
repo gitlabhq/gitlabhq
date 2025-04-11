@@ -37,11 +37,16 @@ With GitLab Query Language (GLQL), fields are used to:
 
 The following fields are available:
 
-## Type
+## Fields inside query
+
+In a GLQL view, the `query` parameter can be used to include one more expressions of the
+format `field operator value`.
+
+### Type
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -85,11 +90,11 @@ The following fields are available:
   type = MergeRequest and assignee = currentUser()
   ```
 
-## Approved by user
+### Approved by user
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -106,8 +111,6 @@ The following fields are available:
 - `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
 
-**Allowed in columns of a GLQL view**: Yes
-
 **Supported for object types**: `MergeRequest`
 
 **Examples**:
@@ -118,7 +121,7 @@ The following fields are available:
   type = MergeRequest and approver = (currentUser(), @johndoe)
   ```
 
-## Assignees
+### Assignees
 
 **Description**: Query issues or merge requests by one or more users who are assigned to the issue or merge request.
 
@@ -132,8 +135,6 @@ The following fields are available:
 - `User` (for example, `@username`)
 - `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -177,7 +178,7 @@ The following fields are available:
   type = MergeRequest and assignee = @johndoe
   ```
 
-## Author
+### Author
 
 **Description**: Query issues or merge request by their author.
 
@@ -191,8 +192,6 @@ The following fields are available:
 - `User` (for example, `@username`)
 - `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -232,7 +231,7 @@ The following fields are available:
   type = MergeRequest and author = @johndoe
   ```
 
-## Cadence
+### Cadence
 
 {{< history >}}
 
@@ -251,8 +250,6 @@ The following fields are available:
 - `Number` (only positive integers)
 - `List` (containing `Number` values)
 - `Nullable` (either of `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: No
 
 **Supported for object types**:
 
@@ -277,7 +274,7 @@ The following fields are available:
   cadence in (123, 456)
   ```
 
-## Closed at
+### Closed at
 
 **Description**: Query issues or merge requests by the date when they were closed.
 
@@ -290,8 +287,6 @@ The following fields are available:
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -322,7 +317,7 @@ The following fields are available:
   closed > 2023-02-01 and closed < 2023-02-28
   ```
 
-## Confidential
+### Confidential
 
 **Description**: Query issues by their visibility to project members.
 
@@ -333,8 +328,6 @@ The following fields are available:
 **Allowed value types**:
 
 - `Boolean` (either of `true` or `false`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -359,7 +352,7 @@ The following fields are available:
   confidential = false
   ```
 
-## Created at
+### Created at
 
 **Description**: Query issues or merge requests by the date when they were created.
 
@@ -372,8 +365,6 @@ The following fields are available:
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -405,11 +396,11 @@ The following fields are available:
   created > 2025-01-01 and created < 2025-01-31 and state = opened
   ```
 
-## Deployed at
+### Deployed at
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -424,8 +415,6 @@ The following fields are available:
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**: `MergeRequest`
 
@@ -447,11 +436,11 @@ The following fields are available:
   type = MergeRequest and deployed > 2025-01-01 and deployed < 2025-01-31
   ```
 
-## Draft
+### Draft
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -464,8 +453,6 @@ The following fields are available:
 **Allowed value types**:
 
 - `Boolean` (either of `true` or `false`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**: `MergeRequest`
 
@@ -483,7 +470,7 @@ The following fields are available:
   type = MergeRequest and draft = false
   ```
 
-## Due date
+### Due date
 
 **Description**: Query issues by the date when they are due.
 
@@ -496,8 +483,6 @@ The following fields are available:
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -534,11 +519,11 @@ The following fields are available:
   due > -1m and due < today()
   ```
 
-## Environment
+### Environment
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -550,8 +535,6 @@ The following fields are available:
 
 **Allowed value types**: `String`
 
-**Allowed in columns of a GLQL view**: No
-
 **Supported for object types**: `MergeRequest`
 
 **Examples**:
@@ -562,7 +545,7 @@ The following fields are available:
   environment = "production"
   ```
 
-## Group
+### Group
 
 {{< history >}}
 
@@ -577,8 +560,6 @@ The following fields are available:
 **Allowed operators**: `=`
 
 **Allowed value types**: `String`
-
-**Allowed in columns of a GLQL view**: No
 
 **Supported for object types**:
 
@@ -610,7 +591,7 @@ The following fields are available:
   group = "gitlab-org" and type = Task
   ```
 
-## Health status
+### Health status
 
 **Description**: Query issues by their health status.
 
@@ -622,8 +603,6 @@ The following fields are available:
 
 - `StringEnum` (one of `"needs attention"`, `"at risk"` or `"on track"`)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -644,7 +623,7 @@ The following fields are available:
   health = "needs attention"
   ```
 
-## ID
+### ID
 
 {{< history >}}
 
@@ -662,8 +641,6 @@ The following fields are available:
 
 - `Number` (only positive integers)
 - `List` (containing `Number` values)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -691,7 +668,7 @@ The following fields are available:
   type = MergeRequest and id in (1, 2, 3)
   ```
 
-## Include subgroups
+### Include subgroups
 
 {{< history >}}
 
@@ -708,8 +685,6 @@ The following fields are available:
 **Allowed value types**:
 
 - `Boolean` (either of `true` or `false`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -736,7 +711,7 @@ The following fields are available:
   group = "gitlab-org" and includeSubgroups = true
   ```
 
-## Iteration
+### Iteration
 
 {{< history >}}
 
@@ -758,8 +733,6 @@ The following fields are available:
 - `List` (containing `Number` or `Iteration` values)
 - `Enum` (only `current` is supported)
 - `Nullable` (either of `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -803,7 +776,7 @@ The following fields are available:
   iteration = current
   ```
 
-## Labels
+### Labels
 
 {{< history >}}
 
@@ -823,8 +796,6 @@ The following fields are available:
 - `Label` (for example, `~bug`, `~"team::planning"`)
 - `List` (containing `String` or `Label` values)
 - `Nullable` (either of `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -881,11 +852,11 @@ The following fields are available:
   type = MergeRequest and label = (~bug, ~"team::planning")
   ```
 
-## Merged at
+### Merged at
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -900,8 +871,6 @@ The following fields are available:
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**: `MergeRequest`
 
@@ -923,11 +892,11 @@ The following fields are available:
   type = MergeRequest and merged > 2025-01-01 and merged < 2025-01-31
   ```
 
-## Merged by user
+### Merged by user
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/81) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -944,8 +913,6 @@ The following fields are available:
 - `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
 
-**Allowed in columns of a GLQL view**: No
-
 **Supported for object types**: `MergeRequest`
 
 **Examples**:
@@ -956,7 +923,7 @@ The following fields are available:
   type = MergeRequest and merger = currentUser()
   ```
 
-## Milestone
+### Milestone
 
 {{< history >}}
 
@@ -976,8 +943,6 @@ The following fields are available:
 - `Milestone` (for example, `%Backlog`, `%"Awaiting Further Demand"`)
 - `List` (containing `String` or `Milestone` values)
 - `Nullable` (either of `none`, or `any`)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -1023,7 +988,7 @@ The following fields are available:
   milestone != (%17.7, %17.8)
   ```
 
-## Project
+### Project
 
 **Description**: Query issues or merge requests within a particular project.
 
@@ -1032,8 +997,6 @@ The following fields are available:
 **Allowed operators**: `=`
 
 **Allowed value types**: `String`
-
-**Allowed in columns of a GLQL view**: No
 
 **Supported for object types**:
 
@@ -1055,7 +1018,7 @@ The following fields are available:
   project = "gitlab-org/gitlab"
   ```
 
-## Reviewers
+### Reviewers
 
 **Description**: Query merge requests that were reviewed by one or more users.
 
@@ -1070,8 +1033,6 @@ The following fields are available:
 - `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
 
-**Allowed in columns of a GLQL view**: Yes
-
 **Supported for object types**: `MergeRequest`
 
 **Examples**:
@@ -1082,7 +1043,7 @@ The following fields are available:
   type = MergeRequest and reviewer = (currentUser(), @johndoe)
   ```
 
-## State
+### State
 
 {{< history >}}
 
@@ -1095,8 +1056,6 @@ The following fields are available:
 **Field name**: `state`
 
 **Allowed operators**: `=`
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Allowed value types**:
 
@@ -1140,7 +1099,7 @@ The following fields are available:
   type = MergeRequest and state = merged
   ```
 
-## Updated at
+### Updated at
 
 **Description**: Query issues or merge requests by when they were last updated.
 
@@ -1153,8 +1112,6 @@ The following fields are available:
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -1186,7 +1143,7 @@ The following fields are available:
   type = MergeRequest and state = opened and updated < -1w
   ```
 
-## Weight
+### Weight
 
 **Description**: Query issues by their weight.
 
@@ -1197,8 +1154,6 @@ The following fields are available:
 **Allowed value types**:
 
 - `Number` (only positive integers)
-
-**Allowed in columns of a GLQL view**: Yes
 
 **Supported for object types**:
 
@@ -1222,3 +1177,233 @@ The following fields are available:
   ```plaintext
   weight != 5
   ```
+
+## Fields in GLQL views
+
+In GLQL views, the `fields` view parameter is a comma-separated list of fields, or field functions that
+can be used to indicate what fields to include in the rendered GLQL view.
+
+### Approved by user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Display all users who have approved a merge request listed in the view.
+
+**Field name**: `approver`
+
+**Aliases**: `approvers`, `approvedBy`
+
+**Supported for**: Merge requests
+
+### Assignees
+
+**Description**: Display all users who are assigned to an issue or a merge request listed in the view.
+
+**Field name**: `assignee`
+
+**Aliases**: `assignees`
+
+**Supported for**: Merge requests, Issues
+
+### Author
+
+**Description**: Display the author of an issue or a merge request listed in the view.
+
+**Field name**: `author`
+
+**Supported for**: Merge requests, Issues
+
+### Closed at
+
+**Description**: Display relative time since today when an issue or a merge request listed in the view was closed.
+
+**Field name**: `closed`
+
+**Aliases**: `closedAt`
+
+**Supported for**: Merge requests, Issues
+
+### Confidential
+
+**Description**: Display either `Yes` or `No` indicating whether an issue listed in the view is confidential.
+
+**Field name**: `confidential`
+
+**Supported for**: Issues
+
+### Created at
+
+**Description**: Display relative time since today when an issue or a merge request listed in the view was opened.
+
+**Field name**: `created`
+
+**Aliases**: `createdAt`
+
+**Supported for**: Merge requests, Issues
+
+### Deployed at
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Display relative time since today when a merge request listed in the view was deployed.
+
+**Field name**: `deployed`
+
+**Aliases**: `deployedAt`
+
+**Supported for**: Merge requests
+
+### Draft
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Display either `Yes` or `No` indicating whether a merge request listed in the view is in draft state.
+
+**Field name**: `draft`
+
+**Supported for**: Merge requests
+
+### Due date
+
+**Description**: Display relative time since today when an issue listed in the view is due.
+
+**Field name**: `due`
+
+**Aliases**: `dueDate`
+
+**Supported for**: Issues
+
+### Health status
+
+**Description**: Display a badge indicating the health status of an issue listed in the view.
+
+**Field name**: `health`
+
+**Aliases**: `healthStatus`
+
+**Supported for**: Issues
+
+### ID
+
+**Description**: Display the ID of an issue or merge request listed in the view.
+
+**Field name**: `id`
+
+**Supported for**: Merge requests, Issues
+
+### Iteration
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
+
+{{< /history >}}
+
+**Description**: Display the iteration an issue listed in the view may be associated with.
+
+**Field name**: `iteration`
+
+**Supported for**: Issues
+
+### Labels
+
+**Description**: Display all the labels associated with an issue or a merge request listed in the view.
+
+**Field name**: `label`
+
+**Aliases**: `labels`
+
+**Supported for**: Merge requests, Issues
+
+### Last comment
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
+
+{{< /history >}}
+
+**Description**: Display the last comment made on an issue or a merge request listed in the view.
+
+**Field name**: `lastComment`
+
+**Supported for**: Merge requests, Issues
+
+### Merged at
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Display relative time since today when a merge request listed in the view was merged.
+
+**Field name**: `merged`
+
+**Aliases**: `mergedAt`
+
+**Supported for**: Merge requests
+
+### Milestone
+
+**Description**: Display the milestone associated with an issue or a merge request listed in the view.
+
+**Field name**: `milestone`
+
+**Supported for**: Merge requests, Issues
+
+### Reviewers
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+
+{{< /history >}}
+
+**Description**: Display all users who are assigned to a merge request listed in the view for review.
+
+**Field name**: `reviewer`
+
+**Aliases**: `reviewers`
+
+**Supported for**: Merge requests
+
+### State
+
+**Description**: Display a badge indicating the state of an issue or merge request listed in the view. For issues,
+the state values can include `Open` or `Closed`. For merge requests, these include `Open`, `Closed` and `Merged`.
+
+**Field name**: `state`
+
+**Supported for**: Merge requests, Issues
+
+### Updated at
+
+**Description**: Display relative time since today when an issue or a merge request listed in the view was last updated.
+
+**Field name**: `updated`
+
+**Aliases**: `updatedAt`
+
+**Supported for**: Merge requests, Issues
+
+### Weight
+
+**Description**: Display the weight of an issue listed in the view.
+
+**Field name**: `weight`
+
+**Supported for**: Issues

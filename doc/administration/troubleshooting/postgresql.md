@@ -47,7 +47,7 @@ On a single-node instance, or a web or Sidekiq node you can also use the Rails d
 it takes longer to initialize:
 
 ```shell
-sudo gitlab-rails db-console --database main
+sudo gitlab-rails dbconsole --database main
 ```
 
 {{< /tab >}}

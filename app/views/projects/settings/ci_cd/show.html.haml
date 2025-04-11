@@ -56,8 +56,6 @@
       - c.with_body do
         #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts.md', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
 
-= render_if_exists 'projects/settings/ci_cd/secrets', expanded: expanded
-
 - if can?(current_user, :admin_cicd_variables, @project)
   = render ::Layouts::SettingsBlockComponent.new(_('Variables'),
     id: 'js-cicd-variables-settings',

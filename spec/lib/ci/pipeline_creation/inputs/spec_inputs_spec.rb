@@ -115,12 +115,21 @@ RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipe
 
     let(:specs) do
       {
-        'string_param' => { type: 'string' }
+        'number_param' => { type: 'number' }
       }
     end
 
-    context 'with valid params' do
-      let(:params) { { 'string_param' => 'value' } }
+    context 'with valid params as string' do
+      let(:params) { { 'number_param' => '123' } }
+
+      it 'does not raise error' do
+        validate
+        expect(spec_inputs.errors).to be_empty
+      end
+    end
+
+    context 'with valid params as number' do
+      let(:params) { { 'number_param' => 123 } }
 
       it 'does not raise error' do
         validate
@@ -129,7 +138,7 @@ RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipe
     end
 
     context 'with missing required params' do
-      let(:params) { { 'string_param' => nil } }
+      let(:params) { { 'number_param' => nil } }
 
       it 'adds an error for missing required param' do
         validate
@@ -138,11 +147,11 @@ RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipe
     end
 
     context 'with invalid param type' do
-      let(:params) { { 'string_param' => 123 } }
+      let(:params) { { 'number_param' => 'abc' } }
 
       it 'adds an error for invalid param type' do
         validate
-        expect(spec_inputs.errors).to contain_exactly(/provided value is not a string/)
+        expect(spec_inputs.errors).to contain_exactly(/provided value is not a number/)
       end
     end
   end

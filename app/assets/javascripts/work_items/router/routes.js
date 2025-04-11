@@ -20,8 +20,8 @@ function getRoutes() {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/new`,
       name: ROUTES.new,
       component: CreateWorkItem,
-      props: ({ params: { type }, query }) => ({
-        workItemTypeName: query.type || WORK_ITEM_BASE_ROUTE_MAP[type],
+      props: ({ params, query }) => ({
+        workItemTypeEnum: query.type || WORK_ITEM_BASE_ROUTE_MAP[params.type],
       }),
     },
     {

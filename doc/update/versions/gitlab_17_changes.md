@@ -234,6 +234,10 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## Issues to be aware of when upgrading to 17.8
 
+- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
+  If you have a multi-node configuration, follow the steps relevant to your installation from
+  the [17.8.0](#1780) section below.
+
 - Migration failures when upgrading to GitLab 17.8.
 
   When upgrading to 17.8, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
@@ -261,6 +265,10 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## Issues to be aware of when upgrading to 17.9
 
+- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
+  If you have a multi-node configuration, follow the steps relevant to your installation from
+  the [17.9.0](#1790) section below.
+
 - Runner tags missing when upgrading to GitLab 17.9
 
   When upgrading from 17.5 through a version older than the 17.8.6 or 17.9.3 patch releases, there is a chance of the
@@ -278,18 +286,199 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
   If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
   see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
 
+## Issues to be aware of when upgrading to 17.10
+
+- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
+  If you have a multi-node configuration, follow the steps relevant to your installation from
+  the [17.9.0](#1790) section below.
+
+## Issues to be aware of when upgrading to 17.11
+
+- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
+  If you have a multi-node configuration, follow the steps relevant to your installation from
+  the [17.9.0](#1790) section below.
+
+## 17.11.0
+
+### New encryption secrets
+
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+**If you have a multi-node configuration, you must ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
+
+Follow the steps relevant to your installation from the [17.9.0](#1790) section below.
+
+## 17.10.0
+
+### New encryption secrets
+
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+**If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
+
+Follow the steps relevant to your installation from the [17.9.0](#1790) section below.
+
+## 17.9.0
+
+### New encryption secrets
+
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+**If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Optional. If possible, put your instance in [maintenance mode](../../administration/maintenance_mode/_index.md) (otherwise if the steps 3 and 6 return `true`, it's fine).
+1. Delete all `CloudConnector::Keys` records:
+
+   ```shell
+   gitlab-rails r 'CloudConnector::Keys.delete_all'
+   ```
+
+1. Check if any records with encrypted attributes exist:
+
+   ```shell
+   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
+   ```
+
+   If the result is `true`, you can proceed to the next step. Otherwise, we need to check what are the existing records
+   and decide if we can delete them before proceeding further.
+
+1. Pick one Sidekiq or Rails node as a reference node from which you will copy
+   `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and Rails nodes.
+1. On all Sidekiq and Rails nodes (except the reference node):
+
+   1. Back up your [configuration files](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-configuration-on-a-linux-package-installation):
+
+      ```shell
+      sudo gitlab-ctl backup-etc
+      ```
+
+   1. Copy `/etc/gitlab/gitlab-secrets.json` from the reference node, and replace the file of the
+      same name on the current node.
+   1. Reconfigure GitLab:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+1. Check again if any records with encrypted attributes exist (to ensure no records were created while
+   you performed the previous steps). The return value should be `true`:
+
+   ```shell
+   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
+   ```
+
+1. Create a new Cloud Connector key: `gitlab-rake cloud_connector:keys:create`
+1. Optional. On all Sidekiq and Rails nodes, check that the encrypted attributes can be read
+   (if no `ActiveRecord::Encryption::Errors::Decryption` exception is raised, it's good):
+
+   ```shell
+   gitlab-rails r 'CloudConnector::Keys.first.secret_key; nil'
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
+you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## 17.8.0
 
-- In GitLab 17.8.0, GitLab agent server for Kubernetes (KAS) does not start with the default settings on the GitLab Linux package (Omnibus) and Docker installations.
-  To resolve this issue, edit `/etc/gitlab/gitlab.rb`:
+### New encryption secrets
 
-  ```ruby
-  gitlab_kas['env'] = { 'OWN_PRIVATE_API_URL' => 'grpc://127.0.0.1:8155' }
-  ```
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
 
-  Multiple node installations should use the settings described in the [documentation](../../administration/clusters/kas.md).
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
 
-- S3 object storage uploads in Workhorse now only use [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597).
+**If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Optional. If possible, put your instance in [maintenance mode](../../administration/maintenance_mode/_index.md) (otherwise if the steps 2 and 5 return `true`, it's fine).
+1. Check if any records with encrypted attributes exist:
+
+   ```shell
+   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
+   ```
+
+   If the result is `true`, you can proceed to step 2. Otherwise, we need to check what are the existing records
+   and decide if we can delete them before proceeding further.
+
+1. Pick one Sidekiq or Rails node as a reference node from which you will copy
+   `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and Rails nodes.
+1. On all Sidekiq and Rails nodes (except the reference node):
+
+   1. Back up your [configuration files](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-configuration-on-a-linux-package-installation):
+
+      ```shell
+      sudo gitlab-ctl backup-etc
+      ```
+
+   1. Copy `/etc/gitlab/gitlab-secrets.json` from the reference node, and replace the file of the
+      same name on the current node.
+   1. Reconfigure GitLab:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+1. Check again if any records with encrypted attributes exist (to ensure no records were created while
+   you performed the previous steps). The return value should be `true`:
+
+   ```shell
+   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
+you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Change to the GitLab agent server for Kubernetes
+
+In GitLab 17.8.0, GitLab agent server for Kubernetes (KAS) does not start with the default settings on the GitLab Linux package (Omnibus) and Docker installations.
+
+To resolve this issue, edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitlab_kas['env'] = { 'OWN_PRIVATE_API_URL' => 'grpc://127.0.0.1:8155' }
+```
+
+Multiple node installations should use the settings described in the [documentation](../../administration/clusters/kas.md).
+
+### Change to S3 object storage uploads in Workhorse
+
+S3 object storage uploads in Workhorse now only use [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597).
 The `workhorse_use_aws_sdk_v2` feature flag has been removed. The AWS SDK v2
 [sets `Accept-Encoding: identity` and includes it as a signed header](https://github.com/aws/aws-sdk-go-v2/issues/2848).
 However, some proxy services, such as Cloudflare, [alter this header, causing a signature mismatch error](https://gitlab.com/gitlab-org/gitlab/-/issues/492973#note_2312726631).
@@ -301,13 +490,13 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 - When upgrading from GitLab 17.5 to 17.8, background migration fails with insert or update on the `group_type_ci_runner_machines` table.
 
   In the UI, the migration path `BackfillCiRunnerMachinesPartitionedTable: ci_runner_machines` shows progress `0.00%` and status `failed`.
-  The corresponding error in the logs include a foreign key constraint error. 
+  The corresponding error in the logs include a foreign key constraint error.
 
   ```shell
   ERROR:  insert or update on table "group_type_ci_runner_machines_" violates foreign key constraint "fk_rails_"
   ```
 
-  To resolve this error, initialize the migration from the UI. 
+  To resolve this error, initialize the migration from the UI.
 
 ## 17.7.0
 

@@ -38,8 +38,7 @@ module Ci
         raw_push_options_inputs = push_options.dig(:ci, :input)
         return {} unless raw_push_options_inputs
 
-        raw_inputs = extract_key_value_pairs_from_push_option(raw_push_options_inputs)
-        ::Ci::PipelineCreation::Inputs.parse_params(raw_inputs.to_h)
+        extract_key_value_pairs_from_push_option(raw_push_options_inputs).to_h
       end
 
       private

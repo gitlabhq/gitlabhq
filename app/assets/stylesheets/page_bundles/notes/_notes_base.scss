@@ -390,3 +390,15 @@
   }
 }
 
+// Safari-specific override to avoid container stacking context problems
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+    .work-item-notes .note-container-query-wrapper {
+      container-type: unset;
+
+      @media (max-width: $breakpoint-sm) {
+        .note-hidden-xs {
+          @apply gl-hidden
+        }
+      }
+    }
+  }

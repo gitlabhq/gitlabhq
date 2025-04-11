@@ -19,6 +19,7 @@ include:
   stage: prepare
   needs:
     # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
+    # TODO: refactor to pass assets hash as environment variable to not download all of the actual assets needlessly
     - pipeline: $PARENT_PIPELINE_ID
       job: compile-production-assets
   variables:
