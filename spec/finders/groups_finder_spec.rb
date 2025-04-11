@@ -325,6 +325,32 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with marked_for_deletion_on' do
+      let_it_be(:deletion_date) { Date.parse('2024-01-01') }
+      let_it_be(:different_date) { Date.parse('2024-02-01') }
+      let_it_be(:group_with_schedule) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: deletion_date)
+      end
+
+      let_it_be(:group_with_different_date) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: different_date)
+      end
+
+      it 'filters groups by marked_for_deletion_on' do
+        result = described_class.new(user, { marked_for_deletion_on: deletion_date }).execute
+
+        expect(result).to include(group_with_schedule)
+        expect(result).not_to include(group_with_different_date)
+      end
+
+      it 'does not filter by marked_for_deletion_on when parameter is not provided' do
+        result = described_class.new(user, {}).execute
+
+        expect(result).to include(group_with_schedule)
+        expect(result).to include(group_with_different_date)
+      end
+    end
+
     context 'with organization' do
       let_it_be(:organization_user) { create(:organization_user) }
       let_it_be(:organization) { organization_user.organization }

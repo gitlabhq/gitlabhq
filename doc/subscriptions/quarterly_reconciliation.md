@@ -94,7 +94,8 @@ You are excluded from quarterly reconciliation if you:
 - Are enrolled in a program that provides a Free tier such as the GitLab for Education,
 GitLab for Open Source Program, or GitLab for Startups.
 
-If you are excluded from quarterly reconciliation and not on a Free tier, your true-ups are reconciled annually. Alternatively, you can reconcile any overages by [purchasing additional seats](gitlab_com/_index.md#add-seats-to-subscription).
+If you are excluded from quarterly reconciliation and not on a Free tier, your true-ups are reconciled annually.
+Alternatively, you can reconcile any overages by [purchasing additional seats](gitlab_com/_index.md#buy-seats-for-a-subscription).
 
 ## Troubleshooting
 

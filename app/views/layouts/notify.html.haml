@@ -44,6 +44,9 @@
             #{link_to _('View it on GitLab'), @target_url}.
           %br
           = notification_reason_text(reason: @reason, show_manage_notifications_link: !@labels_url, show_help_link: true, manage_label_subscriptions_url: @labels_url, unsubscribe_url: @unsubscribe_url, format: :html)
+          - if Feature.enabled?(:fix_gmail_footer_truncation, @project)
+            %span{ style: "color:transparent;font-size:0;display:none;overflow:hidden;opacity:0;width:0;height:0;max-width:0;max-height:0" }
+              = 'Notification message regarding ' + @target_url + " at #{Time.current.to_i}"
 
           = email_action @target_url
 

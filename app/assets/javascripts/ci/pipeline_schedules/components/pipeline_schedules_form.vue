@@ -296,6 +296,7 @@ export default {
           :value="cronTimezone"
           :timezone-data="timezoneData"
           name="schedule-timezone"
+          required
           @input="setTimezone"
         />
       </gl-form-group>

@@ -30,8 +30,8 @@ module Keeps
     ].freeze
     ROLLOUT_ISSUE_URL_REGEX = %r{\Ahttps://gitlab\.com/(?<project_path>.*)/-/issues/(?<issue_iid>\d+)\z}
     API_ISSUE_URL = "https://gitlab.com/api/v4/projects/%<project_path>s/issues/%<issue_iid>s"
-    API_ISSUE_DISCUSSIONS_URL = "https://gitlab.com/api/v4/projects/%<project_path>s/issues/%<issue_iid>s/notes?per_page=100"
     FEATURE_FLAG_LOG_ISSUES_URL = "https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues/?search=%<feature_flag_name>s&sort=created_date&state=all&label_name%%5B%%5D=host%%3A%%3Agitlab.com"
+    MISSING_URL_PLACEHOLDER = '(missing URL)'
 
     def each_change
       each_feature_flag do |feature_flag|
@@ -49,13 +49,13 @@ module Keeps
         return false
       end
 
-      if feature_flag_rollout_issue_url(feature_flag) == "(missing URL)"
-        @logger.puts "#{feature_flag.name} cannot be removed as it is not having a rollout issue."
+      if latest_feature_flag_status.nil?
+        @logger.puts "#{feature_flag.name} cannot be removed as we cannot get the status from the rollout issue."
         return false
       end
 
-      if latest_feature_flag_status.nil?
-        @logger.puts "#{feature_flag.name} cannot be removed as we cannot get the status from the rollout issue."
+      if latest_feature_flag_status == :conditional
+        @logger.puts "#{feature_flag.name} cannot be removed as it is partially rolled out."
         return false
       end
 
@@ -72,11 +72,6 @@ module Keeps
 
       unless matches_filter_identifiers?(identifiers)
         @logger.puts "#{feature_flag.name} cannot be removed as it is not matching passed filter."
-        return false
-      end
-
-      if latest_feature_flag_status == :conditional
-        @logger.puts "#{feature_flag.name} cannot be removed as it is partially rolled out."
         return false
       end
 
@@ -226,7 +221,7 @@ module Keeps
     end
 
     def feature_flag_rollout_issue_url(feature_flag)
-      feature_flag.rollout_issue_url || '(missing URL)'
+      feature_flag.rollout_issue_url || MISSING_URL_PLACEHOLDER
     end
 
     def assignees(rollout_issue_url)
@@ -259,40 +254,30 @@ module Keeps
       return :enabled if feature_flag.default_enabled
 
       rollout_issue_url = feature_flag_rollout_issue_url(feature_flag)
-      matches = ROLLOUT_ISSUE_URL_REGEX.match(rollout_issue_url)
-
-      return unless matches
-
-      # rubocop:disable Gitlab/HttpV2 -- Not running inside rails application
-      response = Gitlab::HTTP_V2.try_get(
-        format(API_ISSUE_DISCUSSIONS_URL, project_path: CGI.escape(matches[:project_path]),
-          issue_iid: matches[:issue_iid]), { headers: { 'Private-Token' => ENV.fetch('HOUSEKEEPER_GITLAB_API_TOKEN') } }
-      )
-      # rubocop:enable Gitlab/HttpV2
-
-      unless (200..299).cover?(response.code)
-        raise Error, "Failed with response code: #{response.code} and body:\n#{response.body}"
+      if rollout_issue_url == MISSING_URL_PLACEHOLDER
+        @logger.puts "Can't fetch ff status for #{feature_flag.name} due to absence of rollout issue."
+        return
       end
 
-      parse_latest_feature_flag_status(Gitlab::Json.parse(response.body, symbolize_names: true))
-    end
+      rollout_issue = get_rollout_issue(rollout_issue_url)
+      return unless rollout_issue
 
-    def parse_latest_feature_flag_status(notes)
-      # Filter notes by cogbot and gprd mentions
-      cogbot_notes = notes.select do |note|
-        note[:author][:username] == 'cogbot' && !note[:system] && note[:body].include?('on **gprd**')
+      state_label = rollout_issue[:labels].find { |label| label.start_with?('feature flag state::') }
+
+      if state_label.nil?
+        @logger.puts(
+          "Can't fetch ff status for #{feature_flag.name} due to absence of feature flag state label on rollout issue."
+        )
+        return
       end
 
-      return if cogbot_notes.empty?
-
-      # Get latest note
-      latest_note = cogbot_notes.max_by { |note| Time.parse(note[:created_at]) }
-      message = latest_note[:body]
-
-      case message
-      when /set to `false`/ then :disabled
-      when /scoped to/ then :conditional
-      when /set to `true`/ then :enabled
+      case state_label
+      when 'feature flag state::enabled'
+        :enabled
+      when 'feature flag state::disabled'
+        :disabled
+      when 'feature flag state::rolling out'
+        :conditional
       end
     end
 

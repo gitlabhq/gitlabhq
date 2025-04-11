@@ -214,7 +214,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         fill_in 'schedule-description', with: 'my fancy description'
         create_pipeline_schedule
 
-        expect(page).to have_content("Cron timezone can't be blank")
+        expect(page).to have_content("Schedule a new pipeline")
       end
     end
 

@@ -10,14 +10,14 @@ title: Custom fields
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `custom_fields_feature`.
-  Disabled by default.
-  Enabled on GitLab.com for a subset of users.
+  Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 {{< /history >}}
 
@@ -25,7 +25,6 @@ title: Custom fields
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
@@ -148,3 +147,122 @@ Prerequisites:
 1. Enter or select the desired value.
    - A text field value can have at most 1024 characters.
 1. Select any area outside the field.
+
+## Field type selection guide
+
+When creating custom fields, choose a field type that matches the kind of data you want to track.
+The right field type improves data quality and makes reporting more effective.
+
+### Single-select fields
+
+Use single-select fields when:
+
+- Users should choose exactly one option from a predefined list.
+- The options are mutually exclusive.
+- You want to enforce consistency and prevent free-form input.
+
+Single-select fields work well for:
+
+- Priority indicators (like `High`, `Medium`, `Low`)
+- Category assignments
+- Team assignments
+- Approval states
+- Priority levels
+
+### Multi-select fields
+
+Use multi-select fields when:
+
+- Multiple values might apply simultaneously.
+- You need to track overlapping attributes.
+- Items might belong to multiple categories.
+
+Multi-select fields work well for:
+
+- Tags or labels
+- Skills required
+- Affected components
+- Stakeholder groups
+- Feature capabilities
+
+### Number fields
+
+Use number fields when:
+
+- You need to collect quantitative data.
+- You want to perform calculations or aggregations.
+- The information needs to be sortable numerically.
+
+Number fields work well for:
+
+- Cost estimates
+- Time estimates
+- Business value scores
+- Ranking or prioritization scores
+- Percentage complete
+
+### Text fields
+
+Use text fields when:
+
+- You need to capture unique information that doesn't fit predefined categories.
+- The data is highly variable.
+- You need to provide context or details.
+
+Text fields work well for:
+
+- Additional context
+- External reference IDs
+- Contact information
+- Brief notes or comments
+- URLs or links
+
+## Naming conventions for custom fields
+
+Consistent naming conventions for custom fields make them easier to understand and use.
+Good field names improve adoption and data quality.
+
+### General guidelines
+
+- Keep names concise but descriptive.
+- Use clear, specific language that your organization understands.
+- Be consistent with capitalization (title case is recommended).
+- Avoid abbreviations unless they're widely understood.
+- Include the unit of measure when applicable.
+
+### Naming single-select and multi-select fields
+
+Start with the category name, followed by a descriptor. For example:
+
+- `Risk Level` instead of `Risk`
+- `Customer Segment` instead of `Segment`
+- `Development Phase` instead of `Phase`
+- `Approval Status` instead of `Status`
+
+### Naming number fields
+
+Include the unit of measurement in the field name. For example:
+
+- `Effort Points` instead of `Points`
+- `Budget Estimate ($)` instead of `Budget`
+- `Implementation Time (days)` instead of `Time`
+- `Business Value Score` instead of `Value`
+
+### Naming text fields
+
+Clearly indicate what information should be entered. For example:
+
+- `External Reference ID` instead of `Reference`
+- `Implementation Notes` instead of `Notes`
+- `Requirements Source` instead of `Source`
+
+### Team-specific prefixes
+
+If multiple teams use the same GitLab instance, consider adding team prefixes to avoid confusion:
+
+- `DEV: Sprint Priority`
+- `QA: Test Environment`
+- `UX: Design Status`
+- `PM: Market Segment`
+
+This approach helps teams quickly identify which fields are relevant to their work.

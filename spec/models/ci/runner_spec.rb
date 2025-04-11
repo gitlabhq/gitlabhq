@@ -1889,6 +1889,21 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     include_context 'with token authenticatable routable token context'
 
+    shared_examples 'an encrypted non-routable token' do |prefix|
+      context 'when :routable_runner_token feature flag is disabled' do
+        before do
+          stub_feature_flags(routable_runner_token: false)
+        end
+
+        it_behaves_like 'an encrypted token' do
+          let(:expected_token) { token }
+          let(:expected_token_payload) { devise_token }
+          let(:expected_token_prefix) { prefix }
+          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+        end
+      end
+    end
+
     shared_examples 'an encrypted routable token for resource' do |prefix|
       let(:resource_payload) do
         case resource
@@ -1914,6 +1929,19 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         routing_payload.map { |pairs| pairs.join(':') }.join("\n")
       end
 
+      context 'when :routable_runner_token feature flag is enabled for the resource' do
+        before do
+          stub_feature_flags(routable_runner_token: resource)
+        end
+
+        it_behaves_like 'an encrypted routable token' do
+          let(:expected_token) { token }
+          let(:expected_random_bytes) { random_bytes }
+          let(:expected_token_prefix) { prefix }
+          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+        end
+      end
+
       it_behaves_like 'an encrypted routable token' do
         let(:expected_token) { token }
         let(:expected_random_bytes) { random_bytes }
@@ -1925,6 +1953,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     shared_examples 'an instance runner encrypted token' do |prefix|
       let(:runner_type) { :instance_type }
 
+      it_behaves_like 'an encrypted non-routable token', prefix
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { nil }
       end
@@ -1934,6 +1963,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:runner_type) { :group_type }
       let(:attrs) { { groups: [group], sharding_key_id: group.id } }
 
+      it_behaves_like 'an encrypted non-routable token', prefix
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { group }
       end
@@ -1943,6 +1973,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:runner_type) { :project_type }
       let(:attrs) { { projects: [project], sharding_key_id: project.id } }
 
+      it_behaves_like 'an encrypted non-routable token', prefix
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { project }
       end

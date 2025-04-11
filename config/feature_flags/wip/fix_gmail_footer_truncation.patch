@@ -1,0 +1,31 @@
+diff --git a/app/views/layouts/notify.html.haml b/app/views/layouts/notify.html.haml
+index 826d822354b6..b713cee3266f 100644
+--- a/app/views/layouts/notify.html.haml
++++ b/app/views/layouts/notify.html.haml
+@@ -44,9 +44,8 @@
+             #{link_to _('View it on GitLab'), @target_url}.
+           %br
+           = notification_reason_text(reason: @reason, show_manage_notifications_link: !@labels_url, show_help_link: true, manage_label_subscriptions_url: @labels_url, unsubscribe_url: @unsubscribe_url, format: :html)
+-          - if Feature.enabled?(:fix_gmail_footer_truncation, @project)
+-            %span{ style: "color:transparent;font-size:0;display:none;overflow:hidden;opacity:0;width:0;height:0;max-width:0;max-height:0" }
+-              = 'Notification message regarding ' + @target_url + " at #{Time.current.to_i}"
++          %span{ style: "color:transparent;font-size:0;display:none;overflow:hidden;opacity:0;width:0;height:0;max-width:0;max-height:0" }
++            = 'Notification message regarding ' + @target_url + " at #{Time.current.to_i}"
+ 
+           = email_action @target_url
+ 
+diff --git a/config/feature_flags/wip/fix_gmail_footer_truncation.yml b/config/feature_flags/wip/fix_gmail_footer_truncation.yml
+deleted file mode 100644
+index e092a0d092b6..000000000000
+--- a/config/feature_flags/wip/fix_gmail_footer_truncation.yml
++++ /dev/null
+@@ -1,9 +0,0 @@
+----
+-name: fix_gmail_footer_truncation
+-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/14072
+-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177913
+-rollout_issue_url:
+-milestone: '17.11'
+-group: group::ux paper cuts
+-type: wip
+-default_enabled: false

@@ -1,0 +1,9 @@
+---
+name: fix_gmail_footer_truncation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/14072
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177913
+rollout_issue_url:
+milestone: '17.11'
+group: group::ux paper cuts
+type: wip
+default_enabled: false

@@ -110,6 +110,7 @@ class GroupsFinder < UnionFinder
     groups = by_visibility(groups)
     groups = by_ids(groups)
     groups = top_level_only(groups)
+    groups = by_marked_for_deletion_on(groups)
     by_search(groups)
   end
 
@@ -140,6 +141,12 @@ class GroupsFinder < UnionFinder
 
   def by_parent_children(groups, parent)
     groups.by_parent(parent)
+  end
+
+  def by_marked_for_deletion_on(groups)
+    return groups unless params[:marked_for_deletion_on].present?
+
+    groups.by_marked_for_deletion_on(params[:marked_for_deletion_on])
   end
 
   def filter_group_ids(groups)

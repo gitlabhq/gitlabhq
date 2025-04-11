@@ -1713,7 +1713,7 @@ to ensure the correct locations are being used to mirror the required scanner im
 </div>
 
 The REST API endpoint `pre_receive_secret_detection_enabled` is deprecated in favor of `secret_push_protection_enabled`. We are renaming some API fields to reflect the name change of the feature `pre_receive_secret_detection` to `secret_push_protection`.
-To avoid breaking workflows that use the old name, you should stop using the `pre_receive_secret_detection_enabled` endpoint before GitLab 18.0. Instead, use the new `secret_push_protection_enabled` endpoint.
+Following [new guidance](https://docs.gitlab.com/development/api_styleguide/#what-to-do-instead-of-a-breaking-change), we will adapt the schema to support both `pre_receive_secret_detection_enabled` and `secret_push_protection_enabled`. We will still [remove](https://gitlab.com/gitlab-org/gitlab/-/issues/512996) the old `pre_receive_secret_detection_enabled` column, but customers will be able to use either parameter, with both pointing to the new `secret_push_protection_enabled` column.
 
 </div>
 
@@ -1847,10 +1847,7 @@ In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may 
 </div>
 
 The `setPreReceiveSecretDetection` GraphQL mutation has been renamed to `setSecretPushProtection`. We are also renaming some fields in the mutation's response to reflect the name change of the feature `pre_receive_secret_detection` to `secret_push_protection`.
-To avoid breaking workflows that use the old name, before GitLab 18.0 you should:
-
-- Stop using the old mutation name `setPreReceiveSecretDetection`. Instead, use the name `setSecretPushProtection`.
-- Change any references to the field `pre_receive_secret_detection_enabled` to `secret_push_protection_enabled`.
+Following [new guidance](https://docs.gitlab.com/development/api_styleguide/#what-to-do-instead-of-a-breaking-change), we're adapting the schema to support both `setPreReceiveSecretDetection` and `setSecretPushProtection`. You can use either parameter because they both point to the `secret_push_protection_enabled` column. In GitLab 18.0, we will [remove](https://gitlab.com/gitlab-org/gitlab/-/issues/514414) the old `setPreReceiveSecretDetection` column.
 
 </div>
 
@@ -1980,7 +1977,7 @@ If you need to use the cache when scanning a project, you can restore the previo
 
 </div>
 
-From GitLab 18.0, the secret detection analyzer will no longer use the root user by default. You shouldn't experience any impact as a result of this change. However, you might experience issues if you use `before_script` or `after_script` to make changes to the image. GitLab doesn't support this use of `before_script` and `after_script`.
+This planned change to the secret detection analyzer is cancelled. You can still use the root user by default.
 
 </div>
 

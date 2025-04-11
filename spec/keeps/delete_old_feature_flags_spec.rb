@@ -151,16 +151,6 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
     end
 
-    context 'when feature flag is missing rollout issue URL' do
-      before do
-        allow(keep).to receive(:feature_flag_rollout_issue_url).and_return('(missing URL)')
-      end
-
-      it 'returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
-      end
-    end
-
     context 'when latest feature flag status is nil' do
       it 'returns false' do
         expect(keep.send(:can_remove_ff?, feature_flag, identifiers, nil)).to be false

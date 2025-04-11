@@ -49,7 +49,7 @@ possible without a quarterly usage report.
 
 Billable users count toward the number of subscription seats purchased in your subscription.
 
-The number of billable users changes when you block, deactivate, or [add](#add-seats-to-a-subscription) users to your instance during your current subscription period.
+The number of billable users changes when you block, deactivate, or [add](#buy-seats-for-a-subscription) users to your instance during your current subscription period.
 
 A user is not counted as a billable user if:
 
@@ -207,20 +207,20 @@ GitLab has several features to help you manage the number of users. You can:
 - View a breakdown of users by role in the
   [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
-### Add seats to a subscription
+### Buy seats for a subscription
 
-To increase the number of users covered by your license, add seats to your subscription
+To increase the number of users covered by your license, buy seats for your subscription
 during the subscription period. The cost of seats added during the subscription
 period is prorated from the date of purchase through to the end of the subscription
 period. You can continue to add users even if you reach the number of users in
 license count. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
-You cannot add seats to your subscription if either:
+You cannot buy seats for your subscription if either:
 
 - You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
 - You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
 
-To add seats to a subscription:
+To buy seats for a subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
 1. Go to the **Subscriptions & purchases** page.

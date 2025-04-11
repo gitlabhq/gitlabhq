@@ -2644,6 +2644,7 @@ Supported attributes:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186602) from `setPreReceiveSecretDetection` in GitLab 17.11.
 
 {{< /history >}}
 

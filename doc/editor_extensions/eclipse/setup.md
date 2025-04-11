@@ -14,6 +14,12 @@ title: Install and set up GitLab for Eclipse
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/163) from experiment to beta in GitLab 17.11.
+
+{{< /history >}}
+
 {{< alert type="disclaimer" />}}
 
 ## Install the GitLab for Eclipse plugin

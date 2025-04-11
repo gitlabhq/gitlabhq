@@ -315,7 +315,7 @@ To export seat usage history as a CSV file:
 The generated list contains all seats being used,
 and is not affected by the current search.
 
-## Add seats to subscription
+## Buy seats for a subscription
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
 
@@ -324,12 +324,12 @@ Your subscription cost is based on the maximum number of seats you use during th
 - If restricted access is turned off, when there are no seats left in your subscription groups can continue to add billable
   users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
-You cannot add seats to your subscription if either:
+You cannot buy seats for your subscription if either:
 
 - You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
 - You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
 
-To add seats to a subscription:
+To buy seats for a subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
 1. Go to the **Subscriptions & purchases** page.

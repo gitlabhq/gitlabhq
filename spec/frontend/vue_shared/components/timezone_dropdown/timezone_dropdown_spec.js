@@ -99,7 +99,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('preserves initial value in the associated input', () => {
-      expect(findHiddenInput().attributes('value')).toBe('Berlin');
+      expect(findHiddenInput().element.value).toBe('Berlin');
     });
   });
 

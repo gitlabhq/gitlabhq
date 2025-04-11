@@ -226,6 +226,12 @@ To preserve historical context, the placeholder user name and username are deriv
 
 #### View placeholder users
 
+{{< history >}}
+
+- Ability for administrators to filter for placeholder users for an instance [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521974) in GitLab 17.11.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -237,6 +243,12 @@ To view placeholder users created during imports to a top-level group and its su
    This group must be at the top level.
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
+
+Administrators can view all placeholder users created during imports for an entire instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview > Users**.
+1. Use the user search box to filter users by **type**.
 
 #### Placeholder user limits
 

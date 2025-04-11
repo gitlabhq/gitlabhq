@@ -78,8 +78,9 @@ These push rules apply only to commits and not [tags](tags/_index.md).
 
 {{< /alert >}}
 
-- **Reject unverified users**: Users must have a [confirmed email address](../../../security/user_email_confirmation.md).
-- **Check whether the commit author is a GitLab user**: The commit author and committer must have an email address that's been verified by GitLab.
+- **Reject unverified users**: The committer email must match one of the user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile) or [private commit email address](../../profile/_index.md#use-an-automatically-generated-private-commit-email).
+- **Reject inconsistent user name**: The commit author name must match the user's GitLab account name.
+- **Check whether the commit author is a GitLab user**: Both the commit author and committer email addresses must match a GitLab user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile).
 - **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
 
@@ -117,7 +118,7 @@ Use these rules for your commit messages.
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.
 
-## Reject commits that aren't signed-off
+## Reject commits that aren't DCO certified
 
 {{< history >}}
 

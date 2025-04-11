@@ -67,7 +67,6 @@ export default {
       :toggle-text="__('GLQL view options')"
       text-sr-only
       placement="bottom-end"
-      positioning-strategy="fixed"
     />
   </div>
 </template>
