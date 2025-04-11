@@ -1,5 +1,5 @@
-.rd-app-empty-state.gl-mt-5.gl-text-center
-  = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-subtle" }) do |c|
+.rd-app-empty-state
+  = render Pajamas::CardComponent.new(card_options: { class: "rd-app-empty-state-card" }) do |c|
     - c.with_body do
       = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
         title: message) do |c|

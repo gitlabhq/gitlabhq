@@ -192,6 +192,15 @@ describe('filterVariables', () => {
           not: {},
         },
       },
+      {
+        filters: {
+          'custom-field[1][]': '2',
+        },
+        expected: {
+          customField: [],
+          not: {},
+        },
+      },
     ],
   ])('%s', (_, { filters, issuableType = 'issue', expected }) => {
     const result = filterVariables({

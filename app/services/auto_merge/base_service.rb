@@ -58,13 +58,32 @@ module AutoMerge
 
     def available_for?(merge_request)
       strong_memoize("available_for_#{merge_request.id}") do
-        merge_request.can_be_merged_by?(current_user) &&
-          merge_request.mergeability_checks_pass?(**skippable_available_for_checks(merge_request)) &&
-          yield
+        availability_details(merge_request).available?
       end
     end
 
     private
+
+    def availability_details(merge_request)
+      strong_memoize("availability_details_#{merge_request.id}") do
+        unless merge_request.can_be_merged_by?(current_user)
+          next AutoMerge::AvailabilityCheck.error(unavailable_reason: :forbidden)
+        end
+
+        mergeability_checks = merge_request.execute_merge_checks(
+          MergeRequest.all_mergeability_checks,
+          params: skippable_available_for_checks(merge_request),
+          execute_all: false
+        )
+
+        unless mergeability_checks.success?
+          next AutoMerge::AvailabilityCheck.error(unavailable_reason: :mergeability_checks_failed,
+            unsuccessful_check: mergeability_checks.payload[:unsuccessful_check])
+        end
+
+        block_given? ? yield : AvailabilityCheck.success
+      end
+    end
 
     def skippable_available_for_checks(merge_request)
       merge_request.skipped_mergeable_checks(

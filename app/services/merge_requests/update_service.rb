@@ -40,7 +40,7 @@ module MergeRequests
         todo_service.update_merge_request(merge_request, current_user, old_mentioned_users)
       end
 
-      handle_target_branch_change(merge_request)
+      handle_target_branch_change(merge_request, changed_fields)
       handle_draft_status_change(merge_request, changed_fields)
 
       track_title_and_desc_edits(changed_fields)
@@ -55,8 +55,8 @@ module MergeRequests
       #   state machine, we want to push this as far down in the process so we
       #   avoid resetting #ActiveModel::Dirty
       #
-      if merge_request.previous_changes.include?('target_branch') ||
-          merge_request.previous_changes.include?('source_branch')
+      if changed_fields.include?('target_branch') ||
+          changed_fields.include?('source_branch')
         merge_request.mark_as_unchecked unless merge_request.unchecked?
       end
     end
@@ -198,8 +198,8 @@ module MergeRequests
       resolve_todos_for(merge_request)
     end
 
-    def handle_target_branch_change(merge_request)
-      return unless merge_request.previous_changes.include?('target_branch')
+    def handle_target_branch_change(merge_request, changes)
+      return unless changes.include?('target_branch')
 
       create_branch_change_note(
         merge_request,

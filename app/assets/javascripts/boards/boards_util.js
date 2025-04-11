@@ -314,7 +314,7 @@ const parseFilters = (filters) => {
  * @param {Object} objParam.filterFields - data on what filters are available for given issuableType (based on GraphQL schema)
  */
 export const filterVariables = ({ filters, issuableType, filterInfo, filterFields, options }) => {
-  const customFields = new Map();
+  const customFieldRegex = /^custom-field\[(\d*)\]$/;
 
   return parseFilters(filters)
     .map(([k, v, negated]) => {
@@ -325,7 +325,7 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
       return [remappedKey, v, negated];
     })
     .filter(([k, , negated]) => {
-      if (k.startsWith('custom-field') && options.hasCustomFieldsFeature) {
+      if (k.match(customFieldRegex) && options.hasCustomFieldsFeature) {
         return true;
       }
 
@@ -347,22 +347,17 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
     .map(([k, v, negated]) => {
       let newK = k;
       let newV = v;
-      if (k.startsWith('custom-field') && options.hasCustomFieldsFeature) {
-        let customFieldId = k.replace('custom-field[', '').replace(']', '');
-        customFieldId = convertToGraphQLId(TYPENAME_CUSTOM_FIELD, customFieldId);
-
-        const existingSelectedOptions = customFields.has(customFieldId)
-          ? customFields.get(customFieldId)
-          : [];
-
-        const selectedOptionIds = [...existingSelectedOptions];
-        selectedOptionIds.push(convertToGraphQLId(TYPENAME_CUSTOM_FIELD_SELECT_OPTION, v));
-        customFields.set(customFieldId, selectedOptionIds);
-
+      if (k.match(customFieldRegex) && options.hasCustomFieldsFeature) {
+        const [, customFieldId] = customFieldRegex.exec(k);
         newV = [
           {
-            customFieldId,
-            selectedOptionIds,
+            customFieldId: convertToGraphQLId(TYPENAME_CUSTOM_FIELD, customFieldId),
+            selectedOptionIds: [
+              convertToGraphQLId(
+                TYPENAME_CUSTOM_FIELD_SELECT_OPTION,
+                Array.isArray(v) ? v[v.length - 1] : v,
+              ),
+            ],
           },
         ];
         newK = 'customField';

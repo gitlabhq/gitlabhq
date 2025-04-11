@@ -17,6 +17,27 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def note_wiki_page_email_for_individual_note
+    note_email(:note_wiki_page_email) do
+      note = <<-MD.strip_heredoc
+        This is an individual note on a merge request :smiley:
+
+        In this notification email, we expect to see:
+
+        - The note contents (that's what you're looking at)
+        - A link to view this note on GitLab
+        - An explanation for why the user is receiving this notification
+      MD
+
+      create_note(
+        noteable_type: 'WikiPage::Meta',
+        noteable_id: wiki_page_meta.id,
+        note: note,
+        project: wiki_page_meta.project
+      )
+    end
+  end
+
   def new_user_email
     Notify.new_user_email(user.id).message
   end
@@ -515,6 +536,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def merge_request
     @merge_request ||= project.merge_requests.first
+  end
+
+  def wiki_page_meta
+    @wiki_page_meta ||= WikiPage::Meta.last
   end
 
   def milestone

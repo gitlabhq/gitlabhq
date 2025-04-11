@@ -164,6 +164,10 @@ class WikiPage
       canonical_slug
     end
 
+    def reference_link_text
+      canonical_slug
+    end
+
     # Used by app/policies/todo_policy.rb
     def readable_by?(user)
       Ability.allowed?(user, :read_wiki, self)

@@ -9475,6 +9475,11 @@ Input type: `ProjectSecurityExclusionUpdateInput`
 
 Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
 
+{{< details >}}
+**Deprecated** in GitLab 17.11.
+Use mutation ProjectUpdateComplianceFrameworks instead of this.
+{{< /details >}}
+
 Input type: `ProjectSetComplianceFrameworkInput`
 
 #### Arguments

@@ -8000,6 +8000,7 @@ CREATE TABLE ai_settings (
     duo_workflow_service_account_user_id bigint,
     duo_workflow_oauth_application_id bigint,
     duo_nano_features_enabled boolean,
+    enabled_instance_verbose_ai_logs boolean,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
@@ -21357,6 +21358,7 @@ CREATE TABLE project_settings (
     pages_primary_domain text,
     extended_prat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
     merge_request_title_regex text,
+    protect_merge_request_pipelines boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),

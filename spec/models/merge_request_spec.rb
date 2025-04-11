@@ -717,6 +717,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '#reload_diff_if_branch_changed' do
+      subject(:update_mr) { merge_request.update!(update_params) }
+
+      let(:merge_request) { create(:merge_request, target_branch: 'fix', merge_status: :cannot_be_merged) }
+
+      context 'when the source branch changes' do
+        let(:update_params) { { source_branch: 'feature' } }
+
+        it 'calls reload diff service' do
+          expect(MergeRequests::ReloadDiffsService).to receive(:new).and_call_original
+
+          update_mr
+        end
+      end
+
+      context 'when the target branch changes' do
+        let(:update_params) { { target_branch: 'feature' } }
+
+        it 'calls reload diff service' do
+          expect(MergeRequests::ReloadDiffsService).to receive(:new).and_call_original
+
+          update_mr
+        end
+      end
+    end
+
     describe '#ensure_merge_request_metrics' do
       let(:merge_request) { create(:merge_request) }
 

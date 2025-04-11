@@ -16,6 +16,7 @@ module Ci
       Gitlab::Ci::Pipeline::Chain::AssignPartition,
       Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::EvaluatePolicies,
       Gitlab::Ci::Pipeline::Chain::Skip,
+      Gitlab::Ci::Pipeline::Chain::Validate::Config,
       Gitlab::Ci::Pipeline::Chain::Config::Content,
       Gitlab::Ci::Pipeline::Chain::Config::Process,
       Gitlab::Ci::Pipeline::Chain::StopLinting,

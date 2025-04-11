@@ -86,9 +86,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Pages, feature_category: :pages do
         context 'and it is an invalid duration' do
           let(:config) { { expire_in: 'some string that cant be parsed' } }
 
-          it 'is valid' do
+          it 'is invalid' do
             expect(entry).not_to be_valid
             expect(entry.errors).to include('pages expire in should be a duration')
+          end
+        end
+
+        context 'and it is a variable' do
+          let(:config) { { expire_in: '$DURATION' } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+            expect(entry.value).to eq({
+              expire_in: '$DURATION'
+            })
           end
         end
       end

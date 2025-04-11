@@ -3776,7 +3776,8 @@ In this example, a different pages deployment is created for each branch.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4.
+- Support for variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/492289) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -3791,7 +3792,7 @@ To disable this behavior, set the value to `never`.
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
 **Supported values**: The expiry time. If no unit is provided, the time is in seconds.
-Valid values include:
+Variables are also supported. Valid values include:
 
 - `'42'`
 - `42 seconds`
@@ -3802,6 +3803,7 @@ Valid values include:
 - `47 yrs 6 mos and 4d`
 - `3 weeks and 2 days`
 - `never`
+- `$DURATION`
 
 **Example of `pages.expire_in`**:
 

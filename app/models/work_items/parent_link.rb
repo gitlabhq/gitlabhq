@@ -64,7 +64,7 @@ module WorkItems
 
       if work_item_parent.confidential? && !work_item.confidential?
         errors.add :work_item, format(
-          _("cannot assign a non-confidential %{work_item_type} to a confidential "\
+          _("cannot assign a non-confidential %{work_item_type} to a confidential " \
                     "parent. Make the %{work_item_type} confidential and try again."),
           work_item_type: work_item.work_item_type.name.downcase
         )

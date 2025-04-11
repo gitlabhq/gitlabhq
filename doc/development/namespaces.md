@@ -220,12 +220,11 @@ namespace_object.recursive_self_and_hierarchy
 `namespaces.traveral_ids` hierarchy for a set of Namespaces.
 
 ```ruby
-traversal_ids = Namespace.where(...).map(&:traversal_ids)
+traversal_ids = [[9970, 123], [9970, 456]] # Derived from (for example): Namespace.where(...).map(&:traversal_ids)
 
-# contains [9970, 123] and [9970, 456]
 trie = Namespaces::Traversal::TrieNode.build(traversal_ids)
 
-trie.prefix_search([9970]) # returns [[9970, 123], [9970, 456]] 
+trie.prefix_search([9970]) # returns [[9970, 123], [9970, 456]]
 
 trie.covered?([9970]) # returns false
 trie.covered?([9970, 123]) # returns true

@@ -63,3 +63,11 @@ To enable or disable event-level data collection:
 1. Expand **Event tracking**.
 1. To enable the setting, select the checkbox **Enable event tracking**. To disable the setting, clear the checkbox.
 1. Select **Save changes**.
+
+### Event delivery timing
+
+Events are transmitted to GitLab almost immediately after they occur. The system collects events in small batches, sending data once 10 events have been gathered. This approach provides near real-time delivery while maintaining efficient network usage.
+
+### Payload size and compression
+
+Each event is approximately 10 kB in JSON format. Batches of 10 events result in an uncompressed payload size of about 100 kB. Before transmission, the payload is compressed to minimize data transfer size and optimize performance.

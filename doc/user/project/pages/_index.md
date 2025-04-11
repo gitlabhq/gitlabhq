@@ -209,6 +209,7 @@ Prerequisites:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162826) in GitLab 17.4.
+- Support for variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/492289) in GitLab 17.11.
 
 {{< /history >}}
 

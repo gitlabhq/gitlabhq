@@ -54,7 +54,7 @@ end
 
 RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
   it 'has X-GitLab-*-ID header' do
-    is_expected.to have_header "X-GitLab-#{model.class.name}-ID", model.id.to_s
+    is_expected.to have_header "X-GitLab-#{model.class.name.gsub(/::/, '-')}-ID", model.id.to_s
   end
 
   it 'has X-GitLab-*-IID header if model has iid defined' do
@@ -205,6 +205,12 @@ RSpec.shared_examples 'it should show Gmail Actions View Commit link' do
   it_behaves_like 'it should have Gmail Actions links'
 
   it { is_expected.to have_body_text('View Commit') }
+end
+
+RSpec.shared_examples 'it should show Gmail Actions View Wiki link' do
+  it_behaves_like 'it should have Gmail Actions links'
+
+  it { is_expected.to have_body_text('View Wiki') }
 end
 
 RSpec.shared_examples 'an unsubscribeable thread' do

@@ -1,4 +1,8 @@
+---
+name: gitlab_docs.FrontMatter
 extends: script
+description: |
+  Ensures all pages have frontmatter and set a page title.
 message: "Page must have valid frontmatter that includes a 'title' field."
 link: https://docs.gitlab.com/development/documentation/metadata/
 level: error

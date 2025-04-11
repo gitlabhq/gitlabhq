@@ -34,12 +34,12 @@ module Issues
 
     def description_for_discussions
       if discussions_to_resolve.empty?
-        return "There are no unresolved discussions. "\
+        return "There are no unresolved discussions. " \
                "Review the conversation in #{merge_request_to_resolve_discussions_of.to_reference}"
       end
 
-      description = "The following #{'discussion'.pluralize(discussions_to_resolve.size)} "\
-                    "from #{merge_request_to_resolve_discussions_of.to_reference} "\
+      description = "The following #{'discussion'.pluralize(discussions_to_resolve.size)} " \
+                    "from #{merge_request_to_resolve_discussions_of.to_reference} " \
                     "should be addressed:"
 
       [description, *items_for_discussions].join("\n\n")

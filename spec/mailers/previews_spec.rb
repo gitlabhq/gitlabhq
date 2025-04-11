@@ -15,6 +15,7 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
   let_it_be(:review) { create(:review, project: project, merge_request: merge_request, author: user) }
   let_it_be(:key) { create(:key, user: user) }
   let_it_be(:bulk_import) { create(:bulk_import, :finished, :with_configuration) }
+  let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
   let_it_be(:source_user) do
     create(:import_source_user, :awaiting_approval, :with_reassigned_by_user, namespace: group, reassign_to_user: user)
   end

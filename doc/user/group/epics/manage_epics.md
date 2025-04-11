@@ -475,7 +475,7 @@ You can filter the list of epics by:
 - Confidentiality
 - Reaction emoji
 - Groups
-- [Custom fields](../../../../../gitlab/doc/user/work_items/custom_fields.md) enabled for epics
+- [Custom fields](../../../user/work_items/custom_fields.md) enabled for epics
 
 ![epics filter](img/epics_filter_v14_7.png)
 

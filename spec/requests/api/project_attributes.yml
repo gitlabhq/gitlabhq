@@ -196,6 +196,7 @@ project_setting:
     - max_number_of_vulnerabilities
     - extended_prat_expiry_webhooks_execute
     - merge_request_title_regex
+    - protect_merge_request_pipelines
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

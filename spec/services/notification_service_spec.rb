@@ -1731,6 +1731,60 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
+  context 'wiki page note', :deliver_mails_inline do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let(:note) { create(:note, noteable: wiki_page_meta, project: project) }
+
+    before_all do
+      build_team(project)
+      build_group(project)
+      update_custom_notification(:new_note, @u_guest_custom, resource: project)
+      update_custom_notification(:new_note, @u_custom_global)
+    end
+
+    before do
+      reset_delivered_emails!
+    end
+
+    describe '#new_note, #perform_enqueued_jobs' do
+      it do
+        notification.new_note(note)
+        should_email(@u_guest_watcher)
+        should_email(@u_custom_global)
+        should_email(@u_guest_custom)
+        should_email(@u_watcher)
+        should_email_nested_group_user(@pg_watcher)
+        should_not_email(@u_mentioned)
+        should_not_email(note.author)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+        should_not_email_nested_group_user(@pg_disabled)
+      end
+
+      it do
+        note.update_attribute(:note, '@mention referenced')
+        notification.new_note(note)
+
+        should_email(@u_guest_watcher)
+        should_email(@u_watcher)
+        should_email(@u_mentioned)
+        should_email_nested_group_user(@pg_watcher)
+        should_not_email(note.author)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+        should_not_email_nested_group_user(@pg_disabled)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { note }
+        let(:notification_trigger) { notification.new_note(note) }
+      end
+    end
+  end
+
   describe '#send_new_release_notifications', :deliver_mails_inline do
     let(:release) { create(:release, project: project, author: current_user) }
     let(:object) { release }

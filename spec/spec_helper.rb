@@ -359,6 +359,10 @@ RSpec.configure do |config|
       # New issue page can cause tests to fail if they link to issue or issue list page
       # Default false while we make it compatible
       stub_feature_flags(work_item_view_for_issues: false)
+
+      # New approval rules cause tests to fail
+      # Default false while we make them compatible
+      stub_feature_flags(v2_approval_rules: false)
     else
       unstub_all_feature_flags
     end

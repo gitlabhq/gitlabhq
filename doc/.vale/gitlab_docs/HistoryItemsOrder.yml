@@ -1,8 +1,7 @@
 ---
-# Warning: gitlab_docs.HistoryItemsOrder
-#
-# Ensures history items come before the Details block.
-#
+name: gitlab_docs.HistoryItemsOrder
+description: |
+  Ensures history items come before the Details block.
 extends: existence
 message: "History items must follow the tier, offering, or status details."
 link: https://docs.gitlab.com/development/documentation/feature_flags/#add-history-text

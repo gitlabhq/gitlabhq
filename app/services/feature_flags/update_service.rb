@@ -71,8 +71,8 @@ module FeatureFlags
 
     def changed_attributes_messages(feature_flag)
       feature_flag.changes.slice(*AUDITABLE_ATTRIBUTES).map do |attribute_name, changes|
-        "Updated #{attribute_name} "\
-        "from \"#{changes.first}\" to "\
+        "Updated #{attribute_name} " \
+        "from \"#{changes.first}\" to " \
         "\"#{changes.second}\"."
       end
     end

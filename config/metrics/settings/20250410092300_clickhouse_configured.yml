@@ -1,0 +1,17 @@
+---
+key_path: settings.clickhouse_configured
+description: Tracks whether ClickHouse databases are configured
+product_group: database_frameworks
+value_type: boolean
+status: active
+milestone: "17.11"
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187682'
+time_frame: none
+data_source: system
+instrumentation_class: ClickHouseConfiguredMetric
+data_category: optional
+performance_indicator_type: []
+tiers:
+  - free
+  - premium
+  - ultimate

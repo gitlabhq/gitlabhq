@@ -6508,9 +6508,6 @@ msgstr ""
 msgid "AmazonQ|Features are not available. However, any group, subgroup, or project can turn them on."
 msgstr ""
 
-msgid "AmazonQ|Get started"
-msgstr ""
-
 msgid "AmazonQ|GitLab Duo with Amazon Q"
 msgstr ""
 
@@ -6608,9 +6605,6 @@ msgid "AmazonQ|To completely remove GitLab Duo with Amazon Q, update the followi
 msgstr ""
 
 msgid "AmazonQ|Upgrade Java Maven application to Java 17"
-msgstr ""
-
-msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
 msgstr ""
 
 msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java."
@@ -7574,10 +7568,13 @@ msgstr ""
 msgid "Appearance was successfully updated."
 msgstr ""
 
+msgid "AppearanceSettings|Changes must be saved to appear."
+msgstr ""
+
 msgid "AppearanceSettings|Last edit"
 msgstr ""
 
-msgid "AppearanceSettings|Preview last save:"
+msgid "AppearanceSettings|Preview active settings:"
 msgstr ""
 
 msgid "Append the hostname of your GitLab instance to the status check name."
@@ -30767,6 +30764,9 @@ msgstr ""
 msgid "Hostname used in private commit emails. %{learn_more}"
 msgstr ""
 
+msgid "Hotspot indicator"
+msgstr ""
+
 msgid "Hour"
 msgstr ""
 
@@ -35524,6 +35524,12 @@ msgid "Learn more about Auto DevOps"
 msgstr ""
 
 msgid "Learn more about GitLab"
+msgstr ""
+
+msgid "Learn more about Root Cause Analysis"
+msgstr ""
+
+msgid "Learn more about Root Cause Analysis in new tab"
 msgstr ""
 
 msgid "Learn more about Service Desk"
@@ -49499,6 +49505,9 @@ msgstr ""
 msgid "Quick start guide"
 msgstr ""
 
+msgid "Quickly identify the root cause of an incident using AI-assisted analysis."
+msgstr ""
+
 msgid "README"
 msgstr ""
 
@@ -51244,6 +51253,9 @@ msgid "Roll up totals may reflect child items you don’t have access to."
 msgstr ""
 
 msgid "Rollback"
+msgstr ""
+
+msgid "Root Cause Analysis"
 msgstr ""
 
 msgid "Root Moved Permanently redirection response"

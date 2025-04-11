@@ -1,11 +1,10 @@
 - show_counter = local_assigns.fetch(:show_counter, false)
-- primary = local_assigns.fetch(:primary, false)
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }, header_options: { class: milestone_header_class(primary, issuables) }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }, header_options: { class: "gl-text-subtle gl-flex" }) do |c|
   - c.with_header do
     .gl-grow-2
       = title
-    .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap{ class: milestone_counter_class(primary) }
+    .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap.gl-text-subtle
       - if show_counter
         %span
           = sprite_icon('issues', css_class: 'gl-align-text-bottom')
