@@ -1,9 +1,7 @@
 ---
-# Suggestion: gitlab_base.HeadingDepth
-#
-# Checks that there are no headings greater than 3 levels
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.HeadingDepth
+description: |
+  Checks that there are no headings greater than 3 levels.
 extends: existence
 message: "Refactor the section or page to avoid headings greater than H5."
 link: https://docs.gitlab.com/development/documentation/styleguide/#heading-levels-in-markdown

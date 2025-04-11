@@ -19951,7 +19951,8 @@ CREATE TABLE pipl_users (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     initial_email_sent_at timestamp with time zone,
-    last_access_from_pipl_country_at timestamp with time zone NOT NULL
+    last_access_from_pipl_country_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE plan_limits (

@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.Simplicity
-#
-# Checks for words implying ease of use, to avoid cognitive dissonance for frustrated users.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Simplicity
+description: |
+  Checks for words implying ease of use, to avoid cognitive dissonance for frustrated users.
 extends: existence
 message: "Remove '%s'. Be precise instead of subjective."
 vocab: false

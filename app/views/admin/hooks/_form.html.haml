@@ -29,6 +29,8 @@
   %fieldset.form-group
     = form.gitlab_ui_checkbox_component :merge_requests_events, _('Merge request events'),
     help_text: _('URL is triggered when a merge request is created, updated, or merged')
+  = render_if_exists 'admin/hooks/member_approval_events', form: form
+
 .form-group
   = form.label :enable_ssl_verification, _('SSL verification'), class: 'label-bold checkbox'
   = form.gitlab_ui_checkbox_component :enable_ssl_verification, _('Enable SSL verification')

@@ -853,6 +853,14 @@ You should avoid overriding predefined variables in most cases, as it can cause 
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+and later, [pipeline inputs](../inputs/_index.md#for-a-pipeline) are recommended over passing pipeline variables.
+For enhanced security, you should [disable pipeline variables](#restrict-pipeline-variables) when using inputs.
+
+{{< /alert >}}
+
 ### Restrict pipeline variables
 
 {{< history >}}

@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.ElementDescriptors
-#
-# Suggests the correct way to describe a button.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.ElementDescriptors
+description: |
+  Suggests the correct way to describe a button.
 extends: existence
 message: "If possible, rewrite to remove 'button'."
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#button

@@ -7,17 +7,30 @@ title: ClickHouse integration guidelines
 
 {{< details >}}
 
-- Status: Experiment
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta on GitLab Self-Managed
 
 {{< /details >}}
 
-This feature is an [experiment](../policy/development_stages_support.md).
+{{< alert type="note" >}}
 
-Instructions about how to set up integration between GitLab and ClickHouse database.
+For more information on plans for ClickHouse support for GitLab Self-Managed, see [this epic](https://gitlab.com/groups/gitlab-com/gl-infra/data-access/dbo/-/epics/29).
 
-## Setup
+{{< /alert >}}
 
-To set up ClickHouse as the GitLab data storage:
+[ClickHouse](https://clickhouse.com) is an open-source column-oriented database management system. It can efficiently filter, aggregate, and query across large data sets.
+
+ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for advanced analytical features such as [AI impact analytics](../user/analytics/ai_impact_analytics.md) and [CI Analytics](../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse).
+
+You can connect ClickHouse to GitLab either:
+
+- Recommended. With [ClickHouse Cloud](https://clickhouse.com/cloud).
+- By [bringing your own ClickHouse](https://clickhouse.com/docs/en/install). For more information, see [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/en/install#recommendations-for-self-managed-clickhouse).
+
+## Set up ClickHouse
+
+To set up ClickHouse with GitLab:
 
 1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
 1. [Configure GitLab connection to ClickHouse](#configure-the-gitlab-connection-to-clickhouse).
@@ -25,21 +38,11 @@ To set up ClickHouse as the GitLab data storage:
 
 ### Run and configure ClickHouse
 
-The most straightforward way to run ClickHouse is with [ClickHouse Cloud](https://console.clickhouse.cloud/).
-You can also [run ClickHouse on your own server](https://clickhouse.com/docs/en/install). Refer to the ClickHouse
-documentation regarding [recommendations for GitLab Self-Managed](https://clickhouse.com/docs/en/install#recommendations-for-self-managed-clickhouse).
-
 When you run ClickHouse on a hosted server, various data points might impact the resource consumption, like the number
 of builds that run on your instance each month, the selected hardware, the data center choice to host ClickHouse, and more.
 Regardless, the cost should not be significant.
 
-{{< alert type="note" >}}
-
-ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for analytics purposes.
-
-{{< /alert >}}
-
-To create necessary user and database objects:
+To create the necessary user and database objects:
 
 1. Generate a secure password and save it.
 1. Sign in to the ClickHouse SQL console.

@@ -437,7 +437,7 @@ In this example:
 
 **Related topics**:
 
-- [Set input values when using `include`](../inputs/_index.md#set-input-values-when-using-include).
+- [Set input values when using `include`](../inputs/_index.md#for-configuration-added-with-include).
 
 #### `include:rules`
 
@@ -911,16 +911,17 @@ with `---`.
 Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
 when a configuration is added to the pipeline with the `include` keyword.
 
+Specs must be declared at the top of a configuration file, in a header section separated
+from the rest of the configuration with `---`.
+
 #### `spec:inputs`
 
-You can use `spec:inputs` to define input parameters for the CI/CD configuration you intend to add
-to a pipeline with `include`. Use `include:inputs` to define the values to use when the pipeline runs.
-
-Use the inputs to customize the behavior of the configuration when included in CI/CD configuration.
+You can use `spec:inputs` to define [inputs](inputs.md) for the CI/CD configuration.
 
 Use the interpolation format `$[[ inputs.input-id ]]` to reference the values outside of the header section.
-Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
-configuration is merged with the contents of the `.gitlab-ci.yml` file.
+Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation.
+When using `inputs`, interpolation completes before the configuration is merged
+with the contents of the `.gitlab-ci.yml` file.
 
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
@@ -944,11 +945,13 @@ scan-website:
 **Additional details**:
 
 - Inputs are mandatory unless you use [`spec:inputs:default`](#specinputsdefault)
-  to set a default value.
+  to set a default value. Avoid mandatory inputs unless you only use inputs with
+  [`include:inputs`](#includeinputs).
 - Inputs expect strings unless you use [`spec:inputs:type`](#specinputstype) to set a
   different input type.
 - A string containing an interpolation block must not exceed 1 MB.
 - The string inside an interpolation block must not exceed 1 KB.
+- You can define input values [when running a new pipeline](../inputs/_index.md#for-a-pipeline).
 
 **Related topics**:
 
@@ -5699,6 +5702,26 @@ trigger-multi-project-pipeline:
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
 
+#### `trigger:inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
+
+{{</history >}}
+
+Use `trigger:inputs` to set the [inputs](../inputs/_index.md) for a multi-project pipeline
+when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).
+
+**Example of `trigger:inputs`**:
+
+```yaml
+trigger:
+  - project: 'my-group/my-project'
+    inputs:
+      website: "My website"
+```
+
 #### `trigger:include`
 
 Use `trigger:include` to declare that a job is a "trigger job" which starts a
@@ -5727,6 +5750,28 @@ trigger-child-pipeline:
 **Related topics**:
 
 - [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
+
+#### `trigger:include:inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
+
+{{</history >}}
+
+Use `trigger:include:inputs` to set the [inputs](../inputs/_index.md) for a child pipeline
+when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).
+
+**Example of `trigger:inputs`**:
+
+```yaml
+trigger-job:
+  trigger:
+    include:
+      - local: path/to/child-pipeline.yml
+        inputs:
+          website: "My website"
+```
 
 #### `trigger:project`
 
@@ -5801,26 +5846,6 @@ successfully complete before starting.
   jobs in later stages do not start until the trigger job completes.
 - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
   the downstream pipeline is considered successful and the trigger job shows **success**.
-
-#### `trigger:inputs`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
-
-{{</history >}}
-
-Use `trigger:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
-uses [`spec:inputs`](#specinputs).
-
-**Example of `trigger:inputs`**:
-
-```yaml
-trigger:
-  - project: 'my-group/my-project'
-    inputs:
-      website: "My website"
-```
 
 #### `trigger:forward`
 

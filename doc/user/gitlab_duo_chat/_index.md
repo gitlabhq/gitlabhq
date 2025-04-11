@@ -137,13 +137,14 @@ Only the last 25 messages are retained in the chat history.
 
 {{< details >}}
 
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16108) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `duo_chat_multi_thread`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187443) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -186,9 +187,8 @@ To delete a conversation:
 1. In the top-left corner of the Chat drawer, select **Chat History**.
 1. In the Chat history, select **Delete conversation**.
 
-> Individual conversations are automatically deleted after 30 days of inactivity.
->
-> When a user's permission or role changes in any project or group, all of that user's chat conversations are deleted.
+> By default, individual conversations expire and are automatically deleted after 30 days of inactivity.
+> However, administrators can [change this expiration period](#configure-chat-conversation-expiration).
 
 ## Use GitLab Duo Chat in the Web IDE
 
@@ -388,6 +388,29 @@ read the blog post:
 [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 
 [View examples of how to use GitLab Duo Chat](examples.md).
+
+## Configure Chat conversation expiration
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.11.
+
+{{< /history >}}
+
+You can configure how long conversations persist before they expire and are automatically deleted.
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. In the lower-right corner, select **Change configuration**.
+1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:
+
+   - **Expire conversation based on time conversation was last updated.**
+   - **Expire conversation based on time conversation was created.**
+1. Select **Save changes**.
 
 ## Give feedback
 

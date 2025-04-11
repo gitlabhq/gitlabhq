@@ -67407,6 +67407,9 @@ msgstr ""
 msgid "Webhooks|Mask portions of URL"
 msgstr ""
 
+msgid "Webhooks|Member approval events"
+msgstr ""
+
 msgid "Webhooks|Member events"
 msgstr ""
 
@@ -67495,6 +67498,9 @@ msgid "Webhooks|The webhook has %{help_link_start}failed%{help_link_end} %{failu
 msgstr ""
 
 msgid "Webhooks|Trigger"
+msgstr ""
+
+msgid "Webhooks|URL is triggered when a member promotion request is queued, approved, or denied"
 msgstr ""
 
 msgid "Webhooks|URL preview"

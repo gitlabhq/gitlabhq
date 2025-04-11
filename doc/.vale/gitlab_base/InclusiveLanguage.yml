@@ -1,8 +1,7 @@
 ---
-# Warning: gitlab_base.InclusiveLanguage
-# Suggests alternatives for non-inclusive language.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.InclusiveLanguage
+description: |
+  Suggests alternatives for non-inclusive language.
 extends: substitution
 message: "Use inclusive language. Consider '%s' instead of '%s'."
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/

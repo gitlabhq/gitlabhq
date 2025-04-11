@@ -40,6 +40,37 @@ RSpec.describe Gitlab::Tracking::EventEligibilityChecker, feature_category: :ser
       end
     end
 
+    context 'when app_id is passed' do
+      subject { checker.eligible?(event_name, app_id) }
+
+      before do
+        stub_application_setting(
+          snowplow_enabled?: false, gitlab_product_usage_data_enabled?: false
+        )
+        event_definition = instance_double(
+          Gitlab::Tracking::EventDefinition,
+          action: 'perform_completion_worker',
+          duo_event?: true
+        )
+        allow(Gitlab::Tracking::EventDefinition).to receive(:definitions).and_return([event_definition])
+      end
+
+      where(:event_name, :app_id, :result) do
+        'click_button'                  | 'gitlab_ide_extension' | true
+        'suggestion_shown'              | 'gitlab_ide_extension' | true
+        'some_non_ide_extension_event'  | 'gitlab_ide_extension' | false
+        'click_button'                  | 'some_other_app'       | false
+        'suggestion_shown'              | 'some_other_app'       | false
+        'some_non_ide_extension_event'  | 'some_other_app'       | false
+        'perform_completion_worker'     | 'some_other_app'       | true
+        'perform_completion_worker'     | 'gitlab_ide_extension' | false
+      end
+
+      with_them do
+        it { is_expected.to eq(result) }
+      end
+    end
+
     context 'when collect_product_usage_events feature flag is disabled' do
       where(:event_name, :product_usage_data_enabled, :snowplow_enabled, :result) do
         'perform_completion_worker' | true  | false | false

@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.ToDo
-#
-# You should not use "To Do", unless it refers to the UI element.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.ToDo
+description: |
+  You should not use "To Do", unless it refers to the UI element.
 extends: substitution
 message: "Use 'to-do item' in most cases, or 'Add a to do' if referring to the UI button."
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#to-do-item

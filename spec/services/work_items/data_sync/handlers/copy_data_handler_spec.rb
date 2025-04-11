@@ -10,7 +10,7 @@ RSpec.describe WorkItems::DataSync::Handlers::CopyDataHandler, feature_category:
   let_it_be(:target_work_item_type) { create(:work_item_type) }
   let_it_be(:current_user) { create(:user) }
 
-  let(:params) { { operation: 'move', data_sync_params: { some_param: "some data" } } }
+  let(:params) { { operation: :move, data_sync_params: { some_param: "some data" } } }
   let(:overwritten_params) { { overwritten: 'params' } }
 
   subject(:copy_data_handler) do

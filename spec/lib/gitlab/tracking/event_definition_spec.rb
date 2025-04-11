@@ -154,4 +154,32 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       expect(described_class.new(nil, config).extra_tracking_classes).to eq([Gitlab::Tracking::AiTracking])
     end
   end
+
+  describe '#duo_event?' do
+    context 'when classification is set to duo' do
+      let(:attributes) do
+        super().merge(classification: 'duo')
+      end
+
+      it 'returns true' do
+        expect(definition.duo_event?).to be(true)
+      end
+    end
+
+    context 'when classification is set to something else' do
+      let(:attributes) do
+        super().merge(classification: 'other')
+      end
+
+      it 'returns false' do
+        expect(definition.duo_event?).to be(false)
+      end
+    end
+
+    context 'when classification is not set' do
+      it 'returns false' do
+        expect(definition.duo_event?).to be(false)
+      end
+    end
+  end
 end

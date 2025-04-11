@@ -70,6 +70,8 @@ To configure the `remote_development` module in the agent project:
      dns_zone: "<workspaces.example.dev>" # DNS zone of the URL where workspaces are available
    ```
 
+For a full list of configuration options, see the workspace [configuration reference](settings.md#configuration-reference).
+
 ## Allow the GitLab agent in your group
 
 When you allow an agent in a group, the group and its subgroups can use that agent.

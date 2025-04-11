@@ -82,6 +82,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 {{< history >}}
 
 - **Run pipeline** name [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+- **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
 
 {{< /history >}}
 
@@ -96,8 +97,12 @@ To execute a pipeline manually:
 1. Select **Build > Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. Enter any [CI/CD variables](../variables/_index.md) required for the pipeline to run.
-   You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
+1. (Optional) Enter any:
+   - [Inputs](../inputs/_index.md) required for the pipeline to run. Default values for inputs are prefilled,
+     but can be modified. Input values must follow the expected type.
+   - [CI/CD variables](../variables/_index.md). You can configure variables to have their
+     [values prefilled in the form](#prefill-variables-in-manual-pipelines). Using inputs to
+     control pipeline behavior offers improved security and flexibility over CI/CD variables.
 1. Select **New pipeline**.
 
 The pipeline now executes the jobs as configured.

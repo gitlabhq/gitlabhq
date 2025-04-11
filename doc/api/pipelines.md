@@ -388,7 +388,7 @@ Sample response:
 {{< history >}}
 
 - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
 
 {{< /history >}}
 

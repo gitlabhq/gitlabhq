@@ -62,6 +62,9 @@ export default {
     },
   },
   methods: {
+    dropdownShown() {
+      this.trackEvent('open_display_preferences_dropdown_on_merge_request_homepage');
+    },
     async toggleShowLabels() {
       const isShowingLabels = !this.isShowingLabels;
 
@@ -88,6 +91,10 @@ export default {
       this.savingPreferences = true;
 
       try {
+        this.trackEvent('toggle_list_type_on_merge_request_homepage', {
+          property: mergeRequestDashboardListType,
+        });
+
         await this.$apollo.mutate({
           mutation: updatePreferencesMutation,
           variables: {
@@ -129,6 +136,7 @@ export default {
     :loading="savingPreferences"
     :toggle-class="{ '!gl-px-3': savingPreferences }"
     @select="updateListType"
+    @shown="dropdownShown"
   >
     <template #list-item="{ item }">
       <div class="gl-font-bold">{{ item.text }}</div>

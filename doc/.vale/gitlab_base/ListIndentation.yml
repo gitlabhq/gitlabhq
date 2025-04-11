@@ -1,8 +1,7 @@
 ---
-# Error: gitlab_base.ListIndentation
-#
-# Ensures content nested in lists is spaced correctly.
-#
+name: gitlab_base.ListIndentation
+description: |
+  Ensures content nested in lists is spaced correctly.
 extends: existence
 message: "Items nested under an ordered list must be indented three spaces. Items nested under an unordered list must be indented two spaces."
 link: https://docs.gitlab.com/development/documentation/styleguide/#nesting-inside-a-list-item

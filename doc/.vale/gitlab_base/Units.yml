@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.Units
-#
-# Recommends a space between a number and a unit of measure.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Units
+description: |
+  Recommends a space between a number and a unit of measure.
 extends: existence
 message: "Add a space between the number and the unit in '%s'."
 link: 'https://docs.gitlab.com/development/documentation/styleguide/'

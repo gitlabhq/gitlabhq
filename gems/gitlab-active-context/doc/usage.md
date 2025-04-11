@@ -92,6 +92,67 @@ Instance methods required:
 Optional methods:
 - `unique_identifiers`: array of identifiers to build a unique identifier for every document. For example, `[identifier, branch_name]`. Defaults to `[identifier]`
 
+### Preprocessors
+
+Existing preprocessors are
+
+1. `Preload`: preloads from the database to prevent N+1 queries
+1. `Chunking`: splits content into chunks and assigns them to `ref.documents`
+1. `Embeddings`: generates embeddings for every document in bulk
+
+#### Preload
+
+Requires `model_klass` and `model_klass` to define `preload_indexing_data`.
+
+```ruby
+add_preprocessor :preload do |refs|
+  preload(refs)
+end
+```
+
+#### Chunking
+
+Requires passing `chunker` instance, `chunk_on` method to define the content to chunk on and the `field` to assign the content to.
+
+```ruby
+add_preprocessor :chunking do |refs|
+  chunker = Chunkers::BySize.new(chunk_size: 1000, overlap: 20)
+  chunk(refs: refs, chunker: chunker, chunk_on: :title_and_description, field: :content)
+end
+
+def title_and_description
+  "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
+end
+```
+
+Chunkers use the `::ActiveContext::Concerns::Chunker` concern and should define a `chunks` method. The only existing chunker is `BySize`.
+
+#### Embeddings
+
+Generates embeddings either by specifying a content method or by specifying a content field on existing documents.
+
+When documents with a populated content field already exists:
+
+```ruby
+add_preprocessor :embeddings do |refs|
+  apply_embeddings(refs: refs, target_field: :embedding, content_field: :content)
+end
+```
+
+When the ref doesn't have existing documents:
+
+```ruby
+add_preprocessor :embeddings do |refs|
+  apply_embeddings(refs: refs, target_field: :embedding, content_field: :title_and_description)
+end
+
+def title_and_description
+  "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
+end
+```
+
+### Examples
+
 Example for a reference reading from a database relation, with preloading and bulk embedding generation:
 
 ```ruby
@@ -101,19 +162,12 @@ module Ai
   module Context
     module References
       class MergeRequest < ::ActiveContext::Reference
-        include ::ActiveContext::Preprocessors::Embeddings
-        include ::ActiveContext::Preprocessors::Preload
-
         add_preprocessor :preload do |refs|
           preload(refs)
         end
 
         add_preprocessor :embeddings do |refs|
-          bulk_embeddings(refs)
-        end
-
-        def self.embedding_content(ref)
-          "title #{ref.database_record.title}\ndescription #{ref.database_record.description}"
+          apply_embeddings(refs: refs, target_field: :embeddings, content_method: :title_and_description)
         end
 
         def self.model_klass
@@ -135,13 +189,15 @@ module Ai
           [identifier]
         end
 
-        def as_indexed_json
+        def title_and_description
+          "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
+        end
+
+        def shared_attributes
           {
-            id: identifier,
-            issue_id: identifier,
+            iid: database_record.iid,
             namespace_id: database_record.project.id,
-            traversal_ids: database_record.project.elastic_namespace_ancestry,
-            embeddings: embedding
+            traversal_ids: database_record.project.elastic_namespace_ancestry
           }
         end
 
@@ -171,17 +227,12 @@ module Ai
   module Context
     module References
       class CodeEmbeddings < ::ActiveContext::Reference
-        include ::ActiveContext::Preprocessors::Embeddings
-
-        add_preprocessor :bulk_embeddings do |refs|
-          bulk_embeddings(refs)
+        add_preprocessor :chunk_full_file_by_size do |refs|
+          chunker = Chunkers::BySize.new
+          chunk(refs: refs, chunker: chunker, chunk_on: :blob_content)
         end
 
-        def self.embedding_content(ref)
-          ref.blob.data
-        end
-
-        attr_accessor :project_id, :identifier, :repository, :blob, :embedding
+        attr_accessor :project_id, :identifier, :repository, :blob
 
         def init
           @project_id, @identifier = serialized_args
@@ -193,14 +244,17 @@ module Ai
           [project_id, identifier]
         end
 
+        def blob_content
+          blob.data
+        end
+
         def operation
           blob.data ? :upsert : :delete
         end
 
-        def as_indexed_jsons
+        def shared_attributes
           {
-            project_id: project_id,
-            embeddings: embedding
+            project_id: project_id
           }
         end
       end

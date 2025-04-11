@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_base.British
-#
-# Checks that US spelling is used instead of British spelling.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.British
+description: |
+  Checks that US spelling is used instead of British spelling.
 extends: substitution
 message: "Use the US spelling '%s' instead of the British '%s'."
 link: https://docs.gitlab.com/development/documentation/styleguide/#language

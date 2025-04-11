@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Define inputs for configuration added with `include`
+title: CI/CD inputs
 ---
 
 {{< details >}}
@@ -19,55 +19,90 @@ title: Define inputs for configuration added with `include`
 
 {{< /history >}}
 
-Use inputs to increase the flexibility of CI/CD configuration files that are designed
-to be reused.
+Use CI/CD inputs to increase the flexibility of CI/CD configuration. Inputs and [CI/CD variables](../variables/_index.md)
+can be used in similar ways, but have different benefits:
 
-Inputs can use CI/CD variables, but have the same [variable limitations as the `include` keyword](../yaml/includes.md#use-variables-with-include).
+- Inputs provide typed parameters for reusable templates with built-in validation at pipeline creation time.
+  To define specific values when the pipeline runs, use inputs instead of CI/CD variables.
+- CI/CD variables offer flexible values that can be defined at multiple levels, but can be modified
+  throughout pipeline execution. Use variables for values that need to be accessible in the job's runtime environment.
+  You can also use [predefined variables](../variables/predefined_variables.md) with `rules`
+  for dynamic pipeline configuration.
+
+## CI/CD Inputs and variables comparison
+
+Inputs:
+
+- **Purpose**: Defined in CI configurations (templates, components or `.gitlab-ci.yml`) and assigned values
+  when a pipeline is triggered, allowing consumers to customize reusable CI configurations.
+- **Modification**: Once passed at pipeline initialization, input values are interpolated in the CI/CD
+  configuration and remain fixed for the entire pipeline run.
+- **Scope**: Available only in the file they are defined, whether in the `.gitlab-ci.yml` or a file
+  being `include`d. You can pass them explicitly to other files - using `include:inputs` - or pipeline
+  using `trigger:inputs`.
+- **Validation**: Provide robust validation capabilities including type checking, regex patterns,
+  predefined option lists, and helpful descriptions for users.
+
+CI/CD Variables:
+
+- **Purpose**: Values that can be set as environment variables during job execution and in various parts
+  of the pipeline for passing data between jobs.
+- **Modification**: Can be dynamically generated or modified during pipeline execution through dotenv artifacts,
+  conditional rules, or directly in job scripts.
+- **Scope**: Can be defined globally (affecting all jobs), at the job level (affecting only specific jobs),
+  or for the entire project or group through the GitLab UI.
+- **Validation**: Simple key-value pairs with minimal built-in validation, though you can add some controls through
+  the GitLab UI for project variables.
 
 ## Define input parameters with `spec:inputs`
 
-Use `spec:inputs` to define parameters that can be populated in reusable CI/CD configuration
-files when added to a pipeline. Then use [`include:inputs`](#set-input-values-when-using-include)
-to add the configuration to a project's pipeline and set the values for the parameters.
+Use `spec:inputs` in the CI/CD configuration [header](../yaml/_index.md) to define input parameters that
+can be passed to the configuration file.
 
-For example, in a file named `custom_website_scan.yml`:
+Use the `$[[ inputs.input-id ]]` interpolation format outside the header section to declare where to use
+the inputs.
+
+For example:
 
 ```yaml
 spec:
   inputs:
     job-stage:
+      default: test
     environment:
+      default: production
 ---
-
 scan-website:
   stage: $[[ inputs.job-stage ]]
   script: ./scan-website $[[ inputs.environment ]]
 ```
 
-In this example, the inputs are `job-stage` and `environment`. Then, in a `.gitlab-ci.yml` file,
-you can add this configuration and set the input values:
-
-```yaml
-include:
-  - local: 'custom_website_scan.yml'
-    inputs:
-      job-stage: 'my-test-stage'
-      environment: 'my-environment'
-```
-
-Specs must be declared at the top of a configuration file, in a header section separated
-from the rest of the configuration with `---`. Use the `$[[ inputs.input-id ]]` interpolation format
-outside the header section to declare where to use the inputs.
+In this example, the inputs are `job-stage` and `environment`.
 
 With `spec:inputs`:
 
-- Inputs are mandatory by default.
-- Inputs are evaluated and populated when the configuration is fetched during pipeline creation,
-  before the configuration is merged with the contents of the `.gitlab-ci.yml` file.
+- Inputs are mandatory if `default` is not specified.
+- Inputs are evaluated and populated when the configuration is fetched during pipeline creation.
 - A string containing an input must be less than 1 MB.
 - A string inside an input must be less than 1 KB.
+- Inputs can use CI/CD variables, but have the same [variable limitations as the `include` keyword](../yaml/includes.md#use-variables-with-include).
 
-Additionally, use:
+Then you set the values for the inputs when you:
+
+- [Trigger a new pipeline](#for-a-pipeline) using this configuration file.
+  You should always set default values when using inputs to configure new pipelines
+  with any method other than `include`. Otherwise the pipeline could fail to start
+  if a new pipeline triggers automatically, including in:
+  - Merge request pipelines
+  - Branch pipelines
+  - Tag pipelines
+- [Include the configuration](#for-configuration-added-with-include) in your pipeline.
+  Any inputs that are mandatory must be added to the `include:inputs` section, and are used
+  every time the configuration is included.
+
+### Input configuration
+
+To configure inputs, use:
 
 - [`spec:inputs:default`](../yaml/_index.md#specinputsdefault) to define default values for inputs
   when not specified. When you specify a default, the inputs are no longer mandatory.
@@ -80,8 +115,6 @@ Additionally, use:
   that the input must match.
 - [`spec:inputs:type`](../yaml/_index.md#specinputstype) to force a specific input type, which
   can be `string` (default when not specified), `array`, `number`, or `boolean`.
-
-### Define inputs with multiple parameters
 
 You can define multiple inputs per CI/CD configuration file, and each input can have
 multiple configuration parameters.
@@ -199,6 +232,13 @@ test_job:
   script: ls
 ```
 
+Array inputs must be formatted as JSON, for example `["array-input-1", "array-input-2"]`,
+when manually passing inputs for:
+
+- [Manually triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
+- Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
+- [Pipeline schedules](../pipelines/schedules.md#add-a-pipeline-schedule)
+
 #### Multi-line input string values
 
 Inputs support different value types. You can pass multi-string values using the following format:
@@ -216,7 +256,9 @@ spec:
 ---
 ```
 
-## Set input values when using `include`
+## Set input values
+
+### For configuration added with `include`
 
 {{< history >}}
 
@@ -224,10 +266,15 @@ spec:
 
 {{< /history >}}
 
-Use [`include:inputs`](../yaml/_index.md#includeinputs) to set the values for the parameters
-when the included configuration is added to the pipeline.
+Use [`include:inputs`](../yaml/_index.md#includeinputs) to set the values for inputs
+when the included configuration is added to the pipeline, including for:
 
-For example, to include the `scan-website-job.yml` in the [example above](#define-inputs-with-multiple-parameters):
+- [CI/CD components](../components/_index.md)
+- [Custom CI/CD templates](../examples/_index.md#adding-templates-to-your-gitlab-installation)
+- Any other configuration added with `include`.
+
+For example, to include and set the input values for `scan-website-job.yml` from the
+[input configuration example](#input-configuration):
 
 ```yaml
 include:
@@ -251,10 +298,9 @@ In this example, the inputs for the included configuration are:
 | `version`        | `v1.3.2`        | Must be explicitly defined, and must match the regular expression in the `spec:inputs:regex` in the included configuration. |
 | `export_results` | `false`         | Must be either `true` or `false` to match the `spec:inputs:type` set to `boolean` in the included configuration. Overrides the default value. |
 
-### Use `include:inputs` with multiple files
+#### With multiple `include` entries
 
-[`inputs`](../yaml/_index.md#includeinputs) must be specified separately for each included file.
-For example:
+Inputs must be specified separately for each include entry. For example:
 
 ```yaml
 include:
@@ -266,11 +312,53 @@ include:
       stage: my-stage
 ```
 
-### Use `inputs` with downstream pipelines
+### For a pipeline
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16321) in GitLab 17.11.
+
+{{< /history >}}
+
+Inputs provide advantages over variables including type checking, validation and a clear contract.
+Unexpected inputs are rejected.
+
+Inputs for pipelines can be defined in the [`spec:inputs` header](#define-input-parameters-with-specinputs)
+of the `.gitlab-ci.yml`.
+
+{{< alert type="note" >}}
+
+In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+and later, pipeline inputs are recommended over passing [pipeline variables](../variables/_index.md#use-pipeline-variables).
+For enhanced security, you should [disable pipeline variables](../variables/_index.md#restrict-pipeline-variables) when using inputs.
+
+{{< /alert >}}
+
+You should always set default values when defining inputs for pipelines.
+Otherwise the pipeline could fail to start if a new pipeline triggers automatically.
+For example, merge request pipelines can trigger for changes to a merge request's source branch.
+You cannot manually set inputs for merge request pipelines, so if any input is missing a default,
+the pipeline fails to create. This can also happen for branch pipelines, tag pipelines,
+and other automatically triggered pipelines.
+
+You can set input values with:
+
+- [Downstream pipelines](../pipelines/downstream_pipelines.md#pass-inputs-to-a-downstream-pipeline)
+- [Manually triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
+- The [pipeline triggers API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
+- The [pipelines API](../../api/pipelines.md#create-a-new-pipeline)
+- Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
+- [Pipeline schedules](../pipelines/schedules.md#add-a-pipeline-schedule)
+- The [`trigger` keyword](../pipelines/downstream_pipelines.md#pass-inputs-to-a-downstream-pipeline)
+
+A pipeline can take up to 20 inputs.
+
+Feedback is welcome on [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/533802).
 
 You can pass inputs to [downstream pipelines](../pipelines/downstream_pipelines.md),
 if the downstream pipeline's configuration file uses [`spec:inputs`](#define-input-parameters-with-specinputs).
-For example:
+
+For example, with [`trigger:inputs`](../yaml/_index.md#triggerinputs):
 
 {{< tabs >}}
 

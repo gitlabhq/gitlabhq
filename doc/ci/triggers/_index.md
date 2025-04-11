@@ -145,7 +145,10 @@ so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
 ### Pass CI/CD variables in the API call
 
-You can pass any number of [CI/CD variables](../variables/_index.md) in the trigger API call.
+You can pass any number of [CI/CD variables](../variables/_index.md) in the trigger API call,
+though [using inputs to control pipeline behavior](#pass-pipeline-inputs-in-the-api-call)
+offers improved security and flexibility over CI/CD variables.
+
 These variables have the [highest precedence](../variables/_index.md#cicd-variable-precedence),
 and override all variables with the same name.
 
@@ -163,6 +166,36 @@ CI/CD variables in triggered pipelines display on each job's page, but only
 users with the Owner and Maintainer role can view the values.
 
 ![Job variables in UI](img/trigger_variables_v11_6.png)
+
+Using inputs to control pipeline behavior offers improved security and flexibility over CI/CD variables.
+
+### Pass pipeline inputs in the API call
+
+You can pass pipeline inputs in the trigger API call. [Inputs](../yaml/inputs.md)
+provide a structured way to parameterize your pipelines with built-in validation and documentation.
+
+The parameter format is `inputs[name]=value`, for example:
+
+```shell
+curl --request POST \
+     --form token=TOKEN \
+     --form ref=main \
+     --form "inputs[environment]=production" \
+     "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"
+```
+
+Input values are validated according to the type and constraints defined in your pipeline's
+`spec:inputs` section:
+
+```yaml
+spec:
+  inputs:
+    environment:
+      type: string
+      description: "Deployment environment"
+      options: [dev, staging, production]
+      default: dev
+```
 
 ## Revoke a pipeline trigger token
 

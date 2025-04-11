@@ -27,6 +27,12 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 ## Add a pipeline schedule
 
+{{< history >}}
+
+- **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
+
+{{< /history >}}
+
 To add a pipeline schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -37,9 +43,12 @@ To add a pipeline schedule:
      but scheduled pipelines cannot run more frequently than the instance's
      [maximum scheduled pipeline frequency](../../administration/cicd/_index.md#change-maximum-scheduled-pipeline-frequency).
    - **Target branch or tag**: Select the branch or tag for the pipeline.
+   - **Inputs**: Set values for any [inputs](../yaml/inputs.md) defined in your pipeline's `spec:inputs` section.
+     These input values are used every time the scheduled pipeline runs. A schedule can have a maximum of 20 inputs.
    - **Variables**: Add any number of [CI/CD variables](../variables/_index.md) to the schedule.
      These variables are available only when the scheduled pipeline runs,
-     and not in any other pipeline run.
+     and not in any other pipeline run. Inputs are recommended for pipeline configuration instead of variables
+     because they offer improved security and flexibility.
 
 If the project already has the [maximum number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules),
 you must delete unused schedules before you can add another.

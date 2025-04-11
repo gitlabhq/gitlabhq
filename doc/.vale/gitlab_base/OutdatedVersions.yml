@@ -1,9 +1,7 @@
 ---
-# Suggestion: gitlab_base.OutdatedVersions
-#
-# Checks for references to versions of GitLab that are no longer supported.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.OutdatedVersions
+description: |
+  Checks for references to versions of GitLab that are no longer supported.
 extends: existence
 message: "If possible, remove the reference to '%s'."
 link: https://docs.gitlab.com/development/documentation/styleguide/availability_details/#removing-versions

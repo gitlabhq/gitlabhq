@@ -1,9 +1,7 @@
 ---
-# Suggestion: gitlab_base.Uppercase
-#
-# Checks for use of all uppercase letters with unknown reason.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Uppercase
+description: |
+  Checks for use of all uppercase letters with unknown reason.
 extends: conditional
 message: "Instead of uppercase for '%s', use lowercase or backticks (`) if possible. Otherwise, ask a Technical Writer to add this word or acronym to the rule's exception list."
 link: https://docs.gitlab.com/development/documentation/testing/vale/#uppercase-acronym-test

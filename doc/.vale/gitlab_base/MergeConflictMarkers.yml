@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_base.MergeConflictMarkers
-#
-# Checks for the presence of merge conflict markers.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.MergeConflictMarkers
+description: |
+  Checks for the presence of merge conflict markers.
 extends: existence
 message: "Remove the merge conflict marker '%s'."
 link: https://docs.gitlab.com/development/code_review/#merging-a-merge-request

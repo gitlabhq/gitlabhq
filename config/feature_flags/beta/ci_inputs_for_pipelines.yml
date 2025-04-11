@@ -5,5 +5,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182125
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520290
 milestone: '17.10'
 group: group::pipeline authoring
-type: wip
-default_enabled: false
+type: beta
+default_enabled: true

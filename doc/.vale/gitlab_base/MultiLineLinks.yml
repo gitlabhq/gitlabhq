@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_base.MultiLineLinks
-#
-# Checks that links are all on a single line.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.MultiLineLinks
+description: |
+  Checks that links are all on a single line.
 extends: existence
 message: "Put the full link on one line, even if the link is very long."
 link: https://docs.gitlab.com/development/documentation/styleguide/#links

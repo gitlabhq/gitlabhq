@@ -17,7 +17,7 @@ module Gitlab
       # - First element: DB lock_timeout
       # - Second element: Sleep time after unsuccessful lock attempt (LockWaitTimeout error raised)
       # - Worst case, this configuration would retry for about 40 minutes.
-      DEFAULT_TIMING_CONFIGURATION = [
+      DEFAULT_TIMING_CONFIGURATION = ([
         [0.1.seconds, 0.05.seconds], # short timings, lock_timeout: 100ms, sleep after LockWaitTimeout: 50ms
         [0.1.seconds, 0.05.seconds],
         [0.2.seconds, 0.05.seconds],
@@ -28,7 +28,7 @@ module Gitlab
         [0.5.seconds, 2.seconds],
         [0.5.seconds, 2.seconds],
         [1.second, 5.seconds], # probably high traffic, increase timings
-        [1.second, 1.minute],
+        [1.second, 15.seconds],
         [0.1.seconds, 0.05.seconds],
         [0.1.seconds, 0.05.seconds],
         [0.2.seconds, 0.05.seconds],
@@ -37,29 +37,29 @@ module Gitlab
         [0.5.seconds, 2.seconds],
         [0.5.seconds, 2.seconds],
         [0.5.seconds, 2.seconds],
-        [3.seconds, 3.minutes], # probably high traffic or long locks, increase timings
+        [2.seconds, 15.seconds], # probably high traffic or long locks, increase timings
         [0.1.seconds, 0.05.seconds],
         [0.1.seconds, 0.05.seconds],
         [0.5.seconds, 2.seconds],
         [0.5.seconds, 2.seconds],
-        [5.seconds, 2.minutes],
+        [2.seconds, 15.seconds],
         [0.5.seconds, 0.5.seconds],
         [0.5.seconds, 0.5.seconds],
-        [7.seconds, 5.minutes],
+        [2.seconds, 15.seconds],
         [0.5.seconds, 0.5.seconds],
         [0.5.seconds, 0.5.seconds],
-        [7.seconds, 5.minutes],
+        [2.seconds, 15.seconds],
         [0.5.seconds, 0.5.seconds],
         [0.5.seconds, 0.5.seconds],
-        [7.seconds, 5.minutes],
+        [2.seconds, 15.seconds],
         [0.1.seconds, 0.05.seconds],
         [0.1.seconds, 0.05.seconds],
         [0.5.seconds, 2.seconds],
-        [10.seconds, 10.minutes],
+        [2.seconds, 15.seconds],
         [0.1.seconds, 0.05.seconds],
         [0.5.seconds, 2.seconds],
-        [10.seconds, 10.minutes]
-      ].freeze
+        [2.seconds, 15.seconds]
+      ] * 15).freeze
 
       def initialize(connection:, logger: NULL_LOGGER, allow_savepoints: true, timing_configuration: DEFAULT_TIMING_CONFIGURATION, klass: nil, env: ENV)
         @logger = logger

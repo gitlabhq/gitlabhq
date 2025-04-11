@@ -1,12 +1,10 @@
 ---
-# Error: gitlab_base.HeadingLink
-#
-# Do not include links in a heading.
-# Headings already have self-referencing anchor links,
-# and they're used for generating the table of contents.
-# Adding a link will break the anchor linking behavior.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.HeadingLink
+description: |
+  Do not include links in a heading.
+  Headings already have self-referencing anchor links,
+  and they're used for generating the table of contents.
+  Adding a link will break the anchor linking behavior.
 extends: existence
 message: "Do not use links in headings."
 vocab: false

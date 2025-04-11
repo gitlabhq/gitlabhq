@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.MeaningfulLinkWords
-#
-# Checks for the presence of semantically unhelpful words in link text.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.MeaningfulLinkWords
+description: |
+  Checks for the presence of semantically unhelpful words in link text.
 extends: existence
 message: "Improve SEO and accessibility by rewriting the link text for '%s'."
 level: warning

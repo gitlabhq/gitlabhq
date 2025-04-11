@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.DefaultBranch
-#
-# Do not refer to the default branch as the 'master' branch, if possible.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.DefaultBranch
+description: |
+  Do not refer to the default branch as the 'master' branch, if possible.
 extends: existence
 message: "Use 'default branch' or `main` instead of `master`, when possible."
 vocab: false
