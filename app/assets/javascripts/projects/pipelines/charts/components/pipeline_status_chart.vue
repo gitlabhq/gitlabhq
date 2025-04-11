@@ -72,7 +72,7 @@ export default {
       v-else
       x-axis-type="category"
       :x-axis-title="s__('Pipelines|Time')"
-      :y-axis-title="s__('Pipelines|Pipelines count')"
+      :y-axis-title="s__('Pipelines|Number of Pipelines')"
       :custom-palette="$options.palette"
       :group-by="groupBy"
       :bars="bars"

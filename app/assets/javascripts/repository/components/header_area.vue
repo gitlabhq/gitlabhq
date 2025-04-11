@@ -241,7 +241,7 @@ export default {
           opened
           aria-hidden="true"
           class="gl-mr-3 gl-inline-flex"
-          :class="{ 'gl-text-gray-700': isTreeView }"
+          :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
       </h1>
 

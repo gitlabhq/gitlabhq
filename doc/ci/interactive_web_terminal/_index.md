@@ -79,7 +79,7 @@ for the current job. Only the person who started a job can debug it.
 When selected, a new tab opens to the terminal page where you can access
 the terminal and type commands like in a standard shell.
 
-![terminal of the job](img/interactive_web_terminal_page_v11_1.png)
+![A command being executed on a job's terminal page](img/interactive_web_terminal_page_v11_1.png)
 
 If your terminal is open after the job completes,
 the job doesn't finish until after the configured

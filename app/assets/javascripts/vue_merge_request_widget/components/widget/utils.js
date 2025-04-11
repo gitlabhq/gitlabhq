@@ -30,9 +30,9 @@ const textStyleTags = {
   [getStartTag('success')]: '<span class="gl-font-bold gl-text-success">',
   [getStartTag('danger')]: '<span class="gl-font-bold gl-text-danger">',
   [getStartTag('critical')]: '<span class="gl-font-bold gl-text-red-800">',
-  [getStartTag('same')]: '<span class="gl-font-bold gl-text-gray-700">',
+  [getStartTag('same')]: '<span class="gl-font-bold gl-text-subtle">',
   [getStartTag('strong')]: '<span class="gl-font-bold">',
-  [getStartTag('small')]: '<span class="gl-text-sm gl-text-gray-700">',
+  [getStartTag('small')]: '<span class="gl-text-sm gl-text-subtle">',
 };
 
 const escapeText = (text) =>

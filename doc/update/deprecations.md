@@ -486,6 +486,30 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Make the `gitlab-runner-helper-images` Linux OS package an optional dependency of `gitlab-runner`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517765).
+
+</div>
+
+Currently the `gitlab-runner` OS package depends on the `gitlab-runner-helper-images` package. The
+`gitlab-runner-helper-images` package provides an exported archive of the `gitlab-runner-helper` Docker images for
+several OS architectures. The archive is ~500MB, but is required by only some users. The required dependency means
+users are forced to install the latter package even if they do not need the exported runner helper images it
+provides.
+
+In GitLab 18.0 this dependency will become optional, and users that need the exported helper images will have to
+explicitly install them. This means that in very specific cases, CI jobs can fail when attempting to pull the helper
+Docker image.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`
 
 <div class="deprecation-notes">
@@ -1292,28 +1316,6 @@ You can set this variable in your project, group, or policy now to prevent Advan
 
 </div>
 
-<div class="deprecation " data-milestone="18.0">
-
-### GitLab Runner support for Alpine versions
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.7</span>
-- Removal in GitLab <span class="milestone">18.0</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/38369).
-
-</div>
-
-GitLab Runner versions 17.7 and later support only a single Alpine version (`latest`) instead of specific versions.
-Alpine versions 3.18 and 3.19 will be supported to the stated EOL date. In contrast, Ubuntu 20.04, as an LTS release,
-will be supported to its EOL date, at which point we will move to the most recent LTS release.
-
-When you upgrade an Alpine container, make sure your container image uses
-[a supported named version](https://docs.gitlab.com/runner/install/support-policy/),
-`latest` (for GitLab Runner images), or `alpine-latest` (for GitLab Runner helper images).
-
-</div>
-
 <div class="deprecation breaking-change" data-milestone="18.0">
 
 ### GitLab chart use of NGINX controller image v1.3.1
@@ -1563,30 +1565,6 @@ Pushgateway enabled, you will also need to update your Helm values.
 
 Please refer to the [migration guide](https://docs.gitlab.com/charts/releases/9_0/#prometheus-upgrade)
 for more information.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Make the `gitlab-runner-helper-images` Linux OS package an optional dependency of `gitlab-runner`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517765).
-
-</div>
-
-Currently the `gitlab-runner` OS package depends on the `gitlab-runner-helper-images` package. The
-`gitlab-runner-helper-images` package provides an exported archive of the `gitlab-runner-helper` Docker images for
-several OS architectures. The archive is ~500MB, but is required by only some users. The required dependency means
-users are forced to install the latter package even if they do not need the exported runner helper images it
-provides.
-
-In GitLab 18.0 this dependency will become optional, and users that need the exported helper images will have to
-explicitly install them. This means that in very specific cases, CI jobs can fail when attempting to pull the helper
-Docker image.
 
 </div>
 

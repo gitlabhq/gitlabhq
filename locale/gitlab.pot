@@ -1082,6 +1082,9 @@ msgstr ""
 msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
 msgstr ""
 
+msgid "%{labelStart}Validity check:%{labelEnd} %{validityCheck}"
+msgstr ""
+
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
@@ -5673,6 +5676,9 @@ msgstr ""
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
 msgstr ""
 
+msgid "AiPowered|Configure how long GitLab Duo Chat conversations persist before they expire:"
+msgstr ""
+
 msgid "AiPowered|Connection method"
 msgstr ""
 
@@ -5700,6 +5706,12 @@ msgstr ""
 msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
+msgid "AiPowered|Expire conversation based on time conversation was created."
+msgstr ""
+
+msgid "AiPowered|Expire conversation based on time conversation was last updated."
+msgstr ""
+
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr ""
 
@@ -5707,6 +5719,9 @@ msgid "AiPowered|Features are not available and cannot be turned on for any grou
 msgstr ""
 
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Chat conversation expiration"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
@@ -40371,9 +40386,6 @@ msgstr ""
 msgid "No start date – %{dueDate}"
 msgstr ""
 
-msgid "No status"
-msgstr ""
-
 msgid "No suggestions found"
 msgstr ""
 
@@ -44718,6 +44730,9 @@ msgstr ""
 msgid "Pipelines|No trigger tokens have been created yet. Add one using the form above."
 msgstr ""
 
+msgid "Pipelines|Number of Pipelines"
+msgstr ""
+
 msgid "Pipelines|Owner"
 msgstr ""
 
@@ -44734,9 +44749,6 @@ msgid "Pipelines|Pipeline inputs now available!"
 msgstr ""
 
 msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
-msgstr ""
-
-msgid "Pipelines|Pipelines count"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -45054,6 +45066,9 @@ msgstr ""
 msgid "Pipeline|Merged results pipeline runs on the contents of the merge request combined with the contents of the target branch."
 msgstr ""
 
+msgid "Pipeline|Minutes"
+msgstr ""
+
 msgid "Pipeline|New pipeline"
 msgstr ""
 
@@ -45094,9 +45109,6 @@ msgid "Pipeline|Run pipeline"
 msgstr ""
 
 msgid "Pipeline|Running"
-msgstr ""
-
-msgid "Pipeline|Seconds"
 msgstr ""
 
 msgid "Pipeline|Skipped"
@@ -54860,6 +54872,9 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
+msgid "SecurityOrchestration|Schedule the following pipeline execution policy to run %{branchInfo} %{scheduleTypeInfo} %{timeInfo} %{timeWindowInfo} %{timezoneInfo}."
+msgstr ""
+
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
@@ -55199,6 +55214,18 @@ msgstr ""
 msgid "SecurityOrchestration|all projects in this group"
 msgstr ""
 
+msgid "SecurityOrchestration|and run for %{hours}"
+msgstr ""
+
+msgid "SecurityOrchestration|and run for %{hours} and %{minutes}"
+msgstr ""
+
+msgid "SecurityOrchestration|and run for %{minutes}"
+msgstr ""
+
+msgid "SecurityOrchestration|and run for %{seconds}"
+msgstr ""
+
 msgid "SecurityOrchestration|any"
 msgstr ""
 
@@ -55218,6 +55245,9 @@ msgid "SecurityOrchestration|are false positives"
 msgstr ""
 
 msgid "SecurityOrchestration|are not false positives"
+msgstr ""
+
+msgid "SecurityOrchestration|at %{time}"
 msgstr ""
 
 msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
@@ -55250,6 +55280,9 @@ msgstr ""
 msgid "SecurityOrchestration|exceptions: %{exceptions}"
 msgstr ""
 
+msgid "SecurityOrchestration|for %{branchType}"
+msgstr ""
+
 msgid "SecurityOrchestration|group level branch input"
 msgstr ""
 
@@ -55262,10 +55295,16 @@ msgstr ""
 msgid "SecurityOrchestration|have no fix available"
 msgstr ""
 
+msgid "SecurityOrchestration|in timezone %{timezone}"
+msgstr ""
+
 msgid "SecurityOrchestration|latest"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|on %{dayText} %{days} of each month"
 msgstr ""
 
 msgid "SecurityOrchestration|on every"
@@ -55281,6 +55320,9 @@ msgid "SecurityOrchestration|scanners find"
 msgstr ""
 
 msgid "SecurityOrchestration|specific projects"
+msgstr ""
+
+msgid "SecurityOrchestration|starting every %{days}"
 msgstr ""
 
 msgid "SecurityOrchestration|targeting %{branchTypeText}"
@@ -66816,6 +66858,9 @@ msgstr ""
 msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
+msgid "Vulnerability|GitLab checks the validity of the secret with the third party vendor on each pipeline run. If the secret is still active it could be exploited and needs to be revoked and rotated."
+msgstr ""
+
 msgid "Vulnerability|Identifier"
 msgstr ""
 
@@ -66973,6 +67018,9 @@ msgid "Vulnerability|What is EPSS?"
 msgstr ""
 
 msgid "Vulnerability|What is Reachability?"
+msgstr ""
+
+msgid "Vulnerability|What is a validity check?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
@@ -68677,9 +68725,6 @@ msgid "WorkItem|Something went wrong when fetching iterations. Please try again.
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching labels. Please try again."
-msgstr ""
-
-msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
@@ -71841,6 +71886,9 @@ msgid "milestone should belong either to a project or a group."
 msgstr ""
 
 msgid "missing"
+msgstr ""
+
+msgid "monthly"
 msgstr ""
 
 msgid "months"

@@ -107,11 +107,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    noResetButton: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -128,7 +123,7 @@ export default {
       return `work-item-dropdown-listbox-value-${this.dropdownName}`;
     },
     resetButton() {
-      return this.noResetButton ? null : this.resetButtonLabel || __('Clear');
+      return this.resetButtonLabel || __('Clear');
     },
     toggleText() {
       return !this.toggleDropdownText && !this.hasValue

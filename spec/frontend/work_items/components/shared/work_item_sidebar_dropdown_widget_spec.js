@@ -32,7 +32,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     clearSearchOnItemSelect = false,
     listItems = [],
     shortcut = undefined,
-    noResetButton = false,
   } = {}) => {
     wrapper = mountExtended(WorkItemSidebarDropdownWidget, {
       propsData: {
@@ -49,7 +48,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         infiniteScrollLoading,
         clearSearchOnItemSelect,
         shortcut,
-        noResetButton,
       },
       slots,
     });
@@ -101,13 +99,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
       expect(wrapper.text()).toContain('None');
     });
-  });
-
-  it('does not render `Clear` button when props `noResetButton` is true', async () => {
-    createComponent({ noResetButton: true });
-    await nextTick();
-
-    expect(findWorkItemSidebarWidget().props('resetButtonLabel')).toBeUndefined();
   });
 
   describe('Dropdown', () => {

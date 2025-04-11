@@ -109,7 +109,7 @@ describe('HeaderArea', () => {
         expect(findPageHeading().text()).toContain('project');
         expect(findFileIcon().props('fileName')).toBe('folder-open');
         expect(findFileIcon().props('folder')).toBe(true);
-        expect(findFileIcon().classes('gl-text-gray-700')).toBe(true);
+        expect(findFileIcon().classes('gl-text-subtle')).toBe(true);
       });
     });
 
@@ -247,7 +247,7 @@ describe('HeaderArea', () => {
       expect(findPageHeading().text()).toContain('index.js');
       expect(findFileIcon().props('fileName')).toBe('index.js');
       expect(findFileIcon().props('folder')).toBe(false);
-      expect(findFileIcon().classes('gl-text-gray-700')).toBe(false);
+      expect(findFileIcon().classes('gl-text-subtle')).toBe(false);
     });
   });
 
