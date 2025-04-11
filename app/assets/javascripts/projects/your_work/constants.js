@@ -27,6 +27,7 @@ export const CONTRIBUTED_TAB = {
   query: userProjectsQuery,
   variables: { contributed: true },
   queryPath: 'currentUser.contributedProjects',
+  countsQueryPath: 'currentUser.contributed',
   emptyStateComponentProps: {
     title: s__("Projects|You haven't contributed to any projects yet."),
     description: s__(
@@ -43,6 +44,7 @@ export const STARRED_TAB = {
   query: userProjectsQuery,
   variables: { starred: true },
   queryPath: 'currentUser.starredProjects',
+  countsQueryPath: 'currentUser.starred',
   emptyStateComponentProps: {
     title: s__("Projects|You haven't starred any projects yet."),
     description: s__(
@@ -59,6 +61,7 @@ export const PERSONAL_TAB = {
   query: projectsQuery,
   variables: { personal: true },
   queryPath: 'projects',
+  countsQueryPath: 'personal',
   emptyStateComponentProps: {
     title: s__("Projects|You don't have any personal projects yet."),
   },
@@ -71,6 +74,7 @@ export const MEMBER_TAB = {
   query: projectsQuery,
   variables: { membership: true },
   queryPath: 'projects',
+  countsQueryPath: 'member',
   emptyStateComponentProps: {
     title: s__("Projects|You aren't a member of any projects yet."),
   },
@@ -83,6 +87,7 @@ export const INACTIVE_TAB = {
   query: projectsQuery,
   variables: { archived: 'ONLY', membership: true },
   queryPath: 'projects',
+  countsQueryPath: 'inactive',
   emptyStateComponentProps: {
     title: s__("Projects|You don't have any inactive projects."),
     description: s__('Projects|Projects that are archived or pending deletion will appear here.'),

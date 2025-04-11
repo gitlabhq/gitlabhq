@@ -88,6 +88,8 @@ const defaultPropsData = {
     tabs: 'click_tab_on_your_work_projects',
     sort: 'click_sort_on_your_work_projects',
   },
+  tabCountsQuery: projectCountsQuery,
+  tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
 };
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -143,6 +145,7 @@ describe('TabsWithList', () => {
     extendedWrapper(findTabByName(tabName)).findByTestId('tab-counter-badge').text();
   const findFilteredSearchAndSort = () => wrapper.findComponent(FilteredSearchAndSort);
   const findTabView = () => wrapper.findComponent(TabView);
+  const findBadge = () => wrapper.findComponent(GlBadge);
 
   afterEach(() => {
     router = null;
@@ -150,14 +153,14 @@ describe('TabsWithList', () => {
   });
 
   describe('template', () => {
-    describe('when project counts are loading', () => {
+    describe('when tab counts are loading', () => {
       it('does not show count badges', async () => {
         await createComponent();
-        expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+        expect(findBadge().exists()).toBe(false);
       });
     });
 
-    describe('when project counts are successfully retrieved', () => {
+    describe('when tab counts are successfully retrieved', () => {
       beforeEach(async () => {
         await createComponent();
         await waitForPromises();
@@ -172,24 +175,58 @@ describe('TabsWithList', () => {
       });
     });
 
-    describe('when project counts are not successfully retrieved', () => {
+    describe('when tab counts are not successfully retrieved', () => {
       const error = new Error();
 
-      beforeEach(async () => {
-        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
-        await waitForPromises();
-      });
+      describe('when tabCountsQueryErrorMessage prop is passed', () => {
+        beforeEach(async () => {
+          await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
+          await waitForPromises();
+        });
 
-      it('displays error alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred loading the project counts.',
-          error,
-          captureError: true,
+        it('displays error alert with message', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: defaultPropsData.tabCountsQueryErrorMessage,
+            error,
+            captureError: true,
+          });
         });
       });
 
-      it('does not show count badges', () => {
-        expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+      describe('when tabCountsQueryErrorMessage prop is not passed', () => {
+        beforeEach(async () => {
+          await createComponent({
+            projectsCountHandler: jest.fn().mockRejectedValue(error),
+            propsData: { tabCountsQueryErrorMessage: undefined },
+          });
+          await waitForPromises();
+        });
+
+        it('displays error alert with default message', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'An error occurred loading the tab counts.',
+            error,
+            captureError: true,
+          });
+        });
+      });
+
+      it('does not show tab count badges', async () => {
+        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
+        await waitForPromises();
+
+        expect(findBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when tabCountsQuery prop is not passed', () => {
+      beforeEach(async () => {
+        await createComponent({ propsData: { tabCountsQuery: {} } });
+        await waitForPromises();
+      });
+
+      it('does not make GraphQL query or show tab count badges', () => {
+        expect(findBadge().exists()).toBe(false);
       });
     });
 

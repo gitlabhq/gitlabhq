@@ -21,7 +21,7 @@ including:
 - Available actions
 - Linked issues
 - Actions log
-- Filename and line number of the vulnerability (if available)
+- Location
 - Severity
 
 For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
@@ -571,3 +571,29 @@ To view the security training for a vulnerability:
 1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.
+
+## View the location of a vulnerability in transitive dependencies
+
+{{< history >}}
+
+- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `dependency_paths`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When managing vulnerabilities found in dependencies in the vulnerability details, under **Location**, you can view:
+
+- The location of the direct dependency where the vulnerability was found.
+- If available, the specific line number where the vulnerability occurs.
+
+If the vulnerability occurs in one or more transitive dependencies, knowing only the direct dependency may not be enough. Transitive dependencies are indirect dependencies that have a direct dependent as an ancestor.
+
+If any transitive dependencies exist, you can view the paths to all dependencies, including the transitive dependencies that contain the vulnerability. 
+
+- On the vulnerability details page, under **Location**, select **View dependency paths**. If **View dependency paths** doesn't appear, then there are no transitive dependencies.

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  RSpec.describe 'Verify' do
     describe 'Pipeline with raw variables in YAML', product_group: :pipeline_authoring do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let(:pipeline_job_name) { 'rspec' }

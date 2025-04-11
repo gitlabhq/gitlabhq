@@ -1,6 +1,6 @@
 <script>
 import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
-import { isEqual, pick } from 'lodash';
+import { isEqual, pick, get } from 'lodash';
 import { __ } from '~/locale';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -9,7 +9,6 @@ import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_
 import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
-import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import {
@@ -26,9 +25,6 @@ const trackingMixin = InternalEvents.mixin();
 // Will be made more generic to work with groups and projects in future commits
 export default {
   name: 'TabsWithList',
-  i18n: {
-    projectCountError: __('An error occurred loading the project counts.'),
-  },
   components: {
     GlTabs,
     GlTab,
@@ -98,43 +94,29 @@ export default {
         return {};
       },
     },
+    tabCountsQuery: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
+    tabCountsQueryErrorMessage: {
+      type: String,
+      required: false,
+      default: __('An error occurred loading the tab counts.'),
+    },
   },
   data() {
     return {
       activeTabIndex: this.initActiveTabIndex(),
-      counts: this.tabs.reduce((accumulator, tab) => {
+      tabCounts: this.tabs.reduce((accumulator, tab) => {
         return {
           ...accumulator,
           [tab.value]: undefined,
         };
       }, {}),
     };
-  },
-  apollo: {
-    counts() {
-      return {
-        query: projectCountsQuery,
-        update(response) {
-          const {
-            currentUser: { contributed, starred },
-            personal,
-            member,
-            inactive,
-          } = response;
-
-          return {
-            contributed: contributed.count,
-            starred: starred.count,
-            personal: personal.count,
-            member: member.count,
-            inactive: inactive.count,
-          };
-        },
-        error(error) {
-          createAlert({ message: this.$options.i18n.projectCountError, error, captureError: true });
-        },
-      };
-    },
   },
   computed: {
     activeTab() {
@@ -233,6 +215,30 @@ export default {
       return this.timestampTypeMap[this.activeSortOption.value];
     },
   },
+  async created() {
+    if (!Object.keys(this.tabCountsQuery).length) {
+      return;
+    }
+
+    try {
+      const { data } = await this.$apollo.query({ query: this.tabCountsQuery });
+
+      this.tabCounts = this.tabs.reduce((accumulator, tab) => {
+        const { count } = get(data, tab.countsQueryPath);
+
+        return {
+          ...accumulator,
+          [tab.value]: count,
+        };
+      }, {});
+    } catch (error) {
+      createAlert({
+        message: this.tabCountsQueryErrorMessage,
+        error,
+        captureError: true,
+      });
+    }
+  },
   methods: {
     numberToMetricPrefix,
     createSortQuery({ sortBy, isAscending }) {
@@ -267,7 +273,7 @@ export default {
       this.trackEvent(this.eventTracking.tabs, { label: tab.text });
     },
     tabCount(tab) {
-      return this.counts[tab.value];
+      return this.tabCounts[tab.value];
     },
     shouldShowCountBadge(tab) {
       return this.tabCount(tab) !== undefined;

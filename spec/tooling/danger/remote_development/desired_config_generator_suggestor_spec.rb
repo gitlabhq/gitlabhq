@@ -3,10 +3,10 @@
 require 'fast_spec_helper'
 require 'gitlab/dangerfiles/spec_helper'
 
-require_relative '../../../../tooling/danger/remote_development/desired_config_generator'
+require_relative '../../../../tooling/danger/remote_development/desired_config_generator_suggestor'
 require_relative '../../../../tooling/danger/project_helper'
 
-RSpec.describe Tooling::Danger::RemoteDevelopment::DesiredConfigGenerator, feature_category: :tooling do
+RSpec.describe Tooling::Danger::RemoteDevelopment::DesiredConfigGeneratorSuggestor, feature_category: :workspaces do
   subject(:remote_development) { fake_danger.new(helper: fake_helper) }
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }

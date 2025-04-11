@@ -16,6 +16,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import projectCountsQuery from '../graphql/queries/project_counts.query.graphql';
 import { PROJECT_DASHBOARD_TABS, FIRST_TAB_ROUTE_NAMES } from '../constants';
 
 export default {
@@ -44,6 +45,7 @@ export default {
     tabs: 'click_tab_on_your_work_projects',
     sort: 'click_sort_on_your_work_projects',
   },
+  tabCountsQuery: projectCountsQuery,
   name: 'YourWorkProjectsApp',
   components: {
     TabsWithList,
@@ -75,5 +77,7 @@ export default {
     :initial-sort="initialSort"
     :programming-languages="programmingLanguages"
     :event-tracking="$options.eventTracking"
+    :tab-counts-query="$options.tabCountsQuery"
+    :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
   />
 </template>

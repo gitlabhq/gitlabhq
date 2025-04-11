@@ -36,6 +36,7 @@
             s_("CICD|Use separate caches for protected branches"),
             help_text: (s_('CICD|Unprotected branches will not have access to the cache from protected branches.') + ' ' + help_link_separated_caches).html_safe
 
+        = render_if_exists 'projects/settings/ci_cd/composite_identities_pipelines', form: f
         = render_if_exists 'projects/settings/ci_cd/pipeline_cancelation', form: f
 
         .form-group

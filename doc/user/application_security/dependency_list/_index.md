@@ -52,13 +52,24 @@ Although this is not mandatory for populating the dependency list, the SBOM docu
 
 - In GitLab 17.2, the `location` field no longer links to the commit where the dependency was last detected when the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled. The flag is disabled by default.
 - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
+- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `dependency_paths`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 To view the dependencies of a project or all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
+1. Optional. If there are transitive dependencies, you can also view all of the dependency paths:
+   - For a project, in the **Location** column, select **View dependency paths**.
+   - For a group, in the **Location** column, select the location, then select **View dependency paths**.
 
 Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name, packager, or license.
 
@@ -66,7 +77,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 |:----------|:-----------|
 | Component | The dependency's name and version. |
 | Packager  | The packager used to install the dependency. |
-| Location  | For system dependencies, this lists the image that was scanned. For application dependencies, this shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the [direct dependents](#dependency-paths) of the dependency, if any, and if supported. |
+| Location  | For system dependencies, this field lists the image that was scanned. For application dependencies, this field shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the direct [dependents](#dependency-paths), if any. If there are transitive dependencies, selecting **View dependency paths** shows the full path of all dependents. Transitive dependencies are indirect dependents that have a direct dependent as an ancestor. |
 | License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
 | Projects (for groups only) | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. The project search feature is supported only on groups that have up to 600 occurrences in their group hierarchy. |
 

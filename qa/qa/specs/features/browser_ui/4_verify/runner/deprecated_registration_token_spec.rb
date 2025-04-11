@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :runner do
+  RSpec.describe 'Verify', product_group: :runner do
     describe 'Group runner with deprecated registration token' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
       let!(:runner) do

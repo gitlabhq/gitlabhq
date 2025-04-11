@@ -5,7 +5,7 @@ require_relative '../suggestor'
 module Tooling
   module Danger
     module RemoteDevelopment
-      module DesiredConfigGenerator
+      module DesiredConfigGeneratorSuggestor
         include ::Tooling::Danger::Suggestor
 
         WORKSPACE_LIB = 'ee/lib/remote_development/workspace_operations'

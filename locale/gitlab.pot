@@ -6742,6 +6742,9 @@ msgstr ""
 msgid "An error occurred loading the projects. Please refresh the page to try again."
 msgstr ""
 
+msgid "An error occurred loading the tab counts."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -11552,6 +11555,9 @@ msgstr ""
 msgid "CICD|Allow Git push requests to the repository"
 msgstr ""
 
+msgid "CICD|Allow composite identities to run pipelines"
+msgstr ""
+
 msgid "CICD|An error occurred while adding the authentication log entries. Please try again."
 msgstr ""
 
@@ -11607,6 +11613,9 @@ msgid "CICD|Continuous deployment to production"
 msgstr ""
 
 msgid "CICD|Continuous deployment to production using timed incremental rollout"
+msgstr ""
+
+msgid "CICD|Controls whether AI agents can automatically run pipelines. When disabled, pipelines triggered by AI agents will require manual review and execution by a human user."
 msgstr ""
 
 msgid "CICD|Default (user membership and role)"
@@ -29623,6 +29632,9 @@ msgstr ""
 msgid "GroupSAML|An error occurred resetting your SCIM token. Please try again."
 msgstr ""
 
+msgid "GroupSAML|Any Provider (Default)"
+msgstr ""
+
 msgid "GroupSAML|Are you sure you want to remove the SAML group link?"
 msgstr ""
 
@@ -29675,6 +29687,9 @@ msgid "GroupSAML|Generate a SCIM token to set up your System for Cross-Domain Id
 msgstr ""
 
 msgid "GroupSAML|Identifier"
+msgstr ""
+
+msgid "GroupSAML|Identity Provider"
 msgstr ""
 
 msgid "GroupSAML|Identity provider single sign-on URL"
@@ -29768,6 +29783,9 @@ msgid "GroupSAML|Users in this SAML group will be assigned a GitLab Duo Pro or G
 msgstr ""
 
 msgid "GroupSAML|Valid SAML Response"
+msgstr ""
+
+msgid "GroupSAML|When selected, group sync will only occur when both the SAML group name and provider match."
 msgstr ""
 
 msgid "GroupSAML|as %{access_level}"
@@ -71413,6 +71431,9 @@ msgstr ""
 msgid "does not match dast_site_validation.project"
 msgstr ""
 
+msgid "does not match the name of the predefined control."
+msgstr ""
+
 msgid "does not support select options."
 msgstr ""
 
@@ -71751,6 +71772,9 @@ msgid "is not one of"
 msgstr ""
 
 msgid "is not part of the given organization"
+msgstr ""
+
+msgid "is not valid."
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."

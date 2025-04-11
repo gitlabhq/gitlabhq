@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', product_group: :pipeline_authoring do
     describe 'Include multiple files from a project' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:expected_text) { Faker::Lorem.sentence }

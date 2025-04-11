@@ -47,6 +47,8 @@ describe('YourWorkGroupsApp', () => {
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
       eventTracking: {},
+      tabCountsQuery: {},
+      tabCountsQueryErrorMessage: 'An error occurred loading the tab counts.',
     });
   });
 });

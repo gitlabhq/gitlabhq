@@ -14,6 +14,7 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
+import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
@@ -65,6 +66,8 @@ describe('YourWorkProjectsApp', () => {
         tabs: 'click_tab_on_your_work_projects',
         sort: 'click_sort_on_your_work_projects',
       },
+      tabCountsQuery: projectCountsQuery,
+      tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
     });
   });
 });
