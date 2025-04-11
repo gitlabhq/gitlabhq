@@ -97,7 +97,7 @@ You can add or remove data from export files. For example, you can:
 To edit a project export file:
 
 1. Extract the exported `.tar.gz` file.
-1. Edit the appropriate file . For example, `tree/project/project_members.ndjson`.
+1. Edit the appropriate file. For example, `tree/project/project_members.ndjson`.
 1. Compress the files back to a `.tar.gz` file.
 
 You can also make sure that all members were exported by checking the `project_members.ndjson` file.

@@ -18,8 +18,12 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level mod
 
     private
 
-    # overridden in EE
-    def send_group_deletion_notification; end
+    def send_group_deletion_notification
+      return unless ::Feature.enabled?(:group_deletion_notification_email, group) &&
+        group.adjourned_deletion?
+
+      ::NotificationService.new.group_scheduled_for_deletion(group)
+    end
 
     def create_deletion_schedule
       deletion_schedule = group.build_deletion_schedule(deletion_schedule_params)

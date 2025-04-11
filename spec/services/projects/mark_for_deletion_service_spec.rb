@@ -75,8 +75,6 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
       end
 
       it 'does not send notification email' do
-        stub_feature_flags(project_deletion_notification_email: true)
-
         expect(NotificationService).not_to receive(:new)
 
         result
@@ -112,35 +110,6 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
   describe '#send_project_deletion_notification' do
     context 'when all conditions are met' do
       before do
-        stub_feature_flags(project_deletion_notification_email: true)
-        allow(project).to receive_messages(adjourned_deletion?: true, marked_for_deletion?: true)
-      end
-
-      it 'sends a notification email' do
-        expect_next_instance_of(NotificationService) do |service|
-          expect(service).to receive(:project_scheduled_for_deletion).with(project)
-        end
-
-        execute_send_project_deletion_notification
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(project_deletion_notification_email: false)
-        allow(project).to receive_messages(adjourned_deletion?: true, marked_for_deletion?: true)
-      end
-
-      it 'does not send a notification email' do
-        expect(NotificationService).not_to receive(:new)
-
-        execute_send_project_deletion_notification
-      end
-    end
-
-    context 'when feature flag is enabled for specific project' do
-      before do
-        stub_feature_flags(project_deletion_notification_email: project)
         allow(project).to receive_messages(adjourned_deletion?: true, marked_for_deletion?: true)
       end
 
@@ -155,7 +124,6 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
     context 'when adjourned deletion is disabled' do
       before do
-        stub_feature_flags(project_deletion_notification_email: true)
         allow(project).to receive_messages(adjourned_deletion?: false, marked_for_deletion?: true)
       end
 
@@ -168,7 +136,6 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
     context 'when project is not marked for deletion' do
       before do
-        stub_feature_flags(project_deletion_notification_email: true)
         allow(project).to receive_messages(adjourned_deletion?: true, marked_for_deletion?: false)
       end
 

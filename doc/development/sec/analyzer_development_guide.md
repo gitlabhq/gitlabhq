@@ -163,11 +163,23 @@ To use Docker with `replace` in the `go.mod` file:
 
 Users may use tools other than Docker to orchestrate their containers and run their analyzers,
 such as [containerd](https://containerd.io/), [Podman](https://podman.io/), or [skopeo](https://github.com/containers/skopeo).
-In order to avoid inadvertently adding proprietary Docker features which might break customer tools, we [run a periodic test](https://gitlab.com/gitlab-org/security-products/tests/analyzer-containerization-support/-/blob/main/.gitlab-ci.yml?ref_type=heads) for all analyzers, to ensure that these tools still function as expected, and a Slack alert is raised if a failure occurs.
+To ensure compatibility with these tools, we [periodicically test](https://gitlab.com/gitlab-org/security-products/tests/analyzer-containerization-support/-/blob/main/.gitlab-ci.yml?ref_type=heads)
+all analyzers using a scheduled pipeline. A Slack alert is raised if a test fails.
 
-In addition to the periodic test, analyzers using the [`ci-templates` `docker-test.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker-test.yml) include a [`check docker manifest`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/c0f217560b134f4ebe6024b26a41f77cea885c2c/includes-dev/docker-test.yml#L157-165) test in their pipelines, to prevent proprietary Docker features from being merged in the first place.
+To avoid compatibility issues when building analyzer Docker images, use the [OCI media types](https://docs.docker.com/build/exporters/#oci-media-types) instead of the default proprietary Docker media types.
 
-When creating a new analyzer, or changing the location of existing analyzer images, ensure that the analyzer is accounted for in the periodic test and consider using the shared [`ci-templates`](https://gitlab.com/gitlab-org/security-products/ci-templates/).
+In addition to the periodic test, we ensure compatibility for users of the [`ci-templates` repo](https://gitlab.com/gitlab-org/security-products/ci-templates):
+
+1. Analyzers using the [`ci-templates` `docker-test.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker-test.yml)
+include [`tests`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/08319f7586fd9cc66f58ca894525ab54a2b7d831/includes-dev/docker-test.yml#L155-179) to ensure our Docker images function correctly with supported Docker tools.
+
+   These tests are executed in Merge Request pipelines and scheduled pipelines, and prevent images from being released if they break the supported Docker tools.
+1. The [`ci-templates` `docker.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml)
+specifies [`oci-mediatypes=true`](https://docs.docker.com/build/exporters/#oci-media-types) for the `docker buildx` command when building analyzer images.
+This builds images using [OCI](https://opencontainers.org/) media types rather than Docker proprietary media types.
+
+When creating a new analyzer, or changing the location of existing analyzer images,
+add it to the periodic test, or consider using the shared [`ci-templates`](https://gitlab.com/gitlab-org/security-products/ci-templates/) which includes an automated test.
 
 ## Analyzer scripts
 

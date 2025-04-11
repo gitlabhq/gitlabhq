@@ -462,6 +462,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 {{< history >}}
 
 - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
+- Filtering by custom fields was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525462) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -474,6 +475,7 @@ You can filter the list of epics by:
 - Confidentiality
 - Reaction emoji
 - Groups
+- [Custom fields](../../../../../gitlab/doc/user/work_items/custom_fields.md) enabled for epics
 
 ![epics filter](img/epics_filter_v14_7.png)
 

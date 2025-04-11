@@ -232,7 +232,7 @@ as WebAuthn, must be used (IA-2).
 
 - GitLab [provides instructions](../user/ssh.md) on how to configure SSH keys to authenticate and communicate with Git. [Commits can be signed](../user/project/repository/signed_commits/ssh.md), providing additional verification for anyone with a public key.
 
-- Keys should be configured to meet applicable strength and complexity requirements, such as using FIPS 140-2 and FIPS 140-3 validated ciphers . Administrators can [restrict minimum key technologies and key lengths](ssh_keys_restrictions.md). Additionally, administrators can [block or ban compromised keys](ssh_keys_restrictions.md#block-banned-or-compromised-keys).
+- Keys should be configured to meet applicable strength and complexity requirements, such as using FIPS 140-2 and FIPS 140-3 validated ciphers. Administrators can [restrict minimum key technologies and key lengths](ssh_keys_restrictions.md). Additionally, administrators can [block or ban compromised keys](ssh_keys_restrictions.md#block-banned-or-compromised-keys).
 
 **Personal access tokens**
 

@@ -25606,6 +25606,71 @@ CREATE SEQUENCE work_item_current_statuses_id_seq
 
 ALTER SEQUENCE work_item_current_statuses_id_seq OWNED BY work_item_current_statuses.id;
 
+CREATE TABLE work_item_custom_lifecycle_statuses (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    lifecycle_id bigint NOT NULL,
+    status_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    "position" integer DEFAULT 0 NOT NULL,
+    CONSTRAINT check_91172799d3 CHECK (("position" >= 0))
+);
+
+CREATE SEQUENCE work_item_custom_lifecycle_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_custom_lifecycle_statuses_id_seq OWNED BY work_item_custom_lifecycle_statuses.id;
+
+CREATE TABLE work_item_custom_lifecycles (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    default_open_status_id bigint NOT NULL,
+    default_closed_status_id bigint NOT NULL,
+    default_duplicate_status_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_1feff2de99 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE work_item_custom_lifecycles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_custom_lifecycles_id_seq OWNED BY work_item_custom_lifecycles.id;
+
+CREATE TABLE work_item_custom_statuses (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    category smallint DEFAULT 1 NOT NULL,
+    name text NOT NULL,
+    description text,
+    color text NOT NULL,
+    CONSTRAINT check_4789467800 CHECK ((char_length(color) <= 7)),
+    CONSTRAINT check_720a7c4d24 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_8ea8b3c991 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_ff2bac1606 CHECK ((category > 0))
+);
+
+CREATE SEQUENCE work_item_custom_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_custom_statuses_id_seq OWNED BY work_item_custom_statuses.id;
+
 CREATE TABLE work_item_dates_sources (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -25765,6 +25830,24 @@ CREATE SEQUENCE work_item_type_custom_fields_id_seq
     CACHE 1;
 
 ALTER SEQUENCE work_item_type_custom_fields_id_seq OWNED BY work_item_type_custom_fields.id;
+
+CREATE TABLE work_item_type_custom_lifecycles (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    work_item_type_id bigint NOT NULL,
+    lifecycle_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE work_item_type_custom_lifecycles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_type_custom_lifecycles_id_seq OWNED BY work_item_type_custom_lifecycles.id;
 
 CREATE TABLE work_item_type_user_preferences (
     id bigint NOT NULL,
@@ -28017,6 +28100,12 @@ ALTER TABLE ONLY wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('wik
 
 ALTER TABLE ONLY work_item_current_statuses ALTER COLUMN id SET DEFAULT nextval('work_item_current_statuses_id_seq'::regclass);
 
+ALTER TABLE ONLY work_item_custom_lifecycle_statuses ALTER COLUMN id SET DEFAULT nextval('work_item_custom_lifecycle_statuses_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_custom_lifecycles ALTER COLUMN id SET DEFAULT nextval('work_item_custom_lifecycles_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_custom_statuses ALTER COLUMN id SET DEFAULT nextval('work_item_custom_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY work_item_hierarchy_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_hierarchy_restrictions_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_number_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_number_field_values_id_seq'::regclass);
@@ -28030,6 +28119,8 @@ ALTER TABLE ONLY work_item_select_field_values ALTER COLUMN id SET DEFAULT nextv
 ALTER TABLE ONLY work_item_text_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_text_field_values_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_type_custom_fields ALTER COLUMN id SET DEFAULT nextval('work_item_type_custom_fields_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_type_custom_lifecycles ALTER COLUMN id SET DEFAULT nextval('work_item_type_custom_lifecycles_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_type_user_preferences ALTER COLUMN id SET DEFAULT nextval('work_item_type_user_preferences_id_seq'::regclass);
 
@@ -31215,6 +31306,15 @@ ALTER TABLE ONLY work_item_colors
 ALTER TABLE ONLY work_item_current_statuses
     ADD CONSTRAINT work_item_current_statuses_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY work_item_custom_lifecycle_statuses
+    ADD CONSTRAINT work_item_custom_lifecycle_statuses_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_custom_lifecycles
+    ADD CONSTRAINT work_item_custom_lifecycles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_custom_statuses
+    ADD CONSTRAINT work_item_custom_statuses_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT work_item_dates_sources_pkey PRIMARY KEY (issue_id);
 
@@ -31241,6 +31341,9 @@ ALTER TABLE ONLY work_item_text_field_values
 
 ALTER TABLE ONLY work_item_type_custom_fields
     ADD CONSTRAINT work_item_type_custom_fields_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_type_custom_lifecycles
+    ADD CONSTRAINT work_item_type_custom_lifecycles_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY work_item_type_user_preferences
     ADD CONSTRAINT work_item_type_user_preferences_pkey PRIMARY KEY (id);
@@ -33154,6 +33257,8 @@ CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_
 
 CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), before_expiry_notification_delivered_at) WHERE (before_expiry_notification_delivered_at IS NULL);
 
+CREATE UNIQUE INDEX idx_lifecycle_statuses_on_lifecycle_and_status ON work_item_custom_lifecycle_statuses USING btree (lifecycle_id, status_id);
+
 CREATE INDEX idx_member_roles_on_base_access_level ON member_roles USING btree (base_access_level);
 
 CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
@@ -33426,6 +33531,16 @@ CREATE UNIQUE INDEX idx_wi_current_statuses_on_wi_id_custom_status_id_unique ON 
 
 CREATE UNIQUE INDEX idx_wi_current_statuses_on_wi_id_system_def_status_id_unique ON work_item_current_statuses USING btree (work_item_id, system_defined_status_id);
 
+CREATE INDEX idx_wi_custom_lifecycle_statuses_on_namespace_id ON work_item_custom_lifecycle_statuses USING btree (namespace_id);
+
+CREATE INDEX idx_wi_custom_lifecycle_statuses_on_status_id ON work_item_custom_lifecycle_statuses USING btree (status_id);
+
+CREATE INDEX idx_wi_custom_lifecycles_on_closed_status_id ON work_item_custom_lifecycles USING btree (default_closed_status_id);
+
+CREATE INDEX idx_wi_custom_lifecycles_on_duplicate_status_id ON work_item_custom_lifecycles USING btree (default_duplicate_status_id);
+
+CREATE INDEX idx_wi_custom_lifecycles_on_open_status_id ON work_item_custom_lifecycles USING btree (default_open_status_id);
+
 CREATE UNIQUE INDEX idx_wi_number_values_on_work_item_id_custom_field_id ON work_item_number_field_values USING btree (work_item_id, custom_field_id);
 
 CREATE INDEX idx_wi_select_field_values_on_custom_field_select_option_id ON work_item_select_field_values USING btree (custom_field_select_option_id);
@@ -33435,6 +33550,12 @@ CREATE UNIQUE INDEX idx_wi_select_values_on_wi_custom_field_id_select_option_id 
 CREATE UNIQUE INDEX idx_wi_text_values_on_work_item_id_custom_field_id ON work_item_text_field_values USING btree (work_item_id, custom_field_id);
 
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
+
+CREATE INDEX idx_wi_type_custom_lifecycles_on_lifecycle_id ON work_item_type_custom_lifecycles USING btree (lifecycle_id);
+
+CREATE UNIQUE INDEX idx_wi_type_custom_lifecycles_on_namespace_type_lifecycle ON work_item_type_custom_lifecycles USING btree (namespace_id, work_item_type_id, lifecycle_id);
+
+CREATE INDEX idx_wi_type_custom_lifecycles_on_work_item_type_id ON work_item_type_custom_lifecycles USING btree (work_item_type_id);
 
 CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
 
@@ -38006,6 +38127,10 @@ CREATE INDEX index_work_item_current_statuses_on_namespace_id ON work_item_curre
 
 CREATE UNIQUE INDEX index_work_item_current_statuses_on_work_item_id ON work_item_current_statuses USING btree (work_item_id);
 
+CREATE UNIQUE INDEX index_work_item_custom_lifecycles_on_namespace_id_and_name ON work_item_custom_lifecycles USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX index_work_item_custom_statuses_on_namespace_id_and_name ON work_item_custom_statuses USING btree (namespace_id, name);
+
 CREATE INDEX index_work_item_hierarchy_restrictions_on_child_type_id ON work_item_hierarchy_restrictions USING btree (child_type_id);
 
 CREATE UNIQUE INDEX index_work_item_hierarchy_restrictions_on_parent_and_child ON work_item_hierarchy_restrictions USING btree (parent_type_id, child_type_id);
@@ -41688,6 +41813,9 @@ ALTER TABLE ONLY deployments
 ALTER TABLE ONLY projects_branch_rules_merge_request_approval_settings
     ADD CONSTRAINT fk_00acf20382 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_custom_lifecycles
+    ADD CONSTRAINT fk_00c659d395 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
@@ -41712,8 +41840,14 @@ ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
 ALTER TABLE ONLY service_desk_settings
     ADD CONSTRAINT fk_03afb71f06 FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_type_custom_lifecycles
+    ADD CONSTRAINT fk_03c6229585 FOREIGN KEY (lifecycle_id) REFERENCES work_item_custom_lifecycles(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_type_custom_lifecycles
+    ADD CONSTRAINT fk_0425cd8e8b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_0480f2308c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -41766,6 +41900,9 @@ ALTER TABLE ONLY observability_traces_issues_connections
 ALTER TABLE ONLY targeted_message_dismissals
     ADD CONSTRAINT fk_08c30af7ff FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_custom_lifecycle_statuses
+    ADD CONSTRAINT fk_08e006a1a3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -41780,6 +41917,9 @@ ALTER TABLE ONLY dast_sites
 
 ALTER TABLE ONLY project_saved_replies
     ADD CONSTRAINT fk_0ace76afbb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY work_item_custom_lifecycles
+    ADD CONSTRAINT fk_0b028ab81c FOREIGN KEY (default_open_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscription_seat_assignments
     ADD CONSTRAINT fk_0b6bc63773 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -41834,6 +41974,9 @@ ALTER TABLE ONLY packages_package_file_build_infos
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters
     ADD CONSTRAINT fk_107946dffb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_type_custom_lifecycles
+    ADD CONSTRAINT fk_111d417cb7 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -42182,6 +42325,9 @@ ALTER TABLE ONLY sprints
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_3685a990ae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_custom_statuses
+    ADD CONSTRAINT fk_3694bacabe FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY push_event_payloads
     ADD CONSTRAINT fk_36c74129da FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE;
@@ -42579,6 +42725,9 @@ ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
 ALTER TABLE ONLY terraform_state_versions
     ADD CONSTRAINT fk_6e81384d7f FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_custom_lifecycles
+    ADD CONSTRAINT fk_6e8df43239 FOREIGN KEY (default_duplicate_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_6ee8249821 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -42717,6 +42866,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_7d2f93996c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_custom_lifecycles
+    ADD CONSTRAINT fk_7d5eb33a21 FOREIGN KEY (default_closed_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sent_notifications
     ADD CONSTRAINT fk_7d7663e36a FOREIGN KEY (issue_email_participant_id) REFERENCES issue_email_participants(id) ON DELETE SET NULL NOT VALID;
 
@@ -42839,6 +42991,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_8a4948b668 FOREIGN KEY (start_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY work_item_custom_lifecycle_statuses
+    ADD CONSTRAINT fk_8a6dadaf44 FOREIGN KEY (status_id) REFERENCES work_item_custom_statuses(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY targeted_message_namespaces
     ADD CONSTRAINT fk_8ba73cd32a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -43049,6 +43204,9 @@ ALTER TABLE ONLY issuable_metric_images
 
 ALTER TABLE ONLY operations_strategies
     ADD CONSTRAINT fk_a542e10c31 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_custom_lifecycle_statuses
+    ADD CONSTRAINT fk_a546eef539 FOREIGN KEY (lifecycle_id) REFERENCES work_item_custom_lifecycles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_a56e02279c FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE RESTRICT NOT VALID;

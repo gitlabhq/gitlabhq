@@ -1,0 +1,7 @@
+%p
+  = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+%p
+  = _('Your group %{group_name} has been marked for deletion and will be removed in %{days}.').html_safe % { group_name: link_to(@group.full_name, group_url(@group)), days: pluralize((@deletion_due_in_days / 1.day).to_i, _('day')) }
+%p
+  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: url_for(controller: 'groups', action: 'edit', id: @group.full_path, anchor: 'js-advanced-settings', only_path: false) }
+  = _('If this was a mistake, you can %{link_start}retain the group%{link_end} before %{deletion_date}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe, deletion_date: @deletion_date }

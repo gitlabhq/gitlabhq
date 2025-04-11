@@ -72,16 +72,27 @@ By default, when you run a pipeline:
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
-### Historic scan
+### Run a historic scan
 
 By default, pipeline secret detection scans only the current state of the Git repository. Any secrets
 contained in the repository's history are not detected. Run a historic scan to check for secrets from
 all commits and branches in the Git repository.
 
-You should do a historic scan only once, after enabling pipeline secret detection. Historic scans
+You should run a historic scan only once, after enabling pipeline secret detection. Historic scans
 can take a long time, especially for larger repositories with lengthy Git histories. After
 completing an initial historic scan, use only standard pipeline secret detection as part of your
 pipeline.
+
+To run a historic scan:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Select **New pipeline**.
+1. Add a CI/CD variable:
+   1. From the dropdown list, select **Variable**.
+   1. In the **Input variable key** box, enter `SECRET_DETECTION_HISTORIC_SCAN`.
+   1. In the **Input variable value** box, enter `true`.
+1. Select **New pipeline**.
 
 ### Advanced vulnerability tracking
 

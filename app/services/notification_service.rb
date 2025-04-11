@@ -801,6 +801,19 @@ class NotificationService
     end
   end
 
+  def group_scheduled_for_deletion(group)
+    return if group.emails_disabled?
+
+    recipients = group.members.active_without_invites_and_requests.owners.map(&:user)
+
+    recipients.each do |recipient|
+      mailer.group_scheduled_for_deletion(
+        recipient.id,
+        group.id
+      ).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, current_user, method)

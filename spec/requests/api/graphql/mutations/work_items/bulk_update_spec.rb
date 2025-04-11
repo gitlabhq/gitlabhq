@@ -43,20 +43,6 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     end
   end
 
-  context 'when the `bulk_update_work_items_mutation` feature flag is disabled' do
-    before do
-      stub_feature_flags(bulk_update_work_items_mutation: false)
-    end
-
-    it 'returns a resource not available error' do
-      post_graphql_mutation(mutation, current_user: current_user)
-
-      expect_graphql_errors_to_include(
-        '`bulk_update_work_items_mutation` feature flag is disabled.'
-      )
-    end
-  end
-
   context 'when user can not update all work_items' do
     let_it_be(:forbidden_work_item) { create(:work_item, project: private_project) }
     let(:updatable_work_item_ids) { updatable_work_items.map { |i| i.to_gid.to_s } + [forbidden_work_item.to_gid.to_s] }

@@ -27,7 +27,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 
 - **`icon_name`**: Use the `icon_name` for the SVG sprite in the list of
   ([GitLab SVGs](https://gitlab-org.gitlab.io/gitlab-svgs)).
-- **`size` (optional)**: Use one of the following sizes : 16, 24, 32, 48, 72 (this
+- **`size` (optional)**: Use one of the following sizes: 16, 24, 32, 48, 72 (this
   is translated into a `s16` class)
 - **`css_class` (optional)**: If you want to add additional CSS classes.
 

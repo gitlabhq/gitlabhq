@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: "Use exactly one space between sentences and clauses. Check '%s' for spacing problems."
+message: "Use exactly one space with punctuation. Check '%s' for spacing problems."
 link: https://docs.gitlab.com/development/documentation/styleguide/#punctuation
 vocab: false
 level: error
@@ -13,3 +13,4 @@ nonword: true
 tokens:
   - '[a-z][.?!,][A-Z]'
   - '[\w.?!,\(\)\-":] {2,}[\w.?!,\(\)\-":]'
+  - '[a-z] +[.?!,:] +'

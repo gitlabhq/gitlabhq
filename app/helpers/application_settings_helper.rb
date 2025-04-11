@@ -193,7 +193,7 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_description
-    s_("ExternalAuthorization|Access to projects is validated on an external service "\
+    s_("ExternalAuthorization|Access to projects is validated on an external service " \
       "using their classification label.")
   end
 
@@ -202,39 +202,39 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_timeout_help_text
-    s_("ExternalAuthorization|Period GitLab waits for a response from the external "\
+    s_("ExternalAuthorization|Period GitLab waits for a response from the external " \
       "service. If there is no response, access is denied. Default: 0.5 seconds.")
   end
 
   def external_authorization_url_help_text
-    s_("ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project "\
-      "features are available and can still specify classification "\
+    s_("ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project " \
+      "features are available and can still specify classification " \
       "labels for projects.")
   end
 
   def external_authorization_client_certificate_help_text
-    s_("ExternalAuthorization|Certificate used to authenticate with the external authorization service. "\
+    s_("ExternalAuthorization|Certificate used to authenticate with the external authorization service. " \
       "If blank, the server certificate is validated when accessing over HTTPS.")
   end
 
   def external_authorization_client_key_help_text
-    s_("ExternalAuthorization|Private key of client authentication certificate. "\
+    s_("ExternalAuthorization|Private key of client authentication certificate. " \
       "Encrypted when stored.")
   end
 
   def external_authorization_client_pass_help_text
-    s_("ExternalAuthorization|Passphrase required to decrypt the private key. "\
+    s_("ExternalAuthorization|Passphrase required to decrypt the private key. " \
       "Encrypted when stored.")
   end
 
   def external_authorization_client_url_help_text
-    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific "\
+    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific " \
       "label is defined on the project.")
   end
 
   def sidekiq_job_limiter_mode_help_text
-    _("How the job limiter handles jobs exceeding the thresholds specified below. "\
-      "The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and "\
+    _("How the job limiter handles jobs exceeding the thresholds specified below. " \
+      "The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and " \
       "raises an exception if the compressed size exceeds the limit.")
   end
 

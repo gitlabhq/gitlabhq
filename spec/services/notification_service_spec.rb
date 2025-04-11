@@ -4621,6 +4621,64 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
+  describe 'group scheduled for deletion' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    context 'when group emails are disabled' do
+      before do
+        allow(group).to receive(:emails_disabled?).and_return(true)
+      end
+
+      it 'does not send any emails' do
+        expect(Notify).not_to receive(:group_scheduled_for_deletion)
+
+        subject.group_scheduled_for_deletion(group)
+      end
+    end
+
+    context 'when group emails are enabled' do
+      before do
+        allow(group).to receive(:emails_disabled?).and_return(false)
+      end
+
+      context 'when user is owner' do
+        it 'sends email' do
+          group.add_owner(user)
+
+          expect(Notify).to receive(:group_scheduled_for_deletion).with(user.id, group.id).and_call_original
+
+          subject.group_scheduled_for_deletion(group)
+        end
+
+        context 'when owner is blocked' do
+          it 'does not send email' do
+            group.add_owner(user)
+            user.block!
+
+            expect(Notify).not_to receive(:group_scheduled_for_deletion)
+
+            subject.group_scheduled_for_deletion(group)
+          end
+        end
+      end
+
+      context 'when group has multiple owners' do
+        let_it_be(:another_user) { create(:user) }
+
+        it 'sends email to all owners' do
+          group.add_owner(user)
+          group.add_owner(another_user)
+
+          expect(Notify).to receive(:group_scheduled_for_deletion).with(user.id, group.id).and_call_original
+          expect(Notify).to receive(:group_scheduled_for_deletion).with(another_user.id, group.id).and_call_original
+
+          subject.group_scheduled_for_deletion(group)
+        end
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

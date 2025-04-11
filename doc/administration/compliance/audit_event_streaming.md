@@ -199,7 +199,7 @@ To update a streaming destination's event filters:
 ### Override default content type header
 
 By default, streaming destinations use a `content-type` header of `application/x-www-form-urlencoded`. However, you
-might want to set the `content-type` header to something else. For example ,`application/json`.
+might want to set the `content-type` header to something else. For example, `application/json`.
 
 To override the `content-type` header default value for an instance streaming destination, use either:
 

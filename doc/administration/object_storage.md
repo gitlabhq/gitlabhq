@@ -1162,7 +1162,7 @@ Prerequisites:
 
    The configuration process is interactive. Add at least two "remotes": one for the object storage provider your data is currently on (`old`), and one for the provider you are moving to (`new`).
 
-1. Verify that you can read the old data. The following example refers to the `uploads` bucket , but your bucket may have a different name:
+1. Verify that you can read the old data. The following example refers to the `uploads` bucket, but your bucket may have a different name:
 
    ```shell
    rclone ls old:uploads | head

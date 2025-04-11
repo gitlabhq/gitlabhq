@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineContinuationSpacing:
   Exclude:
-    - 'app/helpers/application_settings_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/tree_helper.rb'

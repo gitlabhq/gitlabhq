@@ -2,6 +2,8 @@
 
 module Emails
   module Groups
+    include NamespacesHelper
+
     def group_was_exported_email(current_user, group)
       group_email(current_user, group, _('Group was exported'))
     end
@@ -14,6 +16,18 @@ module Emails
       @group = group
       @errors = errors
       mail_with_locale(to: current_user.notification_email_for(@group), subject: subject(subj))
+    end
+
+    def group_scheduled_for_deletion(recipient_id, group_id)
+      @group = ::Group.find(group_id)
+      @user = ::User.find(recipient_id)
+      @deletion_due_in_days = ::Gitlab::CurrentSettings.deletion_adjourned_period.days
+      @deletion_date = permanent_deletion_date_formatted(@group.marked_for_deletion_on, format: '%B %-d, %Y')
+
+      email_with_layout(
+        to: @user.email,
+        subject: subject('Group scheduled for deletion')
+      )
     end
   end
 end

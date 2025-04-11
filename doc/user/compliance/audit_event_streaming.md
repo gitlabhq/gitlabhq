@@ -221,7 +221,7 @@ To update a streaming destination's namespace filters:
 ### Override default content type header
 
 By default, streaming destinations use a `content-type` header of `application/x-www-form-urlencoded`. However, you
-might want to set the `content-type` header to something else. For example ,`application/json`.
+might want to set the `content-type` header to something else. For example, `application/json`.
 
 To override the `content-type` header default value for a top-level group streaming destination, use either:
 

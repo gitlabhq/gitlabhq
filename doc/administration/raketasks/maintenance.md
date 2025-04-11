@@ -628,7 +628,7 @@ The messages returned are informational and can be ignored.
 
 ### PostgreSQL socket errors when executing the `gitlab:env:info` Rake task
 
-After running `sudo gitlab-rake gitlab:env:info` on Gitaly or other non-Rails nodes , you might see the following error:
+After running `sudo gitlab-rake gitlab:env:info` on Gitaly or other non-Rails nodes, you might see the following error:
 
 ```plaintext
 PG::ConnectionBad: could not connect to server: No such file or directory

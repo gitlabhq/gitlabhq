@@ -34,9 +34,7 @@ Configure custom fields for a group to track data points like business value, ri
 These fields appear in all work items across the group, its subgroups, and projects.
 
 Custom fields help teams standardize how they record and report information across the entire workflow.
-This standardization creates consistency across projects.
-<!-- Use the sentence below when custom fields show on filters: -->
-<!-- This standardization creates consistency across projects and supports more powerful filtering and reporting capabilities. -->
+This standardization creates consistency across projects and supports more powerful filtering and reporting capabilities.
 Choose from various field types to accommodate different data requirements and planning scenarios:
 
 - Single-select

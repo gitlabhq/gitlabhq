@@ -43,6 +43,7 @@ module FastSpecHelper
   # @return [void]
   def self.spec_requires_and_configuration
     require 'gitlab/rspec/next_instance_of'
+    require 'hashdiff'
     require_relative 'support/patches/rspec_mocks_doubles_fast_spec_helper_patch'
     require_relative 'support/matchers/result_matchers'
     require_relative 'support/railway_oriented_programming'

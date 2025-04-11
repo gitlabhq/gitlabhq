@@ -443,6 +443,17 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def group_scheduled_for_deletion
+    cleanup do
+      group.create_deletion_schedule!(
+        marked_for_deletion_on: Time.current,
+        deleting_user: user
+      )
+
+      ::Notify.group_scheduled_for_deletion(user.id, group.id).message
+    end
+  end
+
   private
 
   def project

@@ -86,14 +86,22 @@ module GroupsHelper
     }
   end
 
-  # Overridden in EE
   def remove_group_message(group, permanently_remove)
+    return permanently_delete_group_message(group) if permanently_remove
+    return permanently_delete_group_message(group) unless group.adjourned_deletion?
+    return permanently_delete_group_message(group) if group.marked_for_deletion?
+
+    date = permanent_deletion_date_formatted(Date.current)
+
+    _("The contents of this group, its subgroups and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered.") %
+      { date: date, deletion_adjourned_period: group.deletion_adjourned_period }
+  end
+
+  def permanently_delete_group_message(group)
     content = ''.html_safe
     content << content_tag(:span, format(_("You are about to delete the group %{group_name}."), group_name: group.name))
-
     additional_content = additional_removed_items(group)
     content << additional_content if additional_content.present?
-
     content << remove_group_warning
   end
 
