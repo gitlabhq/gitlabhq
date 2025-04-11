@@ -73,99 +73,112 @@ RSpec.describe Settings, feature_category: :system_access do
   end
 
   describe '.attr_encrypted_db_key_base_truncated' do
-    it 'is a string with maximum 32 bytes size' do
-      expect(described_class.attr_encrypted_db_key_base_truncated.bytesize)
-        .to be <= 32
+    it 'returns the first item from #db_key_base_keys_truncated' do
+      expect(described_class.attr_encrypted_db_key_base_truncated)
+        .to eq(described_class.db_key_base_keys_truncated.first)
     end
   end
 
-  describe '.attr_encrypted_db_key_base_12' do
-    context 'when db key base secret is less than 12 bytes' do
-      before do
-        allow(described_class)
-          .to receive(:attr_encrypted_db_key_base)
-          .and_return('a' * 10)
-      end
-
-      it 'expands db key base secret to 12 bytes' do
-        expect(described_class.attr_encrypted_db_key_base_12)
-          .to eq(('a' * 10) + ('0' * 2))
-      end
-    end
-
-    context 'when key has multiple multi-byte UTF chars exceeding 12 bytes' do
-      before do
-        allow(described_class)
-          .to receive(:attr_encrypted_db_key_base)
-          .and_return('❤' * 18)
-      end
-
-      it 'does not use more than 32 bytes' do
-        db_key_base = described_class.attr_encrypted_db_key_base_12
-
-        expect(db_key_base).to eq('❤' * 4)
-        expect(db_key_base.bytesize).to eq 12
+  describe '.db_key_base_keys_truncated' do
+    it 'is an array of string with maximum 32 bytes size' do
+      described_class.db_key_base_keys_truncated.each do |key|
+        expect(key.bytesize).to be <= 32
       end
     end
   end
 
   describe '.attr_encrypted_db_key_base_32' do
+    it 'returns the first item from #db_key_base_keys_32_bytes' do
+      expect(described_class.attr_encrypted_db_key_base_32)
+        .to eq(described_class.db_key_base_keys_32_bytes.first)
+    end
+  end
+
+  describe '.db_key_base_keys_32_bytes' do
     context 'when db key base secret is less than 32 bytes' do
       before do
         allow(described_class)
-          .to receive(:attr_encrypted_db_key_base)
-          .and_return('a' * 10)
+          .to receive(:db_key_base_keys)
+          .and_return(['a' * 10, '❤' * 6])
       end
 
       it 'expands db key base secret to 32 bytes' do
-        expanded_key_base = ('a' * 10) + ('0' * 22)
-
-        expect(expanded_key_base.bytesize).to eq 32
-        expect(described_class.attr_encrypted_db_key_base_32)
-          .to eq expanded_key_base
+        expect(described_class.db_key_base_keys_32_bytes.first.bytesize).to eq(32)
+        expect(described_class.db_key_base_keys_32_bytes.first).to eq(('a' * 10) + ('0' * 22))
+        expect(described_class.db_key_base_keys_32_bytes.last.bytesize).to eq(32)
+        expect(described_class.db_key_base_keys_32_bytes.last).to eq(('❤' * 6) + ('0' * 14))
       end
     end
 
     context 'when db key base secret is 32 bytes' do
       before do
         allow(described_class)
-          .to receive(:attr_encrypted_db_key_base)
-          .and_return('a' * 32)
+          .to receive(:db_key_base_keys)
+          .and_return(['a' * 32, 'b' * 32])
       end
 
       it 'returns original value' do
-        expect(described_class.attr_encrypted_db_key_base_32)
-          .to eq 'a' * 32
+        expect(described_class.db_key_base_keys_32_bytes.first.bytesize).to eq(32)
+        expect(described_class.db_key_base_keys_32_bytes.first).to eq('a' * 32)
+        expect(described_class.db_key_base_keys_32_bytes.last.bytesize).to eq(32)
+        expect(described_class.db_key_base_keys_32_bytes.last).to eq('b' * 32)
       end
     end
 
     context 'when db key base contains multi-byte UTF character' do
       before do
         allow(described_class)
-          .to receive(:attr_encrypted_db_key_base)
-          .and_return('❤' * 6)
+          .to receive(:db_key_base_keys)
+          .and_return(['a' * 36, '❤' * 11])
       end
 
       it 'does not use more than 32 bytes' do
-        db_key_base = described_class.attr_encrypted_db_key_base_32
+        expect(described_class.db_key_base_keys_32_bytes.first.bytesize).to eq(32)
+        expect(described_class.db_key_base_keys_32_bytes.first).to eq('a' * 32)
+        expect(described_class.db_key_base_keys_32_bytes.last.bytesize).to eq(32)
+        expect(described_class.db_key_base_keys_32_bytes.last).to eq(('❤' * 10) + ('0' * 2))
+      end
+    end
+  end
 
-        expect(db_key_base).to eq '❤❤❤❤❤❤' + ('0' * 14)
-        expect(db_key_base.bytesize).to eq 32
+  describe '.attr_encrypted_db_key_base' do
+    it 'returns the first item from #attr_encrypted_db_key_base' do
+      expect(described_class.attr_encrypted_db_key_base)
+        .to eq(described_class.db_key_base_keys.first)
+    end
+  end
+
+  describe '.db_key_base_keys' do
+    before do
+      allow(Gitlab::Application.credentials)
+        .to receive(:db_key_base)
+        .and_return(raw_keys)
+    end
+
+    context 'when db key base secret is a string' do
+      let(:raw_keys) { 'a' }
+
+      it 'wraps the secret in an array' do
+        expect(described_class.db_key_base_keys)
+          .to eq(['a'])
       end
     end
 
-    context 'when db key base multi-byte UTF chars exceeding 32 bytes' do
-      before do
-        allow(described_class)
-          .to receive(:attr_encrypted_db_key_base)
-          .and_return('❤' * 18)
+    context 'when db key base secret is an array with a single element' do
+      let(:raw_keys) { ['a'] }
+
+      it 'returns the array' do
+        expect(described_class.db_key_base_keys)
+          .to eq(['a'])
       end
+    end
 
-      it 'does not use more than 32 bytes' do
-        db_key_base = described_class.attr_encrypted_db_key_base_32
+    context 'when db key base secret is an array with several elements' do
+      let(:raw_keys) { %w[a b] }
 
-        expect(db_key_base).to eq(('❤' * 10) + ('0' * 2))
-        expect(db_key_base.bytesize).to eq 32
+      it 'raises a MultipleDbKeyBaseError error' do
+        expect { described_class.db_key_base_keys }
+          .to raise_error(MultipleDbKeyBaseError, "Defining multiple `db_key_base` keys isn't supported yet.")
       end
     end
   end

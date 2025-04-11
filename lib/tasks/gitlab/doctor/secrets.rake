@@ -26,5 +26,11 @@ namespace :gitlab do
 
       Gitlab::Doctor::ResetTokens.new(logger, model_names: model_names, token_names: token_names, dry_run: dry_run).run!
     end
+
+    desc "GitLab | Check Active Record Encryption keys"
+    task encryption_keys: :gitlab_environment do
+      logger = Logger.new($stdout)
+      Gitlab::Doctor::EncryptionKeys.new(logger).run!
+    end
   end
 end
