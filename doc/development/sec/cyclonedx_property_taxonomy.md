@@ -78,6 +78,12 @@ The `Property of` column describes what object a property may be attached to.
 | ------------------------------------------ | ----------- | -------------- | ----------- |
 | `gitlab:dependency_scanning:language:name` | The name of the programming language associated with the dependency | `JavaScript`, `Ruby`, `Go` | `metadata`, `component` |
 
+## `gitlab:dependency_scanning_component` namespace taxonomy
+
+| Property                                   | Description | Example values | Property of |
+| ------------------------------------------ | ----------- | -------------- | ----------- |
+| `gitlab:dependency_scanning_component:reachability` | Identifies if a component is used | `in_use`, `not_found` | `component` |
+
 ## `gitlab:container_scanning` namespace taxonomy
 
 ### Namespaces

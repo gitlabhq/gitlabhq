@@ -44,6 +44,18 @@ The KEV catalog lists vulnerabilities that are known to have been exploited. You
 the remediation of vulnerabilities in the KEV catalog above other vulnerabilities. Attacks using
 these vulnerabilities have occurred and the exploitation method is likely known to attackers.
 
+## Reachability
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16510) in GitLab 17.11.
+
+{{< /history >}}
+
+Reachability shows whether a vulnerable package is actively used in your application.
+Vulnerabilities in packages that your code directly interacts with pose a higher risk than those in unused dependencies.
+Prioritize fixing reachable vulnerabilities, as they represent real exposure points that attackers could exploit.
+
 ## Query risk assessment data
 
 Use the GraphQL API to query the severity, EPSS, and KEV values of vulnerabilities in a project.
@@ -72,6 +84,7 @@ client.
           isKnownExploit
           cve
         }
+        reachability
       }
     }
   }
@@ -99,6 +112,7 @@ Example output:
               "isKnownExploit": false,
               "cve": "CVE-2019-3859"
             }
+            "reachability": "UNKNOWN"
           },
           {
             "severity": "CRITICAL",
@@ -113,6 +127,7 @@ Example output:
               "isKnownExploit": true,
               "cve": "CVE-2016-8735"
             }
+            "reachability": "IN_USE"
           },
         ]
       }
