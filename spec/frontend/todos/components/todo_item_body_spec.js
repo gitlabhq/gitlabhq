@@ -64,8 +64,8 @@ describe('TodoItemBody', () => {
   describe('correct text for actionName', () => {
     it.each`
       actionName                                        | text                                                                                                        | showsAuthor
-      ${TODO_ACTION_TYPE_ADDED_APPROVER}                | ${'set you as an approver.'}                                                                                | ${true}
-      ${TODO_ACTION_TYPE_APPROVAL_REQUIRED}             | ${'set you as an approver.'}                                                                                | ${true}
+      ${TODO_ACTION_TYPE_ADDED_APPROVER}                | ${'created a merge request you can approve.'}                                                               | ${true}
+      ${TODO_ACTION_TYPE_APPROVAL_REQUIRED}             | ${'created a merge request you can approve.'}                                                               | ${true}
       ${TODO_ACTION_TYPE_ASSIGNED}                      | ${'assigned you.'}                                                                                          | ${true}
       ${TODO_ACTION_TYPE_BUILD_FAILED}                  | ${'The pipeline failed.'}                                                                                   | ${false}
       ${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}            | ${'mentioned you.'}                                                                                         | ${true}

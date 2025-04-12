@@ -9,9 +9,7 @@ module Types
 
         value 'CONAN',
           value: 'conan',
-          experiment: { milestone: '17.6' },
-          description: 'Packages of the Conan format. ' \
-            'Available only when feature flag `packages_protected_packages_conan` is enabled.'
+          description: 'Packages of the Conan format.'
 
         value 'MAVEN',
           value: 'maven',

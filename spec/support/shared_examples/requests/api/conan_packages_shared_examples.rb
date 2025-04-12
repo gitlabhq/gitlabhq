@@ -886,23 +886,6 @@ RSpec.shared_examples 'protected package main example' do
     with_them do
       it_behaves_like params[:shared_examples_name]
     end
-
-    context 'when feature flag :packages_protected_packages_conan is disabled' do
-      before do
-        stub_feature_flags(packages_protected_packages_conan: false)
-      end
-
-      where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
-        ref(:conan_package_name)          | :maintainer | ref(:pat_project_developer) | 'uploads a package file'
-        ref(:conan_package_name)          | :admin      | ref(:pat_project_owner)     | 'uploads a package file'
-        ref(:conan_package_name_no_match) | :maintainer | ref(:pat_project_developer) | 'uploads a package file'
-        ref(:conan_package_name_no_match) | :admin      | ref(:pat_project_owner)     | 'uploads a package file'
-      end
-
-      with_them do
-        it_behaves_like params[:shared_examples_name]
-      end
-    end
   end
 end
 

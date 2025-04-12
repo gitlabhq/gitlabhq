@@ -158,6 +158,13 @@ approvals from other users with at least the Developer role
 in the project count toward meeting the required number of approvals, even if the
 users were not explicitly listed in the approval rules.
 
+### Get notified about all merge requests you can approve
+
+To get email notifications every time a merge request you're eligible to approve is created:
+
+- [Set your notification level](../../../profile/notifications.md#edit-notification-settings) to **Custom**
+and select this event.
+
 ### Group approvers
 
 You can add a group of users as approvers. All **direct members** of this group

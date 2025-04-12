@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import { difference, unionBy } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __, n__, s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -104,18 +105,23 @@ export default {
     isLoadingLabels() {
       return this.$apollo.queries.searchLabels.loading;
     },
+    fuzzyFilteredLabels() {
+      return this.searchTerm
+        ? fuzzaldrinPlus.filter(this.searchLabels, this.searchTerm, { key: ['title'] })
+        : this.searchLabels;
+    },
     listboxItems() {
-      const formattedSearchLabels = this.searchLabels.map(formatLabelForListbox);
+      const listboxLabels = this.fuzzyFilteredLabels.map(formatLabelForListbox);
 
       if (this.searchTerm || this.widgetLabelsIds.length === 0) {
-        return formattedSearchLabels;
+        return listboxLabels;
       }
 
       const selectedLabels = this.labelsToShowAtTopOfListbox.map(formatLabelForListbox);
 
       return [
         { text: __('Selected'), options: selectedLabels },
-        { text: __('All'), textSrOnly: true, options: formattedSearchLabels },
+        { text: __('All'), textSrOnly: true, options: listboxLabels },
       ];
     },
     labelsWidget() {

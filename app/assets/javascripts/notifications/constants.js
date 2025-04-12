@@ -56,6 +56,6 @@ export const i18n = {
     reopen_issue: s__('NotificationEvent|Issue is reopened'),
     reopen_merge_request: s__('NotificationEvent|Merge request is reopened'),
     success_pipeline: s__('NotificationEvent|Pipeline is successful'),
-    approver: s__('NotificationEvent|You are added as an approver on a merge request'),
+    approver: s__("NotificationEvent|Merge request you're eligible to approve is created"),
   },
 };

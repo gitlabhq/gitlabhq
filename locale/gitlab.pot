@@ -631,7 +631,7 @@ msgstr ""
 msgid "%{author} commented %{time}"
 msgstr ""
 
-msgid "%{author} has added you as an approver."
+msgid "%{author} has created a merge request that you can approve."
 msgstr ""
 
 msgid "%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{target_copy_button} %{created_at}"
@@ -1439,7 +1439,7 @@ msgstr ""
 msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
 msgstr ""
 
-msgid "%{strong_start}%{author}%{strong_end} has added you as an approver."
+msgid "%{strong_start}%{author}%{strong_end} has created a merge request that you can approve."
 msgstr ""
 
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
@@ -40753,6 +40753,9 @@ msgstr ""
 msgid "NotificationEvent|Merge request reviewers are changed"
 msgstr ""
 
+msgid "NotificationEvent|Merge request you're eligible to approve is created"
+msgstr ""
+
 msgid "NotificationEvent|Merge when pipeline succeeds"
 msgstr ""
 
@@ -40802,9 +40805,6 @@ msgid "NotificationEvent|Reopen issue"
 msgstr ""
 
 msgid "NotificationEvent|Reopen merge request"
-msgstr ""
-
-msgid "NotificationEvent|You are added as an approver on a merge request"
 msgstr ""
 
 msgid "NotificationLevel|Custom"
@@ -63039,6 +63039,9 @@ msgstr ""
 msgid "Todos|assigned you"
 msgstr ""
 
+msgid "Todos|created a merge request you can approve"
+msgstr ""
+
 msgid "Todos|has requested access to %{what} %{which}"
 msgstr ""
 
@@ -63055,9 +63058,6 @@ msgid "Todos|requested an OKR update for %{which}"
 msgstr ""
 
 msgid "Todos|reviewed your merge request"
-msgstr ""
-
-msgid "Todos|set %{who} as an approver"
 msgstr ""
 
 msgid "Todos|you"

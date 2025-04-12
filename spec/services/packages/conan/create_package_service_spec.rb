@@ -163,22 +163,6 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
           it_behaves_like params[:shared_examples_name]
         end
       end
-
-      context 'when feature flag :packages_protected_packages_conan is disabled' do
-        before do
-          stub_feature_flags(packages_protected_packages_conan: false)
-        end
-
-        where(:package_name_pattern, :minimum_access_level_for_push, :user) do
-          ref(:package_name)                  | :maintainer | ref(:project_developer)
-          ref(:package_name)                  | :admin      | ref(:project_owner)
-          ref(:package_name_pattern_no_match) | :maintainer | ref(:project_developer)
-          ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)
-        end
-        with_them do
-          it_behaves_like 'a service response for valid package'
-        end
-      end
     end
   end
 end

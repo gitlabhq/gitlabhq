@@ -44238,7 +44238,7 @@ Package type of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the Conan format. Available only when feature flag `packages_protected_packages_conan` is enabled. |
+| <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` | Packages of the Conan format. |
 | <a id="packagesprotectionrulepackagetypemaven"></a>`MAVEN` | Packages of the Maven format. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 | <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` | Packages of the PyPI format. |
@@ -44903,8 +44903,8 @@ Values for sorting timelogs.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="todoactionenumadded_approver"></a>`added_approver` | User was added as an approver. |
-| <a id="todoactionenumapproval_required"></a>`approval_required` | User was set as an approver. |
+| <a id="todoactionenumadded_approver"></a>`added_approver` | User is eligible to approve a merge request. |
+| <a id="todoactionenumapproval_required"></a>`approval_required` | User is eligible to approve a merge request. |
 | <a id="todoactionenumassigned"></a>`assigned` | User was assigned. |
 | <a id="todoactionenumbuild_failed"></a>`build_failed` | Build triggered by the user failed. |
 | <a id="todoactionenumdirectly_addressed"></a>`directly_addressed` | User was directly addressed. |

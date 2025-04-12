@@ -126,7 +126,7 @@ export default {
         this.todo.action === TODO_ACTION_TYPE_APPROVAL_REQUIRED ||
         this.todo.action === TODO_ACTION_TYPE_ADDED_APPROVER
       ) {
-        name = sprintf(s__('Todos|set %{who} as an approver'), { who: this.actionSubject });
+        name = s__('Todos|created a merge request you can approve');
       }
 
       if (this.todo.action === TODO_ACTION_TYPE_UNMERGEABLE) {

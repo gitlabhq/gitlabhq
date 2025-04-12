@@ -27,7 +27,6 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
         allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
       end
 
-      it_behaves_like 'pushed feature flag', :packages_protected_packages_conan
       it_behaves_like 'pushed feature flag', :packages_protected_packages_delete
       it_behaves_like 'pushed feature flag', :container_registry_protected_containers_delete
     end

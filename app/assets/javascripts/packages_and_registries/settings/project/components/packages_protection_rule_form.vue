@@ -118,11 +118,8 @@ export default {
         { value: 'NPM', text: s__('PackageRegistry|Npm') },
         { value: 'PYPI', text: s__('PackageRegistry|PyPI') },
         { value: 'MAVEN', text: s__('PackageRegistry|Maven') },
+        { value: 'CONAN', text: s__('PackageRegistry|Conan') },
       ];
-
-      if (this.glFeatures.packagesProtectedPackagesConan) {
-        packageTypeOptions.push({ value: 'CONAN', text: s__('PackageRegistry|Conan') });
-      }
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },

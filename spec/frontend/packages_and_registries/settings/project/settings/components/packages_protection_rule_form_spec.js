@@ -24,7 +24,6 @@ describe('Packages Protection Rule Form', () => {
   const defaultProvidedValues = {
     projectPath: 'path',
     glFeatures: {
-      packagesProtectedPackagesConan: true,
       packagesProtectedPackagesDelete: true,
     },
   };
@@ -95,23 +94,6 @@ describe('Packages Protection Rule Form', () => {
 
         expect(findPackageTypeSelect().exists()).toBe(true);
         expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'PYPI']);
-      });
-
-      describe('when feature flag packagesProtectedPackagesConan is disabled', () => {
-        it('contains available options without option "CONAN"', () => {
-          mountComponent({
-            provide: {
-              ...defaultProvidedValues,
-              glFeatures: {
-                ...defaultProvidedValues.glFeatures,
-                packagesProtectedPackagesConan: false,
-              },
-            },
-          });
-
-          expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual(['MAVEN', 'NPM', 'PYPI']);
-        });
       });
     });
 
