@@ -137,6 +137,8 @@ export default {
     WorkItemDrawer,
     WorkItemDevelopment,
     WorkItemCreateBranchMergeRequestSplitButton,
+    WorkItemVulnerabilities: () =>
+      import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
   },
   mixins: [glFeatureFlagMixin(), trackingMixin],
   inject: ['fullPath', 'groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
@@ -453,6 +455,9 @@ export default {
     },
     showWorkItemTree() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY) && this.allowedChildTypes?.length > 0;
+    },
+    showWorkItemVulnerabilities() {
+      return this.glFeatures.workItemRelatedVulnerabilities;
     },
     titleClassHeader() {
       return {
@@ -1222,6 +1227,13 @@ export default {
               :work-item-iid="iid"
               :work-item-full-path="workItemFullPath"
             />
+
+            <work-item-vulnerabilities
+              v-if="showWorkItemVulnerabilities"
+              :work-item-id="workItem.id"
+              data-testid="work-item-vulnerabilities"
+            />
+
             <work-item-notes
               v-if="workItemNotes"
               :full-path="workItemFullPath"

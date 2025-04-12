@@ -68673,6 +68673,9 @@ msgstr ""
 msgid "WorkItem|Related to"
 msgstr ""
 
+msgid "WorkItem|Related vulnerabilities"
+msgstr ""
+
 msgid "WorkItem|Remove"
 msgstr ""
 
