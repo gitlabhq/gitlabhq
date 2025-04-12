@@ -79,33 +79,19 @@ module RuboCop
           'See https://github.com/rubocop/rubocop-rake/issues/42'
 
         def on_def(node)
-          return unless in_rake_file?
-
           add_offense(node)
         end
 
         def on_defs(node)
-          return unless in_rake_file?
-
           add_offense(node)
         end
 
         def on_class(node)
-          return unless in_rake_file?
-
           add_offense(node, message: CLASS_MSG)
         end
 
         def on_module(node)
-          return unless in_rake_file?
-
           add_offense(node, message: MODULE_MSG)
-        end
-
-        private
-
-        def in_rake_file?
-          processed_source.file_path.end_with?('.rake')
         end
       end
     end

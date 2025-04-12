@@ -39085,6 +39085,7 @@ Representing a to-do entry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="treeblobs"></a>`blobs` | [`BlobConnection!`](#blobconnection) | Blobs of the tree. (see [Connections](#connections)) |
+| <a id="treepermalinkpath"></a>`permalinkPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Web path to tree permalink. |
 | <a id="treesubmodules"></a>`submodules` | [`SubmoduleConnection!`](#submoduleconnection) | Sub-modules of the tree. (see [Connections](#connections)) |
 | <a id="treetrees"></a>`trees` | [`TreeEntryConnection!`](#treeentryconnection) | Trees of the tree. (see [Connections](#connections)) |
 

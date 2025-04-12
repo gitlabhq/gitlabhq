@@ -43524,6 +43524,8 @@ definitions:
         type: string
       repository_storage:
         type: string
+      duo_nano_features_enabled:
+        type: string
       duo_features_enabled:
         type: string
       lock_duo_features_enabled:
@@ -44050,6 +44052,10 @@ definitions:
       service_access_tokens_expiration_enforced:
         type: boolean
         description: To enforce token expiration for Service accounts users for group
+      duo_nano_features_enabled:
+        type: boolean
+        description: Indicates whether GitLab Duo Nano features are enabled for the
+          group
       duo_features_enabled:
         type: boolean
         description: Indicates whether GitLab Duo features are enabled for the group
@@ -44162,6 +44168,8 @@ definitions:
       wiki_access_level:
         type: string
       repository_storage:
+        type: string
+      duo_nano_features_enabled:
         type: string
       duo_features_enabled:
         type: string

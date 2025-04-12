@@ -180,32 +180,77 @@ RSpec.describe RuboCop::Cop::Rake::TopLevelMethodDefinition, :aggregate_failures
     end
   end
 
-  context 'in a non-rake file' do
-    let(:source_file) { 'elastic.rb' }
+  context 'in a Rakefile' do
+    let(:source_file) { 'Rakefile' }
 
-    it 'does not register an offense for method definitions outside modules' do
-      expect_no_offenses(<<~RUBY, source_file)
+    it 'registers an offense for method definitions' do
+      expect_offense(<<~RUBY, source_file)
         def task_executor_service
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Methods defined in rake tasks share the same namespace and can cause collisions. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
           Search::RakeTaskExecutorService.new(logger: stdout_logger)
         end
       RUBY
     end
 
-    it 'does not register an offense for method definitions inside blocks' do
-      expect_no_offenses(<<~RUBY, source_file)
-        something do
-          def task_executor_service
+    it 'registers an offense for class definitions' do
+      expect_offense(<<~RUBY, source_file)
+        class TaskHelper
+        ^^^^^^^^^^^^^^^^ Classes should not be defined in rake files. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
+          def self.task_executor_service
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Methods defined in rake tasks share the same namespace and can cause collisions. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
             Search::RakeTaskExecutorService.new(logger: stdout_logger)
           end
         end
       RUBY
     end
 
-    it 'does not register an offense for class and module definitions' do
-      expect_no_offenses(<<~RUBY, source_file)
+    it 'registers an offense for module definitions' do
+      expect_offense(<<~RUBY, source_file)
         module SomeNamespace
+        ^^^^^^^^^^^^^^^^^^^^ Modules should not be defined in rake files. Please define it in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
           class TaskHelper
+          ^^^^^^^^^^^^^^^^ Classes should not be defined in rake files. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
             def self.task_executor_service
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Methods defined in rake tasks share the same namespace and can cause collisions. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
+              Search::RakeTaskExecutorService.new(logger: stdout_logger)
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'in non-rake files (should still be checked based on .rubocop.yml Include directive)' do
+    let(:source_file) { 'elastic.rb' }
+
+    it 'registers an offense for method definitions outside modules' do
+      expect_offense(<<~RUBY, source_file)
+        def task_executor_service
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Methods defined in rake tasks share the same namespace and can cause collisions. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
+          Search::RakeTaskExecutorService.new(logger: stdout_logger)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for method definitions inside blocks' do
+      expect_offense(<<~RUBY, source_file)
+        something do
+          def task_executor_service
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Methods defined in rake tasks share the same namespace and can cause collisions. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
+            Search::RakeTaskExecutorService.new(logger: stdout_logger)
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for class and module definitions' do
+      expect_offense(<<~RUBY, source_file)
+        module SomeNamespace
+        ^^^^^^^^^^^^^^^^^^^^ Modules should not be defined in rake files. Please define it in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
+          class TaskHelper
+          ^^^^^^^^^^^^^^^^ Classes should not be defined in rake files. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
+            def self.task_executor_service
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Methods defined in rake tasks share the same namespace and can cause collisions. Please define it in a bounded contexts module in a separate Ruby file. For example, Search::RakeTask::<Namespace>. See https://github.com/rubocop/rubocop-rake/issues/42
               Search::RakeTaskExecutorService.new(logger: stdout_logger)
             end
           end

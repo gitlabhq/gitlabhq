@@ -6,6 +6,8 @@ module Types
     class TreeType < BaseObject
       graphql_name 'Tree'
 
+      present_using ::Projects::TreePresenter
+
       # Complexity 10 as it triggers a Gitaly call on each render
       field :last_commit, Types::Repositories::CommitType,
         null: true, complexity: 10, calls_gitaly: true, resolver: Resolvers::LastCommitResolver,
@@ -21,6 +23,11 @@ module Types
       field :blobs, Types::Tree::BlobType.connection_type, null: false,
         description: 'Blobs of the tree.',
         calls_gitaly: true
+
+      field :permalink_path, GraphQL::Types::String, null: true,
+        description: 'Web path to tree permalink.',
+        calls_gitaly: true,
+        experiment: { milestone: '17.11' }
 
       def trees
         Gitlab::Graphql::Representation::TreeEntry.decorate(object.trees, object.repository)

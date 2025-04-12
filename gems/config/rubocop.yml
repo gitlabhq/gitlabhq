@@ -147,3 +147,9 @@ Rails/StrongParams:
 # This cop doesn't make sense in the context of gems
 Gitlab/NoFindInWorkers:
   Enabled: false
+
+Rake/TopLevelMethodDefinition:
+  Enabled: true
+  Include:
+    - '**/Rakefile'
+    - '**/*.rake'

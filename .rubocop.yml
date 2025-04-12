@@ -1274,6 +1274,7 @@ Gitlab/TokenWithoutPrefix:
 Rake/TopLevelMethodDefinition:
   Enabled: true
   Include:
+    - '**/Rakefile'
     - 'lib/tasks/**/*.rake'
     - 'ee/lib/tasks/**/*.rake'
 
