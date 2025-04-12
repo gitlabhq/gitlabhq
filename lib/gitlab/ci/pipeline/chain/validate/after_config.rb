@@ -12,6 +12,8 @@ module Gitlab
               'Please verify this change is okay before running a new pipeline.'
 
             def perform!
+              return if Feature.disabled?(:forbid_composite_identities_to_run_pipelines, :instance)
+
               if !@pipeline.project.allow_composite_identities_to_run_pipelines &&
                   current_user.has_composite_identity?
 

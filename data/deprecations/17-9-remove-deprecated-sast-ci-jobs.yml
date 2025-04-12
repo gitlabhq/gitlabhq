@@ -1,5 +1,5 @@
 - title: "End-of-Support SAST jobs will be removed from the CI/CD template"
-  removal_milestone: "18.0"
+  removal_milestone: "Cancelled"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 1

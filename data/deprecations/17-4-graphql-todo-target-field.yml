@@ -1,6 +1,6 @@
 - title: "GraphQL `target` field for to-do items replaced with `targetEntity`"
   announcement_milestone: "17.4"
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   breaking_change: true
   reporter: jtucker_gl
   stage: Foundations

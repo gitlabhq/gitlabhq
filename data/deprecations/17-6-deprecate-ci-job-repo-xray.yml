@@ -1,6 +1,6 @@
 - title: "Deprecate CI job implementation of Repository X-Ray"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   announcement_milestone: "17.6"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "Pending"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: jordanjanes  # (required) GitLab username of the person reporting the change
   stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth

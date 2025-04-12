@@ -1,6 +1,6 @@
 - title: "Updated tooling to release CI/CD components to the Catalog"
   announcement_milestone: "17.7"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   breaking_change: true
   reporter: dhershkovitch
   stage: verify

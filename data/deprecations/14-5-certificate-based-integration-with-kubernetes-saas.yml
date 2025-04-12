@@ -1,6 +1,6 @@
 - title: "GitLab.com certificate-based integration with Kubernetes"
   announcement_milestone: "14.5"
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   window: 3
   breaking_change: true
   impact: medium

@@ -1,0 +1,9 @@
+---
+name: forbid_composite_identities_to_run_pipelines
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/535705
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187953
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/535715
+milestone: '17.11'
+group: group::ci platform
+type: experiment
+default_enabled: false

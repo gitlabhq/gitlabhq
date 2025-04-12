@@ -1,5 +1,5 @@
 - title: "The `heroku/builder:22` image is deprecated"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "17.4"
   breaking_change: true
   reporter: nagyv-gitlab

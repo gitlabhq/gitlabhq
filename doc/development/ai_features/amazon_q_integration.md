@@ -68,5 +68,5 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
 ## Add Amazon Q to GitLab
 
 1. Follow [Enter the ARN in GitLab and enable Amazon Q](../../user/duo_amazon_q/setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q) exactly
-1. [Invite Amazon Q user to your project](../../user/duo_amazon_q/setup.md#add-the-amazon-q-user-to-your-project). For this step, we do not need to configure AI Gateway again, because we've already done it when configuring our GitLab instance.
+1. Invite Amazon Q user to your project. For this step, we do not need to configure AI Gateway again, because we've already done it when configuring our GitLab instance.
 1. Now Q should be working. We can test it like [this](https://gitlab.com/gitlab-com/ops-sub-department/aws-gitlab-ai-integration/integration-motion-planning/-/wikis/integration-docs#testing-q)

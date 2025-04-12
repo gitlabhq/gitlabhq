@@ -1,6 +1,6 @@
 - title: "CodeClimate-based Code Quality scanning will be removed"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   announcement_milestone: "17.3"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "19.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   window: 1
   check_impact: Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/471677#understanding-this-change) section for details.

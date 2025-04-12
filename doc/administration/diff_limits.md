@@ -13,7 +13,8 @@ title: Diff limits administration
 
 {{< /details >}}
 
-You can set a maximum size for display of diff files (patches).
+You can set a maximum size for display of diff files (patches) in GitLab Self-Managed.
+[Diff limits cannot be configured](../user/gitlab_com/_index.md#diff-display-limits) on GitLab.com.
 
 For details about diff files, [view changes between files](../user/project/merge_requests/changes.md).
 Read more about the [built-in limits for merge requests and diffs](instance_limits.md#merge-requests).

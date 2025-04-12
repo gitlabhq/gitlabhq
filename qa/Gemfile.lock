@@ -84,7 +84,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
-    faraday-retry (2.3.0)
+    faraday-retry (2.3.1)
       faraday (~> 2.0)
     ffi (1.17.0)
     ffi-compiler (1.0.1)
@@ -363,7 +363,7 @@ DEPENDENCIES
   deprecation_toolkit (~> 2.2.2)
   factory_bot (~> 6.5.1)
   faker (~> 3.5, >= 3.5.1)
-  faraday-retry (~> 2.3)
+  faraday-retry (~> 2.3, >= 2.3.1)
   fog-core (= 2.1.0)
   fog-google (~> 1.24, >= 1.24.1)
   gitlab-orchestrator!

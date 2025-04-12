@@ -1,6 +1,6 @@
 - title: "Updating CI/CD job tokens to JWT standard"
   announcement_milestone: "17.9"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   breaking_change: true
   impact: low
   scope: project

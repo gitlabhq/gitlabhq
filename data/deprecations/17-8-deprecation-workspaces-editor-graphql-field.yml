@@ -1,6 +1,6 @@
 - title: "Workspaces `editor` GraphQL field is deprecated"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   announcement_milestone: "17.8"
   # Change breaking_change to false if needed.
   breaking_change: true

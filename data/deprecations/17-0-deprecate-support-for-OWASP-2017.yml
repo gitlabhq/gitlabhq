@@ -1,5 +1,5 @@
 - title: "Group vulnerability report by OWASP top 10 2017 is deprecated"
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   announcement_milestone: "17.0"
   breaking_change: false
   reporter: abellucci

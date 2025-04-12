@@ -109,6 +109,19 @@ GitLab.com is fronted by Cloudflare.
 For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
 ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
+## Diff display limits
+
+The settings for the display of diff files cannot be changed on GitLab.com.
+
+| Setting                 | Definition                                     | GitLab.com |
+|-------------------------|------------------------------------------------|------------|
+| Maximum diff patch size | The total size of the entire diff.             | 200 KB |
+| Maximum diff files      | The total number of files changed in a diff.   | 3,000 |
+| Maximum diff lines      | The total number of lines changed in a diff.   | 100,000 |
+
+[Diff limits can be changed](../../administration/diff_limits.md#configure-diff-limits)
+in GitLab Self-Managed.
+
 ## Email
 
 Email configuration settings, IP addresses, and aliases.

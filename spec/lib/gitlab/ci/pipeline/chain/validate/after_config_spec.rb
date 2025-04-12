@@ -31,6 +31,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig, feature_categ
           expect(pipeline.failure_reason).to eq('composite_identity_forbidden')
           expect(pipeline).to be_persisted
         end
+
+        context 'when forbid_composite_identities_to_run_pipelines is disabled' do
+          before do
+            stub_feature_flags(forbid_composite_identities_to_run_pipelines: false)
+          end
+
+          it 'succeeds the step' do
+            step.perform!
+
+            expect(step.break?).to be_falsey
+            expect(pipeline.errors).to be_empty
+          end
+        end
       end
 
       context 'when the user does not have a composite identity' do

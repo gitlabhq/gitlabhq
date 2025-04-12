@@ -1,5 +1,5 @@
 - title: "`kpt`-based `agentk` is deprecated"
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 2
