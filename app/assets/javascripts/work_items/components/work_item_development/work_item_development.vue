@@ -64,6 +64,11 @@ export default {
     };
   },
   computed: {
+    itemCount() {
+      return (
+        this.relatedMergeRequests.length + this.relatedBranches.length + this.featureFlags.length
+      );
+    },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
     },
@@ -246,6 +251,7 @@ export default {
       v-if="shouldShowDevWidget"
       ref="workItemDevelopment"
       :title="s__('WorkItem|Development')"
+      :count="itemCount"
       :anchor-id="$options.DEVELOPMENT_ITEMS_ANCHOR"
       :is-loading="isLoading"
       is-collapsible
