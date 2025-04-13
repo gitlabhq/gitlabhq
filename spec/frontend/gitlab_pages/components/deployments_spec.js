@@ -18,6 +18,7 @@ describe('PagesDeployments', () => {
         data: {
           project: {
             id: 'gid://gitlab/Project/1',
+            fullPath: 'user/project',
             pagesDeployments: {
               __typename: 'PagesDeploymentConnection',
               count: 14,
