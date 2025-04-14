@@ -130,14 +130,3 @@ export const mockPipelineVariablesPermissions = (value) => ({
     },
   },
 });
-
-export const minimumRoleResponse = {
-  data: {
-    project: {
-      id: mockId,
-      ciCdSettings: {
-        pipelineVariablesMinimumOverrideRole: 'developer',
-      },
-    },
-  },
-};

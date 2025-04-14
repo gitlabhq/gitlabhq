@@ -685,6 +685,18 @@ class Project < ApplicationRecord
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   scope :sorted_by_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :sorted_by_path_desc, -> { reorder(self.arel_table['path'].desc) }
+  scope :sorted_by_full_path_asc, -> { order_by_full_path(:asc) }
+  scope :sorted_by_full_path_desc, -> { order_by_full_path(:desc) }
+  scope :order_by_full_path, ->(direction) do
+    build_keyset_order_on_joined_column(
+      scope: joins(:route),
+      attribute_name: 'project_full_path',
+      column: Route.arel_table[:path],
+      direction: direction,
+      nullable: :nulls_first
+    )
+  end
+
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
@@ -1118,6 +1130,8 @@ class Project < ApplicationRecord
       when 'latest_activity_asc' then sorted_by_updated_asc
       when 'path_desc'then sorted_by_path_desc
       when 'path_asc' then sorted_by_path_asc
+      when 'full_path_desc'then sorted_by_full_path_desc
+      when 'full_path_asc' then sorted_by_full_path_asc
       when 'stars_desc' then sorted_by_stars_desc
       when 'stars_asc' then sorted_by_stars_asc
       else
@@ -3257,10 +3271,10 @@ class Project < ApplicationRecord
     ci_cd_settings.restrict_user_defined_variables?
   end
 
-  def override_pipeline_variables_allowed?(access_level)
+  def override_pipeline_variables_allowed?(access_level, user)
     return false unless ci_cd_settings
 
-    ci_cd_settings.override_pipeline_variables_allowed?(access_level)
+    ci_cd_settings.override_pipeline_variables_allowed?(access_level, user)
   end
 
   def ci_push_repository_for_job_token_allowed?

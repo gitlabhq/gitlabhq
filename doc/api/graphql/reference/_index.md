@@ -22202,7 +22202,7 @@ Branch rules configured for a rule target.
 | <a id="branchruleisprotected"></a>`isProtected` | [`Boolean!`](#boolean) | Check if the branch rule protects access for the branch. |
 | <a id="branchrulematchingbranchescount"></a>`matchingBranchesCount` | [`Int!`](#int) | Number of existing branches that match the branch rule. |
 | <a id="branchrulename"></a>`name` | [`String!`](#string) | Name of the branch rule target. Includes wildcards. |
-| <a id="branchrulesquashoption"></a>`squashOption` {{< icon name="warning-solid" >}} | [`SquashOption`](#squashoption) | **Introduced** in GitLab 17.9. **Status**: Experiment. The default behavior for squashing in merge requests. Returns null if `branch_rule_squash_settings` feature flag is disabled. |
+| <a id="branchrulesquashoption"></a>`squashOption` {{< icon name="warning-solid" >}} | [`SquashOption`](#squashoption) | **Introduced** in GitLab 17.9. **Status**: Experiment. Default behavior for squashing in merge requests. |
 | <a id="branchruleupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the branch rule was last updated. |
 
 ### `BurnupChartDailyTotals`
@@ -43985,6 +43985,8 @@ Values for sorting projects.
 | <a id="namespaceprojectsortcontainer_registry_size_asc"></a>`CONTAINER_REGISTRY_SIZE_ASC` | Sort by total container registry size, ascending order. |
 | <a id="namespaceprojectsortcontainer_registry_size_desc"></a>`CONTAINER_REGISTRY_SIZE_DESC` | Sort by total container registry size, descending order. |
 | <a id="namespaceprojectsortexcess_repo_storage_size_desc"></a>`EXCESS_REPO_STORAGE_SIZE_DESC` | Sort by excess repository storage size, descending order. |
+| <a id="namespaceprojectsortfull_path_asc"></a>`FULL_PATH_ASC` | Sort by full path, ascending order. |
+| <a id="namespaceprojectsortfull_path_desc"></a>`FULL_PATH_DESC` | Sort by full path, descending order. |
 | <a id="namespaceprojectsortlfs_objects_size_asc"></a>`LFS_OBJECTS_SIZE_ASC` | Sort by total LFS object size, ascending order. |
 | <a id="namespaceprojectsortlfs_objects_size_desc"></a>`LFS_OBJECTS_SIZE_DESC` | Sort by total LFS object size, descending order. |
 | <a id="namespaceprojectsortpackages_size_asc"></a>`PACKAGES_SIZE_ASC` | Sort by total package size, ascending order. |
@@ -45031,7 +45033,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumproduct_analytics_dashboard_feedback"></a>`PRODUCT_ANALYTICS_DASHBOARD_FEEDBACK` | Callout feature name for product_analytics_dashboard_feedback. |
 | <a id="usercalloutfeaturenameenumproduct_usage_data_collection_changes"></a>`PRODUCT_USAGE_DATA_COLLECTION_CHANGES` | Callout feature name for product_usage_data_collection_changes. |
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
-| <a id="usercalloutfeaturenameenumproject_quality_summary_feedback"></a>`PROJECT_QUALITY_SUMMARY_FEEDBACK` | Callout feature name for project_quality_summary_feedback. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |

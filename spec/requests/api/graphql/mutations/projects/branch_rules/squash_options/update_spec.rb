@@ -40,17 +40,6 @@ RSpec.describe 'Updating a squash option', feature_category: :source_code_manage
       project.add_maintainer(current_user)
     end
 
-    context 'and the branch_rule_squash_settings feature flag is disabled' do
-      before do
-        stub_feature_flags(branch_rule_squash_settings: false)
-      end
-
-      it 'raises an error' do
-        mutation_request
-        expect(graphql_errors).to include(a_hash_including('message' => 'Squash options feature disabled'))
-      end
-    end
-
     it 'updates the squash option' do
       expect do
         mutation_request

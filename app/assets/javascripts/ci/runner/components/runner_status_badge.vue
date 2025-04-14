@@ -120,6 +120,7 @@ export default {
     v-gl-tooltip="badge.tooltip"
     :variant="badge.variant"
     :icon="badge.icon"
+    icon-optically-aligned
     v-bind="$attrs"
   >
     <span class="gl-truncate">

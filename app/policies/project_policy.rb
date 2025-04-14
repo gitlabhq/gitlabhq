@@ -250,7 +250,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:user_defined_variables_allowed) do
-    @subject.override_pipeline_variables_allowed?(team_access_level)
+    @subject.override_pipeline_variables_allowed?(team_access_level, @user)
   end
 
   condition(:push_repository_for_job_token_allowed) do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'oj'
 require_relative Rails.root.join('lib/gitlab/ci/config/interpolation/inputs.rb')
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pipeline_composition do
@@ -193,6 +194,16 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
         it 'is valid' do
           expect(inputs).to be_valid
           expect(inputs.to_hash).to eq(foo: 'bar')
+        end
+      end
+
+      context 'when a hash value is passed as string' do
+        let(:specs) { { test_input: { type: 'string' } } }
+        let(:args) { { test_input: '{"key": "value"}' } }
+
+        it 'is valid and behaves like an unparsed string' do
+          expect(inputs).to be_valid
+          expect(inputs.to_hash).to eq(test_input: '{"key": "value"}')
         end
       end
     end

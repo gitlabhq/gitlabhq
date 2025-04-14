@@ -22,11 +22,7 @@
               = _("Squash commits when merge request is accepted.")
               = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
             - c.with_help_text do
-              -# When we remove the feature flag we should also remove the local_assigns[:project]
-              - if Feature.enabled?(:branch_rule_squash_settings, local_assigns.fetch(:project))
-                = _('Required in this branch.')
-              - else
-                = _('Required in this project.')
+              = _('Required in this branch.')
         - else
           = hidden_field_tag 'merge_request[squash]', '0', id: nil
           = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: merge_request_squash_option?(merge_request), value: '1', checkbox_options: { class: 'js-form-update' }) do |c|

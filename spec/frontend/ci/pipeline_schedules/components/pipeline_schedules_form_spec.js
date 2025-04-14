@@ -18,10 +18,6 @@ import createPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/muta
 import updatePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/update_pipeline_schedule.mutation.graphql';
 import getPipelineVariablesMinimumOverrideRoleQuery from '~/ci/pipeline_variables_minimum_override_role/graphql/queries/get_pipeline_variables_minimum_override_role_project_setting.query.graphql';
 import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
-import {
-  mockPipelineVariablesPermissions,
-  minimumRoleResponse,
-} from 'jest/ci/job_details/mock_data';
 import { timezoneDataFixture } from '../../../vue_shared/components/timezone_dropdown/helpers';
 import {
   createScheduleMutationResponse,
@@ -65,7 +61,6 @@ describe('Pipeline schedules form', () => {
     dailyLimit,
     settingsLink: '',
     schedulesPath: '/root/ci-project/-/pipeline_schedules',
-    userRole: 'maintainer',
   };
 
   const querySuccessHandler = jest.fn().mockResolvedValue(mockSinglePipelineScheduleNode);
@@ -76,11 +71,9 @@ describe('Pipeline schedules form', () => {
   const updateMutationHandlerSuccess = jest.fn().mockResolvedValue(updateScheduleMutationResponse);
   const updateMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
-  const minimumRoleHandler = jest.fn().mockResolvedValue(minimumRoleResponse);
-
   const createMockApolloProvider = (
     requestHandlers = [
-      [getPipelineVariablesMinimumOverrideRoleQuery, minimumRoleHandler],
+      [getPipelineVariablesMinimumOverrideRoleQuery],
       [createPipelineScheduleMutation, createMutationHandlerSuccess],
     ],
   ) => {
@@ -89,15 +82,16 @@ describe('Pipeline schedules form', () => {
 
   const createComponent = ({
     editing = false,
-    pipelineVariablesPermissionsMixin = mockPipelineVariablesPermissions(true),
     requestHandlers,
     ciInputsForPipelines = false,
+    canSetPipelineVariables = true,
   } = {}) => {
     wrapper = shallowMountExtended(PipelineSchedulesForm, {
       propsData: {
         timezoneData: timezoneDataFixture,
         refParam: 'master',
         editing,
+        canSetPipelineVariables,
       },
       provide: {
         ...defaultProvide,
@@ -105,7 +99,7 @@ describe('Pipeline schedules form', () => {
           ciInputsForPipelines,
         },
       },
-      mixins: [glFeatureFlagMixin(), pipelineVariablesPermissionsMixin],
+      mixins: [glFeatureFlagMixin()],
       apolloProvider: createMockApolloProvider(requestHandlers),
     });
   };
@@ -205,7 +199,7 @@ describe('Pipeline schedules form', () => {
 
     it('does not display variable list when the user has no permissions', () => {
       createComponent({
-        pipelineVariablesPermissionsMixin: mockPipelineVariablesPermissions(false),
+        canSetPipelineVariables: false,
       });
 
       expect(findPipelineVariables().exists()).toBe(false);

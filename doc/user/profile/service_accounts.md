@@ -40,10 +40,10 @@ token for [Git operations](personal_access_tokens.md#clone-repository-using-pers
   - [Configurable rate limits](../../security/rate_limits.md#configurable-limits).
   - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits).
 
-Service accounts were previously managed exclusively through the API. You can now use either the UI or the API.
+You can also manage service accounts through the API.
 
-- For instance-level service accounts, use the [Service account users API](../../api/user_service_accounts.md).
-- For group-level service accounts, use the [Group service accounts API](../../api/group_service_accounts.md).
+- For instance-level service accounts, use the [service account users API](../../api/user_service_accounts.md).
+- For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
 
 ## View and manage service accounts
 
@@ -168,13 +168,18 @@ The personal access tokens page displays information about the personal access t
 - Rotate personal access tokens.
 - Revoke personal access tokens.
 
+You can also manage personal access tokens for service accounts through the API.
+
+- For instance-level service accounts, use the [personal access tokens API](../../api/user_service_accounts.md).
+- For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
+
 To view the personal access tokens page for a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
 
-## Create a personal access token for a service account
+### Create a personal access token for a service account
 
 To use a service account, you must create a personal access token to authenticate requests.
 
@@ -198,25 +203,31 @@ To create a personal access token:
 1. Select the [desired scopes](personal_access_tokens.md#personal-access-token-scopes).
 1. Select **Create personal access token**.
 
-## Rotate a personal access token
+### Rotate a personal access token
 
 Prerequisites:
 
-- For service accounts created by top-level group Owners, you must have the Owner role in the top-level group or be an administrator.
-- For service accounts created by administrators, you must be an administrator for your GitLab Self-Managed instance.
+- For instance-level service accounts, you must be an administrator for the instance.
+- For group-level service accounts, you must have the Owner role in a top-level group.
 
-Use the groups API to [rotate the personal access token](../../api/group_service_accounts.md#rotate-a-personal-access-token-for-a-service-account-user) for a service account user.
+1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Identify a service account.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
+1. Select **Rotate**.
+1. On the confirmation dialog, select **Rotate**.
 
-## Revoke a personal access token
+### Revoke a personal access token
 
 Prerequisites:
 
-- You must be signed in as the service account user.
+- For instance-level service accounts, you must be an administrator for the instance.
+- For group-level service accounts, you must have the Owner role in a top-level group.
 
-To revoke a personal access token, use the [personal access tokens API](../../api/personal_access_tokens.md#revoke-a-personal-access-token). You can use either of the following methods:
-
-- Use a [personal access token ID](../../api/personal_access_tokens.md#revoke-a-personal-access-token). The token used to perform the revocation must have the [`admin_mode`](personal_access_tokens.md#personal-access-token-scopes) scope.
-- Use a [request header](../../api/personal_access_tokens.md#self-revoke). The token used to perform the request is revoked.
+1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Identify a service account.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
+1. Select **Revoke**.
+1. On the confirmation dialog, select **Revoke**.
 
 ## Delete a service account via API
 

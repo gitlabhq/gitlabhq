@@ -18,8 +18,6 @@ module Resolvers
 
       # BranchRules for 'All branches' i.e. no associated ProtectedBranch
       def custom_branch_rules(args)
-        return [] unless squash_settings_enabled?
-
         [all_branches_rule]
       end
 
@@ -36,10 +34,6 @@ module Resolvers
 
       def protected_branches
         apply_lookahead(project.all_protected_branches.sorted_by_name)
-      end
-
-      def squash_settings_enabled?
-        Feature.enabled?(:branch_rule_squash_settings, project)
       end
     end
   end

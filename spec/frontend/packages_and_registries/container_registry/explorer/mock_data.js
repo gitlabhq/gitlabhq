@@ -200,10 +200,7 @@ export const tagsMock = [
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
-    protection: {
-      minimumAccessLevelForPush: null,
-      minimumAccessLevelForDelete: null,
-    },
+    protection: null,
     __typename: 'ContainerRepositoryTag',
   },
   {
@@ -221,10 +218,7 @@ export const tagsMock = [
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
-    protection: {
-      minimumAccessLevelForPush: null,
-      minimumAccessLevelForDelete: null,
-    },
+    protection: null,
     __typename: 'ContainerRepositoryTag',
   },
   {
@@ -242,10 +236,7 @@ export const tagsMock = [
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
-    protection: {
-      minimumAccessLevelForPush: null,
-      minimumAccessLevelForDelete: null,
-    },
+    protection: null,
     __typename: 'ContainerRepositoryTag',
   },
   {
@@ -263,10 +254,7 @@ export const tagsMock = [
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
-    protection: {
-      minimumAccessLevelForPush: null,
-      minimumAccessLevelForDelete: null,
-    },
+    protection: null,
     __typename: 'ContainerRepositoryTag',
   },
 ];

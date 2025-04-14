@@ -73,6 +73,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
 
       it 'does not invoke Projects::InactiveProjectsDeletionNotificationWorker' do
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
         expect(::Projects::DestroyService).not_to receive(:new)
 
         worker.perform
@@ -100,9 +101,26 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
         end
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).to receive(:perform_async).with(
           inactive_large_project.id, deletion_date).and_call_original
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
         expect(::Projects::DestroyService).not_to receive(:new)
 
         worker.perform
+      end
+
+      it 'does not invoke InactiveProjectsDeletionNotificationWorker for inactive projects marked for deletion' do
+        inactive_large_project.update!(marked_for_deletion_at: Date.current)
+
+        expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
+        expect(::Projects::DestroyService).not_to receive(:new)
+
+        worker.perform
+
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(
+            redis.hget('inactive_projects_deletion_warning_email_notified', "project:#{inactive_large_project.id}")
+          ).to be_nil
+        end
       end
 
       it 'does not invoke InactiveProjectsDeletionNotificationWorker for already notified inactive projects' do
@@ -115,6 +133,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
         end
 
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
         expect(::Projects::DestroyService).not_to receive(:new)
 
         worker.perform
@@ -131,6 +150,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
         end
 
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
         expect(::Projects::DestroyService).to receive(:new).with(inactive_large_project, admin_bot, {})
                                                            .at_least(:once).and_call_original
 

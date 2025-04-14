@@ -7,14 +7,12 @@ import {
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/settings/project/constants';
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
-import DockerHubRateLimitsAlert from '~/vue_shared/components/docker_hub_rate_limits_alert.vue';
 import PackageRegistrySection from '~/packages_and_registries/settings/project/components/package_registry_section.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 
 export default {
   components: {
     ContainerRegistrySection,
-    DockerHubRateLimitsAlert,
     GlAlert,
     MetadataDatabaseAlert,
     PackageRegistrySection,
@@ -66,7 +64,6 @@ export default {
     >
       {{ $options.i18n.UPDATE_SETTINGS_SUCCESS_MESSAGE }}
     </gl-alert>
-    <docker-hub-rate-limits-alert class="gl-my-5" />
     <metadata-database-alert v-if="!isContainerRegistryMetadataDatabaseEnabled" class="gl-mt-5" />
     <package-registry-section v-if="showPackageRegistrySettings" />
     <container-registry-section

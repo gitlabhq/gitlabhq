@@ -96,6 +96,11 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d Artifact"
+msgid_plural "%d Artifacts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Module"
 msgid_plural "%d Modules"
 msgstr[0] ""
@@ -4929,6 +4934,9 @@ msgstr ""
 msgid "AdminUsers|Access level"
 msgstr ""
 
+msgid "AdminUsers|Access summary for %{userType} user"
+msgstr ""
+
 msgid "AdminUsers|Access the API"
 msgstr ""
 
@@ -4987,6 +4995,9 @@ msgid "AdminUsers|Ban user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Banned"
+msgstr ""
+
+msgid "AdminUsers|Based on member role in groups and projects. %{linkStart}Learn more about member roles.%{linkEnd}"
 msgstr ""
 
 msgid "AdminUsers|Be added to groups and projects"
@@ -5112,7 +5123,13 @@ msgstr ""
 msgid "AdminUsers|Full access to all groups, projects, users, features, and the Admin area. You cannot remove your own administrator access."
 msgstr ""
 
+msgid "AdminUsers|Full read and write access."
+msgstr ""
+
 msgid "AdminUsers|Group Managed Account"
+msgstr ""
+
+msgid "AdminUsers|Groups and project settings"
 msgstr ""
 
 msgid "AdminUsers|Here are some helpful links to help you manage your instance:"
@@ -5154,10 +5171,16 @@ msgstr ""
 msgid "AdminUsers|Manage (accept/reject) pending user sign ups"
 msgstr ""
 
+msgid "AdminUsers|May be directly added to groups and projects. %{linkStart}Learn more about auditor role.%{linkEnd}"
+msgstr ""
+
 msgid "AdminUsers|Name not matching"
 msgstr ""
 
 msgid "AdminUsers|New user"
+msgstr ""
+
+msgid "AdminUsers|No access."
 msgstr ""
 
 msgid "AdminUsers|Owned groups will be left"
@@ -5187,6 +5210,9 @@ msgstr ""
 msgid "AdminUsers|Reactivating a user will:"
 msgstr ""
 
+msgid "AdminUsers|Read access to all groups and projects."
+msgstr ""
+
 msgid "AdminUsers|Read-only access to all groups and projects. No access to the Admin area by default."
 msgstr ""
 
@@ -5205,10 +5231,16 @@ msgstr ""
 msgid "AdminUsers|Rejected users:"
 msgstr ""
 
+msgid "AdminUsers|Requires at least Maintainer role in specific groups and projects."
+msgstr ""
+
 msgid "AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in."
 msgstr ""
 
 msgid "AdminUsers|Restore user access to the account, including web, Git and API."
+msgstr ""
+
+msgid "AdminUsers|Review and set Admin area access with a custom admin role."
 msgstr ""
 
 msgid "AdminUsers|Role Promotions"
@@ -8938,9 +8970,6 @@ msgid "Authenticate"
 msgstr ""
 
 msgid "Authenticate user SSH keys without requiring additional configuration. Performance of GitLab can be improved by using the GitLab database instead. %{link_start}How do I configure authentication using the GitLab database? %{link_end}"
-msgstr ""
-
-msgid "Authenticate with Docker Hub"
 msgstr ""
 
 msgid "Authenticate with GitHub"
@@ -17353,6 +17382,9 @@ msgstr ""
 msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
+msgid "ContainerRegistry|This container image tag cannot be overwritten or deleted."
+msgstr ""
+
 msgid "ContainerRegistry|This field is required."
 msgstr ""
 
@@ -17408,6 +17440,9 @@ msgid "ContainerRegistry|You are about to remove %{item}. Are you sure?"
 msgstr ""
 
 msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
+msgstr ""
+
+msgid "ContainerRegistry|immutable"
 msgstr ""
 
 msgid "ContainerRegistry|index"
@@ -22683,9 +22718,6 @@ msgid "Do not include the username in the URL, use the username field below if r
 msgstr ""
 
 msgid "Do you want to remove this deploy key?"
-msgstr ""
-
-msgid "Docker Hub pull rate limits begin April 1, 2025 and might affect CI/CD pipelines that pull Docker images. To prevent pipeline failures, configure the GitLab Dependency Proxy to authenticate with Docker Hub."
 msgstr ""
 
 msgid "Dockerfile"
@@ -47351,9 +47383,6 @@ msgstr ""
 msgid "ProjectQualitySummary|Get insight into the overall percentage of tests in your project that succeed, fail and are skipped."
 msgstr ""
 
-msgid "ProjectQualitySummary|Help us improve this page"
-msgstr ""
-
 msgid "ProjectQualitySummary|Latest pipeline results"
 msgstr ""
 
@@ -47367,9 +47396,6 @@ msgid "ProjectQualitySummary|Learn more about test reports"
 msgstr ""
 
 msgid "ProjectQualitySummary|Measure of how much of your code is covered by tests."
-msgstr ""
-
-msgid "ProjectQualitySummary|Provide feedback"
 msgstr ""
 
 msgid "ProjectQualitySummary|See full report"
@@ -47397,9 +47423,6 @@ msgid "ProjectQualitySummary|Test runs"
 msgstr ""
 
 msgid "ProjectQualitySummary|The percentage of tests that succeed, fail, or are skipped."
-msgstr ""
-
-msgid "ProjectQualitySummary|This page helps you understand the code testing trends for your project. Let us know how we can improve it!"
 msgstr ""
 
 msgid "ProjectQualitySummary|Violations"
@@ -66403,6 +66426,9 @@ msgid "VirtualRegistries|Configure Virtual Registries settings."
 msgstr ""
 
 msgid "VirtualRegistries|Virtual Registries"
+msgstr ""
+
+msgid "VirtualRegistry|Maven"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

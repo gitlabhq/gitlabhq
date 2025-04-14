@@ -42,14 +42,43 @@ Behavioral testing tools include:
 - API security testing: Test your application's API for known attacks and vulnerabilities to input.
 - Coverage-guided fuzz testing: Test your application for unexpected behavior.
 
-## Lifecycle coverage
+## Early detection
 
-You should enable vulnerability detection from before the first commit through to when your
-application can be deployed and run. Early detection has many benefits, including easier and quicker
-remediation.
+Enable GitLab application security scanning tools from before the first commit. Early detection
+provides benefits such as easier, quicker, and cheaper remediation, compared to detection later in
+the software development lifecycle. GitLab provides developers immediate feedback of security
+scanning, enabling them to address vulnerabilities early.
 
-All GitLab application security scanning tools can be run in a CI/CD pipeline, triggered by code
-changes. Security scans can also be run on a schedule, outside the context of code changes, and some
-can be run manually. It's important to also perform detection outside the CI/CD pipeline because
-risks can arise outside the context of code changes. For example, a newly-discovered vulnerability
-in a dependency might be a risk to any application using it.
+Security scans:
+
+- Run automatically in the CI/CD pipeline when developers commit changes. Vulnerabilities detected
+  in a feature branch are listed, enabling you to investigate and address them before they're merged
+  into the default branch. For more details, see
+  [Security scan results](security_scan_results.md).
+- Can be scheduled or run manually to detect vulnerabilities. When a project is idle and no changes
+  are being made, security scans configured to run in a CI/CD pipeline are not run. Risks such as
+  newly-discovered vulnerabilities can go undetected in this situation. Running security scans
+  outside a CI/CD pipeline helps address this risk. For more details, see
+  [Scan execution policies](../policies/scan_execution_policies.md).
+
+## Prevention
+
+Security scanning in the pipeline can help minimize the risk of vulnerabilities in the default
+branch:
+
+- Extra approval can be enforced on merge requests according to the results of pipeline
+  security scanning. For example, you can require that a member of the security team **also**
+  approve a merge request if one or more critical vulnerabilities are detected in the code
+  changes. For more details, see
+  [Merge request approval policies](../policies/merge_request_approval_policies.md).
+- Secret push protection can prevent commits being pushed to GitLab if they contain secret
+  information - for example, a GitLab personal access token.
+
+## Vulnerability management workflow
+
+Vulnerabilities detected in the default branch are listed in the vulnerability report. To address
+these vulnerabilities, follow the vulnerability management workflow:
+
+- Triage: Evaluate vulnerabilities to identify those that need immediate attention.
+- Analyze: Examine details of a vulnerability to determine if it can and should be remediated.
+- Remediate: Resolve the root cause of the vulnerability, reduce the associated risks, or both.

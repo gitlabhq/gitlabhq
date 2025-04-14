@@ -26,7 +26,7 @@ export default (selector, editing = false) => {
     projectPath,
     schedulesPath,
     settingsLink,
-    userRole,
+    canSetPipelineVariables,
     timezoneData,
   } = containerEl.dataset;
 
@@ -43,7 +43,6 @@ export default (selector, editing = false) => {
       projectPath,
       schedulesPath,
       settingsLink,
-      userRole,
     },
     render(createElement) {
       return createElement(PipelineSchedulesForm, {
@@ -51,6 +50,7 @@ export default (selector, editing = false) => {
           timezoneData: JSON.parse(timezoneData),
           refParam: defaultBranch,
           editing,
+          canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
         },
       });
     },

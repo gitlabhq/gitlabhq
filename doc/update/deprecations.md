@@ -1722,6 +1722,22 @@ In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may 
 
 </div>
 
+<div class="deprecation " data-milestone="18.0">
+
+### Rename options to skip GitGuardian secret detection
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.3</span>
+- Removal in GitLab <span class="milestone">18.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470119).
+
+</div>
+
+The options to skip GitGuardian secret detection, `[skip secret detection]` and `secret_detection.skip_all`, are deprecated. You should use `[skip secret push protection]` and `secret_push_protection.skip_all` instead.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="18.0">
 
 ### Replace `add_on_purchase` GraphQL field with `add_on_purchases`
@@ -7854,26 +7870,6 @@ This change has been removed from its original milestone and is being reassessed
 
 The `setPreReceiveSecretDetection` GraphQL mutation has been renamed to `setSecretPushProtection`. We are also renaming some fields in the mutation's response to reflect the name change of the feature `pre_receive_secret_detection` to `secret_push_protection`.
 Following [new guidance](https://docs.gitlab.com/development/api_styleguide/#what-to-do-instead-of-a-breaking-change), we're adapting the schema to support both `setPreReceiveSecretDetection` and `setSecretPushProtection`. You can use either parameter because they both point to the `secret_push_protection_enabled` column. In GitLab 18.0, we will [remove](https://gitlab.com/gitlab-org/gitlab/-/issues/514414) the old `setPreReceiveSecretDetection` column.
-
-</div>
-
-<div class="deprecation breaking-change">
-
-### Rename options to skip GitGuardian secret detection
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.3</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470119).
-
-</div>
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
-
-The options to skip GitGuardian secret detection, `[skip secret detection]` and `secret_detection.skip_all`, are deprecated and will be removed in GitLab 18.0. You should use `[skip secret push protection]` and `secret_push_protection.skip_all` instead.
 
 </div>
 

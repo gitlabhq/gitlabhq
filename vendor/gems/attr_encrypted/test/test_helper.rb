@@ -49,7 +49,6 @@ end
 # This plugin re-enables it.
 Sequel::Model.plugin :after_initialize
 
-OLD_SECRET_KEY = SecureRandom.random_bytes(32)
 SECRET_KEY = SecureRandom.random_bytes(32)
 
 def base64_encoding_regex

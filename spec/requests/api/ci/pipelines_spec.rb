@@ -889,10 +889,14 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             { 'Content-Type' => 'application/x-www-form-urlencoded' }
           end
 
+          let(:transformed_values) do
+            inputs.transform_values { |value| value.is_a?(String) ? value : value.to_json }
+          end
+
           subject(:post_request) do
             post api("/projects/#{project.id}/pipeline", user),
               headers: headers,
-              params: { ref: project.default_branch, inputs: inputs.transform_values(&:to_json) }
+              params: { ref: project.default_branch, inputs: transformed_values }
           end
 
           it_behaves_like 'creating a succesful pipeline'

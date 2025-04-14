@@ -455,6 +455,8 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`admin_role_assigned_to_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186570) | A custom admin role is assigned to a user | {{< icon name="check-circle" >}} Yes | GitLab [18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/507958) | User |
+| [`admin_role_unassigned_from_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186570) | A custom admin role is unassigned from a user | {{< icon name="check-circle" >}} Yes | GitLab [18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/507958) | User |
 | [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | A custom role is created | {{< icon name="check-circle" >}} Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) | Group, Instance |
 | [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is deleted | {{< icon name="check-circle" >}} Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 | [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is updated | {{< icon name="check-circle" >}} Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |

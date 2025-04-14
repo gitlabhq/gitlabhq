@@ -2355,6 +2355,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(projects).to eq([project1, project2, project3].sort_by(&:path).reverse)
     end
 
+    it 'reorders the input relation by full path asc' do
+      projects = described_class.sort_by_attribute(:full_path_asc)
+
+      expect(projects).to eq([project1, project2, project3].sort_by(&:full_path))
+    end
+
+    it 'reorders the input relation by full path desc' do
+      projects = described_class.sort_by_attribute(:full_path_desc)
+
+      expect(projects).to eq([project1, project2, project3].sort_by(&:full_path).reverse)
+    end
+
     context 'with project_statistics' do
       describe '.sort_by_attribute with project_statistics' do
         def create_project_statistics_with_size(project, size)

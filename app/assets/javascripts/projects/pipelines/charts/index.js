@@ -20,7 +20,6 @@ const mountPipelineChartsApp = (el) => {
     coverageChartPath,
     defaultBranch,
     testRunsEmptyStateImagePath,
-    projectQualitySummaryFeedbackImagePath,
   } = el.dataset;
 
   const shouldRenderDoraCharts = parseBoolean(el.dataset.shouldRenderDoraCharts);
@@ -46,7 +45,6 @@ const mountPipelineChartsApp = (el) => {
       defaultBranch,
       projectBranchCount,
       testRunsEmptyStateImagePath,
-      projectQualitySummaryFeedbackImagePath,
       contextId,
     },
     render: (createElement) => createElement(ProjectPipelinesCharts, {}),

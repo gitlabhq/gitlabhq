@@ -12,6 +12,7 @@ import {
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -54,6 +55,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -166,6 +168,9 @@ export default {
         this.tag.protection?.minimumAccessLevelForPush != null
       );
     },
+    isImmutable() {
+      return this.glFeatures.containerRegistryImmutableTags && this.tag.protection?.immutable;
+    },
     tagRowId() {
       return `${this.tag.name}_badge`;
     },
@@ -224,6 +229,22 @@ export default {
                 {{ accessLevelForDelete }}
               </li>
             </ul>
+          </gl-popover>
+        </template>
+
+        <template v-if="isImmutable">
+          <gl-badge
+            :id="tagRowId"
+            boundary="viewport"
+            class="gl-ml-4"
+            data-testid="immutable-badge"
+          >
+            {{ s__('ContainerRegistry|immutable') }}
+          </gl-badge>
+          <gl-popover :target="tagRowId" data-testid="immutable-popover">
+            {{
+              s__('ContainerRegistry|This container image tag cannot be overwritten or deleted.')
+            }}
           </gl-popover>
         </template>
 

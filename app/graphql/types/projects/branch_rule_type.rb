@@ -49,8 +49,7 @@ module Types
       field :squash_option,
         type: ::Types::Projects::BranchRules::SquashOptionType,
         null: true,
-        description: 'The default behavior for squashing in merge requests. ' \
-          'Returns null if `branch_rule_squash_settings` feature flag is disabled.',
+        description: 'Default behavior for squashing in merge requests. ',
         experiment: { milestone: '17.9' }
       field :updated_at,
         Types::TimeType,
@@ -58,8 +57,6 @@ module Types
         description: 'Timestamp of when the branch rule was last updated.'
 
       def squash_option
-        return unless ::Feature.enabled?(:branch_rule_squash_settings, branch_rule.project)
-
         branch_rule.squash_option
       end
     end

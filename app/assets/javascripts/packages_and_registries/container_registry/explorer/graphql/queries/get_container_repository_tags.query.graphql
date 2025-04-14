@@ -42,6 +42,7 @@ query getContainerRepositoryTags(
         protection {
           minimumAccessLevelForPush
           minimumAccessLevelForDelete
+          immutable
         }
         referrers {
           artifactType

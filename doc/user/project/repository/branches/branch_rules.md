@@ -172,15 +172,9 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181370) in GitLab 17.9 with a flag named `branch_rule_squash_settings`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/506542) in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/524860) in GitLab 17.11. Feature flag `branch_rule_squash_settings` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 

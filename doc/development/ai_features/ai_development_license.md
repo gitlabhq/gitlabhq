@@ -101,7 +101,7 @@ gdk restart
 - If you need to set up a Duo Pro add-on instead, run this Rake task:
 
 ```shell
-GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[pro]'
+GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[duo_pro]'
 ```
 
 ### Pros

@@ -68,7 +68,7 @@ class ProjectCiCdSetting < ApplicationRecord
     Gitlab::CurrentSettings.current_application_settings.keep_latest_artifact? && keep_latest_artifact?
   end
 
-  def override_pipeline_variables_allowed?(role_access_level)
+  def override_pipeline_variables_allowed?(role_access_level, user)
     return true unless restrict_user_defined_variables?
 
     project_minimum_access_level = pipeline_variables_minimum_override_role_for_database
@@ -77,7 +77,7 @@ class ProjectCiCdSetting < ApplicationRecord
 
     role_project_minimum_access_level = role_map_pipeline_variables_minimum_override_role[project_minimum_access_level]
 
-    role_access_level >= role_project_minimum_access_level
+    role_access_level >= role_project_minimum_access_level || user&.can_admin_all_resources?
   end
 
   def pipeline_variables_minimum_override_role=(value)

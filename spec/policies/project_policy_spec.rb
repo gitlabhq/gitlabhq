@@ -992,63 +992,79 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context 'when `pipeline_variables_minimum_override_role` is defined' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:user_role, :minimum_role, :restrict_variables, :allowed) do
-        :developer   | :no_one_allowed | true | false
-        :maintainer  | :no_one_allowed | true | false
-        :owner       | :no_one_allowed | true | false
-        :guest       | :no_one_allowed | true | false
-        :planner     | :no_one_allowed | true | false
-        :reporter    | :no_one_allowed | true | false
-        :anonymous   | :no_one_allowed | true | false
-        :developer   | :developer      | true | true
-        :maintainer  | :developer      | true | true
-        :owner       | :developer      | true | true
-        :guest       | :developer      | true | true
-        :planner     | :developer      | true | true
-        :reporter    | :developer      | true | true
-        :anonymous   | :developer      | true | true
-        :developer   | :maintainer     | true | false
-        :maintainer  | :maintainer     | true | true
-        :owner       | :maintainer     | true | true
-        :guest       | :maintainer     | true | false
-        :planner     | :maintainer     | true | false
-        :reporter    | :maintainer     | true | false
-        :anonymous   | :maintainer     | true | false
-        :developer   | :owner          | true | false
-        :maintainer  | :owner          | true | false
-        :owner       | :owner          | true | true
-        :guest       | :owner          | true | false
-        :planner     | :owner          | true | false
-        :reporter    | :owner          | true | false
-        :anonymous   | :owner          | true | false
-        :developer   | :no_one_allowed | false | true
-        :maintainer  | :no_one_allowed | false | true
-        :owner       | :no_one_allowed | false | true
-        :guest       | :no_one_allowed | false | true
-        :planner     | :no_one_allowed | false | true
-        :reporter    | :no_one_allowed | false | true
-        :anonymous   | :no_one_allowed | false | true
-        :developer   | :developer      | false | true
-        :maintainer  | :developer      | false | true
-        :owner       | :developer      | false | true
-        :guest       | :developer      | false | true
-        :planner     | :developer      | false | true
-        :reporter    | :developer      | false | true
-        :anonymous   | :developer      | false | true
-        :developer   | :maintainer     | false | true
-        :maintainer  | :maintainer     | false | true
-        :owner       | :maintainer     | false | true
-        :guest       | :maintainer     | false | true
-        :planner     | :maintainer     | false | true
-        :reporter    | :maintainer     | false | true
-        :anonymous   | :maintainer     | false | true
-        :developer   | :owner          | false | true
-        :maintainer  | :owner          | false | true
-        :owner       | :owner          | false | true
-        :guest       | :owner          | false | true
-        :planner     | :owner          | false | true
-        :reporter    | :owner          | false | true
-        :anonymous   | :owner          | false | true
+      where(:user_role, :admin_mode, :minimum_role, :restrict_variables, :allowed) do
+        :developer   | false | :no_one_allowed | true | false
+        :maintainer  | false | :no_one_allowed | true | false
+        :owner       | false | :no_one_allowed | true | false
+        :guest       | false | :no_one_allowed | true | false
+        :planner     | false | :no_one_allowed | true | false
+        :reporter    | false | :no_one_allowed | true | false
+        :anonymous   | false | :no_one_allowed | true | false
+        :developer   | false | :developer      | true | true
+        :maintainer  | false | :developer      | true | true
+        :owner       | false | :developer      | true | true
+        :guest       | false | :developer      | true | true
+        :planner     | false | :developer      | true | true
+        :reporter    | false | :developer      | true | true
+        :anonymous   | false | :developer      | true | true
+        :developer   | false | :maintainer     | true | false
+        :maintainer  | false | :maintainer     | true | true
+        :owner       | false | :maintainer     | true | true
+        :guest       | false | :maintainer     | true | false
+        :planner     | false | :maintainer     | true | false
+        :reporter    | false | :maintainer     | true | false
+        :anonymous   | false | :maintainer     | true | false
+        :developer   | false | :owner          | true | false
+        :maintainer  | false | :owner          | true | false
+        :owner       | false | :owner          | true | true
+        :guest       | false | :owner          | true | false
+        :planner     | false | :owner          | true | false
+        :reporter    | false | :owner          | true | false
+        :anonymous   | false | :owner          | true | false
+        :developer   | false | :no_one_allowed | false | true
+        :maintainer  | false | :no_one_allowed | false | true
+        :owner       | false | :no_one_allowed | false | true
+        :guest       | false | :no_one_allowed | false | true
+        :planner     | false | :no_one_allowed | false | true
+        :reporter    | false | :no_one_allowed | false | true
+        :anonymous   | false | :no_one_allowed | false | true
+        :developer   | false | :developer      | false | true
+        :maintainer  | false | :developer      | false | true
+        :owner       | false | :developer      | false | true
+        :guest       | false | :developer      | false | true
+        :planner     | false | :developer      | false | true
+        :reporter    | false | :developer      | false | true
+        :anonymous   | false | :developer      | false | true
+        :developer   | false | :maintainer     | false | true
+        :maintainer  | false | :maintainer     | false | true
+        :owner       | false | :maintainer     | false | true
+        :guest       | false | :maintainer     | false | true
+        :planner     | false | :maintainer     | false | true
+        :reporter    | false | :maintainer     | false | true
+        :anonymous   | false | :maintainer     | false | true
+        :developer   | false | :owner          | false | true
+        :maintainer  | false | :owner          | false | true
+        :owner       | false | :owner          | false | true
+        :guest       | false | :owner          | false | true
+        :planner     | false | :owner          | false | true
+        :reporter    | false | :owner          | false | true
+        :anonymous   | false | :owner          | false | true
+        :admin       | false | :no_one_allowed | false | true
+        :admin       | false | :owner          | false | true
+        :admin       | false | :maintainer     | false | true
+        :admin       | false | :developer      | false | true
+        :admin       | false | :no_one_allowed | true  | false
+        :admin       | false | :owner          | true  | false
+        :admin       | false | :maintainer     | true  | false
+        :admin       | false | :developer      | true  | true
+        :admin       | true  | :no_one_allowed | false | true
+        :admin       | true  | :developer      | false | true
+        :admin       | true  | :maintainer     | false | true
+        :admin       | true  | :owner          | false | true
+        :admin       | true  | :no_one_allowed | true  | false
+        :admin       | true  | :developer      | true  | true
+        :admin       | true  | :maintainer     | true  | true
+        :admin       | true  | :owner          | true  | true
       end
       with_them do
         let(:current_user) { public_send(user_role) }
@@ -1058,6 +1074,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           ci_cd_settings[:pipeline_variables_minimum_override_role] = minimum_role
           ci_cd_settings[:restrict_user_defined_variables] = restrict_variables
           ci_cd_settings.save!
+
+          enable_admin_mode!(current_user) if admin_mode
         end
 
         it 'allows/disallows set pipeline variables based on project defined minimum role' do
