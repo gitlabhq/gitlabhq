@@ -24,6 +24,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
 
       note = issue.notes.last
       expect(note.author).to eq(support_bot)
+      expect(note).to be_confidential
       expect(note.note).to include(email)
       expect(note.note).to include(original_author.to_reference)
     end
@@ -38,7 +39,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
   end
 
   describe '#execute' do
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project, :private) }
     let_it_be(:user) { create(:user) }
     let_it_be(:support_bot) { Users::Internal.support_bot }
     let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -47,6 +48,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
     let(:service) { described_class.new(target: issue, current_user: user, email: email) }
     let(:expected_confidentiality) { true }
 
+    let(:error_service_desk_disabled) { s_("ServiceDesk|Cannot convert to ticket because Service Desk is disabled.") }
     let(:error_underprivileged) { _("You don't have permission to manage this issue.") }
     let(:error_already_ticket) { s_("ServiceDesk|Cannot convert to ticket because it is already a ticket.") }
     let(:error_invalid_email) do
@@ -54,6 +56,11 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
     end
 
     let(:success_message) { s_('ServiceDesk|Converted issue to Service Desk ticket.') }
+
+    before do
+      # Support bot only has abilities in project if Service Desk enabled
+      allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
+    end
 
     context 'when the user is not a project member' do
       let(:error_message) { error_underprivileged }
@@ -88,6 +95,12 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
           before do
             issue.update!(confidential: true)
           end
+
+          it_behaves_like 'a successful service execution'
+        end
+
+        context 'with work item of type issue' do
+          let_it_be_with_reload(:issue) { create(:work_item, :issue, project: project) }
 
           it_behaves_like 'a successful service execution'
         end
@@ -138,6 +151,16 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
               author: Users::Internal.support_bot,
               service_desk_reply_to: 'user@example.com'
             )
+          end
+
+          it_behaves_like 'a failed service execution'
+        end
+
+        context 'when Service Desk is disabled' do
+          let(:error_message) { error_service_desk_disabled }
+
+          before do
+            allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(false)
           end
 
           it_behaves_like 'a failed service execution'

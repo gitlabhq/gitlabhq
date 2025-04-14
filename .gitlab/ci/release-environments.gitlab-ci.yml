@@ -15,7 +15,8 @@ start-release-environments-security-pipeline:
       - RUBY_VERSION_DEFAULT
       - RUBY_VERSION_NEXT
       - RUBY_VERSION
-
+      - REGISTRY_GROUP
+      - REGISTRY_HOST
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.
   # https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#pass-yaml-defined-cicd-variables

@@ -2,7 +2,7 @@
 
 class RepositoryCheckMailer < ApplicationMailer
   # rubocop: disable CodeReuse/ActiveRecord
-  layout 'empty_mailer'
+  layout 'mailer'
 
   helper EmailsHelper
 

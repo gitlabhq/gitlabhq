@@ -2,7 +2,7 @@
 
 module Namespaces
   class RateLimiterMailer < ApplicationMailer
-    layout 'empty_mailer'
+    layout 'mailer'
 
     helper EmailsHelper
 
@@ -11,7 +11,7 @@ module Namespaces
 
       headers = {
         to: recipient,
-        subject: [project_or_group.name, 'Notifications temporarily disabled'].join(' | ')
+        subject: [project_or_group.name, _('Notifications temporarily disabled')].join(' | ')
       }
 
       mail_with_locale(headers)

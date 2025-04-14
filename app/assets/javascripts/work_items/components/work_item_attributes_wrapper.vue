@@ -13,6 +13,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_STATUS,
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
@@ -54,6 +55,7 @@ export default {
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemCustomFields: () =>
       import('ee_component/work_items/components/work_item_custom_fields.vue'),
+    WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['hasSubepicsFeature'],
@@ -183,6 +185,9 @@ export default {
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
     },
+    workItemStatus() {
+      return this.isWidgetPresent(WIDGET_TYPE_STATUS);
+    },
     workItemAuthor() {
       return this.workItem?.author;
     },
@@ -198,6 +203,9 @@ export default {
     showWorkItemCustomFields() {
       return this.glFeatures.customFieldsFeature && this.customFields;
     },
+    showWorkItemStatus() {
+      return this.glFeatures.workItemStatusFeatureFlag;
+    },
   },
   methods: {
     isWidgetPresent(type, workItem = this.workItem) {
@@ -209,6 +217,16 @@ export default {
 
 <template>
   <div class="work-item-attributes-wrapper">
+    <work-item-status
+      v-if="showWorkItemStatus"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+      :full-path="fullPath"
+      @error="$emit('error', $event)"
+    />
     <work-item-assignees
       v-if="workItemAssignees"
       class="js-assignee work-item-attributes-item"

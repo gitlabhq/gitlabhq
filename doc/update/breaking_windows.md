@@ -33,7 +33,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](deprecations.md#deprecation-of-storage-enum-in-namespaceprojectsortenum-graphql-api) | Low | Fulfillment | Group |  |
 | [DAST `dast_devtools_api_timeout` will have a lower default value](deprecations.md#dast-dast_devtools_api_timeout-will-have-a-lower-default-value) | Low | Application security testing | Project |  |
 | [API Discovery will use branch pipelines by default](deprecations.md#api-discovery-will-use-branch-pipelines-by-default) | Low | Application_security_testing | Project |  |
-| [Subscription related API endpoints in the public API are deprecated](deprecations.md#subscription-related-api-endpoints-in-the-public-api-are-deprecated) | Low | Fulfillment | Instance |  |
 | [GitLab Advanced SAST will be enabled by default](deprecations.md#gitlab-advanced-sast-will-be-enabled-by-default) | Medium | Application security testing | Instance |  |
 | [Application Security Testing analyzers major version update](deprecations.md#application-security-testing-analyzers-major-version-update) | Low | Application security testing | Project |  |
 

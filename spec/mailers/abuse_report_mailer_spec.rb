@@ -17,6 +17,12 @@ RSpec.describe AbuseReportMailer do
     it_behaves_like 'appearance header and footer enabled'
     it_behaves_like 'appearance header and footer not enabled'
 
+    it_behaves_like 'an email sent from GitLab' do
+      let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
+      let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+      let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
+    end
+
     context 'with abuse_notification_email set' do
       it 'sends to the abuse_notification_email' do
         is_expected.to deliver_to 'admin@example.com'

@@ -1,5 +1,5 @@
 - title: "Subscription related API endpoints in the public API are deprecated"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 1
@@ -13,13 +13,15 @@
   body: |  # (required) Don't change this line.
     The following endpoints in the public REST API will be removed:
 
-    - `POST /api/v4/namespaces/:namespace_id/minutes`
-    - `GET /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
-    - `POST /api/v4/namespaces/:id/gitlab_subscription`
     - `PUT /api/v4/user/:id/credit_card_validation`
+    - `POST /api/v4/namespaces/:namespace_id/minutes`
+    - `PATCH /api/v4/namespaces/:previous_namespace_id/minutes/move/:target_namespace_id`
+    - `GET /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
     - `PUT /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
     - `POST /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
-    - `PATCH /api/v4/namespaces/:previous_namespace_id/minutes/move/:target_namespace_id`
+    - `POST /api/v4/namespaces/:id/gitlab_subscription`
+    - `PUT /api/v4/namespaces/:id/gitlab_subscription`
+    - `PUT /api/v4/namespaces/:id`
 
     These endpoints were being used by the Subscription Portal to manage subscription information on GitLab.com. Their
     usage has been replaced by internal endpoints with JWT authentication to support the upcoming Cells architecture.

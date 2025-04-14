@@ -41,6 +41,16 @@ requests and are triggered on the following events:
 - `user_update_for_group`
 - `user_update_for_team`
 
+{{< alert type="note" >}}
+
+Some events follow a newer schema-based format. Instead of `event_name`, these events use `object_kind`, `action`, 
+and `object_attributes`:
+
+- `gitlab_subscription_member_approval` (`action`: `enqueue`)
+- `gitlab_subscription_member_approvals` (`action`: `approve`, `deny`)
+
+{{< /alert >}}
+
 The triggers for most of these are self-explanatory, but `project_update` and `project_rename` require clarification:
 
 - `project_update` triggers when an attribute of a project is changed (including name, description, and tags)
@@ -857,6 +867,66 @@ X-Gitlab-Event: System Hook
     }
   ],
   "refs":["refs/heads/master"]
+}
+```
+
+## Events for member approval in subscription
+
+These events are triggered if [administrator approval for role promotions](settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on.
+
+**Request header**:
+
+```plaintext
+X-Gitlab-Event: System Hook
+```
+
+**Member queued for promotion management:**
+
+```json
+{
+  "object_kind": "gitlab_subscription_member_approval",
+  "action": "enqueue",
+  "object_attributes": {
+    "new_access_level": 30,
+    "old_access_level": 10,
+    "existing_member_id": 123
+  },
+  "user_id": 42,
+  "requested_by_user_id": 99,
+  "promotion_namespace_id": 789,
+  "created_at": "2025-04-10T14:00:00Z",
+  "updated_at": "2025-04-10T14:05:00Z"
+}
+```
+
+**User approved on a billable role by instance admin:**
+
+```json
+{
+  "object_kind": "gitlab_subscription_member_approvals",
+  "action": "approve",
+  "object_attributes": {
+    "promotion_request_ids_that_failed_to_apply": [],
+    "status": "success"
+  },
+  "reviewed_by_user_id": 101,
+  "user_id": 42,
+  "updated_at": "2025-04-10T14:10:00Z"
+}
+```
+
+**User denied on a billable role by instance admin:**
+
+```json
+{
+"object_kind": "gitlab_subscription_member_approvals",
+"action": "deny",
+"object_attributes": {
+"status": "success"
+},
+"reviewed_by_user_id": 101,
+"user_id": 42,
+"updated_at": "2025-04-10T14:12:00Z"
 }
 ```
 

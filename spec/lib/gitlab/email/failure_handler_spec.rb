@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Email::FailureHandler do
         expect(email).not_to be_nil
         expect(email.to).to match_array(["jake@adventuretime.ooo"])
         expect(email.subject).to include("Rejected")
-        expect(email.body.parts.last.to_s).to include(message)
+        expect(email.body.parts.last.decoded).to include(message)
       end
 
       it 'strips out the body before passing to EmailRejectionMailer' do

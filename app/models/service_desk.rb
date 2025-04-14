@@ -6,6 +6,8 @@ module ServiceDesk
   end
 
   def self.enabled?(project)
+    return false unless project.is_a?(Project)
+
     supported? && project.service_desk_enabled
   end
 
