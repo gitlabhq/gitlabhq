@@ -1,7 +1,7 @@
-@use 'highlight/common';
 @use 'constants';
 
 .rd-text-view-root {
+  background-color: var(--code-background, $gl-color-neutral-0);
   font-family: $monospace-font;
   line-height: constants.$code-line-height;
   font-size: constants.$code-font-size;
@@ -28,10 +28,10 @@
 .rd-hunk-header {
   // this is used when a hunk header doesn't have any text, only expand buttons
   min-height: calc(1em * $code-line-height);
-  border-top: 1px solid var(--rd-hunk-header-border-color, var(--gl-border-color-default));
-  border-bottom: 1px solid var(--rd-hunk-header-border-color, var(--gl-border-color-default));
-  background-color: var(--rd-hunk-header-background-color, $gray-50);
-  color: var(--rd-hunk-header-color, $gray-400);
+  border-top: 1px solid var(--diff-expansion-background-color, var(--gl-border-color-default));
+  border-bottom: 1px solid var(--diff-expansion-background-color, var(--gl-border-color-default));
+  background-color: var(--code-diff-hunk-header-background-color, $gray-50);
+  color: var(--code-diff-hunk-header-color, $gray-400);
 
   &:first-child {
     border-top: 0;
@@ -74,8 +74,6 @@
 }
 
 .rd-expand-lines-button {
-  @include common.diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,13 +82,13 @@
   font-size: 0;
   border: 0;
 
-  background-color: var(--rd-expand-lines-button-background-color, $gray-100);
-  color: var(--rd-expand-lines-button-color, var(--gl-text-color-subtle));
+  background-color: var(--code-diff-expand-button-background-color, $gray-100);
+  color: var(--code-diff-expand-button-color, var(--gl-text-color-subtle));
 
   &:hover,
   &:focus {
-    background-color: var(--rd-expand-lines-button-hover-background-color, $gray-200);
-    color: var(--rd-expand-lines-button-hover-color, $gray-800);
+    background-color:var(--code-diff-expand-button-hover-background-color, $gray-200);
+    color: var(--code-diff-expand-button-hover-color, $gray-800);
   }
 }
 
@@ -101,41 +99,48 @@
 .rd-line-number {
   padding: 0 10px 0 5px;
   text-align: right;
-  background-color: var(--rd-line-number-background-color, $white);
-
-  &:hover:not(:empty) {
-    @include common.line-number-hover;
-  }
+  background-color: var(--code-line-nubmer-background-color, $white);
 
   // override content border
   &:first-child {
     margin-left: -1px;
-    border-left: 1px solid var(--rd-line-number-adjacent-border-color, rgba(0, 0, 0, 0.125));
+    border-left: 1px solid rgba(0, 0, 0, 0.125);
+    border-left: 1px solid light-dark(rgba(0, 0, 0, 0.125), var(--gl-border-color-default));
   }
 }
 
-.rd-line-number:where([data-change=removed]) {
-  background-color: var(--rd-line-number-removed-background-color, $line-number-old);
+// Do not use nesting here to allow quick jump to code based on the selector
+.rd-line-number:hover:not(:empty) {
+  background-color: var(--code-line-nubmer-hover-background-color, $gl-color-purple-100);
+  border-color: var(--code-line-nubmer-hover-border-color, $gl-color-purple-200);
 }
 
-.rd-line-number:where([data-change=added]) {
-  background-color: var(--rd-line-number-added-background-color, $line-number-new);
+.rd-line-number:hover:not(:empty) .rd-line-link {
+  color: var(--code-line-nubmer-hover-color, $gl-color-neutral-600);
+}
+
+.rd-line-number[data-change=removed] {
+  background-color: var(--diff-deletion-color, var(--code-old-diff-line-number-background-color, $line-number-old));
+}
+
+.rd-line-number[data-change=added] {
+  background-color: var(--diff-addition-color, var(--code-new-diff-line-number-background-color, $line-number-new));
 }
 
 .rd-line-number-border-right,
 .rd-line-number-border-both {
-  border-right: 1px solid var(--rd-line-number-adjacent-border-color, rgba(0, 0, 0, 0.125));
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .rd-line-number-border-both {
-  border-left: 1px solid var(--rd-line-number-adjacent-border-color, rgba(0, 0, 0, 0.125));
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .rd-line-link {
   display: block;
 
   &, &:hover {
-    color: var(--rd-line-link-color, $gray-400);
+    color: var(--code-line-nubmer-color, $gray-400);
   }
 
   &::before {
@@ -162,21 +167,21 @@
   }
 }
 
-.rd-line-content:where([data-change=removed]) {
-  background-color: var(--rd-line-content-removed-background-color, $line-removed);
+.rd-line-content[data-change=removed] {
+  background-color: var(--diff-deletion-color, var(--code-old-diff-background-color, $line-removed));
 
   &::before {
     content: "-";
-    color: var(--rd-line-content-removed-pseudo-color, scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%));
+    color: var(--code-old-diff-sign-color, scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%));
   }
 }
 
-.rd-line-content:where([data-change=added]) {
-  background-color: var(--rd-line-content-added-background-color, $line-added);
+.rd-line-content[data-change=added] {
+  background-color: var(--diff-addition-color, var(--code-new-diff-background-color, $line-added));
 
   &::before {
     content: "+";
-    color: var(--rd-line-content-added-pseudo-color, scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
+    color: var(--code-new-diff-sign-color, scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
   }
 }
 

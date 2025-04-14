@@ -128,6 +128,36 @@ $dark-il: #de935f;
 }
 
 .code.dark {
+  --diff-expansion-background-color: #{$gl-color-neutral-600};
+
+  --code-line-nubmer-background-color: #{$dark-main-bg};
+  --code-line-nubmer-color: #{$dark-line-num-color};
+  --code-line-nubmer-hover-background-color: #{$gl-color-purple-800};
+  --code-line-nubmer-hover-border-color: #{$gl-color-purple-700};
+  --code-line-nubmer-hover-color: #{$gl-color-purple-50};
+
+  --code-old-diff-line-number-background-color: #{$dark-old-bg};
+  --code-old-diff-sign-color: #{$dark-line-num-color-old};
+  --code-old-diff-background-color: #{$dark-old-bg};
+  --code-old-diff-border-color: #{$dark-border};
+  --code-old-diff-color: #{$dark-line-num-color-old};
+  --code-old-inline-diff-background-color: #{$dark-old-idiff};
+
+  --code-new-diff-line-number-background-color: #{$dark-new-bg};
+  --code-new-diff-sign-color: #{$dark-line-num-color-new};
+  --code-new-diff-background-color: #{$dark-new-bg};
+  --code-new-diff-border-color: #{$dark-border};
+  --code-new-diff-color: #{$dark-line-num-color-new};
+  --code-new-inline-diff-background-color: #{$dark-new-idiff};
+
+  --code-diff-hunk-header-background-color: #{$dark-diff-match-color};
+  --code-diff-hunk-header-color: #{$dark-diff-match-bg};
+
+  --code-diff-expand-button-background-color: #{$gl-color-neutral-600};
+  --code-diff-expand-button-color: #{$gl-color-neutral-200};
+  --code-diff-expand-button-hover-background-color: #{$gl-color-neutral-300};
+  --code-diff-expand-button-hover-color: #{$gl-color-neutral-0};
+
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('title\\.class', $dark-nc);
@@ -165,6 +195,7 @@ $dark-il: #de935f;
   &,
   pre.code,
   .line_holder .line_content {
+    --code-background: #{$dark-main-bg};
     background-color: $dark-main-bg;
     color: $dark-line-color;
   }
@@ -187,8 +218,6 @@ $dark-il: #de935f;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gl-color-neutral-600};
-
       @include dark-diff-expansion-line;
     }
 

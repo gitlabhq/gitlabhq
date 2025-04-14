@@ -140,7 +140,8 @@ see [placeholder user limits](#placeholder-user-limits).
 
 {{< alert type="note" >}}
 
-Ghost user contributions are handled differently. Contributions previously made by the ghost user (deleted user) on the source instance will automatically be mapped to the ghost user on the destination instance without creating placeholder users.
+Contributions from a deleted user on the source instance are
+mapped automatically to that user on the destination instance.
 
 {{< /alert >}}
 
@@ -192,8 +193,8 @@ Placeholder users do not count towards license limits.
 
 A placeholder user is created for each user on the source instance, except in the following scenarios:
 
-- You are importing a project from [Gitea](gitea.md) and the user has been deleted on Gitea before the import.
-  Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
+- You're importing a project from [Gitea](gitea.md), and the user was deleted on Gitea before the import.
+  Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
 - You are importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
@@ -226,12 +227,6 @@ To preserve historical context, the placeholder user name and username are deriv
 
 #### View placeholder users
 
-{{< history >}}
-
-- Ability for administrators to filter for placeholder users for an instance [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521974) in GitLab 17.11.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -244,11 +239,30 @@ To view placeholder users created during imports to a top-level group and its su
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 
-Administrators can view all placeholder users created during imports for an entire instance:
+#### Filter for placeholder users
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521974) in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+Placeholder users are created on the destination instance while a group or project is imported.
+To filter for placeholder users created during imports for an entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
-1. Use the user search box to filter users by **type**.
+1. In the search box, filter users by **type**.
 
 #### Placeholder user limits
 
@@ -482,9 +496,8 @@ actual users later. Ensure all required reassignments are completed before keepi
 placeholders.
 
 You can keep contributions assigned to placeholder users either one at a time or in bulk.
-
-When applied in bulk, it affects the entire namespace and only users with the following
-**Reassignment status** values in the **Awaiting reassignment** tab:
+When you reassign contributions in bulk, the entire namespace and users with the following
+[reassignment statuses](#view-and-filter-by-reassignment-status) are affected:
 
 - `Not started`
 - `Rejected`
@@ -531,9 +544,9 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Notify** in the correct row.
 
-#### View and filter and sort by reassignment status
+#### View and filter by reassignment status
 
-You can review statuses of all placeholder users for which the reassignment process haven't been completed yet:
+To view the reassignment status of all placeholder users:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
@@ -542,12 +555,7 @@ You can review statuses of all placeholder users for which the reassignment proc
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. See the status of each placeholder user in **Reassignment status** column.
 
-You can filter by reassignment status:
-
-1. In filter dropdown list, select **Status**.
-1. Choose one of available statuses.
-
-In the **Awaiting reassignment** tab possible statuses are:
+In the **Awaiting reassignment** tab, possible statuses are:
 
 - `Not started` - Reassignment has not started.
 - `Pending approval` - Reassignment is waiting on user approval.
@@ -555,16 +563,13 @@ In the **Awaiting reassignment** tab possible statuses are:
 - `Rejected` - Reassignment was rejected by user.
 - `Failed` - Reassignment failed.
 
-In the **Reassigned** tab possible statuses are:
+In the **Reassigned** tab, possible statuses are:
 
 - `Success` - Reassignment succeeded.
 - `Kept as placeholder` - Placeholder user was made permanent.
 
-By default, the table is sorted alphabetically by placeholder user name. You can also sort the table by reassignment
-status:
-
-1. Select on the sort dropdown list.
-1. Select **Reassignment status**.
+By default, the table is sorted alphabetically by placeholder user name.
+You can also sort the table by reassignment status.
 
 ### Accept contribution reassignment
 

@@ -55,8 +55,6 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   end
 
   context 'with recipe endpoints' do
-    include_context 'for conan recipe endpoints'
-
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4/projects/#{project_id}" }
     let(:recipe_path) { package.conan_recipe_path }
 

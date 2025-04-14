@@ -35,7 +35,11 @@ module Gitlab
         end
 
         def relations_that_need_cleaning_before_deadline
-          relation = candidates.not_recently_reindexed.where('ondisk_size_bytes >= ?', minimum_index_size)
+          relation = candidates
+            .not_recently_reindexed
+            .without_parent_partitioned_tables
+            .where('ondisk_size_bytes >= ?', minimum_index_size)
+
           relation = relation.where.not(tablename: VERY_LARGE_TABLES) if too_late_for_very_large_table?
           relation
         end

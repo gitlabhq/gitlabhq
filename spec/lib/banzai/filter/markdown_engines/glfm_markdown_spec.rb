@@ -47,4 +47,13 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
     expect(engine.render('`code`')).to eq expected
   end
+
+  it 'turns on minimal markdown options' do
+    engine = described_class.new({ minimum_markdown: true })
+    expected = <<~TEXT
+      <p><a href="http://example.com">http://example.com</a> <em>emphasis</em> $x + y$</p>
+    TEXT
+
+    expect(engine.render('http://example.com _emphasis_ $x + y$')).to eq expected
+  end
 end

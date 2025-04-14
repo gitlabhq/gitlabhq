@@ -33,6 +33,15 @@ module Banzai
           unsafe: true
         }.freeze
 
+        # Supports the bare minimum markdown. Usually used for single line
+        # titles.
+        MINIMUM_MARKDOWN = {
+          autolink: true,
+          hardbreaks: false,
+          strikethrough: true,
+          unsafe: false
+        }.freeze
+
         def render(text)
           ::GLFMMarkdown.to_html(text, options: render_options)
         end
@@ -40,6 +49,7 @@ module Banzai
         private
 
         def render_options
+          return MINIMUM_MARKDOWN if minimum_markdown_enabled?
           return OPTIONS unless sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled?
 
           OPTIONS.merge(
@@ -61,6 +71,10 @@ module Banzai
 
         def raw_html_disabled?
           context[:disable_raw_html]
+        end
+
+        def minimum_markdown_enabled?
+          context[:minimum_markdown]
         end
       end
     end

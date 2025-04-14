@@ -27,6 +27,18 @@ module Gitlab
           .not_match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$")
       end
 
+      scope :without_parent_partitioned_tables, -> do
+        partitioned_table = PostgresPartitionedTable.arel_table
+        index_table = arel_table
+
+        parent_tables_query = PostgresPartitionedTable
+          .where(partitioned_table[:schema].eq(index_table[:schema]))
+          .where(partitioned_table[:name].eq(index_table[:tablename]))
+          .select(1)
+
+        where('NOT EXISTS (?)', parent_tables_query)
+      end
+
       scope :reindexing_leftovers, -> { match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").order(:name) }
 
       scope :not_match, ->(regex) { where("name !~ ?", regex) }

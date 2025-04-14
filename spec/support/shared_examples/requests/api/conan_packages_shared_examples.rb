@@ -146,6 +146,11 @@ RSpec.shared_examples 'conan search endpoint with access to package registry for
 end
 
 RSpec.shared_examples 'conan authenticate endpoint' do
+  let(:auth_token) { personal_access_token.token }
+  let(:headers) do
+    { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('foo', auth_token) }
+  end
+
   subject { get api(url), headers: headers }
 
   it_behaves_like 'conan FIPS mode'

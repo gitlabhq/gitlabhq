@@ -212,8 +212,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
     '/:package_channel/latest' do
-    include_context 'for conan recipe endpoints'
-
     let(:recipe_path) { package.conan_recipe_path }
     let(:url_suffix) { "#{recipe_path}/latest" }
 
@@ -250,8 +248,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
     '/:package_channel/revisions' do
-    include_context 'for conan recipe endpoints'
-
     let(:recipe_path) { package.conan_recipe_path }
     let(:url_suffix) { "#{recipe_path}/revisions" }
     let_it_be(:revision1) { package.conan_recipe_revisions.first }

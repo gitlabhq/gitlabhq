@@ -27,7 +27,7 @@
       - if empty_diff? && !@lazy
         = render RapidDiffs::EmptyStateComponent.new
 
-      .code{ class: helpers.user_color_scheme }
+      .rd-app-code-theme.code{ class: helpers.user_color_scheme }
         .rd-app-diffs-list{ data: { diffs_list: true } }
           = javascript_tag nonce: content_security_policy_nonce do
             :plain

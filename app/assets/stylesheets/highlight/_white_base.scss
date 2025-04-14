@@ -79,6 +79,10 @@ $white-gc-bg: #eaf2f5;
 }
 
 @mixin white-base {
+  --diff-expansion-background-color: #{$gl-color-neutral-100};
+
+  --code-background: #{$gl-color-neutral-0};
+
   // Line numbers
   .file-line-blame {
     @include line-link($gl-color-neutral-1000, 'git');
@@ -137,8 +141,6 @@ $white-gc-bg: #eaf2f5;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gl-color-neutral-100};
-
       &.expansion {
         &.match .diff-td {
           color: $gl-color-neutral-400;

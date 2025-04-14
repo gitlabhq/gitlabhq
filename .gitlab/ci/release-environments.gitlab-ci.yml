@@ -8,6 +8,8 @@ start-release-environments-security-pipeline:
   # as they cannot be overridden. See this issue for more context:
   #
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
+  needs:
+    - compile-production-assets
   inherit:
     variables:
       - RUBY_VERSION_DEFAULT
@@ -18,8 +20,8 @@ start-release-environments-security-pipeline:
   # They need to be explicitly passed on to the child pipeline.
   # https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#pass-yaml-defined-cicd-variables
   variables:
-    # This is needed by `release-environments-build-cng-env` (`.gitlab/ci/release-environments/security.gitlab-ci.yml`).
-    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    # used by build-cng-env to pass assets image tag to downstream CNG build pipeline
+    GLCI_ASSETS_IMAGE_TAG: $GLCI_ASSETS_IMAGE_TAG
   trigger:
     strategy: depend
     include:

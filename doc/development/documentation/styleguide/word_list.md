@@ -198,9 +198,9 @@ Use title case for **AI Impact Dashboard**.
 On first mention on a page, use **GitLab Duo AI Impact Dashboard**.
 Thereafter, use **AI Impact Dashboard** by itself.
 
-## AI-powered DevSecOps platform
+## AI-powered, AI-native
 
-If preceded by GitLab, capitalize **Platform**. For example, the GitLab AI-powered DevSecOps Platform.
+Use **AI-native** instead of **AI-powered**. For example, **Code Suggestions is an AI-native feature**.
 
 ## air gap, air-gapped
 
@@ -742,10 +742,6 @@ When writing about the Developer role:
 Do not use bold.
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
-
-## DevSecOps platform
-
-If preceded by GitLab, capitalize **Platform**. For example, the GitLab DevSecOps Platform.
 
 ## dialog
 

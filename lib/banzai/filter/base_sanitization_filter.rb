@@ -8,6 +8,7 @@ module Banzai
     # - Banzai::Filter::SanitizationFilter (Markdown)
     # - Banzai::Filter::AsciiDocSanitizationFilter (AsciiDoc/Asciidoctor)
     # - Banzai::Filter::BroadcastMessageSanitizationFilter (Markdown with styled links and line breaks)
+    # - Banzai::Filter::MinimumMarkdownSanitizationFilter (only inline elements)
     #
     # Extends HTML::Pipeline::SanitizationFilter with common rules.
     class BaseSanitizationFilter < HTML::Pipeline::SanitizationFilter

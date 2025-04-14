@@ -11,6 +11,7 @@
 }
 
 .rd-diff-file-header {
+  @apply gl-text-default;
   position: sticky;
   // 1px offset to hide top border
   top: calc(var(--rd-app-sticky-top, 1px) - 1px);

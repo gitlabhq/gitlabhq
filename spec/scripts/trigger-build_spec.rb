@@ -25,8 +25,7 @@ RSpec.describe Trigger, feature_category: :tooling do
       'GITLAB_USER_NAME' => 'gitlab_user_name',
       'GITLAB_USER_LOGIN' => 'gitlab_user_login',
       'QA_IMAGE' => 'qa_image',
-      'DOCS_PROJECT_API_TOKEN' => nil,
-      'CNG_SKIP_REDUNDANT_JOBS' => "false"
+      'DOCS_PROJECT_API_TOKEN' => nil
     }
   end
 
@@ -230,6 +229,11 @@ RSpec.describe Trigger, feature_category: :tooling do
   end
 
   describe Trigger::CNG do
+    before do
+      stub_env('CNG_SKIP_REDUNDANT_JOBS', 'false')
+      stub_env('GLCI_ASSETS_IMAGE_TAG', 'assets_tag')
+    end
+
     describe '#variables' do
       it 'does not include redundant variables' do
         expect(subject.variables).not_to include('TRIGGER_SOURCE', 'TRIGGERED_USER')
@@ -347,6 +351,25 @@ RSpec.describe Trigger, feature_category: :tooling do
 
           it 'sets GITLAB_VERSION to CI_COMMIT_SHA' do
             expect(subject.variables['GITLAB_VERSION']).to eq('ci_commit_sha')
+          end
+        end
+      end
+
+      describe "GLCI_ASSETS_IMAGE_TAG" do
+        context 'when GLCI_ASSETS_IMAGE_TAG is set' do
+          it 'sets GITLAB_ASSETS_TAG to GLCI_ASSETS_IMAGE_TAG value' do
+            expect(subject.variables['GITLAB_ASSETS_TAG']).to eq('assets_tag')
+          end
+        end
+
+        context 'when GLCI_ASSETS_IMAGE_TAG is not set' do
+          before do
+            stub_env('GLCI_ASSETS_IMAGE_TAG', '')
+          end
+
+          it 'sets COMPILE_ASSETS to true' do
+            expect(subject.variables['COMPILE_ASSETS']).to eq('true')
+            expect(subject.variables['GITLAB_ASSETS_TAG']).to be_nil
           end
         end
       end

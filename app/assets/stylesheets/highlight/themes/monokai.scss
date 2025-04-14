@@ -99,6 +99,38 @@ $monokai-gh: #75715e;
 }
 
 .code.monokai {
+  --diff-expansion-background-color: #{$gl-color-neutral-600};
+
+  --code-background: #{$monokai-bg};
+
+  --code-line-nubmer-background-color: #{$monokai-bg};
+  --code-line-nubmer-color: #{$monokai-line-num-color};
+  --code-line-nubmer-hover-background-color: #{$gl-color-purple-800};
+  --code-line-nubmer-hover-border-color: #{$gl-color-purple-700};
+  --code-line-nubmer-hover-color: #{$gl-color-purple-50};
+
+  --code-old-diff-line-number-background-color: #{$monokai-old-bg};
+  --code-old-diff-sign-color: #{$monokai-line-num-color-old};
+  --code-old-diff-background-color: #{$monokai-old-bg};
+  --code-old-diff-border-color: #{$monokai-diff-border};
+  --code-old-diff-color: #{$monokai-line-num-color-old};
+  --code-old-inline-diff-background-color: #{$monokai-old-idiff};
+
+  --code-new-diff-line-number-background-color: #{$monokai-new-bg};
+  --code-new-diff-sign-color: #{$monokai-line-num-color-new};
+  --code-new-diff-background-color: #{$monokai-new-bg};
+  --code-new-diff-border-color: #{$monokai-diff-border};
+  --code-new-diff-color: #{$monokai-line-num-color-new};
+  --code-new-inline-diff-background-color: #{$monokai-new-idiff};
+
+  --code-diff-hunk-header-background-color: #{$dark-diff-match-color};
+  --code-diff-hunk-header-color: #{$dark-diff-match-bg};
+
+  --code-diff-expand-button-background-color: #{$gl-color-neutral-600};
+  --code-diff-expand-button-color: #{$gl-color-neutral-200};
+  --code-diff-expand-button-hover-background-color: #{$gl-color-neutral-300};
+  --code-diff-expand-button-hover-color: #{$gl-color-neutral-0};
+
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('string', $monokai-s);
@@ -178,8 +210,6 @@ $monokai-gh: #75715e;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gl-color-neutral-600};
-
       @include dark-diff-expansion-line;
     }
 

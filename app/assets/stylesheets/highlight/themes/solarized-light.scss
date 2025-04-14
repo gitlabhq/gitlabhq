@@ -109,6 +109,30 @@ $solarized-light-il: #2aa198;
 }
 
 .code.solarized-light {
+  --diff-expansion-background-color: #{$gl-color-neutral-100};
+
+  --code-background: #{$solarized-light-pre-bg};
+
+  --code-line-nubmer-background-color: #{$solarized-light-line-bg};
+  --code-line-nubmer-color: #{$solarized-light-line-color};
+
+  --code-old-diff-line-number-background-color: #{$solarized-light-old-bg};
+  --code-old-diff-sign-color: #{$solarized-light-line-color-old};
+  --code-old-diff-background-color: #{$solarized-light-old-bg};
+  --code-old-diff-border-color: #{$solarized-light-border};
+  --code-old-diff-color: #{$solarized-light-line-color-old};
+  --code-old-inline-diff-background-color: #{$solarized-light-old-idiff};
+
+  --code-new-diff-line-number-background-color: #{$solarized-light-new-bg};
+  --code-new-diff-sign-color: #{$solarized-light-line-color-new};
+  --code-new-diff-background-color: #{$solarized-light-new-bg};
+  --code-new-diff-border-color: #{$solarized-light-border};
+  --code-new-diff-color: #{$solarized-light-line-color-new};
+  --code-new-inline-diff-background-color: #{$solarized-light-new-idiff};
+
+  --code-diff-hunk-header-background-color: #{$solarized-light-matchline-bg};
+  --code-diff-hunk-header-color: #{$gl-color-alpha-dark-24};
+
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('keyword', $solarized-light-k);
@@ -163,10 +187,6 @@ $solarized-light-il: #2aa198;
     &.old-nonewline .line_content,
     &.new-nonewline .line_content {
       @include match-line;
-    }
-
-    &.diff-grid-row {
-      --diff-expansion-background-color: #{$gl-color-neutral-100};
     }
 
     &.diff-grid-row.expansion .diff-td {

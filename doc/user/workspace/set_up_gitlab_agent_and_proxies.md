@@ -172,11 +172,15 @@ To automatically renew certificates, see [`cert-manager`](https://cert-manager.i
 
 ## Register a GitLab OAuth application
 
-To register an application on your GitLab instance:
+To register an OAuth application on your GitLab instance:
 
-1. [Configure GitLab as an OAuth 2.0 identity provider](../../integration/oauth_provider.md).
+1. [Create an OAuth application](../../integration/oauth_provider.md) in GitLab. You can create a:
+   - User-owned application
+   - Group-owned application
+   - Instance-wide application from the Admin area
 1. Set the redirect URI to `https://${GITLAB_WORKSPACES_PROXY_DOMAIN}/auth/callback`.
-1. Select the **Trusted** checkbox.
+1. Ensure the **Confidential** checkbox is selected. It should be selected by default.
+1. If you create an instance-wide application, also select the **Trusted** checkbox.
 1. Set the scopes to `api`, `read_user`, `openid`, and `profile`.
 1. Export your configuration values:
 
@@ -188,7 +192,7 @@ To register an application on your GitLab instance:
    export SIGNING_KEY="make_up_a_random_key_consisting_of_letters_numbers_and_special_chars"
    ```
 
-1. Store the client ID and generated secret securely. For examples, in 1Password.
+1. Store the client ID and generated secret securely, for example, in 1Password.
 
 ## Generate an SSH host key
 

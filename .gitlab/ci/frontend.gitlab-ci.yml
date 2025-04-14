@@ -43,10 +43,14 @@ compile-production-assets:
     - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   variables:
     GLCI_BUILD_ASSETS_IMAGE: "true"
+    GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env.env"
     ARCH: linux/amd64,linux/arm64
   before_script:
     - !reference [.compile-assets-base, before_script]
     - !reference [.buildx-setup, before_script]
+  after_script:
+    - source scripts/utils.sh
+    - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -58,6 +62,8 @@ compile-production-assets:
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
+    reports:
+      dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
 
 compile-production-assets as-if-foss:
   extends:

@@ -102,4 +102,23 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
       it { expect(subject).not_to include(ci_builds.index) }
     end
   end
+
+  context 'with partitioned parent table' do
+    before do
+      swapout_view_for_table(:postgres_partitioned_tables, connection: connection)
+      create(:postgres_partitioned_table, name: '_test_partitioned_parent')
+    end
+
+    let!(:parent_index) do
+      create(
+        :postgres_index_bloat_estimate,
+        index: create(:postgres_index, tablename: '_test_partitioned_parent', ondisk_size_bytes: 100.gigabytes),
+        bloat_size_bytes: 40.gigabytes
+      )
+    end
+
+    it 'excludes indexes from parent partitioned tables' do
+      expect(subject).not_to include(parent_index)
+    end
+  end
 end

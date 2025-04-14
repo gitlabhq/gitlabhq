@@ -6490,6 +6490,9 @@ msgstr ""
 msgid "AmazonQ|Create a merge request to incorporate Amazon Q suggestions"
 msgstr ""
 
+msgid "AmazonQ|Create an Amazon Q Developer profile in the %{linkStart}Amazon Q Developer console.%{linkEnd}"
+msgstr ""
+
 msgid "AmazonQ|Create an identity provider for this GitLab instance within AWS using the following values. %{helpStart}Learn more%{helpEnd}."
 msgstr ""
 

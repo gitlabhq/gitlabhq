@@ -843,11 +843,11 @@ h4 {
 }
 
 .idiff.deletion {
-  background: $line-removed-dark;
+  background: var(--code-old-inline-diff-background-color, $line-removed-dark);
 }
 
 .idiff.addition {
-  background: $line-added-dark;
+  background: var(--code-new-inline-diff-background-color, $line-added-dark);
 }
 
 /**

@@ -7,7 +7,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   let(:issuable_class) { Issue }
-  let(:issue) { create(:issue, title: 'An issue', description: 'A description') }
+  let(:issue) { create(:issue, title: 'An _issue_', description: 'A **description**') }
   let(:user) { create(:user) }
 
   describe "Associations" do
@@ -1157,5 +1157,21 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
       it_behaves_like 'an exportable'
     end
+  end
+
+  describe '#title_html' do
+    let(:expected_title) { 'An <em>issue</em>' }
+
+    subject { issue.title_html }
+
+    it { is_expected.to eq(expected_title) }
+  end
+
+  describe '#description_html' do
+    let(:expected_description) { '<p dir="auto">A <strong>description</strong></p>' }
+
+    subject { issue.description_html }
+
+    it { is_expected.to eq_no_sourcepos(expected_description) }
   end
 end

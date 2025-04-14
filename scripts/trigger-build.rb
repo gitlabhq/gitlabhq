@@ -206,7 +206,6 @@ module Trigger
   class CNG < Base
     TriggerRefBranchCreationFailed = Class.new(StandardError)
 
-    ASSETS_HASH = "cached-assets-hash.txt"
     DEFAULT_DEBIAN_IMAGE = "debian:bookworm-slim"
     DEFAULT_ALPINE_IMAGE = "alpine:3.20"
     DEFAULT_SKIPPED_JOBS = %w[final-images-listing].freeze
@@ -257,6 +256,14 @@ module Trigger
     end
 
     private
+
+    def assets_tag_variable
+      tag = ENV['GLCI_ASSETS_IMAGE_TAG']
+      return { 'GITLAB_ASSETS_TAG' => tag } unless tag.nil? || tag.empty?
+
+      logger.warn("No image tag found in GLCI_ASSETS_IMAGE_TAG environment variable, enabling asset compilation in CNG pipeline")
+      { 'COMPILE_ASSETS' => 'true' }
+    end
 
     # overridden base class methods
     def downstream_project_path
@@ -324,7 +331,8 @@ module Trigger
         "SKIP_JOB_REGEX" => DEFAULT_SKIPPED_JOB_REGEX,
         "DEBIAN_IMAGE" => DEFAULT_DEBIAN_IMAGE, # Make sure default values are always set to not end up as empty string
         "ALPINE_IMAGE" => DEFAULT_ALPINE_IMAGE, # Make sure default values are always set to not end up as empty string
-        **default_build_vars
+        **default_build_vars,
+        **assets_tag_variable
       }
     end
 

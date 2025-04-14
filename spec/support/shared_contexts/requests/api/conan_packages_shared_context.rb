@@ -20,12 +20,6 @@ RSpec.shared_context 'with conan api setup' do
   let(:conan_package_reference) { package.conan_package_references.first.reference }
 
   let(:job_token) { job.token }
-  let(:auth_token) { personal_access_token.token }
-
-  let(:headers) do
-    { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('foo', auth_token) }
-  end
-
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('SHA256'),
@@ -34,25 +28,15 @@ RSpec.shared_context 'with conan api setup' do
     )
   end
 
+  let(:jwt) { build_jwt(personal_access_token) }
+  let(:headers) { build_token_auth_header(jwt.encoded) }
+
   let(:snowplow_gitlab_standard_context) do
     { user: user, project: project, namespace: project.namespace, property: 'i_package_conan_user' }
   end
 end
 
-RSpec.shared_context 'for conan recipe endpoints' do
-  include PackagesManagerApiSpecHelpers
-  include HttpBasicAuthHelpers
-
-  let(:jwt) { build_jwt(personal_access_token) }
-  let(:headers) { build_token_auth_header(jwt.encoded) }
-end
-
 RSpec.shared_context 'for conan file download endpoints' do
-  include PackagesManagerApiSpecHelpers
-  include HttpBasicAuthHelpers
-
-  let(:jwt) { build_jwt(personal_access_token) }
-  let(:headers) { build_token_auth_header(jwt.encoded) }
   let(:recipe_path) { package.conan_recipe_path }
   let(:package_file) { package.package_files.find_by(file_name: 'conaninfo.txt') }
   let(:recipe_file) { package.package_files.find_by!(file_name: 'conanfile.py') }
@@ -61,13 +45,10 @@ RSpec.shared_context 'for conan file download endpoints' do
 end
 
 RSpec.shared_context 'for conan file upload endpoints' do
-  include PackagesManagerApiSpecHelpers
   include WorkhorseHelpers
-  include HttpBasicAuthHelpers
 
   include_context 'workhorse headers'
 
-  let(:jwt) { build_jwt(personal_access_token) }
   let(:headers_with_token) { build_token_auth_header(jwt.encoded).merge(workhorse_headers) }
   let(:recipe_path) { "#{recipe_path_name}/#{recipe_path_version}/#{recipe_path_username}/#{recipe_path_channel}" }
   let(:recipe_path_name) { "#{package.name}_new" }

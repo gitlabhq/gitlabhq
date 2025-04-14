@@ -2,21 +2,25 @@
 
 module Banzai
   module Pipeline
-    class SingleLinePipeline < BasePipeline
+    # Does the same transformation as SingleLinePipeline, but runs
+    # it through the MarkdownFilter first
+    class SingleLineMarkdownPipeline < SingleLinePipeline
       def self.filters
         @filters ||= FilterArray[
-          Filter::HtmlEntityFilter,
+          Filter::MarkdownFilter,
+          Filter::ConvertTextToDocFilter,
           Filter::MinimumMarkdownSanitizationFilter,
           Filter::SanitizeLinkFilter,
           Filter::AssetProxyFilter,
           Filter::EmojiFilter,
           Filter::CustomEmojiFilter,
-          Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
           *reference_filters
         ]
       end
 
+      # UserReferenceFilter is intentionally excluded to prevent generating
+      # a notification. This pipeline is mostly for titles.
       def self.reference_filters
         [
           Filter::References::UserReferenceFilter,
@@ -33,13 +37,10 @@ module Banzai
       end
 
       def self.transform_context(context)
-        context = Filter::AssetProxyFilter.transform_context(context)
-        context[:only_path] = true unless context.key?(:only_path)
-
-        context
+        super.merge(minimum_markdown: true)
       end
     end
   end
 end
 
-Banzai::Pipeline::SingleLinePipeline.prepend_mod_with('Banzai::Pipeline::SingleLinePipeline')
+Banzai::Pipeline::SingleLinePipeline.prepend_mod_with('Banzai::Pipeline::SingleLineMarkdownPipeline')

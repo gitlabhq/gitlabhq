@@ -17,11 +17,6 @@ include:
 .build-cng-env:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim-bookworm
   stage: prepare
-  needs:
-    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
-    # TODO: refactor to pass assets hash as environment variable to not download all of the actual assets needlessly
-    - pipeline: $PARENT_PIPELINE_ID
-      job: compile-production-assets
   variables:
     BUILD_ENV: build.env
     CNG_PROJECT_PATH: "${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]"
@@ -32,7 +27,6 @@ include:
     - install_gitlab_gem
   script:
     - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > $BUILD_ENV'
-    - echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
     - echo -e "section_start:`date +%s`:cng_var_setup_log[collapsed=true]\r\e[0KCNG Variables Script Log Output"
     - cat $CNG_VAR_SETUP_LOG_FILE
     - echo -e "section_end:`date +%s`:cng_var_setup_log\r\e[0K"
@@ -58,6 +52,7 @@ include:
     GITLAB_VERSION: "${GITLAB_VERSION}"
     GITLAB_TAG: "${GITLAB_TAG}"
     GITLAB_ASSETS_TAG: "${GITLAB_ASSETS_TAG}"
+    COMPILE_ASSETS: "${COMPILE_ASSETS}"
     CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
     EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
     GITLAB_ELASTICSEARCH_INDEXER_VERSION: "${GITLAB_ELASTICSEARCH_INDEXER_VERSION}"
