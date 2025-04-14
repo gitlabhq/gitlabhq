@@ -10,7 +10,6 @@ import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   findDescriptionWidget,
   newWorkItemId,
@@ -39,7 +38,7 @@ export default {
     WorkItemDescriptionRendered,
     WorkItemDescriptionTemplateListbox,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   provide: {
     editorAiActions: window.gon?.licensed_features?.generateDescription
       ? [generateDescriptionAction()]

@@ -64,6 +64,9 @@ export const typePolicies = {
       },
     },
   },
+  GroupDora: {
+    merge: true,
+  },
   Dora: {
     merge: true,
   },

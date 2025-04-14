@@ -128,9 +128,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
 
+  condition(:archive_group_enabled, scope: :subject) do
+    Feature.enabled?(:archive_group, @subject.root_ancestor)
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
+
+  rule { (admin | owner) & archive_group_enabled }.enable :archive_group
 
   rule { public_group }.policy do
     enable :read_group

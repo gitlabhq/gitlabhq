@@ -14,7 +14,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_PAGE_SIZE,
   INSTRUMENT_TAB_LABELS,
@@ -49,7 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   provide() {
     return {
       currentTab: computed(() => this.currentTab),

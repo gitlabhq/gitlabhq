@@ -2417,6 +2417,196 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  describe "POST /groups/:id/archive" do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    let_it_be_with_refind(:group) { create(:group, owners: user1) }
+    let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
+    let_it_be_with_refind(:project1) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project2) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project3) { create(:project, namespace: group_2) }
+
+    before do
+      stub_feature_flags(archive_group: true)
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401' do
+        post api("/groups/#{group.id}/archive")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated as owner' do
+      it 'archives the group and all of its projects', :aggregate_failures do
+        expect_log_keys(
+          caller_id: "POST /api/:version/groups/:id/archive",
+          route: "/api/:version/groups/:id/archive",
+          root_namespace: group.path
+        )
+
+        post api("/groups/#{group.id}/archive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['id']).to eq(group.id)
+        expect(json_response['archived']).to be true
+        expect(group.namespace_settings.reload.archived).to eq(true)
+        expect(project1.reload.archived?).to be true
+        expect(project2.reload.archived?).to be true
+      end
+    end
+
+    context 'when authenticated as owner and group is already archived' do
+      before do
+        group.namespace_settings.update!(archived: true)
+      end
+
+      it 'returns an error', :aggregate_failures do
+        post api("/groups/#{group.id}/archive", user1)
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Group is already archived!")
+      end
+    end
+
+    context 'when authenticated as owner and project is shared with the group' do
+      before do
+        project3.project_group_links.create!(
+          group_id: group.id,
+          group_access: Gitlab::Access::DEVELOPER,
+          expires_at: 1.month.from_now
+        )
+      end
+
+      it 'does not archive the shared project', :aggregate_failures do
+        post api("/groups/#{group.id}/archive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project1.reload.archived?).to be true
+        expect(project2.reload.archived?).to be true
+        expect(project3.reload.archived?).to be false
+      end
+    end
+
+    context 'when authenticated as non-owner' do
+      it 'returns 403' do
+        post api("/groups/#{group.id}/archive", user2)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(archive_group: false)
+      end
+
+      it 'returns 403' do
+        post api("/groups/#{group.id}/archive", user1)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "POST /groups/:id/unarchive" do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    let_it_be_with_refind(:group) { create(:group, owners: user1) }
+    let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
+    let_it_be_with_refind(:project1) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project2) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project3) { create(:project, namespace: group_2) }
+
+    before_all do
+      stub_feature_flags(archive_group: true)
+      group.namespace_settings.update!(archived: true)
+      project1.update!(archived: true)
+      project2.update!(archived: true)
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401' do
+        post api("/groups/#{group.id}/unarchive")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated as owner and group is archived' do
+      it 'unarchives the group and all of its projects', :aggregate_failures do
+        expect_log_keys(
+          caller_id: "POST /api/:version/groups/:id/unarchive",
+          route: "/api/:version/groups/:id/unarchive",
+          root_namespace: group.path
+        )
+
+        post api("/groups/#{group.id}/unarchive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['id']).to eq(group.id)
+        expect(json_response['archived']).to be false
+        expect(group.namespace_settings.reload.archived).to eq(false)
+        expect(project1.reload.archived?).to be false
+        expect(project2.reload.archived?).to be false
+      end
+    end
+
+    context 'when authenticated as owner and group is already unarchived' do
+      before do
+        group.namespace_settings.update!(archived: false)
+      end
+
+      it 'returns an error', :aggregate_failures do
+        post api("/groups/#{group.id}/unarchive", user1)
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Group is already unarchived!")
+      end
+    end
+
+    context 'when authenticated as owner and project is shared with the group' do
+      before do
+        project3.project_group_links.create!(
+          group_id: group.id,
+          group_access: Gitlab::Access::DEVELOPER,
+          expires_at: 1.month.from_now
+        )
+
+        group.namespace_settings.update!(archived: true)
+        project1.update!(archived: true)
+        project2.update!(archived: true)
+        project3.update!(archived: true)
+      end
+
+      it 'does not unarchive the shared project', :aggregate_failures do
+        post api("/groups/#{group.id}/unarchive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project1.reload.archived?).to be false
+        expect(project2.reload.archived?).to be false
+        expect(project3.reload.archived?).to be true
+      end
+    end
+
+    context 'when authenticated as non-owner' do
+      it 'returns 403' do
+        post api("/groups/#{group.id}/unarchive", user2)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(archive_group: false)
+      end
+
+      it 'returns 403' do
+        post api("/groups/#{group.id}/unarchive", user1)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe 'GET /groups/:id/subgroups' do
     let!(:subgroup1) { create(:group, parent: group1) }
     let!(:subgroup2) { create(:group, :private, parent: group1) }

@@ -15,12 +15,16 @@ import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters as mapVuexGetters } from 'vuex';
 import { mapActions, mapState } from 'pinia';
+import { keysFor, MR_TOGGLE_REVIEW } from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
+import { sanitize } from '~/lib/dompurify';
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
 import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
@@ -28,6 +32,8 @@ import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
 import { reviewable } from '../utils/file_reviews';
 import DiffStats from './diff_stats.vue';
+
+const createHotkeyHtml = (key) => `<kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`;
 
 export default {
   components: {
@@ -212,6 +218,13 @@ export default {
       'setFileForcedOpen',
       'toggleFileCommentForm',
     ]),
+    fileReviewTooltip() {
+      const { description } = MR_TOGGLE_REVIEW;
+      const keys = keysFor(MR_TOGGLE_REVIEW);
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} ${createHotkeyHtml(keys[0])}`);
+    },
     handleToggleFile() {
       this.setFileForcedOpen({
         filePath: this.diffFile.file_path,
@@ -361,10 +374,9 @@ export default {
       />
       <gl-form-checkbox
         v-if="isReviewable && showLocalFileReviews"
-        v-gl-tooltip.hover.focus.left
+        v-gl-tooltip.hover.focus.left.html="fileReviewTooltip"
         data-testid="fileReviewCheckbox"
         class="-gl-mb-3 gl-mr-5 gl-flex gl-items-center"
-        :title="$options.i18n.fileReviewTooltip"
         :checked="reviewed"
         @change="toggleReview"
       >

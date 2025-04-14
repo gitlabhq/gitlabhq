@@ -347,7 +347,9 @@ module DiffHelper
   end
 
   def hide_whitespace?
-    params[:w] == '1'
+    return params[:w] == '1' if params.key?(:w)
+
+    current_user.nil? || !current_user.show_whitespace_in_diffs
   end
 
   def toggle_whitespace_link(url, options)

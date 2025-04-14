@@ -181,6 +181,7 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
   delegate :default_branch_protection_defaults, to: :namespace_settings, allow_nil: true
+  delegate :archived, :archived=, to: :namespace_settings, allow_nil: true
   delegate :math_rendering_limits_enabled,
     :lock_math_rendering_limits_enabled,
     to: :namespace_settings, allow_nil: true
@@ -234,6 +235,9 @@ class Namespace < ApplicationRecord
   scope :ordered_by_name, -> { order(:name) }
   scope :top_level, -> { by_parent(nil) }
   scope :with_project_statistics, -> { includes(projects: :statistics) }
+
+  scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
+  scope :non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
 
   scope :with_statistics, -> do
     namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }
@@ -382,6 +386,18 @@ class Namespace < ApplicationRecord
     def username_reserved?(username)
       without_project_namespaces.top_level.find_by_path_or_name(username).present?
     end
+  end
+
+  def archive
+    return false if namespace_settings.archived?
+
+    namespace_settings.update(archived: true)
+  end
+
+  def unarchive
+    return false unless namespace_settings.archived?
+
+    namespace_settings.update(archived: false)
   end
 
   def to_reference_base(from = nil, full: false, absolute_path: false)

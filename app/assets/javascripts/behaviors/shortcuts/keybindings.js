@@ -483,6 +483,13 @@ export const MR_ADD_COMMENT_NOW = {
   customizable: false,
 };
 
+export const MR_TOGGLE_REVIEW = {
+  id: 'mergeRequests.toggleReview',
+  description: s__('MergeRequest|Viewed by me'),
+  defaultKeys: ['v'],
+  customizable: false,
+};
+
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
   description: __('Next unresolved thread'),
@@ -708,6 +715,7 @@ const MR_SHORTCUTS_GROUP = {
     MR_TOGGLE_FILE_BROWSER,
     MR_ADD_TO_REVIEW,
     MR_ADD_COMMENT_NOW,
+    MR_TOGGLE_REVIEW,
   ],
 };
 

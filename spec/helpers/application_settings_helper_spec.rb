@@ -85,6 +85,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys
           users_api_limit_ssh_key users_api_limit_gpg_keys users_api_limit_gpg_key
           group_shared_groups_api_limit
+          group_archive_unarchive_api_limit
           group_invited_groups_api_limit
           project_invited_groups_api_limit
           create_organization_api_limit

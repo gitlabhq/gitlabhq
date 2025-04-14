@@ -14747,9 +14747,6 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
-msgid "Collapses this file (only for you) until it’s changed again."
-msgstr ""
-
 msgid "Collector hostname"
 msgstr ""
 
@@ -38023,6 +38020,9 @@ msgid "MergeRequest|This description was generated for revision %{revision} usin
 msgstr ""
 
 msgid "MergeRequest|This description was generated using AI"
+msgstr ""
+
+msgid "MergeRequest|Viewed by me"
 msgstr ""
 
 msgid "MergeTopics|%{sourceTopic} will be removed"

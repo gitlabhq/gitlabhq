@@ -43,6 +43,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         group_api_limit: 400,
+        group_archive_unarchive_api_limit: 60,
         group_invited_groups_api_limit: 60,
         group_projects_api_limit: 600,
         group_shared_groups_api_limit: 60,

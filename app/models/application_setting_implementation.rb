@@ -295,6 +295,7 @@ module ApplicationSettingImplementation
         asciidoc_max_includes: 32,
         use_clickhouse_for_analytics: false,
         group_api_limit: 400,
+        group_archive_unarchive_api_limit: 60,
         group_invited_groups_api_limit: 60,
         group_projects_api_limit: 600,
         group_shared_groups_api_limit: 60,

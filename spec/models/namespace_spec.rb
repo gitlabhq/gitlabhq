@@ -644,6 +644,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:math_rendering_limits_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:archived).to(:namespace_settings).allow_nil }
     it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
@@ -781,6 +782,56 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Namespaces::Traversal::Linear) }
     it { is_expected.to include_module(Namespaces::Traversal::RecursiveScopes) }
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
+  end
+
+  describe 'archive and unarchive' do
+    let_it_be(:namespace) { create(:group) }
+
+    describe '#archive' do
+      context 'when namespace is not archived' do
+        before do
+          namespace.namespace_settings.update!(archived: false)
+        end
+
+        it 'archives the namespace' do
+          expect(namespace.archive).to be true
+          expect(namespace.namespace_settings.reload.archived).to eq(true)
+        end
+      end
+
+      context 'when namespace is already archived' do
+        before do
+          namespace.namespace_settings.update!(archived: true)
+        end
+
+        it 'returns false' do
+          expect(namespace.archive).to be false
+        end
+      end
+    end
+
+    describe '#unarchive' do
+      context 'when namespace is archived' do
+        before do
+          namespace.namespace_settings.update!(archived: true)
+        end
+
+        it 'unarchives the namespace' do
+          expect(namespace.unarchive).to be true
+          expect(namespace.namespace_settings.reload.archived).to eq(false)
+        end
+      end
+
+      context 'when namespace is not archived' do
+        before do
+          namespace.namespace_settings.update!(archived: false)
+        end
+
+        it 'returns false' do
+          expect(namespace.unarchive).to be false
+        end
+      end
+    end
   end
 
   describe '#traversal_ids' do

@@ -113,52 +113,71 @@ Prerequisites:
 1. Enter a name for the service account. A username is automatically generated based on the name. You can modify the username if needed.
 1. Select **Create service account**.
 
-## Manage a service account
+## Edit a service account
 
 You can view, delete or edit an existing service account.
 
+Prerequisites:
+
+- For instance-level service accounts, you must be an administrator for the instance.
+- For group-level service accounts, you must have the Owner role in a top-level group.
+
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
-1. Delete a service account by selecting the three-dot menu (**⋮**) and choosing **Delete**.
-1. Edit a service account's name or username by selecting the three-dot menu (**⋮**) and choosing **Edit**.
+1. Identify a service account.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit**.
+1. Edit the name or username for the service account.
+1. Select **Save changes**.
 
-## Add a service account to subgroup or project
+## Delete a service account
 
-In terms of functionality, a service account is the same as an [external user](../../administration/external_users.md)
-and has minimal access when you first create it.
+When you delete a service account, any contributions made by the account are retained and ownership
+is transfered to a system-wide ghost user account. These contributions can include activity such as
+merge requests, issues, projects, and groups.
 
-You must manually add the service account to each
-[project](../project/members/_index.md#add-users-to-a-project) or
-[group](../group/_index.md#add-users-to-a-group) you want the account to have access to.
+Prerequisites:
 
-There is no limit to the number of service accounts you can add to a project or group.
+- For instance-level service accounts, you must be an administrator for the instance.
+- For group-level service accounts, you must have the Owner role in a top-level group.
 
-A service account:
+1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Identify a service account.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete Account**.
+1. Enter the name of the service account.
+1. Select **Delete user**.
 
-- Can have different roles across multiple subgroups and projects of the same top-level group.
-- When created by a top-level group owner, only belongs to one top-level group.
+You can also delete the service account and any contributions made by the account. These
+contributions can include activity such as merge requests, issues, groups, and projects.
 
-### Add to a subgroup or project
+1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Identify a service account.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete Account and Contributions**.
+1. Enter the name of the service account.
+1. Select **Delete user and contributions**.
 
-You can add the service account to a subgroup or project through the:
+You can also delete service accounts through the API.
 
-- [API](../../api/members.md#add-a-member-to-a-group-or-project).
-- [Group members UI](../group/_index.md#add-users-to-a-group).
-- [Project members UI](../project/members/_index.md#add-users-to-a-project).
+- For instance-level service accounts, use the [users API](../../api/users.md#delete-a-user).
+- For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-service-account-user).
 
-### Change a service account role in a subgroup or project
+## Service account access to groups and projects
 
-You can change a service account role in a subgroup or project through the UI or the API.
+Prerequisites:
 
-To use the UI, go to the subgroup's or project's membership list and change the service
-account's role.
+- For instance-level service accounts, you must be an administrator for the instance.
+- For group-level service accounts, you must have the Owner role in a top-level group.
 
-To use the API, call the following endpoint:
+Service accounts are similar to [external users](../../administration/external_users.md). When first
+created, they have limited access to groups and projects. To give a service account access to
+resources, you must add it to each group or project.
 
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" \ --data "user_id=<service_account_user_id>&access_level=30" "https://gitlab.example.com/api/v4/projects/<project_id>/members"
-```
+There is no limit to the number of service accounts you can add to a group or project. Service accounts
+can have different roles in each group, subgroup, or project they are a member of.
+However, group-level service accounts can only belong to one top-level group.
 
-For more information on the attributes, see the [API documentation on editing a member of a group or project](../../api/members.md#edit-a-member-of-a-group-or-project).
+Access to groups and projects is the same for both human and service users. For more information, see
+[groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
+
+You can also manage group and project assignments with the [members API](../../api/members.md).
 
 ## View and manage personal access tokens for a service account
 
@@ -228,46 +247,6 @@ Prerequisites:
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
 1. Select **Revoke**.
 1. On the confirmation dialog, select **Revoke**.
-
-## Delete a service account via API
-
-### Top-Level Group Owners
-
-Prerequisites:
-
-- You must have the Owner role in a top-level group.
-
-To delete a service account, [use the service accounts API to delete the service account user](../../api/group_service_accounts.md#delete-a-service-account-user).
-
-### Administrators in GitLab Self-Managed
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-Prerequisites:
-
-- You must be an administrator for the instance the service account is associated with.
-
-To delete a service account, [use the users API to delete the service account user](../../api/users.md#delete-a-user).
-
-## Restrict a service account
-
-Prerequisites:
-
-- You must have the Owner role for the group the service account is associated with.
-
-If you are not an administrator for the instance or group a service account is associated with, you cannot directly delete that service account. Instead:
-
-1. Remove the service account as a member of all subgroups and projects:
-
-   ```shell
-   curl --request DELETE --header "PRIVATE-TOKEN: <access_token_id>" "https://gitlab.example.com/api/v4/groups/<group_id>/members/<service_account_id>"
-   ```
-
-   For more information, see the [API documentation on removing a member from a group or project](../../api/members.md#remove-a-member-from-a-group-or-project).
 
 ## Related topics
 

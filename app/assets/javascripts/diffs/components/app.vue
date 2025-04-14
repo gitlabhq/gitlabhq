@@ -14,6 +14,7 @@ import {
   MR_NEXT_FILE_IN_DIFF,
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
+  MR_TOGGLE_REVIEW,
 } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
@@ -464,6 +465,8 @@ export default {
       'setDiffViewType',
       'setShowWhitespace',
       'goToFile',
+      'reviewFile',
+      'setFileCollapsedByUser',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility']),
@@ -475,6 +478,16 @@ export default {
       createAlert({
         message: __('Something went wrong fetching the scanner findings. Please try again.'),
       });
+    },
+    toggleActiveFileReview() {
+      const activeFile = this.diffFiles.find((file) => file.file_hash === this.currentDiffFileId);
+
+      if (activeFile) {
+        const reviewed = !this.fileReviews[activeFile.id];
+        this.reviewFile({ file: activeFile, reviewed });
+
+        this.setFileCollapsedByUser({ filePath: activeFile.file_path, collapsed: reviewed });
+      }
     },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
@@ -644,7 +657,7 @@ export default {
       Mousetrap.bind(keysFor(MR_COMMITS_PREVIOUS_COMMIT), () =>
         this.moveToNeighboringCommit({ direction: 'previous' }),
       );
-
+      Mousetrap.bind(keysFor(MR_TOGGLE_REVIEW), () => this.toggleActiveFileReview());
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();
       });
@@ -658,6 +671,7 @@ export default {
       Mousetrap.unbind(keysFor(MR_NEXT_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
+      Mousetrap.unbind(keysFor(MR_TOGGLE_REVIEW));
       Mousetrap.unbind(['ctrl+f', 'command+f', 'mod+f', 'mod+g']);
       window.removeEventListener('blur', this.handleBrowserFindActivation);
       this.listenersAttached = false;

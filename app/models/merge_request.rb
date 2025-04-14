@@ -2515,10 +2515,9 @@ class MergeRequest < ApplicationRecord
     Gitlab::MergeRequests::LockedSet.remove(self.id)
   end
 
-  def first_diffs_slice(limit)
+  def first_diffs_slice(limit, diff_options = {})
     diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
-
-    diff.paginated_diffs(1, limit).diff_files
+    diff.paginated_diffs(1, limit, diff_options).diff_files
   end
 
   def squash_option

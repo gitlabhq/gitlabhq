@@ -15,8 +15,8 @@ module Gitlab
         delegate :limit_value, :current_page, :next_page, :prev_page, :total_count,
           :total_pages, to: :paginated_collection
 
-        def initialize(merge_request_diff, page, per_page)
-          super(merge_request_diff, diff_options: nil)
+        def initialize(merge_request_diff, page, per_page, diff_options = nil)
+          super(merge_request_diff, diff_options: diff_options)
 
           @paginated_collection = load_paginated_collection(page, per_page)
         end

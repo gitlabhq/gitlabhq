@@ -11865,7 +11865,8 @@ CREATE TABLE ci_resources (
     resource_group_id bigint NOT NULL,
     build_id bigint,
     partition_id bigint,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_f3eccb9d35 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_resources_id_seq

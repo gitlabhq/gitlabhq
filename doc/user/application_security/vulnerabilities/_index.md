@@ -257,8 +257,13 @@ The following data is shared with third-party AI APIs:
 
 {{< /details >}}
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6 with a flag named [`resolve_vulnerability_in_mr`](https://gitlab.com/gitlab-org/gitlab/-/issues/482753). Disabled by default.
-> [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185452) in GitLab 17.11. Feature flag `resolve_vulnerability_in_mr` removed.
+
+{{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
 resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.

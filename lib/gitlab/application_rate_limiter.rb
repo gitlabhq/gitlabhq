@@ -32,6 +32,7 @@ module Gitlab
           project_import: { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
           play_pipeline_schedule: { threshold: 1, interval: 1.minute },
           raw_blob: { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
+          group_archive_unarchive_api: { threshold: -> { application_settings.group_archive_unarchive_api_limit }, interval: 1.minute },
           group_export: { threshold: -> { application_settings.group_export_limit }, interval: 1.minute },
           group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },

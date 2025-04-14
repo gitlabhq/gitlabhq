@@ -1359,6 +1359,166 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/"
 ```
 
+### Archive a group
+
+Archive a group.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the group.
+
+This endpoint returns a `422` unprocessable entity error if the group is already archived.
+
+```plaintext
+POST /groups/:id/archive
+```
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) owned by the authenticated user |
+
+Example response:
+
+```json
+{
+  "id": 96,
+  "web_url": "https://gitlab.example.com/groups/test-1",
+  "name": "test-1",
+  "path": "test-1",
+  "description": "",
+  "visibility": "public",
+  "share_with_group_lock": false,
+  "require_two_factor_authentication": false,
+  "two_factor_grace_period": 48,
+  "project_creation_level": "developer",
+  "auto_devops_enabled": null,
+  "subgroup_creation_level": "maintainer",
+  "emails_disabled": false,
+  "emails_enabled": true,
+  "mentions_disabled": null,
+  "lfs_enabled": true,
+  "archived": true,
+  "math_rendering_limits_enabled": true,
+  "lock_math_rendering_limits_enabled": false,
+  "default_branch": null,
+  "default_branch_protection": 2,
+  "default_branch_protection_defaults": {
+    "allowed_to_push": [
+      {
+        "access_level": 40
+      }
+    ],
+    "allow_force_push": false,
+    "allowed_to_merge": [
+      {
+        "access_level": 40
+      }
+    ],
+    "developer_can_initial_push": false
+  },
+  "avatar_url": null,
+  "request_access_enabled": true,
+  "full_name": "test-1",
+  "full_path": "test-1",
+  "created_at": "2025-03-25T12:05:24.813Z",
+  "parent_id": null,
+  "organization_id": 1,
+  "shared_runners_setting": "enabled",
+  "max_artifacts_size": null,
+  "ldap_cn": null,
+  "ldap_access": null,
+  "wiki_access_level": "enabled",
+  "shared_with_groups": [],
+  "prevent_sharing_groups_outside_hierarchy": false,
+  "shared_runners_minutes_limit": null,
+  "extra_shared_runners_minutes_limit": null,
+  "prevent_forking_outside_group": null,
+  "membership_lock": false
+}
+```
+
+### Unarchive a group
+
+Unarchive a group.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the group.
+
+This endpoint returns a `422` unprocessable entity error if the group is not archived.
+
+```plaintext
+POST /groups/:id/unarchive
+```
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) owned by the authenticated user |
+
+Example response:
+
+```json
+{
+  "id": 96,
+  "web_url": "https://gitlab.example.com/groups/test-1",
+  "name": "test-1",
+  "path": "test-1",
+  "description": "",
+  "visibility": "public",
+  "share_with_group_lock": false,
+  "require_two_factor_authentication": false,
+  "two_factor_grace_period": 48,
+  "project_creation_level": "developer",
+  "auto_devops_enabled": null,
+  "subgroup_creation_level": "maintainer",
+  "emails_disabled": false,
+  "emails_enabled": true,
+  "mentions_disabled": null,
+  "lfs_enabled": true,
+  "archived": false,
+  "math_rendering_limits_enabled": true,
+  "lock_math_rendering_limits_enabled": false,
+  "default_branch": null,
+  "default_branch_protection": 2,
+  "default_branch_protection_defaults": {
+    "allowed_to_push": [
+      {
+        "access_level": 40
+      }
+    ],
+    "allow_force_push": false,
+    "allowed_to_merge": [
+      {
+        "access_level": 40
+      }
+    ],
+    "developer_can_initial_push": false
+  },
+  "avatar_url": null,
+  "request_access_enabled": true,
+  "full_name": "test-1",
+  "full_path": "test-1",
+  "created_at": "2025-03-25T12:05:24.813Z",
+  "parent_id": null,
+  "organization_id": 1,
+  "shared_runners_setting": "enabled",
+  "max_artifacts_size": null,
+  "ldap_cn": null,
+  "ldap_access": null,
+  "wiki_access_level": "enabled",
+  "shared_with_groups": [],
+  "prevent_sharing_groups_outside_hierarchy": false,
+  "shared_runners_minutes_limit": null,
+  "extra_shared_runners_minutes_limit": null,
+  "prevent_forking_outside_group": null,
+  "membership_lock": false
+}
+```
+
 ### Sync a group with LDAP
 
 {{< details >}}

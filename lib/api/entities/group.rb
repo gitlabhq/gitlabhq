@@ -14,6 +14,7 @@ module API
       expose :emails_enabled, documentation: { type: 'boolean' }
       expose :mentions_disabled
       expose :lfs_enabled?, as: :lfs_enabled
+      expose :archived, documentation: { type: 'boolean' }
       expose :math_rendering_limits_enabled, documentation: { type: 'boolean' }
       expose :lock_math_rendering_limits_enabled, documentation: { type: 'boolean' }
       expose :default_branch_name, as: :default_branch

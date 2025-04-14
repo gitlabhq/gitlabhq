@@ -979,6 +979,11 @@ paths:
         default: false
         required: false
       - in: query
+        name: archived
+        description: Limit by archived status
+        type: boolean
+        required: false
+      - in: query
         name: skip_groups
         description: Array of group ids to exclude from list
         type: array
@@ -1186,6 +1191,52 @@ paths:
       tags:
       - groups
       operationId: deleteApiV4GroupsId
+  "/api/v4/groups/{id}/archive":
+    post:
+      description: Archive a group
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Archive a group
+          schema:
+            "$ref": "#/definitions/API_Entities_Group"
+        '403':
+          description: Unauthenticated
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdArchive
+  "/api/v4/groups/{id}/unarchive":
+    post:
+      description: Unarchive a group
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Unarchive a group
+          schema:
+            "$ref": "#/definitions/API_Entities_Group"
+        '403':
+          description: Unauthenticated
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdUnarchive
   "/api/v4/groups/{id}/restore":
     post:
       description: Restore a group.
@@ -1667,6 +1718,11 @@ paths:
         default: false
         required: false
       - in: query
+        name: archived
+        description: Limit by archived status
+        type: boolean
+        required: false
+      - in: query
         name: skip_groups
         description: Array of group ids to exclude from list
         type: array
@@ -1797,6 +1853,11 @@ paths:
         description: Include project statistics
         type: boolean
         default: false
+        required: false
+      - in: query
+        name: archived
+        description: Limit by archived status
+        type: boolean
         required: false
       - in: query
         name: skip_groups
@@ -43454,6 +43515,8 @@ definitions:
         type: string
       lfs_enabled:
         type: string
+      archived:
+        type: boolean
       math_rendering_limits_enabled:
         type: boolean
       lock_math_rendering_limits_enabled:
@@ -44099,6 +44162,8 @@ definitions:
         type: string
       lfs_enabled:
         type: string
+      archived:
+        type: boolean
       math_rendering_limits_enabled:
         type: boolean
       lock_math_rendering_limits_enabled:

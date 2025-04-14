@@ -2737,6 +2737,8 @@ Instead of:
 ## you can
 
 When possible, start sentences with an active verb instead of **you can**.
+([Vale](../testing/vale.md) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/Wordy.yml))
+
 For example:
 
 - Use code review analytics to view merge request data.

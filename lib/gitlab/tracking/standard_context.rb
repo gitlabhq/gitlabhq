@@ -62,7 +62,7 @@ module Gitlab
           realm: realm,
           instance_id: instance_id,
           unique_instance_id: Gitlab::GlobalAnonymousId.instance_uuid,
-          host_name: Gitlab::Environment.hostname,
+          host_name: Gitlab.config.gitlab.host,
           instance_version: Gitlab.version_info.to_s,
           context_generated_at: Time.current
         }

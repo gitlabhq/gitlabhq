@@ -27233,6 +27233,7 @@ GPG signature for a signed commit.
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the group. |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
+| <a id="groupvulnerabilitynamespacestatistic"></a>`vulnerabilityNamespaceStatistic` {{< icon name="warning-solid" >}} | [`VulnerabilityNamespaceStatisticType`](#vulnerabilitynamespacestatistictype) | **Introduced** in GitLab 18.0. **Status**: Experiment. Counts for each vulnerability severity in the group and its subgroups. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
@@ -34606,6 +34607,7 @@ Project-level settings for product analytics provider.
 | <a id="projectvulnerabilityarchives"></a>`vulnerabilityArchives` {{< icon name="warning-solid" >}} | [`[VulnerabilityArchive!]`](#vulnerabilityarchive) | **Introduced** in GitLab 17.9. **Status**: Experiment. All vulnerability archives of the project. |
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
+| <a id="projectvulnerabilitystatistic"></a>`vulnerabilityStatistic` {{< icon name="warning-solid" >}} | [`VulnerabilityStatisticType`](#vulnerabilitystatistictype) | **Introduced** in GitLab 18.0. **Status**: Experiment. Counts for each vulnerability severity in the project. |
 | <a id="projectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 | <a id="projectwikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
 
@@ -40472,6 +40474,24 @@ Represents the vulnerability management policy.
 | <a id="vulnerabilitymanagementpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="vulnerabilitymanagementpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
+### `VulnerabilityNamespaceStatisticType`
+
+Counts for each vulnerability severity in the group and its subgroups.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitynamespacestatistictypecritical"></a>`critical` | [`Int!`](#int) | Number of vulnerabilities of CRITICAL severity. |
+| <a id="vulnerabilitynamespacestatistictypehigh"></a>`high` | [`Int!`](#int) | Number of vulnerabilities of HIGH severity. |
+| <a id="vulnerabilitynamespacestatistictypeinfo"></a>`info` | [`Int!`](#int) | Number of vulnerabilities of INFO severity. |
+| <a id="vulnerabilitynamespacestatistictypelow"></a>`low` | [`Int!`](#int) | Number of vulnerabilities of LOW severity. |
+| <a id="vulnerabilitynamespacestatistictypemedium"></a>`medium` | [`Int!`](#int) | Number of vulnerabilities of MEDIUM severity. |
+| <a id="vulnerabilitynamespacestatistictypenamespaceid"></a>`namespaceId` | [`Int!`](#int) | Namespace ID. |
+| <a id="vulnerabilitynamespacestatistictypetotal"></a>`total` | [`Int!`](#int) | Total of all vulnerabilities. |
+| <a id="vulnerabilitynamespacestatistictypeunknown"></a>`unknown` | [`Int!`](#int) | Number of vulnerabilities of UNKNOWN severity. |
+| <a id="vulnerabilitynamespacestatistictypeupdatedat"></a>`updatedAt` | [`Time`](#time) | Date that data was last updated. |
+
 ### `VulnerabilityPermissions`
 
 Check permissions for the current user on a vulnerability.
@@ -40593,6 +40613,24 @@ Represents a state transition of a vulnerability.
 | <a id="vulnerabilitystatetransitiontypefromstate"></a>`fromState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability before transition. |
 | <a id="vulnerabilitystatetransitiontypeid"></a>`id` | [`VulnerabilitiesStateTransitionID!`](#vulnerabilitiesstatetransitionid) | ID of the state transition. |
 | <a id="vulnerabilitystatetransitiontypetostate"></a>`toState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability after transition. |
+
+### `VulnerabilityStatisticType`
+
+Counts for each vulnerability severity in the project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatistictypecritical"></a>`critical` | [`Int!`](#int) | Number of vulnerabilities of CRITICAL severity. |
+| <a id="vulnerabilitystatistictypehigh"></a>`high` | [`Int!`](#int) | Number of vulnerabilities of HIGH severity. |
+| <a id="vulnerabilitystatistictypeinfo"></a>`info` | [`Int!`](#int) | Number of vulnerabilities of INFO severity. |
+| <a id="vulnerabilitystatistictypelow"></a>`low` | [`Int!`](#int) | Number of vulnerabilities of LOW severity. |
+| <a id="vulnerabilitystatistictypemedium"></a>`medium` | [`Int!`](#int) | Number of vulnerabilities of MEDIUM severity. |
+| <a id="vulnerabilitystatistictypeprojectid"></a>`projectId` | [`Int!`](#int) | Project ID. |
+| <a id="vulnerabilitystatistictypetotal"></a>`total` | [`Int!`](#int) | Total of all vulnerabilities. |
+| <a id="vulnerabilitystatistictypeunknown"></a>`unknown` | [`Int!`](#int) | Number of vulnerabilities of UNKNOWN severity. |
+| <a id="vulnerabilitystatistictypeupdatedat"></a>`updatedAt` | [`Time`](#time) | Date that data was last updated. |
 
 ### `VulnerableDependency`
 
@@ -44142,6 +44180,7 @@ Values for package manager.
 | ----- | ----------- |
 | <a id="packagemanagerapk"></a>`APK` | Package manager: apk. |
 | <a id="packagemanagerbundler"></a>`BUNDLER` | Package manager: bundler. |
+| <a id="packagemanagercargo"></a>`CARGO` | Package manager: cargo. |
 | <a id="packagemanagercomposer"></a>`COMPOSER` | Package manager: composer. |
 | <a id="packagemanagerconan"></a>`CONAN` | Package manager: conan. |
 | <a id="packagemanagerconda"></a>`CONDA` | Package manager: conda. |
@@ -47948,6 +47987,26 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="useruserachievementsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Indicates whether or not achievements hidden from the profile should be included in the result. |
+
+#### `VulnerabilityStatisticInterface`
+
+Implementations:
+
+- [`VulnerabilityNamespaceStatisticType`](#vulnerabilitynamespacestatistictype)
+- [`VulnerabilityStatisticType`](#vulnerabilitystatistictype)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitystatisticinterfacecritical"></a>`critical` | [`Int!`](#int) | Number of vulnerabilities of CRITICAL severity. |
+| <a id="vulnerabilitystatisticinterfacehigh"></a>`high` | [`Int!`](#int) | Number of vulnerabilities of HIGH severity. |
+| <a id="vulnerabilitystatisticinterfaceinfo"></a>`info` | [`Int!`](#int) | Number of vulnerabilities of INFO severity. |
+| <a id="vulnerabilitystatisticinterfacelow"></a>`low` | [`Int!`](#int) | Number of vulnerabilities of LOW severity. |
+| <a id="vulnerabilitystatisticinterfacemedium"></a>`medium` | [`Int!`](#int) | Number of vulnerabilities of MEDIUM severity. |
+| <a id="vulnerabilitystatisticinterfacetotal"></a>`total` | [`Int!`](#int) | Total of all vulnerabilities. |
+| <a id="vulnerabilitystatisticinterfaceunknown"></a>`unknown` | [`Int!`](#int) | Number of vulnerabilities of UNKNOWN severity. |
+| <a id="vulnerabilitystatisticinterfaceupdatedat"></a>`updatedAt` | [`Time`](#time) | Date that data was last updated. |
 
 #### `WorkItemCustomFieldValue`
 

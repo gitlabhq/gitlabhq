@@ -21,6 +21,7 @@ module API
 
       params :group_list_params do
         use :statistics_params
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
@@ -59,7 +60,7 @@ module API
         [:all_available,
           :custom_attributes,
           :owned, :min_access_level,
-          :include_parent_descendants, :search, :visibility]
+          :include_parent_descendants, :search, :visibility, :archived]
       end
 
       # This is a separate method so that EE can extend its behaviour, without
@@ -345,6 +346,56 @@ module API
           present_group_details(params, group, with_projects: true)
         else
           render_validation_error!(group)
+        end
+      end
+
+      desc 'Archive a group' do
+        success code: 200, model: Entities::Group
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[groups]
+      end
+      post ':id/archive', feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_archive_unarchive_api)
+        end
+
+        group = find_group!(params[:id])
+        authorize!(:archive_group, group)
+
+        response = ::Namespaces::Groups::ArchiveService.new(group, current_user).execute
+
+        if response.success?
+          status 200
+          present_group_details(params, group, with_projects: params[:with_projects])
+        else
+          render_api_error!(response.message, 422)
+        end
+      end
+
+      desc 'Unarchive a group' do
+        success code: 200, model: Entities::Group
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[groups]
+      end
+      post ':id/unarchive', feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_archive_unarchive_api)
+        end
+
+        group = find_group!(params[:id])
+        authorize!(:archive_group, group)
+
+        response = ::Namespaces::Groups::UnarchiveService.new(group, current_user).execute
+
+        if response.success?
+          status 200
+          present_group_details(params, group, with_projects: params[:with_projects])
+        else
+          render_api_error!(response.message, 422)
         end
       end
 

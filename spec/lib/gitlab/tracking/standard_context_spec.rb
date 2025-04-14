@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       let(:version) { '17.3.0' }
 
       before do
-        allow(Gitlab::Environment).to receive(:hostname).and_return(hostname)
+        allow(Gitlab.config.gitlab).to receive(:host).and_return(hostname)
         allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(version))
       end
 

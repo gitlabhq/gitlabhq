@@ -128,6 +128,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>c</kbd>                      |                                   | Move to next commit. |
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
 | <kbd>f</kbd>                      |                                   | Toggle file browser. |
+| <kbd>v</kbd>                      |                                   | Mark file as viewed or unviewed. |
 
 ### Project files
 

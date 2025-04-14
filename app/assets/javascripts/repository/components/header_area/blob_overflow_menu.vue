@@ -8,7 +8,6 @@ import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.g
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_button_group.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BlobDefaultActionsGroup from './blob_default_actions_group.vue';
 import BlobDeleteFileGroup from './blob_delete_file_group.vue';
 import BlobRepositoryActionsGroup from './blob_repository_actions_group.vue';
@@ -32,7 +31,6 @@ export default {
   directives: {
     GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['blobInfo', 'currentRef'],
   provide() {
     return {

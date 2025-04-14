@@ -212,7 +212,7 @@ To resolve this issue, you can use the deploy keys API to create deploy keys for
 
 1. [Create a service account user](../../../api/group_service_accounts.md#create-a-service-account-user).
 1. [Create a personal access token](../../../api/user_tokens.md#create-a-personal-access-token) for that service account user. This token must have at least the `api` scope.
-1. [Invite the service account user to the project](../../profile/service_accounts.md#add-to-a-subgroup-or-project).
+1. [Invite the service account user to the project](../../profile/service_accounts.md#service-account-access-to-groups-and-projects).
 1. Use the deploy key API to [create a deploy key for the service account user](../../../api/deploy_keys.md#add-deploy-key):
 
    ```shell
