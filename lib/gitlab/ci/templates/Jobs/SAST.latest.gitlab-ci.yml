@@ -312,10 +312,6 @@ spotbugs-sast:
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/
       when: never
-    - if: $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/AndroidManifest.xml'
-      when: never
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.

@@ -1,7 +1,7 @@
 ---
 Migration/UpdateLargeTable:
   Enabled: true
-  OverLimitTables: &2
+  OverLimitTables:
   - :approval_merge_request_rules_users
   - :ci_build_names_102
   - :ci_build_needs
@@ -50,7 +50,7 @@ Migration/UpdateLargeTable:
   - :vulnerability_occurrences
   - :vulnerability_reads
   - :web_hook_logs
-  LargeTables: &1
+  LargeTables:
   - :approval_merge_request_rules
   - :approval_merge_request_rules_users
   - :audit_events

@@ -178,16 +178,12 @@ When the feature becomes [generally available](../policy/development_stages_supp
 
 Grape allows you to access only the parameters that have been declared by your
 `params` block. It filters out the parameters that have been passed, but are not
-allowed.
-
-– <https://github.com/ruby-grape/grape#declared>
+allowed. For more details, see the Ruby Grape [documentation for `declared()`](https://github.com/ruby-grape/grape#declared).
 
 ### Exclude parameters from parent namespaces
 
-By default `declared(params)`includes parameters that were defined in all
-parent namespaces.
-
-– <https://github.com/ruby-grape/grape#include-parent-namespaces>
+By default `declared(params)` includes parameters that were defined in all
+parent namespaces. For more details, see the Ruby Grape [documetation for `include_parent_namespaces`](https://github.com/ruby-grape/grape#include-parent-namespaces).
 
 In most cases you should exclude parameters from the parent namespaces:
 

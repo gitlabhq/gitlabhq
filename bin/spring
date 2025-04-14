@@ -1,21 +1,97 @@
 #!/usr/bin/env ruby
 
-# This file loads Spring without using Bundler, in order to be fast.
+#################################
+# BEGIN GITLAB MODIFICATIONS
+#
+# EXPLANATION OF GITLAB'S CUSTOM LOGIC FOR ENABLING/DISABLING SPRING:
+#
+# For legacy reasons which do not have any known associated GitLab issues
+# (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180842#note_2355236713),
+# but are related to deadlocks (https://github.com/rails/spring/issues/731),
+# GitLab wants to require the usage of the Spring pre-loaded to be "opt-in".
+#
+# This behavior was introduced via a custom `ENABLE_SPRING` environment variable in this MR:
+# https://gitlab.com/gitlab-org/gitlab/-/commit/7b523eb1a144fe87e4ce12c3a611b5648ebd93cb
+#
+# However, the default contract for Spring is to be automatically enabled
+# whenever a spring-enabled `bin/*` binstub is invoked (e.g. `bin/rspec`), unless
+# the DISABLE_SPRING environment variable is set and contains a non-nil/non-empty/non-"0" value
+#
+# This can lead to unexpected behavior for contributors who are used to the default behavior of
+# Rails and Spring, where it is always used when a binstub is invoked.
+#
+# It can also cause difficulties in environments such as RubyMine, which (as of 2025) relies on the
+# contract of `bin/rspec` to be respected, and it is tedious and error-prone to require that
+# the `ENABLE_SPRING` environment variable be set on every test run configuration (even if you set
+# it on the default RubyMine RSpec configuration template, it will often get unset/lost).
+#
+# And finally, in the GitLab codebase as of 2025, with millions of lines of Ruby code,
+# using Spring reduces the time for each individual test run by ~15 seconds or more.
+# So, it can be a big win for developer productivity to enable it when possible.
+#
+# Thus, as a compromise, we will still default to NOT using Spring
+# even when binstubs are called, but we WILL attempt to automatically use
+# it in cases where it is _likely_ that it is desired.
+#
+# These cases include:
+# 1. When the `bin/spring` binstub was directly invoked (File.basename($0) == "spring")
+# 2. When the `ENABLE_SPRING` environment variable is explicitly set to a "truthy" value,
+# 3. When the `SPRING_TMP_PATH` environment variable is set, which can be used as an indicator
+#    that RubyMine is being used, since RubyMine always sets this variable
+# 4. When the standard `DISABLE_SPRING` environment variable is "0"
+#    (this is the only non-nil/non-empty value that Spring itself considers to be "enabled")
+#
+# An exception will be raised if both the GitLab custom `ENABLE_SPRING` and the
+# standard `DISABLE_SPRING` environment variables are set.
+#
+#################################
+
+if ENV["ENABLE_SPRING"] && ENV["DISABLE_SPRING"]
+  raise "ERROR: Do not set both ENABLE_SPRING and DISABLE_SPRING environment variables, " \
+    "as they are mutually exclusive. Please set only one or the other."
+end
+
+if ENV["ENABLE_SPRING"]
+  # convert ENABLE_SPRING to DISABLE_SPRING
+  ENV["DISABLE_SPRING"] = (ENV["ENABLE_SPRING"] =~ /^(true|t|yes|y|1|on)$/i) ? "0" : "1"
+elsif !ENV["DISABLE_SPRING"] && ENV["SPRING_TMP_PATH"]
+  # Enable spring if the SPRING_TMP_PATH is enabled, and DISABLE_SPRING is not set
+  # Spring is requested by ex. RubyMine
+  ENV["DISABLE_SPRING"] = "0"
+elsif !ENV["DISABLE_SPRING"]
+  # Retain old behavior, making spring disabled by default
+  ENV["DISABLE_SPRING"] = "1"
+end
+
+#################################
+# END GITLAB MODIFICATIONS
+#################################
+
+# This file loads Spring without using loading other gems in the Gemfile, in order to be fast.
 # It gets overwritten when you run the `spring binstub` command.
 
-unless (defined?(Spring) || ENV['ENABLE_SPRING'] != '1') && File.basename($0) != 'spring'
-  require 'rubygems'
-  require 'bundler'
+if !defined?(Spring) && [nil, "development", "test"].include?(ENV["RAILS_ENV"])
+  require "bundler"
 
-  lockfile = Bundler::LockfileParser.new(Bundler.default_lockfile.read)
-  spring = lockfile.specs.detect { |spec| spec.name == 'spring' }
-  if spring
+  Bundler.locked_gems.specs.find { |spec| spec.name == "spring" }&.tap do |spring|
     Gem.use_paths Gem.dir, Bundler.bundle_path.to_s, *Gem.path
+
+
+    #################################
+    # BEGIN GITLAB MODIFICATIONS
+    #
+    # This rescue was added to gracefully handle if the spring gem is not installed.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106659
+    #################################
     begin
-      gem 'spring', spring.version
-      require 'spring/binstub'
-    rescue Gem::MissingSpecError => e
-      $stderr.puts 'INFO: Spring not available.'
+      gem "spring", spring.version
+      require "spring/binstub"
+    rescue Gem::MissingSpecError
+      $stderr.puts "The bin/spring binstub was invoked, but the spring gem is not installed.\n"
+      $stderr.puts "Run `bundle install` to install the missing spring gem."
     end
+    #################################
+    # END GITLAB MODIFICATIONS
+    #################################
   end
 end

@@ -223,7 +223,7 @@ list. But for ATA to work, a globally installed `npm` might be required. IDEs ca
 configuration options to set location of the `npm` executables. Consult your IDE documentation for
 details.
 
-Because ATA is not guaranteed to work and Lodash is a backbone for many of our utility functions
-— we have [DefinitelyTyped definitions for Lodash](https://www.npmjs.com/package/@types/lodash)
+ATA is not guaranteed to work and Lodash is a backbone for many of our utility functions,
+so we have [DefinitelyTyped definitions for Lodash](https://www.npmjs.com/package/@types/lodash)
 explicitly added to our `devDependencies` in the `package.json`. This ensures that everyone gets
 type hints for `lodash`-based functions out of the box.
