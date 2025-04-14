@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Gitlab/FeatureFlagKeyDynamic:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/app_config/gitlab_instance_feature_flags_resolver.rb'
     - 'app/graphql/resolvers/feature_flag_resolver.rb'

@@ -19,7 +19,13 @@ RSpec.describe 'Puma' do
 
     File.write(config_path, config_lines)
 
-    cmd = %W[puma -e test -C #{config_path} #{File.join(__dir__, 'configs/config.ru')}]
+    puma_path = begin
+      Gem.bin_path('puma', 'puma')
+    rescue StandardError
+    end
+    skip "Puma executable not found" unless puma_path
+
+    cmd = %W[#{puma_path} -e test -C #{config_path} #{File.join(__dir__, 'configs/config.ru')}]
     @puma_master_pid = spawn({ 'DISABLE_PUMA_WORKER_KILLER' => '1' }, *cmd)
     wait_puma_boot!(@puma_master_pid, File.join(project_root, 'tmp/tests/puma-worker-ready'))
     WebMock.allow_net_connect!
@@ -45,7 +51,7 @@ RSpec.describe 'Puma' do
 
   after(:all) do
     webmock_enable!
-    Process.kill('TERM', @puma_master_pid)
+    Process.kill('TERM', @puma_master_pid) if @puma_master_pid
   rescue Errno::ESRCH
   end
 
